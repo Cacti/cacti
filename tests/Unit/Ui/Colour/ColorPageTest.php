@@ -10,5 +10,5 @@ test('the Colors page handlers import, save, delete and export colors as intende
 	fclose($pipes[1]);
 	fclose($pipes[2]);
 	expect(proc_close($process))->toBe(0)->and($errors)->toBe('');
-	expect(json_decode($output, true, 512, JSON_THROW_ON_ERROR)['passed'])->toBe(48);
+	expect(json_decode($output, true, 512, JSON_THROW_ON_ERROR)['passed'])->toBe(52);
 });

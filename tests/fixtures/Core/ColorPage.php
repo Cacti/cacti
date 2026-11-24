@@ -143,7 +143,7 @@ function import(array $lines, array $fake, array $request = []) : array {
 
 // Submit the edit form and return the redirect it ends with.
 function save(array $request, array $fake = [], mixed $result = 9) : string {
-	$_REQUEST               = $request + ['save_component_color' => '1'];
+	$_REQUEST               = $request + (isset($request['save_component_import']) ? [] : ['save_component_color' => '1']);
 	$_SESSION               = [];
 	$GLOBALS['db']          = [];
 	$GLOBALS['fake']        = $fake;
@@ -270,5 +270,23 @@ check($GLOBALS['messages'] === [['color_delete_kept', '1 of the selected Colors 
 
 action(['drp_action' => '1', 'selected_items' => serialize(['3'])], ['DELETE FROM colors' => true, 'SELECT COUNT(*)' => 0]);
 check($GLOBALS['messages'] === [], 'nothing reported when every color was deleted');
+
+// Import without a file reports it instead of ending on a blank page; a real upload is processed.
+foreach ([
+	'no file chosen' => ['name' => '', 'tmp_name' => '', 'error' => UPLOAD_ERR_NO_FILE, 'size' => 0],
+	'upload error'   => ['name' => 'c.csv', 'tmp_name' => '', 'error' => UPLOAD_ERR_PARTIAL, 'size' => 0],
+	'missing field'  => null,
+] as $label => $file) {
+	$_FILES              = $file === null ? [] : ['import_file' => $file];
+	$location            = save(['save_component_import' => '1'], [], 0);
+	check($location === 'Location: color.php?action=import' && $GLOBALS['messages'] === [[35, '', 0]], 'import with ' . $label . ' reported');
+}
+
+$csv = tempnam(sys_get_temp_dir(), 'cacti-color-import-');
+file_put_contents($csv, "name,hex\nRed,FF0000\n");
+$_FILES   = ['import_file' => ['name' => 'c.csv', 'tmp_name' => $csv, 'error' => UPLOAD_ERR_OK, 'size' => 17]];
+$location = save(['save_component_import' => '1'], ['SELECT *' => [], 'INSERT INTO colors' => true], 0);
+unlink($csv);
+check($location === 'Location: color.php?action=import' && ($_SESSION['import_debug_info'][1] ?? '') === 'INSERT SUCCEEDED: (FF0000,Red)', 'uploaded file imported');
 
 print json_encode(['passed' => $GLOBALS['passed']], JSON_THROW_ON_ERROR) . "\n";

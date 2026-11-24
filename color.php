@@ -116,22 +116,21 @@ function form_save() : void {
 			header('Location: color.php');
 		}
 	} elseif (isrv('save_component_import')) {
-		if (isset($_FILES['import_file']['tmp_name'])) {
-			if (($_FILES['import_file']['tmp_name'] != 'none') && ($_FILES['import_file']['tmp_name'] != '')) {
-				$csv_data   = file($_FILES['import_file']['tmp_name']);
-				$debug_data = color_import_processor($csv_data);
+		// With no file chosen PHP still sets tmp_name, to an empty string, and reports UPLOAD_ERR_NO_FILE
+		$upload = $_FILES['import_file'] ?? [];
 
-				if (cacti_sizeof($debug_data)) {
-					$_SESSION['import_debug_info'] = $debug_data;
-				}
+		if (($upload['error'] ?? UPLOAD_ERR_NO_FILE) == UPLOAD_ERR_OK && ($upload['tmp_name'] ?? '') != '' && $upload['tmp_name'] != 'none') {
+			$csv_data   = file($upload['tmp_name']) ?: [];
+			$debug_data = color_import_processor($csv_data);
 
-				header('Location: color.php?action=import');
+			if (cacti_sizeof($debug_data)) {
+				$_SESSION['import_debug_info'] = $debug_data;
 			}
 		} else {
 			raise_message(35);
-
-			header('Location: color.php?action=import');
 		}
+
+		header('Location: color.php?action=import');
 	}
 
 	exit;
