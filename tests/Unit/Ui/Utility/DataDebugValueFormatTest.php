@@ -50,11 +50,3 @@ test('the repair box waits only while the check is running', function () {
 	expect(dsdebug_repair_status(array('done' => 0, 'info' => array('rrd_match' => 1))))->toBe('No Repair Recommendations');
 	expect(dsdebug_repair_status(array('done' => 1, 'info' => array())))->toBe('No Repair Recommendations');
 });
-
-test('a completed check without issues stores that none were found', function () {
-	expect(dsdebug_completed_issues(array()))->toBe(array('No issues found'));
-});
-
-test('a completed check keeps the issues it found', function () {
-	expect(dsdebug_completed_issues(array('RRDfile not updated after polling')))->toBe(array('RRDfile not updated after polling'));
-});

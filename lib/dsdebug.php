@@ -334,7 +334,9 @@ function dsdebug_poller_bottom() {
 							$total_issues++;
 						}
 
-						$c['issue'] = dsdebug_completed_issues($c['issue']);
+						if ($c['issue'] == '') {
+							$c['issue'][] = __('No issues found');
+						}
 					}
 				} else {
 					$c['issue'][] = __('RRDfile not created yet');
@@ -446,20 +448,4 @@ function dsdebug_repair_status($check) {
 	}
 
 	return __('Waiting on Data Source Check to Complete');
-}
-
-/**
- * Returns the issues of a completed check, stating that none were found when
- * the list is empty.
- *
- * @param array $issues The issues found by the check.
- *
- * @return array The issues to store.
- */
-function dsdebug_completed_issues($issues) {
-	if (!cacti_sizeof($issues)) {
-		$issues[] = __('No issues found');
-	}
-
-	return $issues;
 }
