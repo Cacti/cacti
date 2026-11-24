@@ -63,3 +63,13 @@ test('the host MIB script queries keep a PHP binary path with spaces as one word
 	'Unix CPU query' => array('host_cpu.xml', 'unix', '/opt/php 8/bin/php', "\"/opt/php 8/bin/php\" -q /srv/cacti/scripts/query_host_cpu.php 'index'"),
 	'Unix partitions query' => array('host_disk.xml', 'unix', '/usr/bin/php', "\"/usr/bin/php\" -q /srv/cacti/scripts/query_host_partitions.php 'index'")
 ));
+
+test('query_host_partitions.php multiplies numeric sizes and prints U on failed gets', function ($field, $sau, $value, $expected) {
+	$result = cacti_test_isolated_probe(dirname(__DIR__, 2) . '/fixtures/Core/QueryHostPartitions.php', array($field, $sau, $value));
+	expect($result['output'])->toBe($expected);
+})->with(array(
+	'numeric total' => array('total', '4096', '100', '409600'),
+	'failed SNMP get returns U' => array('used', '4096', 'U', 'U'),
+	'missing allocation unit returns U' => array('total', '', '100', 'U'),
+	'non-size field passes through' => array('description', '', '/var', '/var')
+));
