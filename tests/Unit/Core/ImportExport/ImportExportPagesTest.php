@@ -21,4 +21,5 @@ test('import and export page scenario passes', function (string $mode) {
 		->and($output)->toContain("PASS: $mode");
 })->with([
 	'data source profile import result lines' => ['profile-messages'],
+	'package key details before verification' => ['public-key-details'],
 ]);

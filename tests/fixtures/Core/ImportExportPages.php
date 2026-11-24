@@ -55,6 +55,32 @@ function db_column_exists(string $table, string $column) : bool {
 	return in_array($column, $GLOBALS['fixture']['columns'], true);
 }
 
+function get_public_key_sha1() : string {
+	return 'legacy';
+}
+
+function get_public_key_sha256() : string {
+	return 'built-in';
+}
+
+function import_get_package_info(string $xmlfile) : mixed {
+	return $GLOBALS['fixture']['package'];
+}
+
+function import_public_key_meets_minimum(string $key) : bool {
+	return true;
+}
+
+function db_fetch_cell_prepared(string $sql, array $params = []) : mixed {
+	return $GLOBALS['fixture']['cell'] ?? false;
+}
+
+function db_execute_prepared(string $sql, array $params = []) : bool {
+	$GLOBALS['fixture']['calls'][] = $params;
+
+	return true;
+}
+
 $mode = $argv[1] ?? '';
 
 switch ($mode) {
@@ -75,6 +101,22 @@ switch ($mode) {
 		check(substr_count($errors, '&lt;b&gt;empty&lt;/b&gt;') === 2, 'Profile names in result lines are encoded');
 		check(str_contains($errors, '&lt;i&gt;extra&lt;/i&gt;'), 'Column names in result lines are encoded');
 		check(!str_contains($errors, '<'), 'No markup from the file reaches the result lines');
+
+		break;
+	case 'public-key-details':
+		\cacti_fixture_source_function($root . '/package_import.php', 'import_validate_public_key', __NAMESPACE__);
+
+		$GLOBALS['fixture']['package'] = ['pubkey' => 'built-in', 'author' => 'Someone', 'homepage' => 'https://example.invalid', 'email' => 'x@example.invalid'];
+
+		check(import_validate_public_key('package.xml.gz', false) === 'built-in', 'The built in key is reported as trusted');
+		check(import_validate_public_key('package.xml.gz', true) === 'built-in', 'Accepting the built in key reports it as trusted');
+		check($GLOBALS['fixture']['calls'] === [], 'No key row is stored for the built in key');
+
+		$GLOBALS['fixture']['package']['pubkey'] = 'other';
+
+		check(import_validate_public_key('package.xml.gz', false) === false, 'An unknown key is not trusted from the details view');
+		check(import_validate_public_key('package.xml.gz', true) === 'other', 'An accepted key is trusted');
+		check(cacti_sizeof($GLOBALS['fixture']['calls']) === 1 && $GLOBALS['fixture']['calls'][0][4] === 'other', 'Only the accepted key is stored');
 
 		break;
 	default:

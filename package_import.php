@@ -1039,11 +1039,17 @@ function import_validate_public_key(string $xmlfile, bool $accept = false) : mix
 				return $info['pubkey'];
 			}
 
+			// The built in key is trusted without a stored row, and the author
+			// details beside it come from a file whose signature is not checked yet.
 			if ($public_key1 == $info['pubkey']) {
-				$insert = true;
-			} elseif ($public_key2 == $info['pubkey']) {
-				$insert = true;
-			} elseif ($accept) {
+				return $info['pubkey'];
+			}
+
+			if ($public_key2 == $info['pubkey']) {
+				return $info['pubkey'];
+			}
+
+			if ($accept) {
 				$insert = true;
 			}
 
