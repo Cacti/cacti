@@ -1021,11 +1021,14 @@ function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orpha
 				cacti_log('Previewing XML Data for ' . $name, false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
 			}
 
-			$debug_data = import_xml_data($fdata, false, $profile_id, $remove_orphans, $replace_svalues, $import_hashes);
+			$result = import_xml_data($fdata, false, $profile_id, $remove_orphans, $replace_svalues, $import_hashes);
 
-			if ($debug_data === false) {
+			if ($result === false) {
 				return false;
 			}
+
+			// A Package can carry several template files, so keep the results of each.
+			$debug_data = array_merge_recursive($debug_data, $result);
 		}
 	}
 

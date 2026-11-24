@@ -164,7 +164,7 @@ function form_actions() : void {
 						$import_packages[$file] = $file;
 					}
 				} else {
-					$import_hashes[$h['files']][] = $h['files'];
+					$import_hashes[$h['files']][] = $h['hash'];
 					$import_packages[$h['files']] = $h['files'];
 				}
 			}
@@ -208,6 +208,14 @@ function form_actions() : void {
 						$files = $import_files[$filename];
 					} else {
 						$files = [];
+					}
+
+					// import_package() reads an empty list as the whole Package, so
+					// name the part that was not selected, as the upload form does.
+					if (cacti_sizeof($files) && !cacti_sizeof($hashes)) {
+						$hashes[] = 'dont import';
+					} elseif (cacti_sizeof($hashes) && !cacti_sizeof($files)) {
+						$files[] = 'dont import';
 					}
 
 					if ($data !== false) {

@@ -127,7 +127,7 @@ function import_package_get_name(string $xmlfile) : string {
 }
 
 function import_package(string $xmlfile, mixed ...$arguments) : mixed {
-	$GLOBALS['fixture']['calls'][] = ['import_package', $arguments];
+	$GLOBALS['fixture']['calls'][] = ['import_package', $arguments, basename($xmlfile)];
 
 	return $GLOBALS['fixture']['import_result'];
 }
@@ -141,7 +141,7 @@ function import_display_package_data(array $templates, array $files, string $pac
 }
 
 function get_repo_manifest_file(string $repo_id) : string {
-	return json_encode(['manifest' => [3 => ['filename' => 'sample.xml.gz', 'name' => 'Sample']]]);
+	return json_encode(['manifest' => [3 => ['filename' => 'sample.xml.gz', 'name' => 'Sample'], 4 => ['filename' => 'other.xml.gz', 'name' => 'Other']]]);
 }
 
 function get_repo_file(string $repo_id, string $filename = 'package.manifest', bool $raise = true) : mixed {
@@ -154,6 +154,14 @@ function package_private_tmpdir() : string {
 
 function get_public_key() : string {
 	return 'built-in';
+}
+
+function package_import_take_state(string $token) : mixed {
+	return $GLOBALS['fixture']['state'];
+}
+
+function import_display_results(array $import_debug_info, array $filestatus, bool $web = false, bool $preview = false) : void {
+	$GLOBALS['fixture']['calls'][] = ['results', $import_debug_info];
 }
 
 $mode = $argv[1] ?? '';
@@ -282,6 +290,41 @@ switch ($mode) {
 		package_get_details();
 
 		check($GLOBALS['fixture']['messages'] === [] && array_column($GLOBALS['fixture']['calls'], 0) === ['import_package', 'prepare', 'display'], 'A readable repository package is prepared and displayed');
+
+		break;
+	case 'repository-import-selection':
+		\cacti_fixture_source_function($root . '/package_import.php', 'form_actions', __NAMESPACE__);
+
+		$GLOBALS['fixture']['request']       = ['drp_action' => 1, 'import_state' => str_repeat('a', 32)];
+		$GLOBALS['fixture']['import_result'] = [[], []];
+		$GLOBALS['fixture']['state']         = [
+			'package_location'    => '1',
+			'data_source_profile' => 1,
+			'remove_orphans'      => false,
+			'replace_svalues'     => false,
+			'selected_items'      => [],
+			'selected_hashes'     => [['hash' => 'template_hash', 'files' => 'sample.xml.gz']],
+			'selected_files'      => [['filename' => 'other.xml.gz', 'pfile' => 'scripts/other.php']],
+		];
+
+		register_shutdown_function(static function () : void {
+			$imports = [];
+
+			foreach ($GLOBALS['fixture']['calls'] as $call) {
+				if ($call[0] === 'import_package') {
+					$imports[$call[2]] = [$call[1][6], $call[1][7]];
+				}
+			}
+
+			check(($imports['sample.xml.gz'] ?? null) === [['template_hash'], ['dont import']], 'Selecting only templates imports no files');
+			check(($imports['other.xml.gz'] ?? null) === [['dont import'], ['scripts/other.php']], 'Selecting only files imports no templates');
+
+			print "PASS: repository-import-selection\n";
+		});
+
+		form_actions();
+
+		check(false, 'The import action ends the request');
 
 		break;
 	default:
