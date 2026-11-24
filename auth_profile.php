@@ -246,6 +246,11 @@ function api_auth_update_user_setting(string $name, string $value) : void {
 		} else {
 			foreach ($settings_user as $tab => $settings) {
 				if (isset($settings[$name])) {
+					// a setting chosen from a fixed list accepts only values from that list
+					if (!cacti_user_setting_value_allowed($settings[$name], $value)) {
+						break;
+					}
+
 					db_execute_prepared('REPLACE INTO settings_user
 						(name, value, user_id)
 						VALUES (?, ?, ?)',
@@ -707,9 +712,9 @@ function settings_javascript() : void {
 	<script type='text/javascript'>
 		var themeFonts = <?php print read_config_option('font_method'); ?>;
 		var currentTab = <?php print json_encode((string) grv('tab')); ?>;
-		var currentTheme = '<?php print get_selected_theme(); ?>';
-		var currentLang = '<?php print read_config_option('user_language'); ?>';
-		var authMethod = '<?php print read_config_option('auth_method'); ?>';
+		var currentTheme = <?php print cacti_js_encode(get_selected_theme()); ?>;
+		var currentLang = <?php print cacti_js_encode((string) read_config_option('user_language')); ?>;
+		var authMethod = <?php print cacti_js_encode((string) read_config_option('auth_method')); ?>;
 
 		function clearUserSettings() {
 			$('#clear_settings').blur();

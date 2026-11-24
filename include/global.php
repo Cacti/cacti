@@ -812,13 +812,10 @@ if ($config['is_web']) {
 		}
 	}
 
+	// newtheme is a flag: the caller changed the theme, so drop the cached name
+	// and let get_selected_theme() read the stored one. Its value is never used.
 	if (isrv('newtheme')) {
-		$newtheme     = gnrv('newtheme');
-		$newtheme_css = __DIR__ . "/themes/$newtheme/main.css";
-
-		if (is_valid_theme($newtheme)) {
-			$_SESSION['selected_theme'] = $newtheme;
-		}
+		kill_session_var('selected_theme');
 	}
 
 	if (isrv('csrf_timeout')) {

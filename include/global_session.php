@@ -125,7 +125,7 @@ if ($graphs) {
 	var cactiVersion='<?php print $config['cacti_version']; ?>';
 	var cactiServerOS='<?php print CACTI_SERVER_OS; ?>';
 	var cactiAction='<?php print gfrv('action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([-a-zA-Z0-9_\s]+)$/']]); ?>';
-	var theme='<?php print get_selected_theme(); ?>';
+	var theme=<?php print cacti_js_encode(get_selected_theme()); ?>;
 	var refreshIsLogout=<?php print $refreshIsLogout; ?>;
 	var refreshPage='<?php print $myrefresh['page']; ?>';
 	var refreshMSeconds=<?php print $myrefresh['seconds'] * 1000; ?>;

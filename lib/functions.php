@@ -381,6 +381,10 @@ function save_user_settings(mixed $user = null) : void {
 						}
 					}
 				} elseif (isrv($field_name)) {
+					if (!cacti_user_setting_value_allowed($field_array, gnrv($field_name))) {
+						continue;
+					}
+
 					set_user_setting($field_name, gnrv($field_name), $user);
 				}
 			}
@@ -945,7 +949,7 @@ function get_selected_theme() : string {
 
 	// shortcut if theme is set in session
 	if (isset($_SESSION['selected_theme']) && isset($_SESSION[SESS_USER_ID])) {
-		if (file_exists(CACTI_PATH_INCLUDE . '/themes/' . $_SESSION['selected_theme'] . '/main.css')) {
+		if (cacti_is_theme_name($_SESSION['selected_theme'])) {
 			return $_SESSION['selected_theme'];
 		}
 	}
@@ -973,9 +977,9 @@ function get_selected_theme() : string {
 		}
 	}
 
-	if (isset($_SESSION[SESS_USER_ID]) && !file_exists(CACTI_PATH_INCLUDE . '/themes/' . $theme . '/main.css')) {
+	if (isset($_SESSION[SESS_USER_ID]) && !cacti_is_theme_name($theme)) {
 		foreach ($themes as $t => $name) {
-			if (file_exists(CACTI_PATH_INCLUDE . '/themes/' . $t . '/main.css')) {
+			if (cacti_is_theme_name($t)) {
 				$theme = $t;
 
 				db_execute_prepared('UPDATE settings_user
@@ -993,7 +997,8 @@ function get_selected_theme() : string {
 		$_SESSION['selected_theme'] = (string) $theme;
 	}
 
-	return (string) $theme;
+	// the name becomes part of file paths and page output, so never hand back one that failed the check
+	return cacti_is_theme_name($theme) ? (string) $theme : 'modern';
 }
 
 /**
@@ -1055,18 +1060,55 @@ function cacti_validate_theme(string $requested) : string {
  *
  * @return bool
  */
+/**
+ * cacti_is_theme_name - checks that a value names an installed theme
+ *
+ * The name becomes part of file paths and of page output, so it must be a
+ * plain directory name under include/themes that holds a main.css.
+ *
+ * @param mixed $theme - the value to check
+ *
+ * @return bool true when the value is the name of an installed theme
+ */
+function cacti_is_theme_name(mixed $theme) : bool {
+	if (!is_string($theme) || !preg_match('/^[A-Za-z0-9][A-Za-z0-9_-]*$/D', $theme)) {
+		return false;
+	}
+
+	return is_file(CACTI_PATH_INCLUDE . '/themes/' . $theme . '/main.css');
+}
+
+/**
+ * cacti_user_setting_value_allowed - checks a value against the setting it is for
+ *
+ * A setting chosen from a fixed list accepts only values from that list.
+ * Other kinds of setting are not restricted here.
+ *
+ * @param array $setting - the setting's definition from $settings_user
+ * @param mixed $value   - the value to store
+ *
+ * @return bool true when the value may be stored
+ */
+function cacti_user_setting_value_allowed(array $setting, mixed $value) : bool {
+	if (isset($setting['method'], $setting['array']) && $setting['method'] == 'drop_array' && is_array($setting['array']) && cacti_sizeof($setting['array'])) {
+		return (is_string($value) || is_int($value)) && isset($setting['array'][$value]);
+	}
+
+	return true;
+}
+
 function is_valid_theme(mixed &$theme, int $set_user = 0) : bool {
 	global $themes;
 
 	$valid = true;
 
-	if ($theme == null || !file_exists(CACTI_PATH_INCLUDE . '/themes/' . $theme . '/main.css')) {
+	if (!cacti_is_theme_name($theme)) {
 		$valid      = false;
 		$user_table = db_table_exists('settings_user');
 
 		$theme = read_config_option('selected_theme', true);
 
-		if (file_exists(CACTI_PATH_INCLUDE . '/themes/' . $theme . '/main.css')) {
+		if (cacti_is_theme_name($theme)) {
 			$valid = true;
 
 			if ($user_table && $set_user && isset($_SESSION[SESS_USER_ID])) {
@@ -1078,7 +1120,7 @@ function is_valid_theme(mixed &$theme, int $set_user = 0) : bool {
 			}
 		} else {
 			foreach ($themes as $t => $name) {
-				if (file_exists(CACTI_PATH_INCLUDE . '/themes/' . $t . '/main.css')) {
+				if (cacti_is_theme_name($t)) {
 					$theme = $t;
 					$valid = true;
 
@@ -9548,7 +9590,7 @@ function get_md5_include_js(string $path, bool $async = false, string|null $them
 function get_md5_include_css(string $path, bool $async = false, string|null $theme = null, string|null $file = null) : string {
 	$format = '<link href=\'%s\' type=\'text/css\' rel=\'stylesheet\'%s>';
 
-	return get_theme_paths($format, $path, $theme, $file, true, $async ? ' media=\'print\' online="this.media=\'all\'"' : '');
+	return get_theme_paths($format, $path, $theme, $file, true, $async ? ' media=\'print\' onload="this.media=\'all\'"' : '');
 }
 
 /**
