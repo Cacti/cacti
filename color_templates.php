@@ -103,7 +103,7 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
 
 			print "</td>\n";
 
-			print "<td style='" . ((isset($item['hex'])) ? "background-color:#" . html_escape($item['hex']) . ";'" : "") . "></td>\n";
+			print '<td' . (isset($item['hex']) ? " style='background-color:#" . html_escape($item['hex']) . ";'" : '') . "></td>\n";
 
 			print "<td>" . html_escape($item['hex']) . "</td>\n";
 

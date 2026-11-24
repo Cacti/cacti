@@ -20,6 +20,7 @@
             <file>Unit/Ui/Colors/ColorMissingRowTest.php</file>
             <file>Unit/Ui/Colors/ColorTemplateSyncTest.php</file>
             <file>Unit/Ui/Colors/ColorDropdownOrderTest.php</file>
+            <file>Unit/Ui/Colors/ColorTemplateItemColorTest.php</file>
             <file>Unit/Core/MessageCallersTest.php</file>
             <file>Unit/Security/Xss/RaiseMessageNameEscapeTest.php</file>
             <file>Unit/Core/Rrd/PollerOutputRetentionTest.php</file>

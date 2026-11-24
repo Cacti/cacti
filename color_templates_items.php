@@ -103,7 +103,7 @@ function aggregate_color_item_form_save() {
 
 			$save['color_template_item_id'] = html_escape_request_var('color_template_item_id');
 			$save['color_template_id'] = html_escape_request_var('color_template_id');
-			$save['color_id'] = form_input_validate((isset($item['color_id']) ? $item['color_id'] : get_nfilter_request_var('color_id')), 'color_id', '', true, 3);
+			$save['color_id'] = form_input_validate((isset($item['color_id']) ? $item['color_id'] : get_nfilter_request_var('color_id')), 'color_id', '^[1-9][0-9]*\z', false, 3);
 			$save['sequence'] = $sequence;
 
 			if (!is_error_message()) {
