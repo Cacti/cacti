@@ -116,7 +116,7 @@ function check_get_author_info() : mixed {
 		var mixedOnPage      = '<?php print __esc('Packaging Key Information Not Found'); ?>';
 
 		sessionMessage = {
-			message: '<?php print __('In order to use this Packaging Tool, you must first run the <b><i class="deviceUp">genkey.php</i></b> script in the cli directory.  Once that is complete, you will have a public and private key used to sign your packages.'); ?>',
+			message: <?php print json_encode(__('In order to use this Packaging Tool, you must first run the <b><i class="deviceUp">genkey.php</i></b> script in the cli directory.  Once that is complete, you will have a public and private key used to sign your packages.')); ?>,
 			level: MESSAGE_LEVEL_MIXED
 		};
 
