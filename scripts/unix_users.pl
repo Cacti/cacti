@@ -15,12 +15,18 @@ if ($grep_string ne '') {
   }
 }
 
-if ($grep_string eq '') {
-  open(PROCESS, "who | grep -c : |");
-}else{
-  open(PROCESS, "who | grep : | grep -c $grep_string |");
+if (!open(PROCESS, '-|', 'who')) {
+  print 'U';
+  exit 1;
 }
-$output = <PROCESS>;
+
+# a user name matches the first column only, not a tty or host that
+# contains it
+$output = 0;
+while ($line = <PROCESS>) {
+  next unless $line =~ /:/;
+  next if ($grep_string ne '' && (split(' ', $line))[0] ne $grep_string);
+  $output++;
+}
 close(PROCESS);
-chomp($output);
 print $output;
