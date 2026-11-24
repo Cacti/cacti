@@ -1850,7 +1850,7 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache, &$files, $replace_s
 							WHERE snmp_query_graph_id = ?',
 							array($data_query_graph_id));
 					}
-				} elseif (!cacti_sizeof($item_array['sv_graph'])) {
+				} elseif (!cacti_sizeof($item_array['sv_data_source'])) {
 					cacti_log('WARNING: Suggested Values Array for Data Template Empty', false, 'IMPORT', POLLER_VERBOSITY_HIGH);
 				}
 
@@ -1893,11 +1893,11 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache, &$files, $replace_s
 					if (!$preview_only) {
 						if (!empty($save['data_template_id'])) {
 							$data_query_graph_rrd_sv_id = sql_save($save, 'snmp_query_graph_rrd_sv');
+
+							$hash_cache['data_query_sv_data_source'][$parsed_hash['hash']] = $data_query_graph_rrd_sv_id;
 						} else {
 							cacti_log('Import Error: Error Importing into snmp_query_graph_rrd_sv table', false, POLLER_VERBOSITY_HIGH);
 						}
-
-						$hash_cache['data_query_sv_data_source'][$parsed_hash['hash']] = $data_query_graph_rrd_sv_id;
 					} else {
 						$hash_cache['data_query_sv_data_source'][$parsed_hash['hash']] = $_data_query_graph_rrd_sv_id;
 					}
@@ -2896,7 +2896,7 @@ function hash_to_friendly_name($hash, $display_type_name) {
 			array($parsed_hash['hash'])));
 		case 'data_source_profile':
 			return $prepend . html_escape(db_fetch_cell_prepared('SELECT name
-			FROM data_source_profile
+			FROM data_source_profiles
 			WHERE hash = ?',
 			array($parsed_hash['hash'])));
 		case 'round_robin_archive':
