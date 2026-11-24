@@ -23,4 +23,5 @@ test('import and export page scenario passes', function (string $mode) {
 	'data source profile import result lines' => ['profile-messages'],
 	'package key details before verification' => ['public-key-details'],
 	'template import result message'          => ['template-import-result'],
+	'template preview dependencies'           => ['template-dependencies'],
 ]);

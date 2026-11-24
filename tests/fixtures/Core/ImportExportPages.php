@@ -182,6 +182,18 @@ switch ($mode) {
 		unlink($upload);
 
 		break;
+	case 'template-dependencies':
+		\cacti_fixture_source_function($root . '/templates_import.php', 'prepare_template_display', __NAMESPACE__);
+
+		$GLOBALS['hash_type_names'] = ['graph_template' => 'Graph Template'];
+
+		$info      = ['graph_template' => [['hash' => 'abc', 'type' => 'new', 'title' => 'Traffic', 'dep' => ['hash_one' => 'met', 'hash_two' => 'unmet']]]];
+		$templates = prepare_template_display($info);
+
+		check(($templates['abc']['deps'] ?? null) === ['hash_one' => 'met', 'hash_two' => 'unmet'], 'The dependencies reach the preview table');
+		check($templates['abc']['name'] === 'Traffic' && $templates['abc']['type_name'] === 'Graph Template', 'The template row is described');
+
+		break;
 	default:
 		fwrite(STDERR, "Unknown mode\n");
 

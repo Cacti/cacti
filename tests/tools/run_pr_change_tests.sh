@@ -63,7 +63,7 @@ if [[ -f tests/fixtures/BoostOnDemandFailureProbe.php ]]; then
 		run_probe ../BoostOnDemandFailureProbe.php "boost-on-demand-$scenario" "$scenario" > /dev/null
 	done
 fi
-for mode in profile-messages public-key-details template-import-result; do
+for mode in profile-messages public-key-details template-import-result template-dependencies; do
 	run_probe ImportExportPages.php "import-export-$mode" "$mode"
 done
 if [[ -f tests/fixtures/BoostSourceExistenceProbe.php ]]; then
