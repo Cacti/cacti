@@ -100,4 +100,7 @@ run_php_probe tests/Unit/fixtures/graph_group_probe.php '^(lib/functions\.php|te
 
 run_probe tests/e2e/basic_auth_identity_docker.sh '^(include/(auth|global)\.php|lib/auth\.php|tests/e2e/basic_auth_identity_docker\.sh)' 18392
 
+theme_name_files='^(auth_profile\.php|include/(global|global_session)\.php|include/themes/.*index\.php|include/themes/midwinter/update_hash\.php|lib/(boost|functions)\.php|tests/fixtures/Core/ThemeNameHardening\.php)'
+run_php_probe tests/fixtures/Core/ThemeNameHardening.php "$theme_name_files"
+run_php_probe tests/fixtures/Core/ThemeNameHardening.php "$theme_name_files" web-guard
 run_php_probe tests/Unit/fixtures/document_direction_probe.php '^(include/global_languages\.php|include/top_general_header\.php|lib/auth\.php|tests/Unit/fixtures/(document_direction_probe|i18n_probe_bootstrap)\.php)'
