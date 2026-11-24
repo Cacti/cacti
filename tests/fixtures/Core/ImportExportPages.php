@@ -81,6 +81,44 @@ function db_execute_prepared(string $sql, array $params = []) : bool {
 	return true;
 }
 
+function isrv(string $name) : bool {
+	return isset($GLOBALS['fixture']['request'][$name]);
+}
+
+function gfrv(string $name, mixed ...$filter) : mixed {
+	return $GLOBALS['fixture']['request'][$name] ?? '';
+}
+
+function grv(string $name) : mixed {
+	return $GLOBALS['fixture']['request'][$name] ?? '';
+}
+
+function gnrv(string $name) : mixed {
+	return $GLOBALS['fixture']['request'][$name] ?? '';
+}
+
+function db_fetch_cell(string $sql) : mixed {
+	return 1;
+}
+
+function header(string $header) : void {
+	$GLOBALS['fixture']['headers'][] = $header;
+}
+
+function raise_message(string $id, string $message = '', int $level = 0) : void {
+	$GLOBALS['fixture']['messages'][] = [$id, $message, $level];
+}
+
+function raise_message_javascript(string $title, string $header, string $message) : void {
+	$GLOBALS['fixture']['messages'][] = ['javascript', $header, $message];
+}
+
+function import_xml_data(string &$xml_data, bool $import_as_new, int $profile_id, bool $remove_orphans = false, bool $replace_svalues = false, array $import_hashes = []) : mixed {
+	$GLOBALS['fixture']['calls'][] = ['import_xml_data', $xml_data];
+
+	return $GLOBALS['fixture']['import_result'];
+}
+
 $mode = $argv[1] ?? '';
 
 switch ($mode) {
@@ -117,6 +155,31 @@ switch ($mode) {
 		check(import_validate_public_key('package.xml.gz', false) === false, 'An unknown key is not trusted from the details view');
 		check(import_validate_public_key('package.xml.gz', true) === 'other', 'An accepted key is trusted');
 		check(cacti_sizeof($GLOBALS['fixture']['calls']) === 1 && $GLOBALS['fixture']['calls'][0][4] === 'other', 'Only the accepted key is stored');
+
+		break;
+	case 'template-import-result':
+		\cacti_fixture_source_function($root . '/templates_import.php', 'form_save', __NAMESPACE__);
+
+		$upload = tempnam(sys_get_temp_dir(), 'cacti-template-');
+		file_put_contents($upload, '<cacti/>');
+
+		$_FILES                        = ['import_file' => ['tmp_name' => $upload, 'name' => 'template.xml']];
+		$GLOBALS['fixture']['request'] = ['save_component_import' => '1', 'import_data_source_profile' => '1', 'preview_only' => 'false'];
+
+		$GLOBALS['fixture']['import_result'] = false;
+		form_save();
+
+		check($GLOBALS['fixture']['messages'][0][0] === 'javascript', 'A failed import is reported as failed');
+		check($GLOBALS['fixture']['headers'] === [], 'A failed import does not redirect as a success');
+
+		$GLOBALS['fixture']['messages']      = [];
+		$GLOBALS['fixture']['import_result'] = ['vdef' => []];
+		form_save();
+
+		check($GLOBALS['fixture']['messages'] === [['import_success', 'The Template Import Succeeded.', MESSAGE_LEVEL_INFO]], 'A completed import is reported as succeeded');
+		check($GLOBALS['fixture']['headers'] === ['Location: templates_import.php'], 'A completed import returns to the import page');
+
+		unlink($upload);
 
 		break;
 	default:

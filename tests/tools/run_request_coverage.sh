@@ -86,7 +86,7 @@ run_php_probe tests/fixtures/Core/PackageRepositoryWorkspace.php '^((package_imp
 run_php_probe tests/fixtures/Core/PackageImportFileStatus.php '^(lib/(import|package)\.php|tests/fixtures/Core/PackageImportFileStatus\.php)'
 run_php_probe tests/fixtures/Core/PackageDiffBoundary.php '^(package_import\.php|tests/fixtures/Core/PackageDiffBoundary\.php)'
 import_export_files='^((data_source_profiles|templates_import|templates_export|package_import|automation_snmp)\.php|cli/import_(template|package)\.php|tests/fixtures/Core/ImportExportPages\.php)'
-for mode in profile-messages public-key-details; do
+for mode in profile-messages public-key-details template-import-result; do
 	run_php_probe tests/fixtures/Core/ImportExportPages.php "$import_export_files" "$mode"
 done
 

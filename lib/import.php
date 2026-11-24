@@ -275,16 +275,34 @@ function import_xml_data(string &$xml_data, bool $import_as_new, int $profile_id
 
 						break;
 					case 'host_template':
-						$hash_cache += xml_to_host_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $host_template_data);
+						$cache_add = xml_to_host_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $host_template_data);
+
+						if ($cache_add === false) {
+							return false;
+						}
+
+						$hash_cache += $cache_add;
 
 						break;
 					case 'data_input_method':
-						$hash_cache += xml_to_data_input_method($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
+						$cache_add = xml_to_data_input_method($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
+
+						if ($cache_add === false) {
+							return false;
+						}
+
+						$hash_cache += $cache_add;
 						$repair++;
 
 						break;
 					case 'data_query':
-						$hash_cache += xml_to_data_query($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $files, $replace_svalues);
+						$cache_add = xml_to_data_query($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $files, $replace_svalues);
+
+						if ($cache_add === false) {
+							return false;
+						}
+
+						$hash_cache += $cache_add;
 
 						break;
 					case 'gprint_preset':
@@ -300,7 +318,13 @@ function import_xml_data(string &$xml_data, bool $import_as_new, int $profile_id
 
 						break;
 					case 'vdef':
-						$hash_cache += xml_to_vdef($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
+						$cache_add = xml_to_vdef($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
+
+						if ($cache_add === false) {
+							return false;
+						}
+
+						$hash_cache += $cache_add;
 
 						break;
 					case 'data_source_profile':
