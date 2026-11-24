@@ -2748,7 +2748,7 @@ msgstr "Problem hittades! Väntar på uppdatering av RRD-filen"
 
 #: data_debug.php
 msgid "No Initial found!  Waiting on RRDfile update"
-msgstr "Inga problem hittades vid den första kontrollen. Väntar på uppdatering av RRD-filen"
+msgstr "Inget initialvärde hittades! Väntar på uppdatering av RRD-fil"
 
 #: data_debug.php
 msgid "Waiting on analysis and RRDfile update"
@@ -2843,7 +2843,7 @@ msgstr "Resultat"
 
 #: data_debug.php
 msgid "<not set>"
-msgstr "&lt;inte angiven&gt;"
+msgstr "<ej angiven>"
 
 #: data_debug.php
 msgid "Data Source Repair Recommendations"
@@ -4085,7 +4085,7 @@ msgstr "2 år (%s i genomsnitt)"
 
 #: graph.php
 msgid "Graph Details, Zooming and Debugging Utilities"
-msgstr "Grafdetaljer, zoomning och felsökningsverktyg"
+msgstr "Diagramdetaljer, zoomning och felsökningsverktyg"
 
 #: graph.php lib/html.php
 msgid "CSV Export"
@@ -9825,7 +9825,7 @@ msgstr "Autokomplettering aktiverad"
 
 #: include/global_settings.php
 msgid "In very large systems, select lists can slow the user interface significantly.  If this option is enabled, Cacti will use autocomplete callbacks to populate the select list systematically.  Note: autocomplete is forcibly disabled on the Classic theme."
-msgstr "I mycket stora system kan vallistor göra användargränssnittet betydligt långsammare. Om alternativet är aktiverat använder Cacti autokomplettering för att fylla vallistan efter hand. Observera att autokomplettering alltid är inaktiverad i temat Classic."
+msgstr "I mycket stora system kan urvalslistor göra användargränssnittet avsevärt långsammare. Om det här alternativet är aktiverat använder Cacti återanrop för automatisk komplettering för att fylla i urvalslistan systematiskt. Obs: automatisk komplettering är tvingande inaktiverad i temat Classic."
 
 #: include/global_settings.php
 msgid "Select Search Minimum Rows"
@@ -13201,7 +13201,7 @@ msgstr "Intervall för att fylla luckor"
 
 #: lib/html.php lib/spikekill.php
 msgid "Float Range"
-msgstr "Ersätt värden i intervall"
+msgstr "Flyttalsintervall"
 
 #: lib/html.php
 msgid "Dry Run StdDev"
@@ -19356,7 +19356,7 @@ msgstr "Största möjliga totala minne"
 
 #: utilities.php
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
-msgstr "Minska MySQL/MariaDB-minnet till mindre än 80 % av systemminnet. Reservera ytterligare cacheminne för RRD-filer om databasen och RRD-filerna finns på samma system. Se de totala värdena för kärna och klienter nedan för en förklaring av beräkningsmetoden."
+msgstr "Minska minnet för MySQL/MariaDB till mindre än 80% av systemminnet. Bevara ytterligare cacheminne för RRD-filer om databasen finns på samma system som RRD-filerna. Se Kärn- och klientsummor nedan för en förklaring av beräkningsmetoden."
 
 #: utilities.php
 msgid "Max Core Memory Possible"
