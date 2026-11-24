@@ -22,17 +22,6 @@
   +-------------------------------------------------------------------------+
 */
 
-$rrdcolors['back']   = 'f5f7f9';
-$rrdcolors['canvas'] = 'f5f7f9';
-$rrdcolors['shadea'] = '0B0B0B';
-$rrdcolors['shadeb'] = '292929';
-$rrdcolors['grid']   = '21212400';
-$rrdcolors['mgrid']  = '6A6C6C';
-$rrdcolors['font']   = 'c7d0d9';
-$rrdcolors['axis']   = '2C4D43';
-$rrdcolors['arrow']  = '2C4D43';
-$rrdcolors['frame']  = '141414';
-
 $rrdcolors_light['back']   = 'f5f7f9';
 $rrdcolors_light['canvas'] = 'f5f7f9';
 $rrdcolors_light['shadea'] = '0B0B0B';
@@ -54,6 +43,9 @@ $rrdcolors_dark['font']   = 'c7d0d9';
 $rrdcolors_dark['axis']   = '2C4D43';
 $rrdcolors_dark['arrow']  = '2C4D43';
 $rrdcolors_dark['frame']  = '141414';
+
+# Graphs requested without a colour mode cookie use the light palette, whose background and text agree.
+$rrdcolors = $rrdcolors_light;
 
 # RRDtool graph fonts in RRDtool 1.2+
 $rrdfonts['title']['font']     = 'Roboto';
