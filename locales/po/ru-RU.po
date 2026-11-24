@@ -4,15 +4,17 @@ msgstr ""
 "Project-Id-Version: Cacti Russian Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2024-12-06 19:25+0000\n"
-"Last-Translator: Anton Zhuravlev <baka109g@gmail.com>\n"
-"Language-Team: Russian <http://translate.cacti.net/projects/cacti/core/ru/>\n"
+"PO-Revision-Date: 2026-11-24 09:13+0000\n"
+"Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
+"Language-Team: Russian <https://translate.cacti.net/projects/cacti/core/ru/>"
+"\n"
 "Language: ru-RU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.8.1\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 5.11.4\n"
 
 #: about.php:29 include/global_arrays.php:2781 lib/html.php:3046
 msgid "About Cacti"
@@ -13809,9 +13811,12 @@ msgid "The poller type to use.  This setting will take affect at next polling in
 msgstr "Тип опросника для использования.  Эта настройка вступит в силу через следующий интервал опроса."
 
 #: include/global_settings.php:1411
-#, fuzzy
 msgid "The polling interval in use.  This setting will affect how often RRDfiles are checked and updated.  <strong><u>NOTE: If you change this value, you must re-populate the poller cache.  Failure to do so, may result in lost data.</u></strong>"
-msgstr "Интервал опроса используется.  Эта настройка влияет на частоту проверки и обновления RRD-файлов.  <strong><u>NOTE: Если вы измените это значение, необходимо повторно заполнить кэш опроса.  Невыполнение этого требования может привести к потере данных.</u></u></strong>."
+msgstr ""
+"Интервал опроса используется.  Эта настройка влияет на частоту проверки и "
+"обновления RRD-файлов.  <strong><u>NOTE: Если вы измените это значение, "
+"необходимо повторно заполнить кэш опроса.  Невыполнение этого требования "
+"может привести к потере данных.</u></strong>"
 
 #: include/global_settings.php:1417
 #, fuzzy
@@ -16185,7 +16190,7 @@ msgstr "Работает:"
 
 #: lib/api_device.php:1718
 msgid "Hostname:"
-msgstr "Имя хоста: "
+msgstr "Имя хоста:"
 
 #: lib/api_device.php:1719
 msgid "Location:"
@@ -16222,31 +16227,31 @@ msgid "Device:(Hide Disabled)"
 msgstr "Устройство отключено"
 
 #: lib/auth.php:2355 lib/auth.php:2357 lib/auth.php:2363 lib/auth.php:2365
-#, fuzzy, php-format
+#, php-format
 msgid "Graph:(%s%s)"
-msgstr "График"
+msgstr "График:(%s%s)"
 
 #: lib/auth.php:2378 lib/auth.php:2384 lib/auth.php:2451 lib/auth.php:2453
 #: lib/auth.php:2457 lib/auth.php:2459
-#, fuzzy, php-format
+#, php-format
 msgid "Device:(%s%s)"
-msgstr "Устройство:"
+msgstr "Устройство:(%s%s)"
 
 #: lib/auth.php:2392 lib/auth.php:2398 lib/auth.php:2467 lib/auth.php:2469
 #: lib/auth.php:2473 lib/auth.php:2475
-#, fuzzy, php-format
+#, php-format
 msgid "Template:(%s%s)"
-msgstr "Шаблон:"
+msgstr "Шаблон:(%s%s)"
 
 #: lib/auth.php:2405
-#, fuzzy, php-format
+#, php-format
 msgid "Graph+Device+Template:(%s%s)"
-msgstr "Шаблон Устройства:"
+msgstr "График+устройство+шаблон:(%s%s)"
 
 #: lib/auth.php:2442 lib/auth.php:2444
-#, fuzzy, php-format
+#, php-format
 msgid "Device+Template:(%s%s)"
-msgstr "Шаблон Устройства:"
+msgstr "Устройство+шаблон:(%s%s)"
 
 #: lib/auth.php:2488 lib/auth.php:2495 lib/auth.php:2504
 msgid "Restricted By: "
@@ -19007,7 +19012,7 @@ msgstr "[ошибка]"
 
 #: lib/import.php:2719
 msgid "[preview]"
-msgstr "[предпросмотр] "
+msgstr "[предпросмотр]"
 
 #: lib/import.php:2723
 msgid "[updated]"
@@ -19392,9 +19397,9 @@ msgid "Installation Type"
 msgstr "Тип установки"
 
 #: lib/installer.php:2239
-#, fuzzy, php-format
+#, php-format
 msgid "Upgrade from <strong>%s</strong> to <strong>%s</strong>"
-msgstr "Переход с <strong>%s</strong> на <strong>%s</strong>s</strong>s</strong>."
+msgstr "Переход с <strong>%s</strong> на <strong>%s</strong>"
 
 #: lib/installer.php:2241
 #, fuzzy
@@ -19412,14 +19417,16 @@ msgid "If after clearing your cache and restarting your browser, you still exper
 msgstr "Если после очистки кэша и перезапуска браузера все еще возникают проблемы, пожалуйста, поднимите их перед нами, и мы попытаемся установить причину."
 
 #: lib/installer.php:2250
-#, fuzzy, php-format
+#, php-format
 msgid "Downgrade from <strong>%s</strong> to <strong>%s</strong>"
-msgstr "Снижение с <strong>%s</strong> до <strong>%s</strong>s</strong>s</strong>."
+msgstr "Снижение с <strong>%s</strong> до <strong>%s</strong>"
 
 #: lib/installer.php:2251
-#, fuzzy
 msgid "You appear to be downgrading to a previous version.  Database changes made for the newer version will not be reversed and <i>could</i> cause issues."
-msgstr "Похоже, вы понижаете рейтинг до предыдущей версии.  Изменения в базе данных, внесенные в более новую версию, не будут отменены и <i> может вызвать проблемы."
+msgstr ""
+"Похоже, вы понижаете рейтинг до предыдущей версии.  Изменения в базе данных, "
+"внесенные в более новую версию, не будут отменены и <i>может</i> вызвать "
+"проблемы."
 
 #: lib/installer.php:2258
 #, fuzzy
@@ -19461,29 +19468,29 @@ msgid "Local Database Connection Information"
 msgstr "Информация о подключении к локальной базе данных"
 
 #: lib/installer.php:2328 lib/installer.php:2340
-#, fuzzy, php-format
+#, php-format
 msgid "Database: <b>%s</b>"
-msgstr "База данных: <b>%s</b>s</b>"
+msgstr "База данных: <b>%s</b>"
 
 #: lib/installer.php:2329 lib/installer.php:2341
-#, fuzzy, php-format
+#, php-format
 msgid "Database User: <b>%s</b>"
-msgstr "Пользователь базы данных: <b>%s</b>s</b>"
+msgstr "Пользователь базы данных: <b>%s</b>"
 
 #: lib/installer.php:2330 lib/installer.php:2342
-#, fuzzy, php-format
+#, php-format
 msgid "Database Hostname: <b>%s</b>"
-msgstr "Имя хоста базы данных: <b>%s</b>s</b>"
+msgstr "Имя хоста базы данных: <b>%s</b>"
 
 #: lib/installer.php:2331 lib/installer.php:2343
-#, fuzzy, php-format
+#, php-format
 msgid "Port: <b>%s</b>"
-msgstr "Портвейн: <b>%s</b>s</b>"
+msgstr "Портвейн: <b>%s</b>"
 
 #: lib/installer.php:2332 lib/installer.php:2344
-#, fuzzy, php-format
+#, php-format
 msgid "Server Operating System Type: <b>%s</b>"
-msgstr "Тип операционной системы сервера: <b>%s</b>s</b>"
+msgstr "Тип операционной системы сервера: <b>%s</b>"
 
 #: lib/installer.php:2337
 #, fuzzy
@@ -20892,9 +20899,8 @@ msgid "CDP Unknown Data points (0)"
 msgstr "CDP Неизвестные точки данных (0)"
 
 #: lib/rrd.php:3663
-#, fuzzy
 msgid "Errors Found"
-msgstr "%s не найдено"
+msgstr "Найдены ошибки"
 
 #: lib/rrd.php:3675
 #, fuzzy
@@ -22066,7 +22072,7 @@ msgstr "Осиротевший"
 
 #: package_import.php:1311
 msgid "File Differences for: "
-msgstr ""
+msgstr "Различия файлов для: "
 
 #: package_import.php:1422
 #, fuzzy
