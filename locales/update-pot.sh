@@ -83,10 +83,25 @@ trap 'exit 1' INT TERM
 find . \( -path './.*' -o -path ./plugins -o -path ./include/vendor \
 	-o -path ./tests -o -path ./node_modules \) -prune -o -name '*.php' -print | LC_ALL=C sort | "$XGETTEXT_BIN" --add-location=file --no-wrap --copyright-holder="The Cacti Group" --package-name="Cacti" --package-version="$(cat include/cacti_version)" --msgid-bugs-address="developers@cacti.net" -F -k__gettext -k__ -k__n:1,2 -k__x:1c,2 -k__xn:1c,2,3 -k__esc -k__esc_n:1,2 -k__esc_x:1c,2 -k__esc_xn:1c,2,3 -k__date -o "$POT_TMP/extracted.pot" --files-from=- || exit 1
 
+# xgettext stamps the current time into POT-Creation-Date on every run.  Keep
+# the date of the template being replaced, so that regenerating an unchanged
+# tree leaves the file byte for byte the same and two pull requests that both
+# change strings do not conflict on that line.
+POT_DATE=
+if [ -f "$POT_FILE" ]; then
+	POT_DATE=$(sed -n 's/^"POT-Creation-Date: \(.*\)\\n"$/\1/p' "$POT_FILE" | head -n 1)
+	printf '%s\n' "$POT_DATE" | grep -Eq '^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}[+-][0-9]{4}$' || POT_DATE=
+fi
+
 if ! sed -e 's/FULL NAME <EMAIL@ADDRESS>/Cacti Developers <developers@cacti.net>/g' \
 	-e 's/LANGUAGE <LL@li.org>/Cacti Developers <developers@cacti.net>/g' \
-	-e 's/CHARSET/UTF-8/g' "$POT_TMP/extracted.pot" > "$POT_TMP/cacti.pot"; then
+	-e 's/CHARSET/UTF-8/g' "$POT_TMP/extracted.pot" > "$POT_TMP/filtered.pot"; then
 	exit 1
+fi
+if [ -n "$POT_DATE" ]; then
+	sed -e "s|^\"POT-Creation-Date: .*\\\\n\"\$|\"POT-Creation-Date: $POT_DATE\\\\n\"|" "$POT_TMP/filtered.pot" > "$POT_TMP/cacti.pot" || exit 1
+else
+	mv "$POT_TMP/filtered.pot" "$POT_TMP/cacti.pot" || exit 1
 fi
 chmod 644 "$POT_TMP/cacti.pot" || exit 1
 mv "$POT_TMP/cacti.pot" "$POT_FILE" || exit 1

@@ -116,6 +116,35 @@ class GettextScriptsTest(unittest.TestCase):
         self.assertIn('charset=UTF-8', pot)
         self.assertEqual([path.name for path in (self.locales / 'po').glob('cacti.pot.*')], [])
 
+    def test_update_pot_keeps_the_creation_date_of_the_existing_template(self):
+        template = self.locales / 'po/cacti.pot'
+        self.assertEqual(self.run_script('update-pot.sh').returncode, 0)
+        pot = template.read_text()
+        stamped = pot.replace(
+            next(line for line in pot.splitlines() if line.startswith('"POT-Creation-Date:')),
+            '"POT-Creation-Date: 2001-02-03 04:05+0600\\n"',
+        )
+        template.write_text(stamped)
+        self.assertEqual(self.run_script('update-pot.sh').returncode, 0)
+        self.assertEqual(template.read_text(), stamped)
+        self.assertEqual(self.run_script('update-pot.sh').returncode, 0)
+        self.assertEqual(template.read_text(), stamped)
+
+        # A changed string is picked up while the date stays.
+        (self.root / 'input with spaces.php').write_text("<?php __('Fixture farewell');\n")
+        self.assertEqual(self.run_script('update-pot.sh').returncode, 0)
+        updated = template.read_text()
+        self.assertIn('msgid "Fixture farewell"', updated)
+        self.assertIn('"POT-Creation-Date: 2001-02-03 04:05+0600\\n"', updated)
+
+        # Without a previous template, or with an unusable date, xgettext's value is used.
+        template.write_text('"POT-Creation-Date: not a date\\n"\n')
+        self.assertEqual(self.run_script('update-pot.sh').returncode, 0)
+        self.assertNotIn('not a date', template.read_text())
+        template.unlink()
+        self.assertEqual(self.run_script('update-pot.sh').returncode, 0)
+        self.assertRegex(template.read_text(), r'"POT-Creation-Date: \d{4}-\d{2}-\d{2} \d{2}:\d{2}[+-]\d{4}\\n"')
+
     def test_update_pot_writes_a_named_file_and_leaves_the_template_alone(self):
         template = self.locales / 'po/cacti.pot'
         template.write_text('committed\n')
