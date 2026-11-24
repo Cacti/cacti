@@ -123,6 +123,9 @@ function package_import_write_session_file() {
 function form_save() {
 	global $config, $preview_only;
 
+	/* the import can use the Package kept in the session, so it must come from the form */
+	csrf_require_post();
+
 	validate_request_vars();
 
 	if (isset_request_var('save_component_import')) {
