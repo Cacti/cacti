@@ -6,10 +6,13 @@ import { installThemeCss, collectThemeCoverage } from '../theme-css';
 import { textContrast } from '../text-contrast';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { registerSelectmenuThemeTests } = require('./selectmenu-theme-coverage');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { registerThemeStylesheetFixTests } = require('./theme-stylesheet-fixes-coverage');
 
 collectThemeCoverage();
 
 registerSelectmenuThemeTests(test, expect);
+registerThemeStylesheetFixTests(test, expect);
 
 // Sunrise paints its body over a radial glow whose color depends on where
 // text sits on the page, which textContrast refuses to guess. These fixtures
