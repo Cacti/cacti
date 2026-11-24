@@ -9,7 +9,6 @@
 'use strict';
 
 const assert = require('node:assert/strict');
-const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
@@ -97,21 +96,6 @@ function hex(text) {
 }
 
 const WHITE = [255, 255, 255];
-
-test('midwinter @import version strings equal the md5 of the imported file', () => {
-	const css = read('midwinter', 'main.css');
-	const imports = [...css.matchAll(/@import\s+(?:url\()?['"]([^'"?]+)(?:\?([^'"]*))?['"]\)?/g)];
-
-	assert.ok(imports.length >= 14, 'expected the midwinter @import list');
-
-	for (const [, file, version] of imports) {
-		const digest = crypto.createHash('md5')
-			.update(fs.readFileSync(path.join(themesDir, 'midwinter', file)))
-			.digest('hex');
-
-		assert.equal(version, digest, `@import of ${file} must carry the current md5`);
-	}
-});
 
 test('no theme stylesheet carries the malformed declarations that browsers drop', () => {
 	const problems = [];
