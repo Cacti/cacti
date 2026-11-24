@@ -33,11 +33,23 @@ function themeReady() {
 	// Setup the navigation menu
 	setMenuVisibility();
 
-	$('#navigation_right').unbind().scroll(function (event) {
-        var scroll_position_x = $('#navigation_right').scrollLeft();
-        var scroll_position_y = $('#navigation_right').scrollTop();
-        $('.bottom_scroll_up').css({'color': ((scroll_position_x == 0 && scroll_position_y == 0) ? '' : '#93CEFF') });
-    });
+	var scrollPending = false;
+
+	// one update per frame, and leave scroll handlers of other scripts on the content pane alone
+	$('#navigation_right').off('scroll.sunrise').on('scroll.sunrise', function (event) {
+		if (scrollPending) {
+			return;
+		}
+
+		scrollPending = true;
+
+		window.requestAnimationFrame(function() {
+			var scroll_position_x = $('#navigation_right').scrollLeft();
+			var scroll_position_y = $('#navigation_right').scrollTop();
+			$('.bottom_scroll_up').css({'color': ((scroll_position_x == 0 && scroll_position_y == 0) ? '' : '#93CEFF') });
+			scrollPending = false;
+		});
+	});
 
 	// Wait until filter inputs have been made visible.
 	setTimeout(addFilterSearchIcons, 0);
@@ -62,7 +74,7 @@ function themeReady() {
 	}
 
 	$('.maintabs nav ul li a.lefttab').each( function() {
-		id = $(this).attr('id');
+		var id = $(this).attr('id');
 		if (id == 'tab-graphs' && $(this).parent().hasClass('maintabs-has-submenu') == 0) {
 			$(this).parent().addClass('maintabs-has-submenu');
 			$('<div class="dropdownMenu">'
@@ -102,8 +114,6 @@ function themeReady() {
 		+'</div>').appendTo('body');
 	}
 
-	ajaxAnchors();
-
 	/* User Menu */
 	$('.menuoptions').parent().appendTo('body');
 
@@ -137,14 +147,10 @@ function themeReady() {
 		}
 	);
 
-	$('input#filter, input#rfilter').addClass('ui-state-default ui-corner-all');
-
-	$('input[type="text"], input[type="password"], input[type="checkbox"], textarea').not('image').addClass('ui-state-default ui-corner-all');
-
 	// Turn file buttons into jQueryUI buttons
 	$('.import_label').button();
 	$('.import_button').change(function() {
-		text=this.value;
+		var text = this.value;
 		setImportFile(text);
 	});
 
@@ -168,8 +174,8 @@ function themeReady() {
 		minLength: 0,
 		select: function(event,ui) {
 			$('#host_id').val(ui.item.id);
-			callBack = $('#call_back').val();
-			if (callBack != 'undefined') {
+			var callBack = $('#call_back').val();
+			if (typeof callBack === 'string') {
 				if (callBack.indexOf('applyFilter') >= 0) {
 					applyFilter();
 				} else if (callBack.indexOf('applyGraphFilter') >= 0) {
@@ -235,36 +241,17 @@ function themeReady() {
 }
 
 function setMenuVisibility() {
-	storage=Storages.localStorage;
+	var storage = Storages.localStorage;
 
 	// Initialize the navigation settings
-	// This will setup the initial visibility of the menu
+	// This will setup the initial visibility of the menu: the section holding the selected page is open
 	$('li.menuitem').each(function() {
-		var id = $(this).attr('id');
-
-		if (storage.isSet(id)) {
-			var active = storage.get(id);
-		} else {
-			var active = null;
-		}
-
-		if (active != null && active == 'active') {
-			$(this).find('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true').show();
-			$(this).next('a').show();
-		} else {
-			$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false').hide();
-			$(this).next('a').hide();
-		}
-
 		if ($(this).find('a.selected').length == 0) {
-			//console.log('hiding1:'+$(this).closest('.menuitem').attr('id'));
 			$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false').hide();
 			$(this).next('a').hide();
-			storage.set($(this).closest('.menuitem').attr('id'), 'collapsed');
 		} else {
 			$(this).find('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true').show();
 			$(this).next('a').show();
-			storage.set($(this).closest('.menuitem').attr('id'), 'active');
 		}
 	});
 
@@ -272,7 +259,7 @@ function setMenuVisibility() {
 	$('#nav li:has(ul) a.active').unbind().click(function(event) {
 		event.preventDefault();
 
-		id = $(this).closest('.menuitem').attr('id');
+		var id = $(this).closest('.menuitem').attr('id');
 
 		if ($(this).next().is(':visible')) {
 			$(this).next('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false');
@@ -289,8 +276,8 @@ function setMenuVisibility() {
 		}
 
 		$('li.menuitem').not('#'+id).each(function() {
-			text = $(this).attr('id');
-			id   = $(this).attr('id');
+			var text = $(this).attr('id');
+			var id   = $(this).attr('id');
 
 			$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false');
 			$(this).find('ul').slideUp( { duration: 200, easing: 'swing' } );

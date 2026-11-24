@@ -25,33 +25,39 @@
 var pageName = basename($(location).attr('pathname'));
 
 function themeReady() {
-	height = get_height();
+	var height = get_height();
 	$('#navigation, .cactiConsoleNavigationArea').css('height', height);
 	$('#navigation, #navigation_right').show();
 
-	keepWindowSize();
+	// applySkin() adds the core resize handler itself; only replace this theme's own handler
+	$(window).off('resize.classic').on('resize.classic', function(event) {
+		var resizable = $(event.target).hasClass('ui-resizable');
 
-	$(window).unbind().resize(function(event) {
-		if (pageName == 'graph_view.php') {
-			treeWidth    = $('#navigation').width();
-			totalWidth   = $('body').width();
-			contentWidth = totalWidth - treeWidth - 25;
-			$('#navigation').css('width', treeWidth);
-			$('#navigation_right').css('width', contentWidth);
-		}
+		waitForFinalEvent(function() {
+			if (pageName == 'graph_view.php') {
+				var treeWidth    = $('#navigation').width();
+				var totalWidth   = $('body').width();
+				var contentWidth = totalWidth - treeWidth - 25;
+				$('#navigation').css('width', treeWidth);
+				$('#navigation_right').css('width', contentWidth);
+			}
 
-		if (!$(event.target).hasClass('ui-resizable')) {
-			height = get_height();
-			$('#navigation, .cactiConsoleNavigationArea').css('height', height);
-		}
+			if (!resizable) {
+				var height = get_height();
+				$('#navigation, .cactiConsoleNavigationArea').css('height', height);
+			}
+		}, 50, 'classic_resize');
 	});
 }
 
 function get_height() {
-	nsh  = parseInt($('#navigation').prop('scrollHeight'));
-	nrsh = parseInt($('#navigation_right').prop('scrollHeight'));
-	nh   = parseInt($('#navigation').height());
-	nrh  = parseInt($('#navigation_right').height());
-	wht  = $(window).height();
+	// measure the content, not the height set by the previous call, so the panes can shrink again
+	$('#navigation, .cactiConsoleNavigationArea').css('height', '');
+
+	var nsh  = parseInt($('#navigation').prop('scrollHeight'));
+	var nrsh = parseInt($('#navigation_right').prop('scrollHeight'));
+	var nh   = parseInt($('#navigation').height());
+	var nrh  = parseInt($('#navigation_right').height());
+	var wht  = $(window).height();
 	return Math.max(nsh, nrsh, nh, nrh, wht);
 }

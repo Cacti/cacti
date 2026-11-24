@@ -573,10 +573,6 @@ function setupDefaultElements() {
 
 	//$('td:nth-child(2), th:nth-child(2)').hide;
 
-	$('input#filter, input#rfilter').addClass('ui-state-default ui-corner-all');
-
-	$('input[type="text"], input[type="password"], input[type="checkbox"], textarea').not('image').addClass('ui-state-default ui-corner-all');
-
 	// really shitty workaround to make custom row checkboxes clickable again. :(
 	$('tr[id*="line"]:not(.disabled_row)').each(function(data) {
 		$(this).find('.formCheckboxLabel').attr('for', '');
