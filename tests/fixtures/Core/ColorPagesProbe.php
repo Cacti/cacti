@@ -464,7 +464,7 @@ function get_hash_version($type) {
 }
 
 function get_hash_graph_template($id, $type = 'graph_template') {
-	return md5($type . $id);
+	return substr(hash('sha256', $type . $id), 0, 32);
 }
 
 function html_create_list($form_data, $column_display, $column_id, $form_previous_value) {

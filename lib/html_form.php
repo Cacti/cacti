@@ -1433,7 +1433,7 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
 	}
 
 	if ($class != '') {
-		$class = " class='colordropdown $class' ";
+		$class = " class='colordropdown " . html_escape($class) . "' ";
 	} else {
 		$class = " class='colordropdown'";
 	}
