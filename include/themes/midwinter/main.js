@@ -1076,9 +1076,9 @@ function fullScreen(event) {
 
 function fullScreenChangeHandler() {
 	if (document.fullscreenElement) {
-		$('.compact_nav_icon[data-helper="fullScreen"]>i').removeClass('ti-maximize').addClass('ti-minimize');
+		$('.compact_nav_icon[data-helper="fullscreen"]>i').removeClass('ti-maximize').addClass('ti-minimize');
 	}else {
-		$('.compact_nav_icon[data-helper="fullScreen"]>i').addClass('ti-maximize').removeClass('ti-minimize');
+		$('.compact_nav_icon[data-helper="fullscreen"]>i').addClass('ti-maximize').removeClass('ti-minimize');
 	}
 }
 

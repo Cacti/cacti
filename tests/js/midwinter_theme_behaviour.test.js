@@ -366,3 +366,20 @@ test('theme actions replace only their own handlers and leave the graph page alo
 
 	assert.equal(page.calls.some((call) => call.selector === '.graphPage'), false);
 });
+
+test('the fullscreen handler updates the button that config.js creates', () => {
+	const config = read('include/themes/midwinter/config.js');
+	const helper = config.match(/helper: "(full[a-z]+)",\s*tooltip: \{ "on" : "Exit Full screen"/i)[1];
+	const selectors = [];
+	const icon = {removeClass: () => icon, addClass: () => icon};
+	const context = themeFunctions(['fullScreenChangeHandler'], {
+		document: {fullscreenElement: {}},
+		$: (selector) => { selectors.push(selector); return icon; }
+	});
+
+	context.fullScreenChangeHandler();
+	context.document.fullscreenElement = null;
+	context.fullScreenChangeHandler();
+
+	assert.deepEqual(selectors, Array(2).fill(`.compact_nav_icon[data-helper="${helper}"]>i`));
+});
