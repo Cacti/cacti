@@ -80,7 +80,8 @@ function form_save() : void {
 
 		if (gnrv('read_only') == '') {
 			$save['name']      = gfrv('name', FILTER_SANITIZE_SPECIAL_CHARS);
-			$save['hex']       = form_input_validate(gnrv('hex'),  'hex',  '^[a-fA-F0-9]+$' , false, 3);
+			// exactly six hex digits; RRDtool appends the two digit alpha to this value
+			$save['hex']       = strtoupper(form_input_validate(gnrv('hex'), 'hex', '\A[a-fA-F0-9]{6}\z', false, 3));
 		} else {
 			$save['name']      = gfrv('hidden_name', FILTER_SANITIZE_SPECIAL_CHARS);
 			$save['read_only'] = 'on';

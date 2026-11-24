@@ -45,6 +45,38 @@ function isrv(string $name) : bool {
 	return isset($_REQUEST[$name]);
 }
 
+function _(string $text) : string {
+	return $text;
+}
+
+function gnrv(string $name, mixed $default = '') : mixed {
+	return $_REQUEST[$name] ?? $default;
+}
+
+function grv(string $name, mixed $default = '') : mixed {
+	return $_REQUEST[$name] ?? $default;
+}
+
+function gfrv(string $name, int $filter = FILTER_VALIDATE_INT, array $options = []) : mixed {
+	return isset($_REQUEST[$name]) ? filter_var($_REQUEST[$name], $filter, $options) : null;
+}
+
+function read_config_option(string $name) : string {
+	return '';
+}
+
+function raise_message(mixed $id, string $message = '', int $level = 0) : bool {
+	$GLOBALS['messages'][] = [$id, $message, $level];
+
+	return true;
+}
+
+function sql_save(array $save, string $table) : mixed {
+	$GLOBALS['saved'][] = $save;
+
+	return $GLOBALS['save_result'];
+}
+
 function header(string $value) : void {
 	throw new Redirect($value);
 }
@@ -93,7 +125,29 @@ function import(array $lines, array $fake, array $request = []) : array {
 	return color_import_processor($lines);
 }
 
+// Submit the edit form and return the redirect it ends with.
+function save(array $request, array $fake = [], mixed $result = 9) : string {
+	$_REQUEST               = $request + ['save_component_color' => '1'];
+	$_SESSION               = [];
+	$GLOBALS['db']          = [];
+	$GLOBALS['fake']        = $fake;
+	$GLOBALS['saved']       = [];
+	$GLOBALS['messages']    = [];
+	$GLOBALS['save_result'] = $result;
+
+	try {
+		form_save();
+	} catch (Redirect $redirect) {
+		return $redirect->getMessage();
+	}
+
+	throw new RuntimeException('form_save() ended without a redirect');
+}
+
 \cacti_fixture_source_function($root . '/color.php', 'color_import_processor', __NAMESPACE__);
+\cacti_fixture_source_function($root . '/color.php', 'form_save', __NAMESPACE__);
+\cacti_fixture_source_function($root . '/lib/functions.php', 'form_input_validate', __NAMESPACE__);
+\cacti_fixture_source_function($root . '/lib/functions.php', 'is_error_message', __NAMESPACE__);
 
 // A header and a quoted name containing a comma, as color_export() writes it.
 $result = import(["\"name\",\"hex\"\n", "\"Blue, dark\",\"0000AA\"\n"], ['SELECT *' => [], 'INSERT INTO colors' => true]);
@@ -132,5 +186,15 @@ check(cacti_sizeof($result) === 1 && $GLOBALS['db'] === [], 'short row ignored')
 
 $result = import(["name,<b>colour</b>\n", "Red,FF0000\n"], []);
 check(cacti_sizeof($result) === 1 && str_contains($result[0], 'HEADER LINE PROCESSING ERROR') && !str_contains($result[0], '<b>colour'), 'bad header stops the import');
+
+// The edit form accepts exactly six hex digits and stores them in upper case.
+foreach (['FFF', 'FF00001', "FF0000\n", 'FF00GG', ''] as $hex) {
+	$location = save(['id' => '0', 'name' => 'Short', 'hex' => $hex]);
+	check($location === 'Location: color.php?action=edit&id=0' && $GLOBALS['saved'] === [], 'hex ' . json_encode($hex) . ' rejected');
+	check(isset($_SESSION[SESS_ERROR_FIELDS]['hex']), 'hex ' . json_encode($hex) . ' marked as the failing field');
+}
+
+$location = save(['id' => '0', 'name' => 'Pink', 'hex' => 'ff00aa']);
+check($location === 'Location: color.php' && $GLOBALS['saved'][0]['hex'] === 'FF00AA', 'six digit hex saved in upper case');
 
 print json_encode(['passed' => $GLOBALS['passed']], JSON_THROW_ON_ERROR) . "\n";
