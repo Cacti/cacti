@@ -79,9 +79,9 @@ function form_save() : void {
 		$save['id'] = gnrv('id');
 
 		// Named colors are read only.  The flag comes from the stored row, never from the request.
-		$stored = empty($save['id']) ? [] : db_fetch_row_prepared('SELECT read_only FROM colors WHERE id = ?', [$save['id']]);
+		$read_only = empty($save['id']) ? '' : db_fetch_cell_prepared('SELECT read_only FROM colors WHERE id = ?', [$save['id']]);
 
-		if (cacti_sizeof($stored) && $stored['read_only'] == 'on') {
+		if ($read_only == 'on') {
 			$_SESSION[SESS_ERROR_FIELDS]['name'] = 'name';
 
 			raise_message('color_read_only', __('Named Colors are read only and cannot be changed.'), MESSAGE_LEVEL_ERROR);
@@ -98,8 +98,6 @@ function form_save() : void {
 			}
 		}
 
-		$color_id = 0;
-
 		if (is_error_message() === false) {
 			$color_id = sql_save($save, 'colors');
 
@@ -111,7 +109,8 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: color.php?action=edit&id=' . (empty($color_id) ? gnrv('id') : $color_id));
+			// a failed save leaves no new id, so return to the color that was being edited
+			header('Location: color.php?action=edit&id=' . gnrv('id'));
 		} else {
 			header('Location: color.php');
 		}
@@ -218,6 +217,7 @@ function form_actions() : void {
 
 function color_import_processor(array &$colors) : array {
 	$i            = 0;
+	/** @var array<int, string> $header column position => field name, from the header row */
 	$header       = [];
 	$return_array = [];
 
@@ -235,15 +235,10 @@ function color_import_processor(array &$colors) : array {
 					foreach ($line_array as $line_item) {
 						$line_item = trim((string) $line_item);
 
-						switch ($line_item) {
-							case 'hex':
-							case 'name':
-								$header[$j] = $line_item;
-								$required++;
-
-								break;
-							default:
-								// ignore unknown columns
+						// unknown columns are ignored
+						if ($line_item === 'hex' || $line_item === 'name') {
+							$header[$j] = $line_item;
+							$required++;
 						}
 
 						$j++;
@@ -608,17 +603,21 @@ function color_export() : void {
 	process_sanitize_render_filter(false);
 
 	// the same rows the list shows; the cached graphs column needs no join with the graph items
-	$colors = db_fetch_assoc('SELECT name, hex
+	$sql_where = color_filter_where();
+
+	$colors = db_fetch_assoc("SELECT name, hex
 		FROM colors
-		' . color_filter_where() . '
-		ORDER BY id');
+		$sql_where
+		ORDER BY id");
 
 	header('Content-type: application/csv');
 	header('Content-Disposition: attachment; filename=colors.csv');
 
 	print cacti_csv_cell('name') . ',' . cacti_csv_cell('hex') . "\n";
 
-	foreach (($colors ?: []) as $color) {
-		print cacti_csv_cell($color['name']) . ',' . cacti_csv_cell($color['hex']) . "\n";
+	if (is_array($colors)) {
+		foreach ($colors as $color) {
+			print cacti_csv_cell($color['name']) . ',' . cacti_csv_cell($color['hex']) . "\n";
+		}
 	}
 }
