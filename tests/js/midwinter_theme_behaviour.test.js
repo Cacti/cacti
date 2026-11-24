@@ -405,3 +405,100 @@ test('the shipped navigation has one tree box and every box has a button', () =>
 
 	assert.ok(helpers.every((helper) => helper !== 'another'), 'no button without a box or action');
 });
+
+/*
+ * A jQuery stand-in for the navigation classes. Each selector gets a chain whose
+ * properties come from the matching entry in `page` (by exact selector or by a
+ * function), and every other method records its call and returns the chain.
+ */
+function navigationPage(page) {
+	const calls = [];
+	const chain = (key, values = {}) => new Proxy({}, {
+		get(_, property) {
+			if (property in values) return values[property];
+			if (property === 'length') return 1;
+			return (...args) => {
+				calls.push({selector: key, method: String(property), args});
+				return chain(key);
+			};
+		}
+	});
+	const $ = (selector) => {
+		if (selector && selector.__chain) return selector;
+		const key = typeof selector === 'string' ? selector : 'node';
+		return chain(key, typeof page === 'function' ? page(key, chain) || {} : page[key] || {});
+	};
+	$.contextMenu = (options) => calls.push({selector: 'contextMenu', method: 'contextMenu', args: [options]});
+
+	return {$, calls};
+}
+
+function boxEnvironment(saved, page) {
+	const storage = {container: 'mdw-SideBarContainer', dock: {enabled: true, top: true, left: true, right: true, bottom: true}, overlay: {enabled: true}, window: {enabled: false}};
+	const nav = navigationPage(page);
+
+	return Object.assign(navigationClasses({
+		$: nav.$,
+		Storages: {localStorage: {isSet: () => true, get: () => storage, set: () => {}}},
+		localStorage: {getItem: () => JSON.stringify(saved), setItem: () => {}},
+		addEventListener: () => {},
+		dispatchEvent: () => {},
+		CustomEvent: function() {},
+		document: {querySelector: () => null}
+	}), {calls: nav.calls});
+}
+
+test('a box stored as open in the sidebar starts closed, a docked box keeps its state', () => {
+	const markup = [];
+	const page = (key) => {
+		if (key.trim().startsWith('<div class="mdw-ConsoleNavigationBox"')) {
+			markup.push(key);
+		}
+	};
+	const context = boxEnvironment({
+		filter: {style: 'overlay', status: 'open'},
+		docked: {style: 'dock', dock: 'top-left', status: 'open'}
+	}, page);
+	const boxes = new context.cactiBox();
+
+	boxes.add({title: 'Filter', helper: 'filter', buttons: {close: false, menu: false, search: ''}});
+	boxes.add({title: 'Docked', helper: 'docked', buttons: {close: false, menu: false, search: ''}});
+
+	assert.match(markup[0], /data-status="closed"/);
+	assert.match(markup[1], /data-status="open"/);
+});
+
+test('docking a box selects its button and keeps the box when the dock side is missing', () => {
+	for (const docks of [true, false]) {
+		const box = {dataset: {helper: 'filter', dock: 'top-left'}};
+		const $box = {
+			__chain: true,
+			attr: (name) => ({'data-dock': 'top-left', 'class': 'mdw-ConsoleNavigationBox', 'data-helper': 'filter'})[name],
+			parent: () => ({is: () => false, find: () => ({each: () => {}})}),
+			detach: () => { detached++; return {appendTo: () => {}}; }
+		};
+		let detached = 0;
+		const context = boxEnvironment({}, (key) => {
+			if (key === '#mdw-DockLeft > .mdw-DockInnerTop') {
+				return {length: docks ? 1 : 0, siblings: () => ({eq: () => ({find: () => ({length: 0}), toggleClass: () => {}})}), find: () => ({length: 0}), toggleClass: () => {}};
+			}
+		});
+		const boxes = new context.cactiBox();
+
+		boxes.add({title: 'Filter', helper: 'filter', buttons: {close: false, menu: true, search: ''}});
+
+		const menu = context.calls.find((call) => call.method === 'contextMenu').args[0];
+		menu.items.style.items.dock.callback('dock', {$trigger: {parents: () => [box], closest: () => $box}});
+
+		const buttons = context.calls.filter((call) => call.selector.startsWith('[class^="compact_nav_icon"]') && call.method === 'toggleClass');
+
+		if (docks) {
+			assert.equal(detached, 1);
+			assert.deepEqual(buttons.map((call) => call.selector), ['[class^="compact_nav_icon"][data-helper="filter"]']);
+		} else {
+			assert.equal(detached, 0, 'the box must stay in the document');
+		}
+	}
+
+	assert.doesNotMatch(extract(navigation, '#moveToDock($box'), /console\.log/);
+});

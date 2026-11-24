@@ -775,6 +775,11 @@ class cactiBox extends cactiNavigation {
             config.layout.overlay   = saveStates.overlay    || config.layout.overlay;
             config.layout.exclusive = saveStates.exclusive  || config.layout.exclusive;
 
+            // only docked and window boxes keep their open state; closing an overlay is not stored, so it starts closed
+            if (config.layout.style !== 'dock' && config.layout.style !== 'window') {
+                config.status = 'closed';
+            }
+
             // check if we have a style specif width value stored
             const styleSpecificWidth = saveStates[`width_${config.layout.style}`];
 
@@ -1126,13 +1131,16 @@ class cactiBox extends cactiNavigation {
         const destinationSelector = `#${prefix}-Dock${this._ucFirst(outer)} > .${prefix}-DockInner${this._ucFirst(inner)}`;
 
         const $destination = $(destinationSelector);
+
+        // a stored dock position can name a dock side that is not enabled; keep the box where it is
+        if (!$destination.length) return;
+
         const $oldParent = $box.parent();
 
         $box.detach().appendTo($destination);
 
         if (typeof restoral !== "boolean") {
-            console.log('here')
-            this._updateNavigationButton($box, true);
+            this._updateNavigationButton($box.attr('data-helper'), true);
             this._hideSiblings($box);
 
             if ($oldParent.is(`[class*="DockInner"]`)) {
