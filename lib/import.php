@@ -341,7 +341,8 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 		$info_array['files'] = $files;
 	}
 
-	if ($repair) {
+	/* a preview makes no changes */
+	if ($repair && !$preview_only) {
 		repair_system_data_input_methods();
 	}
 

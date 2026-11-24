@@ -74,3 +74,13 @@ test('the objects an importer accepts are still reported', function () {
 		->and($verdict['result'])->toBeArray()
 		->and(import_xml_data_importers($verdict))->toBe(array('xml_to_data_input_method', 'xml_to_graph_template'));
 });
+
+test('the Data Input Method repair runs after an import and not after a preview', function (bool $preview, bool $repaired) {
+	$verdict = import_xml_data_scenario(array('data_input_method', 'data_template'), array(), $preview);
+
+	expect($verdict['error'])->toBeNull()
+		->and(in_array('repair_system_data_input_methods', cacti_import_export_called($verdict), true))->toBe($repaired);
+})->with(array(
+	'import'  => array(false, true),
+	'preview' => array(true, false),
+));
