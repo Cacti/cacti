@@ -2219,6 +2219,11 @@ function get_policy_join_select(array $policies) : array {
 		$i++;
 	}
 
+	// callers append the select after a comma, so a disabled group, which has no policy, still needs a column
+	if ($sql_select == '') {
+		$sql_select = 'NULL AS graph1';
+	}
+
 	return ['sql_select' => $sql_select, 'sql_join' => $sql_join];
 }
 
@@ -2233,6 +2238,11 @@ function get_policy_join_select(array $policies) : array {
  * @return string Updated sql_where value
  */
 function get_policy_where(string|int $graph_auth_method, array $policies, string $sql_where) : string {
+	// without a policy nothing grants access, and the clauses below would be empty
+	if (!cacti_sizeof($policies)) {
+		return $sql_where . ($sql_where != '' ? ' AND ' : 'WHERE ') . '1 = 0';
+	}
+
 	if ($graph_auth_method == 1) {
 		// Policy Rows include
 		// id, type (group|user), policy_graphs, policy_hosts, policy_graph_templates
