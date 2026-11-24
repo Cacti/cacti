@@ -208,6 +208,10 @@ label {
 	white-space: pre-wrap;
 }
 
+.wrap {
+	white-space: normal !important;
+}
+
 .top {
 	vertical-align: top;
 }
@@ -222,6 +226,21 @@ label {
 
 .center {
 	text-align: center !important;
+}
+
+.flexContainer {
+	display: flex;
+	flex-wrap: wrap;
+	margin-left: auto;
+	margin-right: auto;
+	justify-content: flex-start;
+}
+
+.flexChild {
+	display: inline-block;
+	margin-top: 5px;
+	flex-basis: 20%;
+	min-width: 200px;
 }
 
 .usermenudown {
