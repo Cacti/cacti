@@ -70,10 +70,15 @@ if [[ -f tests/fixtures/BoostSourceExistenceProbe.php ]]; then
 fi
 if [[ -f tests/fixtures/Core/DocumentDirectionShells.php ]]; then
 	run_probe DocumentDirectionShells.php document-shells
+	run_probe DocumentDirectionShells.php document-shells-rtl he-IL rtl-fixture
+	run_probe DocumentDirectionShells.php document-shells-rtl-unsupported he-IL modern
+	run_probe DocumentDirectionShells.php document-shells-unknown xx-XX modern
 fi
 if [[ -f tests/fixtures/Core/RealtimeDocumentShell.php ]]; then
 	for mode in disabled missing unwritable page; do
 		run_probe RealtimeDocumentShell.php "realtime-shell-$mode" "$mode"
+		run_probe RealtimeDocumentShell.php "realtime-shell-$mode-rtl" "$mode" he-IL rtl-fixture
+		run_probe RealtimeDocumentShell.php "realtime-shell-$mode-rtl-unsupported" "$mode" he-IL modern
 	done
 fi
 if [[ -f tests/fixtures/Core/TableColumnSizing.php ]]; then

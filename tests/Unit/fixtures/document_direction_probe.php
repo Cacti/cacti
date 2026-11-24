@@ -15,9 +15,11 @@
  * Probe for DocumentDirectionTest. Run through cacti_test_isolated_probe();
  * prints a JSON verdict on stdout.
  *
- * Loads include/global_languages.php through its disabled-i18n fallback, which
- * defines CACTI_LOCALE as en-US, then reports the direction helpers. It needs
- * its own process because the fakes below carry names lib/ declares.
+ * With argv[1] '0' it loads include/global_languages.php through its
+ * disabled-i18n fallback, which defines CACTI_LOCALE as en-US. With argv[1]
+ * '1' the session language in argv[2] and the theme in argv[3] select the
+ * locale and the theme the shells render under; see i18n_probe_bootstrap.php.
+ * It needs its own process because the fakes below carry names lib/ declares.
  */
 
 require_once dirname(__DIR__, 2) . '/Helpers/RequestCoverage.php';
@@ -40,26 +42,30 @@ foreach (get_list_of_locales() as $locale => $data) {
 // Document direction pairs a locale with the theme that renders it.
 $document_directions = [];
 
-foreach ([['he-IL', 'modern'], ['ar-SA', 'modern'], ['he-IL', 'midwinter'], ['ar-SA', 'midwinter'], ['en-US', 'modern'], ['en-US', 'midwinter'], ['he-IL', '../themes/modern'], ['he-IL', 'Modern'], ['he-IL', '']] as [$locale, $theme]) {
-	$document_directions[$locale . '|' . $theme] = get_document_direction($locale, $theme);
+foreach (['he-IL', 'ar-SA', 'en-US'] as $locale) {
+	foreach (['rtl-fixture', 'modern', 'midwinter', '../themes/rtl-fixture', 'Rtl-Fixture', ''] as $theme) {
+		$document_directions[$locale . '|' . $theme] = get_document_direction($locale, $theme);
+	}
 }
 
-// No get_selected_theme() is loaded here, so the default theme resolves to none.
-$document_directions['he-IL|default'] = get_document_direction('he-IL');
+// Without a theme argument get_selected_theme() is not loaded and the theme resolves to none.
+$document_directions['he-IL|selected'] = get_document_direction('he-IL');
 
 $rtl_themes = [];
 
-foreach (glob(CACTI_PATH_INCLUDE . '/themes/*/main.css') as $main) {
-	$theme = basename(dirname($main));
-
-	if (theme_supports_rtl($theme)) {
-		$rtl_themes[] = $theme;
+foreach (glob(CACTI_PATH_INCLUDE . '/themes/*', GLOB_ONLYDIR) as $directory) {
+	if (theme_supports_rtl(basename($directory))) {
+		$rtl_themes[] = basename($directory);
 	}
 }
 
 sort($rtl_themes);
 
-if ($directions['ar-SA'] !== 'rtl' || $directions['he-IL'] !== 'rtl' || $directions['<script>'] !== 'ltr' || get_html_document_attributes() !== " lang='en-US' dir='ltr'") {
+if ($i18n_document_attributes === null) {
+	throw new InvalidArgumentException('Unknown document direction scenario.');
+}
+
+if ($directions['ar-SA'] !== 'rtl' || $directions['he-IL'] !== 'rtl' || $directions['<script>'] !== 'ltr' || get_html_document_attributes() !== $i18n_document_attributes) {
 	throw new RuntimeException('Locale direction or document attributes changed.');
 }
 
@@ -94,7 +100,7 @@ require $root . '/include/top_general_header.php';
 $general_html = ob_get_clean();
 
 foreach ([$auth_html, $general_html] as $html) {
-	if (!str_contains($html, "<html lang='en-US' dir='ltr'>")) {
+	if (!str_contains($html, "<html$i18n_document_attributes>")) {
 		throw new RuntimeException('A document shell omitted its locale attributes.');
 	}
 }

@@ -1,0 +1,1 @@
+Fixture theme that declares right-to-left support.  See theme_supports_rtl() in include/global_languages.php.

@@ -7,20 +7,28 @@ if (PHP_SAPI !== 'cli') {
 	exit;
 }
 
-// Usage: RealtimeDocumentShell.php disabled|missing|unwritable|page
-// The shared locale bootstrap reads the i18n mode from argv[1]; the shell
-// renders with i18n disabled, so the active locale is the en-US fallback.
+// Usage: RealtimeDocumentShell.php disabled|missing|unwritable|page [language theme]
+// Without a language the shell renders with i18n disabled, so the active
+// locale is the en-US fallback. With one the shared locale bootstrap puts the
+// language in the session and selects the theme.
 $mode = $argv[1] ?? 'page';
-$argv = [$argv[0], '0'];
+$argv = isset($argv[3]) ? [$argv[0], '1', $argv[2], $argv[3]] : [$argv[0], '0'];
 require_once dirname(__DIR__, 2) . '/Helpers/FixtureCoverage.php';
 require_once dirname(__DIR__, 2) . '/Helpers/SourceSlice.php';
 require_once dirname(__DIR__, 2) . '/Unit/fixtures/i18n_probe_bootstrap.php';
 
+if ($i18n_document_attributes === null) {
+	throw new \InvalidArgumentException('Unknown document direction scenario');
+}
+
+// A translated session changes the message, so only the en-US runs pin its text.
+$html_tag = "<html$i18n_document_attributes>";
+$english  = CACTI_LOCALE === 'en-US';
 $expected = [
-	'disabled'   => "<html lang='en-US' dir='ltr'>\n<body>\n\t<p><strong>Real-time has been disabled by your administrator.</strong></p>\n</body>\n</html>\n",
-	'missing'    => "<html lang='en-US' dir='ltr'>\n<body>\n\t<p><strong>The Image Cache Directory does not exist.",
-	'unwritable' => "<html lang='en-US' dir='ltr'>\n<body>\n\t<p><strong>The Image Cache Directory is not writable.",
-	'page'       => "<!DOCTYPE html>\n<html lang='en-US' dir='ltr'>\n<head>\n",
+	'disabled'   => "$html_tag\n<body>\n\t<p><strong>" . ($english ? "Real-time has been disabled by your administrator.</strong></p>\n</body>\n</html>\n" : ''),
+	'missing'    => "$html_tag\n<body>\n\t<p><strong>" . ($english ? 'The Image Cache Directory does not exist.' : ''),
+	'unwritable' => "$html_tag\n<body>\n\t<p><strong>" . ($english ? 'The Image Cache Directory is not writable.' : ''),
+	'page'       => "<!DOCTYPE html>\n$html_tag\n<head>\n",
 ];
 
 if (!isset($expected[$mode])) {

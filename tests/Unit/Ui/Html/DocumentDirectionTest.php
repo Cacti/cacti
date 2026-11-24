@@ -20,16 +20,26 @@ require_once dirname(__DIR__, 3) . '/Helpers/IsolatedProbe.php';
  * anything unknown stays left-to-right. Arabic and Hebrew get a right-to-left
  * document only under a theme that ships an `rtl` file, because the other
  * themes hide content when the page is mirrored.
+ *
+ * No shipped theme ships that file yet, so the theme that does is the
+ * rtl-fixture theme under tests/fixtures/Ui/RtlTheme. The probe arguments are
+ * the i18n setting, the session language and the configured theme.
  */
 
-function document_direction_verdict() : array {
-	static $verdict;
+const DOCUMENT_DIRECTION_RTL_THEME     = ['1', 'he-IL', 'rtl-fixture'];
+const DOCUMENT_DIRECTION_SHIPPED_THEME = ['1', 'he-IL', 'modern'];
+const DOCUMENT_DIRECTION_UNKNOWN       = ['1', 'xx-XX', 'modern'];
 
-	if ($verdict === null) {
-		$verdict = cacti_test_isolated_probe(dirname(__DIR__, 2) . '/fixtures/document_direction_probe.php', ['0']);
+function document_direction_verdict(array $scenario = ['0']) : array {
+	static $verdicts = [];
+
+	$key = implode(' ', $scenario);
+
+	if (!isset($verdicts[$key])) {
+		$verdicts[$key] = cacti_test_isolated_probe(dirname(__DIR__, 2) . '/fixtures/document_direction_probe.php', $scenario);
 	}
 
-	return $verdict;
+	return $verdicts[$key];
 }
 
 test('right-to-left locales report rtl', function () {
@@ -54,32 +64,37 @@ test('only the locales flagged rtl in the language table are rtl', function () {
 });
 
 test('a right-to-left locale mirrors only a theme that supports it', function () {
-	$documents = document_direction_verdict()['documents'];
+	$fixture = document_direction_verdict(DOCUMENT_DIRECTION_RTL_THEME)['documents'];
+	$shipped = document_direction_verdict()['documents'];
 
-	expect($documents['he-IL|modern'])->toBe('rtl');
-	expect($documents['ar-SA|modern'])->toBe('rtl');
-	expect($documents['he-IL|midwinter'])->toBe('ltr');
-	expect($documents['ar-SA|midwinter'])->toBe('ltr');
+	expect($fixture['he-IL|rtl-fixture'])->toBe('rtl');
+	expect($fixture['ar-SA|rtl-fixture'])->toBe('rtl');
+	expect($shipped['he-IL|modern'])->toBe('ltr');
+	expect($shipped['ar-SA|modern'])->toBe('ltr');
+	expect($shipped['he-IL|midwinter'])->toBe('ltr');
+	expect($shipped['ar-SA|midwinter'])->toBe('ltr');
 });
 
 test('a left-to-right locale stays ltr in every theme', function () {
-	$documents = document_direction_verdict()['documents'];
-
-	expect($documents['en-US|modern'])->toBe('ltr');
-	expect($documents['en-US|midwinter'])->toBe('ltr');
+	expect(document_direction_verdict(DOCUMENT_DIRECTION_RTL_THEME)['documents']['en-US|rtl-fixture'])->toBe('ltr');
+	expect(document_direction_verdict()['documents']['en-US|modern'])->toBe('ltr');
+	expect(document_direction_verdict()['documents']['en-US|midwinter'])->toBe('ltr');
 });
 
 test('an invalid or missing theme never mirrors the page', function () {
-	$documents = document_direction_verdict()['documents'];
+	// Both names reach the fixture's rtl file on disk, so only the name check rejects them.
+	$fixture = document_direction_verdict(DOCUMENT_DIRECTION_RTL_THEME)['documents'];
 
-	expect($documents['he-IL|../themes/modern'])->toBe('ltr');
-	expect($documents['he-IL|Modern'])->toBe('ltr');
-	expect($documents['he-IL|'])->toBe('ltr');
-	expect($documents['he-IL|default'])->toBe('ltr');
+	expect($fixture['he-IL|../themes/rtl-fixture'])->toBe('ltr');
+	expect($fixture['he-IL|Rtl-Fixture'])->toBe('ltr');
+	expect($fixture['he-IL|'])->toBe('ltr');
+	expect($fixture['he-IL|modern'])->toBe('ltr');
+	expect(document_direction_verdict()['documents']['he-IL|selected'])->toBe('ltr');
 });
 
-test('only themes that ship an rtl file support right-to-left', function () {
-	expect(document_direction_verdict()['rtl_themes'])->toBe(['modern']);
+test('no shipped theme declares right-to-left support yet', function () {
+	expect(document_direction_verdict()['rtl_themes'])->toBe([]);
+	expect(document_direction_verdict(DOCUMENT_DIRECTION_RTL_THEME)['rtl_themes'])->toBe(['rtl-fixture']);
 });
 
 test('the active locale drives the html attributes', function () {
@@ -113,6 +128,38 @@ test('every html emitter prints the document attributes', function () {
 
 test('general and authentication error shells render document attributes', function () {
 	foreach (document_direction_verdict()['shells'] as $html) {
+		expect($html)->toContain("<html lang='en-US' dir='ltr'>");
+	}
+});
+
+test('a right-to-left session renders rtl shells under a theme that supports it', function () {
+	$verdict = document_direction_verdict(DOCUMENT_DIRECTION_RTL_THEME);
+
+	expect($verdict['attributes'])->toBe(" lang='he-IL' dir='rtl'");
+	expect($verdict['documents']['he-IL|selected'])->toBe('rtl');
+
+	foreach ($verdict['shells'] as $html) {
+		expect($html)->toContain("<html lang='he-IL' dir='rtl'>");
+	}
+});
+
+test('a right-to-left session renders ltr shells under a shipped theme', function () {
+	$verdict = document_direction_verdict(DOCUMENT_DIRECTION_SHIPPED_THEME);
+
+	expect($verdict['attributes'])->toBe(" lang='he-IL' dir='ltr'");
+	expect($verdict['documents']['he-IL|selected'])->toBe('ltr');
+
+	foreach ($verdict['shells'] as $html) {
+		expect($html)->toContain("<html lang='he-IL' dir='ltr'>");
+	}
+});
+
+test('an unknown session language renders the en-US fallback', function () {
+	$verdict = document_direction_verdict(DOCUMENT_DIRECTION_UNKNOWN);
+
+	expect($verdict['attributes'])->toBe(" lang='en-US' dir='ltr'");
+
+	foreach ($verdict['shells'] as $html) {
 		expect($html)->toContain("<html lang='en-US' dir='ltr'>");
 	}
 });

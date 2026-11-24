@@ -6,9 +6,11 @@ if (PHP_SAPI !== 'cli') {
 	exit;
 }
 
-// The shared locale bootstrap reads the i18n mode from argv[1]. Every shell
-// renders with i18n disabled, so the active locale is the en-US fallback.
-$argv = [$argv[0], '0'];
+// Usage: DocumentDirectionShells.php [language theme]
+// Without arguments every shell renders with i18n disabled, so the active
+// locale is the en-US fallback. With them the shared locale bootstrap puts the
+// language in the session and selects the theme.
+$argv = isset($argv[2]) ? [$argv[0], '1', $argv[1], $argv[2]] : [$argv[0], '0'];
 require_once dirname(__DIR__, 2) . '/Helpers/FixtureCoverage.php';
 require_once dirname(__DIR__, 2) . '/Helpers/SourceSlice.php';
 require_once dirname(__DIR__, 2) . '/Unit/fixtures/i18n_probe_bootstrap.php';
@@ -23,13 +25,17 @@ function document_shell_assert(bool $condition, string $message) : void {
 foreach (['ar-SA' => 'rtl', 'he-IL' => 'rtl', 'en-US' => 'ltr', 'de-DE' => 'ltr', 'xx-XX' => 'ltr', '' => 'ltr', '<script>' => 'ltr'] as $locale => $direction) {
 	document_shell_assert(get_locale_direction($locale) === $direction, "Direction for '$locale' was not $direction");
 }
-document_shell_assert(get_locale_direction() === 'ltr', 'The active en-US locale did not default to ltr');
+document_shell_assert(get_locale_direction() === (CACTI_LOCALE === 'he-IL' ? 'rtl' : 'ltr'), 'The active locale did not decide the default direction');
 
-document_shell_assert(get_document_direction('he-IL', 'modern') === 'rtl', 'Modern did not opt in to RTL');
+// Only the fixture theme declares right-to-left support, and only its own root finds it.
+$rtl_fixture = $i18n_theme === 'rtl-fixture';
+document_shell_assert(get_document_direction('he-IL', 'rtl-fixture') === ($rtl_fixture ? 'rtl' : 'ltr'), 'The fixture theme opt-in changed');
+document_shell_assert(get_document_direction('he-IL', 'modern') === 'ltr', 'Modern unexpectedly mirrored its layout');
 document_shell_assert(get_document_direction('he-IL', 'midwinter') === 'ltr', 'Midwinter unexpectedly mirrored its layout');
-document_shell_assert(get_document_direction('ar-SA') === 'ltr', 'An unselected theme unexpectedly opted in to RTL');
+document_shell_assert(get_document_direction('ar-SA') === ($rtl_fixture ? 'rtl' : 'ltr'), 'The selected theme did not decide the direction');
 
-$attributes = " lang='en-US' dir='ltr'";
+document_shell_assert($i18n_document_attributes !== null, 'Unknown document direction scenario');
+$attributes = $i18n_document_attributes;
 $html_tag   = "<html$attributes>";
 document_shell_assert(get_html_document_attributes() === $attributes, 'Document attributes changed');
 
