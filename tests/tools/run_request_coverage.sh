@@ -90,6 +90,7 @@ for mode in profile-messages public-key-details template-import-result template-
 	run_php_probe tests/fixtures/Core/ImportExportPages.php "$import_export_files" "$mode"
 done
 run_php_probe tests/fixtures/Core/PackageTemplateResults.php '^(lib/import\.php|tests/fixtures/Core/PackageTemplateResults\.php)'
+run_php_probe tests/fixtures/Core/PackageMissingFile.php '^(lib/package\.php|tests/fixtures/Core/PackageMissingFile\.php)'
 
 row_guard_files='^(aggregate_graphs|auth_changepassword|auth_profile|color|data_input|data_source_profiles|graph_templates)\.php|^cli/add_device\.php|^lib/(api_tree|auth|dsstats|html_reports|plugins|poller|reports|template)\.php|^tests/fixtures/Core/RowGuardMatrix\.php'
 run_php_probe tests/fixtures/Core/RowGuardMatrix.php "$row_guard_files"
