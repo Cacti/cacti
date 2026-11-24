@@ -47,6 +47,7 @@ run_php_probe tests/fixtures/Core/DeviceCollectorMessages.php '^(lib/api_device\
 run_php_probe tests/fixtures/Core/ReportMessageDelivery.php '^(lib/(functions|reports)\.php|tests/fixtures/Core/ReportMessageDelivery\.php)'
 run_php_probe tests/fixtures/Core/ExternalLinkMessage.php '^(link\.php|tests/fixtures/Core/ExternalLinkMessage\.php)$'
 run_php_probe tests/fixtures/Core/ColorMarkup.php '^((color|color_templates)\.php|lib/(api_aggregate|html|html_form)\.php|tests/fixtures/Core/ColorMarkup\.php)$'
+run_php_probe tests/fixtures/Core/ColorPage.php '^(color\.php|tests/fixtures/Core/ColorPage\.php)$'
 run_php_probe tests/fixtures/Core/TrustedActionMessages.php '^(aggregate_graphs\.php|lib/plugins\.php|tests/fixtures/Core/TrustedActionMessages\.php)$'
 message_pages='automation_devices|automation_networks|color_templates|data_source_profiles|data_templates|graph_templates|graphs|graphs_new|host|host_templates|package|package_import|package_repos|plugins|pollers|settings|support'
 message_libraries='api_automation|api_data_source|api_device|api_scheduler|clog_webapi|data_query|functions|html_reports|html_utility|package|plugins|reports|template|timespan_settings|utility'
