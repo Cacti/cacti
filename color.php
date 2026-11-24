@@ -589,7 +589,7 @@ function color() : void {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow odd'><td colspan='7'><em>" . __('No Colors Found') . "</em></td></tr>\n";
+		print "<tr class='tableRow odd'><td colspan='8'><em>" . __('No Colors Found') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);

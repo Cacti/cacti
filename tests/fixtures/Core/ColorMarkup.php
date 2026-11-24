@@ -302,4 +302,10 @@ color();
 $html = ob_get_clean();
 assert_text($html, $hex, 'color list');
 
+$GLOBALS['rows'] = [];
+ob_start();
+color();
+$html = ob_get_clean();
+check(str_contains($html, "<td colspan='8'><em>No Colors Found</em>"), 'empty color list spans all eight columns');
+
 print json_encode(['passed' => $GLOBALS['passed']], JSON_THROW_ON_ERROR) . "\n";

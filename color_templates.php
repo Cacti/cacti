@@ -584,16 +584,22 @@ function color_item_edit() : void {
 		WHERE color_template_id = ?',
 		[grv('color_template_id')]);
 
+	$template_name = is_array($template) ? $template['name'] : '';
+
 	if (isrv('color_template_item_id') && (grv('color_template_item_id') > 0)) {
 		$template_item = db_fetch_row_prepared('SELECT *
 			FROM color_template_items
 			WHERE color_template_item_id = ?',
 			[grv('color_template_item_id')]);
 
-		$header_label = __esc('Color Template Items [edit Report Item: %s]', $template['name']);
+		if (!is_array($template_item)) {
+			$template_item = [];
+		}
+
+		$header_label = __esc('Color Template Items [edit Item: %s]', $template_name);
 	} else {
 		$template_item = [];
-		$header_label  = __esc('Color Template Items [new Report Item: %s]', $template['name']);
+		$header_label  = __esc('Color Template Items [new Item: %s]', $template_name);
 	}
 
 	form_start('color_templates.php', 'aggregate_color_item_edit');
@@ -707,8 +713,8 @@ function color_template_edit() : void {
 	// ====================================================
 
 	if (!ierv('color_template_id')) {
-		$template     = db_fetch_row_prepared('SELECT * FROM color_templates WHERE color_template_id = ?', [grv('color_template_id')]);
-		$header_label = __esc('Color Template [edit: %s]', $template['name']);
+		$template     = db_fetch_row_prepared('SELECT * FROM color_templates WHERE color_template_id = ?', [grv('color_template_id')]) ?: [];
+		$header_label = __esc('Color Template [edit: %s]', $template['name'] ?? '');
 	} else {
 		$header_label = __('Color Template [new]');
 	}
@@ -798,7 +804,7 @@ function sync_color_templates(int $color_template) : void {
 	} elseif ($found) {
 		raise_message('color_template_sync', __('Color Template \'%s\' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out', $name, $templates, $graphs), MESSAGE_LEVEL_INFO);
 	} else {
-		raise_message('color_template_sync', __('Color Template \'%s\' had no Aggregate Templates or Graphs using this Color Template.', $name, $templates, $graphs), MESSAGE_LEVEL_INFO);
+		raise_message('color_template_sync', __('Color Template \'%s\' had no Aggregate Templates or Graphs using this Color Template.', $name), MESSAGE_LEVEL_INFO);
 	}
 }
 

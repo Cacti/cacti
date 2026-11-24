@@ -106,6 +106,46 @@ function raise_message(mixed $id, string $message = '', int $level = 0) : bool {
 	return true;
 }
 
+function isrv(string $name) : bool {
+	return isset($_REQUEST[$name]);
+}
+
+function ierv(string $name) : bool {
+	return empty($_REQUEST[$name]);
+}
+
+function __esc(string $text, mixed ...$args) : string {
+	return htmlspecialchars(__($text, ...$args), ENT_QUOTES, 'UTF-8');
+}
+
+function html_start_box(string $label, mixed ...$args) : void {
+	$GLOBALS['label'] = $label;
+}
+
+function inject_form_variables(array &$form, mixed $values = []) : array {
+	$GLOBALS['values'] = $values;
+
+	return $form;
+}
+
+function form_start(mixed ...$args) : void {
+}
+
+function draw_edit_form(mixed ...$args) : void {
+}
+
+function html_end_box(mixed ...$args) : void {
+}
+
+function form_hidden_box(mixed ...$args) : void {
+}
+
+function form_save_button(mixed ...$args) : void {
+}
+
+function color_item() : void {
+}
+
 function check(bool $condition, string $label) : void {
 	if (!$condition) {
 		throw new RuntimeException('Failed: ' . $label);
@@ -126,6 +166,21 @@ function move(string $function, array $fake) : array {
 \cacti_fixture_source_function($root . '/color_templates.php', 'color_item_movedown', __NAMESPACE__);
 \cacti_fixture_source_function($root . '/color_templates.php', 'color_item_moveup', __NAMESPACE__);
 \cacti_fixture_source_function($root . '/color_templates.php', 'sync_color_templates', __NAMESPACE__);
+\cacti_fixture_source_function($root . '/color_templates.php', 'color_item_edit', __NAMESPACE__);
+\cacti_fixture_source_function($root . '/color_templates.php', 'color_template_edit', __NAMESPACE__);
+
+$struct_color_template_item           = [];
+$fields_color_template_template_edit  = [];
+
+// Open an edit form and return its header label.
+function edit(string $function, array $request, array $fake) : string {
+	$_REQUEST         = $request;
+	$GLOBALS['fake']  = $fake;
+	$GLOBALS['label'] = '';
+	(__NAMESPACE__ . '\\' . $function)();
+
+	return $GLOBALS['label'];
+}
 
 // Sync one color template and return the push outs it made.
 function sync(array $templates, array $graphs) : array {
@@ -161,5 +216,14 @@ $pushed = sync([['aggregate_template_id' => 5]], [['aggregate_template_id' => 5,
 check($pushed === [[5, 0], [0, 1001], [0, 1003]], 'templates pushed out, own-item aggregates rebuilt from their own items');
 check(str_contains($GLOBALS['db'][2][0], "WHERE (ag.aggregate_template_id = 0 OR ag.template_propogation = '') AND agi.color_template = ?") && $GLOBALS['db'][2][1] === [7], 'the color template filter applies to both kinds of aggregate');
 check($GLOBALS['messages'][0][1] === "Color Template 'Blues' had 1 Aggregate Templates pushed out and 2 Non-Templated Aggregates pushed out", 'sync result reported');
+
+check(sync([], []) === [] && $GLOBALS['messages'][0][1] === "Color Template 'Blues' had no Aggregate Templates or Graphs using this Color Template.", 'sync without users reported');
+
+// Edit forms label the item and survive a template or item that no longer exists.
+check(edit('color_item_edit', ['color_template_id' => '3', 'color_template_item_id' => '12'], ['FROM color_templates' => ['name' => 'Blues'], 'FROM color_template_items' => ['color_template_item_id' => 12]]) === 'Color Template Items [edit Item: Blues]', 'item edit label');
+check(edit('color_item_edit', ['color_template_id' => '3'], ['FROM color_templates' => ['name' => 'Blues']]) === 'Color Template Items [new Item: Blues]', 'new item label');
+check(edit('color_item_edit', ['color_template_id' => '3', 'color_template_item_id' => '12'], ['FROM color_templates' => false, 'FROM color_template_items' => false]) === 'Color Template Items [edit Item: ]' && $GLOBALS['values'] === [], 'item edit without rows');
+check(edit('color_template_edit', ['color_template_id' => '3'], ['FROM color_templates' => ['name' => 'Blues', 'color_template_id' => 3]]) === 'Color Template [edit: Blues]', 'template edit label');
+check(edit('color_template_edit', ['color_template_id' => '3'], ['FROM color_templates' => false]) === 'Color Template [edit: ]' && $GLOBALS['values'] === [], 'template edit without a row');
 
 print json_encode(['passed' => $GLOBALS['passed']], JSON_THROW_ON_ERROR) . "\n";
