@@ -10,7 +10,7 @@ test('state-mutating routes explicitly require POST', function () {
 		'automation_graph_rules.php' => array('save', 'actions', 'item_movedown', 'item_moveup', 'item_remove', 'qedit', 'remove'),
 		'automation_templates.php'   => array('save', 'ajax_dnd', 'actions', 'movedown', 'moveup', 'remove'),
 		'automation_tree_rules.php'  => array('save', 'actions', 'change_leaf', 'item_movedown', 'item_moveup', 'item_remove', 'remove'),
-		'color.php'                  => array('save', 'actions', 'remove'),
+		'color.php'                  => array('save', 'actions'),
 		'data_queries.php'           => array('save', 'actions', 'item_moveup_dssv', 'item_movedown_dssv', 'item_remove_dssv', 'item_moveup_gsv', 'item_movedown_gsv', 'item_remove_gsv', 'item_remove_confirm', 'item_remove', 'remove'),
 		'rrdcheck.php'                => array('purge'),
 	);
