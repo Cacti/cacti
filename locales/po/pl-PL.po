@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2026-03-10 10:57-0400\n"
-"PO-Revision-Date: 2025-07-04 14:52-0400\n"
-"Last-Translator: The Cacti Group <developers@cacti.net>\n"
-"Language-Team: Polish <http://translate.cacti.net/projects/cacti/core/pl-PL/>\n"
-"Language: pl_PL\n"
+"PO-Revision-Date: 2026-11-24 09:13+0000\n"
+"Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
+"Language-Team: Polish <https://translate.cacti.net/projects/cacti/core/pl/>\n"
+"Language: pl-PL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Poedit 3.6\n"
+"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 5.11.4\n"
 
 #: about.php:29 include/global_arrays.php:2813 lib/html.php:3155
 msgid "About Cacti"
@@ -164,7 +165,11 @@ msgstr "Wybrane wykresy zbiorcze reprezentują elementy z więcej niż jednego s
 
 #: aggregate_graphs.php:834
 msgid "In order to migrate the Aggregate Graphs below use an Aggregate Template, one must already exist."
-msgstr "W celu migracji poniższych wykresów zagregowanych do wykresu zagregowanychopartego na szablonie, mogą one używać tylko jednego szablonu wykresu.  Proszę nacisnąć 'Powróć', a następnie wybrać tylko zagregowane wykresy, które wykorzystują ten sam szablon wykresu zagregowanego."
+msgstr ""
+"W celu migracji poniższych wykresów zagregowanych do wykresu "
+"zagregowanychopartego na szablonie, mogą one używać tylko jednego szablonu "
+"wykresu. Proszę nacisnąć 'Powróć', a następnie wybrać tylko zagregowane "
+"wykresy, które wykorzystują ten sam szablon wykresu zagregowanego."
 
 #: aggregate_graphs.php:859
 msgid "There are currently no Aggregate Templates defined for the selected Legacy Aggregates."
@@ -336,7 +341,7 @@ msgstr "Oddział docelowy:"
 #: user_admin.php:1876
 #, php-format
 msgid "[edit: %s]"
-msgstr ""
+msgstr "[edytuj: %s]"
 
 #: aggregate_graphs.php:1054 aggregate_graphs.php:1164
 #: aggregate_graphs.php:1166
@@ -698,7 +703,7 @@ msgstr "Przywrócenie wartości domyślnych filtra"
 
 #: aggregate_graphs.php:1987
 msgid " [ Custom Graphs List Applied - Clear to Reset ]"
-msgstr "Stosowana lista wykresów niestandardowych - filtr z listy ]"
+msgstr " Stosowana lista wykresów niestandardowych - filtr z listy ]"
 
 #: aggregate_graphs.php:1987 aggregate_graphs.php:2086
 #: include/global_arrays.php:2939
@@ -2446,7 +2451,7 @@ msgstr "Kolejność pozycji."
 #: automation_snmp.php:680
 #, php-format
 msgid "SNMP Option Set [edit: %s]"
-msgstr ""
+msgstr "Zestaw opcji SNMP [edycja: %s]"
 
 #: automation_snmp.php:682
 msgid "SNMP Option Set [new]"
@@ -3523,7 +3528,9 @@ msgstr "Szablon kolorowy [nowy]"
 #: color_templates.php:759
 #, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
-msgstr "Szablon kolorów „%s” wypchnął szablony agregatów% d oraz wypchnięto% d agregatów bez szablonów"
+msgstr ""
+"Szablon kolorów „%s” wypchnął szablony agregatów%d oraz wypchnięto%d "
+"agregatów bez szablonów"
 
 #: color_templates.php:761
 #, php-format
@@ -3597,7 +3604,7 @@ msgstr "Użytkownik, który poprosił o Debug."
 
 #: data_debug.php:392
 msgid "Started"
-msgstr "Rozpoczęte "
+msgstr "Rozpoczęte"
 
 #: data_debug.php:395
 msgid "The Date that the Debug was Started."
@@ -5448,7 +5455,7 @@ msgstr "pozostały %d sekund."
 
 #: graph_realtime.php:452
 msgid " seconds left."
-msgstr "pozostały sekundy."
+msgstr " pozostały sekundy."
 
 #: graph_templates.php:39
 msgid "Change Settings"
@@ -5782,7 +5789,7 @@ msgstr "Tworzenie agregatu z szablonu"
 
 #: graphs.php:240 graphs.php:255
 msgid "No Device - "
-msgstr "Brak urządzenia"
+msgstr "Brak urządzenia "
 
 #: graphs.php:345
 #, php-format
@@ -6183,7 +6190,7 @@ msgstr "Nazwa użytkownika."
 
 #: graphs_new.php:370 lib/html.php:3199
 msgid "Filter Settings Saved"
-msgstr " [ Ustawienia filtra zapisane ]"
+msgstr "[ Ustawienia filtra zapisane ]"
 
 #: graphs_new.php:375
 msgid "Edit this Device"
@@ -6298,7 +6305,7 @@ msgstr "Strona Cacti GitHub"
 
 #: help.php:91
 msgid "Open a ticket at "
-msgstr "UTWÓRZ BILET"
+msgstr "UTWÓRZ BILET "
 
 #: help.php:91
 #, php-format
@@ -7586,7 +7593,7 @@ msgstr "Lewa"
 
 #: include/global_arrays.php:593
 msgid "East"
-msgstr "Wschód "
+msgstr "Wschód"
 
 #: include/global_arrays.php:598
 msgid "Left"
@@ -8568,7 +8575,7 @@ msgstr "Ostatni dzień"
 #: include/global_arrays.php:1582
 #, php-format
 msgid "Last %d Days"
-msgstr "Ostatnie %d  dni"
+msgstr "Ostatnie %d dni"
 
 #: include/global_arrays.php:1583
 msgid "Last Week"
@@ -9042,7 +9049,7 @@ msgstr "Raz na tygodzień"
 #: include/global_arrays.php:2017 include/global_arrays.php:2018
 #, php-format
 msgid "Every %d Weeks"
-msgstr ""
+msgstr "Co %d tygodni"
 
 #: include/global_arrays.php:2022 include/global_arrays.php:3092
 #: include/global_settings.php:1651
@@ -11076,7 +11083,7 @@ msgstr "Przydatna nazwa dla tego szablonu."
 #: include/global_form.php:2286 include/global_form.php:2328
 #: lib/api_automation.php:1351 lib/api_automation.php:1471
 msgid "Operation"
-msgstr "Operacja "
+msgstr "Operacja"
 
 #: include/global_form.php:2287 include/global_form.php:2329
 msgid "Logical operation to combine rules."
@@ -11171,11 +11178,11 @@ msgstr "Zastępczy wzór strunowy do wykorzystania jako nagłówek drzewa.<br>Re
 
 #: include/global_languages.php:1105
 msgid " T"
-msgstr "W"
+msgstr " W"
 
 #: include/global_languages.php:1107
 msgid " G"
-msgstr "G"
+msgstr " G"
 
 #: include/global_languages.php:1109
 msgid " M"
@@ -11183,7 +11190,7 @@ msgstr " mln"
 
 #: include/global_languages.php:1111
 msgid " K"
-msgstr "tys "
+msgstr " tys"
 
 #: include/global_settings.php:62
 msgid "Paths"
@@ -14092,7 +14099,12 @@ msgstr "Filtr"
 
 #: include/global_settings.php:2973
 msgid "Specifies the DSes inside an RRD upon which Spikekill will operate. A string of comma-separated values that contains index numbers or names of desired DSes. If left blank, all DSes will match. An example is <i>\"5,traffic_*\"</i>, which would match DS index 5 as well as any DS whose name begins with <i>\"traffic_\"</i>. "
-msgstr "Określa DS wewnątrz RRD, na którym Spikekill będzie działał. Ciąg wartości oddzielonych przecinkami, który zawiera numery indeksowe lub nazwy żądanych DS. Jeśli pole pozostanie puste, wszystkie DS zostaną dopasowane. Przykładem jest <i>„5,traffic_*”</i>, który pasowałby do DS indeksu 5, a także każdego DS, którego nazwa zaczyna się od <i>„traffic_”</i>."
+msgstr ""
+"Określa DS wewnątrz RRD, na którym Spikekill będzie działał. Ciąg wartości "
+"oddzielonych przecinkami, który zawiera numery indeksowe lub nazwy żądanych "
+"DS. Jeśli pole pozostanie puste, wszystkie DS zostaną dopasowane. Przykładem "
+"jest <i>„5,traffic_*”</i>, który pasowałby do DS indeksu 5, a także każdego "
+"DS, którego nazwa zaczyna się od <i>„traffic_”</i>. "
 
 #: include/global_settings.php:2980
 msgid "RRDfile Backup Directory"
@@ -14550,7 +14562,9 @@ msgstr "Inicjalizacja"
 #: install/install.php:122
 #, php-format
 msgid "Please wait while the installation system for Cacti Version %s initializes. You must have JavaScript enabled for this to work."
-msgstr "Proszę czekać, aż system instalacyjny dla wersji Cacti %s zostanie zainicjalizowany.  Aby to działało, musisz mieć włączony JavaScript."
+msgstr ""
+"Proszę czekać, aż system instalacyjny dla wersji Cacti %s zostanie "
+"zainicjalizowany. Aby to działało, musisz mieć włączony JavaScript."
 
 #: install/install.php:126
 msgid "FATAL: We are unable to continue with this installation. In order to install Cacti, PHP must be at version 7.4 or later."
@@ -15262,11 +15276,11 @@ msgstr ""
 
 #: lib/auth.php:2435 lib/auth.php:2442 lib/auth.php:2451
 msgid "Restricted By: "
-msgstr "Ograniczony"
+msgstr "Ograniczony "
 
 #: lib/auth.php:2439
 msgid "Granted By: "
-msgstr "Przyznane przez:"
+msgstr "Przyznane przez: "
 
 #: lib/auth.php:2446
 msgid "Granted"
@@ -16042,7 +16056,7 @@ msgstr "Debug nie zakończony po 5 głosowaniach"
 
 #: lib/dsdebug.php:276
 msgid "Failed fields: "
-msgstr "Pola, które nie zostały wypełnione:"
+msgstr "Pola, które nie zostały wypełnione: "
 
 #: lib/dsdebug.php:285
 msgid "Data Source is not set as Active"
@@ -16068,7 +16082,7 @@ msgstr "RRD Plik nieaktualizowany po głosowaniu"
 
 #: lib/dsdebug.php:319
 msgid "Data Source returned Bad Results for "
-msgstr "Źródło danych Zwrócono złe wyniki za"
+msgstr "Źródło danych Zwrócono złe wyniki za "
 
 #: lib/dsdebug.php:324
 msgid "Data Source was not polled"
@@ -16205,7 +16219,7 @@ msgstr "Połączenie nieudane: %s"
 
 #: lib/functions.php:6037
 msgid "SMTP error: "
-msgstr "Błąd SMTP:"
+msgstr "Błąd SMTP: "
 
 #: lib/functions.php:6048
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
@@ -16740,7 +16754,7 @@ msgstr "Zezwól lub ogranicz, aby kolumny tabeli wykraczały poza obecne limity 
 
 #: lib/html.php:3237 pollers.php:907
 msgid "Connection Failed"
-msgstr "PoÅÄczenie nie powiodÅo siÄ"
+msgstr "Połączenie nie powiodło się"
 
 #: lib/html.php:3238 pollers.php:905
 msgid "Connection Successful"
@@ -17836,7 +17850,7 @@ msgstr "Pliki opakowaniowe"
 
 #: lib/import.php:2886
 msgid "[preview] "
-msgstr "Podgląd"
+msgstr "Podgląd "
 
 #: lib/import.php:2892
 msgid "Cacti would make the following changes if the Template was imported:"
@@ -18009,7 +18023,7 @@ msgstr "Aktualizuj"
 
 #: lib/installer.php:1955 lib/installer.php:3104 lib/installer.php:3169
 msgid "Downgrade"
-msgstr "Obniżenie"
+msgstr "Obniż wersję"
 
 #: lib/installer.php:2062 support.php:1214
 msgid "Cacti Version"
@@ -18036,7 +18050,7 @@ msgstr "Upewnij się, że przeczytałeś i postępowałeś zgodnie z instrukcjam
 #: lib/installer.php:2072
 #, php-format
 msgid "This process will guide you through the steps for upgrading from version '%s'. "
-msgstr "Proces ten poprowadzi Cię przez etapy aktualizacji z wersji '%s'."
+msgstr "Proces ten poprowadzi Cię przez etapy aktualizacji z wersji '%s'. "
 
 #: lib/installer.php:2073
 #, php-format
@@ -18061,7 +18075,7 @@ msgstr "Akceptacja umowy licencyjnej GPL"
 
 #: lib/installer.php:2127
 msgid "Select default theme: "
-msgstr "Wybierz motyw domyślny:"
+msgstr "Wybierz motyw domyślny: "
 
 #: lib/installer.php:2150
 msgid "Pre-installation Checks"
@@ -18567,7 +18581,7 @@ msgstr "Zestawienie serwerów wydaje się być zgodne z UTF8"
 
 #: lib/installer.php:2999
 msgid "Your server collation does NOT appear to be fully UTF8 compliant. "
-msgstr "Zestawienie serwerów NIE wydaje się być w pełni zgodne z UTF8."
+msgstr "Zestawienie serwerów NIE wydaje się być w pełni zgodne z UTF8. "
 
 #: lib/installer.php:3000
 msgid "Under the [mysqld] section, locate the entries named 'character-set-server' and 'collation-server' and set them as follows:"
@@ -18583,11 +18597,14 @@ msgstr "Domyślna kolacja bazy danych wydaje się być zgodna z UTF8"
 
 #: lib/installer.php:3016
 msgid "Your database default collation does NOT appear to be full UTF8 compliant. "
-msgstr "Domyślna kolacja bazy danych NIE wydaje się być w pełni zgodna z UTF8."
+msgstr "Domyślna kolacja bazy danych NIE wydaje się być w pełni zgodna z UTF8. "
 
 #: lib/installer.php:3017
 msgid "Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched.   Please ensure your database is changed to 'utf8mb4_unicode_ci' by running the following: "
-msgstr "Wszystkie tabele utworzone przez wtyczki mogą mieć problemy z tabelami Cacti Core, jeśli kolacja nie jest dopasowana.   Upewnij się, że twoja baza danych została zmieniona na 'utf8mb4_unicode_ci', wykonując następujące czynności:"
+msgstr ""
+"Wszystkie tabele utworzone przez wtyczki mogą mieć problemy z tabelami Cacti "
+"Core, jeśli kolacja nie jest dopasowana.   Upewnij się, że twoja baza danych "
+"została zmieniona na 'utf8mb4_unicode_ci', wykonując następujące czynności: "
 
 #: lib/installer.php:3024
 msgid "Table Setup"
@@ -18620,7 +18637,10 @@ msgstr "Surowy format"
 
 #: lib/installer.php:3077
 msgid "One or more tables are too large to convert during the installation.  You should use the cli/convert_tables.php script to perform the conversion, then refresh this page. For example: "
-msgstr "Jedna lub więcej tabel są zbyt duże, aby można je było przekonwertować podczas instalacji.  Do konwersji należy użyć skryptu cli/convert_tables.php, a następnie odświeżyć tę stronę. Na przykład:"
+msgstr ""
+"Jedna lub więcej tabel są zbyt duże, aby można je było przekonwertować "
+"podczas instalacji.  Do konwersji należy użyć skryptu cli/"
+"convert_tables.php, a następnie odświeżyć tę stronę. Na przykład: "
 
 #: lib/installer.php:3081
 msgid "The following tables should be converted to UTF8 and InnoDB with a Dynamic row format.  Please select the tables that you wish to convert during the installation process."
@@ -19281,12 +19301,12 @@ msgstr "Ping nie został wykonany z powodu ustawienia."
 #: lib/plugins.php:672
 #, php-format
 msgid "'%s' versions '%s' above or in range are required to install '%s'. "
-msgstr "%s Dla %s wymagana jest wersja %s lub wyższa."
+msgstr "%s Dla %s wymagana jest wersja %s lub wyższa. "
 
 #: lib/plugins.php:676
 #, php-format
 msgid "'%s' must first be installed before '%s' is installed. "
-msgstr "%s jest wymagany dla %s i nie jest zainstalowany."
+msgstr "%s jest wymagany dla %s i nie jest zainstalowany. "
 
 #: lib/plugins.php:699
 msgid "Plugin cannot be installed."
@@ -20610,7 +20630,8 @@ msgstr "OSTRZEŻENIE: Napotkano błędy eksportu. Odśwież okno przeglądarki p
 
 #: package.php:121
 msgid "There were errors packaging your Templates.  Errors Follow. "
-msgstr "Wystąpiły błędy podczas pakowania szablonów. Postępuj zgodnie z błędami."
+msgstr ""
+"Wystąpiły błędy podczas pakowania szablonów. Postępuj zgodnie z błędami. "
 
 #: package.php:165
 msgid "Package Templates"
@@ -20908,7 +20929,7 @@ msgstr "Sieroctwo"
 
 #: package_import.php:1245
 msgid "File Differences for: "
-msgstr "Różnice w plikach dla:"
+msgstr "Różnice w plikach dla: "
 
 #: package_import.php:1351
 msgid "Local Package Import File"
@@ -23155,11 +23176,11 @@ msgstr "Nazwa: "
 
 #: support.php:1325
 msgid "Procs: "
-msgstr "1 Proces"
+msgstr "1 Proces "
 
 #: support.php:1332
 msgid "Threads: "
-msgstr "Tematy"
+msgstr "Tematy "
 
 #: support.php:1338
 msgid "Concurrent Processes"
@@ -23356,7 +23377,7 @@ msgstr "Nazwa pliku"
 
 #: templates_import.php:236
 msgid "Not Readable"
-msgstr "Zapisywalny"
+msgstr "Nieczytelny"
 
 #: templates_import.php:253
 msgid "Import Templates [ None selected imports all, Check to import selectively ]"
@@ -23409,7 +23430,7 @@ msgstr "Cofnij publikację"
 #: tree.php:34
 msgctxt "dropdown action"
 msgid "Un-Lock"
-msgstr "Zakmniety"
+msgstr "Odblokuj"
 
 #: tree.php:406
 msgctxt "ordering of tree items"
@@ -23526,9 +23547,9 @@ msgid "Add Root Branch"
 msgstr "Dodaj główny oddział"
 
 #: tree.php:803
-#, fuzzy, php-format
+#, php-format
 msgid "This tree has been locked for Editing on %s by %s."
-msgstr "To drzewo zostało zablokowane do edycji na %1$s przez %2$s."
+msgstr "To drzewo zostało zablokowane do edycji na %s przez %s."
 
 #: tree.php:809
 msgid "To edit the tree, you must first unlock it and then lock it as yourself"
@@ -24552,7 +24573,7 @@ msgstr "Wyłączyć grupę użytkowników"
 
 #: user_group_admin.php:649
 msgid "Login Name"
-msgstr "Nazwa uzytkownika "
+msgstr "Nazwa uzytkownika"
 
 #: user_group_admin.php:652
 msgid "Membership"
@@ -24665,7 +24686,7 @@ msgstr "Basic Auth Mapfile"
 
 #: user_log.php:342
 msgid "User Login History"
-msgstr "Historia logowania użytkownika "
+msgstr "Historia logowania użytkownika"
 
 #: utilities.php:48
 msgid "The Poller Cache Rebuild Operation has been started in background"
@@ -24690,7 +24711,7 @@ msgstr ""
 
 #: utilities.php:194
 msgid "Cacti Log Cleared"
-msgstr "Kaktusy oczyszczone z kłód"
+msgstr "Dziennik Cacti został wyczyszczony"
 
 #: utilities.php:196
 msgid "Error: Unable to clear log, no write permissions."
