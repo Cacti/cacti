@@ -229,3 +229,41 @@ test('the hotkey dispatcher matches buttons by value and ignores events it canno
 	press({altKey: true, shiftKey: true, key: 'C', code: 'KeyC'});
 	assert.deepEqual(clicked, ['color', 'panels'], 'editable content keeps its keys');
 });
+
+test('menu links close the open box through the box manager and leave modified clicks to the browser', () => {
+	let handler;
+	const loaded = [];
+	let closed = 0;
+	const anchors = {not: () => anchors, rebind: (type, callback) => { handler = callback; return anchors; }};
+	const link = {href: 'host.php'};
+	const context = themeFunctions(['updateAjaxAnchors'], {
+		$: (selector) => {
+			if (selector === link) {
+				return {attr: () => link.href, hasClass: () => false};
+			}
+			return typeof selector === 'string' && selector.startsWith('a.pic') ? anchors : {removeClass: () => {}};
+		},
+		mdw: {obj: {ctrl: {nav: {closeAllBoxes: () => closed++}}}},
+		shouldCaptureClick: (event) => !(event.shiftKey || event.altKey || event.ctrlKey || event.metaKey),
+		basename: (href) => href,
+		loadUrl: (options) => loaded.push(options.url)
+	});
+
+	context.updateAjaxAnchors();
+
+	let prevented = false;
+	handler.call(link, {ctrlKey: true, preventDefault: () => { prevented = true; }, stopPropagation: () => {}});
+	assert.equal(prevented, false, 'a ctrl-click opens a new tab');
+	assert.deepEqual(loaded, []);
+
+	handler.call(link, {preventDefault: () => {}, stopPropagation: () => {}});
+	assert.deepEqual(loaded, ['host.php']);
+	assert.equal(closed, 1, 'the box is closed, not only hidden');
+});
+
+test('the console button closes boxes through the box manager', () => {
+	const setup = extract(theme, 'function setupTheme(');
+
+	assert.doesNotMatch(setup, /\[class\^="cactiConsoleNavigation"\]/);
+	assert.match(setup, /\$\("#navBackdrop"\)\.on\('click', function\(\) \{\s*\/\*[^*]*\*\/\s*if \(mdw\.obj\.ctrl\.nav\) \{\s*mdw\.obj\.ctrl\.nav\.closeAllBoxes\(\);/);
+});

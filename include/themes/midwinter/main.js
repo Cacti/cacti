@@ -286,6 +286,11 @@ function hideConsoleNavigation() {
 
 function updateAjaxAnchors() {
 	$('a.pic, a.linkOverDark, a.linkEditMain, a.console, a.hyperLink, a.tab').not('[href^="http"], [href^="https"], [href^="#"], [href^="mailto"], [target="_blank"]').rebind('click', function(event) {
+		/* leave modified clicks, such as open in a new tab, to the browser */
+		if (!shouldCaptureClick(event)) {
+			return;
+		}
+
 		event.preventDefault();
 		event.stopPropagation();
 
@@ -306,8 +311,10 @@ function updateAjaxAnchors() {
 			pageName = basename(href);
 		}
 
-		/* close the console navigation afterward */
-		$('#mdw-SideBarContainer [class^="mdw-ConsoleNavigationBox"]').removeClass('visible');
+		/* close the console navigation afterward, keeping box state and buttons in step */
+		if (mdw.obj.ctrl.nav) {
+			mdw.obj.ctrl.nav.closeAllBoxes();
+		}
 
 		loadUrl({url:href});
 		return false;
@@ -461,7 +468,9 @@ function setupTheme() {
 			if (cactiConsoleAllowed) {
 				$("#navBackdrop").on('click', function() {
 					/* hide open menu boxes first and remove menu selection */
-					$('[class^="cactiConsoleNavigation"]').removeClass('visible');
+					if (mdw.obj.ctrl.nav) {
+						mdw.obj.ctrl.nav.closeAllBoxes();
+					}
 					loadUrl({url:urlPath+'index.php'});
 				});
 			} else {
