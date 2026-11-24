@@ -66,14 +66,21 @@ $_POST    = $scenario['post'] ?? array();
 $_FILES   = $scenario['files'] ?? array();
 $_REQUEST = ($scenario['request'] ?? array()) + $_POST;
 
-/* the hash and version code tables, read from the checked-in include/global_arrays.php; both are plain literals */
+/* the hash and version code tables, read from the checked-in include/global_arrays.php; both are flat lists of quoted pairs */
+$tables = array();
+
 foreach (array('hash_type_codes', 'cacti_version_codes') as $name) {
-	if (!preg_match('/^\$' . $name . ' = (array\(.*?\));$/ms', file_get_contents($root . '/include/global_arrays.php'), $match)) {
+	if (!preg_match('/^\$' . $name . ' = array\((.*?)\);$/ms', file_get_contents($root . '/include/global_arrays.php'), $match)) {
 		throw new \RuntimeException('Cannot locate $' . $name);
 	}
 
-	$$name = eval('return ' . $match[1] . ';');
+	preg_match_all("/'([^']+)'\\s*=>\\s*'([^']*)'/", $match[1], $pairs);
+
+	$tables[$name] = array_combine($pairs[1], $pairs[2]);
 }
+
+$hash_type_codes     = $tables['hash_type_codes'];
+$cacti_version_codes = $tables['cacti_version_codes'];
 
 $hash_type_names = array_combine(array_keys($hash_type_codes), array_keys($hash_type_codes));
 
@@ -109,11 +116,19 @@ $fakes = array(
 	'get_hash_version', 'get_hash_vdef', 'get_hash_data_query', 'get_hash_data_input', 'get_hash_graph_template', 'get_hash_data_template',
 );
 
+$fake_source = '<?php namespace ' . __NAMESPACE__ . ';' . PHP_EOL;
+
 foreach ($fakes as $fake) {
 	if (!function_exists(__NAMESPACE__ . '\\' . $fake)) {
-		eval('namespace ' . __NAMESPACE__ . '; function ' . $fake . '(...$arguments) { return fake(\'' . $fake . '\', $arguments); }');
+		$fake_source .= 'function ' . $fake . '(...$arguments) { return fake(\'' . $fake . '\', $arguments); }' . PHP_EOL;
 	}
 }
+
+/* the fake names are the fixed list above; the file is written and removed by this process only */
+$fake_file = tempnam(sys_get_temp_dir(), 'ie');
+file_put_contents($fake_file, $fake_source);
+require $fake_file;
+unlink($fake_file);
 
 function fake($name, $arguments) {
 	$GLOBALS['calls'][] = array($name, $arguments);
