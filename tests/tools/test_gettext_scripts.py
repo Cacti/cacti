@@ -102,7 +102,7 @@ class GettextScriptsTest(unittest.TestCase):
         )
 
     def test_update_pot_reads_nested_core_source_and_skips_other_trees(self):
-        for folder in ['lib/Auth', 'plugins/fixture', 'tests/Unit', 'include/vendor/package', '.hidden']:
+        for folder in ['lib/Auth', 'plugins/fixture', 'tests/Unit', 'include/vendor/package', '.hidden', 'lib/.cache/deep']:
             (self.root / folder).mkdir(parents=True)
             (self.root / folder / 'strings.php').write_text("<?php __('From " + folder + "');\n")
         result = self.run_script('update-pot.sh')
@@ -110,7 +110,7 @@ class GettextScriptsTest(unittest.TestCase):
         pot = (self.locales / 'po/cacti.pot').read_text()
         self.assertIn('msgid "From lib/Auth"', pot)
         self.assertIn('#: lib/Auth/strings.php\n', pot)
-        for folder in ['plugins/fixture', 'tests/Unit', 'include/vendor/package', '.hidden']:
+        for folder in ['plugins/fixture', 'tests/Unit', 'include/vendor/package', '.hidden', 'lib/.cache/deep']:
             self.assertNotIn('From ' + folder, pot)
         self.assertIn('Cacti Developers <developers@cacti.net>', pot)
         self.assertIn('charset=UTF-8', pot)

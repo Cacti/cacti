@@ -77,10 +77,12 @@ trap 'exit 1' INT TERM
 
 # Core source only: plugins carry their own templates, and the vendored
 # libraries and the test fixtures are not part of the translated interface.
+# Dot files and directories are skipped at any depth, so caches and tool
+# directories such as lib/.cache are not read.
 # The file list is sorted so the result does not depend on directory order.
 # Locations name the file without a line number so that moving code does not
 # rewrite the template.
-find . \( -path './.*' -o -path ./plugins -o -path ./include/vendor \
+find . \( -name '.?*' -o -path ./plugins -o -path ./include/vendor \
 	-o -path ./tests -o -path ./node_modules \) -prune -o -name '*.php' -print | LC_ALL=C sort | "$XGETTEXT_BIN" --add-location=file --no-wrap --copyright-holder="The Cacti Group" --package-name="Cacti" --package-version="$(cat include/cacti_version)" --msgid-bugs-address="developers@cacti.net" -F -k__gettext -k__ -k__n:1,2 -k__x:1c,2 -k__xn:1c,2,3 -k__esc -k__esc_n:1,2 -k__esc_x:1c,2 -k__esc_xn:1c,2,3 -k__date -o "$POT_TMP/extracted.pot" --files-from=- || exit 1
 
 # xgettext stamps the current time into POT-Creation-Date on every run.  Keep
