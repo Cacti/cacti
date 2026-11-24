@@ -125,17 +125,16 @@ function form_save() {
 			header('Location: color.php?header=false');
 		}
 	} elseif (isset_request_var('save_component_import')) {
-		if (isset($_FILES['import_file']['tmp_name'])) {
-			if (($_FILES['import_file']['tmp_name'] != 'none') && ($_FILES['import_file']['tmp_name'] != '')) {
-				$csv_data = file($_FILES['import_file']['tmp_name']);
-				$debug_data = color_import_processor($csv_data);
+		/* with no file chosen, PHP still sets tmp_name, to an empty string */
+		if (isset($_FILES['import_file']['tmp_name']) && $_FILES['import_file']['tmp_name'] != 'none' && $_FILES['import_file']['tmp_name'] != '') {
+			$csv_data = file($_FILES['import_file']['tmp_name']);
+			$debug_data = color_import_processor($csv_data);
 
-				if (cacti_sizeof($debug_data)) {
-					$_SESSION['import_debug_info'] = $debug_data;
-				}
-
-				header('Location: color.php?action=import');
+			if (cacti_sizeof($debug_data)) {
+				$_SESSION['import_debug_info'] = $debug_data;
 			}
+
+			header('Location: color.php?action=import');
 		} else {
 			raise_message(35);
 
@@ -198,6 +197,11 @@ function form_actions() {
 			/* ==================================================== */
 
 			$color = db_fetch_row_prepared('SELECT name, hex FROM colors WHERE id = ?', array($matches[1]));
+
+			/* deleted since the list was shown */
+			if (!cacti_sizeof($color)) {
+				continue;
+			}
 
 			$color_list .= '<li>' . ($color['name'] != '' ? html_escape($color['name']): __('Unnamed Color')) . ' (<span style="background-color:#' . html_escape($color['hex']) . '">' . html_escape($color['hex']) . '</span>)</li>';
 			$color_array[$i] = $matches[1];
@@ -451,6 +455,15 @@ function color_edit() {
 
 	if (!isempty_request_var('id')) {
 		$color = db_fetch_row_prepared('SELECT * FROM colors WHERE id = ?', array(get_request_var('id')));
+
+		if (!cacti_sizeof($color)) {
+			raise_message('color_not_found', __('Color not found.'), MESSAGE_LEVEL_ERROR);
+
+			cacti_header('color.php');
+
+			exit;
+		}
+
 		$header_label = __esc('Colors [edit: %s]', $color['hex']);
 	} else {
 		$header_label = __('Colors [new]');

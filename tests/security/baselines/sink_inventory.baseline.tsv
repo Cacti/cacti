@@ -688,7 +688,6 @@ header_redirect	./clog_user.php:40			header('Location: logout.php?action=remote'
 header_redirect	./clog_user.php:42			header('Location: permission_denied.php');
 header_redirect	./color.php:115				header('Location: color.php?header=false&action=edit&id=' . (empty($color_id) ? get_nfilter_request_var('id') : $color_id));
 header_redirect	./color.php:117				header('Location: color.php?header=false');
-header_redirect	./color.php:129					header('Location: color.php?action=import');
 header_redirect	./color.php:134				header('Location: color.php?action=import');
 header_redirect	./color.php:168			header('Location: color.php?header=false');
 header_redirect	./color.php:211			header('Location: color.php?header=false');

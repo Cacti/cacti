@@ -704,6 +704,11 @@ function duplicate_color_template($_color_template_id, $color_template_title) {
 		WHERE color_template_id = ?',
 		array($_color_template_id));
 
+	/* deleted since the list was shown */
+	if (!cacti_sizeof($color_template)) {
+		return;
+	}
+
 	/* fetch data from table color_template_items */
 	$color_template_items = db_fetch_assoc_prepared('SELECT *
 		FROM color_template_items

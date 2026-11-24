@@ -391,7 +391,17 @@ function aggregate_color_item_edit() {
 			FROM color_template_items
 			WHERE color_template_item_id = ?',
 			array(get_request_var('color_template_item_id')));
+	}
 
+	if (!cacti_sizeof($template) || (isset($template_item) && !cacti_sizeof($template_item))) {
+		raise_message('color_item_not_found', __('Color Template or Item not found.'), MESSAGE_LEVEL_ERROR);
+
+		cacti_header('color_templates.php');
+
+		exit;
+	}
+
+	if (isset($template_item)) {
 		$header_label = __esc('Color Template Items [edit Report Item: %s]', $template['name']);
 	} else {
 		$template_item = array();
