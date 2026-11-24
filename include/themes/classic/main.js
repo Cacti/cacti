@@ -54,10 +54,10 @@ function get_height() {
 	// measure the content, not the height set by the previous call, so the panes can shrink again
 	$('#navigation, .cactiConsoleNavigationArea').css('height', '');
 
-	var nsh  = parseInt($('#navigation').prop('scrollHeight'));
-	var nrsh = parseInt($('#navigation_right').prop('scrollHeight'));
-	var nh   = parseInt($('#navigation').height());
-	var nrh  = parseInt($('#navigation_right').height());
+	var nsh  = Number.parseInt($('#navigation').prop('scrollHeight'), 10);
+	var nrsh = Number.parseInt($('#navigation_right').prop('scrollHeight'), 10);
+	var nh   = Number.parseInt($('#navigation').height(), 10);
+	var nrh  = Number.parseInt($('#navigation_right').height(), 10);
 	var wht  = $(window).height();
 	return Math.max(nsh, nrsh, nh, nrh, wht);
 }

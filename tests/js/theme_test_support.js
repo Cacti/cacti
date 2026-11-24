@@ -10,6 +10,9 @@ const vm = require('node:vm');
 
 const root = path.join(__dirname, '..', '..');
 
+// The loader only evaluates the theme scripts shipped in include/themes.
+const THEMES = Object.freeze(['classic', 'dark', 'deepness', 'midwinter', 'modern', 'paper-plane', 'paw', 'sunrise']);
+
 const GETTERS = new Set(['attr', 'data', 'prop', 'css']);
 const READERS = new Set(['val', 'text', 'html', 'width', 'height', 'scrollLeft', 'scrollTop', 'outerHeight', 'outerWidth']);
 const EVENTS = new Set(['on', 'click', 'change', 'scroll', 'resize', 'dblclick', 'hover', 'mouseenter', 'mouseleave']);
@@ -107,7 +110,13 @@ function placeholder(name) {
  * Assignments to undeclared names land in `globals`, so a test can see what leaked.
  */
 function loadTheme(theme, globals = {}) {
-	const source = fs.readFileSync(path.join(root, 'include', 'themes', theme, 'main.js'), 'utf8');
+	const known = THEMES.find((entry) => entry === theme);
+
+	if (known === undefined) {
+		throw new Error('unknown theme: ' + theme);
+	}
+
+	const source = fs.readFileSync(path.join(root, 'include', 'themes', known, 'main.js'), 'utf8');
 	const context = vm.createContext(new Proxy(globals, {
 		has: () => true,
 		get(target, name) {
