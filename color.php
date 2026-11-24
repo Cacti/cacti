@@ -93,16 +93,19 @@ function form_save() {
 
 		$save['id']        = get_nfilter_request_var('id');
 
-		if (get_nfilter_request_var('read_only') == '') {
+		/* a named color is read only; that comes from the stored row, never from the form */
+		$read_only = db_fetch_cell_prepared('SELECT read_only
+			FROM colors
+			WHERE id = ?',
+			array($save['id'])) == 'on';
+
+		if (!$read_only) {
 			$save['name']      = get_filter_request_var('name', FILTER_SANITIZE_SPECIAL_CHARS);
 			$save['hex']       = form_input_validate(get_nfilter_request_var('hex'),  'hex',  '^[a-fA-F0-9]{6}\z' , false, 3);
-		} else {
-			$save['name']      = get_filter_request_var('hidden_name', FILTER_SANITIZE_SPECIAL_CHARS);
-			$save['read_only'] = 'on';
 		}
 
 		if (!is_error_message()) {
-			$color_id = sql_save($save, 'colors');
+			$color_id = $read_only ? $save['id'] : sql_save($save, 'colors');
 
 			if ($color_id) {
 				raise_message(1);
@@ -161,7 +164,16 @@ function form_actions() {
 
 		if ($selected_items != false) {
 			if (get_request_var('drp_action') == '1') { // delete
-				db_execute('DELETE FROM colors WHERE ' . array_to_sql_or($selected_items, 'id'));
+				/* named colors and colors used by a graph item or a color template are kept */
+				db_execute('DELETE FROM colors
+					WHERE ' . array_to_sql_or($selected_items, 'id') . "
+					AND COALESCE(read_only, '') != 'on'
+					AND NOT EXISTS (SELECT 1 FROM graph_templates_item AS gti WHERE gti.color_id = colors.id)
+					AND NOT EXISTS (SELECT 1 FROM color_template_items AS cti WHERE cti.color_id = colors.id)");
+
+				if (db_affected_rows() < cacti_sizeof($selected_items)) {
+					raise_message('color_in_use', __('Named Colors and Colors in use were not deleted.'), MESSAGE_LEVEL_WARN);
+				}
 			}
 		}
 
@@ -303,7 +315,15 @@ function color_import_processor(&$colors) {
 					}
 
 					if (isset_request_var('allow_update')) {
-						if (db_execute_prepared('INSERT INTO colors
+						/* a named color keeps its name */
+						$read_only = db_fetch_cell_prepared('SELECT read_only
+							FROM colors
+							WHERE hex = ?',
+							[$hex]);
+
+						if ($read_only == 'on') {
+							array_push($return_array, "<strong>UPDATE SKIPPED, NAMED COLOR:</strong> $save_value");
+						} elseif (db_execute_prepared('INSERT INTO colors
 							(hex, name)
 							VALUES (?, ?)
 							ON DUPLICATE KEY UPDATE
@@ -669,7 +689,8 @@ function color() {
 
 	$colors = db_fetch_assoc("SELECT *,
         SUM(CASE WHEN local_graph_id>0 THEN 1 ELSE 0 END) AS graphs,
-        SUM(CASE WHEN local_graph_id=0 THEN 1 ELSE 0 END) AS templates
+        SUM(CASE WHEN local_graph_id=0 THEN 1 ELSE 0 END) AS templates,
+        (SELECT COUNT(*) FROM color_template_items AS cti WHERE cti.color_id = rs.id) AS color_templates
         FROM (
 			SELECT c.*, local_graph_id
 			FROM colors AS c
@@ -699,7 +720,7 @@ function color() {
 		'name'      => array('display' => __('Color Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Color definition.')),
 		'read_only' => array('display' => __('Named Color'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('Is this color a named color which are read only.')),
 		'nosort1'   => array('display' => __('Color'), 'align' => 'center', 'sort' => 'DESC', 'tip' => __('The Color as shown on the screen.')),
-		'nosort'    => array('display' => __('Deletable'), 'align' => 'right', 'sort' => '', 'tip' => __('Colors in use cannot be Deleted.  In use is defined as being referenced either by a Graph or a Graph Template.')),
+		'nosort'    => array('display' => __('Deletable'), 'align' => 'right', 'sort' => '', 'tip' => __('Named Colors and Colors in use cannot be Deleted.  In use is defined as being referenced by a Graph, a Graph Template or a Color Template.')),
 		'graphs'    => array('display' => __('Graphs Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graph using this Color.')),
 		'templates' => array('display' => __('Templates Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graph Templates using this Color.'))
 	);
@@ -709,7 +730,7 @@ function color() {
 	$i = 0;
 	if (cacti_sizeof($colors)) {
 		foreach ($colors as $color) {
-			if ($color['graphs'] == 0 && $color['templates'] == 0) {
+			if ($color['graphs'] == 0 && $color['templates'] == 0 && $color['color_templates'] == 0 && $color['read_only'] != 'on') {
 				$disabled = false;
 			} else {
 				$disabled = true;

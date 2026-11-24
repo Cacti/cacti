@@ -15,6 +15,7 @@
             <file>Unit/Core/Rrd/RrdGraphItemColorTest.php</file>
             <file>Unit/Ui/Colors/ColorSaveTest.php</file>
             <file>Unit/Ui/Colors/ColorHexOutputTest.php</file>
+            <file>Unit/Ui/Colors/ColorInUseTest.php</file>
             <file>Unit/Core/MessageCallersTest.php</file>
             <file>Unit/Security/Xss/RaiseMessageNameEscapeTest.php</file>
             <file>Unit/Core/Rrd/PollerOutputRetentionTest.php</file>

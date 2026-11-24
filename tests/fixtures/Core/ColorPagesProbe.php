@@ -73,7 +73,6 @@ $helpers = array(
 	array('lib/html.php', 'html_escape'),
 	array('lib/html_utility.php', 'form_selectable_cell'),
 	array('lib/html_utility.php', 'form_selectable_ecell'),
-	array('lib/database.php', 'array_to_sql_or'),
 );
 
 foreach (array_merge($helpers, $scenario['slice']) as $slice) {
@@ -219,6 +218,9 @@ function db_execute($sql) {
 }
 
 function db_execute_prepared($sql, $params = array()) {
+	/* the MySQL upsert, in the SQLite form */
+	$sql = preg_replace(array('/ON DUPLICATE KEY UPDATE/', '/VALUES\((\w+)\)/'), array('ON CONFLICT DO UPDATE SET', 'excluded.$1'), $sql);
+
 	try {
 		$statement = db()->prepare($sql);
 		$statement->execute($params);
@@ -264,6 +266,17 @@ function db_fetch_cell($sql) {
 
 function db_qstr($value) {
 	return db()->quote((string) $value);
+}
+
+/* lib/database.php names the global db_qstr() as a callback, so its body is repeated here */
+function array_to_sql_or($array, $sql_column) {
+	if (end($array) === null) {
+		array_pop($array);
+	}
+
+	if (cacti_sizeof($array)) {
+		return '(' . $sql_column . ' IN(' . implode(',', array_map(__NAMESPACE__ . '\\db_qstr', $array)) . '))';
+	}
 }
 
 function db_fetch_insert_id() {
