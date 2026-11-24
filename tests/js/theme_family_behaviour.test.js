@@ -182,9 +182,11 @@ test('midwinter: the input styling pass runs once', () => {
 	assert.equal(chainsFor($, 'input#filter, input#rfilter').length, 1);
 });
 
-test('sunrise: the scroll handler is namespaced and updates at most once per frame', () => {
-	const frames = [];
-	const {context, $} = themeContext('sunrise', {requestAnimationFrame: (fn) => frames.push(fn)});
+test('sunrise: the namespaced scroll handler updates the indicator on every scroll in both directions', () => {
+	const position = {scrollLeft: 0, scrollTop: 0};
+	const {context, $} = themeContext('sunrise', {jquery: {
+		value: (chain, method) => (chain.target === '#navigation_right' && method in position ? position[method] : undefined)
+	}});
 
 	context.themeReady();
 
@@ -193,13 +195,18 @@ test('sunrise: the scroll handler is namespaced and updates at most once per fra
 	assert.deepEqual(chains[0].calls.map((entry) => entry.method + ':' + entry.args[0]), ['off:scroll.sunrise', 'on:scroll.sunrise']);
 
 	const handler = $.handlers.find((entry) => entry.chain === chains[0]).fn;
-	handler({});
-	handler({});
-	assert.equal(frames.length, 1);
+	const colors = [];
 
-	frames[0]();
-	handler({});
-	assert.equal(frames.length, 2);
+	for (const [x, y] of [[0, 0], [10, 0], [0, 10], [10, 10], [0, 0]]) {
+		position.scrollLeft = x;
+		position.scrollTop = y;
+		handler({});
+
+		const css = chainsFor($, '.bottom_scroll_up').flatMap((chain) => chain.calls).filter((entry) => entry.method === 'css');
+		colors.push(css[css.length - 1].args[0].color);
+	}
+
+	assert.deepEqual(colors, ['', '#93CEFF', '#93CEFF', '#93CEFF', '']);
 });
 
 test('classic: only the theme resize handler is replaced and it is debounced', () => {

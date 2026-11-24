@@ -33,22 +33,12 @@ function themeReady() {
 	// Setup the navigation menu
 	setMenuVisibility();
 
-	var scrollPending = false;
-
-	// one update per frame, and leave scroll handlers of other scripts on the content pane alone
+	// browsers already dispatch scroll at most once per frame; the namespace leaves
+	// scroll handlers of other scripts on the content pane alone
 	$('#navigation_right').off('scroll.sunrise').on('scroll.sunrise', function (event) {
-		if (scrollPending) {
-			return;
-		}
-
-		scrollPending = true;
-
-		window.requestAnimationFrame(function() {
-			var scroll_position_x = $('#navigation_right').scrollLeft();
-			var scroll_position_y = $('#navigation_right').scrollTop();
-			$('.bottom_scroll_up').css({'color': ((scroll_position_x == 0 && scroll_position_y == 0) ? '' : '#93CEFF') });
-			scrollPending = false;
-		});
+		var scroll_position_x = $('#navigation_right').scrollLeft();
+		var scroll_position_y = $('#navigation_right').scrollTop();
+		$('.bottom_scroll_up').css({'color': ((scroll_position_x == 0 && scroll_position_y == 0) ? '' : '#93CEFF') });
 	});
 
 	// Wait until filter inputs have been made visible.
