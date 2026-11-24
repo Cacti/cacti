@@ -341,6 +341,8 @@ window.CactiCards = window.CactiCards || (function() {
 				/* fire-and-forget: the host surfaces adapter errors */
 			}).then(function() {
 				resizeSettled(grid, adapter, id);
+			}).catch(function() {
+				/* fire-and-forget: the host surfaces adapter errors */
 			});
 		} else {
 			saveLayout(grid, adapter);
