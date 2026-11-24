@@ -45,6 +45,27 @@ test('the CSV import with no file chosen returns to the import page with a messa
 		->and(array_column($result['raised'], 'id'))->toBe(array(35));
 });
 
+test('the CSV import with a file imports it and shows the results', function () {
+	$file = tempnam(sys_get_temp_dir(), 'cacti-colors-');
+	file_put_contents($file, "name,hex\nSky,87CEEB\n");
+
+	try {
+		$result = run(array(
+			'slice'   => array(array('color.php', 'form_save'), array('color.php', 'color_import_processor')),
+			'call'    => 'form_save',
+			'request' => array('save_component_import' => '1'),
+			'files'   => array('import_file' => array('name' => 'colors.csv', 'tmp_name' => $file, 'error' => 0)),
+		));
+	} finally {
+		unlink($file);
+	}
+
+	expect($result['location'])->toBe('Location: color.php?action=import')
+		->and($result['raised'])->toBe(array())
+		->and($result['session']['import_debug_info'][1])->toBe('INSERT SUCCEEDED: (87CEEB,Sky)')
+		->and(array_column($result['tables']['colors'], 'name', 'hex'))->toBe(array('0000FF' => 'Blue', '87CEEB' => 'Sky'));
+});
+
 test('a delete confirmation for a color that no longer exists returns to the list', function () {
 	$result = run(array(
 		'slice'   => array(array('color.php', 'form_actions')),
