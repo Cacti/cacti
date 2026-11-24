@@ -52,6 +52,10 @@ function htmle(mixed $text) : string {
 	return htmlspecialchars((string) $text, ENT_QUOTES, 'UTF-8');
 }
 
+function html_escape(mixed $text) : string {
+	return htmle($text);
+}
+
 function html_escape_url(string $url) : string {
 	return htmle($url);
 }

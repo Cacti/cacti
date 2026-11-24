@@ -91,6 +91,10 @@ function db_fetch_assoc(string $sql) : mixed {
 	return fake($sql, []);
 }
 
+// The handlers may require a POST with a valid token; the probe calls them directly.
+function csrf_require_post() : void {
+}
+
 function db_qstr(mixed $value) : string {
 	return "'" . addslashes((string) $value) . "'";
 }
