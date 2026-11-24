@@ -643,12 +643,17 @@ function host_export() {
 	header('Content-type: application/excel');
 	header('Content-Disposition: attachment; filename=cacti-devices-' . time() . '.csv');
 
+	/* the SNMP credentials of the devices are not part of the export */
+	$credentials = array('snmp_community' => true, 'snmp_password' => true, 'snmp_priv_passphrase' => true);
+
 	if (cacti_sizeof($hosts)) {
-		$columns = array_keys($hosts[0]);
+		$columns = array_keys(array_diff_key($hosts[0], $credentials));
 
 		fputcsv($stdout, $columns);
 
 		foreach($hosts as $h) {
+			$h = array_diff_key($h, $credentials);
+
 			foreach(array_keys($h) as $hc) {
 				if ($h[$hc] != '' && (strpos($h[$hc], "\n") !== false || strpos($h[$hc], "\r") !== false)) {
 					$h[$hc] = str_replace(array("\n", "\r"), ' ', $h[$hc]);
