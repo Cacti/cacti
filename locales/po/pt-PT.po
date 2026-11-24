@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2022-03-14 20:57-0400\n"
-"Last-Translator: Luís Silva <luis.m.ribeiro.silva@tecnico.ulisboa.pt>\n"
-"Language-Team: Portuguese (Portugal) <http://translate.cacti.net/projects/cacti/core-v1-2-x/pt_PT/>\n"
-"Language: pt_PT\n"
+"PO-Revision-Date: 2026-11-24 09:13+0000\n"
+"Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
+"Language-Team: Portuguese (Portugal) <https://translate.cacti.net/projects/"
+"cacti/core/pt_PT/>\n"
+"Language: pt-PT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Weblate 5.11.4\n"
 
 #: about.php:29 include/global_arrays.php:2781 lib/html.php:3046
 #, fuzzy
@@ -1365,7 +1366,7 @@ msgstr "Eliminar Dispositivo(s)"
 #: lib/api_automation.php:76 lib/api_automation.php:1176
 #: lib/html_utility.php:1134 pollers.php:46
 msgid "Down"
-msgstr "Widget movido para baixo"
+msgstr "Inativo"
 
 #: automation_devices.php:55 automation_devices.php:375
 #: automation_devices.php:519 automation_devices.php:529
@@ -1373,7 +1374,7 @@ msgstr "Widget movido para baixo"
 #: lib/api_automation.php:75 lib/api_automation.php:1175
 #: lib/html_utility.php:1142
 msgid "Up"
-msgstr "Procure"
+msgstr "Ativo"
 
 #: automation_devices.php:108
 #, fuzzy
@@ -2873,9 +2874,9 @@ msgstr "Atualizar"
 #: support.php:274 support.php:275 support.php:276 support.php:277
 #: support.php:278 support.php:585 support.php:586 support.php:587
 #: support.php:588 support.php:589 support.php:590
-#, fuzzy, php-format
+#, php-format
 msgid "%d Seconds"
-msgstr "% d segundos"
+msgstr "%d segundos"
 
 #: automation_networks.php:1560
 #, fuzzy
@@ -4268,9 +4269,11 @@ msgid "Color Template [new]"
 msgstr "Modelo de cor [novo]"
 
 #: color_templates.php:762
-#, fuzzy, php-format
+#, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
-msgstr "O modelo de cor '%s' teve% d modelos agregados enviados e% d agregados não modelados enviados"
+msgstr ""
+"O modelo de cor '%s' teve%d modelos agregados enviados e%d agregados não "
+"modelados enviados"
 
 #: color_templates.php:764
 #, fuzzy, php-format
@@ -6236,9 +6239,8 @@ msgid "%d seconds left."
 msgstr "Faltam poucos segundos."
 
 #: graph_realtime.php:456
-#, fuzzy
 msgid " seconds left."
-msgstr "segundos para o fim."
+msgstr " segundos para o fim."
 
 #: graph_templates.php:39
 msgid "Change Settings"
@@ -6748,9 +6750,8 @@ msgid "Create Aggregate from Template"
 msgstr "Criar agregado a partir de modelo"
 
 #: graphs.php:234 graphs.php:249
-#, fuzzy
 msgid "No Device - "
-msgstr "Dispositivo"
+msgstr "Dispositivo "
 
 #: graphs.php:339
 #, fuzzy, php-format
@@ -12687,19 +12688,19 @@ msgstr "O Padrão de Substituição Forte para uso como um Cabeçalho de Árvore
 
 #: include/global_languages.php:971
 msgid " T"
-msgstr "T"
+msgstr " T"
 
 #: include/global_languages.php:973
 msgid " G"
-msgstr "G"
+msgstr " G"
 
 #: include/global_languages.php:975
 msgid " M"
-msgstr "M"
+msgstr " M"
 
 #: include/global_languages.php:977
 msgid " K"
-msgstr "K"
+msgstr " K"
 
 #: include/global_settings.php:40
 msgid "Paths"
@@ -12724,7 +12725,7 @@ msgstr "Visual"
 
 #: include/global_settings.php:46 lib/functions.php:5868 lib/functions.php:5873
 msgid "Authentication"
-msgstr "Autenticação do Assunto do E-mail"
+msgstr "Autenticação"
 
 #: include/global_settings.php:47
 msgid "Performance"
@@ -14275,9 +14276,12 @@ msgid "The poller type to use.  This setting will take affect at next polling in
 msgstr "O tipo de polidor a utilizar.  Esta definição terá efeito no próximo intervalo de polling."
 
 #: include/global_settings.php:1411
-#, fuzzy
 msgid "The polling interval in use.  This setting will affect how often RRDfiles are checked and updated.  <strong><u>NOTE: If you change this value, you must re-populate the poller cache.  Failure to do so, may result in lost data.</u></strong>"
-msgstr "O intervalo de polling em uso.  Esta configuração afetará a frequência com que os arquivos RRD são verificados e atualizados.  <Strong><u>NOTE: Se você alterar este valor, você deve repovoar o cache do poller.  A falha em fazer isso pode resultar em perda de dados.</u><</strong>"
+msgstr ""
+"O intervalo de polling em uso.  Esta configuração afetará a frequência com "
+"que os arquivos RRD são verificados e atualizados.  <strong><u>NOTE: Se você "
+"alterar este valor, você deve repovoar o cache do poller.  A falha em fazer "
+"isso pode resultar em perda de dados.</u></strong>"
 
 #: include/global_settings.php:1417
 #, fuzzy
@@ -16419,9 +16423,11 @@ msgid "Initializing"
 msgstr "A inicializar"
 
 #: install/install.php:117
-#, fuzzy, php-format
+#, php-format
 msgid "Please wait while the installation system for Cacti Version %s initializes. You must have JavaScript enabled for this to work."
-msgstr "Por favor aguarde enquanto o sistema de instalação do Cacti Version %s inicializa.  Você deve ter o JavaScript habilitado para que isso funcione."
+msgstr ""
+"Por favor aguarde enquanto o sistema de instalação do Cacti Version %s "
+"inicializa. Você deve ter o JavaScript habilitado para que isso funcione."
 
 #: install/install.php:121
 #, fuzzy
@@ -16922,14 +16928,12 @@ msgid "Device+Template:(%s%s)"
 msgstr "Modelo de dispositivo:"
 
 #: lib/auth.php:2488 lib/auth.php:2495 lib/auth.php:2504
-#, fuzzy
 msgid "Restricted By: "
-msgstr "Restrito"
+msgstr "Restrito "
 
 #: lib/auth.php:2492
-#, fuzzy
 msgid "Granted By: "
-msgstr "Concedido por:"
+msgstr "Concedido por: "
 
 #: lib/auth.php:2499
 msgid "Granted"
@@ -17231,9 +17235,8 @@ msgid "Device Up/Down"
 msgstr "Dispositivos que utilizam"
 
 #: lib/clog_webapi.php:592
-#, fuzzy
 msgid "Recaches"
-msgstr "Motos no estoque"
+msgstr "Recarregamentos de cache"
 
 #: lib/clog_webapi.php:593
 #, fuzzy
@@ -17623,9 +17626,11 @@ msgid "Executing SNMP get for %s oids (%s)"
 msgstr "Executando SNMP get para %s oids (%s)"
 
 #: lib/data_query.php:1167 lib/data_query.php:1260 lib/data_query.php:1269
-#, fuzzy, php-format
+#, php-format
 msgid "Sort field returned no data for OID[%s], skipping."
-msgstr "Campo de ordenação devolvido, não dados.  Não é possível continuar o Re-Index para OID[%s]"
+msgstr ""
+"Campo de ordenação devolvido, não dados. Não é possível continuar o Re-Index "
+"para OID[%s]"
 
 #: lib/data_query.php:1171
 #, fuzzy, php-format
@@ -17748,9 +17753,8 @@ msgid "Debug not completed after 5 pollings"
 msgstr "Debug não completado após 5 sondagens"
 
 #: lib/dsdebug.php:260
-#, fuzzy
 msgid "Failed fields: "
-msgstr "Campos falhados:"
+msgstr "Campos falhados: "
 
 #: lib/dsdebug.php:269
 #, fuzzy
@@ -17778,9 +17782,8 @@ msgid "RRDfile not updated after polling"
 msgstr "Arquivo RRD não atualizado após a sondagem"
 
 #: lib/dsdebug.php:303
-#, fuzzy
 msgid "Data Source returned Bad Results for "
-msgstr "Fonte de Dados devolvida Bad Results for"
+msgstr "Fonte de Dados devolvida Bad Results for "
 
 #: lib/dsdebug.php:308
 #, fuzzy
@@ -17918,9 +17921,8 @@ msgid "Connect failed: %s"
 msgstr "Conexão falhou: %s"
 
 #: lib/functions.php:5822
-#, fuzzy
 msgid "SMTP error: "
-msgstr "Erro SMTP:"
+msgstr "Erro SMTP: "
 
 #: lib/functions.php:5835
 #, fuzzy
@@ -18562,7 +18564,7 @@ msgstr "Permitir ou limitar as colunas da tabela para se estender além dos limi
 
 #: lib/html.php:3127 pollers.php:875
 msgid "Connection Failed"
-msgstr "A LigaÃ§Ã£o Falhou"
+msgstr "A ligação falhou"
 
 #: lib/html.php:3128 pollers.php:873
 #, fuzzy
@@ -19685,9 +19687,8 @@ msgid "Package Files"
 msgstr "Ficheiros de Pacotes"
 
 #: lib/import.php:2692
-#, fuzzy
 msgid "[preview] "
-msgstr "Pré-visualizar"
+msgstr "Pré-visualizar "
 
 #: lib/import.php:2698
 #, fuzzy
@@ -19910,9 +19911,11 @@ msgid "Make sure you have read and followed the required steps needed to install
 msgstr "Certifique-se de que leu e seguiu os passos necessários para instalar o Cacti antes de continuar. As informações de instalação podem ser encontradas para <a href=\"%1$s\">Unix</a> e <a href=\"%2$s\">Win32</a> sistemas operacionais baseados."
 
 #: lib/installer.php:1910
-#, fuzzy, php-format
+#, php-format
 msgid "This process will guide you through the steps for upgrading from version '%s'. "
-msgstr "Este processo irá guiá-lo através dos passos para atualizar a partir da versão '%s'."
+msgstr ""
+"Este processo irá guiá-lo através dos passos para atualizar a partir da "
+"versão '%s'. "
 
 #: lib/installer.php:1911
 #, fuzzy, php-format
@@ -19940,9 +19943,8 @@ msgid "Accept GPL License Agreement"
 msgstr "Aceitar contrato de licença GPL"
 
 #: lib/installer.php:1965
-#, fuzzy
 msgid "Select default theme: "
-msgstr "Seleccione o tema predefinido:"
+msgstr "Seleccione o tema predefinido: "
 
 #: lib/installer.php:1988
 #, fuzzy
@@ -20517,9 +20519,9 @@ msgid "Your server collation appears to be UTF8 compliant"
 msgstr "O seu agrupamento de servidores parece ser compatível com UTF8"
 
 #: lib/installer.php:2806
-#, fuzzy
 msgid "Your server collation does NOT appear to be fully UTF8 compliant. "
-msgstr "Seu agrupamento de servidores NÃO parece ser totalmente compatível com UTF8."
+msgstr ""
+"Seu agrupamento de servidores NÃO parece ser totalmente compatível com UTF8. "
 
 #: lib/installer.php:2807
 #, fuzzy
@@ -20537,14 +20539,18 @@ msgid "Your database default collation appears to be UTF8 compliant"
 msgstr "Seu banco de dados padrão de agrupamento parece ser compatível com UTF8"
 
 #: lib/installer.php:2823
-#, fuzzy
 msgid "Your database default collation does NOT appear to be full UTF8 compliant. "
-msgstr "Seu banco de dados padrão de agrupamento NÃO parece ser totalmente compatível com UTF8."
+msgstr ""
+"Seu banco de dados padrão de agrupamento NÃO parece ser totalmente "
+"compatível com UTF8. "
 
 #: lib/installer.php:2824
-#, fuzzy
 msgid "Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched.   Please ensure your database is changed to 'utf8mb4_unicode_ci' by running the following: "
-msgstr "Quaisquer tabelas criadas por plugins podem ter problemas vinculados às tabelas do Cacti Core se o agrupamento não for compatível.   Por favor, certifique-se de que a sua base de dados é alterada para 'utf8mb4_unicode_ci' executando o seguinte:"
+msgstr ""
+"Quaisquer tabelas criadas por plugins podem ter problemas vinculados às "
+"tabelas do Cacti Core se o agrupamento não for compatível.   Por favor, "
+"certifique-se de que a sua base de dados é alterada para "
+"'utf8mb4_unicode_ci' executando o seguinte: "
 
 #: lib/installer.php:2831
 #, fuzzy
@@ -20578,9 +20584,11 @@ msgid "Row Format"
 msgstr "Formato de linha"
 
 #: lib/installer.php:2884
-#, fuzzy
 msgid "One or more tables are too large to convert during the installation.  You should use the cli/convert_tables.php script to perform the conversion, then refresh this page. For example: "
-msgstr "Uma ou mais tabelas são muito grandes para converter durante a instalação.  Você deve usar o script cli/convert_tables.php para realizar a conversão e depois atualizar esta página. Por exemplo:"
+msgstr ""
+"Uma ou mais tabelas são muito grandes para converter durante a instalação.  "
+"Você deve usar o script cli/convert_tables.php para realizar a conversão e "
+"depois atualizar esta página. Por exemplo: "
 
 #: lib/installer.php:2888
 #, fuzzy
@@ -22783,7 +22791,7 @@ msgstr "Orfandade"
 
 #: package_import.php:1311
 msgid "File Differences for: "
-msgstr ""
+msgstr "Diferenças de ficheiros para: "
 
 #: package_import.php:1422
 #, fuzzy
@@ -25268,17 +25276,15 @@ msgstr "Não há itens para pesquisar"
 
 #: support.php:1309 support.php:1316
 msgid "Name: "
-msgstr "Nome:"
+msgstr "Nome: "
 
 #: support.php:1309
-#, fuzzy
 msgid "Procs: "
-msgstr "1 Processo"
+msgstr "1 Processo "
 
 #: support.php:1316
-#, fuzzy
 msgid "Threads: "
-msgstr "Canais execução"
+msgstr "Canais execução "
 
 #: support.php:1322
 #, fuzzy
@@ -27386,7 +27392,7 @@ msgstr "%d minutos"
 #: utilities.php:1685
 #, php-format
 msgid "%d seconds"
-msgstr "% d segundos"
+msgstr "%d segundos"
 
 #: utilities.php:1688
 #, fuzzy, php-format
