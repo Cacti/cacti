@@ -1,1 +1,1 @@
-Set the html lang and dir attributes from the active language so Arabic and Hebrew render right to left in themes that declare right-to-left support (Modern), and add an axe-based WCAG 2.2 AA audit of every theme
+Set the html lang and dir attributes on every page from the active language; dir is rtl only for a right-to-left language on a theme that declares support with an rtl marker file, and no bundled theme declares it yet, so layout is unchanged for everyone
