@@ -5008,7 +5008,7 @@ function automation_device_rule_export(mixed $template_ids) : array {
 					$tree_rule_items[$trindex]['rule_id'] = db_fetch_cell_prepared('SELECT hash
 						FROM automation_tree_rules
 						WHERE id = ?',
-						[$rule_item['id']]);
+						[$rule_id]);
 				}
 
 				// unset the rule id
@@ -5080,7 +5080,7 @@ function automation_device_rule_export(mixed $template_ids) : array {
 
 						// unset id's that will be recalculated on import
 						unset($tt_details['id']);
-						unset($rr_details['data_source_id']);
+						unset($tt_details['data_source_id']);
 						unset($tt_details['data_template_id']);
 
 						$thold_rules[] = [

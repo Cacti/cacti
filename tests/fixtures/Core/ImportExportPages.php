@@ -170,6 +170,13 @@ function get_item_xml(string $type, mixed $id, bool $follow_deps) : string {
 	return '<xml/>';
 }
 
+function automation_snmp_option_import(array $snmp) : array {
+	return ['success' => ['Imported ' . $snmp['name']]];
+}
+
+function automation_log(string $message, int $level = 0) : void {
+}
+
 $mode = $argv[1] ?? '';
 
 switch ($mode) {
@@ -356,6 +363,24 @@ switch ($mode) {
 		form_save();
 
 		check(false, 'An unknown export type ends the request');
+
+		break;
+	case 'snmp-option-results':
+		\cacti_fixture_source_function($root . '/automation_snmp.php', 'automation_import_process', __NAMESPACE__);
+
+		$_SESSION                      = [];
+		$GLOBALS['fixture']['request'] = ['import_text' => json_encode(['snmp' => [['name' => 'First'], ['name' => 'Second']]])];
+
+		register_shutdown_function(static function () : void {
+			check(count($_SESSION['import_debug_info'] ?? []) === 2, 'Each imported SNMP option set is reported');
+			check(str_ends_with($_SESSION['import_debug_info'][1], 'Imported Second'), 'The second SNMP option set is reported');
+
+			print "PASS: snmp-option-results\n";
+		});
+
+		automation_import_process();
+
+		check(false, 'The import ends the request');
 
 		break;
 	default:

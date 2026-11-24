@@ -28,6 +28,7 @@ test('import and export page scenario passes', function (string $mode) {
 	'unreadable repository package details'   => ['package-details-failure'],
 	'repository import of part of a package'  => ['repository-import-selection'],
 	'unknown template export type'            => ['export-type'],
+	'results of every imported snmp option'   => ['snmp-option-results'],
 ]);
 
 test('the results of every template file of a package are kept', function () {
