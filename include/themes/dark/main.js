@@ -57,7 +57,7 @@ function themeReady() {
 
 	// Turn file buttons into jQueryUI buttons
 	$('.import_label').button();
-	$('.import_button').on('change', function() {
+	$('.import_button').rebind('change.theme', function() {
 		const text = this.value;
 		setImportFile(text);
 	});
@@ -67,7 +67,7 @@ function themeReady() {
 		$('.import_text').text(fileText);
 	}
 
-	$('#drp_action').on('change', function() {
+	$('#drp_action').rebind('change.theme', function() {
 		if ($(this).val() != '0') {
 			$('#submit').button('enable');
 		} else {
@@ -75,7 +75,7 @@ function themeReady() {
 		}
 	});
 
-	$('#graph_type_id').on('change', function() {
+	$('#graph_type_id').rebind('change.theme', function() {
 		switch($(this).val()) {
 		case '4':
 		case '5':

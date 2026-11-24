@@ -107,6 +107,11 @@ test('repeated setup on the same content keeps the title, tabs and save row in t
 	context.setupDefaultElements();
 	assert.equal(emptied(), 3);
 
+	for (const selector of ['.tableHeader th', '.import_button']) {
+		const bindings = page.calls.filter((call) => call.selector === selector && (call.method === 'on' || call.method === 'rebind'));
+		assert.ok(bindings.length > 0 && bindings.every((call) => call.method === 'rebind' && /\.theme$/.test(call.args[0])), `${selector} handlers must replace their earlier copies`);
+	}
+
 	for (const selector of ['#main div.cactiTableTitleRow', '#main div.saveRow']) {
 		const filters = page.calls.filter((call) => call.selector === selector && call.method === 'not');
 		assert.ok(filters.length > 0 && filters.every((call) => String(call.args[0]).includes('#cdialog *')), `${selector} must skip dialog content`);

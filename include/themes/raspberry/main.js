@@ -122,9 +122,9 @@ function themeReady() {
 	$('.tableHeader th').has('i.fa-sort').removeClass('tableHeaderColumnHover tableHeaderColumnSelected');
 	$('.tableHeader th').has('i.fa-sort-up').addClass('tableHeaderColumnSelected');
 	$('.tableHeader th').has('i.fa-sort-down').addClass('tableHeaderColumnSelected');
-	$('.tableHeader th').has('i.fa-sort').on('mouseenter', function() {
+	$('.tableHeader th').has('i.fa-sort').rebind('mouseenter.theme', function() {
 			$(this).addClass('tableHeaderColumnHover');
-		}).on('mouseleave', function() {
+		}).rebind('mouseleave.theme', function() {
 			$(this).removeClass('tableHeaderColumnHover');
 		});
 

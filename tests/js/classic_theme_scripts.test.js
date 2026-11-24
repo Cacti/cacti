@@ -95,3 +95,28 @@ test('the paper-plane logo uses a single icon class', () => {
 		assert.equal(classes, 'ti ti-send');
 	}
 });
+
+test('handlers bound on every page load replace their earlier copies', () => {
+	const watched = {mouseenter: '.tableHeader th', mouseleave: '.tableHeader th', change: ['.import_button', '#drp_action', '#graph_type_id']};
+
+	for (const name of classicThemes) {
+		const page = fakeJQuery();
+		const noop = () => {};
+		const context = new Proxy({$: page.$, window: {}, document: {}, keepWindowSize: noop}, {
+			has: () => true,
+			get: (target, property) => (property in target ? target[property] : (property === Symbol.unscopables ? undefined : noop))
+		});
+
+		vm.runInNewContext(extract(read(`include/themes/${name}/main.js`), 'function themeReady(') + '\nthemeReady();', vm.createContext(context));
+
+		for (const call of page.calls.filter((call) => call.method === 'on' || call.method === 'rebind')) {
+			const event = String(call.args[0]).split('.')[0];
+			const selectors = [].concat(watched[event] || []);
+
+			if (!selectors.includes(call.selector)) continue;
+
+			assert.equal(call.method, 'rebind', `${name}: ${event} on ${call.selector}`);
+			assert.match(String(call.args[0]), /\.theme$/, `${name}: only the theme's own handler is replaced`);
+		}
+	}
+});
