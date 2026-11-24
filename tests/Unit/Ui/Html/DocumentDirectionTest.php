@@ -104,26 +104,80 @@ test('the active locale drives the html attributes', function () {
 	expect($verdict['attributes'])->toBe(" lang='en-US' dir='ltr'");
 });
 
+/*
+ * The helper only covers the pages that call it, so this is the ratchet over
+ * the tree: an `<html` in PHP code or inline markup that is not followed by the
+ * helper call fails here unless its file is listed below with a reason.
+ */
 test('every html emitter prints the document attributes', function () {
-	$root  = dirname(__DIR__, 4);
-	$files = [
-		'graph_realtime.php',
-		'include/auth.php',
-		'include/top_general_header.php',
-		'include/top_graph_header.php',
-		'include/top_header.php',
-		'install/install.php',
-		'lib/auth.php',
-		'lib/html.php',
+	$root = dirname(__DIR__, 4);
+
+	// File => number of `<html` occurrences that may stay without the helper.
+	$allowed = [
+		// The SAML relay is a bare page that submits itself and shows no text.
+		'lib/Auth/SamlPostRelay.php' => 1,
+		// Not emitters: the CSRF buffer looks for the tag and reports strip it from a format file.
+		'lib/csrf.php'    => 1,
+		'lib/reports.php' => 1,
 	];
 
-	foreach ($files as $file) {
-		$src = file_get_contents($root . '/' . $file);
+	$iterator = new RecursiveIteratorIterator(
+		new RecursiveCallbackFilterIterator(
+			new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS),
+			function ($current) : bool {
+				$name = $current->getFilename();
 
-		// A bare <html> or <html lang=...> without dir means a page shell was missed.
-		expect(preg_match_all('/<html(?:>|\\s)/i', $src))->toBe(0, $file);
-		expect(str_contains($src, 'get_html_document_attributes()'))->toBeTrue($file);
+				if ($current->isDir()) {
+					// Dot directories are developer state; the rest is third-party, generated or not shipped.
+					return !str_starts_with($name, '.') && !in_array($name, ['vendor', 'node_modules', 'tests', 'plugins', 'locales', 'log', 'cache'], true);
+				}
+
+				return str_ends_with($name, '.php');
+			}
+		)
+	);
+
+	$emitters = [];
+	$bare     = [];
+
+	foreach ($iterator as $file) {
+		$src = file_get_contents($file->getPathname());
+
+		if (stripos($src, '<html') === false) {
+			continue;
+		}
+
+		// Comments may mention the tag; only code and inline markup can print it.
+		$code = '';
+
+		foreach (token_get_all($src) as $token) {
+			if (!is_array($token)) {
+				$code .= $token;
+			} elseif ($token[0] !== T_COMMENT && $token[0] !== T_DOC_COMMENT) {
+				$code .= $token[1];
+			}
+		}
+
+		$name   = substr($file->getPathname(), strlen($root) + 1);
+		$helped = preg_match_all('/<html(?:\' \. |<\?php print )get_html_document_attributes\(\)/i', $code);
+		$missed = preg_match_all('/<html/i', $code) - $helped;
+
+		if ($helped > 0) {
+			$emitters[] = $name;
+		}
+
+		if ($missed > 0) {
+			$bare[$name] = $missed;
+		}
 	}
+
+	ksort($bare);
+	ksort($allowed);
+
+	expect($bare)->toBe($allowed);
+
+	// The scan found the page headers, so an empty result is not a broken pattern.
+	expect($emitters)->toContain('include/top_header.php', 'include/auth.php', 'lib/html.php', 'install/install.php');
 });
 
 test('general and authentication error shells render document attributes', function () {
