@@ -213,6 +213,7 @@ foreach ([
 	[$root . '/color_templates.php', 'draw_color_template_items_list'],
 	[$root . '/color.php', 'form_actions'],
 	[$root . '/color.php', 'color'],
+	[$root . '/color.php', 'color_filter_where'],
 ] as [$file, $function]) {
 	\cacti_fixture_source_function($file, $function, __NAMESPACE__);
 }

@@ -78,7 +78,17 @@ function sql_save(array $save, string $table) : mixed {
 }
 
 function header(string $value) : void {
-	throw new Redirect($value);
+	if (str_starts_with($value, 'Location: ')) {
+		throw new Redirect($value);
+	}
+	$GLOBALS['headers'][] = $value;
+}
+
+function process_sanitize_render_filter(bool $render = false) : void {
+}
+
+function db_fetch_assoc(string $sql) : mixed {
+	return fake($sql, []);
 }
 
 function db_qstr(mixed $value) : string {
@@ -166,6 +176,22 @@ function save(array $request, array $fake = [], mixed $result = 9) : string {
 \cacti_fixture_source_function($root . '/lib/functions.php', 'is_error_message', __NAMESPACE__);
 \cacti_fixture_source_function($root . '/lib/functions.php', 'sanitize_unserialize_selected_items', __NAMESPACE__);
 \cacti_fixture_source_function($root . '/color.php', 'form_actions', __NAMESPACE__);
+\cacti_fixture_source_function($root . '/color.php', 'color_export', __NAMESPACE__);
+\cacti_fixture_source_function($root . '/color.php', 'color_filter_where', __NAMESPACE__);
+\cacti_fixture_source_function($root . '/lib/functions.php', 'cacti_csv_cell', __NAMESPACE__);
+\cacti_fixture_source_function($root . '/lib/functions.php', 'cacti_csv_needs_formula_guard', __NAMESPACE__);
+
+// Run the export with the list filter and return the CSV it prints.
+function export(array $request, mixed $rows) : string {
+	$_REQUEST           = $request;
+	$GLOBALS['db']      = [];
+	$GLOBALS['headers'] = [];
+	$GLOBALS['fake']    = ['SELECT name, hex' => $rows];
+	ob_start();
+	color_export();
+
+	return ob_get_clean();
+}
 
 // Confirm a bulk action and return the redirect it ends with.
 function action(array $request, array $fake) : string {
@@ -288,5 +314,19 @@ $_FILES   = ['import_file' => ['name' => 'c.csv', 'tmp_name' => $csv, 'error' =>
 $location = save(['save_component_import' => '1'], ['SELECT *' => [], 'INSERT INTO colors' => true], 0);
 unlink($csv);
 check($location === 'Location: color.php?action=import' && ($_SESSION['import_debug_info'][1] ?? '') === 'INSERT SUCCEEDED: (FF0000,Red)', 'uploaded file imported');
+
+// The export selects the rows the list shows, from the colors table alone, and always writes the header row.
+$csv = export(['filter' => 'Re', 'named' => 'true', 'has_graphs' => 'true'], [['name' => 'Red, "dark"', 'hex' => 'AA0000']]);
+$sql = $GLOBALS['db'][0][0];
+check($csv === "\"name\",\"hex\"\n\"Red, \"\"dark\"\"\",\"AA0000\"\n", 'export writes quoted rows');
+check(str_contains($sql, "WHERE (name LIKE '%Re%' OR hex LIKE '%Re%') AND read_only='on' AND graphs > 0"), 'export uses the list filter');
+check(!str_contains($sql, 'graph_templates_item') && !str_contains($sql, 'HAVING'), 'export reads only the colors table');
+check(in_array('Content-Disposition: attachment; filename=colors.csv', $GLOBALS['headers'], true), 'export is a download');
+
+$csv = export([], false);
+check($csv === "\"name\",\"hex\"\n" && cacti_sizeof($GLOBALS['headers']) === 2, 'empty export still downloads the header row');
+
+$imported = import(explode("\n", "\"name\",\"hex\"\n\"Red, \"\"dark\"\"\",\"AA0000\""), ['SELECT *' => [], 'INSERT INTO colors' => true]);
+check($GLOBALS['db'][1][1] === ['AA0000', 'Red, "dark"'], 'an exported file imports unchanged');
 
 print json_encode(['passed' => $GLOBALS['passed']], JSON_THROW_ON_ERROR) . "\n";

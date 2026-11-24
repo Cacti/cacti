@@ -454,18 +454,12 @@ function process_sanitize_render_filter(bool $render = false) : void {
 	}
 }
 
-function color() : void {
-	global $actions, $item_rows;
-
-	process_sanitize_render_filter(true);
-
-	if (grv('rows') == '-1') {
-		$rows = read_config_option('num_rows_table');
-	} else {
-		$rows = grv('rows');
-	}
-
-	// form the 'where' clause for our main sql query
+/**
+ * color_filter_where - the WHERE clause for the filter of the Colors list, shared by its export
+ *
+ * @return string
+ */
+function color_filter_where() : string {
 	if (grv('filter') != '') {
 		$sql_where = 'WHERE (name LIKE ' . db_qstr('%' . grv('filter') . '%') . '
 			OR hex LIKE ' . db_qstr('%' . grv('filter') . '%') . ')';
@@ -480,6 +474,22 @@ function color() : void {
 	if (grv('has_graphs') == 'true') {
 		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' graphs > 0';
 	}
+
+	return $sql_where;
+}
+
+function color() : void {
+	global $actions, $item_rows;
+
+	process_sanitize_render_filter(true);
+
+	if (grv('rows') == '-1') {
+		$rows = read_config_option('num_rows_table');
+	} else {
+		$rows = grv('rows');
+	}
+
+	$sql_where = color_filter_where();
 
 	$total_rows = db_fetch_cell("SELECT COUNT(*)
 		FROM colors
@@ -597,49 +607,18 @@ function color() : void {
 function color_export() : void {
 	process_sanitize_render_filter(false);
 
-	// form the 'where' clause for our main sql query
-	if (grv('filter') != '') {
-		$sql_where = 'WHERE (name LIKE ' . db_qstr('%' . grv('filter') . '%') . '
-			OR hex LIKE ' . db_qstr('%' . grv('filter') . '%') . ')';
-	} else {
-		$sql_where = '';
-	}
+	// the same rows the list shows; the cached graphs column needs no join with the graph items
+	$colors = db_fetch_assoc('SELECT name, hex
+		FROM colors
+		' . color_filter_where() . '
+		ORDER BY id');
 
-	if (grv('named') == 'true') {
-		$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . " read_only='on'";
-	}
+	header('Content-type: application/csv');
+	header('Content-Disposition: attachment; filename=colors.csv');
 
-	if (grv('has_graphs') == 'true') {
-		$sql_having = 'HAVING graphs>0 OR templates>0';
-	} else {
-		$sql_having = '';
-	}
+	print cacti_csv_cell('name') . ',' . cacti_csv_cell('hex') . "\n";
 
-	$colors = db_fetch_assoc("SELECT *,
-        SUM(CASE WHEN local_graph_id>0 THEN 1 ELSE 0 END) AS graphs,
-        SUM(CASE WHEN local_graph_id=0 THEN 1 ELSE 0 END) AS templates
-        FROM (
-			SELECT c.*, local_graph_id
-			FROM colors AS c
-			LEFT JOIN (
-				SELECT color_id, graph_template_id, local_graph_id
-				FROM graph_templates_item
-				WHERE color_id>0
-			) AS gti
-			ON c.id=gti.color_id
-		) AS rs
-		$sql_where
-		GROUP BY rs.id
-		$sql_having");
-
-	if (cacti_sizeof($colors)) {
-		header('Content-type: application/csv');
-		header('Content-Disposition: attachment; filename=colors.csv');
-
-		print cacti_csv_cell('name') . ',' . cacti_csv_cell('hex') . "\n";
-
-		foreach ($colors as $color) {
-			print cacti_csv_cell($color['name']) . ',' . cacti_csv_cell($color['hex']) . "\n";
-		}
+	foreach (($colors ?: []) as $color) {
+		print cacti_csv_cell($color['name']) . ',' . cacti_csv_cell($color['hex']) . "\n";
 	}
 }
