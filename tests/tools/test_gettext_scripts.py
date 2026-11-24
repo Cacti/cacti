@@ -95,11 +95,35 @@ class GettextScriptsTest(unittest.TestCase):
             self.assertIn('Unable to locate xgettext', result.stderr)
             self.assertNotIn('ERROR:', result.stdout)
 
-    def run_check(self):
+    def run_check(self, *arguments, env=None):
         return subprocess.run(
-            shell_command(self.tools / CHECK, ROOT / 'tests/tools' / CHECK), cwd=self.root,
-            env=self.env, capture_output=True, text=True, timeout=60,
+            shell_command(self.tools / CHECK, ROOT / 'tests/tools' / CHECK) + list(arguments), cwd=self.root,
+            env=env or self.env, capture_output=True, text=True, timeout=60,
         )
+
+    def git(self, *arguments):
+        result = subprocess.run(
+            ['git', '-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid',
+             '-c', 'commit.gpgsign=false', '-c', 'core.hooksPath=/dev/null', *arguments],
+            cwd=self.root, env=self.env, capture_output=True, text=True, timeout=30,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        return result.stdout.strip()
+
+    def commit_all(self, message):
+        self.git('add', '-A')
+        self.git('commit', '-q', '-m', message)
+        return self.git('rev-parse', 'HEAD')
+
+    def start_history(self, source):
+        """Commit a base with the given source and a template that matches it."""
+        (self.root / 'input with spaces.php').write_text(source)
+        self.assertEqual(self.run_script('update-pot.sh').returncode, 0)
+        self.git('init', '-q')
+        return self.commit_all('base')
+
+    def set_source(self, source):
+        (self.root / 'input with spaces.php').write_text(source)
 
     def test_update_pot_reads_nested_core_source_and_skips_other_trees(self):
         for folder in ['lib/Auth', 'plugins/fixture', 'tests/Unit', 'include/vendor/package', '.hidden', 'lib/.cache/deep']:
@@ -171,7 +195,7 @@ class GettextScriptsTest(unittest.TestCase):
 
         template = self.locales / 'po/cacti.pot'
         committed = template.read_text()
-        (self.root / 'input with spaces.php').write_text("<?php __('Fixture farewell');\n")
+        self.set_source("<?php __('Fixture farewell');\n")
         result = self.run_check()
         self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
         self.assertIn('-msgid "Fixture greeting"', result.stdout)
@@ -181,6 +205,96 @@ class GettextScriptsTest(unittest.TestCase):
 
         self.assertEqual(self.run_script('update-pot.sh').returncode, 0)
         self.assertEqual(self.run_check().returncode, 0)
+
+    def test_template_check_without_a_base_compares_the_whole_tree(self):
+        self.assertEqual(self.run_script('update-pot.sh').returncode, 0)
+        self.set_source("<?php __('Fixture greeting'); __('Fixture drift');\n")
+        # Not a git checkout.
+        result = self.run_check()
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertIn('NOTE: this is not a git checkout; comparing the whole tree', result.stdout)
+        self.assertIn('+msgid "Fixture drift"', result.stdout)
+
+        # A git checkout with no develop branch and an unknown base.
+        self.git('init', '-q')
+        self.commit_all('only commit')
+        result = self.run_check()
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertIn('neither upstream/develop nor origin/develop exists; comparing the whole tree', result.stdout)
+        result = self.run_check('no-such-revision')
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertIn("base 'no-such-revision' is not available in this checkout; comparing the whole tree", result.stdout)
+        self.assertIn('+msgid "Fixture drift"', result.stdout)
+
+    def test_template_check_passes_a_clean_change_on_a_drifted_base(self):
+        # develop already has a string the template lacks.
+        self.start_history("<?php __('Fixture greeting');\n")
+        self.set_source("<?php __('Fixture greeting'); __('Fixture drift');\n")
+        base = self.commit_all('drifted base')
+        (self.root / 'lib').mkdir()
+        (self.root / 'lib/other.php').write_text('<?php echo 1;\n')
+        self.commit_all('change that has no strings')
+        result = self.run_check(base)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('NOTE: 1 message(s) were already out of sync', result.stdout)
+        self.assertNotIn('+msgid', result.stdout)
+        self.assertIn('OK: locales/po/cacti.pot matches the source', result.stdout)
+        # Without the base the same tree fails, which is what the base removes.
+        self.assertEqual(self.run_check('no-such-revision').returncode, 1)
+
+    def test_template_check_fails_a_string_added_without_regenerating(self):
+        base = self.start_history("<?php __('Fixture greeting');\n")
+        self.git('update-ref', 'refs/remotes/upstream/develop', base)
+        self.set_source("<?php __('Fixture greeting'); __('Fixture farewell');\n")
+        self.commit_all('add a string')
+        # The base comes from upstream/develop when none is named.
+        result = self.run_check()
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertIn('Comparing with the base', result.stdout)
+        self.assertIn('+msgid "Fixture farewell"', result.stdout)
+        self.assertNotIn('Fixture greeting"', result.stdout)
+        self.assertIn("Run 'sh locales/update-pot.sh'", result.stdout)
+        # The environment variable names the base as well.
+        result = self.run_check(env={**self.env, 'CACTI_I18N_BASE': base})
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertIn('+msgid "Fixture farewell"', result.stdout)
+
+    def test_template_check_fails_a_string_removed_without_regenerating(self):
+        base = self.start_history("<?php __('Fixture greeting'); __('Fixture farewell');\n")
+        self.set_source("<?php __('Fixture greeting');\n")
+        self.commit_all('remove a string')
+        result = self.run_check(base)
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertIn('-msgid "Fixture farewell"', result.stdout)
+        self.assertNotIn('Fixture greeting"', result.stdout)
+
+    def test_template_check_fails_a_template_edit_without_a_source_change(self):
+        base = self.start_history("<?php __('Fixture greeting');\n")
+        template = self.locales / 'po/cacti.pot'
+        template.write_text(template.read_text() + '\nmsgid "Fixture invented"\nmsgstr ""\n')
+        self.commit_all('edit the template by hand')
+        result = self.run_check(base)
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertIn('-msgid "Fixture invented"', result.stdout)
+
+    def test_template_check_passes_a_regenerated_template_and_leaves_the_checkout_alone(self):
+        base = self.start_history("<?php __('Fixture greeting');\n")
+        self.set_source("<?php __('Fixture farewell');\n")
+        self.assertEqual(self.run_script('update-pot.sh').returncode, 0)
+        self.commit_all('change a string and regenerate')
+        self.set_source("<?php __('Fixture farewell'); __x('Fixture context', 'Fixture farewell');\n")
+        self.assertEqual(self.run_script('update-pot.sh').returncode, 0)
+        self.commit_all('add a contextual string and regenerate')
+        before = self.git('status', '--porcelain', '--ignored')
+        scratch = Path(self.temp.name) / 'scratch'
+        scratch.mkdir()
+        result = self.run_check(base, env={**self.env, 'TMPDIR': str(scratch)})
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('Comparing with the base', result.stdout)
+        self.assertNotIn('already out of sync', result.stdout)
+        self.assertEqual(self.git('status', '--porcelain', '--ignored'), before)
+        self.assertEqual(self.git('worktree', 'list').count('\n'), 0)
+        self.assertEqual(list(scratch.iterdir()), [])
 
     def test_template_check_ignores_date_locations_and_format_flags(self):
         (self.root / 'input with spaces.php').write_text("<?php __('Fixture %s total', 1);\n")
@@ -194,31 +308,52 @@ class GettextScriptsTest(unittest.TestCase):
         result = self.run_check()
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
-    def test_template_check_holds_catalogs_to_the_baseline(self):
+    def test_template_check_compares_catalog_failures_with_the_baseline(self):
         self.assertEqual(self.run_script('update-pot.sh').returncode, 0)
         catalog = self.locales / 'po/xx-XX.po'
         catalog.write_text(BROKEN_CATALOG)
         result = self.run_check()
         self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
-        self.assertIn('FAIL: locales/po/xx-XX.po does not pass msgfmt --check-format (1, baseline allows 0 errors)', result.stdout)
+        self.assertIn('FAIL: locales/po/xx-XX.po does not pass msgfmt --check-format: msgid Fixture %s total', result.stdout)
         self.assertIn('OK: locales/po/cacti.pot matches the source', result.stdout)
 
+        listed = self.run_check('--list-catalog-failures')
+        self.assertEqual(listed.returncode, 0, listed.stderr)
+        self.assertEqual(listed.stdout, 'locales/po/xx-XX.po\tmsgid Fixture %s total\n')
+
         baseline = self.tools / 'message_catalog_baseline.txt'
-        baseline.write_text('# comment\nlocales/po/xx-XX.po 1\n')
+        baseline.write_text('# comment\n\n' + listed.stdout)
         result = self.run_check()
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertIn('KNOWN: locales/po/xx-XX.po has 1 msgfmt', result.stdout)
+        self.assertIn('KNOWN: 1 msgfmt', result.stdout)
 
+        # Lines moving in the catalog do not change the entry.
+        catalog.write_text('# translator comment\n# another\n' + BROKEN_CATALOG)
+        result = self.run_check()
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+        # A different failure fails, even though the number of failures is the same.
+        catalog.write_text(BROKEN_CATALOG.replace('Fixture %s total', 'Another %s total'))
+        result = self.run_check()
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertIn('msgfmt --check-format: msgid Another %s total', result.stdout)
+        self.assertIn('NOTE: locales/po/xx-XX.po no longer fails for: msgid Fixture %s total', result.stdout)
+
+        # An additional failure fails next to a known one.
         catalog.write_text(BROKEN_CATALOG + '\n#, php-format\nmsgid "Second %s"\nmsgstr "Second %a"\n')
         result = self.run_check()
         self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
-        self.assertIn('(2, baseline allows 1 errors)', result.stdout)
+        self.assertIn('msgfmt --check-format: msgid Second %s', result.stdout)
+        self.assertNotIn('FAIL: locales/po/xx-XX.po does not pass msgfmt --check-format: msgid Fixture', result.stdout)
 
+        # A fixed entry passes and says to remove it from the baseline.
         catalog.write_text('msgid ""\nmsgstr ""\n"Content-Type: text/plain; charset=UTF-8\\n"\n')
         result = self.run_check()
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertIn('NOTE: locales/po/xx-XX.po now passes', result.stdout)
+        self.assertIn('NOTE: locales/po/xx-XX.po no longer fails for: msgid Fixture %s total', result.stdout)
+        self.assertIn('Remove those lines from tests/tools/message_catalog_baseline.txt', result.stdout)
 
+        # A catalog msgfmt cannot read fails, named by its error.
         catalog.write_text('msgid "unterminated\n')
         result = self.run_check()
         self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
