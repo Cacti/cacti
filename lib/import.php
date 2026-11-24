@@ -219,7 +219,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 	 * with the most dependencies are last and the items with no dependencies are first.
 	 * this means dependencies will just magically work themselves out :)
 	 */
-	foreach ($hash_type_codes as $type => $code) {
+	foreach (import_hash_type_order($hash_type_codes) as $type => $code) {
 		/* do we have any matches for this type? */
 		if (isset($dep_hash_cache[$type])) {
 			/* yes we do. loop through each match for this type */
@@ -335,6 +335,29 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 	}
 
 	return $info_array;
+}
+
+/**
+ * Returns the hash types in the order the import processes them. The type
+ * codes keep their historical order, but Graph Template items refer to VDEFs,
+ * so VDEFs are moved ahead of Graph Templates.
+ *
+ * @param array $hash_type_codes The hash type codes, keyed by type.
+ *
+ * @return array The same codes, keyed by type, in import order.
+ */
+function import_hash_type_order($hash_type_codes) {
+	$order = array();
+
+	foreach ($hash_type_codes as $type => $code) {
+		if ($type == 'graph_template') {
+			$order += array_intersect_key($hash_type_codes, array('vdef' => true, 'vdef_item' => true));
+		}
+
+		$order += array($type => $code);
+	}
+
+	return $order;
 }
 
 /**
