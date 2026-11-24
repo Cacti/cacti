@@ -63,7 +63,9 @@ test('graph pages encode JS-bound PHP strings safely', function () use ($htmlGra
 test('data debug escapes tooltip title values before rendering', function () use ($dataDebugPath) {
 	$contents = file_get_contents($dataDebugPath);
 
-	expect($contents)->toContain('$value_title = htmle((string) $value);');
+	// dsdebug_format_value() escapes the value and its title, see DataDebugValueFormatTest
+	expect($contents)->toContain('[$value, $value_title] = dsdebug_format_value($value);');
+	expect(file_get_contents(__DIR__ . '/../../../../lib/dsdebug.php'))->toContain('$title = nl2br(htmle($value), false);');
 });
 
 test('auth reset password encodes return location in onclick handlers', function () use ($authResetpasswordPath) {
