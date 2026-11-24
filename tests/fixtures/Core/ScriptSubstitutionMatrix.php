@@ -105,6 +105,22 @@ $payloads = ['', '0', 'hello world', "single'quote", '"double"', 'line' . "\n" .
 	'; touch ' . escapeshellarg($marker) . '; #', '${HOME}', '* ? [abc]', 'é 日本語'];
 $count = count($cases);
 
+$run_shell = function ($argument, $expected, $label) use ($check, $marker) {
+	$pipes   = [];
+	$process = proc_open(['sh', '-c', 'printf %s ' . $argument], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+
+	if (!is_resource($process)) {
+		throw new RuntimeException('Cannot start POSIX shell');
+	}
+	$stdout = stream_get_contents($pipes[1]);
+	$stderr = stream_get_contents($pipes[2]);
+	fclose($pipes[1]);
+	fclose($pipes[2]);
+	$status = proc_close($process);
+	$check([$status, $stdout, $stderr], [0, $expected, ''], $label);
+	$check(file_exists($marker), false, 'execution sentinel');
+};
+
 try {
 	foreach ($payloads as $value) {
 		foreach (['', "'", '"'] as $quote) {
@@ -116,19 +132,7 @@ try {
 					$escaped  = $value === '' ? escapeshellarg($value) : cacti_escapeshellarg($value);
 					$argument = substitute_script_path($template, ['field' => $escaped, 'other' => cacti_escapeshellarg('other')]);
 					$expected = $prefix . str_repeat('\\', $quote === "'" ? $slashes : intdiv($slashes, 2)) . str_replace(["\r", "\n"], '', $value) . ($shape === 'adjacent' ? 'other' : '') . $suffix;
-					$pipes    = [];
-					$process  = proc_open(['sh', '-c', 'printf %s ' . $argument], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
-
-					if (!is_resource($process)) {
-						throw new RuntimeException('Cannot start POSIX shell');
-					}
-					$stdout = stream_get_contents($pipes[1]);
-					$stderr = stream_get_contents($pipes[2]);
-					fclose($pipes[1]);
-					fclose($pipes[2]);
-					$status = proc_close($process);
-					$check([$status, $stdout, $stderr], [0, $expected, ''], 'shell ' . $count);
-					$check(file_exists($marker), false, 'execution sentinel');
+					$run_shell($argument, $expected, 'shell ' . $count);
 					$count++;
 				}
 			}
@@ -140,20 +144,7 @@ try {
 			$escaped  = $value === '' ? escapeshellarg($value) : cacti_escapeshellarg($value);
 			$argument = substitute_script_path($template, ['field' => $escaped]);
 			$expected = 'x' . str_replace(["\r", "\n"], '', $value);
-
-			$pipes   = [];
-			$process = proc_open(['sh', '-c', 'printf %s ' . $argument], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
-
-			if (!is_resource($process)) {
-				throw new RuntimeException('Cannot start POSIX shell');
-			}
-			$stdout = stream_get_contents($pipes[1]);
-			$stderr = stream_get_contents($pipes[2]);
-			fclose($pipes[1]);
-			fclose($pipes[2]);
-			$status = proc_close($process);
-			$check([$status, $stdout, $stderr], [0, $expected, ''], 'nested ' . $count);
-			$check(file_exists($marker), false, 'execution sentinel');
+			$run_shell($argument, $expected, 'nested ' . $count);
 			$count++;
 		}
 	}
