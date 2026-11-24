@@ -269,11 +269,14 @@ function checkPWADisplayMode() {
 	let displayModeQuery = window.matchMedia('(display-mode: standalone)');
 	setDocumentAttribute('theme-pwa', (displayModeQuery.matches) ? 'on' : 'off' );
 
-	// monitor changes
-	displayModeQuery.addEventListener('change', (e) => {
-		setDocumentAttribute('theme-pwa', (e.matches) ? 'on' : 'off' );
+	// monitor changes; themeReady() runs on every page load, so register the listener once
+	if (!mdw.cache.pwaListener) {
+		mdw.cache.pwaListener = true;
+		displayModeQuery.addEventListener('change', (e) => {
+			setDocumentAttribute('theme-pwa', (e.matches) ? 'on' : 'off' );
 
-	});
+		});
+	}
 
 	// TODO conflict with fullscreen mode
 }
@@ -987,15 +990,19 @@ function setThemeColor() {
 
 function detectSystemColorSetup(state) {
 	let storage = Storages.localStorage;
-	const systemColorMode = window.matchMedia("(prefers-color-scheme: dark)");
+	// keep one query and one listener, so the listener can be removed again and is not added once per page load
+	if (!mdw.cache.colorQuery) {
+		mdw.cache.colorQuery = window.matchMedia("(prefers-color-scheme: dark)");
+		mdw.cache.colorListener = (e) => { checkThemeColorSetup((e.matches) ? 'dark' : 'light'); };
+	}
 
-	let _listener = (e) => { checkThemeColorSetup((e.matches) ? 'dark' : 'light'); };
+	const systemColorMode = mdw.cache.colorQuery;
 
 	if(state === 'on') {
-		systemColorMode.addEventListener('change', _listener);
+		systemColorMode.addEventListener('change', mdw.cache.colorListener);
 		checkThemeColorSetup(systemColorMode.matches === true ? 'dark' : 'light');
 	}else {
-		systemColorMode.removeEventListener('change', _listener);
+		systemColorMode.removeEventListener('change', mdw.cache.colorListener);
 		checkThemeColorSetup(mdw.session.theme.color.mode);
 	}
 }
@@ -1005,6 +1012,8 @@ function checkThemeColorSetup(color_mode) {
 	let cookie_color_mode = getCookieValue('CactiColorMode');
 
 	if (document_color_mode !== color_mode || cookie_color_mode !== color_mode) {
+		// store the applied mode, so the next page load starts with it
+		mdw.session.theme.color.mode = color_mode;
         refreshLocalStorage();
 		setDocumentAttribute('theme-color', color_mode)
 		setCookieValue('CactiColorMode', color_mode);

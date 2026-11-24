@@ -267,3 +267,67 @@ test('the console button closes boxes through the box manager', () => {
 	assert.doesNotMatch(setup, /\[class\^="cactiConsoleNavigation"\]/);
 	assert.match(setup, /\$\("#navBackdrop"\)\.on\('click', function\(\) \{\s*\/\*[^*]*\*\/\s*if \(mdw\.obj\.ctrl\.nav\) \{\s*mdw\.obj\.ctrl\.nav\.closeAllBoxes\(\);/);
 });
+
+function mediaQueries(matches = false) {
+	const created = [];
+	const matchMedia = () => {
+		const listeners = new Set();
+		const query = {
+			matches,
+			listeners,
+			addEventListener: (type, listener) => listeners.add(listener),
+			removeEventListener: (type, listener) => listeners.delete(listener)
+		};
+		created.push(query);
+		return query;
+	};
+	const active = () => created.reduce((total, query) => total + query.listeners.size, 0);
+
+	return {matchMedia, active};
+}
+
+test('the system color listener is added once and can be removed again', () => {
+	const media = mediaQueries(true);
+	const checked = [];
+	const context = themeFunctions(['detectSystemColorSetup'], {
+		window: {matchMedia: media.matchMedia},
+		Storages: {localStorage: {}},
+		mdw: {cache: {}, session: {theme: {color: {mode: 'light'}}}},
+		checkThemeColorSetup: (mode) => checked.push(mode)
+	});
+
+	context.detectSystemColorSetup('on');
+	context.detectSystemColorSetup('on');
+	context.detectSystemColorSetup('on');
+	assert.equal(media.active(), 1, 'page loads must not add more listeners');
+
+	context.detectSystemColorSetup('off');
+	assert.equal(media.active(), 0, 'turning automatic mode off removes the listener');
+	assert.deepEqual(checked, ['dark', 'dark', 'dark', 'light']);
+});
+
+test('the applied color mode is stored and the display mode listener is added once', () => {
+	const media = mediaQueries();
+	const stored = [];
+	const graphs = [];
+	const attributes = {};
+	const context = themeFunctions(['checkThemeColorSetup', 'checkPWADisplayMode'], {
+		window: {matchMedia: media.matchMedia},
+		document: {documentElement: {getAttribute: () => 'light'}},
+		mdw: {cache: {}, session: {theme: {color: {mode: 'light'}}}},
+		getCookieValue: () => 'light',
+		refreshLocalStorage: () => stored.push(context.mdw.session.theme.color.mode),
+		setDocumentAttribute: (name, value) => { attributes[name] = value; },
+		setCookieValue: () => {},
+		initializeGraphs: (refresh) => graphs.push(refresh)
+	});
+
+	context.checkThemeColorSetup('dark');
+	assert.deepEqual(stored, ['dark'], 'the detected mode is what gets stored');
+	assert.equal(context.mdw.session.theme.color.mode, 'dark');
+
+	context.checkPWADisplayMode();
+	context.checkPWADisplayMode();
+	assert.equal(media.active(), 1);
+	assert.equal(attributes['theme-pwa'], 'off');
+});
