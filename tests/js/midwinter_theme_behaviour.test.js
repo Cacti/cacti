@@ -554,3 +554,26 @@ test('column titles are read again after a language change, keeping hidden colum
 	assert.doesNotMatch(html, /Etat/);
 	assert.deepEqual(table.classes, ['no-col2']);
 });
+
+test('moving the filter into its box leaves the rest of the page alone', () => {
+	const touched = [];
+	const container = {detach: () => container};
+	const filter = {length: 1, first: () => filter, closest: () => container};
+	const main = {length: 1, 0: {}, data: () => 1};
+	const context = {
+		$: (selector) => {
+			touched.push(selector);
+			if (selector === '#main') return main;
+			if (selector === '#main .filterTable') return filter;
+			// the first div of #main holds a second filter table
+			return {length: 1, find: () => ({closest: () => ({length: 1})}), first: () => ({length: 1}), detach: () => ({appendTo: () => {}}), removeClass: () => {}};
+		},
+		midwinter: {navigationBox: {registerPlugin: () => {}}}
+	};
+
+	vm.runInNewContext(read('include/js/navigationBox.tableFilter.js'), context);
+
+	const box = {data: (name, value) => (value === undefined ? undefined : box)};
+	assert.equal(context.midwinter.navigationBox.filter.content(box), container);
+	assert.deepEqual(touched, ['#main', '#main .filterTable'], 'no other element is detached or discarded');
+});
