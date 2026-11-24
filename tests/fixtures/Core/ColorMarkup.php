@@ -68,7 +68,7 @@ function cacti_log(mixed ...$args) : void {
 }
 
 function read_config_option(string $name) : string {
-	return '';
+	return $name === 'num_rows_table' ? '30' : '';
 }
 
 function db_fetch_cell_prepared(string $sql, array $params = []) : mixed {
@@ -305,6 +305,14 @@ ob_start();
 color();
 $html = ob_get_clean();
 assert_text($html, $hex, 'color list');
+
+// Rows set to the default (-1) pages by the configured row count.
+$_REQUEST           = ['rows' => '-1', 'page' => '1', 'filter' => ''];
+$GLOBALS['queries'] = [];
+ob_start();
+color();
+$html = ob_get_clean();
+check(str_contains(end($GLOBALS['queries']), 'LIMIT 0,30'), 'default row count read from the settings');
 
 $GLOBALS['rows'] = [];
 ob_start();

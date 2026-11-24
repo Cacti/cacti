@@ -262,11 +262,11 @@ $location = save(['id' => '0', 'name' => 'Pink', 'hex' => 'ff00aa'], ['SELECT id
 check($location === 'Location: color.php' && $GLOBALS['saved'][0]['hex'] === 'FF00AA', 'six digit hex saved in upper case');
 
 // A Named Color is read only whatever the request says, and the request cannot make a color read only.
-$location = save(['id' => '1', 'name' => 'Renamed', 'hex' => '000001', 'read_only' => ''], ['SELECT read_only' => ['read_only' => 'on']]);
+$location = save(['id' => '1', 'name' => 'Renamed', 'hex' => '000001', 'read_only' => ''], ['SELECT read_only' => 'on']);
 check($location === 'Location: color.php?action=edit&id=1' && $GLOBALS['saved'] === [], 'named color not saved');
 check($GLOBALS['messages'][0][0] === 'color_read_only' && $GLOBALS['messages'][0][2] === MESSAGE_LEVEL_ERROR, 'named color save reported');
 
-$location = save(['id' => '7', 'name' => 'Teal', 'hex' => '008080', 'read_only' => 'on', 'hidden_name' => 'Other'], ['SELECT read_only' => ['read_only' => ''], 'SELECT id FROM colors' => false]);
+$location = save(['id' => '7', 'name' => 'Teal', 'hex' => '008080', 'read_only' => 'on', 'hidden_name' => 'Other'], ['SELECT read_only' => '', 'SELECT id FROM colors' => false]);
 check($location === 'Location: color.php' && $GLOBALS['saved'] === [['id' => '7', 'name' => 'Teal', 'hex' => '008080']], 'editable color saved without a read only flag');
 check($GLOBALS['db'][1][1] === ['008080', '7'], 'hex owner looked up excluding the color itself');
 
@@ -275,7 +275,7 @@ $location = save(['id' => '0', 'name' => 'Copy', 'hex' => '000000'], ['SELECT id
 check($location === 'Location: color.php?action=edit&id=0' && $GLOBALS['saved'] === [], 'duplicate hex not saved');
 check(isset($_SESSION[SESS_ERROR_FIELDS]['hex']) && $GLOBALS['messages'][0][0] === 'color_hex_exists', 'duplicate hex reported on the field');
 
-$location = save(['id' => '7', 'name' => 'Teal', 'hex' => '008080'], ['SELECT read_only' => ['read_only' => ''], 'SELECT id FROM colors' => false], false);
+$location = save(['id' => '7', 'name' => 'Teal', 'hex' => '008080'], ['SELECT read_only' => '', 'SELECT id FROM colors' => false], false);
 check($location === 'Location: color.php' && $GLOBALS['messages'][0][0] === 2, 'failed save reported');
 
 // An import that may update rows keeps the name of a Named Color.
