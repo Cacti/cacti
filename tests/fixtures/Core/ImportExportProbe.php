@@ -106,6 +106,7 @@ $fakes = array(
 	'retemplate_graphs', 'get_cacti_cli_version', 'csrf_require_post',
 	'resolve_hash_to_id', 'raise_message_javascript', 'clean_up_file_name', 'get_public_key',
 	'cacti_csv_safe', 'compare_data', 'read_config_option', 'isempty_request_var', 'graph_template_input_column_is_allowed',
+	'get_hash_version', 'get_hash_vdef', 'get_hash_data_query', 'get_hash_data_input', 'get_hash_graph_template', 'get_hash_data_template',
 );
 
 foreach ($fakes as $fake) {

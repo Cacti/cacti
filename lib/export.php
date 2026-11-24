@@ -67,7 +67,7 @@ function graph_template_to_xml($graph_template_id) {
 	if ((empty($graph_template['id'])) || (empty($graph_template_graph['id']))) {
 		$export_errors++;
 		raise_message(30);
-		cacti_log('ERROR: Invalid Graph Template found in Database for Template ' . $graph_template['name'] . '[' . $graph_template['id'] . '] GTGid: ' . $graph_template_graph['id'] . '.  Please run database repair script to identify and/or correct.', false, 'WEBUI');
+		cacti_log('ERROR: Invalid Graph Template found in Database for Template id ' . $graph_template_id . '.  Please run database repair script to identify and/or correct.', false, 'WEBUI');
 		return;
 	}
 
@@ -487,7 +487,7 @@ function cdef_to_xml($cdef_id) {
  * @return string XML text of encoded VDEF.
  */
 function vdef_to_xml($vdef_id) {
-	global $config;
+	global $config, $export_errors;
 
 	include_once($config['library_path'] . '/vdef.php');
 
@@ -506,8 +506,9 @@ function vdef_to_xml($vdef_id) {
 		array($vdef_id));
 
 	if (empty($vdef['id'])) {
-		$err_msg = 'Invalid VDEF.';
-		return $err_msg;
+		$export_errors++;
+		cacti_log('ERROR: Invalid VDEF found in Graph Template.  Please run database repair script to identify and/or correct.', false, 'WEBUI');
+		return;
 	}
 
 	$xml_text .= '<hash_' . $hash['vdef'] . ">\n";
@@ -856,7 +857,7 @@ function data_query_to_xml($data_query_id) {
 				foreach ($snmp_query_graph_rrd as $item2) {
 					$xml_text .= "\t\t\t\t<item_" . str_pad(strval($i), 3, '0', STR_PAD_LEFT) . ">\n";
 
-					$xml_text .= "\t\t\t\t\t<snmp_field_name>" . $item2['snmp_field_name'] . "</snmp_field_name>\n";
+					$xml_text .= "\t\t\t\t\t<snmp_field_name>" . xml_character_encode($item2['snmp_field_name']) . "</snmp_field_name>\n";
 					$xml_text .= "\t\t\t\t\t<data_template_id>hash_" . get_hash_version('data_template') . get_hash_data_template($item2['data_template_id']) . "</data_template_id>\n";
 					$xml_text .= "\t\t\t\t\t<data_template_rrd_id>hash_" . get_hash_version('data_template_item') . get_hash_data_template($item2['data_template_rrd_id'], 'data_template_item') . "</data_template_rrd_id>\n";
 
