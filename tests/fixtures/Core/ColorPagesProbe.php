@@ -108,10 +108,72 @@ $db->exec('CREATE TABLE aggregate_graph_templates_item (aggregate_template_id IN
 $db->exec("CREATE TABLE aggregate_graphs (id INTEGER PRIMARY KEY, aggregate_template_id INTEGER DEFAULT 0, template_propogation TEXT DEFAULT '', local_graph_id INTEGER DEFAULT 0)");
 $db->exec('CREATE TABLE aggregate_graphs_graph_item (aggregate_graph_id INTEGER, graph_templates_item_id INTEGER, color_template INTEGER DEFAULT 0)');
 
+/*
+ * Each table is seeded by a fixed statement: a row of defaults is added and the
+ * columns the scenario names replace their defaults.
+ */
+$seed_columns = array(
+	'colors' => array('id', 'name', 'hex', 'read_only'),
+	'graph_templates_item' => array('id', 'hash', 'graph_template_id', 'local_graph_id', 'local_graph_template_item_id', 'task_item_id', 'color_id', 'alpha', 'graph_type_id', 'line_width', 'dashes', 'dash_offset', 'cdef_id', 'vdef_id', 'shift', 'consolidation_function_id', 'textalign', 'text_format', 'value', 'hard_return', 'gprint_id', 'sequence'),
+	'cdef' => array('id', 'name'),
+	'graph_templates' => array('id', 'name', 'multiple', 'test_source'),
+	'graph_templates_graph' => array('id', 'graph_template_id', 'local_graph_id'),
+	'graph_template_input' => array('id', 'hash', 'graph_template_id', 'name', 'column_name'),
+	'graph_template_input_defs' => array('graph_template_input_id', 'graph_template_item_id'),
+	'color_templates' => array('color_template_id', 'name'),
+	'color_template_items' => array('color_template_item_id', 'color_template_id', 'color_id', 'sequence'),
+	'aggregate_graph_templates_item' => array('aggregate_template_id', 'graph_templates_item_id', 'color_template'),
+	'aggregate_graphs' => array('id', 'aggregate_template_id', 'template_propogation', 'local_graph_id'),
+	'aggregate_graphs_graph_item' => array('aggregate_graph_id', 'graph_templates_item_id', 'color_template'),
+);
+
+$seed_statements = array(
+	'colors' => 'UPDATE colors SET id = COALESCE(?, id), name = COALESCE(?, name), hex = COALESCE(?, hex), read_only = COALESCE(?, read_only) WHERE rowid = ?',
+	'graph_templates_item' => 'UPDATE graph_templates_item SET id = COALESCE(?, id), hash = COALESCE(?, hash), graph_template_id = COALESCE(?, graph_template_id), local_graph_id = COALESCE(?, local_graph_id), local_graph_template_item_id = COALESCE(?, local_graph_template_item_id), task_item_id = COALESCE(?, task_item_id), color_id = COALESCE(?, color_id), alpha = COALESCE(?, alpha), graph_type_id = COALESCE(?, graph_type_id), line_width = COALESCE(?, line_width), dashes = COALESCE(?, dashes), dash_offset = COALESCE(?, dash_offset), cdef_id = COALESCE(?, cdef_id), vdef_id = COALESCE(?, vdef_id), shift = COALESCE(?, shift), consolidation_function_id = COALESCE(?, consolidation_function_id), textalign = COALESCE(?, textalign), text_format = COALESCE(?, text_format), value = COALESCE(?, value), hard_return = COALESCE(?, hard_return), gprint_id = COALESCE(?, gprint_id), sequence = COALESCE(?, sequence) WHERE rowid = ?',
+	'cdef' => 'UPDATE cdef SET id = COALESCE(?, id), name = COALESCE(?, name) WHERE rowid = ?',
+	'graph_templates' => 'UPDATE graph_templates SET id = COALESCE(?, id), name = COALESCE(?, name), multiple = COALESCE(?, multiple), test_source = COALESCE(?, test_source) WHERE rowid = ?',
+	'graph_templates_graph' => 'UPDATE graph_templates_graph SET id = COALESCE(?, id), graph_template_id = COALESCE(?, graph_template_id), local_graph_id = COALESCE(?, local_graph_id) WHERE rowid = ?',
+	'graph_template_input' => 'UPDATE graph_template_input SET id = COALESCE(?, id), hash = COALESCE(?, hash), graph_template_id = COALESCE(?, graph_template_id), name = COALESCE(?, name), column_name = COALESCE(?, column_name) WHERE rowid = ?',
+	'graph_template_input_defs' => 'UPDATE graph_template_input_defs SET graph_template_input_id = COALESCE(?, graph_template_input_id), graph_template_item_id = COALESCE(?, graph_template_item_id) WHERE rowid = ?',
+	'color_templates' => 'UPDATE color_templates SET color_template_id = COALESCE(?, color_template_id), name = COALESCE(?, name) WHERE rowid = ?',
+	'color_template_items' => 'UPDATE color_template_items SET color_template_item_id = COALESCE(?, color_template_item_id), color_template_id = COALESCE(?, color_template_id), color_id = COALESCE(?, color_id), sequence = COALESCE(?, sequence) WHERE rowid = ?',
+	'aggregate_graph_templates_item' => 'UPDATE aggregate_graph_templates_item SET aggregate_template_id = COALESCE(?, aggregate_template_id), graph_templates_item_id = COALESCE(?, graph_templates_item_id), color_template = COALESCE(?, color_template) WHERE rowid = ?',
+	'aggregate_graphs' => 'UPDATE aggregate_graphs SET id = COALESCE(?, id), aggregate_template_id = COALESCE(?, aggregate_template_id), template_propogation = COALESCE(?, template_propogation), local_graph_id = COALESCE(?, local_graph_id) WHERE rowid = ?',
+	'aggregate_graphs_graph_item' => 'UPDATE aggregate_graphs_graph_item SET aggregate_graph_id = COALESCE(?, aggregate_graph_id), graph_templates_item_id = COALESCE(?, graph_templates_item_id), color_template = COALESCE(?, color_template) WHERE rowid = ?',
+);
+
+$seed_defaults = array(
+	'colors' => 'INSERT INTO colors DEFAULT VALUES',
+	'graph_templates_item' => 'INSERT INTO graph_templates_item DEFAULT VALUES',
+	'cdef' => 'INSERT INTO cdef DEFAULT VALUES',
+	'graph_templates' => 'INSERT INTO graph_templates DEFAULT VALUES',
+	'graph_templates_graph' => 'INSERT INTO graph_templates_graph DEFAULT VALUES',
+	'graph_template_input' => 'INSERT INTO graph_template_input DEFAULT VALUES',
+	'graph_template_input_defs' => 'INSERT INTO graph_template_input_defs DEFAULT VALUES',
+	'color_templates' => 'INSERT INTO color_templates DEFAULT VALUES',
+	'color_template_items' => 'INSERT INTO color_template_items DEFAULT VALUES',
+	'aggregate_graph_templates_item' => 'INSERT INTO aggregate_graph_templates_item DEFAULT VALUES',
+	'aggregate_graphs' => 'INSERT INTO aggregate_graphs DEFAULT VALUES',
+	'aggregate_graphs_graph_item' => 'INSERT INTO aggregate_graphs_graph_item DEFAULT VALUES',
+);
+
 foreach ($scenario['db'] ?? array() as $table => $rows) {
 	foreach ($rows as $row) {
-		$statement = $db->prepare('INSERT INTO ' . $table . ' (' . implode(', ', array_keys($row)) . ') VALUES (' . implode(', ', array_fill(0, cacti_sizeof($row), '?')) . ')');
-		$statement->execute(array_values($row));
+		if (cacti_sizeof(array_diff(array_keys($row), $seed_columns[$table]))) {
+			throw new \InvalidArgumentException('Unknown column for ' . $table);
+		}
+
+		$db->exec($seed_defaults[$table]);
+
+		$values = array();
+
+		foreach ($seed_columns[$table] as $column) {
+			$values[] = $row[$column] ?? null;
+		}
+
+		$values[] = $db->lastInsertId();
+
+		$db->prepare($seed_statements[$table])->execute($values);
 	}
 }
 
