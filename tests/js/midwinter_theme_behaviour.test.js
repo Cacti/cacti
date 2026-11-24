@@ -502,3 +502,55 @@ test('docking a box selects its button and keeps the box when the dock side is m
 
 	assert.doesNotMatch(extract(navigation, '#moveToDock($box'), /console\.log/);
 });
+
+function tableLayoutPage(stored, locale) {
+	const written = [];
+	const table = {attributes: {}, classes: [], attr(name, value) { this.attributes[name] = value; return this; }, addClass(name) { this.classes.push(name); return this; }};
+	const header = (title) => ({
+		__th: true,
+		hasClass: (name) => name === 'sortable',
+		find: (selector) => selector === 'i:first'
+			? {parent: () => ({text: () => title})}
+			: {attr: () => title.toLowerCase()},
+		text: () => title
+	});
+	const ths = [header('Name'), header('Status'), header('Hosts')];
+	const headerRow = {
+		length: 1,
+		closest: () => table,
+		find: () => ({each: (callback) => ths.forEach((th, index) => callback.call(th, index))})
+	};
+	const context = {
+		$: (selector) => (selector && selector.__th) ? selector : {first: () => headerRow},
+		window: {location: {pathname: '/cacti/host.php'}},
+		sessionLocale: locale,
+		Storages: {localStorage: {get: () => stored, set: (key, value) => written.push(JSON.parse(value))}},
+		midwinter: {navigationBox: {registerPlugin: () => {}, _escape: (value) => String(value)}}
+	};
+
+	vm.runInNewContext(read('include/js/navigationBox.tableLayout.js'), context);
+
+	return {html: context.midwinter.navigationBox.table.content({}), table, written};
+}
+
+test('stored hidden columns are hidden again when the table is shown', () => {
+	const stored = JSON.stringify([['no-col3', 'x" onclick="'], [[1, 'name', 'Name', 1, 1], [2, 'status', 'Status', 1, 1], [3, 'hosts', 'Hosts', 1, 0]], 'en-US']);
+	const {table, html, written} = tableLayoutPage(stored, 'en-US');
+
+	assert.deepEqual(table.classes, ['no-col3'], 'only column classes are applied');
+	assert.match(html, /data-column="3"\s*\n\s*\n/, 'the hidden column is shown unchecked');
+	assert.deepEqual(written, [], 'nothing is rebuilt in the same language');
+});
+
+test('column titles are read again after a language change, keeping hidden columns', () => {
+	const stored = JSON.stringify([['no-col2'], [[1, 'name', 'Nom', 1, 1], [2, 'status', 'Etat', 1, 0], [3, 'hosts', 'Hotes', 1, 1]], 'fr-FR']);
+	const {table, html, written} = tableLayoutPage(stored, 'en-US');
+
+	assert.equal(written.length, 1);
+	assert.deepEqual(written[0][0], ['no-col2']);
+	assert.deepEqual(written[0][1].map((column) => [column[2], column[4]]), [['Name', 1], ['Status', 0], ['Hosts', 1]]);
+	assert.equal(written[0][2], 'en-US');
+	assert.match(html, /<span>Status<\/span>/);
+	assert.doesNotMatch(html, /Etat/);
+	assert.deepEqual(table.classes, ['no-col2']);
+});
