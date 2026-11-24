@@ -769,13 +769,17 @@ function sync_color_templates(int $color_template) : void {
 		}
 	}
 
-	$aggregate_graphs = db_fetch_assoc_prepared('SELECT DISTINCT ag.aggregate_template_id, ag.local_graph_id
+	/*
+	 * Aggregates that keep their own items, either without a template or with template
+	 * propagation off, and that use this color template.  They are pushed out from their
+	 * own items, as aggregate_graphs.php does when one of them is saved.
+	 */
+	$aggregate_graphs = db_fetch_assoc_prepared("SELECT DISTINCT ag.local_graph_id
 		FROM aggregate_graphs_graph_item AS agi
-		LEFT JOIN aggregate_graphs AS ag
-		ON ag.id=agi.aggregate_graph_id
-		WHERE (ag.aggregate_template_id > 0 AND ag.template_propogation = "")
-		OR ag.aggregate_template_id = 0
-		AND agi.color_template = ?',
+		INNER JOIN aggregate_graphs AS ag
+		ON ag.id = agi.aggregate_graph_id
+		WHERE (ag.aggregate_template_id = 0 OR ag.template_propogation = '')
+		AND agi.color_template = ?",
 		[$color_template]);
 
 	if (cacti_sizeof($aggregate_graphs)) {
@@ -783,7 +787,7 @@ function sync_color_templates(int $color_template) : void {
 		$graphs = cacti_sizeof($aggregate_graphs);
 
 		foreach ($aggregate_graphs as $id) {
-			if (!push_out_aggregates($id['aggregate_template_id'], $id['local_graph_id'])) {
+			if (!push_out_aggregates(0, $id['local_graph_id'])) {
 				$failed++;
 			}
 		}
