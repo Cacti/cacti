@@ -640,7 +640,14 @@ function import_read_package_data($xmlfile, &$public_key) {
 				fclose($f);
 				return false;
 			} elseif (strpos($x, '<signature>') !== FALSE) {
-				$binary_signature =  base64_decode(trim(str_replace(array('<signature>', '</signature>'), array('', ''), $x)));
+				/* the line is left out of the signed text, so it may hold nothing but the signature */
+				if (!preg_match('#^\s*<signature>([A-Za-z0-9+/=]*)</signature>\s*$#', $x, $matches)) {
+					cacti_log('FATAL: Package signature line is not valid for ' . $filename, true, 'IMPORT', POLLER_VERBOSITY_LOW);
+					fclose($f);
+					return false;
+				}
+
+				$binary_signature = base64_decode($matches[1]);
 				$x = "   <signature></signature>\n";
 
 				cacti_log('NOTE: Got Package Signature', false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
