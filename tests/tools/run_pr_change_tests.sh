@@ -103,6 +103,7 @@ run_probe ConfiguredCommands.php configured-commands
 run_probe ConfiguredCommands.php deprecated-rebuild deprecated
 run_probe DisplayAndValidation.php display-validation
 run_probe DisplayAndValidation.php input-method-save save
+run_probe ThemeGraphPalette.php theme-graph-palette
 
 browser_specs=()
 for spec in graph-drilldown graph-spikekill filter-dialog-theme table-column-widths; do
