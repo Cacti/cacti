@@ -150,7 +150,22 @@ function form_actions() : void {
 
 		if ($selected_items != false) {
 			if (grv('drp_action') == '1') { // delete
-				db_execute('DELETE FROM colors WHERE ' . array_to_sql_or($selected_items, 'id'));
+				$sql_ids = array_to_sql_or($selected_items, 'id');
+
+				// Named Colors and colors that graph items, color templates or the graph settings use are kept
+				db_execute("DELETE FROM colors
+					WHERE $sql_ids
+					AND IFNULL(read_only, '') != 'on'
+					AND NOT EXISTS (SELECT 1 FROM graph_templates_item AS gti WHERE gti.color_id = colors.id)
+					AND NOT EXISTS (SELECT 1 FROM graph_templates_item AS gti WHERE gti.color2_id = colors.id)
+					AND NOT EXISTS (SELECT 1 FROM color_template_items AS cti WHERE cti.color_id = colors.id)
+					AND NOT EXISTS (SELECT 1 FROM settings AS s WHERE s.name IN ('graph_unknown_color', 'business_hours_color') AND s.value = colors.id)");
+
+				$kept = db_fetch_cell("SELECT COUNT(*) FROM colors WHERE $sql_ids");
+
+				if ($kept > 0) {
+					raise_message('color_delete_kept', __('%d of the selected Colors were not deleted because they are Named Colors or still in use.', $kept), MESSAGE_LEVEL_WARN);
+				}
 			}
 		}
 

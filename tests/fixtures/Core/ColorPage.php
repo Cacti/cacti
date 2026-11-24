@@ -81,12 +81,24 @@ function header(string $value) : void {
 	throw new Redirect($value);
 }
 
-function db_execute(string $sql) : bool {
-	throw new RuntimeException('Unprepared statement: ' . $sql);
+function db_qstr(mixed $value) : string {
+	return "'" . addslashes((string) $value) . "'";
 }
 
-function db_fetch_row(string $sql) : array {
-	throw new RuntimeException('Unprepared statement: ' . $sql);
+function array_to_sql_or(array $array, string $column) : string {
+	return '(' . $column . ' IN(' . implode(',', array_map(__NAMESPACE__ . '\\db_qstr', $array)) . '))';
+}
+
+function db_execute(string $sql) : bool {
+	return fake($sql, []);
+}
+
+function db_fetch_row(string $sql) : mixed {
+	return fake($sql, []);
+}
+
+function db_fetch_cell(string $sql) : mixed {
+	return fake($sql, []);
 }
 
 // Each fake answer is matched by a fragment of the statement, in order.
@@ -152,6 +164,24 @@ function save(array $request, array $fake = [], mixed $result = 9) : string {
 \cacti_fixture_source_function($root . '/color.php', 'form_save', __NAMESPACE__);
 \cacti_fixture_source_function($root . '/lib/functions.php', 'form_input_validate', __NAMESPACE__);
 \cacti_fixture_source_function($root . '/lib/functions.php', 'is_error_message', __NAMESPACE__);
+\cacti_fixture_source_function($root . '/lib/functions.php', 'sanitize_unserialize_selected_items', __NAMESPACE__);
+\cacti_fixture_source_function($root . '/color.php', 'form_actions', __NAMESPACE__);
+
+// Confirm a bulk action and return the redirect it ends with.
+function action(array $request, array $fake) : string {
+	$_REQUEST            = $request;
+	$GLOBALS['db']       = [];
+	$GLOBALS['fake']     = $fake;
+	$GLOBALS['messages'] = [];
+
+	try {
+		form_actions();
+	} catch (Redirect $redirect) {
+		return $redirect->getMessage();
+	}
+
+	throw new RuntimeException('form_actions() ended without a redirect');
+}
 
 // A header and a quoted name containing a comma, as color_export() writes it.
 $result = import(["\"name\",\"hex\"\n", "\"Blue, dark\",\"0000AA\"\n"], ['SELECT *' => [], 'INSERT INTO colors' => true]);
@@ -221,5 +251,24 @@ check($location === 'Location: color.php' && $GLOBALS['messages'][0][0] === 2, '
 // An import that may update rows keeps the name of a Named Color.
 import(["name,hex\n", "Red,FF0000\n"], ['ON DUPLICATE KEY UPDATE' => true], ['allow_update' => 'on']);
 check(str_contains($GLOBALS['db'][0][0], "name=IF(read_only = 'on', name, VALUES(name))"), 'import update keeps named color names');
+
+// Delete keeps Named Colors and colors in use whatever ids are posted, and says so.
+$location = action(['drp_action' => '1', 'selected_items' => serialize(['3', '4'])], ['DELETE FROM colors' => true, 'SELECT COUNT(*)' => 1]);
+$delete   = $GLOBALS['db'][0][0];
+check($location === 'Location: color.php' && str_starts_with($delete, "DELETE FROM colors WHERE (id IN('3','4'))"), 'delete limited to the selected ids');
+
+foreach ([
+	"IFNULL(read_only, '') != 'on'",
+	'gti.color_id = colors.id',
+	'gti.color2_id = colors.id',
+	'FROM color_template_items AS cti WHERE cti.color_id = colors.id',
+	"s.name IN ('graph_unknown_color', 'business_hours_color') AND s.value = colors.id",
+] as $guard) {
+	check(str_contains($delete, $guard), 'delete guarded by ' . $guard);
+}
+check($GLOBALS['messages'] === [['color_delete_kept', '1 of the selected Colors were not deleted because they are Named Colors or still in use.', MESSAGE_LEVEL_WARN]], 'kept colors reported');
+
+action(['drp_action' => '1', 'selected_items' => serialize(['3'])], ['DELETE FROM colors' => true, 'SELECT COUNT(*)' => 0]);
+check($GLOBALS['messages'] === [], 'nothing reported when every color was deleted');
 
 print json_encode(['passed' => $GLOBALS['passed']], JSON_THROW_ON_ERROR) . "\n";
