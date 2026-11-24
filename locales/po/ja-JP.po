@@ -4,15 +4,16 @@ msgstr ""
 "Project-Id-Version: cacti\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2025-07-04 14:30-0400\n"
-"Last-Translator: The Cacti Group <developers@cacti.net>\n"
-"Language-Team: Japanese <http://translate.cacti.net/projects/cacti/core/ja/>\n"
-"Language: ja_JP\n"
+"PO-Revision-Date: 2026-11-24 09:13+0000\n"
+"Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
+"Language-Team: Japanese <https://translate.cacti.net/projects/cacti/core/ja/>"
+"\n"
+"Language: ja-JP\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Weblate 5.11.4\n"
 
 #: about.php:29 include/global_arrays.php:2781 lib/html.php:3046
 msgid "About Cacti"
@@ -182,7 +183,7 @@ msgstr "次の集計グラフを削除するには、[続行]をクリックし�
 
 #: aggregate_graphs.php:888
 msgid "Delete Aggregate Graph"
-msgstr "集約グラフを作成する"
+msgstr "集計グラフを削除"
 
 #: aggregate_graphs.php:889
 msgid "Delete Aggregate Graphs"
@@ -328,7 +329,7 @@ msgstr "行き先の枝："
 #: user_admin.php:1833
 #, php-format
 msgid "[edit: %s]"
-msgstr "[編集：%s]"
+msgstr "[編集: %s]"
 
 #: aggregate_graphs.php:1039 aggregate_graphs.php:1151
 #: aggregate_graphs.php:1153
@@ -1358,7 +1359,7 @@ msgstr "OS"
 
 #: automation_devices.php:343 host.php:1814 include/global_arrays.php:535
 msgid "Uptime"
-msgstr "あなたのアップタイムロボットAPIキー："
+msgstr "稼働時間"
 
 #: automation_devices.php:348 automation_devices.php:659
 #: automation_devices.php:662 include/global_arrays.php:1110 utilities.php:1036
@@ -2085,7 +2086,7 @@ msgstr "%d 分"
 #: include/global_settings.php:1858
 #, php-format
 msgid "%d Hour"
-msgstr "%d 時間"
+msgstr "%d時間"
 
 #: automation_networks.php:834 automation_networks.php:835
 #: automation_networks.php:836 data_source_profiles.php:859
@@ -2111,7 +2112,7 @@ msgstr "%d 時間"
 #: include/global_settings.php:3223
 #, php-format
 msgid "%d Hours"
-msgstr "%d 時間"
+msgstr "%d時間"
 
 #: automation_networks.php:843
 msgid "Enable this Network Range."
@@ -3547,7 +3548,7 @@ msgstr "<strong>name</strong> - カラーネーム"
 
 #: color.php:377
 msgid "<strong>hex</strong> - The Hex Value"
-msgstr "<strong>hex</strong> - <strong>16進値</strong>"
+msgstr "<strong>hex</strong> - 16進値"
 
 #: color.php:398
 #, php-format
@@ -4631,7 +4632,7 @@ msgstr "1年"
 #: rrdcleaner.php:524
 #, php-format
 msgid "%d Month"
-msgstr "%d ヶ月間の"
+msgstr "%dか月"
 
 #: data_source_profiles.php:833 include/global_arrays.php:812
 #: include/global_arrays.php:813 include/global_arrays.php:814
@@ -4646,7 +4647,7 @@ msgstr "%d ヶ月間の"
 #: rrdcleaner.php:527
 #, php-format
 msgid "%d Months"
-msgstr "%d ヶ月間の"
+msgstr "%dか月"
 
 #: data_source_profiles.php:842 include/global_arrays.php:752
 #: include/global_arrays.php:808 include/global_arrays.php:829
@@ -4654,7 +4655,7 @@ msgstr "%d ヶ月間の"
 #: include/global_settings.php:1869 rrdcleaner.php:520 rrdcleaner.php:521
 #, php-format
 msgid "%d Week"
-msgstr "%d 週間の"
+msgstr "%d週間"
 
 #: data_source_profiles.php:842 include/global_arrays.php:809
 #: include/global_arrays.php:810 include/global_arrays.php:830
@@ -4664,14 +4665,14 @@ msgstr "%d 週間の"
 #: include/global_settings.php:3228 rrdcleaner.php:522 rrdcleaner.php:523
 #, php-format
 msgid "%d Weeks"
-msgstr "%d 週間の"
+msgstr "%d週間"
 
 #: data_source_profiles.php:851 include/global_arrays.php:751
 #: include/global_arrays.php:795 include/global_arrays.php:805
 #: include/global_arrays.php:1601 include/global_settings.php:1863
 #, php-format
 msgid "%d Day"
-msgstr "%d 日間"
+msgstr "%d日"
 
 #: data_source_profiles.php:851 include/global_arrays.php:796
 #: include/global_arrays.php:806 include/global_arrays.php:807
@@ -4685,7 +4686,7 @@ msgstr "%d 日間"
 #: include/global_settings.php:1974 include/global_settings.php:1975
 #, php-format
 msgid "%d Days"
-msgstr "%d 日"
+msgstr "%d日"
 
 #: data_source_profiles.php:859 include/global_arrays.php:745
 #: include/global_arrays.php:1666 include/global_arrays.php:1687
@@ -5407,7 +5408,7 @@ msgstr "%d秒残りました。"
 
 #: graph_realtime.php:456
 msgid " seconds left."
-msgstr "残り秒。"
+msgstr " 残り秒。"
 
 #: graph_templates.php:39
 msgid "Change Settings"
@@ -5842,12 +5843,12 @@ msgstr "テンプレートから集計を作成"
 
 #: graphs.php:234 graphs.php:249
 msgid "No Device - "
-msgstr "デバイスがありません"
+msgstr "デバイスがありません "
 
 #: graphs.php:339
 #, php-format
 msgid "Created graph: %s"
-msgstr "作成したグラフ：%s"
+msgstr "グラフを作成しました: %s"
 
 #: graphs.php:347 lib/template.php:2251 lib/template.php:2285
 msgid "ERROR: No Data Source associated. Check Template"
@@ -6603,7 +6604,7 @@ msgstr "再索引方法"
 #: host.php:982
 #, php-format
 msgid " [%d Items, %d Rows]"
-msgstr "[%d項目、%d行]"
+msgstr " [%dアイテム、%d行]"
 
 #: host.php:982
 msgid "Fail"
@@ -7421,7 +7422,7 @@ msgstr "西"
 
 #: include/global_arrays.php:588
 msgid "East"
-msgstr "东"
+msgstr "東"
 
 #: include/global_arrays.php:593
 msgid "Left"
@@ -7596,27 +7597,27 @@ msgstr "UDP Ping"
 
 #: include/global_arrays.php:708
 msgid "NONE - Syslog Only if Selected"
-msgstr "NONE  - 選択した場合のみSyslog"
+msgstr "NONE - 選択した場合のみSyslog"
 
 #: include/global_arrays.php:709
 msgid "LOW - Statistics and Errors"
-msgstr "LOW  - 統計とエラー"
+msgstr "LOW - 統計とエラー"
 
 #: include/global_arrays.php:710
 msgid "MEDIUM - Statistics, Errors and Results"
-msgstr "MEDIUM  - 統計、エラー、結果"
+msgstr "MEDIUM - 統計、エラー、結果"
 
 #: include/global_arrays.php:711
 msgid "HIGH - Statistics, Errors, Results and Major I/O Events"
-msgstr "HIGH  - 統計、エラー、結果、および主要なI / Oイベント"
+msgstr "HIGH - 統計、エラー、結果、および主要なI / Oイベント"
 
 #: include/global_arrays.php:712
 msgid "DEBUG - Statistics, Errors, Results, I/O and Program Flow"
-msgstr "DEBUG  - 統計、エラー、結果、I / O、プログラムフロー"
+msgstr "DEBUG - 統計、エラー、結果、I / O、プログラムフロー"
 
 #: include/global_arrays.php:713
 msgid "DEVEL - Developer DEBUG Level"
-msgstr "DEVEL  - 開発者向けDEBUGレベル"
+msgstr "DEVEL - 開発者向けDEBUGレベル"
 
 #: include/global_arrays.php:738
 msgid "Selected Poller Interval"
@@ -7678,7 +7679,7 @@ msgstr "%0.1f 分"
 #: include/global_settings.php:1961 rrdcleaner.php:528
 #, php-format
 msgid "%d Year"
-msgstr "%d 年間の"
+msgstr "%d年"
 
 #: include/global_arrays.php:888
 msgid "Disabled/Manual"
@@ -8874,7 +8875,7 @@ msgstr "毎週"
 #: include/global_arrays.php:2017 include/global_arrays.php:2018
 #, php-format
 msgid "Every %d Weeks"
-msgstr "週%dごと"
+msgstr "%d週間ごと"
 
 #: include/global_arrays.php:2049
 msgctxt "A short textual representation of a month, three letters"
@@ -9874,7 +9875,12 @@ msgstr "オートスケールオプション"
 
 #: include/global_form.php:781
 msgid "Use <br> --alt-autoscale to scale to the absolute minimum and maximum <br> --alt-autoscale-max to scale to the maximum value, using a given lower limit <br> --alt-autoscale-min to scale to the minimum value, using a given upper limit <br> --alt-autoscale (with limits) to scale using both lower and upper limits (RRDtool default) <br>"
-msgstr "つかいます<br> --alt-autoscaleで絶対最小値と最大値に合わせます<br> --alt-autoscale-maxは、与えられた下限を使って最大値にスケールします<br> --alt-autoscale-min  - 与えられた上限を使って最小値にスケールする<br>下限と上限の両方を使用して拡大縮小する--alt-autoscale（制限あり）（RRDtoolのデフォルト） <br>"
+msgstr ""
+"つかいます<br> --alt-autoscaleで絶対最小値と最大値に合わせます<br> --alt-"
+"autoscale-maxは、与えられた下限を使って最大値にスケールします<br> --alt-"
+"autoscale-min - "
+"与えられた上限を使って最小値にスケールする<br>下限と上限の両方を使用して拡大"
+"縮小する--alt-autoscale（制限あり）（RRDtoolのデフォルト） <br>"
 
 #: include/global_form.php:785
 msgid "Use --alt-autoscale (ignoring given limits)"
@@ -9938,7 +9944,7 @@ msgstr "グリッドオプション"
 
 #: include/global_form.php:842
 msgid "Unit Grid Value (--unit/--y-grid)"
-msgstr "単位グリッド値（--unit /  -   -  y-grid）"
+msgstr "単位グリッド値（--unit / - - y-grid）"
 
 #: include/global_form.php:846
 msgid "Sets the exponent value on the Y-axis for numbers. Note: This option is deprecated and replaced by the --y-grid option.  In this option, Y-axis grid lines appear at each grid step interval.  Labels are placed every label factor lines."
@@ -10875,19 +10881,19 @@ msgstr "ツリーヘッダーとして使用するための置換文字列パタ
 
 #: include/global_languages.php:971
 msgid " T"
-msgstr "・"
+msgstr " ・"
 
 #: include/global_languages.php:973
 msgid " G"
-msgstr "G"
+msgstr " G"
 
 #: include/global_languages.php:975
 msgid " M"
-msgstr "M"
+msgstr " M"
 
 #: include/global_languages.php:977
 msgid " K"
-msgstr "K"
+msgstr " K"
 
 #: include/global_settings.php:40
 msgid "Paths"
@@ -11255,7 +11261,7 @@ msgstr "Cactiには、複数の代替言語翻訳プロセッサのサポート�
 
 #: include/global_settings.php:456
 msgid "Client TimeZone Support"
-msgstr "MySQL  -  TimeZoneのサポート"
+msgstr "MySQL - TimeZoneのサポート"
 
 #: include/global_settings.php:457
 msgid "How should Cacti support Client Dates based upon the Client browsers timezone."
@@ -13612,7 +13618,11 @@ msgstr "フィルター"
 
 #: include/global_settings.php:2822
 msgid "Specifies the DSes inside an RRD upon which Spikekill will operate. A string of comma-separated values that contains index numbers or names of desired DSes. If left blank, all DSes will match. An example is <i>\"5,traffic_*\"</i>, which would match DS index 5 as well as any DS whose name begins with <i>\"traffic_\"</i>. "
-msgstr "Spikekillが動作するRRD内のDSを指定します。インデックス番号または目的のDSの名前を含むカンマ区切りの値の文字列。空白のままにすると、すべてのDSが一致します。たとえば、<i>「5, traffic _*」は、DSインデックス5と、名前が「</i> <i>traffic _」</i>で始まるすべてのDSと一致します。"
+msgstr ""
+"Spikekillが動作するRRD内のDSを指定します。インデックス番号または目的のDSの名"
+"前を含むカンマ区切りの値の文字列。空白のままにすると、すべてのDSが一致します"
+"。たとえば、<i>「5, traffic _*」は、DSインデックス5と、名前が「</i> "
+"<i>traffic _」</i>で始まるすべてのDSと一致します。 "
 
 #: include/global_settings.php:2829
 msgid "RRDfile Backup Directory"
@@ -13676,7 +13686,7 @@ msgstr "初めてグラフページにアクセスしたときにデフォルト
 
 #: include/global_settings.php:2895
 msgid "TimeZone Support"
-msgstr "MySQL  -  TimeZoneのサポート"
+msgstr "MySQL - TimeZoneのサポート"
 
 #: include/global_settings.php:2896
 msgid "How would you like Cacti to present dates?  This setting will also change the way that Cacti Graphs dates are represented."
@@ -13684,7 +13694,7 @@ msgstr "Cactiで日付をどのように提示しますか？この設定は、C
 
 #: include/global_settings.php:2899
 msgid "Cacti Server Timezone"
-msgstr "Cacti Server v%s  - メンテナンス"
+msgstr "Cacti Server v%s - メンテナンス"
 
 #: include/global_settings.php:2900
 msgid "My Browsers Timezone"
@@ -14027,12 +14037,12 @@ msgstr "アクティブ/インストール済み"
 #: install/install.php:99
 #, php-format
 msgid "Cacti Server v%s - Maintenance"
-msgstr "Cacti Server v%s  - メンテナンス"
+msgstr "Cacti Server v%s - メンテナンス"
 
 #: install/install.php:110
 #, php-format
 msgid "Cacti Server v%s - Installation Wizard"
-msgstr "Cacti Server v%s  - インストールウィザード"
+msgstr "Cacti Server v%s - インストールウィザード"
 
 #: install/install.php:110
 msgid "Refresh current page"
@@ -14491,11 +14501,11 @@ msgstr "デバイス+テンプレート： （%s%s）"
 
 #: lib/auth.php:2488 lib/auth.php:2495 lib/auth.php:2504
 msgid "Restricted By: "
-msgstr "メンバーに限定"
+msgstr "メンバーに限定 "
 
 #: lib/auth.php:2492
 msgid "Granted By: "
-msgstr "許可を与える："
+msgstr "許可を与える： "
 
 #: lib/auth.php:2499
 msgid "Granted"
@@ -14651,7 +14661,7 @@ msgstr "%s バイト"
 #: lib/clog_webapi.php:109 utilities.php:529
 #, php-format
 msgid "%s - WEBUI NOTE: Cacti Log Cleared from Web Management Interface."
-msgstr "%s  -  WEBUI注：CactiログはWeb管理インターフェースから消去されました。"
+msgstr "%s - WEBUI注：CactiログはWeb管理インターフェースから消去されました。"
 
 #: lib/clog_webapi.php:224
 msgid "Click 'Continue' to purge the Log File.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog."
@@ -14667,15 +14677,15 @@ msgstr "ログのフィルター"
 
 #: lib/clog_webapi.php:280
 msgid " - Admin Filter active"
-msgstr "- 管理フィルタがアクティブ"
+msgstr " - 管理フィルタがアクティブ"
 
 #: lib/clog_webapi.php:282
 msgid " - Admin Unfiltered"
-msgstr "- 管理者フィルタなし"
+msgstr " - 管理者フィルタなし"
 
 #: lib/clog_webapi.php:285
 msgid " - Admin view"
-msgstr "- 管理者ビュー"
+msgstr " - 管理者ビュー"
 
 #: lib/clog_webapi.php:290
 #, php-format
@@ -15237,7 +15247,7 @@ msgstr "5回のポーリング後にデバッグが完了しない"
 
 #: lib/dsdebug.php:260
 msgid "Failed fields: "
-msgstr "失敗したフィールド"
+msgstr "失敗したフィールド "
 
 #: lib/dsdebug.php:269
 msgid "Data Source is not set as Active"
@@ -15263,7 +15273,7 @@ msgstr "ポーリング後にRRDファイルが更新されない"
 
 #: lib/dsdebug.php:303
 msgid "Data Source returned Bad Results for "
-msgstr "データソースから返された悪い結果"
+msgstr "データソースから返された悪い結果 "
 
 #: lib/dsdebug.php:308
 msgid "Data Source was not polled"
@@ -15392,7 +15402,7 @@ msgstr "接続失敗：%s"
 
 #: lib/functions.php:5822
 msgid "SMTP error: "
-msgstr "SMTPエラー："
+msgstr "SMTPエラー： "
 
 #: lib/functions.php:5835
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
@@ -15946,7 +15956,7 @@ msgstr "テーブルの列が現在のウィンドウの制限を超えること
 
 #: lib/html.php:3127 pollers.php:875
 msgid "Connection Failed"
-msgstr "æ¥ç¶å¤±æ"
+msgstr "接続に失敗しました"
 
 #: lib/html.php:3128 pollers.php:873
 msgid "Connection Successful"
@@ -16924,7 +16934,7 @@ msgstr "パッケージファイル"
 
 #: lib/import.php:2692
 msgid "[preview] "
-msgstr "プレビュー"
+msgstr "プレビュー "
 
 #: lib/import.php:2698
 msgid "Cacti would make the following changes if the Template was imported:"
@@ -17144,7 +17154,7 @@ msgstr "GPLライセンス契約に同意する"
 
 #: lib/installer.php:1965
 msgid "Select default theme: "
-msgstr "デフォルトのテーマを選択："
+msgstr "デフォルトのテーマを選択： "
 
 #: lib/installer.php:1988
 msgid "Pre-installation Checks"
@@ -17209,7 +17219,7 @@ msgstr "指定された値は、実行コンフィグとINIファイルで異な
 
 #: lib/installer.php:2115
 msgid "PHP - Module Support (Required)"
-msgstr "PHP  - モジュールサポート（必須）"
+msgstr "PHP - モジュールサポート（必須）"
 
 #: lib/installer.php:2116
 msgid "Cacti requires several PHP Modules to be installed to work properly. If any of these are not installed, you will be unable to continue the installation until corrected. In addition, for optimal system performance Cacti should be run with certain MySQL system variables set.  Please follow the MySQL recommendations at your discretion.  Always seek the MySQL documentation if you have any questions."
@@ -17233,7 +17243,7 @@ msgstr "必須"
 
 #: lib/installer.php:2146
 msgid "PHP - Module Support (Optional)"
-msgstr "PHP  - モジュールサポート（オプション）"
+msgstr "PHP - モジュールサポート（オプション）"
 
 #: lib/installer.php:2148
 msgid "The following PHP extensions are recommended, and should be installed before continuing your Cacti install.  NOTE: If you are planning on supporting SNMPv3 with IPv6, you should not install the php-snmp module at this time."
@@ -17249,7 +17259,7 @@ msgstr "オプション"
 
 #: lib/installer.php:2174
 msgid "MySQL - TimeZone Support"
-msgstr "MySQL  -  TimeZoneのサポート"
+msgstr "MySQL - TimeZoneのサポート"
 
 #: lib/installer.php:2186
 msgid "Your MySQL TimeZone database is not populated.  Please populate this database before proceeding."
@@ -17265,7 +17275,7 @@ msgstr "あなたのCactiデータベースアカウントはMySQL TimeZoneデ�
 
 #: lib/installer.php:2200
 msgid "MySQL - Settings"
-msgstr "MySQL  - 設定"
+msgstr "MySQL - 設定"
 
 #: lib/installer.php:2201
 msgid "These MySQL performance tuning settings will help your Cacti system perform better without issues for a longer time."
@@ -17282,7 +17292,7 @@ msgstr "インストールの種類"
 #: lib/installer.php:2239
 #, php-format
 msgid "Upgrade from <strong>%s</strong> to <strong>%s</strong>"
-msgstr "<strong>%s</strong>から</strong>%s<strong>にアップグレード"
+msgstr "<strong>%s</strong>から<strong>%s</strong>にアップグレード"
 
 #: lib/installer.php:2241
 msgid "In the event of issues, It is highly recommended that you clear your browser cache, closing then reopening your browser (not just the tab Cacti is on) and retrying, before raising an issue with The Cacti Group"
@@ -17299,11 +17309,14 @@ msgstr "キャッシュをクリアしてブラウザを再起動しても問題
 #: lib/installer.php:2250
 #, php-format
 msgid "Downgrade from <strong>%s</strong> to <strong>%s</strong>"
-msgstr "<strong>%s</strong>から</strong>%s<strong>にダウングレード"
+msgstr "<strong>%s</strong>から<strong>%s</strong>にダウングレード"
 
 #: lib/installer.php:2251
 msgid "You appear to be downgrading to a previous version.  Database changes made for the newer version will not be reversed and <i>could</i> cause issues."
-msgstr "以前のバージョンにダウングレードしているようです。新しいバージョンに対して行われたデータベースの変更は元に戻されず、問題を引き起こす<i>可能</i>性<i>が</i>あります。"
+msgstr ""
+"以前のバージョンにダウングレードしているようです。新しいバージョンに対して行"
+"われたデータベースの変更は元に戻されず、問題を引き起こす<i>可能性</i>がありま"
+"す。"
 
 #: lib/installer.php:2258
 msgid "Please select the type of installation"
@@ -17625,7 +17638,7 @@ msgstr "サーバーの照合順序はUTF8に準拠しているようです"
 
 #: lib/installer.php:2806
 msgid "Your server collation does NOT appear to be fully UTF8 compliant. "
-msgstr "サーバーの照合順序が完全にUTF8に準拠していないようです。"
+msgstr "サーバーの照合順序が完全にUTF8に準拠していないようです。 "
 
 #: lib/installer.php:2807
 msgid "Under the [mysqld] section, locate the entries named 'character-set-server' and 'collation-server' and set them as follows:"
@@ -17641,11 +17654,14 @@ msgstr "データベースのデフォルトの照合順序はUTF8に準拠し�
 
 #: lib/installer.php:2823
 msgid "Your database default collation does NOT appear to be full UTF8 compliant. "
-msgstr "データベースのデフォルト照合は完全なUTF-8に準拠しているようには見えません。"
+msgstr "データベースのデフォルト照合は完全なUTF-8に準拠しているようには見えません。 "
 
 #: lib/installer.php:2824
 msgid "Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched.   Please ensure your database is changed to 'utf8mb4_unicode_ci' by running the following: "
-msgstr "照合が一致しない場合、プラグインによって作成されたテーブルにはCacti Coreテーブルとリンクした問題があるかもしれません。次のコマンドを実行して、データベースが「utf8mb4_unicode_ci」に変更されていることを確認してください。"
+msgstr ""
+"照合が一致しない場合、プラグインによって作成されたテーブルにはCacti "
+"Coreテーブルとリンクした問題があるかもしれません。次のコマンドを実行して、デ"
+"ータベースが「utf8mb4_unicode_ci」に変更されていることを確認してください。 "
 
 #: lib/installer.php:2831
 msgid "Table Setup"
@@ -17678,7 +17694,10 @@ msgstr "row 形式"
 
 #: lib/installer.php:2884
 msgid "One or more tables are too large to convert during the installation.  You should use the cli/convert_tables.php script to perform the conversion, then refresh this page. For example: "
-msgstr "1つ以上のテーブルが大きすぎるため、インストール中に変換できません。 cli / convert_tables.phpスクリプトを使用して変換を実行してから、このページを更新してください。例えば："
+msgstr ""
+"1つ以上のテーブルが大きすぎるため、インストール中に変換できません。 cli / "
+"convert_tables.phpスクリプトを使用して変換を実行してから、このページを更新し"
+"てください。例えば： "
 
 #: lib/installer.php:2888
 msgid "The following tables should be converted to UTF8 and InnoDB with a Dynamic row format.  Please select the tables that you wish to convert during the installation process."
@@ -17740,7 +17759,7 @@ msgstr "GPLライセンス契約に同意する"
 #: lib/installer.php:2969 lib/installer.php:2972 lib/installer.php:2975
 #: lib/installer.php:2978 lib/installer.php:2981
 msgid "Install Type"
-msgstr "インストール  タイプ"
+msgstr "インストール タイプ"
 
 #: lib/installer.php:2969
 msgid "New Install"
@@ -18281,12 +18300,12 @@ msgstr "設定によりpingが実行されません。"
 #: lib/plugins.php:681
 #, php-format
 msgid "'%s' versions '%s' above or in range are required to install '%s'. "
-msgstr "%s%sには%s以上のバージョンが必要です。"
+msgstr "%s%sには%s以上のバージョンが必要です。 "
 
 #: lib/plugins.php:685
 #, php-format
 msgid "'%s' must first be installed before '%s' is installed. "
-msgstr "%sは%sに必須であり、インストールされていません。"
+msgstr "%sは%sに必須であり、インストールされていません。 "
 
 #: lib/plugins.php:708
 msgid "Plugin cannot be installed."
@@ -19313,7 +19332,7 @@ msgstr "警告：エクスポートエラーが発生しました。詳細につ
 
 #: package.php:163
 msgid "There were errors packaging your Templates.  Errors Follow. "
-msgstr "テンプレートのパッケージ化中にエラーが発生しました。エラーが続きます。"
+msgstr "テンプレートのパッケージ化中にエラーが発生しました。エラーが続きます。 "
 
 #: package.php:221
 #, php-format
@@ -19660,7 +19679,7 @@ msgstr "独立"
 
 #: package_import.php:1311
 msgid "File Differences for: "
-msgstr "次のファイルの差異："
+msgstr "次のファイルの差異： "
 
 #: package_import.php:1422
 msgid "Local Package Import File"
@@ -20994,17 +21013,17 @@ msgstr "年齢"
 #: rrdcheck.php:236 rrdcheck.php:237 rrdcheck.php:238
 #, php-format
 msgid "%d hours"
-msgstr "%d 時間"
+msgstr "%d時間"
 
 #: rrdcheck.php:239
 #, php-format
 msgid "%d day"
-msgstr "%d 日"
+msgstr "%d日"
 
 #: rrdcheck.php:240 rrdcheck.php:241
 #, php-format
 msgid "%d days"
-msgstr "%d 日"
+msgstr "%d日"
 
 #: rrdcheck.php:245 rrdcheck.php:248
 msgid "Messages"
@@ -21295,7 +21314,7 @@ msgstr "このサイトのデフォルトのマップズーム。値は0〜23で
 
 #: sites.php:154
 msgid "0 - 23"
-msgstr "0  -  23"
+msgstr "0 - 23"
 
 #: sites.php:161
 msgid "Additional Information"
@@ -21783,15 +21802,15 @@ msgstr "投票する項目はありません"
 
 #: support.php:1309 support.php:1316
 msgid "Name: "
-msgstr "名前:"
+msgstr "名前: "
 
 #: support.php:1309
 msgid "Procs: "
-msgstr "1プロセス"
+msgstr "1プロセス "
 
 #: support.php:1316
 msgid "Threads: "
-msgstr "スレッド"
+msgstr "スレッド "
 
 #: support.php:1322
 msgid "Concurrent Processes"
@@ -23004,7 +23023,7 @@ msgstr "このグループの名前"
 
 #: user_group_admin.php:80
 msgid "Group Description"
-msgstr "グループの説明 "
+msgstr "グループの説明"
 
 #: user_group_admin.php:81
 msgid "A more descriptive name for this group, that can include spaces or special characters."
@@ -23206,7 +23225,7 @@ msgstr "結果"
 
 #: user_log.php:179 user_log.php:318
 msgid "Success - Password"
-msgstr "成功 -  PSWD"
+msgstr "成功 - PSWD"
 
 #: user_log.php:180 user_log.php:318
 msgid "Success - Token"
@@ -23214,7 +23233,7 @@ msgstr "成功 - トークン"
 
 #: user_log.php:181 user_log.php:318
 msgid "Success - Password Change"
-msgstr "成功 -  PSWD"
+msgstr "成功 - PSWD"
 
 #: user_log.php:186
 msgid "Attempts"
@@ -23465,7 +23484,7 @@ msgstr "サボテンシステムユーティリティ"
 
 #: utilities.php:1397 utilities.php:1400
 msgid "Refresh Interval"
-msgstr "ãªãã¬ãã·ã¥éé"
+msgstr "更新間隔"
 
 #: utilities.php:1494
 msgid "Overrun Warning"
