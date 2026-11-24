@@ -38,7 +38,7 @@ require $root . '/include/global_constants.php';
 
 $scenario = json_decode($argv[1], true, 512, JSON_THROW_ON_ERROR);
 
-$config   = array('base_path' => $root, 'is_web' => false);
+$config   = array('base_path' => $root, 'include_path' => __DIR__ . '/ColorPages', 'is_web' => false, 'cacti_server_os' => 'unix');
 $messages = array();
 $_SESSION = $scenario['session'] ?? array();
 $_POST    = $scenario['post'] ?? array();
@@ -52,7 +52,7 @@ $GLOBALS['checkboxes']    = array();
 $GLOBALS['pushed']        = array();
 $GLOBALS['affected_rows'] = 0;
 
-$pages = array('color.php', 'color_templates.php', 'color_templates_items.php', 'graphs_items.php', 'graph_templates_items.php', 'lib/html_form.php', 'lib/aggregate.php', 'lib/api_aggregate.php', 'lib/functions.php', 'lib/html.php', 'lib/html_utility.php', 'lib/database.php');
+$pages = array('color.php', 'color_templates.php', 'color_templates_items.php', 'graphs_items.php', 'graph_templates_items.php', 'lib/html_form.php', 'lib/aggregate.php', 'lib/api_aggregate.php', 'lib/functions.php', 'lib/html.php', 'lib/html_utility.php', 'lib/database.php', 'lib/export.php');
 
 /* the alpha keys the graph item editor offers, read from include/global_arrays.php */
 $graph_color_alpha = array();
@@ -72,6 +72,7 @@ $helpers = array(
 	array('lib/functions.php', 'filter_value'),
 	array('lib/html.php', 'html_escape'),
 	array('lib/html_utility.php', 'form_selectable_cell'),
+	array('lib/html_utility.php', 'form_selectable_ecell'),
 	array('lib/database.php', 'array_to_sql_or'),
 );
 
@@ -83,14 +84,24 @@ foreach (array_merge($helpers, $scenario['slice']) as $slice) {
 	\cacti_fixture_source_function($root . '/' . $slice[0], $slice[1], __NAMESPACE__);
 }
 
-$graph_item_types = array(1 => 'COMMENT', 2 => 'HRULE', 3 => 'VRULE', 4 => 'LINE1', 5 => 'LINE2', 6 => 'LINE3', 7 => 'AREA', 8 => 'STACK', 9 => 'GPRINT', 10 => 'LEGEND');
+require $config['include_path'] . '/global_arrays.php';
+
+/* template export writes these fields of a graph item */
+$struct_graph                     = array();
+$struct_graph_item                = array('color_id' => array(), 'alpha' => array(), 'text_format' => array());
+$fields_graph_template_input_edit = array();
+$export_errors                    = 0;
 
 $db = new \PDO('sqlite::memory:');
 $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 $db->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
 $db->setAttribute(\PDO::ATTR_STRINGIFY_FETCHES, true);
 $db->exec("CREATE TABLE colors (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT DEFAULT '', hex TEXT NOT NULL DEFAULT '', read_only TEXT DEFAULT '', UNIQUE (hex))");
-$db->exec('CREATE TABLE graph_templates_item (id INTEGER PRIMARY KEY AUTOINCREMENT, graph_template_id INTEGER DEFAULT 0, local_graph_id INTEGER DEFAULT 0, color_id INTEGER DEFAULT 0, alpha TEXT DEFAULT \'FF\', graph_type_id INTEGER DEFAULT 0, sequence INTEGER DEFAULT 0)');
+$db->exec("CREATE TABLE graph_templates_item (id INTEGER PRIMARY KEY AUTOINCREMENT, hash TEXT DEFAULT '', graph_template_id INTEGER DEFAULT 0, local_graph_id INTEGER DEFAULT 0, local_graph_template_item_id INTEGER DEFAULT 0, task_item_id INTEGER DEFAULT 0, color_id INTEGER DEFAULT 0, alpha TEXT DEFAULT 'FF', graph_type_id INTEGER DEFAULT 0, line_width TEXT DEFAULT '', dashes TEXT DEFAULT '', dash_offset TEXT DEFAULT '', cdef_id INTEGER DEFAULT 0, vdef_id INTEGER DEFAULT 0, shift TEXT DEFAULT '', consolidation_function_id INTEGER DEFAULT 0, textalign TEXT DEFAULT '', text_format TEXT DEFAULT '', value TEXT DEFAULT '', hard_return TEXT DEFAULT '', gprint_id INTEGER DEFAULT 0, sequence INTEGER DEFAULT 0)");
+$db->exec("CREATE TABLE cdef (id INTEGER PRIMARY KEY, name TEXT DEFAULT '')");
+$db->exec("CREATE TABLE graph_templates (id INTEGER PRIMARY KEY, name TEXT DEFAULT '', multiple TEXT DEFAULT '', test_source TEXT DEFAULT '')");
+$db->exec('CREATE TABLE graph_templates_graph (id INTEGER PRIMARY KEY, graph_template_id INTEGER DEFAULT 0, local_graph_id INTEGER DEFAULT 0)');
+$db->exec('CREATE TABLE graph_template_input (id INTEGER PRIMARY KEY, graph_template_id INTEGER DEFAULT 0)');
 $db->exec("CREATE TABLE color_templates (color_template_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT DEFAULT '')");
 $db->exec('CREATE TABLE color_template_items (color_template_item_id INTEGER PRIMARY KEY AUTOINCREMENT, color_template_id INTEGER DEFAULT 0, color_id INTEGER DEFAULT 0, sequence INTEGER DEFAULT 0)');
 $db->exec('CREATE TABLE aggregate_graph_templates_item (aggregate_template_id INTEGER, graph_templates_item_id INTEGER, color_template INTEGER DEFAULT 0)');
@@ -395,10 +406,6 @@ function form_end_row() {
 	print '</tr>';
 }
 
-function form_selectable_ecell($contents, $id, $width = '', $style_or_class = '', $title = '') {
-	form_selectable_cell(html_escape($contents), $id, $width, $style_or_class, $title);
-}
-
 function form_checkbox_cell($title, $id, $disabled = false) {
 	$GLOBALS['checkboxes'][$id] = $disabled;
 }
@@ -423,6 +430,21 @@ function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $aja
 
 function form_hidden_box($form_name, $form_previous_value, $form_default_value, $in_form = false) {
 	print '<input type="hidden" name="' . $form_name . '" value="' . html_escape($form_previous_value) . '">';
+}
+
+function form_alternate_row_class($row_id = '', $class = '') {
+	print '<tr id="' . $row_id . '">';
+}
+
+function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1) {
+}
+
+function get_hash_version($type) {
+	return '0024';
+}
+
+function get_hash_graph_template($id, $type = 'graph_template') {
+	return md5($type . $id);
 }
 
 function html_create_list($form_data, $column_display, $column_id, $form_previous_value) {

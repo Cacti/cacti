@@ -313,7 +313,7 @@ function aggregate_color_item_remove_confirm() {
 		<td class='topBoxAlt'>
 			<p><?php print __('Click \'Continue\' to delete the following Color Template Color.'); ?></p>
 			<p><?php print __('Color Name:');?> '<?php print html_escape($template['name']);?>'<br>
-			<?php print __('Color Hex:');?><strong><?php print $color_hex;?></p>
+			<?php print __('Color Hex:');?><strong><?php print html_escape($color_hex);?></p>
 		</td>
 	</tr>
 	<tr>
