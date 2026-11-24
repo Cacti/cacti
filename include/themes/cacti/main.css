@@ -1530,7 +1530,7 @@ legend {
 	width: 100%;
 	text-align: left;
 	line-height: 25px;
-	background: rgba(0, 119, 0, 0.55) none repeat scroll 0 0;
+	background: rgba(0,119,0,1) none repeat scroll 0 0;
 	color: white;
 	font-weight: bold;
 }
@@ -1655,7 +1655,7 @@ legend {
 .tableHeader {
 	display: table-row;
 	color: white;
-	background: rgba(0,109,0,0.55);
+	background: rgba(0,119,0,1);
 }
 
 th.sortable {
@@ -2101,7 +2101,7 @@ div.submenu span {
 .tabs nav a.selected {
 	color: white;
 	border-bottom: 1px solid rgba(162,117,63,0.8);
-	background: rgba(117,162,63,0.8);
+	background: rgba(0,119,0,1);
 }
 
 .tabs li {

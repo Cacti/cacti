@@ -79,6 +79,7 @@
     --text-color-high-contrast: hsl(var(--contrast), 0%, 5%);
     --text-color-navigation: hsl(var(--special2-hue), 7%, 25%);
     --text-color-navigation-highlight:hsl(var(--hue), 7%, 100%);
+    --text-color-highlight: var(--text-color-white);
     --text-color-highlight-a: hsl(var(--special2-hue), 100%, 50%);
     --text-search-highlight: royalblue;
     --text-color-disabled: hsl(var(--hue), 5%, 40%);
