@@ -5752,7 +5752,7 @@ function automation_graph_rule_import(mixed $json_data) : array {
 
 				if (empty($snmp_query_id)) {
 					$error                  = true;
-					$debug_data['errors'][] = __('The Cacti install does not include the Data Query with the hash \'%s\'!', $hash);
+					$debug_data['errors'][] = __esc('The Cacti install does not include the Data Query with the hash \'%s\'!', $hash);
 				} else {
 					$sqids[$hash] = $snmp_query_id;
 				}
@@ -5764,7 +5764,7 @@ function automation_graph_rule_import(mixed $json_data) : array {
 
 				if (empty($graph_type_id)) {
 					$error                  = true;
-					$debug_data['errors'][] = __('The Cacti install does not include the Data Query Graph mapping with the hash \'%s\'!', $hash);
+					$debug_data['errors'][] = __esc('The Cacti install does not include the Data Query Graph mapping with the hash \'%s\'!', $hash);
 				} else {
 					$sqgtids[$hash] = $graph_type_id;
 				}
@@ -6038,7 +6038,7 @@ function automation_template_import(mixed $json_data, bool $tree_branches = fals
 
 			if (empty($host_template_id)) {
 				$error                  = true;
-				$debug_data['errors'][] = __('The Cacti install does not include the Device Template with the hash \'%s\'!', $hash);
+				$debug_data['errors'][] = __esc('The Cacti install does not include the Device Template with the hash \'%s\'!', $hash);
 			} else {
 				$htids[$hash] = $host_template_id;
 			}
@@ -6053,7 +6053,7 @@ function automation_template_import(mixed $json_data, bool $tree_branches = fals
 
 						if (empty($snmp_query_id)) {
 							$error                  = true;
-							$debug_data['errors'][] = __('The Cacti install does not include the Data Query with the hash \'%s\'!', $hash);
+							$debug_data['errors'][] = __esc('The Cacti install does not include the Data Query with the hash \'%s\'!', $hash);
 						} else {
 							$sqids[$hash] = $snmp_query_id;
 						}
@@ -6065,7 +6065,7 @@ function automation_template_import(mixed $json_data, bool $tree_branches = fals
 
 						if (empty($graph_type_id)) {
 							$error                  = true;
-							$debug_data['errors'][] = __('The Cacti install does not include the Data Query Graph mapping with the hash \'%s\'!', $hash);
+							$debug_data['errors'][] = __esc('The Cacti install does not include the Data Query Graph mapping with the hash \'%s\'!', $hash);
 						} else {
 							$sqgtids[$hash] = $graph_type_id;
 						}
@@ -6471,7 +6471,7 @@ function automation_validate_import_columns(string $table, array &$data, array &
 	if (cacti_sizeof($data)) {
 		foreach ($data as $column => $cdata) {
 			if (!db_column_exists($table, $column)) {
-				$debug_data['errors'][] = __('Template column \'' . $column . '\' is not valid column.');
+				$debug_data['errors'][] = __('Template column \'' . html_escape($column) . '\' is not valid column.');
 
 				cacti_log('Template column \'' . $column . '\' is not valid column.', false, 'AUTOM8');
 

@@ -63,6 +63,9 @@ if [[ -f tests/fixtures/BoostOnDemandFailureProbe.php ]]; then
 		run_probe ../BoostOnDemandFailureProbe.php "boost-on-demand-$scenario" "$scenario" > /dev/null
 	done
 fi
+for mode in profile-messages; do
+	run_probe ImportExportPages.php "import-export-$mode" "$mode"
+done
 if [[ -f tests/fixtures/BoostSourceExistenceProbe.php ]]; then
 	for scenario in deleted query-failed; do
 		run_probe ../BoostSourceExistenceProbe.php "boost-source-existence-$scenario" "$scenario" > /dev/null
