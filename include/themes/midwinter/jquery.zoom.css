@@ -112,7 +112,7 @@
 	font-size: 1em;
 	float: left;
 	background: var(--background-content);
-    padding: 6px
+    padding: 6px;
 	border: 1px solid var(--border-color);
     border-radius: 4px;
 }
