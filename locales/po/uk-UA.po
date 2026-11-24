@@ -8,15 +8,17 @@ msgstr ""
 "Project-Id-Version: Cacti 1.2.23\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2025-07-01 14:10-0400\n"
-"Last-Translator: The Cacti Group <developers@cacti.net>\n"
-"Language-Team: Ukrainian <http://translate.cacti.net/projects/cacti/core/uk/>\n"
-"Language: uk_UA\n"
+"PO-Revision-Date: 2026-11-24 09:13+0000\n"
+"Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
+"Language-Team: Ukrainian <https://translate.cacti.net/projects/cacti/core/uk/"
+">\n"
+"Language: uk-UA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Poedit 3.6\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 5.11.4\n"
 
 #: about.php:29 include/global_arrays.php:2781 lib/html.php:3046
 msgid "About Cacti"
@@ -880,9 +882,8 @@ msgid "2nd Factor Authentication"
 msgstr "Основна веб-автентифікація"
 
 #: auth_2fa.php:135
-#, fuzzy
 msgid "Enter your token"
-msgstr "Пошук..."
+msgstr "Введіть ваш токен"
 
 #: auth_2fa.php:144 auth_2fa.php:147
 msgid "Token"
@@ -1002,7 +1003,9 @@ msgstr "Користувача було автентифіковано, але �
 #: auth_login.php:141
 #, php-format
 msgid "Access Denied!  Guest user id %s does not exist.  Please contact your Administrator."
-msgstr "Доступ заборонено! Ідентифікатор гостьового користувача %s не існує. Будь ласка, зверніться до свого адміністратора."
+msgstr ""
+"Доступ заборонено!  Гостьовий користувач з ID %s не існує.  Будь ласка, "
+"зверніться до вашого адміністратора."
 
 #: auth_login.php:180
 msgid "Access Denied!  User account disabled."
@@ -2807,7 +2810,7 @@ msgstr "Версія SNMP: <b>%s</b>"
 #: automation_snmp.php:538
 #, php-format
 msgid "SNMP Community/Username: <b>%s</b>"
-msgstr "Спільнота/ім’я користувача SNMP: <b>%s</b>"
+msgstr "SNMP Community/Ім`я користувача: <b>%s</b>"
 
 #: automation_snmp.php:543 automation_templates.php:675
 #: automation_templates.php:797 cdef.php:317 color_templates.php:495
@@ -2861,7 +2864,7 @@ msgstr "Послідовність пункту."
 #: automation_snmp.php:675
 #, php-format
 msgid "SNMP Option Set [edit: %s]"
-msgstr "Набір параметрів SNMP [редагувати: %s]"
+msgstr "Набір SNMP Опцій [редагування: %s]"
 
 #: automation_snmp.php:677
 msgid "SNMP Option Set [new]"
@@ -3998,7 +4001,7 @@ msgstr "Розпочато налагодження джерела даних."
 
 #: data_debug.php:55
 msgid "Data Source debug received an invalid Data Source ID."
-msgstr "Налагодження джерела даних отримано недійсний ідентифікатор джерела даних."
+msgstr "Відлагодженням Джерела Даних отримало невірний ID Джерела Даних."
 
 #: data_debug.php:64
 msgid "All RRDfile repairs succeeded."
@@ -6173,7 +6176,7 @@ msgstr "Створити агрегат із шаблону"
 
 #: graphs.php:234 graphs.php:249
 msgid "No Device - "
-msgstr "Немає пристрою -"
+msgstr "Немає пристрою - "
 
 #: graphs.php:339
 #, php-format
@@ -6699,7 +6702,7 @@ msgstr "Сайт Cacti GitHub"
 
 #: help.php:88
 msgid "Open a ticket at "
-msgstr "Відкрийте квиток на"
+msgstr "Відкрийте квиток на "
 
 #: help.php:88
 #, php-format
@@ -12984,7 +12987,7 @@ msgstr "1 Процес"
 #: include/global_settings.php:2567 include/global_settings.php:2568
 #, php-format
 msgid "%d Processes"
-msgstr "%d Процеси"
+msgstr "%d процесів"
 
 #: include/global_settings.php:1655
 msgid "Maintenance Background Generation Timeout"
@@ -15044,11 +15047,11 @@ msgstr "Пристрій+шаблон:(%s%s)"
 
 #: lib/auth.php:2488 lib/auth.php:2495 lib/auth.php:2504
 msgid "Restricted By: "
-msgstr "Обмежено:"
+msgstr "Обмежено: "
 
 #: lib/auth.php:2492
 msgid "Granted By: "
-msgstr "Надано:"
+msgstr "Надано: "
 
 #: lib/auth.php:2499
 msgid "Granted"
@@ -15111,7 +15114,9 @@ msgstr "Помилка пошуку LDAP: %s"
 #: lib/auth.php:4094 lib/auth.php:5105
 #, php-format
 msgid "Access Denied!  Template user id %s does not exist.  Please contact your Administrator."
-msgstr "Доступ заборонено! Ідентифікатор користувача шаблону %s не існує. Будь ласка, зверніться до свого адміністратора."
+msgstr ""
+"Доступ заборонено!  Шаблонний користувач з ID %s не існує.  Будь ласка, "
+"зверніться до вашого адміністратора."
 
 #: lib/auth.php:4479
 msgid "Access Denied! Login failed."
@@ -15329,7 +15334,7 @@ msgstr "Безпека"
 
 #: lib/clog_webapi.php:597
 msgid "Threshold"
-msgstr "Граничне значення"
+msgstr "Пороги"
 
 #: lib/clog_webapi.php:607 lib/clog_webapi.php:610 tree.php:844
 msgid "Display"
@@ -15799,7 +15804,7 @@ msgstr "Налагодження не завершено після 5 опиту
 
 #: lib/dsdebug.php:260
 msgid "Failed fields: "
-msgstr "Поля з помилкою:"
+msgstr "Поля з помилкою: "
 
 #: lib/dsdebug.php:269
 msgid "Data Source is not set as Active"
@@ -15825,7 +15830,7 @@ msgstr "RRD-файл не оновлено після опитування"
 
 #: lib/dsdebug.php:303
 msgid "Data Source returned Bad Results for "
-msgstr "Джерело даних повернуло погані результати для"
+msgstr "Джерело даних повернуло погані результати для "
 
 #: lib/dsdebug.php:308
 msgid "Data Source was not polled"
@@ -15955,7 +15960,7 @@ msgstr "Помилка підключення: %s"
 
 #: lib/functions.php:5822
 msgid "SMTP error: "
-msgstr "Помилка SMTP:"
+msgstr "Помилка SMTP: "
 
 #: lib/functions.php:5835
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
@@ -17253,7 +17258,7 @@ msgstr "Подробиці %s"
 #: lib/html_reports.php:1618
 #, php-format
 msgid "Report Items %s"
-msgstr "Повідомити про елементи %s"
+msgstr "Елементи звіту %s"
 
 #: lib/html_reports.php:1664
 #, php-format
@@ -17496,9 +17501,9 @@ msgid "not writable"
 msgstr "не можна записувати"
 
 #: lib/import.php:1712 lib/import.php:1729
-#, fuzzy, php-format
+#, php-format
 msgid "New Graph Template: %s"
-msgstr ", шаблон графіка: %s"
+msgstr "Новий шаблон графіка: %s"
 
 #: lib/import.php:1741 lib/import.php:1751
 #, fuzzy, php-format
@@ -17527,7 +17532,7 @@ msgstr "Файли пакетів"
 
 #: lib/import.php:2692
 msgid "[preview] "
-msgstr "[попередній перегляд]"
+msgstr "[попередній перегляд] "
 
 #: lib/import.php:2698
 msgid "Cacti would make the following changes if the Template was imported:"
@@ -17722,7 +17727,7 @@ msgstr "Перш ніж продовжити, переконайтеся, що �
 #: lib/installer.php:1910
 #, php-format
 msgid "This process will guide you through the steps for upgrading from version '%s'. "
-msgstr "Цей процес проведе вас через кроки для оновлення з версії \"%s\"."
+msgstr "Цей процес проведе вас через кроки для оновлення з версії \"%s\". "
 
 #: lib/installer.php:1911
 #, php-format
@@ -17747,7 +17752,7 @@ msgstr "Прийміть Ліцензійну угоду GPL"
 
 #: lib/installer.php:1965
 msgid "Select default theme: "
-msgstr "Виберіть тему за умовчанням:"
+msgstr "Виберіть тему за умовчанням: "
 
 #: lib/installer.php:1988
 msgid "Pre-installation Checks"
@@ -18230,7 +18235,7 @@ msgstr "Схоже, що сортування вашого сервера від
 
 #: lib/installer.php:2806
 msgid "Your server collation does NOT appear to be fully UTF8 compliant. "
-msgstr "Схоже, що ваше порівняння на сервері НЕ повністю сумісно з UTF8."
+msgstr "Схоже, що ваше порівняння на сервері НЕ повністю сумісно з UTF8. "
 
 #: lib/installer.php:2807
 msgid "Under the [mysqld] section, locate the entries named 'character-set-server' and 'collation-server' and set them as follows:"
@@ -18246,11 +18251,16 @@ msgstr "Схоже, стандартна сортування вашої баз�
 
 #: lib/installer.php:2823
 msgid "Your database default collation does NOT appear to be full UTF8 compliant. "
-msgstr "Схоже, стандартна сортування вашої бази даних НЕ повністю сумісна з UTF8."
+msgstr ""
+"Схоже, стандартна сортування вашої бази даних НЕ повністю сумісна з UTF8. "
 
 #: lib/installer.php:2824
 msgid "Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched.   Please ensure your database is changed to 'utf8mb4_unicode_ci' by running the following: "
-msgstr "Будь-які таблиці, створені плагінами, можуть мати проблеми, пов’язані з таблицями Cacti Core, якщо сортування не відповідає. Будь ласка, переконайтеся, що вашу базу даних змінено на 'utf8mb4_unicode_ci', виконавши наступне:"
+msgstr ""
+"Будь-які таблиці, створені плагінами, можуть мати проблеми, пов’язані з "
+"таблицями Cacti Core, якщо сортування не відповідає. Будь ласка, "
+"переконайтеся, що вашу базу даних змінено на 'utf8mb4_unicode_ci', виконавши "
+"наступне: "
 
 #: lib/installer.php:2831
 msgid "Table Setup"
@@ -18283,7 +18293,10 @@ msgstr "Формат рядка"
 
 #: lib/installer.php:2884
 msgid "One or more tables are too large to convert during the installation.  You should use the cli/convert_tables.php script to perform the conversion, then refresh this page. For example: "
-msgstr "Одна чи кілька таблиць завеликі для перетворення під час встановлення. Ви повинні використати сценарій cli/convert_tables.php для виконання перетворення, а потім оновити цю сторінку. Наприклад:"
+msgstr ""
+"Одна чи кілька таблиць завеликі для перетворення під час встановлення. Ви "
+"повинні використати сценарій cli/convert_tables.php для виконання "
+"перетворення, а потім оновити цю сторінку. Наприклад: "
 
 #: lib/installer.php:2888
 msgid "The following tables should be converted to UTF8 and InnoDB with a Dynamic row format.  Please select the tables that you wish to convert during the installation process."
@@ -19252,9 +19265,8 @@ msgid "CDP Unknown Data points (0)"
 msgstr "CDP Невідомо Точки даних (0)"
 
 #: lib/rrd.php:3663
-#, fuzzy
 msgid "Errors Found"
-msgstr "%s не знайдено"
+msgstr "Знайдено помилки"
 
 #: lib/rrd.php:3675
 #, fuzzy
@@ -19978,7 +19990,8 @@ msgstr "ПОПЕРЕДЖЕННЯ: Виникли помилки експорту
 
 #: package.php:163
 msgid "There were errors packaging your Templates.  Errors Follow. "
-msgstr "Під час пакування ваших шаблонів виникли помилки. Слідкуйте за помилками."
+msgstr ""
+"Під час пакування ваших шаблонів виникли помилки. Слідкуйте за помилками. "
 
 #: package.php:221
 #, php-format
@@ -20352,7 +20365,7 @@ msgstr "Сироти"
 
 #: package_import.php:1311
 msgid "File Differences for: "
-msgstr "Відмінності файлів для:"
+msgstr "Відмінності файлів для: "
 
 #: package_import.php:1422
 msgid "Local Package Import File"
@@ -22665,11 +22678,11 @@ msgstr "Ім'я: "
 
 #: support.php:1309
 msgid "Procs: "
-msgstr "Процедури:"
+msgstr "Процедури: "
 
 #: support.php:1316
 msgid "Threads: "
-msgstr "Теми:"
+msgstr "Теми: "
 
 #: support.php:1322
 msgid "Concurrent Processes"
