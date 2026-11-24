@@ -53,3 +53,17 @@ test('a template import that succeeds is reported as succeeded', function () {
 		->and(array_column($verdict['raised'], 0))->toBe(array('import_success'))
 		->and($verdict['headers'])->toBe(array('Location: templates_import.php'));
 });
+
+test('the preview keeps the dependencies of each template for the Dependencies column', function () {
+	$dep = 'hash_050103' . str_repeat('d', 32);
+
+	$verdict = cacti_import_export_probe(array(
+		'slice'     => array(array('templates_import.php', 'prepare_template_display')),
+		'globals'   => array('hash_type_names' => array('graph_template' => 'Graph Template')),
+		'call'      => 'prepare_template_display',
+		'arguments' => array(array('graph_template' => array(array('hash' => str_repeat('a', 32), 'type' => 'new', 'title' => 'Traffic', 'result' => 'preview', 'dep' => array($dep => 'unmet'))))),
+	));
+
+	expect($verdict['error'])->toBeNull()
+		->and($verdict['result'][str_repeat('a', 32)]['deps'])->toBe(array($dep => 'unmet'));
+});

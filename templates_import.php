@@ -212,7 +212,7 @@ function prepare_template_display(&$import_info) {
 				unset($vals['type']);
 
 				if (isset($vals['dep'])) {
-					$template[$hash]['deps'] = $vals['dep'];
+					$templates[$hash]['deps'] = $vals['dep'];
 				}
 
 				if (cacti_sizeof($vals)) {
