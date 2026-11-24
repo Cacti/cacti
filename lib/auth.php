@@ -4578,6 +4578,10 @@ function reset_group_perms($group_id) {
 			WHERE user_id IN ($placeholders)",
 			$user_ids);
 
+		db_execute_prepared("DELETE FROM user_auth_row_cache
+			WHERE user_id IN ($placeholders)",
+			$user_ids);
+
 		db_execute_prepared("UPDATE user_auth
 			SET reset_perms=FLOOR(RAND() * 4294967295) + 1
 			WHERE id IN ($placeholders)",
@@ -4595,6 +4599,7 @@ function reset_group_perms($group_id) {
  */
 function reset_user_perms($user_id) {
 	db_execute_prepared('DELETE FROM user_auth_cache WHERE user_id = ?', array($user_id));
+	db_execute_prepared('DELETE FROM user_auth_row_cache WHERE user_id = ?', array($user_id));
 
 	db_execute_prepared('UPDATE user_auth
 		SET reset_perms=FLOOR(RAND() * 4294967295) + 1

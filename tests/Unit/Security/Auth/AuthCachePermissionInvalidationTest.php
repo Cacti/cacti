@@ -115,11 +115,13 @@ beforeEach(function () {
 test('permission resets invalidate persistent authentication tokens', function () {
 	reset_user_perms_under_test(42);
 
-	expect($GLOBALS['auth_cache_queries'])->toHaveCount(2)
+	expect($GLOBALS['auth_cache_queries'])->toHaveCount(3)
 		->and($GLOBALS['auth_cache_queries'][0][0])->toBe('DELETE FROM user_auth_cache WHERE user_id = ?')
 		->and($GLOBALS['auth_cache_queries'][0][1])->toBe(array(42))
-		->and($GLOBALS['auth_cache_queries'][1][0])->toContain('UPDATE user_auth')
+		->and($GLOBALS['auth_cache_queries'][1][0])->toBe('DELETE FROM user_auth_row_cache WHERE user_id = ?')
 		->and($GLOBALS['auth_cache_queries'][1][1])->toBe(array(42))
+		->and($GLOBALS['auth_cache_queries'][2][0])->toContain('UPDATE user_auth')
+		->and($GLOBALS['auth_cache_queries'][2][1])->toBe(array(42))
 		->and($GLOBALS['auth_cache_session_kills'])->toBe(array());
 });
 
@@ -139,13 +141,16 @@ test('group permission resets invalidate every member token', function () {
 
 	reset_group_perms_under_test(5);
 
-	expect($GLOBALS['auth_cache_queries'])->toHaveCount(2)
+	expect($GLOBALS['auth_cache_queries'])->toHaveCount(3)
 		->and($GLOBALS['auth_cache_queries'][0][0])->toContain('DELETE FROM user_auth_cache')
 		->and($GLOBALS['auth_cache_queries'][0][0])->toContain('user_id IN (?,?)')
 		->and($GLOBALS['auth_cache_queries'][0][1])->toBe(array(10, 11))
-		->and($GLOBALS['auth_cache_queries'][1][0])->toContain('UPDATE user_auth')
-		->and($GLOBALS['auth_cache_queries'][1][0])->toContain('id IN (?,?)')
-		->and($GLOBALS['auth_cache_queries'][1][1])->toBe(array(10, 11));
+		->and($GLOBALS['auth_cache_queries'][1][0])->toContain('DELETE FROM user_auth_row_cache')
+		->and($GLOBALS['auth_cache_queries'][1][0])->toContain('user_id IN (?,?)')
+		->and($GLOBALS['auth_cache_queries'][1][1])->toBe(array(10, 11))
+		->and($GLOBALS['auth_cache_queries'][2][0])->toContain('UPDATE user_auth')
+		->and($GLOBALS['auth_cache_queries'][2][0])->toContain('id IN (?,?)')
+		->and($GLOBALS['auth_cache_queries'][2][1])->toBe(array(10, 11));
 });
 
 test('empty groups do not issue invalidation queries', function () {
