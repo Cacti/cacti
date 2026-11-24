@@ -329,6 +329,7 @@ Cacti CHANGELOG
 -feature#8743: Allow users to keep graph action icons visible beside graphs
 -feature#8858: Update bundled DOMPurify to 3.4.18
 -feature#8858: Update bundled billboard.js to 4.1.5
+-feature#8950: Add 15 African locales (af-ZA, am-ET, ar-EG, ar-MA, fr-MA, fr-SN, ha-NG, ig-NG, mg-MG, rw-RW, so-SO, sw-KE, xh-ZA, yo-NG, zu-ZA)
 
 1.2.31
 -security#GHSA-23g4-vf2j-94w4: CVE-2026-39894 RRDtool metric shift via LC_NUMERIC locale comma decimal formatting
