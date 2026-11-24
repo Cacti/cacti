@@ -44,16 +44,29 @@ jobs:
         with:
           persist-credentials: false
 
+      # The check holds a change only to the messages it puts out of sync with
+      # the template, so it needs the revision the change started from.  The
+      # checkout holds just the merge commit.
+      - name: Fetch the base revision
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin "$BASE_SHA" \
+            || echo "::warning::Could not fetch $BASE_SHA; the check compares the whole tree."
+
       - name: Install gettext
         run: |
           set -euo pipefail
           sudo apt-get update
           sudo apt-get install --no-install-recommends --yes gettext
 
-      # Fails when locales/po/cacti.pot does not hold the messages that
-      # locales/update-pot.sh extracts, or when the template or a catalog
-      # outside the baseline does not pass msgfmt --check-format.
+      # Fails when the change leaves locales/po/cacti.pot without messages that
+      # locales/update-pot.sh extracts (or holding ones it does not), or adds a
+      # msgfmt --check-format failure that the baseline does not list.
       - name: Compare the template with the source and check catalog formats
+        env:
+          CACTI_I18N_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: |
           set -euo pipefail
           xgettext --version | head -n 1
