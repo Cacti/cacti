@@ -411,3 +411,41 @@ function dsdebug_run_repair($id) {
 	return false;
 }
 
+
+/**
+ * Formats a value of the data source troubleshooter for its table cell. The
+ * value is plain text with one item per line, and it is shortened before it is
+ * escaped, so that its line breaks can become tags that are neither escaped
+ * nor cut in half.
+ *
+ * @param string $value The plain text value.
+ * @param int $length The number of characters shown in the cell.
+ *
+ * @return array The cell contents and its tooltip, both escaped.
+ */
+function dsdebug_format_value($value, $length = 100) {
+	$value = (string) $value;
+	$title = nl2br(html_escape($value), false);
+
+	if (strlen($value) > $length) {
+		$value = substr($value, 0, $length);
+	}
+
+	return array(nl2br(html_escape($value), false), $title);
+}
+
+/**
+ * Returns the text for the repair recommendations of a check that has no
+ * RRDfile mismatch to repair.
+ *
+ * @param array $check The data_debug row, with its info unserialized.
+ *
+ * @return string The text to show.
+ */
+function dsdebug_repair_status($check) {
+	if (!empty($check['done']) || isset($check['info']['rrd_match'])) {
+		return __('No Repair Recommendations');
+	}
+
+	return __('Waiting on Data Source Check to Complete');
+}

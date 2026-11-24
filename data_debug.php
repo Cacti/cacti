@@ -742,7 +742,7 @@ function debug_view() {
 		array($id));
 
 	if (cacti_sizeof($dtd)) {
-		$real_path = html_escape(str_replace('<path_rra>', $config['rra_path'], $dtd['data_source_path']));
+		$real_path = str_replace('<path_rra>', $config['rra_path'], $dtd['data_source_path']);
 	} else {
 		$real_path = __('Not Found');
 	}
@@ -753,7 +753,7 @@ function debug_view() {
 			$poller_data[] = "$a = $l";
 		}
 	}
-	$poller_data = implode('<br>', $poller_data);
+	$poller_data = implode("\n", $poller_data);
 
 	$rra_updated = '';
 	if (isset($check['info']['rra_timestamp2'])) {
@@ -856,7 +856,7 @@ function debug_view() {
 		array(
 			'name' => 'convert_name',
 			'title' => __('Were we able to convert the title?'),
-			'value' => html_escape(get_data_source_title($check['datasource']))
+			'value' => get_data_source_title($check['datasource'])
 		),
 		array(
 			'name' => 'rrd_match',
@@ -909,17 +909,15 @@ function debug_view() {
 		}
 
 		if (array_key_exists('value', $field)) {
-			$value = html_escape($field['value']);
+			$value = $field['value'];
 		}
 
 		if (array_key_exists('icon', $field)) {
 			$icon = $field['icon'];
 		}
 
-		$value_title = $value;
-		if (strlen($value) > 100) {
-			$value = substr($value, 0, 100);
-		}
+		/* values are plain text, escaped once here, where line breaks become tags */
+		list($value, $value_title) = dsdebug_format_value($value);
 
 		form_selectable_cell($value, $i, '', '', $value_title);
 		form_selectable_cell($icon, $i);
@@ -984,7 +982,7 @@ function debug_view() {
 	} else {
 		html_start_box(__('Data Source Repair Recommendations'), '', '', '2', 'center', '');
 		form_alternate_row('line3_0', true);
-		form_selectable_cell(__('Waiting on Data Source Check to Complete'), 'line3_0');
+		form_selectable_cell(dsdebug_repair_status($check), 'line3_0');
 		form_end_row();
 		html_end_box();
 	}
