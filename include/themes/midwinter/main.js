@@ -1190,7 +1190,9 @@ function loadScript(className, url='') {
 			cache: true,
 			async: false,
 			url: urlPath + url,
-			success: mdw.cache.classes.push(className)
+			success: function() {
+				mdw.cache.classes.push(className);
+			}
 		}).fail(function(html) {
 			console.error('error');
 			getPresentHTTPError(html);

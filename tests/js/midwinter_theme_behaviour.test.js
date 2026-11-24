@@ -331,3 +331,19 @@ test('the applied color mode is stored and the display mode listener is added on
 	assert.equal(media.active(), 1);
 	assert.equal(attributes['theme-pwa'], 'off');
 });
+
+test('a script is recorded as loaded only when its request succeeds', () => {
+	const requests = [];
+	const context = themeFunctions(['loadScript'], {
+		urlPath: '/cacti/',
+		mdw: {cache: {classes: []}},
+		$: {ajax: (options) => { requests.push(options); return {fail: () => {}}; }}
+	});
+
+	context.loadScript('config', 'include/themes/midwinter/config.js');
+	assert.equal(requests.length, 1);
+	assert.deepEqual([...context.mdw.cache.classes], [], 'nothing is recorded before the response');
+
+	requests[0].success();
+	assert.deepEqual([...context.mdw.cache.classes], ['config']);
+});
