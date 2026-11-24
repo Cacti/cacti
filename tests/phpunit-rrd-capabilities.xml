@@ -14,6 +14,7 @@
             <file>Unit/Core/ManagementSaveTest.php</file>
             <file>Unit/Core/Rrd/RrdGraphItemColorTest.php</file>
             <file>Unit/Core/Rrd/RrdAreaGradientTest.php</file>
+            <file>Unit/Core/Rrd/RrdGradientNamesTest.php</file>
             <file>Unit/Ui/Colors/ColorSaveTest.php</file>
             <file>Unit/Ui/Colors/ColorHexOutputTest.php</file>
             <file>Unit/Ui/Colors/ColorInUseTest.php</file>

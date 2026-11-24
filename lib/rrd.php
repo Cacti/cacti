@@ -5575,8 +5575,13 @@ function gradient($vname = false, $start_color = '#0000a0', $end_color = '#f0f0f
 	$diff_g = $g2 - $g1;
 	$diff_b = $b2 - $b1;
 	$spline =  '';
-	$spline_vname = 'var' . substr(sha1(rand()), 1, 4);
-	$vnamet = $vname.substr(sha1(rand()), 1, 4);
+	/* a graph can hold several gradients, so number them instead of naming them from random digits */
+	static $gradient_id = 0;
+
+	$gradient_id++;
+
+	$spline_vname = 'gradient' . $gradient_id . 'step';
+	$vnamet       = 'gradient' . $gradient_id . 'base';
 
 	if (preg_match('/^([0-9]{1,3})%$/', $lower, $matches)) {
 		$lower   = $matches[1];
