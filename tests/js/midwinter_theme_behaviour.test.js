@@ -161,3 +161,71 @@ test('themeLoader reads the theme state it writes', () => {
 	context.themeLoader('on', true);
 	assert.equal(attributes['data-theme-state'], 'loading');
 });
+
+const navigation = read('include/js/navigationBox.js');
+
+function navigationClasses(globals = {}) {
+	const context = {console: {warn: () => {}, info: () => {}, error: () => {}, log: () => {}}, ...globals};
+	context.window = context;
+	vm.runInNewContext(navigation + '\nthis.cactiNavigation = cactiNavigation; this.cactiButton = cactiButton; this.cactiBox = cactiBox;', context);
+	return context;
+}
+
+test('configured hotkeys are written to the navigation buttons', () => {
+	const markup = [];
+	const button = {on: () => button, appendTo: () => button};
+	const context = navigationClasses({
+		$: (selector) => {
+			if (typeof selector === 'string' && selector.includes('compact_nav_icon')) {
+				markup.push(selector);
+				return button;
+			}
+			return {length: 1, find: () => ({length: 0})};
+		}
+	});
+	const manager = new context.cactiButton();
+
+	manager.add({helper: 'help', destination: '#compact_user_menu', hotkey: 'ALT+SHIFT+4'});
+	manager.add({helper: 'user', destination: '#compact_user_menu'});
+
+	assert.match(markup[0], /data-hotkey="ALT\+SHIFT\+4"/);
+	assert.doesNotMatch(markup[1], /data-hotkey/);
+});
+
+test('the hotkey dispatcher matches buttons by value and ignores events it cannot read', () => {
+	let listener;
+	const clicked = [];
+	const buttons = [{dataset: {hotkey: 'ALT+SHIFT+C'}, name: 'color'}, {dataset: {hotkey: 'ALT+SHIFT+1'}, name: 'panels'}];
+	const document = {
+		activeElement: {tagName: 'BODY'},
+		addEventListener: (type, handler) => { listener = handler; },
+		querySelectorAll: (selector) => {
+			assert.equal(selector, '[data-hotkey]');
+			return buttons;
+		},
+		querySelector: () => { throw new Error('selectors must not be built from key names'); }
+	};
+	const context = {
+		mdw: {actions: {}, cache: {}},
+		document,
+		$: (element) => ({trigger: () => clicked.push(element.name)}),
+		console: {log: () => {}}
+	};
+
+	vm.runInNewContext(extract(theme, 'mdw.actions.initHotKeys = function'), context);
+	context.mdw.actions.initHotKeys();
+
+	const press = (event) => listener({preventDefault: () => {}, stopImmediatePropagation: () => {}, ...event});
+
+	// macOS reports a composed character for Alt+Shift+C
+	press({altKey: true, shiftKey: true, key: 'Ç', code: 'KeyC'});
+	press({altKey: true, shiftKey: true, key: '!', code: 'Digit1'});
+	assert.deepEqual(clicked, ['color', 'panels']);
+
+	assert.doesNotThrow(() => press({}), 'autofill events carry no key');
+	assert.doesNotThrow(() => press({shiftKey: true, key: '"', code: 'Quote'}));
+
+	document.activeElement = {tagName: 'DIV', isContentEditable: true};
+	press({altKey: true, shiftKey: true, key: 'C', code: 'KeyC'});
+	assert.deepEqual(clicked, ['color', 'panels'], 'editable content keeps its keys');
+});

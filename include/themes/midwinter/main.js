@@ -109,8 +109,12 @@ mdw.actions.initHotKeys = function() {
 	if (mdw.cache.hotkeysActive) return;
 
 	document.addEventListener('keydown', (event) => {
-		// skip if user is focusing a form element
-		if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
+		// synthetic events, such as those from browser autofill, carry no key or code
+		if (!event.key || !event.code) return;
+
+		// skip if user is focusing a form element or editable content
+		const active = document.activeElement;
+		if (active && (['INPUT', 'TEXTAREA', 'SELECT'].includes(active.tagName) || active.isContentEditable)) return;
 
 		const parts = [];
 		if (event.ctrlKey)  parts.push('CTRL');
@@ -122,6 +126,9 @@ mdw.actions.initHotKeys = function() {
 		if (event.code.startsWith('Digit')) {
 			// extract the actual digit from "Digit2" -> "2"
 			keyName = event.code.replace('Digit', '');
+		} else if (/^Key[A-Z]$/.test(event.code)) {
+			// with Alt held, macOS reports a composed character in event.key, so use the key code ("KeyC" -> "C")
+			keyName = event.code.slice(3);
 		} else {
 			keyName = event.key.toUpperCase();
 		}
@@ -131,8 +138,8 @@ mdw.actions.initHotKeys = function() {
 
 		const combo = parts.join('+');
 
-		// find element with matching data-hotkey attribute
-		const targetEl = document.querySelector(`[data-hotkey="${combo}"]`);
+		// find element with matching data-hotkey attribute; compare values, as a key such as " cannot be placed in a selector
+		const targetEl = Array.from(document.querySelectorAll('[data-hotkey]')).find((el) => el.dataset.hotkey === combo);
 
 		if (targetEl) {
 			// stop cacti and browser defaults immediately

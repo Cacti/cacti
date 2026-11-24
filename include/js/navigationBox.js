@@ -608,6 +608,7 @@ class cactiButton extends cactiNavigation {
             onclick     : 'auto',
             param       : 'on',
             enabled     : true,
+            hotkey      : '',
         };
 
         // validate and merge
@@ -629,6 +630,7 @@ class cactiButton extends cactiNavigation {
                  data-subtitle="${config.title}" 
                  data-helper="${config.helper}"  
                  aria-label="${tooltip}" 
+                 ${config.hotkey ? `data-hotkey="${midwinter.navigationBox._escape(config.hotkey)}"` : ''}
                  role="button" 
                  tabindex="0" 
                  aria-pressed="false">
