@@ -850,7 +850,15 @@ function restoreLocalStorage() {
     if (mdw.cache.storage.isSet('midWinter') === false) {
         refreshLocalStorage();
     } else {
-        mdw.session = JSON.parse(lzjs.decompress(mdw.cache.storage.get('midWinter')));
+        let stored = null;
+
+        try {
+            stored = JSON.parse(lzjs.decompress(mdw.cache.storage.get('midWinter')));
+        } catch (e) {
+            stored = null;
+        }
+
+        mdw.session = midwinterThemeSession(stored);
     }
     setDocumentAttribute('theme-color',         mdw.session.theme.color.mode );
     setDocumentAttribute('theme-color-auto',    mdw.session.theme.color.auto );
@@ -1169,8 +1177,49 @@ function loadElement(elementName, url='', content_only=false) {
 }
 
 
+// Theme controls name their handler in data-func. Only these theme actions may be called that way.
+const midwinterThemeActions = [
+	'toggleAutoTableLayout',
+	'toggleColorModeAuto',
+	'toggleControlsSubtitle',
+	'toggleGuiAnimations',
+	'togglePopOver',
+	'togglePwdInputField'
+];
+
 function is_function(f_name) {
-	return (typeof window[f_name] === 'function');
+	return (midwinterThemeActions.indexOf(f_name) !== -1 && typeof window[f_name] === 'function');
+}
+
+function midwinterEscape(value) {
+	const entityMap = {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;', '`': '&#x60;'};
+
+	return String(value === undefined || value === null ? '' : value).replace(/[&<>"'`]/g, function(character) {
+		return entityMap[character];
+	});
+}
+
+// Rebuild the stored theme preferences from known values only. Anything else
+// found in local storage gives way to the default for that preference.
+function midwinterThemeSession(stored) {
+	const source = (stored && typeof stored === 'object' && stored.theme && typeof stored.theme === 'object') ? stored.theme : {};
+	const group  = function(name) {
+		return (source[name] && typeof source[name] === 'object') ? source[name] : {};
+	};
+	const choice = function(value, allowed, fallback) {
+		return allowed.indexOf(value) !== -1 ? value : fallback;
+	};
+	const zoom = Number.parseFloat(group('font').zoom);
+
+	return {
+		theme: {
+			boxes:    { animated: choice(group('boxes').animated, ['on', 'off'], 'on') },
+			color:    { mode: choice(group('color').mode, ['dark', 'light'], 'dark'), auto: choice(group('color').auto, ['on', 'off'], 'off') },
+			controls: { subTitle: choice(group('controls').subTitle, ['on', 'off'], 'off'), tooltip: choice(group('controls').tooltip, ['on', 'off'], 'on') },
+			font:     { zoom: (Number.isFinite(zoom) && zoom >= 50 && zoom <= 100) ? zoom : 75 },
+			mobile:   { autoTableLayout: choice(group('mobile').autoTableLayout, ['on', 'off'], 'off') }
+		}
+	};
 }
 
 
@@ -1242,7 +1291,8 @@ registry.midwinter = {
 
 						$('<div class="dropdownMenu">' + submenu_tab_graphs_content + '</div>').appendTo('body');
 					} else if ($(this).attr('href') !== urlPath + 'index.php') {
-						compact_tab_menu_content += '<li><a class="pic" role="menuitem" href="' + $(this).attr('href') + '">' + $('.text_' + id).text() + '</a></li>';
+						// attr() and text() return decoded values, so encode them again before they become markup
+						compact_tab_menu_content += '<li><a class="pic" role="menuitem" href="' + midwinterEscape($(this).attr('href')) + '">' + midwinterEscape($('.text_' + id).text()) + '</a></li>';
 					}
 				});
 				compact_tab_menu_content += '</ul></li></ul></div>';

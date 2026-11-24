@@ -236,7 +236,10 @@ midwinter.navigationBox.table = {
         const columns = settings[1]; // Correct index for column definitions
 
         columns.forEach((col) => {
-            const [index, name, title, hideable, visible] = col;
+            const [storedIndex, name, storedTitle, hideable, visible] = col;
+            // column titles are read from the page and kept in local storage; encode them for the markup below
+            const index = Number.parseInt(storedIndex, 10) || 0;
+            const title = midwinter.navigationBox._escape(storedTitle);
             if (hideable) {
                 const inputID = `cacti_col_${index}`;
                 html += `

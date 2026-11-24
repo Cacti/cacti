@@ -24,6 +24,13 @@ window.midwinter = window.midwinter || {};
 midwinter.navigationBox = {
     _plugins: {},
 
+    /* encode a value before it is placed in markup or an attribute */
+    _escape(value) {
+        const entityMap = {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;', '`': '&#x60;'};
+
+        return String(value === undefined || value === null ? '' : value).replace(/[&<>"'`]/g, (character) => entityMap[character]);
+    },
+
     /**
      * registers a plugin by its namespace path
      * @param {string} path - string path to the plugin
@@ -282,6 +289,9 @@ class cactiNavigation {
     }
 
     _ensureContainer(id, parent = 'body', content = '') {
+        // the id can come from stored layout state; keep only characters valid in the ids used here
+        id = String(id).replace(/[^\w-]/g, '');
+
         let $el = $(`#${id}`);
         if (!$el.length) {
             $el = $(`<div id="${id}" class="${id}">${content}</div>`).appendTo(parent);
@@ -784,15 +794,18 @@ class cactiBox extends cactiNavigation {
         const btnClose      = buttons.close     ? `<div class="navBox-header-button ti-icon-minus" data-action="close" data-helper="${helper}" role="button" tabindex="0"></div>` : '';
         const rightButtons  = (btnMenu + btnClose) || '<div class="navBox-header-dropdown invisible"></div>';
 
+        // layout values can come from stored state, so encode them for the attributes below
+        const esc = midwinter.navigationBox._escape;
+
         // assemble container
         const containerHtml = `
             <div class="${this.prefix}-${this.className}" data-title="${title}" data-helper="${helper}" 
                  data-plugin="${config.pluginType}"
                  data-refresh="${config.isRefreshable}" 
-                 data-status="${config.status}" 
-                 data-height="${layout.height}" data-width="${width}" data-align="${layout.align}"
-                 data-style="${layout.style}" data-dock="${layout.dock}" data-overlay="${layout.overlay}"
-                 data-exclusive="${layout.exclusive}">
+                 data-status="${esc(config.status)}" 
+                 data-height="${esc(layout.height)}" data-width="${esc(width)}" data-align="${esc(layout.align)}"
+                 data-style="${esc(layout.style)}" data-dock="${esc(layout.dock)}" data-overlay="${esc(layout.overlay)}"
+                 data-exclusive="${esc(layout.exclusive)}">
                 <div class="navBox-header">
                     ${btnSearch}
                     ${inputSearch}
