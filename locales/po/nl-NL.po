@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2024-01-31 14:27+0000\n"
-"Last-Translator: Edwin Lankamp <edwin.lankamp@gmail.com>\n"
-"Language-Team: Dutch <http://translate.cacti.net/projects/cacti/core/nl/>\n"
+"PO-Revision-Date: 2026-11-24 09:13+0000\n"
+"Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
+"Language-Team: Dutch <https://translate.cacti.net/projects/cacti/core/nl/>\n"
 "Language: nl-NL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.8.1\n"
+"X-Generator: Weblate 5.11.4\n"
 
 #: about.php:29 include/global_arrays.php:2781 lib/html.php:3046
 msgid "About Cacti"
@@ -76,7 +76,10 @@ msgstr "De gebruikers van Cacti"
 
 #: about.php:92
 msgid "Especially anyone who has taken the time to create an issue report, or otherwise help fix a Cacti related problems. Also to anyone who has contributed to supporting Cacti."
-msgstr "Vooral iedereen die de tijd heeft genomen om een ​​probleem te melden, of op andere wijze Cacti gerelateerde problemen op te lossen. Ook aan iedereen die heeft bijgedragen aan de ondersteuning van Cacti."
+msgstr ""
+"Vooral iedereen die de tijd heeft genomen om een probleem te melden, of op "
+"andere wijze Cacti gerelateerde problemen op te lossen. Ook aan iedereen die "
+"heeft bijgedragen aan de ondersteuning van Cacti."
 
 #: about.php:97
 msgid "License"
@@ -700,9 +703,8 @@ msgid "No Graphs Found"
 msgstr "Geen grafieken gevonden"
 
 #: aggregate_graphs.php:1979
-#, fuzzy
 msgid " [ Custom Graphs List Applied - Clear to Reset ]"
-msgstr "[ Aangepaste grafieklijst toegepast - Filter VAN lijst ]"
+msgstr " [ Aangepaste grafieklijst toegepast - Filter VAN lijst ]"
 
 #: aggregate_graphs.php:1979 aggregate_graphs.php:2099
 #: include/global_arrays.php:2937
@@ -4012,9 +4014,11 @@ msgid "Color Template [new]"
 msgstr "Kleurtemplate [nieuw]"
 
 #: color_templates.php:762
-#, fuzzy, php-format
+#, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
-msgstr "Kleurensjabloon '%s' had% d Aggregaatsjablonen naar buiten gedrukt en% d Niet-sjabloonaggregaten naar buiten gedrukt"
+msgstr ""
+"Kleurensjabloon '%s' had%d Aggregaatsjablonen naar buiten gedrukt en%d Niet-"
+"sjabloonaggregaten naar buiten gedrukt"
 
 #: color_templates.php:764
 #, fuzzy, php-format
@@ -5848,9 +5852,8 @@ msgid "%d seconds left."
 msgstr "%d seconden over."
 
 #: graph_realtime.php:456
-#, fuzzy
 msgid " seconds left."
-msgstr "%d seconden over."
+msgstr " %d seconden over."
 
 #: graph_templates.php:39
 msgid "Change Settings"
@@ -6324,9 +6327,8 @@ msgid "Create Aggregate from Template"
 msgstr "Maak geaggregeerde grafiek vanaf template"
 
 #: graphs.php:234 graphs.php:249
-#, fuzzy
 msgid "No Device - "
-msgstr "Geen apparaat"
+msgstr "Geen apparaat "
 
 #: graphs.php:339
 #, php-format
@@ -6916,9 +6918,11 @@ msgid "ERROR: Invalid Device ID."
 msgstr "ERROR: Apparaat["
 
 #: host.php:217
-#, fuzzy, php-format
+#, php-format
 msgid "Device Reindex Completed in %0.2f seconds.  There were %d items updated."
-msgstr "Apparaat opnieuw indexeren voltooid in% 0.2f seconden. Er zijn% d items geüpdatet."
+msgstr ""
+"Apparaat opnieuw indexeren voltooid in%0.2f seconden. Er zijn%d items "
+"geüpdatet."
 
 #: host.php:360
 #, fuzzy, php-format
@@ -8337,9 +8341,8 @@ msgid "%d Year"
 msgstr "%d Jaar"
 
 #: include/global_arrays.php:888
-#, fuzzy
 msgid "Disabled/Manual"
-msgstr "Gehandicapten/Handboek"
+msgstr "Uitgeschakeld/Handmatig"
 
 #: include/global_arrays.php:895
 msgid "Every day"
@@ -10996,7 +10999,9 @@ msgstr "Verplaats uw gegevens op de tijdas (x-as) met de hoeveelheid die in het 
 
 #: include/global_form.php:1072
 msgid "[HRULE|VRULE]: The value of the graph item.<br/> [TICK]: The fraction for the tick line.<br/> [SHIFT]: The time offset in seconds."
-msgstr "[HRULE|VRULE]: De waarde van het grafiek item.<br> [TICK]: De fractie voor de tiklijn.<br> [SHIFT]: De tijd compensatie in seconden."
+msgstr ""
+"[HRULE|VRULE]: De waarde van het grafiek item.<br/> [TICK]: De fractie voor "
+"de tiklijn.<br/> [SHIFT]: De tijd compensatie in seconden."
 
 #: include/global_form.php:1075
 msgid "GPRINT Type"
@@ -15344,9 +15349,11 @@ msgid "Initializing"
 msgstr "Initialiseren"
 
 #: install/install.php:117
-#, fuzzy, php-format
+#, php-format
 msgid "Please wait while the installation system for Cacti Version %s initializes. You must have JavaScript enabled for this to work."
-msgstr "Even geduld a.u.b. terwijl het installatiesysteem voor Cacti versie %s initialiseert.  U moet JavaScript ingeschakeld hebben om dit te laten werken."
+msgstr ""
+"Even geduld a.u.b. terwijl het installatiesysteem voor Cacti versie %s "
+"initialiseert. U moet JavaScript ingeschakeld hebben om dit te laten werken."
 
 #: install/install.php:121
 #, fuzzy
@@ -15824,14 +15831,12 @@ msgid "Device+Template:(%s%s)"
 msgstr "Apparaattemplate"
 
 #: lib/auth.php:2488 lib/auth.php:2495 lib/auth.php:2504
-#, fuzzy
 msgid "Restricted By: "
-msgstr "Beperkt"
+msgstr "Beperkt "
 
 #: lib/auth.php:2492
-#, fuzzy
 msgid "Granted By: "
-msgstr "Toegang verleend"
+msgstr "Toegang verleend "
 
 #: lib/auth.php:2499
 msgid "Granted"
@@ -15948,7 +15953,7 @@ msgstr "Verificatie was eerder niet ingesteld. Geprobeerd om lokale authenticati
 
 #: lib/auth.php:5215 lib/auth.php:5250 lib/auth.php:5288
 msgid "Unknown error"
-msgstr "Onbekende fout "
+msgstr "Onbekende fout"
 
 #: lib/auth.php:5219 lib/auth.php:5254 lib/auth.php:5292
 #, fuzzy
@@ -16511,9 +16516,11 @@ msgid "Executing SNMP get for %s oids (%s)"
 msgstr "Het uitvoeren van SNMP krijgt voor %s oids (%s)"
 
 #: lib/data_query.php:1167 lib/data_query.php:1260 lib/data_query.php:1269
-#, fuzzy, php-format
+#, php-format
 msgid "Sort field returned no data for OID[%s], skipping."
-msgstr "Teruggezonden veld sorteren, geen gegevens.  Kan niet doorgaan Re-Index voor OID[%s]"
+msgstr ""
+"Teruggezonden veld sorteren, geen gegevens. Kan niet doorgaan Re-Index voor "
+"OID[%s]"
 
 #: lib/data_query.php:1171
 #, fuzzy, php-format
@@ -16636,9 +16643,8 @@ msgid "Debug not completed after 5 pollings"
 msgstr "Debug niet voltooid na 5 stemmingen"
 
 #: lib/dsdebug.php:260
-#, fuzzy
 msgid "Failed fields: "
-msgstr "Mislukte velden:"
+msgstr "Mislukte velden: "
 
 #: lib/dsdebug.php:269
 #, fuzzy
@@ -16666,9 +16672,8 @@ msgid "RRDfile not updated after polling"
 msgstr "RRD Bestand niet bijgewerkt na polling"
 
 #: lib/dsdebug.php:303
-#, fuzzy
 msgid "Data Source returned Bad Results for "
-msgstr "Gegevensbron retourneerde slechte resultaten voor"
+msgstr "Gegevensbron retourneerde slechte resultaten voor "
 
 #: lib/dsdebug.php:308
 #, fuzzy
@@ -18679,9 +18684,9 @@ msgid "Make sure you have read and followed the required steps needed to install
 msgstr "Zorg ervoor dat u de benodigde stappen heeft gelezen en gevolgd voor het installeren en Cacti. Installatieinstructies kunnen worden gevonden voor <a href=\"%1$s\">Unix</a> en <a href=\"%2$s\">Win32</a>-gebaseerde besturingssystemen."
 
 #: lib/installer.php:1910
-#, fuzzy, php-format
+#, php-format
 msgid "This process will guide you through the steps for upgrading from version '%s'. "
-msgstr "Dit proces leidt u door de stappen voor het upgraden van versie '%s'."
+msgstr "Dit proces leidt u door de stappen voor het upgraden van versie '%s'. "
 
 #: lib/installer.php:1911
 #, fuzzy, php-format
@@ -18706,9 +18711,8 @@ msgid "Accept GPL License Agreement"
 msgstr "Accepteer de GPL licentie overeenkomst"
 
 #: lib/installer.php:1965
-#, fuzzy
 msgid "Select default theme: "
-msgstr "Selecteer het standaardthema:"
+msgstr "Selecteer het standaardthema: "
 
 #: lib/installer.php:1988
 msgid "Pre-installation Checks"
@@ -18879,9 +18883,11 @@ msgid "Downgrade from <strong>%s</strong> to <strong>%s</strong>"
 msgstr "Downgrade van <strong>%s</strong> naar <strong>%s</strong>"
 
 #: lib/installer.php:2251
-#, fuzzy
 msgid "You appear to be downgrading to a previous version.  Database changes made for the newer version will not be reversed and <i>could</i> cause issues."
-msgstr "U lijkt te downgraden naar een vorige versie.  Databasewijzigingen voor de nieuwere versie worden niet teruggedraaid en <i>zouden problemen kunnen veroorzaken."
+msgstr ""
+"U lijkt te downgraden naar een vorige versie.  Databasewijzigingen voor de "
+"nieuwere versie worden niet teruggedraaid en <i>zouden</i> problemen kunnen "
+"veroorzaken."
 
 #: lib/installer.php:2258
 msgid "Please select the type of installation"
@@ -19247,9 +19253,8 @@ msgid "Your server collation appears to be UTF8 compliant"
 msgstr "Uw servercollation blijkt UTF8-compliant te zijn"
 
 #: lib/installer.php:2806
-#, fuzzy
 msgid "Your server collation does NOT appear to be fully UTF8 compliant. "
-msgstr "Uw servercollation lijkt NIET volledig compatibel te zijn met UTF8."
+msgstr "Uw servercollation lijkt NIET volledig compatibel te zijn met UTF8. "
 
 #: lib/installer.php:2807
 #, fuzzy
@@ -19267,14 +19272,16 @@ msgid "Your database default collation appears to be UTF8 compliant"
 msgstr "De standaardverzameling van uw database lijkt te voldoen aan UTF8."
 
 #: lib/installer.php:2823
-#, fuzzy
 msgid "Your database default collation does NOT appear to be full UTF8 compliant. "
-msgstr "Uw database wordt NIET volledig UTF8-conform weergegeven."
+msgstr "Uw database wordt NIET volledig UTF8-conform weergegeven. "
 
 #: lib/installer.php:2824
-#, fuzzy
 msgid "Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched.   Please ensure your database is changed to 'utf8mb4_unicode_ci' by running the following: "
-msgstr "Alle tabellen die door plugins zijn gemaakt, kunnen problemen hebben met Cacti Core tabellen als de vergelijking niet wordt geëvenaard.   Zorg ervoor dat uw database wordt gewijzigd in 'utf8mb4_unicode_ci' door het volgende uit te voeren:"
+msgstr ""
+"Alle tabellen die door plugins zijn gemaakt, kunnen problemen hebben met "
+"Cacti Core tabellen als de vergelijking niet wordt geëvenaard.   Zorg ervoor "
+"dat uw database wordt gewijzigd in 'utf8mb4_unicode_ci' door het volgende "
+"uit te voeren: "
 
 #: lib/installer.php:2831
 #, fuzzy
@@ -19308,9 +19315,11 @@ msgid "Row Format"
 msgstr "Regelindeling"
 
 #: lib/installer.php:2884
-#, fuzzy
 msgid "One or more tables are too large to convert during the installation.  You should use the cli/convert_tables.php script to perform the conversion, then refresh this page. For example: "
-msgstr "Een of meer tafels zijn te groot om tijdens de installatie om te zetten.  Gebruik het cli/convert_tables.php script om de conversie uit te voeren en vernieuw deze pagina. Bijvoorbeeld:"
+msgstr ""
+"Een of meer tafels zijn te groot om tijdens de installatie om te zetten.  "
+"Gebruik het cli/convert_tables.php script om de conversie uit te voeren en "
+"vernieuw deze pagina. Bijvoorbeeld: "
 
 #: lib/installer.php:2888
 #, fuzzy
@@ -21467,7 +21476,7 @@ msgstr "Overerfd"
 
 #: package_import.php:1311
 msgid "File Differences for: "
-msgstr ""
+msgstr "Bestandsverschillen voor: "
 
 #: package_import.php:1422
 #, fuzzy
@@ -23883,14 +23892,12 @@ msgid "Name: "
 msgstr "Naam: "
 
 #: support.php:1309
-#, fuzzy
 msgid "Procs: "
-msgstr "1 Proces"
+msgstr "1 Proces "
 
 #: support.php:1316
-#, fuzzy
 msgid "Threads: "
-msgstr "Threads"
+msgstr "Threads "
 
 #: support.php:1322
 msgid "Concurrent Processes"
