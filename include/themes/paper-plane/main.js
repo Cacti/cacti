@@ -47,8 +47,8 @@ function themeReady() {
 	/* Start clean up */
 
 	//login page
-	$('.cactiLoginLogo').html("<i class='ti ti-pawti ti-send'/>");
-	$('.cactiLogoutLogo').html("<i class='ti ti-pawti ti-send'/>");
+	$('.cactiLoginLogo').html("<i class='ti ti-send'/>");
+	$('.cactiLogoutLogo').html("<i class='ti ti-send'/>");
 
 	/* clean up the navigation menu */
 	$('.cactiConsoleNavigationArea').find('#menu').appendTo($('.cactiConsoleNavigationArea').find('#navigation'));

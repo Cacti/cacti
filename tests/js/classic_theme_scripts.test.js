@@ -85,3 +85,13 @@ test('classic theme scripts do not assign undeclared globals or keep dead handle
 		assert.doesNotMatch(source, /\$\('\.colordropdown'\)/, `${name}: core handles color selects with dropcolor()`);
 	}
 });
+
+test('the paper-plane logo uses a single icon class', () => {
+	const source = read('include/themes/paper-plane/main.js');
+	const icons = [...source.matchAll(/\$\('\.(cactiLoginLogo|cactiLogoutLogo)'\)\.html\("<i class='([^']*)'\/>"\)/g)];
+
+	assert.equal(icons.length, 2);
+	for (const [, , classes] of icons) {
+		assert.equal(classes, 'ti ti-send');
+	}
+});
