@@ -6139,7 +6139,6 @@ msgid "Selected Graph Template"
 msgstr "არჩეული გრაფიკის შაბლონი"
 
 #: graphs.php:2320
-#, php-format
 msgid "Choose a Graph Template to apply to this Graph. Please note that you may only change Graph Templates to a 100%% compatible Graph Template, which means that it includes identical Data Sources."
 msgstr ""
 
@@ -11287,7 +11286,7 @@ msgstr ""
 
 #: include/global_settings.php:473 include/global_settings.php:2943
 msgid "Date Separator"
-msgstr "მონაცემების გამყოფი"
+msgstr "თარიღის გამყოფი"
 
 #: include/global_settings.php:474
 msgid "The System default date separator to be used in Cacti."
@@ -13513,7 +13512,6 @@ msgid "Variance Percentage"
 msgstr "გადახრის პროცენტი"
 
 #: include/global_settings.php:2734
-#, php-format
 msgid "This value represents the percentage above the adjusted sample average once outliers have been removed from the sample.  For example, a Variance Percentage of 100%% on an adjusted average of 50 would remove any sample above the quantity of 100 from the graph."
 msgstr ""
 
@@ -14777,7 +14775,7 @@ msgstr "მოწყობილობა ჩრთ/გმრთ"
 
 #: lib/clog_webapi.php:592
 msgid "Recaches"
-msgstr "ემთხვევა"
+msgstr "ხელახალი კეშირებები"
 
 #: lib/clog_webapi.php:593
 msgid "Security Issues"
@@ -15790,7 +15788,7 @@ msgstr "მალსახმობები"
 
 #: lib/html.php:3066
 msgid "Spine"
-msgstr "ხერხემალი"
+msgstr "Spine"
 
 #: lib/html.php:3068
 msgid "Help in Translating"
@@ -17400,7 +17398,7 @@ msgstr ""
 
 #: lib/installer.php:2360
 msgid "Remote Poller Variables"
-msgstr "გამომთხოვის ცვლადების წაშლა"
+msgstr "დაშორებული Poller-ის ცვლადები"
 
 #: lib/installer.php:2362
 msgid "The variables that must be set in the config.php file include the following:"
@@ -18782,7 +18780,6 @@ msgid "With Remote polling capabilities, large amounts of data will be synced fr
 msgstr ""
 
 #: lib/utility.php:1212
-#, php-format
 msgid "If using the Cacti Performance Booster and choosing a memory storage engine, you have to be careful to flush your Performance Booster buffer before the system runs out of memory table space.  This is done two ways, first reducing the size of your output column to just the right size.  This column is in the tables poller_output, and poller_output_boost.  The second thing you can do is allocate more memory to memory tables.  We have arbitrarily chosen a recommended value of 10%% of system memory, but if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation or choose a different storage engine.  You may see the expected consumption of the Performance Booster tables under Console -> System Utilities -> View Boost Status."
 msgstr ""
 
@@ -18812,7 +18809,6 @@ msgid "If your tables have very large indexes, you must operate with the Barracu
 msgstr ""
 
 #: lib/utility.php:1254
-#, php-format
 msgid "InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size.  If you database is very large or remote, you can consider increasing this size.  If remote, it can by as high as 80% of the systems memory.  However, cautions must be taken to reduce the swappiness of the system, or to remove swap to keep the system from swapping."
 msgstr ""
 
@@ -21888,7 +21884,6 @@ msgid "Max Total Memory Possible"
 msgstr ""
 
 #: support.php:1594
-#, php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr ""
 
