@@ -27,13 +27,11 @@ function _data_query_source_7809() {
 	return $src;
 }
 
-require_once dirname(__DIR__, 3) . '/Helpers/PhpSource.php';
-
 test('#7809: the method-fix guard tests direction before reading source', function () {
 	$src = _data_query_source_7809();
 
 	$needle = 'if ((' . '$field_array' . "['direction'] == 'input' || " . '$field_array' . "['direction'] == 'input-output') && " . '$field_array' . "['source'] != 'index'";
-	$start  = \Cacti\Tests\Helpers\PhpSource::position($src, $needle);
+	$start  = strpos($src, $needle);
 
 	expect($start)->not->toBeFalse(
 		"query_snmp_host() must test direction before reading \$field_array['source'] so output-only fields short-circuit"
@@ -41,7 +39,7 @@ test('#7809: the method-fix guard tests direction before reading source', functi
 
 	// The old ordering (source first) must be gone.
 	$oldNeedle = 'if (' . '$field_array' . "['source'] != 'index' && (" . '$field_array' . "['direction'] == 'input'";
-	$old       = \Cacti\Tests\Helpers\PhpSource::position($src, $oldNeedle);
+	$old       = strpos($src, $oldNeedle);
 	expect($old)->toBeFalse('the source-first ordering must not remain');
 });
 

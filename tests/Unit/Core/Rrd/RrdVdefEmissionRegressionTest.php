@@ -40,8 +40,6 @@ function vdef_block(string $src): string {
 	return substr($src, $start, $end - $start);
 }
 
-require_once dirname(__DIR__, 3) . '/Helpers/PhpSource.php';
-
 test('the VDEF block builds only uncached VDEFs (!isset)', function () {
 	$block = vdef_block(rrd_source());
 
@@ -75,5 +73,6 @@ test('XPORT emission excludes VDEF-backed items', function () {
 
 	// the AREA/STACK/LINE selector for xport must gate on vdef_id == 0 so a
 	// drawn VDEF item does not emit XPORT:vdefNN and fail the whole export
-	expect($src)->toContainPhp("\$graph_item['vdef_id'] == 0 && preg_match('/^(AREA|AREA:STACK|LINE[123]|STACK)$/', \$graph_item_types[\$graph_item['graph_type_id']])");
+	expect(preg_match('/^.*preg_match\(\'\/\^\(AREA\|AREA:STACK\|LINE\[123\]\|STACK\)\$\/\'.*$/m', $src, $m))->toBe(1)
+		->and($m[0])->toContain("\$graph_item['vdef_id'] == 0 &&");
 });

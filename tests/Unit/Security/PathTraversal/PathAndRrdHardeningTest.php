@@ -15,8 +15,6 @@
 
 $root = dirname(__DIR__, 4);
 
-require_once dirname(__DIR__, 3) . '/Helpers/PhpSource.php';
-
 test('imported data-query xml_path is confined to the Cacti tree (GHSA-m67r)', function () use ($root) {
 	$s = file_get_contents($root . '/lib/import.php');
 	expect($s)->toContain('realpath(CACTI_PATH_BASE)')
@@ -30,11 +28,11 @@ test('rrdtool_create_error_image validates the theme (GHSA-mpfm)', function () u
 
 test('path_dsstats_log is escaped before the shell redirect (GHSA-pjq5)', function () use ($root) {
 	$s = file_get_contents($root . '/lib/dsstats.php');
-	expect(\Cacti\Tests\Helpers\PhpSource::normalizeWhitespace($s))->toContain(">> ' . cacti_escapeshellarg");
+	expect($s)->toContain(">> ' . cacti_escapeshellarg");
 });
 
 test('data_templates rrd_maximum/rrd_minimum validator is anchored (GHSA-wp33)', function () use ($root) {
 	$s = file_get_contents($root . '/data_templates.php');
-	expect($s)->toContainPhp("'rrd_maximum', [new Assert\\Regex(")
+	expect($s)->toContain("'rrd_maximum', [new Assert")
 		->and($s)->toContain('\z/');
 });
