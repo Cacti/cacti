@@ -30,16 +30,6 @@ if (PHP_SAPI !== 'cli') {
 }
 
 /**
- * Updates the hash. Used as part of Cacti's include functionality.
- *
- * @param string $file The file.
- *
- * @return void No value is returned.
- */
-function update_hash($file) {
-}
-
-/**
  * Handles the file search. Used as part of Cacti's include functionality.
  *
  * @param string $folder The folder.
@@ -69,8 +59,14 @@ function file_search($folder, $pattern_array) {
 function file_hash($match) {
 	global $cssFile;
 	$md5File = dirname($cssFile) . '/' . $match[2];
-	$md5Real = realpath($md5File);
-	$md5Hash = md5_file($md5File);
+	$md5Hash = is_file($md5File) ? md5_file($md5File) : false;
+
+	if ($md5Hash === false) {
+		fwrite(STDERR, 'ERROR: unable to hash ' . $md5File . ' imported by ' . $cssFile . PHP_EOL);
+
+		exit(1);
+	}
+
 	$result  = $match[1] . $match[2] . '?' . $md5Hash . $match[4];
 
 	return $result;
@@ -94,7 +90,21 @@ function file_update($cssFile) {
 
 	if ($fileContents != $fileUpdated) {
 		echo "file_update(" . $cssFile . ")\n";
-		file_put_contents($cssFile, $fileUpdated);
+
+		/* write a complete copy next to the stylesheet and swap it in, so it is never served half written */
+		$tempFile = $cssFile . '.' . getmypid() . '.tmp';
+
+		if (file_put_contents($tempFile, $fileUpdated) === false ||
+			!chmod($tempFile, fileperms($cssFile) & 0777) ||
+			!rename($tempFile, $cssFile)) {
+			if (file_exists($tempFile)) {
+				unlink($tempFile);
+			}
+
+			fwrite(STDERR, 'ERROR: unable to update ' . $cssFile . PHP_EOL);
+
+			exit(1);
+		}
 	}
 }
 
