@@ -244,6 +244,9 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 					return false;
 				}
 
+				/* an importer that returns false refused the object and the import stops */
+				$cache_add = array();
+
 				switch($type) {
 					case 'graph_template':
 						$transaction_started = $preview_only ? false : db_begin_transaction();
@@ -266,24 +269,23 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 							db_commit_transaction();
 						}
 
-						$hash_cache += $cache_add;
 						break;
 				case 'data_template':
-					$hash_cache += xml_to_data_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $import_as_new, $profile_id);
+					$cache_add = xml_to_data_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $import_as_new, $profile_id);
 					$repair++;
 					break;
 				case 'host_template':
-					$hash_cache += xml_to_host_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $host_template_data, $class);
+					$cache_add = xml_to_host_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $host_template_data, $class);
 					break;
 				case 'data_input_method':
-					$hash_cache += xml_to_data_input_method($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
+					$cache_add = xml_to_data_input_method($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
 					$repair++;
 					break;
 				case 'data_query':
-					$hash_cache += xml_to_data_query($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $files, $replace_svalues);
+					$cache_add = xml_to_data_query($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $files, $replace_svalues);
 					break;
 				case 'gprint_preset':
-					$hash_cache += xml_to_gprint_preset($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
+					$cache_add = xml_to_gprint_preset($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
 					break;
 				case 'cdef':
 					$return = xml_to_cdef($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
@@ -292,12 +294,13 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 					}
 					break;
 				case 'vdef':
-					$hash_cache += xml_to_vdef($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
+					$cache_add = xml_to_vdef($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
 					break;
 				case 'data_source_profile':
 					$cache_add = xml_to_data_source_profile($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $import_as_new, $profile_id);
-					if ($cache_add !== false) {
-						$hash_cache += $cache_add;
+					/* false means the profile was not imported and the selected one stays in use */
+					if ($cache_add === false) {
+						$cache_add = array();
 					}
 					break;
 				case 'round_robin_archive':
@@ -314,6 +317,14 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 					$hash_cache += $param['hash_cache'];
 					break;
 				}
+
+				if ($cache_add === false) {
+					cacti_log('ERROR: Import of ' . $type . ' with hash ' . $dep_hash_cache[$type][$i]['hash'] . ' failed', false, 'IMPORT');
+
+					return false;
+				}
+
+				$hash_cache += $cache_add;
 
 				if (cacti_sizeof($import_debug_info)) {
 					if (isset($info_array[$type])) {

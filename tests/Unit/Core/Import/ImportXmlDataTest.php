@@ -57,3 +57,20 @@ test('VDEFs are imported before the Graph Templates whose items use them', funct
 	expect($verdict['error'])->toBeNull()
 		->and(import_xml_data_importers($verdict))->toBe(array('xml_to_cdef', 'xml_to_vdef', 'xml_to_graph_template'));
 });
+
+test('an object its importer refuses stops the import with false instead of an error', function (string $refused) {
+	$verdict = import_xml_data_scenario(array('data_input_method', 'data_template', 'graph_template', 'vdef'), array($refused => false));
+
+	expect($verdict['error'])->toBeNull()
+		->and($verdict['result'])->toBeFalse()
+		->and(import_xml_data_importers($verdict))->not->toContain('xml_to_graph_template')
+		->and(end($verdict['log']))->toContain('failed');
+})->with(array('xml_to_data_input_method', 'xml_to_data_template', 'xml_to_vdef'));
+
+test('the objects an importer accepts are still reported', function () {
+	$verdict = import_xml_data_scenario(array('data_input_method', 'graph_template'), array('xml_to_data_input_method' => array('data_input_method' => array('x' => 3))));
+
+	expect($verdict['error'])->toBeNull()
+		->and($verdict['result'])->toBeArray()
+		->and(import_xml_data_importers($verdict))->toBe(array('xml_to_data_input_method', 'xml_to_graph_template'));
+});
