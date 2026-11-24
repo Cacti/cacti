@@ -2276,7 +2276,7 @@ function item() : void {
 			LEFT JOIN colors AS c
 			ON color_id = c.id
 			LEFT JOIN colors AS c2
-			ON color_id = c2.id
+			ON color2_id = c2.id
 			WHERE gti.local_graph_id = ?
 			ORDER BY gti.sequence", [grv('id')]);
 
