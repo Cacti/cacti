@@ -82,6 +82,15 @@ $cases = [
 	['"$(cat <<EOF\n<field>\nEOF\n)"', ['field' => "'p'"], ''],
 	['"`(true); printf %s <field>`"', ['field' => "'p'"], ''],
 	['"$((1 + <field>))"', ['field' => "'p'"], ''],
+	// A field right after a nested substitution is not an exact wrap of the
+	// outer quote; its closing ) or backtick and that quote must survive.
+	['"$(printf x)<field>"', ['field' => "'p'"], '"$(printf x)"\'p\'""'],
+	['"`printf x`<field>"', ['field' => "'p'"], '"`printf x`"\'p\'""'],
+	['"$(printf x)<path>"', ['path' => '/space path'], '"$(printf x)/space path"'],
+	// Grouping, redirection and ${...} operators in a substitution stay rejected.
+	['$(cmd 2>/dev/null) <field>', ['field' => "'p'"], ''],
+	['cmd ${FOO:-x} <field>', ['field' => "'p'"], ''],
+	['cmd $((1+2)) <field>', ['field' => "'p'"], ''],
 ];
 
 foreach ($cases as $index => [$template, $values, $expected]) {
@@ -123,6 +132,29 @@ try {
 					$count++;
 				}
 			}
+		}
+	}
+
+	foreach ($payloads as $value) {
+		foreach (['"$(printf x)<field>"', '"`printf x`<field>"'] as $template) {
+			$escaped  = $value === '' ? escapeshellarg($value) : cacti_escapeshellarg($value);
+			$argument = substitute_script_path($template, ['field' => $escaped]);
+			$expected = 'x' . str_replace(["\r", "\n"], '', $value);
+
+			$pipes   = [];
+			$process = proc_open(['sh', '-c', 'printf %s ' . $argument], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+
+			if (!is_resource($process)) {
+				throw new RuntimeException('Cannot start POSIX shell');
+			}
+			$stdout = stream_get_contents($pipes[1]);
+			$stderr = stream_get_contents($pipes[2]);
+			fclose($pipes[1]);
+			fclose($pipes[2]);
+			$status = proc_close($process);
+			$check([$status, $stdout, $stderr], [0, $expected, ''], 'nested ' . $count);
+			$check(file_exists($marker), false, 'execution sentinel');
+			$count++;
 		}
 	}
 } finally {

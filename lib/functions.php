@@ -2901,6 +2901,10 @@ function substitute_script_path($template, $escaped_values) {
 		// shell context whose quoting is independent of this frame, so push a
 		// fresh frame and judge any token inside against that context
 		if ($ch === '$' && $i + 1 < $len && $template[$i + 1] === '(') {
+			// the substitution is content of this frame's open quote, so a token
+			// right after its close must not be treated as an exact wrap
+			$stack[$top]['quoteEmpty'] = false;
+
 			$out .= '$(';
 			$i      += 2;
 			$stack[] = ['quote' => '', 'quoteEmpty' => false, 'kind' => 'cmdsub'];
@@ -2922,7 +2926,8 @@ function substitute_script_path($template, $escaped_values) {
 			if ($stack[$top]['kind'] === 'backtick' && $quote === '') {
 				array_pop($stack);
 			} else {
-				$stack[] = ['quote' => '', 'quoteEmpty' => false, 'kind' => 'backtick'];
+				$stack[$top]['quoteEmpty'] = false;
+				$stack[]                   = ['quote' => '', 'quoteEmpty' => false, 'kind' => 'backtick'];
 			}
 
 			$out .= '`';
