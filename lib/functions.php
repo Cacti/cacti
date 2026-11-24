@@ -10335,3 +10335,15 @@ function log_user_action($user, $action) {
 	return cacti_log("NOTE: User '$user' was $action by user '$acting_user'", false, PHP_SAPI === 'cli' ? 'AUTHC' : 'AUTH');
 }
 
+/**
+ * Whether a value is a color hex as stored in the colors table: exactly six hexadecimal digits.
+ *
+ * @param mixed $hex The value to check.
+ *
+ * @return bool True for six hexadecimal digits and nothing else.
+ */
+function cacti_color_hex_valid($hex) {
+	/* \z, unlike $, does not accept a trailing line feed */
+	return is_string($hex) && preg_match('/^[0-9A-Fa-f]{6}\z/', $hex) === 1;
+}
+

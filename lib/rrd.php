@@ -3242,13 +3242,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			$need_rrd_nl = true;
 
 			/* initialize color support */
-			$graph_item_color_code = '';
-			if (!empty($graph_item['hex'])) {
-				$graph_item_color_code = '#' . $graph_item['hex'];
-				// alpha is user-controlled and concatenated raw into the shell command
-				// line (escape_command() is a no-op), so escape it like every other argument.
-				$graph_item_color_code .= cacti_escapeshellarg($graph_item['alpha']);
-			}
+			$graph_item_color_code = rrd_graph_item_color_code($graph_item['hex'], $graph_item['alpha']);
 
 			/* initialize dash support */
 			$dash = '';
@@ -5516,6 +5510,25 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 	ob_end_clean();
 
 	return $image_data;
+}
+
+/**
+ * Build the color part of a graph item argument: '#', the color hex and the escaped alpha.
+ *
+ * @param mixed $hex The color hex of the item.
+ * @param mixed $alpha The alpha of the item.
+ *
+ * @return string The color part, or an empty string when the item has no valid color.
+ */
+function rrd_graph_item_color_code($hex, $alpha) {
+	/* the hex is not quoted in the argument, so only six hexadecimal digits are used */
+	if (!cacti_color_hex_valid($hex)) {
+		return '';
+	}
+
+	// alpha is user-controlled and concatenated raw into the shell command
+	// line (escape_command() is a no-op), so escape it like every other argument.
+	return '#' . $hex . cacti_escapeshellarg($alpha);
 }
 
 /**

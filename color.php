@@ -95,7 +95,7 @@ function form_save() {
 
 		if (get_nfilter_request_var('read_only') == '') {
 			$save['name']      = get_filter_request_var('name', FILTER_SANITIZE_SPECIAL_CHARS);
-			$save['hex']       = form_input_validate(get_nfilter_request_var('hex'),  'hex',  '^[a-fA-F0-9]+$' , false, 3);
+			$save['hex']       = form_input_validate(get_nfilter_request_var('hex'),  'hex',  '^[a-fA-F0-9]{6}\z' , false, 3);
 		} else {
 			$save['name']      = get_filter_request_var('hidden_name', FILTER_SANITIZE_SPECIAL_CHARS);
 			$save['read_only'] = 'on';

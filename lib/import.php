@@ -1134,7 +1134,7 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 					/* is the value of this field a hash or not? */
 					if (preg_match('/hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})/', $item_array[$field_name])) {
 						$save[$field_name] = resolve_hash_to_id($item_array[$field_name], $hash_cache, 'graph_templates_item');
-					} elseif (($field_name == 'color_id') && (preg_match('/^[a-fA-F0-9]{6}$/', $item_array[$field_name])) && (get_version_index($parsed_hash['version']) >= get_version_index('0.8.5'))) { /* treat the 'color' field differently */
+					} elseif (($field_name == 'color_id') && (cacti_color_hex_valid($item_array[$field_name])) && (get_version_index($parsed_hash['version']) >= get_version_index('0.8.5'))) { /* treat the 'color' field differently */
 						$color_id = db_fetch_cell_prepared('SELECT id
 							FROM colors
 							WHERE hex = ?',
