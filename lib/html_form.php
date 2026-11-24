@@ -1451,10 +1451,7 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
 
 	$colors_sql = 'SELECT *
 		FROM colors
-		ORDER BY
-			SUBSTRING(hex,0,2) ASC,
-			SUBSTRING(hex,2,2) ASC,
-			SUBSTRING(hex,4,2) ASC';
+		ORDER BY hex ASC';
 
 	$colors_list = db_fetch_assoc($colors_sql);
 
