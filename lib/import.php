@@ -1516,13 +1516,7 @@ function xml_to_graph_template(string $hash, array &$xml_array, array &$hash_cac
 			if (!$preview_only && $remove_orphans) {
 				$orphan_text[] = 'Removed Orphaned Graph Items, Type: ' . $graph_item_types[$item['graph_type_id']] . ', Text Format: ' . $item['text_format'] . ', Value: ' . $item['value'];
 
-				db_execute_prepared('DELETE FROM graph_templates_item
-					WHERE hash = ?',
-					[$item['hash']]);
-
-				db_execute_prepared('DELETE FROM graph_templates_item
-					WHERE local_graph_template_item_id = ?',
-					[$item['id']]);
+				import_remove_orphan_graph_item($graph_template_id, $item);
 			} else {
 				$orphan_text[] = 'Found Orphaned Graph Items, Type: ' . $graph_item_types[$item['graph_type_id']] . ', Text Format: ' . $item['text_format'] . ', Value: ' . $item['value'];
 			}
@@ -1536,6 +1530,29 @@ function xml_to_graph_template(string $hash, array &$xml_array, array &$hash_cac
 	}
 
 	return $hash_cache;
+}
+
+/**
+ * import_remove_orphan_graph_item - removes a Graph Template item that the imported
+ * Template no longer carries, and the Graph items created from it.  The item is
+ * matched by id within its Template: Graph items carry an empty hash, so a match on
+ * the hash alone could reach items of every Graph.
+ *
+ * @param int   $graph_template_id The Template the item belongs to
+ * @param array $item              The graph_templates_item row of the orphaned item
+ *
+ * @return void
+ */
+function import_remove_orphan_graph_item(int $graph_template_id, array $item) : void {
+	db_execute_prepared('DELETE FROM graph_templates_item
+		WHERE id = ?
+		AND graph_template_id = ?
+		AND local_graph_id = 0',
+		[$item['id'], $graph_template_id]);
+
+	db_execute_prepared('DELETE FROM graph_templates_item
+		WHERE local_graph_template_item_id = ?',
+		[$item['id']]);
 }
 
 /**
