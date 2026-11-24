@@ -314,7 +314,10 @@ function update_poller_cache($data_source, $commit = false) {
 					$data_source_item_name = '';
 				}
 
-				$poller_items[] = api_poller_cache_item_add($data_source['host_id'], array(), $data_source['id'], $data_input['rrd_step'], $action, $data_source_item_name, 1, $script_path);
+				// get_full_script_path() has already logged why no command could be built
+				if ($script_path !== false) {
+					$poller_items[] = api_poller_cache_item_add($data_source['host_id'], array(), $data_source['id'], $data_input['rrd_step'], $action, $data_source_item_name, 1, $script_path);
+				}
 			} elseif ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP) {
 				/* get the host override fields */
 				if (!isset($data_source['data_template_id'])) {

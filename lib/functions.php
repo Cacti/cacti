@@ -2382,6 +2382,10 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 
 			dsv_log('script_path', $script_path);
 
+			if ($script_path === false) {
+				return false;
+			}
+
 			$num_output_fields_sql = 'SELECT ' . SQL_NO_CACHE . ' id
 				FROM data_input_fields
 				WHERE data_input_id = ?
@@ -3013,7 +3017,7 @@ function substitute_script_path($template, $escaped_values) {
  * @param int $data_template_id (int) the ID of the data template.
  * @param int $host_id The ID of the host device.
  *
- * @return string The full script path or (bool) false for an error.
+ * @return string|false The full script path or (bool) false for an error.
  */
 function get_full_test_script_path($data_template_id, $host_id) {
 	global $config;
@@ -3074,6 +3078,12 @@ function get_full_test_script_path($data_template_id, $host_id) {
 	 * value contains another field's <token> from re-injecting an escaped payload
 	 * into an already-quoted region (GHSA-fq9x-x3vf-3vf2) */
 	$full_path = substitute_script_path($full_path, $escaped_values);
+
+	if ($full_path === '') {
+		cacti_log(sprintf('WARNING: Data Input[%d] for Data Template[%d] and Device[%d] produced an empty command, its input string is empty or uses shell syntax that cannot be substituted safely', $data_source['data_input_id'], $data_template_id, $host_id), false);
+
+		return false;
+	}
 
 	/**
 	 * sometimes a certain input value will not have anything entered... null out these fields
@@ -3144,6 +3154,12 @@ function get_full_script_path($local_data_id) {
 	 * value contains another field's <token> from re-injecting an escaped payload
 	 * into an already-quoted region (GHSA-fq9x-x3vf-3vf2) */
 	$full_path = substitute_script_path($full_path, $escaped_values);
+
+	if ($full_path === '') {
+		cacti_log(sprintf('WARNING: Data Input[%d] for Data Source[%d] produced an empty command, its input string is empty or uses shell syntax that cannot be substituted safely', $data_source['data_input_id'], $local_data_id), false);
+
+		return false;
+	}
 
 	/* sometimes a certain input value will not have anything entered... null out these fields
 	in the input string so we don't mess up the script */
