@@ -100,7 +100,8 @@ $db->exec("CREATE TABLE graph_templates_item (id INTEGER PRIMARY KEY AUTOINCREME
 $db->exec("CREATE TABLE cdef (id INTEGER PRIMARY KEY, name TEXT DEFAULT '')");
 $db->exec("CREATE TABLE graph_templates (id INTEGER PRIMARY KEY, name TEXT DEFAULT '', multiple TEXT DEFAULT '', test_source TEXT DEFAULT '')");
 $db->exec('CREATE TABLE graph_templates_graph (id INTEGER PRIMARY KEY, graph_template_id INTEGER DEFAULT 0, local_graph_id INTEGER DEFAULT 0)');
-$db->exec('CREATE TABLE graph_template_input (id INTEGER PRIMARY KEY, graph_template_id INTEGER DEFAULT 0)');
+$db->exec("CREATE TABLE graph_template_input (id INTEGER PRIMARY KEY, hash TEXT DEFAULT '', graph_template_id INTEGER DEFAULT 0, name TEXT DEFAULT '', column_name TEXT DEFAULT '')");
+$db->exec('CREATE TABLE graph_template_input_defs (graph_template_input_id INTEGER, graph_template_item_id INTEGER)');
 $db->exec("CREATE TABLE color_templates (color_template_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT DEFAULT '')");
 $db->exec('CREATE TABLE color_template_items (color_template_item_id INTEGER PRIMARY KEY AUTOINCREMENT, color_template_id INTEGER DEFAULT 0, color_id INTEGER DEFAULT 0, sequence INTEGER DEFAULT 0)');
 $db->exec('CREATE TABLE aggregate_graph_templates_item (aggregate_template_id INTEGER, graph_templates_item_id INTEGER, color_template INTEGER DEFAULT 0)');
@@ -450,6 +451,12 @@ function form_alternate_row_class($row_id = '', $class = '') {
 }
 
 function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1) {
+}
+
+function push_out_graph_item($graph_template_item_id, $task_item_changed = true) {
+}
+
+function push_out_graph_input($graph_template_input_id, $graph_template_item_id, $session_members) {
 }
 
 function get_hash_version($type) {
