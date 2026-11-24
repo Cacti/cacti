@@ -133,7 +133,8 @@ if (cacti_sizeof($parms)) {
 
 	if ($info_only) {
 		if ($filename != '' && is_readable($filename) && file_exists($filename) && !is_dir($filename)) {
-			$result = import_package($filename, $profile_id, $remove_orphans, $replace_svalues, $preview_only, $info_only);
+			// The Data Source Profile is not used to read the Package information.
+			$result = import_package($filename, preview: $preview_only, info_only: true);
 
 			if ($result !== false && cacti_sizeof($result)) {
 				print json_encode($result);

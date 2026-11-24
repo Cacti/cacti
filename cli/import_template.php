@@ -94,7 +94,7 @@ if (cacti_sizeof($parms)) {
 				exit(0);
 
 			default:
-				print 'ERROR: Invalid Argument: ($arg)' . PHP_EOL . PHP_EOL;
+				print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
 
 				exit(1);
 		}
@@ -103,13 +103,13 @@ if (cacti_sizeof($parms)) {
 	if ($profile_id > 0) {
 		if ($with_profile) {
 			print "WARNING: '--with-profile' and '--profile-id=N' are exclusive. Ignoring '--with-profile'" . PHP_EOL;
-		} else {
-			$id = db_fetch_cell_prepared('SELECT id FROM data_source_profiles WHERE id = ?', [$profile_id]);
+		}
 
-			if (empty($id)) {
-				print "WARNING: Data Source Profile ID $profile_id not found. Using System Default" . PHP_EOL;
-				$id = db_fetch_cell_prepared('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
-			}
+		$id = db_fetch_cell_prepared('SELECT id FROM data_source_profiles WHERE id = ?', [$profile_id]);
+
+		if (empty($id)) {
+			print "WARNING: Data Source Profile ID $profile_id not found. Using System Default" . PHP_EOL;
+			$id = db_fetch_cell_prepared('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
 		}
 	} else {
 		$id = db_fetch_cell_prepared('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');

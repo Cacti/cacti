@@ -68,6 +68,9 @@ for mode in profile-messages public-key-details template-import-result template-
 done
 run_probe PackageTemplateResults.php package-template-results
 run_probe PackageMissingFile.php package-missing-file
+for mode in template-profile package-info; do
+	run_probe CliImportArguments.php "cli-import-$mode" "$mode"
+done
 if [[ -f tests/fixtures/BoostSourceExistenceProbe.php ]]; then
 	for scenario in deleted query-failed; do
 		run_probe ../BoostSourceExistenceProbe.php "boost-source-existence-$scenario" "$scenario" > /dev/null
