@@ -140,7 +140,7 @@ if (read_config_option('auth_method') == 2) {
 	var cactiNonce='<?php print CactiSecureHeaders::getNonce();?>';
 	var cactiServerOS='<?php print $config['cacti_server_os'];?>';
 	var cactiAction='<?php print get_filter_request_var('action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([-a-zA-Z0-9_\s]+)$/')));?>';
-	var theme='<?php print get_selected_theme();?>';
+	var theme=<?php print json_encode((string) get_selected_theme());?>;
 	var refreshIsLogout=<?php print $refreshIsLogout;?>;
 	var refreshPage='<?php print $myrefresh['page'];?>';
 	var refreshMSeconds=<?php print $myrefresh['seconds']*1000;?>;

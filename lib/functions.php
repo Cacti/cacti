@@ -184,7 +184,13 @@ function save_user_settings($user = -1) {
 						}
 					}
 				} elseif (isset_request_var($field_name)) {
-					set_user_setting($field_name, get_nfilter_request_var($field_name), $user);
+					$field_value = get_nfilter_request_var($field_name);
+
+					if (!cacti_user_setting_value_allowed($field_array, $field_value)) {
+						continue;
+					}
+
+					set_user_setting($field_name, $field_value, $user);
 				}
 			}
 		}
@@ -796,12 +802,51 @@ function read_config_option($config_name, $force = false) {
  *
  * @return string The theme name.
  */
+/**
+ * cacti_user_setting_value_allowed - checks a value against the setting it is for
+ *
+ * A setting chosen from a fixed list accepts only values from that list.
+ * Other kinds of setting are not restricted here.
+ *
+ * @param  array $setting - the setting's definition from $settings_user
+ * @param  mixed $value   - the value to store
+ *
+ * @return bool  true when the value may be stored
+ */
+function cacti_user_setting_value_allowed($setting, $value) {
+	if (isset($setting['method'], $setting['array']) && $setting['method'] == 'drop_array' && is_array($setting['array']) && cacti_sizeof($setting['array'])) {
+		return (is_string($value) || is_int($value)) && isset($setting['array'][$value]);
+	}
+
+	return true;
+}
+
+/**
+ * cacti_is_theme_name - checks that a value names an installed theme
+ *
+ * The name becomes part of file paths and of page output, so it must be a
+ * plain directory name under include/themes that holds a main.css.
+ *
+ * @param  mixed $theme - the value to check
+ *
+ * @return bool  true when the value is the name of an installed theme
+ */
+function cacti_is_theme_name($theme) {
+	global $config;
+
+	if (!is_string($theme) || !preg_match('/^[A-Za-z0-9][A-Za-z0-9_-]*$/D', $theme)) {
+		return false;
+	}
+
+	return is_file($config['base_path'] . '/include/themes/' . $theme . '/main.css');
+}
+
 function get_selected_theme() {
 	global $config, $themes;
 
 	// shortcut if theme is set in session
 	if (isset($_SESSION['selected_theme'])) {
-		if (file_exists($config['base_path'] . '/include/themes/' . $_SESSION['selected_theme'] . '/main.css')) {
+		if (cacti_is_theme_name($_SESSION['selected_theme'])) {
 			return $_SESSION['selected_theme'];
 		}
 	}
@@ -829,17 +874,22 @@ function get_selected_theme() {
 		}
 	}
 
-	if (!file_exists($config['base_path'] . '/include/themes/' . $theme . '/main.css')) {
+	if (!cacti_is_theme_name($theme)) {
+		// never hand back a name that failed the check, even when no other theme is found
+		$theme = 'modern';
+
 		foreach($themes as $t => $name) {
 			if ($t != 'classic') {
-				if (file_exists($config['base_path'] . '/include/themes/' . $t . '/main.css')) {
+				if (cacti_is_theme_name($t)) {
 					$theme = $t;
 
-					db_execute_prepared('UPDATE settings_user
-						SET value = ?
-						WHERE user_id = ?
-						AND name = "selected_theme"',
-						array($theme, $_SESSION['sess_user_id']));
+					if (isset($_SESSION['sess_user_id'])) {
+						db_execute_prepared('UPDATE settings_user
+							SET value = ?
+							WHERE user_id = ?
+							AND name = "selected_theme"',
+							array($theme, $_SESSION['sess_user_id']));
+					}
 
 					break;
 				}

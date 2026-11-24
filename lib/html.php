@@ -2828,7 +2828,8 @@ function html_common_header($title, $selectedTheme = '') {
 		print get_md5_include_js($path2msfilter);
 	}
 
-	if (file_exists('include/themes/custom.css')) {
+	// look in the installation, not in whatever directory the request started from
+	if (file_exists($config['base_path'] . '/include/themes/custom.css')) {
 		print get_md5_include_css('include/themes/custom.css');
 	}
 
