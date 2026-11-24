@@ -236,6 +236,8 @@ if (cacti_sizeof($parms) == 0) {
 
 	foreach ($userIds as $id) {
 		db_execute("REPLACE INTO user_auth_perms (user_id, item_id, type) VALUES ($id, $itemId, $itemType)");
+
+		reset_user_perms($id);
 	}
 }
 

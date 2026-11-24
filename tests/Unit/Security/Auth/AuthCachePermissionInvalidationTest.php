@@ -136,6 +136,22 @@ test('permission resets still clear the current user session caches', function (
 	));
 });
 
+test('permission resets run without a session from the command line', function () {
+	unset($_SESSION);
+
+	reset_user_perms_under_test(7);
+
+	expect($GLOBALS['auth_cache_queries'])->toHaveCount(3)
+		->and($GLOBALS['auth_cache_session_kills'])->toBe(array());
+});
+
+test('the add_perms command line resets each user it grants to', function () {
+	$source = file_get_contents(dirname(__DIR__, 4) . '/cli/add_perms.php');
+
+	expect($source)->not->toBeFalse()
+		->and($source)->toContain("VALUES (\$id, \$itemId, \$itemType)\");\n\n\t\treset_user_perms(\$id);");
+});
+
 test('group permission resets invalidate every member token', function () {
 	$GLOBALS['auth_cache_group_users'] = array(array('user_id' => 10), array('user_id' => 11));
 
