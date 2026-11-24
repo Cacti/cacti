@@ -826,7 +826,16 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 			continue;
 		}
 
-		if (strpos($name, 'scripts/') !== false || strpos($name, 'resource/') !== false) {
+		/* script and resource files are written only below those two directories */
+		$is_install_file = preg_match('#^(scripts|resource)/#', $normalized_name);
+
+		if (!$is_install_file && (strpos($normalized_name, 'scripts/') !== false || strpos($normalized_name, 'resource/') !== false)) {
+			cacti_log("WARNING: Skipping package file outside the scripts and resource directories: $name", false, 'IMPORT');
+
+			continue;
+		}
+
+		if ($is_install_file) {
 			$filename = $config['base_path'] . "/$name";
 
 			if (preg_match('#^[a-z][a-z0-9+.\-]*://#i', $name)) {
