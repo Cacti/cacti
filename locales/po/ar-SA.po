@@ -8,15 +8,17 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2022-06-16 20:12-0400\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: ar_SA\n"
+"PO-Revision-Date: 2026-11-24 09:13+0000\n"
+"Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
+"Language-Team: Arabic (Saudi Arabia) <https://translate.cacti.net/projects/"
+"cacti/core/ar_SA/>\n"
+"Language: ar-SA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
-"X-Generator: Poedit 3.1\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
+"X-Generator: Weblate 5.11.4\n"
 
 #: about.php:29 include/global_arrays.php:2781 lib/html.php:3046
 msgid "About Cacti"
@@ -559,7 +561,7 @@ msgstr "جزء من التجميع"
 #: user_admin.php:2821 user_admin.php:2920 user_admin.php:3019
 #: user_admin.php:3118
 msgid "Go"
-msgstr "أذهب"
+msgstr "انتقال"
 
 #: aggregate_graphs.php:1720 aggregate_graphs.php:2042
 #: automation_devices.php:606 automation_snmp.php:908
@@ -601,7 +603,7 @@ msgstr "مجموعة / تحديث الفلاتر"
 #: user_admin.php:2700 user_admin.php:2822 user_admin.php:2921
 #: user_admin.php:3020 user_admin.php:3119 user_domains.php:626
 msgid "Clear"
-msgstr "واضح"
+msgstr "مسح"
 
 #: aggregate_graphs.php:1721 aggregate_graphs.php:2043 automation_snmp.php:909
 #: automation_templates.php:1362 cdef.php:782 color.php:549 data_debug.php:1079
@@ -639,7 +641,7 @@ msgstr "عنوان الرسم البياني"
 #: user_group_admin.php:859 user_group_admin.php:1005 user_group_admin.php:1151
 #: user_group_admin.php:1284
 msgid "ID"
-msgstr "المعرف"
+msgstr "الهویة الشخصیة"
 
 #: aggregate_graphs.php:1757
 msgid "Included in Aggregate"
@@ -690,7 +692,7 @@ msgstr "لا توجد الرسوم البيانية"
 
 #: aggregate_graphs.php:1979
 msgid " [ Custom Graphs List Applied - Clear to Reset ]"
-msgstr "[تطبيق قائمة الرسم البياني المخصص - تصفية قائمة FROM]"
+msgstr " [تطبيق قائمة الرسم البياني المخصص - تصفية قائمة FROM]"
 
 #: aggregate_graphs.php:1979 aggregate_graphs.php:2099
 #: include/global_arrays.php:2937
@@ -1281,7 +1283,7 @@ msgstr "حذف الجهاز (الأجهزة)"
 #: lib/api_automation.php:76 lib/api_automation.php:1176
 #: lib/html_utility.php:1134 pollers.php:46
 msgid "Down"
-msgstr "المرض"
+msgstr "متوقف"
 
 #: automation_devices.php:55 automation_devices.php:375
 #: automation_devices.php:519 automation_devices.php:529
@@ -1501,7 +1503,7 @@ msgstr "تصدير إلى ملف"
 #: automation_devices.php:613 data_debug.php:1080 lib/clog_webapi.php:220
 #: lib/clog_webapi.php:566 managers.php:772
 msgid "Purge"
-msgstr "شربة، مسهل. يسهل"
+msgstr "تطهير"
 
 #: automation_devices.php:613
 msgid "Purge Discovered Devices"
@@ -2245,7 +2247,7 @@ msgstr "%d ساعة"
 #: include/global_settings.php:3223
 #, php-format
 msgid "%d Hours"
-msgstr "%d د ساعات"
+msgstr "%d ساعات"
 
 #: automation_networks.php:843
 msgid "Enable this Network Range."
@@ -2440,7 +2442,7 @@ msgstr "ثانية"
 
 #: automation_networks.php:961
 msgid "Third"
-msgstr "﻿الأول"
+msgstr "الثالث"
 
 #: automation_networks.php:969
 msgid "Day(s) of Week"
@@ -3975,9 +3977,11 @@ msgid "Color Template [new]"
 msgstr "قالب اللون [جديد]"
 
 #: color_templates.php:762
-#, fuzzy, php-format
+#, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
-msgstr "قالب اللون '٪ s' تم دفع٪ d من القوالب المجمعة للخارج وتم دفع٪ d التجميعات التي لا تحتوي على قالب"
+msgstr ""
+"تم دفع %2$d من قوالب التجميع و%3$d من التجميعات غير القالبية من قالب الألوان "
+"'%1$s'"
 
 #: color_templates.php:764
 #, fuzzy, php-format
@@ -4956,7 +4960,7 @@ msgstr "٪ d يوم"
 #: include/global_settings.php:1974 include/global_settings.php:1975
 #, php-format
 msgid "%d Days"
-msgstr "%d أيام"
+msgstr "%d من الأيام"
 
 #: data_source_profiles.php:859 include/global_arrays.php:745
 #: include/global_arrays.php:1666 include/global_arrays.php:1687
@@ -5754,7 +5758,7 @@ msgstr "%d ثانية."
 
 #: graph_realtime.php:456
 msgid " seconds left."
-msgstr "الثواني المتبقية."
+msgstr " الثواني المتبقية."
 
 #: graph_templates.php:39
 msgid "Change Settings"
@@ -6220,7 +6224,7 @@ msgstr "إنشاء تجميع من القالب"
 
 #: graphs.php:234 graphs.php:249
 msgid "No Device - "
-msgstr "جهاز"
+msgstr "جهاز "
 
 #: graphs.php:339
 #, fuzzy, php-format
@@ -11479,19 +11483,19 @@ msgstr "نمط سلسلة الاستبدال لاستخدامه كرأس شجر�
 
 #: include/global_languages.php:971
 msgid " T"
-msgstr "T"
+msgstr " T"
 
 #: include/global_languages.php:973
 msgid " G"
-msgstr "ز"
+msgstr " ز"
 
 #: include/global_languages.php:975
 msgid " M"
-msgstr "M"
+msgstr " M"
 
 #: include/global_languages.php:977
 msgid " K"
-msgstr "ك"
+msgstr " ك"
 
 #: include/global_settings.php:40
 msgid "Paths"
@@ -15167,25 +15171,25 @@ msgstr "رسم بياني:"
 
 #: lib/auth.php:2378 lib/auth.php:2384 lib/auth.php:2451 lib/auth.php:2453
 #: lib/auth.php:2457 lib/auth.php:2459
-#, fuzzy, php-format
+#, php-format
 msgid "Device:(%s%s)"
-msgstr "جهاز"
+msgstr "الجهاز:(%s%s)"
 
 #: lib/auth.php:2392 lib/auth.php:2398 lib/auth.php:2467 lib/auth.php:2469
 #: lib/auth.php:2473 lib/auth.php:2475
-#, fuzzy, php-format
+#, php-format
 msgid "Template:(%s%s)"
-msgstr "قوالب"
+msgstr "القالب:(%s%s)"
 
 #: lib/auth.php:2405
-#, fuzzy, php-format
+#, php-format
 msgid "Graph+Device+Template:(%s%s)"
-msgstr "قالب الجهاز:"
+msgstr "الرسم البياني+الجهاز+القالب:(%s%s)"
 
 #: lib/auth.php:2442 lib/auth.php:2444
-#, fuzzy, php-format
+#, php-format
 msgid "Device+Template:(%s%s)"
-msgstr "قالب الجهاز:"
+msgstr "الجهاز+القالب:(%s%s)"
 
 #: lib/auth.php:2488 lib/auth.php:2495 lib/auth.php:2504
 msgid "Restricted By: "
@@ -15193,7 +15197,7 @@ msgstr "مصدر مقيد "
 
 #: lib/auth.php:2492
 msgid "Granted By: "
-msgstr "تم منحها بواسطة:"
+msgstr "تم منحها بواسطة: "
 
 #: lib/auth.php:2499
 msgid "Granted"
@@ -15201,7 +15205,7 @@ msgstr "مُنح"
 
 #: lib/auth.php:2501 lib/auth.php:2506
 msgid "Restricted"
-msgstr "مصدر مقيد "
+msgstr "مصدر مقيد"
 
 #: lib/auth.php:2750 lib/auth.php:2785
 msgid "Branch:"
@@ -15378,15 +15382,15 @@ msgstr "فلاتر السجل"
 
 #: lib/clog_webapi.php:280
 msgid " - Admin Filter active"
-msgstr "- مرشح الإدارة النشط"
+msgstr " - مرشح الإدارة النشط"
 
 #: lib/clog_webapi.php:282
 msgid " - Admin Unfiltered"
-msgstr "- المشرف غير المرشح"
+msgstr " - المشرف غير المرشح"
 
 #: lib/clog_webapi.php:285
 msgid " - Admin view"
-msgstr "- عرض المسؤول"
+msgstr " - عرض المسؤول"
 
 #: lib/clog_webapi.php:290
 #, fuzzy, php-format
@@ -15963,7 +15967,7 @@ msgstr "التصحيح لم يكتمل بعد 5 استطلاعات"
 
 #: lib/dsdebug.php:260
 msgid "Failed fields: "
-msgstr "الحقول الفاشلة:"
+msgstr "الحقول الفاشلة: "
 
 #: lib/dsdebug.php:269
 msgid "Data Source is not set as Active"
@@ -15989,7 +15993,7 @@ msgstr "لم يتم تحديث ملف RRD بعد الاقتراع"
 
 #: lib/dsdebug.php:303
 msgid "Data Source returned Bad Results for "
-msgstr "مصدر البيانات إرجاع &quot;نتائج سيئة&quot; لـ"
+msgstr "مصدر البيانات إرجاع &quot;نتائج سيئة&quot; لـ "
 
 #: lib/dsdebug.php:308
 msgid "Data Source was not polled"
@@ -16121,7 +16125,7 @@ msgstr "فشل الاتصال:٪ s"
 
 #: lib/functions.php:5822
 msgid "SMTP error: "
-msgstr "خطأ SMTP:"
+msgstr "خطأ SMTP: "
 
 #: lib/functions.php:5835
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
@@ -17664,7 +17668,7 @@ msgstr "خطأ في التحقق من المتغير٪ s بقيمة٪ s. انظ�
 
 #: lib/html_validate.php:115
 msgid "Validation Error"
-msgstr "عنوان / خطأ التحقق  مساحة الخريطة"
+msgstr "عنوان / خطأ التحقق مساحة الخريطة"
 
 #: lib/import.php:564
 msgid "written"
@@ -17714,7 +17718,7 @@ msgstr "ملفات الحزمة"
 
 #: lib/import.php:2692
 msgid "[preview] "
-msgstr "معاينة"
+msgstr "معاينة "
 
 #: lib/import.php:2698
 msgid "Cacti would make the following changes if the Template was imported:"
@@ -17934,7 +17938,7 @@ msgstr "قبول اتفاقية ترخيص GPL"
 
 #: lib/installer.php:1965
 msgid "Select default theme: "
-msgstr "حدد المظهر الافتراضي:"
+msgstr "حدد المظهر الافتراضي: "
 
 #: lib/installer.php:1988
 msgid "Pre-installation Checks"
@@ -18420,7 +18424,7 @@ msgstr "يظهر ترتيب الخادم الخاص بك متوافقًا مع U
 
 #: lib/installer.php:2806
 msgid "Your server collation does NOT appear to be fully UTF8 compliant. "
-msgstr "لا يظهر ترتيب الخادم الخاص بك متوافقًا تمامًا مع UTF8."
+msgstr "لا يظهر ترتيب الخادم الخاص بك متوافقًا تمامًا مع UTF8. "
 
 #: lib/installer.php:2807
 msgid "Under the [mysqld] section, locate the entries named 'character-set-server' and 'collation-server' and set them as follows:"
@@ -18436,11 +18440,16 @@ msgstr "يبدو أن الترتيب الافتراضي لقاعدة البيا�
 
 #: lib/installer.php:2823
 msgid "Your database default collation does NOT appear to be full UTF8 compliant. "
-msgstr "لا يظهر الترتيب الافتراضي لقاعدة البيانات الخاص بك على أنه متوافق تمامًا مع UTF8."
+msgstr ""
+"لا يظهر الترتيب الافتراضي لقاعدة البيانات الخاص بك على أنه متوافق تمامًا مع "
+"UTF8. "
 
 #: lib/installer.php:2824
 msgid "Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched.   Please ensure your database is changed to 'utf8mb4_unicode_ci' by running the following: "
-msgstr "قد تحتوي أي جداول تم إنشاؤها بواسطة المكونات الإضافية على مشكلات مرتبطة بجداول Cacti Core في حالة عدم مطابقة الترتيب. الرجاء التأكد من تغيير قاعدة البيانات الخاصة بك إلى &quot;utf8mb4_unicode_ci&quot; عن طريق تشغيل ما يلي:"
+msgstr ""
+"قد تحتوي أي جداول تم إنشاؤها بواسطة المكونات الإضافية على مشكلات مرتبطة "
+"بجداول Cacti Core في حالة عدم مطابقة الترتيب. الرجاء التأكد من تغيير قاعدة "
+"البيانات الخاصة بك إلى &quot;utf8mb4_unicode_ci&quot; عن طريق تشغيل ما يلي: "
 
 #: lib/installer.php:2831
 msgid "Table Setup"
@@ -18473,7 +18482,10 @@ msgstr "تنسيق الصف"
 
 #: lib/installer.php:2884
 msgid "One or more tables are too large to convert during the installation.  You should use the cli/convert_tables.php script to perform the conversion, then refresh this page. For example: "
-msgstr "جدول واحد أو أكثر كبير جدًا بحيث لا يمكن تحويله أثناء التثبيت. يجب عليك استخدام البرنامج النصي cli / convert_tables.php لتنفيذ التحويل ، ثم تحديث هذه الصفحة. فمثلا:"
+msgstr ""
+"جدول واحد أو أكثر كبير جدًا بحيث لا يمكن تحويله أثناء التثبيت. يجب عليك "
+"استخدام البرنامج النصي cli / convert_tables.php لتنفيذ التحويل ، ثم تحديث "
+"هذه الصفحة. فمثلا: "
 
 #: lib/installer.php:2888
 msgid "The following tables should be converted to UTF8 and InnoDB with a Dynamic row format.  Please select the tables that you wish to convert during the installation process."
@@ -19851,7 +19863,7 @@ msgstr "نمط"
 
 #: links.php:406
 msgid "Edit Page"
-msgstr "تعديل الصفحـة"
+msgstr "تعديل الصفحة"
 
 #: links.php:409
 msgid "View Page"
@@ -19999,7 +20011,7 @@ msgstr "مستلمون"
 
 #: managers.php:225
 msgid "Id"
-msgstr " الهویة الشخصیة"
+msgstr "الهویة الشخصیة"
 
 #: managers.php:260
 msgid "No SNMP Notification Receivers"
@@ -20285,9 +20297,8 @@ msgstr ""
 
 #: package.php:828 package_import.php:329 package_import.php:346
 #: package_import.php:1084
-#, fuzzy
 msgid "Package"
-msgstr "ملفات الحزمة"
+msgstr "الباقة"
 
 #: package.php:885
 msgid "Package Contents Include"
@@ -22061,9 +22072,9 @@ msgid "Age"
 msgstr "اغسطس"
 
 #: rrdcheck.php:236 rrdcheck.php:237 rrdcheck.php:238
-#, fuzzy, php-format
+#, php-format
 msgid "%d hours"
-msgstr "%d د ساعات"
+msgstr "%d ساعات"
 
 #: rrdcheck.php:239
 #, php-format
@@ -22071,9 +22082,9 @@ msgid "%d day"
 msgstr ""
 
 #: rrdcheck.php:240 rrdcheck.php:241
-#, fuzzy, php-format
+#, php-format
 msgid "%d days"
-msgstr "أيام"
+msgstr "%d من الأيام"
 
 #: rrdcheck.php:245 rrdcheck.php:248
 msgid "Messages"
@@ -22916,15 +22927,15 @@ msgstr "لا توجد عناصر للاستطلاع"
 
 #: support.php:1309 support.php:1316
 msgid "Name: "
-msgstr "الاسم:"
+msgstr "الاسم: "
 
 #: support.php:1309
 msgid "Procs: "
-msgstr "1 عملية"
+msgstr "1 عملية "
 
 #: support.php:1316
 msgid "Threads: "
-msgstr "مواضيع"
+msgstr "مواضيع "
 
 #: support.php:1322
 msgid "Concurrent Processes"
