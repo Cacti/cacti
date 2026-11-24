@@ -202,8 +202,19 @@ function aggregate_color_form_actions() {
 
 		if ($selected_items != false) {
 			if (get_request_var('drp_action') == '1') { /* delete */
-				db_execute('DELETE FROM color_templates WHERE ' . array_to_sql_or($selected_items, 'color_template_id'));
-				db_execute('DELETE FROM color_template_items WHERE ' . array_to_sql_or($selected_items, 'color_template_id'));
+				/* color templates used by an aggregate template or graph are kept */
+				db_execute('DELETE FROM color_templates
+					WHERE ' . array_to_sql_or($selected_items, 'color_template_id') . '
+					AND NOT EXISTS (SELECT 1 FROM aggregate_graph_templates_item AS agti WHERE agti.color_template = color_templates.color_template_id)
+					AND NOT EXISTS (SELECT 1 FROM aggregate_graphs_graph_item AS agi WHERE agi.color_template = color_templates.color_template_id)');
+
+				if (db_affected_rows() < cacti_sizeof($selected_items)) {
+					raise_message('color_template_in_use', __('Color Templates in use were not deleted.'), MESSAGE_LEVEL_WARN);
+				}
+
+				db_execute('DELETE FROM color_template_items
+					WHERE ' . array_to_sql_or($selected_items, 'color_template_id') . '
+					AND color_template_id NOT IN (SELECT color_template_id FROM color_templates)');
 			} elseif (get_nfilter_request_var('drp_action') == '2') { // duplicate
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					duplicate_color_template($selected_items[$i], get_nfilter_request_var('title_format'));
@@ -631,13 +642,13 @@ function aggregate_color_template() {
 		COUNT(ct.color_template_id)
 		FROM color_templates AS ct
 		LEFT JOIN (
-			SELECT color_template, COUNT(*) AS templates
+			SELECT color_template, COUNT(DISTINCT aggregate_template_id) AS templates
 			FROM aggregate_graph_templates_item
 			GROUP BY color_template
 		) AS templates
 		ON ct.color_template_id=templates.color_template
 		LEFT JOIN (
-			SELECT color_template, COUNT(*) AS graphs
+			SELECT color_template, COUNT(DISTINCT aggregate_graph_id) AS graphs
 			FROM aggregate_graphs_graph_item
 			GROUP BY color_template
 		) AS graphs
@@ -651,13 +662,13 @@ function aggregate_color_template() {
 		ct.color_template_id, ct.name, templates.templates, graphs.graphs
 		FROM color_templates AS ct
 		LEFT JOIN (
-			SELECT color_template, COUNT(*) AS templates
+			SELECT color_template, COUNT(DISTINCT aggregate_template_id) AS templates
 			FROM aggregate_graph_templates_item
 			GROUP BY color_template
 		) AS templates
 		ON ct.color_template_id=templates.color_template
 		LEFT JOIN (
-			SELECT color_template, COUNT(*) AS graphs
+			SELECT color_template, COUNT(DISTINCT aggregate_graph_id) AS graphs
 			FROM aggregate_graphs_graph_item
 			GROUP BY color_template
 		) AS graphs
@@ -682,7 +693,7 @@ function aggregate_color_template() {
 		'nosort' => array(
 			'display' => __('Deletable'),
 			'align' => 'right',
-			'tip' => __('Color Templates that are in use cannot be Deleted. In use is defined as being referenced by an Aggregate Template.')
+			'tip' => __('Color Templates that are in use cannot be Deleted. In use is defined as being referenced by an Aggregate Template or an Aggregate Graph.')
 		),
 		'graphs'    => array(
 			'display' => __('Graphs'),
@@ -700,7 +711,7 @@ function aggregate_color_template() {
 
 	if (cacti_sizeof($template_list)) {
 		foreach ($template_list as $template) {
-			if ($template['templates'] > 0) {
+			if ($template['templates'] > 0 || $template['graphs'] > 0) {
 				$disabled = true;
 			} else {
 				$disabled = false;
