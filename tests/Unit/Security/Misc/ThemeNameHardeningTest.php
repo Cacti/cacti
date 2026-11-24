@@ -12,7 +12,13 @@
  * used.
  */
 
+require_once dirname(__DIR__, 3) . '/Helpers/IsolatedProbe.php';
+
 $root = dirname(__DIR__, 4);
+
+function themeNameProbe(string $scenario): array {
+	return cacti_test_isolated_probe(dirname(__DIR__, 3) . '/fixtures/Core/ThemeNameProbe.php', array($scenario));
+}
 
 function themeNameTestTree(): string {
 	$base = sys_get_temp_dir() . '/cacti-theme-' . bin2hex(random_bytes(6));
@@ -218,4 +224,76 @@ test('every theme directory has an index guard', function () use ($root) {
 	}
 
 	expect($missing)->toBe(array());
+});
+
+test('the profile stores only listed values and needs the settings permission', function () {
+	$stored = array(array('REPLACE INTO settings_user (name, value, user_id) VALUES (?, ?, ?)', array('selected_theme', 'dark', 7)));
+	$result = themeNameProbe('profile');
+
+	expect($result['listed theme'])->toBe(array('queries' => $stored, 'theme_kept' => false))
+		->and($result['unlisted theme'])->toBe(array('queries' => array(), 'theme_kept' => true))
+		->and($result['no settings realm'])->toBe(array('queries' => array(), 'theme_kept' => true))
+		->and($result['unknown setting'])->toBe(array('queries' => array(), 'theme_kept' => true))
+		->and($result['scroll without realm']['queries'])->toBe(array(
+			array('REPLACE INTO settings_user (name, value, user_id) VALUES (?, ?, ?)', array('enable_hscroll', 'on', 7)),
+		));
+});
+
+test('the graph cache name differs by theme and color mode', function () {
+	$names = themeNameProbe('cache');
+
+	expect(array_unique(array($names['modern'], $names['modern dark'], $names['modern light'], $names['modern dimmed'], $names['classic'])))->toHaveCount(5)
+		->and($names['modern unknown'])->toBe($names['modern'])
+		->and($names['invalid theme'])->toBe($names['modern']);
+});
+
+test('the theme directory index guards print nothing and redirect', function () {
+	$guards = themeNameProbe('guards');
+
+	expect($guards)->toHaveKey('include/themes/midwinter/vendor/ua-parser/index.php')
+		->and($guards)->toHaveKey('include/themes/classic/images/128/index.php');
+
+	foreach ($guards as $guard) {
+		expect($guard['returned'])->toBe(1)
+			->and($guard['output'])->toBe('')
+			->and($guard['location'])->not->toBeFalse();
+	}
+});
+
+test('the profile form saves a listed theme and skips an unlisted one', function () {
+	$result = themeNameProbe('save');
+
+	expect($result['listed'])->toBe(array('selected_theme' => array('dark', 7), 'user_language' => array('en-US', 7), 'full_name' => array('Ann', 7)))
+		->and($result['unlisted'])->toBe(array('user_language' => array('en-US', 7), 'full_name' => array('Ann', 7)));
+});
+
+test('a stored user theme that is not installed is replaced by an installed one', function () {
+	$lookup = array("SELECT value FROM settings_user WHERE name='selected_theme' AND user_id = ?", array(7));
+	$result = themeNameProbe('selected');
+
+	expect($result['installed'])->toBe(array('theme' => 'classic', 'queries' => array($lookup)))
+		->and($result['not installed'])->toBe(array('theme' => 'dark', 'queries' => array(
+			$lookup,
+			array('UPDATE settings_user SET value = ? WHERE user_id = ? AND name = "selected_theme"', array('dark', 7)),
+		)));
+});
+
+test('the index guards inside the midwinter vendor tree also redirect', function () use ($root) {
+	// the request coverage helper ignores every path containing /vendor/, so these guards run here
+	$guards = glob($root . '/include/themes/midwinter/vendor{,/*}/index.php', GLOB_BRACE);
+
+	expect($guards)->toHaveCount(4);
+
+	foreach ($guards as $guard) {
+		ob_start();
+		$returned = include $guard;
+		$output   = ob_get_clean();
+
+		expect($returned)->toBe(1)
+			->and($output)->toBe('');
+
+		if (function_exists('xdebug_get_headers')) {
+			expect(xdebug_get_headers())->toContain('Location:../index.php');
+		}
+	}
 });
