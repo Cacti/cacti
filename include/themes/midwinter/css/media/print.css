@@ -5,3 +5,26 @@
 html {
     --graph-print-background: var(--background);
 }
+
+/* The screen layout pins the page to the viewport and scrolls inside the content area;
+ * lift that so a printout holds the whole page and not only the first screenful. */
+html, body, .cactiContent, #cactiContent, #navigation_right, #main {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+}
+
+html, body {
+    background: white !important;
+    color: #111 !important;
+    width: auto !important;
+}
+
+body {
+    opacity: 1 !important;
+    animation: none !important;
+}
+
+#cactiPageHead, #breadCrumbBar, #navigation, .cactiShadow, #cactiPageBottom {
+    display: none !important;
+}
