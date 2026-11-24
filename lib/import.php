@@ -2349,12 +2349,17 @@ function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 						}
 
 						if (!$damaged_item) {
-							$_cdef_id = db_fetch_cell_prepared('SELECT id
-								FROM cdef
-								WHERE hash = ?',
-								array($parsed_item_hash['hash']));
+							/* an inherited CDEF imported earlier from this file is in the hash cache */
+							if (isset($hash_cache['cdef'][$parsed_item_hash['hash']])) {
+								$inherited_cdef_id = $hash_cache['cdef'][$parsed_item_hash['hash']];
+							} else {
+								$inherited_cdef_id = db_fetch_cell_prepared('SELECT id
+									FROM cdef
+									WHERE hash = ?',
+									array($parsed_item_hash['hash']));
+							}
 
-							$save[$field_name] = $_cdef_id;
+							$save[$field_name] = $inherited_cdef_id;
 						}
 					} else {
 						$save[$field_name] = xml_character_decode($item_array[$field_name]);
