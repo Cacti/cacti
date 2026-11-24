@@ -726,7 +726,7 @@ msgstr "Паролі збігаються"
 
 #: auth_login.php
 msgid "Cacti no longer supports No Authentication mode. Please contact your System Administrator."
-msgstr "Доступ Заборонено, будь ласка зверніться до вашого Адміністратора Cacti."
+msgstr "Cacti більше не підтримує режим без автентифікації. Будь ласка, зверніться до системного адміністратора."
 
 #: auth_login.php
 msgid "Unable to determine user Login Realm or Domain. Please contact your System Administrator."
@@ -739,7 +739,7 @@ msgstr ""
 #: auth_login.php
 #, php-format
 msgid "Access Denied!  Guest user id %s does not exist.  Please contact your Administrator."
-msgstr "Доступ заборонено!  Гостьовий користувач з ID %s не існує.  Будь ласка, зверніться до вашого адміністратора."
+msgstr "Доступ заборонено! Ідентифікатор гостьового користувача %s не існує. Будь ласка, зверніться до вашого адміністратора."
 
 #: auth_login.php
 msgid "Access Denied!  User account disabled."
@@ -2600,10 +2600,8 @@ msgid "No Color Templates Found"
 msgstr "Не знайдено Шаблонів Кольору"
 
 #: color_templates_items.php
-#, fuzzy
-#| msgid "Color Template Items [new]"
 msgid "Color Template or Item not found."
-msgstr "Елементи Шаблону Кольору [новий]"
+msgstr "Шаблон кольорів або елемент не знайдено."
 
 #: color_templates_items.php
 msgid "Click 'Continue' to delete the following Color Template Color."
@@ -3103,10 +3101,8 @@ msgid "Delete Data Input Field"
 msgstr "Видалити Поле Введення Даних"
 
 #: data_input.php
-#, fuzzy
-#| msgid "Update this Field"
 msgid "Update Whitelist"
-msgstr "Оновити це Поле"
+msgstr "Оновити білий список"
 
 #: data_input.php include/global_arrays.php
 msgid "Data Input Methods"
@@ -3174,9 +3170,9 @@ msgstr[2] "Видалити Запити Даних"
 #: data_queries.php
 msgid "Click 'Continue' to duplicate the following Data Query."
 msgid_plural "Click 'Continue' to duplicate following Data Queries."
-msgstr[0] "Клацніть 'Продовжити' для видалення наступного Запиту Даних."
-msgstr[1] "Клацніть 'Продовжити' для видалення наступних Запитів Даних."
-msgstr[2] "Клацніть 'Продовжити' для видалення наступних Запитів Даних."
+msgstr[0] "Натисніть 'Продовжити', щоб дублювати наступний запит даних."
+msgstr[1] "Натисніть 'Продовжити', щоб дублювати наступні запити даних."
+msgstr[2] "Натисніть 'Продовжити', щоб дублювати наступні запити даних."
 
 #: data_queries.php lib/html_reports.php
 msgid "Name Format:"
@@ -3185,9 +3181,9 @@ msgstr ""
 #: data_queries.php
 msgid "Duplicate Data Query"
 msgid_plural "Duplicate Data Queries"
-msgstr[0] "Видалити Запит Даних"
-msgstr[1] "Видалити Запити Даних"
-msgstr[2] "Видалити Запити Даних"
+msgstr[0] "Дублювати запит даних"
+msgstr[1] "Дублювати запити даних"
+msgstr[2] "Дублювати запити даних"
 
 #: data_queries.php
 msgid "Click 'Continue' to delete the following Data Query Graph Association."
@@ -3647,9 +3643,9 @@ msgstr[2] "Увімкнути Джерела Даних"
 #: data_sources.php
 msgid "Click 'Continue' to disable the following Data Source."
 msgid_plural "Click 'Continue' to disable all following Data Sources."
-msgstr[0] "Клацніть 'Продовжити', щоб видалити наступне Джерело Даних."
-msgstr[1] "Клацніть 'Продовжити', щоб видалити всі наступні Джерела Даних."
-msgstr[2] "Клацніть 'Продовжити', щоб видалити всі наступні Джерела Даних."
+msgstr[0] "Натисніть 'Продовжити', щоб вимкнути наступне джерело даних."
+msgstr[1] "Натисніть 'Продовжити', щоб вимкнути всі наступні джерела даних."
+msgstr[2] "Натисніть 'Продовжити', щоб вимкнути всі наступні джерела даних."
 
 #: data_sources.php
 msgid "Disable Data Source"
@@ -3699,10 +3695,8 @@ msgid "The RRDfile could not be read, so no repairs were performed."
 msgstr ""
 
 #: data_sources.php
-#, fuzzy
-#| msgid "All RRDfile repairs succeeded."
 msgid "No RRDfile repairs were necessary."
-msgstr "Усі ремонти RRD файлу успішно завершено."
+msgstr "Відновлення RRDfile не було потрібне."
 
 #: data_sources.php
 msgid "The RRDfile is not writable by the web server.  Run the suggested commands from the command line instead."
@@ -4639,10 +4633,9 @@ msgid "A Graph Item Input contains an invalid value."
 msgstr ""
 
 #: graphs.php
-#, fuzzy, php-format
-#| msgid "Add Graph Template to Device"
+#, php-format
 msgid "Graph %s Moved to new Device"
-msgstr "Додати Шаблон Графіків до Пристрою"
+msgstr "Графік %s переміщено до нового пристрою"
 
 #: graphs.php
 #, php-format
@@ -5035,7 +5028,7 @@ msgstr "Синхронізувати з Шаблоном Пристрою"
 
 #: host.php
 msgid "Place Device on Report"
-msgstr "Розмістити Пристрій(ї) в Дереві"
+msgstr "Розмістити пристрій у звіті"
 
 #: host.php
 msgid "Data Query Re-indexed."
@@ -5145,7 +5138,7 @@ msgstr "Запустити Автоматизацію на Пристроях"
 
 #: host.php
 msgid "Add Devices to Report"
-msgstr "Додати Графіки до Звіту"
+msgstr "Додати пристрої до звіту"
 
 #: host.php
 msgid "You currently have no Reports defined."
@@ -5312,7 +5305,7 @@ msgstr "SNMP GetNext"
 
 #: host.php
 msgid "Delete Item from Device"
-msgstr "Видалити Пристрій"
+msgstr "Видалити елемент із пристрою"
 
 #: host.php
 msgid "Undefined"
@@ -6460,7 +6453,7 @@ msgstr "Шаблони Імпорту"
 
 #: include/global_arrays.php
 msgid "Import Packages"
-msgstr "Шаблони Імпорту"
+msgstr "Імпорт пакетів"
 
 #: include/global_arrays.php templates_export.php
 msgid "Export Templates"
@@ -6512,7 +6505,7 @@ msgstr ""
 
 #: include/global_arrays.php
 msgid "Application Related"
-msgstr "Застосувати Правила Автоматизації"
+msgstr "Пов'язане із застосунком"
 
 #: include/global_arrays.php
 msgid "Cacti Related"
@@ -6528,7 +6521,7 @@ msgstr ""
 
 #: include/global_arrays.php
 msgid "Generic Device"
-msgstr "Синхронізація Пристроїв"
+msgstr "Загальний пристрій"
 
 #: include/global_arrays.php
 msgid "HPC/Grid Computing"
@@ -6556,11 +6549,11 @@ msgstr ""
 
 #: include/global_arrays.php
 msgid "Network Switch"
-msgstr "Фільтри Мережі"
+msgstr "Мережевий комутатор"
 
 #: include/global_arrays.php
 msgid "Network Router"
-msgstr "Фільтри Мережі"
+msgstr "Мережевий маршрутизатор"
 
 #: include/global_arrays.php
 msgid "NAS/SAN Related"
@@ -6568,7 +6561,7 @@ msgstr ""
 
 #: include/global_arrays.php
 msgid "Network Firewalls"
-msgstr "Фільтри Мережі"
+msgstr "Мережеві брандмауери"
 
 #: include/global_arrays.php
 msgid "Power Related PDUs/STS, etc."
@@ -6576,7 +6569,7 @@ msgstr ""
 
 #: include/global_arrays.php
 msgid "Printer Related"
-msgstr "Шаблон Даних"
+msgstr "Пов'язане з принтерами"
 
 #: include/global_arrays.php
 msgid "Storage Related"
@@ -6584,7 +6577,7 @@ msgstr ""
 
 #: include/global_arrays.php
 msgid "Telco Related"
-msgstr "Виберіть Шаблон"
+msgstr "Пов'язано з телекомунікаціями"
 
 #: include/global_arrays.php
 msgid "Web Server Related"
@@ -7575,7 +7568,7 @@ msgstr ""
 
 #: include/global_arrays.php
 msgid "Cacti Help"
-msgstr "Розробники Cacti"
+msgstr "Довідка Cacti"
 
 #: include/global_arrays.php
 msgid "Export Results"
@@ -8580,7 +8573,7 @@ msgstr ""
 
 #: include/global_form.php
 msgid "A suitable Class for the Device Template."
-msgstr "Скопіювати Шаблони Пристроїв."
+msgstr "Відповідний клас для шаблону пристрою."
 
 #: include/global_form.php
 msgid "A name for this data query."
@@ -9436,7 +9429,7 @@ msgstr ""
 
 #: include/global_settings.php
 msgid "Enable Gradient Support"
-msgstr "Увімкнути Джерело Даних"
+msgstr "Увімкнути підтримку градієнтів"
 
 #: include/global_settings.php
 msgid "Enabled Gradient Support for AREA and STACK charts."
@@ -9555,10 +9548,8 @@ msgid "Allow the use of Self Signed Certificates and allow the hostname of the C
 msgstr ""
 
 #: include/global_settings.php
-#, fuzzy
-#| msgid "The name of this Data Input Method."
 msgid "Allow Unsafe Metacharacters in Data Input Methods"
-msgstr "Ім'я цього Методу Введення Даних."
+msgstr "Дозволити небезпечні метасимволи в методах введення даних"
 
 #: include/global_settings.php
 msgid "Historically, Cacti administrators created simple Data Input Methods that include commands like \"ps -ef | grep something | wc -l\" to represent a numeric value for use in Cacti Graphs.  In earlier versions of Cacti, this was permitted.  However, this is an unsafe practice as it is a gateway for third party users to publish insecure Data Templates.  In modern Cacti, these types of practices should be avoided.  However, we provide this option if you have older Data Input Methods that contain these unsafe Meta Characters and have not converted them to local scripts in the 'scripts' directory.  When this option is unchecked, Cacti restricts shell-style metacharacters such as quotation marks, curly brackets, vertical bars, backslashes, and backticks.  Cacti continues to allow greater-than and less-than signs for things like <path_cacti> and for input parameters, but if this option is unchecked, that is the limit of their permitted use."
@@ -9662,7 +9653,7 @@ msgstr ""
 
 #: include/global_settings.php
 msgid "The default Graph Height to be used for all new Graph Templates."
-msgstr "Висота графіка за замовчуванням, що використовуватиметься для всіх нових шаблонів графіків."
+msgstr "Висота графіка за замовчуванням для всіх нових шаблонів графіків."
 
 #: include/global_settings.php
 msgid "The default Graph Width to be used for all new Graph Templates."
@@ -10090,7 +10081,7 @@ msgstr "Синтаксис RRDtool Графіка"
 
 #: include/global_settings.php
 msgid "Custom Watermark"
-msgstr "Користувацькі Дані"
+msgstr "Власний водяний знак"
 
 #: include/global_settings.php
 msgid "Text placed at the bottom center of every Graph."
@@ -10098,7 +10089,7 @@ msgstr ""
 
 #: include/global_settings.php
 msgid "Custom Date Format"
-msgstr "Користувацькі Дані"
+msgstr "Власний формат дати"
 
 #: include/global_settings.php
 msgid "To be used when formatting |date_time| on a graph"
@@ -10202,7 +10193,7 @@ msgstr ""
 
 #: include/global_settings.php
 msgid "Business Hours Settings"
-msgstr "Налаштування користувача"
+msgstr "Налаштування робочих годин"
 
 #: include/global_settings.php
 msgid "Start of Business Day"
@@ -10222,7 +10213,7 @@ msgstr ""
 
 #: include/global_settings.php
 msgid "Hide Weekends"
-msgstr "%d Тижнів"
+msgstr "Приховати вихідні"
 
 #: include/global_settings.php
 msgid "Only show business hours during weekdays."
@@ -10351,10 +10342,8 @@ msgid "The MD5 authentication and DES privacy algorithms are legacy, weak, and u
 msgstr ""
 
 #: include/global_settings.php
-#, fuzzy
-#| msgid "Enable RRDfile Check"
 msgid "Enable Credential Cache"
-msgstr "Увімкнути Відлагодження Пристрою"
+msgstr "Увімкнути кеш облікових даних"
 
 #: include/global_settings.php
 msgid "Pre-harden and cache SNMPv3 credential arguments once per credential change so each poller process reuses them instead of rebuilding them on every request.  This yields a marginal savings when collecting with SNMPv3 credentials through the Net-SNMP binaries.  The php-snmp extension handles most SNMPv3 gets in-process and bypasses this cache, but the Net-SNMP binaries (and therefore this cache) are still used for SNMP walks, hex output, requests that set a context or engine id, and protocol combinations that the running PHP version does not support.  Enable this if you collect any of those workloads with SNMPv3 credentials."
@@ -10426,7 +10415,7 @@ msgstr ""
 
 #: include/global_settings.php
 msgid "Re-Index All Device Schedule"
-msgstr "Переіндексувати Пристрій"
+msgstr "Розклад переіндексації всіх пристроїв"
 
 #: include/global_settings.php
 msgid "At what frequency do you wish to Re-Index all Devices.  This Re-Index will occur at midnight at the frequency that you select."
@@ -10438,7 +10427,7 @@ msgstr ""
 
 #: include/global_settings.php
 msgid "Monthly on Sunady"
-msgstr "Щомісяця вдень"
+msgstr "Щомісяця в неділю"
 
 #: include/global_settings.php
 msgid "Background Timeout and Concurrent Process Settings"
@@ -10467,7 +10456,7 @@ msgstr ""
 
 #: include/global_settings.php
 msgid "RRDChecker Timeout"
-msgstr "TimeStamp Першої Перевірки"
+msgstr "Тайм-аут RRDChecker"
 
 #: include/global_settings.php
 msgid "The maximum amount of time Cacti's RRDfile check script can run without generating a timeout error and being killed."
@@ -10593,7 +10582,7 @@ msgstr ""
 
 #: include/global_settings.php
 msgid "Basic Authentication Settings"
-msgstr "Налаштування Сповіщень"
+msgstr "Налаштування базової автентифікації"
 
 #: include/global_settings.php
 msgid "Basic Auth Login Failure Message"
@@ -11311,11 +11300,11 @@ msgstr ""
 
 #: include/global_settings.php
 msgid "RRDfile Check"
-msgstr "Видалити Перевірку"
+msgstr "Перевірка RRDfile"
 
 #: include/global_settings.php
 msgid "Enable RRDfile Check"
-msgstr "Увімкнути Відлагодження Пристрою"
+msgstr "Увімкнути перевірку RRDfile"
 
 #: include/global_settings.php
 msgid "Should RRDfile check be enabled for this Cacti system?"
@@ -11375,7 +11364,7 @@ msgstr "Пристрій"
 
 #: include/global_settings.php
 msgid "Device ID/Data Query ID"
-msgstr "Видалити Запит Даних"
+msgstr "ID пристрою/ID запиту даних"
 
 #: include/global_settings.php
 msgid "Device Hash/Device ID"
@@ -11860,7 +11849,7 @@ msgstr ""
 
 #: include/global_settings.php
 msgid "System Setting"
-msgstr "Налаштування користувача"
+msgstr "Системне налаштування"
 
 #: include/global_settings.php
 msgid "1 Week"
@@ -12326,7 +12315,7 @@ msgstr ""
 #: lib/auth.php
 #, php-format
 msgid "Access Denied!  Template user id %s does not exist.  Please contact your Administrator."
-msgstr "Доступ заборонено!  Шаблонний користувач з ID %s не існує.  Будь ласка, зверніться до вашого адміністратора."
+msgstr "Доступ заборонено! Ідентифікатор шаблонного користувача %s не існує. Будь ласка, зверніться до вашого адміністратора."
 
 #: lib/auth.php
 #, fuzzy
@@ -12427,7 +12416,7 @@ msgstr ""
 
 #: lib/clog_webapi.php
 msgid "Head Lines"
-msgstr "Всі Рядки"
+msgstr "Перші рядки"
 
 #: lib/clog_webapi.php utilities.php
 msgid "Tail Lines"
@@ -12459,7 +12448,7 @@ msgstr ""
 
 #: lib/clog_webapi.php
 msgid "Non Stats"
-msgstr "В стані"
+msgstr "Без статистики"
 
 #: lib/clog_webapi.php
 msgid "Boost"
@@ -12475,7 +12464,7 @@ msgstr ""
 
 #: lib/clog_webapi.php
 msgid "Threshold"
-msgstr "Пороги"
+msgstr "Поріг"
 
 #: lib/clog_webapi.php tree.php
 msgid "Display"
@@ -12499,7 +12488,7 @@ msgstr "Паролі не збігаються"
 
 #: lib/clog_webapi.php
 msgid "System Device"
-msgstr "Синхронізація Пристроїв"
+msgstr "Системний пристрій"
 
 #: lib/data_query.php
 msgid "Automation Execution for Data Query complete"
@@ -13182,7 +13171,7 @@ msgstr ""
 
 #: lib/html.php
 msgid "Remote Server"
-msgstr "Видалити Запит"
+msgstr "Віддалений сервер"
 
 #: lib/html.php
 msgid "Get Page Help"
@@ -13199,10 +13188,8 @@ msgid "Graph Actions"
 msgstr "Дії"
 
 #: lib/html.php
-#, fuzzy
-#| msgid "Tree View"
 msgid "Time View"
-msgstr "Перегляд Дерева"
+msgstr "Перегляд за часом"
 
 #: lib/html.php
 msgid "Edit Device"
@@ -13682,16 +13669,12 @@ msgid "You have unsaved changes on this form.  If you press 'Continue' these cha
 msgstr ""
 
 #: lib/html_form_template.php
-#, fuzzy
-#| msgid "Add Graph Template"
 msgid "Invalid Graph Template Input"
-msgstr "Додати Шаблон Графіків"
+msgstr "Неприпустимі вхідні дані шаблону графіка"
 
 #: lib/html_form_template.php
-#, fuzzy
-#| msgid "No Graph Templates Found"
 msgid "The graph template cannot be rendered"
-msgstr "Не знайдено Шаблонів Графіків"
+msgstr "Неможливо відобразити шаблон графіка"
 
 #: lib/html_form_template.php
 msgid "A Graph Item Input contains an invalid Field Type."
@@ -14168,7 +14151,7 @@ msgstr "Ім'я Шаблону Графіків"
 #: lib/html_reports.php
 #, php-format
 msgid ", Graph Template: %s"
-msgstr ", Шаблон графіка: %s"
+msgstr ", шаблон графіка: %s"
 
 #: lib/html_reports.php
 #, php-format
@@ -14346,7 +14329,7 @@ msgstr ""
 
 #: lib/html_utility.php
 msgid "Down (Thold)"
-msgstr "Завантажити"
+msgstr "Недоступний (Thold)"
 
 #: lib/html_utility.php lib/installer.php
 msgid "Error"
@@ -16206,10 +16189,8 @@ msgid "FATAL: Unable to write XML file '%s'"
 msgstr ""
 
 #: lib/spikekill.php
-#, fuzzy
-#| msgid "No Devices Found"
 msgid "NOTE: No Spikes Found."
-msgstr "Пристроїв не знайдено"
+msgstr "ПРИМІТКА: Сплесків не виявлено."
 
 #: lib/spikekill.php
 #, php-format
@@ -16531,16 +16512,12 @@ msgid "ON or OFF; back-ported to MariaDB 10.6.18+, 10.11.8+ and 11.4.2+. Set OFF
 msgstr ""
 
 #: lib/utility.php
-#, fuzzy
-#| msgid "Remove Query"
 msgid "Removed"
-msgstr "Видалити Запит"
+msgstr "Видалено"
 
 #: lib/utility.php
-#, fuzzy
-#| msgid "Duplicate"
 msgid "Deprecated"
-msgstr "Дублікат"
+msgstr "Застаріло"
 
 #: lib/utility.php
 msgid "Not applicable to this engine"
@@ -17103,10 +17080,8 @@ msgid "The Package %s Import Failed"
 msgstr ""
 
 #: package_import.php
-#, fuzzy
-#| msgid "ERROR: Invalid Device ID."
 msgid "Error: Invalid file path."
-msgstr "ERROR: Невірний ID Пристрою."
+msgstr "Помилка: неправильний шлях до файлу."
 
 #: package_import.php
 msgid "Error in Package"
@@ -17147,7 +17122,7 @@ msgstr ""
 
 #: package_import.php
 msgid "Packages Details"
-msgstr "Подробиці Правила"
+msgstr "Деталі пакетів"
 
 #: package_import.php
 msgid "Device class"
@@ -17187,7 +17162,7 @@ msgstr "Заголовок Шаблону"
 
 #: package_import.php templates_import.php
 msgid "Changes/Diffferences"
-msgstr "Змінити Пристрій"
+msgstr "Зміни/Відмінності"
 
 #: package_import.php templates_import.php
 msgid "Updated"
@@ -17248,10 +17223,8 @@ msgid "Plugin '%s' can not be Force Uninstalled because it is still required by:
 msgstr ""
 
 #: plugins.php
-#, fuzzy
-#| msgid "Are you sure you want to delete the Rule '%s'?"
 msgid "Are you sure you want to Force Uninstall the plugin"
-msgstr "Ви впевнені в тому, що бажаєте видалити Правило '%s'?"
+msgstr "Ви впевнені, що бажаєте примусово видалити плагін"
 
 #: plugins.php
 msgid "This permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone.  If you really want to Force Uninstall the Plugin, click 'Force Uninstall' below.  Otherwise click 'Cancel'."
@@ -17867,7 +17840,7 @@ msgstr ""
 
 #: rrdcheck.php
 msgid "No RRDcheck Problems Found"
-msgstr "Не знайдено Профілів Джерел Даних"
+msgstr "Проблем RRDcheck не знайдено"
 
 #: rrdcheck.php
 msgid "Age"
@@ -18306,7 +18279,7 @@ msgstr ""
 
 #: templates_import.php
 msgid "Error in Template"
-msgstr "Шаблони Експорту"
+msgstr "Помилка в шаблоні"
 
 #: templates_import.php
 #, php-format
@@ -18436,9 +18409,9 @@ msgstr[2] ""
 #: tree.php
 msgid "Publish Tree"
 msgid_plural "Publish Trees"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Опублікувати дерево"
+msgstr[1] "Опублікувати дерева"
+msgstr[2] "Опублікувати дерева"
 
 #: tree.php
 msgid "Click 'Continue' to un-publish the following Tree."
@@ -18911,10 +18884,8 @@ msgid "Last Login"
 msgstr ""
 
 #: user_admin.php
-#, fuzzy
-#| msgid "1 Week"
 msgid "< 1 Week Ago"
-msgstr "%d Тиждень"
+msgstr "< 1 тижня тому"
 
 #: user_admin.php
 msgid "< 1 Month Ago"
@@ -18925,16 +18896,12 @@ msgid "> 1 Month Ago"
 msgstr ""
 
 #: user_admin.php
-#, fuzzy
-#| msgid "%d Months"
 msgid "> 2 Months Ago"
-msgstr "%d Місяців"
+msgstr "> 2 місяців тому"
 
 #: user_admin.php
-#, fuzzy
-#| msgid "%d Months"
 msgid "> 4 Months Ago"
-msgstr "%d Місяців"
+msgstr "> 4 місяців тому"
 
 #: user_admin.php
 msgid "Basic"
@@ -19257,9 +19224,9 @@ msgstr ""
 #: user_group_admin.php
 msgid "Copy User Group"
 msgid_plural "Copy User Groups"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Копіювати групу користувачів"
+msgstr[1] "Копіювати групи користувачів"
+msgstr[2] "Копіювати групи користувачів"
 
 #: user_group_admin.php
 msgid "Click 'Continue' to enable the following User Group."
@@ -19945,7 +19912,7 @@ msgstr ""
 
 #: utilities.php
 msgid "Total Poller Items:"
-msgstr "Елемент Кольору:"
+msgstr "Усього елементів опитувача:"
 
 #: utilities.php
 msgid "Total Data Sources:"
@@ -19953,7 +19920,7 @@ msgstr ""
 
 #: utilities.php
 msgid "Remaining Data Sources:"
-msgstr "Має Джерела Даних:"
+msgstr "Залишилося джерел даних:"
 
 #: utilities.php
 msgid "TBD"
@@ -20057,7 +20024,7 @@ msgstr ""
 
 #: utilities.php
 msgid "Detailed Runtime Statistics"
-msgstr "Очистити Статистику"
+msgstr "Детальна статистика виконання"
 
 #: utilities.php
 #, php-format
