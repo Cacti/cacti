@@ -383,3 +383,25 @@ test('the fullscreen handler updates the button that config.js creates', () => {
 
 	assert.deepEqual(selectors, Array(2).fill(`.compact_nav_icon[data-helper="${helper}"]>i`));
 });
+
+test('the shipped navigation has one tree box and every box has a button', () => {
+	const context = {$: () => ({text: () => ''}), document: {}};
+	context.window = context;
+	vm.runInNewContext(read('include/themes/midwinter/config.js') + '\nthis.uiConfig = uiConfig;', context);
+
+	const {boxes, buttons} = context.uiConfig;
+	const helpers = buttons.map((button) => button.helper);
+
+	assert.equal(boxes.filter((box) => box.type === 'tree').length, 1);
+	assert.equal(new Set(helpers).size, helpers.length, 'button helpers are unique');
+
+	for (const box of boxes.filter((box) => !box.type)) {
+		assert.ok(helpers.includes(box.helper), `${box.helper} needs a button`);
+	}
+
+	for (const box of boxes.filter((box) => box.type && box.overrides && box.overrides.helper)) {
+		assert.ok(helpers.includes(box.overrides.helper), `${box.overrides.helper} needs a button`);
+	}
+
+	assert.ok(helpers.every((helper) => helper !== 'another'), 'no button without a box or action');
+});

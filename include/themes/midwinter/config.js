@@ -42,10 +42,6 @@ const uiConfig = {
             type: 'tree',
             overrides: { title: 'Tree' }
         },
-        {   // New Cacti NavigationBox Tree Plugin
-            type: 'tree',
-            overrides: { title: 'Tree' , helper: 'another1' }
-        },
         {   // New Cacti NavigationBox Table Plugin
             type: 'table',
             overrides: {
@@ -107,16 +103,6 @@ const uiConfig = {
             destination: "#compact_tab_menu",
             enabled: window.cactiGraphsAllowed || false,
             hotkey: 'ALT+SHIFT+3'
-
-        },
-        {
-            title: "Tree2",
-            helper: "another",
-            tooltip: "Tree View",
-            iconClass: "ti ti-login",
-            destination: "#compact_tab_menu",
-            enabled: window.cactiGraphsAllowed || false,
-            hotkey: 'ALT+SHIFT+8'
 
         },
         {
