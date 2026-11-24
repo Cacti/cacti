@@ -110,6 +110,10 @@ function db_fetch_row_prepared(string $sql, array $params = []) : mixed {
 	return fake($sql, $params);
 }
 
+function db_fetch_cell_prepared(string $sql, array $params = []) : mixed {
+	return fake($sql, $params);
+}
+
 function check(bool $condition, string $label) : void {
 	if (!$condition) {
 		throw new RuntimeException('Failed: ' . $label);
@@ -194,7 +198,28 @@ foreach (['FFF', 'FF00001', "FF0000\n", 'FF00GG', ''] as $hex) {
 	check(isset($_SESSION[SESS_ERROR_FIELDS]['hex']), 'hex ' . json_encode($hex) . ' marked as the failing field');
 }
 
-$location = save(['id' => '0', 'name' => 'Pink', 'hex' => 'ff00aa']);
+$location = save(['id' => '0', 'name' => 'Pink', 'hex' => 'ff00aa'], ['SELECT id FROM colors' => false]);
 check($location === 'Location: color.php' && $GLOBALS['saved'][0]['hex'] === 'FF00AA', 'six digit hex saved in upper case');
+
+// A Named Color is read only whatever the request says, and the request cannot make a color read only.
+$location = save(['id' => '1', 'name' => 'Renamed', 'hex' => '000001', 'read_only' => ''], ['SELECT read_only' => ['read_only' => 'on']]);
+check($location === 'Location: color.php?action=edit&id=1' && $GLOBALS['saved'] === [], 'named color not saved');
+check($GLOBALS['messages'][0][0] === 'color_read_only' && $GLOBALS['messages'][0][2] === MESSAGE_LEVEL_ERROR, 'named color save reported');
+
+$location = save(['id' => '7', 'name' => 'Teal', 'hex' => '008080', 'read_only' => 'on', 'hidden_name' => 'Other'], ['SELECT read_only' => ['read_only' => ''], 'SELECT id FROM colors' => false]);
+check($location === 'Location: color.php' && $GLOBALS['saved'] === [['id' => '7', 'name' => 'Teal', 'hex' => '008080']], 'editable color saved without a read only flag');
+check($GLOBALS['db'][1][1] === ['008080', '7'], 'hex owner looked up excluding the color itself');
+
+// A hex owned by another color is refused instead of renaming that color.
+$location = save(['id' => '0', 'name' => 'Copy', 'hex' => '000000'], ['SELECT id FROM colors' => 1]);
+check($location === 'Location: color.php?action=edit&id=0' && $GLOBALS['saved'] === [], 'duplicate hex not saved');
+check(isset($_SESSION[SESS_ERROR_FIELDS]['hex']) && $GLOBALS['messages'][0][0] === 'color_hex_exists', 'duplicate hex reported on the field');
+
+$location = save(['id' => '7', 'name' => 'Teal', 'hex' => '008080'], ['SELECT read_only' => ['read_only' => ''], 'SELECT id FROM colors' => false], false);
+check($location === 'Location: color.php' && $GLOBALS['messages'][0][0] === 2, 'failed save reported');
+
+// An import that may update rows keeps the name of a Named Color.
+import(["name,hex\n", "Red,FF0000\n"], ['ON DUPLICATE KEY UPDATE' => true], ['allow_update' => 'on']);
+check(str_contains($GLOBALS['db'][0][0], "name=IF(read_only = 'on', name, VALUES(name))"), 'import update keeps named color names');
 
 print json_encode(['passed' => $GLOBALS['passed']], JSON_THROW_ON_ERROR) . "\n";

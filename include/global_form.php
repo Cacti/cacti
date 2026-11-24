@@ -406,12 +406,6 @@ $fields_color_edit = [
 		'method' => 'hidden_zero',
 		'value'  => '|arg1:id|'
 	],
-	'hidden_name' => [
-		'method'     => 'hidden',
-		'value'      => '|arg1:name|',
-		'max_length' => '40',
-		'size'       => '40'
-	],
 	'save_component_color' => [
 		'method' => 'hidden',
 		'value'  => '1'

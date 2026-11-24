@@ -76,16 +76,29 @@ function form_save() : void {
 		gfrv('id');
 		// ====================================================
 
-		$save['id']        = gnrv('id');
+		$save['id'] = gnrv('id');
 
-		if (gnrv('read_only') == '') {
-			$save['name']      = gfrv('name', FILTER_SANITIZE_SPECIAL_CHARS);
-			// exactly six hex digits; RRDtool appends the two digit alpha to this value
-			$save['hex']       = strtoupper(form_input_validate(gnrv('hex'), 'hex', '\A[a-fA-F0-9]{6}\z', false, 3));
+		// Named colors are read only.  The flag comes from the stored row, never from the request.
+		$stored = empty($save['id']) ? [] : db_fetch_row_prepared('SELECT read_only FROM colors WHERE id = ?', [$save['id']]);
+
+		if (cacti_sizeof($stored) && $stored['read_only'] == 'on') {
+			$_SESSION[SESS_ERROR_FIELDS]['name'] = 'name';
+
+			raise_message('color_read_only', __('Named Colors are read only and cannot be changed.'), MESSAGE_LEVEL_ERROR);
 		} else {
-			$save['name']      = gfrv('hidden_name', FILTER_SANITIZE_SPECIAL_CHARS);
-			$save['read_only'] = 'on';
+			$save['name'] = gfrv('name', FILTER_SANITIZE_SPECIAL_CHARS);
+			// exactly six hex digits; RRDtool appends the two digit alpha to this value
+			$save['hex']  = strtoupper(form_input_validate(gnrv('hex'), 'hex', '\A[a-fA-F0-9]{6}\z', false, 3));
+
+			// The hex is a unique key, so saving another color's hex would rename that color instead.
+			if (is_error_message() === false && db_fetch_cell_prepared('SELECT id FROM colors WHERE hex = ? AND id != ?', [$save['hex'], $save['id']])) {
+				$_SESSION[SESS_ERROR_FIELDS]['hex'] = 'hex';
+
+				raise_message('color_hex_exists', __('Another Color already uses the Hex value %s.', $save['hex']), MESSAGE_LEVEL_ERROR);
+			}
 		}
+
+		$color_id = 0;
 
 		if (is_error_message() === false) {
 			$color_id = sql_save($save, 'colors');
@@ -95,8 +108,6 @@ function form_save() : void {
 			} else {
 				raise_message(2);
 			}
-		} else {
-			$color_id = isrv('id') ? grv('color_id') : 0;
 		}
 
 		if (is_error_message()) {
@@ -259,12 +270,12 @@ function color_import_processor(array &$colors) : array {
 					}
 
 					if (isrv('allow_update')) {
-						if (db_execute_prepared('INSERT INTO colors
+						// an update keeps the name of a read only Named Color
+						if (db_execute_prepared("INSERT INTO colors
 							(hex, name)
 							VALUES (?, ?)
 							ON DUPLICATE KEY UPDATE
-							hex=VALUES(hex),
-							name=VALUES(name)',
+							name=IF(read_only = 'on', name, VALUES(name))",
 							[$hex, $name])) {
 							$return_array[] = "INSERT SUCCEEDED: $save_value";
 						} else {
@@ -397,10 +408,6 @@ function color_edit() : void {
 		$('#hex').colorpicker().css({'width':'60px'});
 		$('#read_only').click(function() {
 			checkReadonly();
-		});
-
-		$('#name').keyup(function() {
-			$('#hidden_name').val($(this).val());
 		});
 
 		function checkReadonly() {
