@@ -42,12 +42,6 @@ switch (get_request_var('action')) {
 		form_actions();
 
 		break;
-	case 'remove':
-		csrf_require_post();
-		color_remove();
-
-		header ('Location: color.php');
-		break;
 	case 'edit':
 		top_header();
 
