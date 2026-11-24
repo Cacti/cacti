@@ -884,7 +884,7 @@ function template_edit() {
 
 				// Data Query Key fields
 				if (data_input_field_always_checked($field['id'])) {
-					$message = __esc('This value is disabled due to it either it value being derived from the Device or special Data Query object that keeps track of critical data Data Query associations.');
+					$message = __esc('This value is disabled due to its value being derived from the Device or a special Data Query object that keeps track of critical Data Query associations.');
 
 					if (cacti_sizeof($data_input_data)) {
 						$old_value  = $data_input_data['value'];

@@ -896,6 +896,7 @@ $struct_graph = array(
 		'sql' => 'SELECT id, name FROM graph_templates_gprint WHERE gprint_text NOT LIKE "%\%s%" ORDER BY name',
 		'default' => '',
 		'none_value' => __('None'),
+		/* xgettext:no-php-format */
 		'description' => __('By default, the format of the axis labels gets determined automatically.  If you want to do this yourself, use this option with the same %lf arguments you know from the PRINT and GPRINT commands.'),
 		),
 	'right_axis_formatter' => array(
@@ -1734,7 +1735,7 @@ $fields_template_import = array(
 		'array' => $image_types,
 	),
 	'graph_height' => array(
-		'friendly_name' => __('Graph Template Height', 'pagkage'),
+		'friendly_name' => __('Graph Template Height'),
 		'description' => __('The Height to be used when importing or updating Graph Templates.'),
 		'method' => 'textbox',
 		'default' => read_config_option('default_graph_height'),

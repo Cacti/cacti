@@ -1367,6 +1367,7 @@ function utilities_mysql_variable_capabilities() {
 		),
 		'innodb_buffer_pool_size' => array(
 			'description' => __('Total memory InnoDB uses to cache table and index data.'),
+			/* xgettext:no-php-format */
 			'settings'    => __('Bytes; commonly 25%-80% of total system memory.'),
 			'MariaDB'     => array(),
 			'MySQL'       => array(),

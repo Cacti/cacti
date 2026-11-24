@@ -653,7 +653,7 @@ function network_edit() {
 	'notification_enabled' => array(
 		'method' => 'checkbox',
 		'friendly_name' => __('Notification Enabled'),
-		'description' => __('If checked, when the Automation Network is scanned, a report will be sent to the Notification Email account..'),
+		'description' => __('If checked, when the Automation Network is scanned, a report will be sent to the Notification Email account.'),
 		'value' => '|arg1:notification_enabled|',
 		'default' => ''
 		),

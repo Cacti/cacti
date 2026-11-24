@@ -950,7 +950,7 @@ function get_import_form($default_profile) {
 			'array' => $image_types,
 		),
 		'graph_height' => array(
-			'friendly_name' => __('Graph Template Height', 'pagkage'),
+			'friendly_name' => __('Graph Template Height'),
 			'description' => __('The Height to be used when importing or updating Graph Templates.'),
 			'method' => 'textbox',
 			'default' => read_config_option('default_graph_height'),

@@ -69,7 +69,7 @@ if (isset_request_var('error')) {
 		print json_encode(
 			array(
 				'status' => 'Not Reachable',
-				'message' => __('The Document page \'%s\' count not be reached.  The Cacti Documentation site is not reachable.  The http error was \'%s\'.  Consider downloading an official release to obtain the latest documentation and hosting the documentation locally.', $page, $response_code)
+				'message' => __('The Document page \'%s\' could not be reached.  The Cacti Documentation site is not reachable.  The http error was \'%s\'.  Consider downloading an official release to obtain the latest documentation and hosting the documentation locally.', $page, $response_code)
 			)
 		);
 	} elseif ($contents != '' && !preg_match('/does not appear to exist/i', $contents)) {
@@ -97,7 +97,7 @@ if (isset_request_var('error')) {
 		print json_encode(
 			array(
 				'status' => 'Not Reachable',
-				'message' => __('The Document page \'%s\' count not be reached locally.', $page, $response_code)
+				'message' => __('The Document page \'%s\' could not be reached locally.', $page)
 			)
 		);
 	}
