@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2024-06-23 04:09+0000\n"
-"Last-Translator: tql <fttx31@126.com>\n"
-"Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core/zh_Hans/>\n"
+"PO-Revision-Date: 2026-11-24 09:13+0000\n"
+"Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
+"Language-Team: Chinese (Simplified Han script) <https://translate.cacti.net/"
+"projects/cacti/core/zh_Hans/>\n"
 "Language: zh-CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.8.1\n"
+"X-Generator: Weblate 5.11.4\n"
 
 #: about.php:29 include/global_arrays.php:2781 lib/html.php:3046
 msgid "About Cacti"
@@ -2192,7 +2193,7 @@ msgstr "在选定的运行限制之后,发现过程将被终止."
 #: automation_networks.php:828 automation_networks.php:1546 pollers.php:975
 #, php-format
 msgid "%d Minute"
-msgstr "%d分钟"
+msgstr "%d 分钟"
 
 #: automation_networks.php:829 automation_networks.php:830
 #: automation_networks.php:831 automation_networks.php:832
@@ -16922,7 +16923,7 @@ msgstr "允许或限制表列扩展到超出当前窗口限制。"
 
 #: lib/html.php:3127 pollers.php:875
 msgid "Connection Failed"
-msgstr "UNKNOWN STATE FIX ME"
+msgstr "连接失败"
 
 #: lib/html.php:3128 pollers.php:873
 #, fuzzy
@@ -17269,7 +17270,10 @@ msgstr "格式化文件以使用"
 
 #: lib/html_reports.php:67
 msgid "Choose the custom html wrapper and CSS file to use.  This file contains both html and CSS to wrap around your report.  If it contains more than simply CSS, you need to place a special <REPORT> tag inside of the file.  This format tag will be replaced by the report content.  These files are located in the 'formats' directory."
-msgstr "选择要使用的自定义html包装和CSS文件。此文件同时包含html和CSS，用于包装您的报告。如果它包含的不仅仅是CSS，则需要在文件中放置一个特殊的＜REPORT＞标记。此格式标记将被报告内容替换。这些文件位于“formats”目录中。"
+msgstr ""
+"择要使用的自定义html包装器和CSS文件. "
+"该文件包含html和CSS.以包装您的报告.如果它包含的不仅仅是CSS.你需要在文件中放置"
+"一个特殊的<REPORT>标签.此格式标签将被报告内容替换. 这些文件位于'formats'目录."
 
 #: lib/html_reports.php:72
 msgid "Default Text Font Size"
@@ -17944,7 +17948,7 @@ msgstr "包文件"
 
 #: lib/import.php:2692
 msgid "[preview] "
-msgstr "预览"
+msgstr "预览 "
 
 #: lib/import.php:2698
 msgid "Cacti would make the following changes if the Template was imported:"
@@ -23130,9 +23134,8 @@ msgstr "配置设置"
 #: support.php:1168
 #, php-format
 msgid "ERROR: Installed RRDtool version does not exceed configured version.<br>Please visit the %s and select the correct RRDtool Utility Version."
-msgstr ""
-"错误:已安装的RRDtool版本不超过已配置的版本。\n"
-"请访问%s并选择正确的RRDtool实用程序版本。"
+msgstr "错误:已安装的RRDtool版本不超过已配置的版本。<br>请访问%s并选择正确的RRDtool实"
+"用程序版本。"
 
 #: support.php:1174
 #, php-format
