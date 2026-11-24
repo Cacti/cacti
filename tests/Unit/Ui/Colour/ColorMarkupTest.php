@@ -10,5 +10,5 @@ test('stored color values stay text in every list, dropdown and confirmation tha
 	fclose($pipes[1]);
 	fclose($pipes[2]);
 	expect(proc_close($process))->toBe(0)->and($errors)->toBe('');
-	expect(json_decode($output, true, 512, JSON_THROW_ON_ERROR)['passed'])->toBe(57);
+	expect(json_decode($output, true, 512, JSON_THROW_ON_ERROR)['passed'])->toBe(58);
 });

@@ -72,6 +72,8 @@ function db_fetch_cell_prepared(string $sql, array $params = []) : mixed {
 }
 
 function db_fetch_assoc(string $sql) : array {
+	$GLOBALS['queries'][] = preg_replace('/\s+/', ' ', $sql);
+
 	if (str_contains($sql, 'FROM color_templates')) {
 		return [];
 	}
@@ -229,6 +231,7 @@ form_color_dropdown('color_id', 3, 'None', 0);
 $html = ob_get_clean();
 assert_text($html, $hex, 'color dropdown');
 check(str_contains($html, "data-color='" . htmle($hex) . "'"), 'color dropdown data attribute');
+check(end($GLOBALS['queries']) === 'SELECT * FROM colors ORDER BY hex ASC', 'color dropdown sorted by hex');
 
 // Graph and graph template item list: AREA has primary and gradient colors, LINE1 only the primary.
 $item = [
