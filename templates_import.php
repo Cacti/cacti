@@ -123,7 +123,13 @@ function form_save() {
 		$debug_data = import_xml_data($xml_data, $import_as_new, $profile_id, $remove_orphans, $replace_svalues, $import_hashes);
 
 		if (!$preview_only) {
-			raise_message('import_success', __('The Template Import Succeeded.'), MESSAGE_LEVEL_INFO);
+			if ($debug_data === false) {
+				cacti_log(sprintf('ERROR: Import failed for XML file %s!', $_FILES['import_file']['name']), false, 'IMPORT');
+
+				raise_message('import_fail', __('The Template Import Failed.  See the cacti.log for more information.'), MESSAGE_LEVEL_ERROR);
+			} else {
+				raise_message('import_success', __('The Template Import Succeeded.'), MESSAGE_LEVEL_INFO);
+			}
 
 			header('Location: templates_import.php');
 		} elseif ($debug_data !== false && cacti_sizeof($debug_data)) {
