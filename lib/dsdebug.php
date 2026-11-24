@@ -320,10 +320,6 @@ function dsdebug_poller_bottom() : bool {
 							$c['issue'][] = __('Data Source was not polled');
 							$total_issues++;
 						}
-
-						if ($c['issue'] == '') {
-							$c['issue'][] = __('No issues found');
-						}
 					}
 				} else {
 					$c['issue'][] = __('RRDfile not created yet');
