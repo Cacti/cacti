@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-10-06 15:35+0000\n"
-"Last-Translator: YU HAO HUANG <mix@b51.tw>\n"
+"PO-Revision-Date: 2026-11-24 09:13+0000\n"
+"Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://translate.cacti.net/"
 "projects/cacti/core/zh_Hant/>\n"
 "Language: zh-TW\n"
@@ -35,9 +35,8 @@ msgid "Please see the official %sCacti website%s for information on how to use C
 msgstr "有關信息，支持和更新，請參閱官方%sCacti網站%s。"
 
 #: about.php:50
-#, fuzzy
 msgid "Active Developers"
-msgstr "仙人掌開發人員"
+msgstr "活躍開發人員"
 
 #: about.php:51
 msgid "Developers working on Cacti, its Architecture, Documentation and Future Releases."
@@ -1097,9 +1096,9 @@ msgid "User was Authenticated, but the Template Account is disabled. Using Guest
 msgstr "用戶已通過身份驗證，但模板帳戶已禁用。使用訪客帳戶"
 
 #: auth_login.php:141
-#, fuzzy, php-format
+#, php-format
 msgid "Access Denied!  Guest user id %s does not exist.  Please contact your Administrator."
-msgstr "訪問被拒絕，請與您聯繫Cacti管理員。"
+msgstr "存取遭拒！訪客使用者 ID %s 不存在。請聯絡您的管理員。"
 
 #: auth_login.php:180
 #, fuzzy
@@ -7436,9 +7435,10 @@ msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id of
 msgstr "為 ID 為“%s”的數據查詢“%s”解析數據查詢資源 XML 文件時出錯"
 
 #: graphs_new.php:695
-#, fuzzy, php-format
+#, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'.  Field Name '%s' missing a 'direction' attribute"
-msgstr "為 ID 為“%s”的數據查詢“%s”解析數據查詢資源 XML 文件時出錯"
+msgstr "解析資料查詢 '%s'（ID 為 '%s'）的資料查詢資源 XML 檔案時發生錯誤。欄位名稱 "
+"'%s' 缺少 'direction' 屬性"
 
 #: graphs_new.php:699
 #, fuzzy, php-format
@@ -7579,9 +7579,9 @@ msgid "Device Reindex Completed in %0.2f seconds.  There were %d items updated."
 msgstr "設備重新索引在 %0.2f 秒內完成。有 %d 個項目已更新。"
 
 #: host.php:360
-#, fuzzy, php-format
+#, php-format
 msgid "Unable to add some Devices to Report '%s'"
-msgstr "無法連接到服務器"
+msgstr "無法將部分裝置新增至報表 '%s'"
 
 #: host.php:479
 #, fuzzy
@@ -11364,9 +11364,9 @@ msgstr "最大OID"
 #: include/global_form.php:172 include/global_form.php:173
 #: include/global_form.php:174 include/global_form.php:175
 #: include/global_form.php:176
-#, fuzzy, php-format
+#, php-format
 msgid "%d OID's"
-msgstr "最大OID"
+msgstr "%d 個 OID"
 
 #: include/global_form.php:181
 #, fuzzy
@@ -11401,9 +11401,9 @@ msgstr "網格選項"
 #: include/global_form.php:199 include/global_form.php:200
 #: include/global_form.php:201 include/global_form.php:202
 #: include/global_form.php:203
-#, fuzzy, php-format
+#, php-format
 msgid "%d Repetitions"
-msgstr "網格選項"
+msgstr "%d 次重複"
 
 #: include/global_form.php:212
 #, fuzzy
@@ -13546,9 +13546,8 @@ msgid "Cacti includes support for multiple alternate Language Translation Proces
 msgstr "Cacti 包括對多個備用語言翻譯處理器的支持。默認使用 PHP 內置支持，但並非所有 Linux 變體都包含內置語言支持。如果未選中，Cacti 將選擇找到的第一個。"
 
 #: include/global_settings.php:456
-#, fuzzy
 msgid "Client TimeZone Support"
-msgstr "MySQL  -  TimeZone支持"
+msgstr "MySQL - TimeZone支持"
 
 #: include/global_settings.php:457
 msgid "How should Cacti support Client Dates based upon the Client browsers timezone."
@@ -16433,9 +16432,8 @@ msgid "Which Graph mode you want displayed by default when you first visit the G
 msgstr "首次訪問“圖形”頁面時，默認情況下要顯示哪種圖形模式？"
 
 #: include/global_settings.php:2895
-#, fuzzy
 msgid "TimeZone Support"
-msgstr "MySQL  -  TimeZone支持"
+msgstr "MySQL - TimeZone支持"
 
 #: include/global_settings.php:2896
 msgid "How would you like Cacti to present dates?  This setting will also change the way that Cacti Graphs dates are represented."
@@ -17154,7 +17152,7 @@ msgstr ""
 
 #: lib/api_automation.php:5228
 msgid "Failed to write file to disk"
-msgstr ""
+msgstr "檔案無法寫入。"
 
 #: lib/api_automation.php:5231
 msgid "File upload stopped by extension"
@@ -17474,9 +17472,9 @@ msgid "LDAP Search Error: %s"
 msgstr "LDAP搜索錯誤：%s"
 
 #: lib/auth.php:4094 lib/auth.php:5105
-#, fuzzy, php-format
+#, php-format
 msgid "Access Denied!  Template user id %s does not exist.  Please contact your Administrator."
-msgstr "訪問被拒絕，請與您聯繫Cacti管理員。"
+msgstr "存取遭拒！範本使用者 ID %s 不存在。請聯絡您的管理員。"
 
 #: lib/auth.php:4479
 #, fuzzy
@@ -17839,9 +17837,9 @@ msgid "Index Association with Local Data complete"
 msgstr "與本地數據的索引關聯完成"
 
 #: lib/data_query.php:392
-#, fuzzy, php-format
+#, php-format
 msgid "Update Re-Index Cache complete. There were %s index changes, and %s orphaned indexes."
-msgstr "更新重新索引緩存完成。曾經有"
+msgstr "更新重新索引快取完成。共有 %s 個索引變更，以及 %s 個孤立索引。"
 
 #: lib/data_query.php:396
 #, fuzzy
@@ -19931,9 +19929,9 @@ msgid "Details %s"
 msgstr "詳細資料"
 
 #: lib/html_reports.php:1618
-#, fuzzy, php-format
+#, php-format
 msgid "Report Items %s"
-msgstr "沒有報告項目"
+msgstr "報表項目 %s"
 
 #: lib/html_reports.php:1664
 #, fuzzy, php-format
@@ -19951,9 +19949,9 @@ msgid "Item Details"
 msgstr "項目明細"
 
 #: lib/html_reports.php:1727
-#, fuzzy, php-format
+#, php-format
 msgid "Graph: %s"
-msgstr "圖表 :"
+msgstr "圖表：%s"
 
 #: lib/html_reports.php:1730 lib/html_reports.php:1758
 #: lib/html_reports.php:1771 lib/html_reports.php:1772
@@ -21685,19 +21683,19 @@ msgid "No username defined"
 msgstr "沒有定義用戶名"
 
 #: lib/ldap.php:412
-#, fuzzy, php-format
+#, php-format
 msgid "Protocol Error, Unable to set version (%s) on Server (%s)"
-msgstr "協議錯誤，無法設置版本"
+msgstr "通訊協定錯誤，無法在伺服器 (%2$s) 上設定版本 (%1$s)"
 
 #: lib/ldap.php:416
-#, fuzzy, php-format
+#, php-format
 msgid "Protocol Error, Unable to set referrals option (%s) on Server (%s)"
-msgstr "協議錯誤，無法設置引薦選項"
+msgstr "通訊協定錯誤，無法在伺服器 (%2$s) 上設定轉介選項 (%1$s)"
 
 #: lib/ldap.php:420
-#, fuzzy, php-format
+#, php-format
 msgid "Protocol Error, unable to start TLS communications (%s) on Server (%s)"
-msgstr "協議錯誤，無法啟動TLS通信"
+msgstr "通訊協定錯誤，無法在伺服器 (%2$s) 上啟動 TLS 通訊 (%1$s)"
 
 #: lib/ldap.php:424
 #, fuzzy, php-format
@@ -21710,24 +21708,24 @@ msgid "Protocol Error, Unable to bind, LDAP result: (%s) on Server (%s)"
 msgstr "協議錯誤，無法綁定，LDAP結果：%s"
 
 #: lib/ldap.php:432
-#, fuzzy, php-format
+#, php-format
 msgid "Unable to Connect to Server (%s)"
-msgstr "無法連接到服務器"
+msgstr "無法連線至伺服器 (%s)"
 
 #: lib/ldap.php:436
-#, fuzzy, php-format
+#, php-format
 msgid "Connection Timeout to Server (%s)"
-msgstr "連接超時"
+msgstr "連線至伺服器 (%s) 逾時"
 
 #: lib/ldap.php:440
-#, fuzzy, php-format
+#, php-format
 msgid "Insufficient Access to Server (%s)"
-msgstr "訪問不足"
+msgstr "對伺服器 (%s) 的存取權限不足"
 
 #: lib/ldap.php:444
-#, fuzzy, php-format
+#, php-format
 msgid "Group DN could not be found to compare on Server (%s)"
-msgstr "無法找到組DN進行比較"
+msgstr "在伺服器 (%s) 上找不到可用於比較的群組 DN"
 
 #: lib/ldap.php:448
 #, fuzzy
@@ -21745,9 +21743,9 @@ msgid "Unable to find users DN"
 msgstr "無法找到用戶DN"
 
 #: lib/ldap.php:460
-#, fuzzy, php-format
+#, php-format
 msgid "Unable to create LDAP connection object to Server (%s)"
-msgstr "無法創建LDAP連接對象"
+msgstr "無法建立連線至伺服器 (%s) 的 LDAP 連線物件"
 
 #: lib/ldap.php:464
 #, fuzzy
@@ -22005,9 +22003,9 @@ msgid "Unable to reach The Cacti Groups GitHub site.  No plugin data retrieved i
 msgstr ""
 
 #: lib/reports.php:144
-#, fuzzy, php-format
+#, php-format
 msgid "Device '%s' successfully added to Report."
-msgstr "添加到仙人掌"
+msgstr "已成功將裝置 '%s' 新增至報表。"
 
 #: lib/reports.php:147
 #, fuzzy
@@ -22305,9 +22303,9 @@ msgid "ERROR: Whitelist Validation Failed. Check Data Input Method"
 msgstr "錯誤：白名單驗證失敗。檢查數據輸入方法"
 
 #: lib/template.php:2267
-#, fuzzy, php-format
+#, php-format
 msgid "Graph Not created for %s due to bad data"
-msgstr "圖形創建"
+msgstr "因資料錯誤而未為 %s 建立圖表"
 
 #: lib/template.php:2296
 #, php-format
@@ -23198,9 +23196,9 @@ msgid "Unable to create package temporary directory %s."
 msgstr ""
 
 #: package_import.php:203 package_import.php:527
-#, fuzzy, php-format
+#, php-format
 msgid "The Package %s Imported Successfully"
-msgstr "仙人掌日誌成功清除"
+msgstr "套件 %s 已成功匯入"
 
 #: package_import.php:205 package_import.php:529
 #, php-format
@@ -28165,9 +28163,9 @@ msgid "Previous Runtime Timers:"
 msgstr "詳細的運行時間計時器："
 
 #: utilities.php:1779 utilities.php:1781
-#, fuzzy, php-format
+#, php-format
 msgid "Process: %d"
-msgstr "1流程"
+msgstr "程序：%d"
 
 #: utilities.php:1779
 #, php-format
