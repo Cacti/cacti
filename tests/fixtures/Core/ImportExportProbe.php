@@ -105,7 +105,7 @@ $fakes = array(
 	'get_device_records', 'get_item_xml', 'top_header', 'bottom_footer', 'update_replication_crc',
 	'retemplate_graphs', 'get_cacti_cli_version', 'csrf_require_post',
 	'resolve_hash_to_id', 'raise_message_javascript', 'clean_up_file_name', 'get_public_key',
-	'cacti_csv_safe', 'compare_data',
+	'cacti_csv_safe', 'compare_data', 'read_config_option', 'isempty_request_var', 'graph_template_input_column_is_allowed',
 );
 
 foreach ($fakes as $fake) {

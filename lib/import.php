@@ -1121,7 +1121,10 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 
 			if (cacti_sizeof($items)) {
 				foreach($items as $item) {
-					$orphaned_items[$item['hash']] = $item;
+					/* an item without a hash can not be matched against the file */
+					if ($item['hash'] != '') {
+						$orphaned_items[$item['hash']] = $item;
+					}
 				}
 			}
 		} else {
@@ -1308,8 +1311,10 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 				$orphan_text[] = 'Removed Orphaned Graph Items, Type: ' . $graph_item_types[$item['graph_type_id']] . ', Text Format: ' . $item['text_format'] . ', Value: ' . $item['value'];
 
 				db_execute_prepared('DELETE FROM graph_templates_item
-					WHERE hash = ?',
-					array($item['hash']));
+					WHERE id = ?
+					AND graph_template_id = ?
+					AND local_graph_id = 0',
+					array($item['id'], $graph_template_id));
 
 				db_execute_prepared('DELETE FROM graph_templates_item
 					WHERE local_graph_template_item_id = ?',
