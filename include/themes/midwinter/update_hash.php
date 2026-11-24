@@ -22,6 +22,13 @@
   +-------------------------------------------------------------------------+
 */
 
+/* maintenance script for theme developers, command line only */
+if (PHP_SAPI !== 'cli') {
+	http_response_code(404);
+
+	exit;
+}
+
 /**
  * Updates the hash. Used as part of Cacti's include functionality.
  *

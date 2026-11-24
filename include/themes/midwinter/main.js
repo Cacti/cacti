@@ -193,7 +193,7 @@ function setupTheme() {
 			+'<li><a href="#" class="toggleGuiMode">'+compactGraphicalUserInterface+'</a></li>'
 			+'<li><a href="#" class="toggleColorMode">'+(midWinter_Color_Mode === 'light' ? darkColorMode : lightColorMode)+'</a></li>'
 			+'<li><a href="#" class="toggleColorModeAuto">'+(midWinter_Color_Mode_Auto === 'on' ? ignorePreferredColorTheme : usePreferredColorTheme)+'</a></li>'
-			+'<li><a href="#" class="toggleGuiFontSize">Font Size: '+ midWinter_Font_Size +'</a></li>'
+			+'<li><a href="#" class="toggleGuiFontSize">Font Size: '+ midwinterEscape(midWinter_Font_Size) +'</a></li>'
 			+'<li><hr class="menu"></li>';
 
 		$('.menuoptions').find('li').eq(2).after(theme_switches);
@@ -269,7 +269,8 @@ function setupTheme() {
 
 			$('<div class="dropdownMenu">' + submenu_tab_graphs_content + '</div>').appendTo('body');
 		} else if ($(this).attr('href') !== urlPath + 'index.php') {
-			compact_tab_menu_content += '<li><a class="pic" role="menuitem" href="' + $(this).attr('href') + '">' + $('.text_' + id).text() + '</a></li>';
+			// attr() and text() return decoded values, so encode them again before they become markup
+			compact_tab_menu_content += '<li><a class="pic" role="menuitem" href="' + midwinterEscape($(this).attr('href')) + '">' + midwinterEscape($('.text_' + id).text()) + '</a></li>';
 		}
 	});
 	compact_tab_menu_content += '</ul></li></ul></div>';
@@ -377,7 +378,7 @@ function setupTheme() {
 				+   '</ul>'
 				+   '</div>'
 				+   '<div class="cactiConsoleNavigationUserBox hide" data-helper="user">'
-				+   '<div class="header compact"><div></div><div><span>'+ $('.loggedInAs').text() +'</span></div></div>'
+				+   '<div class="header compact"><div></div><div><span>'+ midwinterEscape($('.loggedInAs').text()) +'</span></div></div>'
 				+   '<ul class="nav">'
 				+   '<li class="menuitem" id="menu_user_action">'
 				+       '<a class="menu_parent active" href="#">'
@@ -398,7 +399,7 @@ function setupTheme() {
 				+           '<li><a href="#" class="toggleGuiMode">'+standardGraphicalUserInterface+'</a></li>'
 				+           '<li><a href="#" class="toggleColorMode">'+(midWinter_Color_Mode === 'light' ? darkColorMode : lightColorMode)+'</a></li>'
 				+           '<li><a href="#" class="toggleColorModeAuto">'+(midWinter_Color_Mode_Auto === 'on' ? ignorePreferredColorTheme : usePreferredColorTheme)+'</a></li>'
-				+           '<li><a href="#" class="toggleGuiFontSize">Font Size: '+ midWinter_Font_Size +'</a></li>'
+				+           '<li><a href="#" class="toggleGuiFontSize">Font Size: '+ midwinterEscape(midWinter_Font_Size) +'</a></li>'
 				+       '</ul>'
 				+   '</li>'
 				+   '<li class="menuitem" id="menu_user_client">'
@@ -658,9 +659,28 @@ function setupDefaultElements() {
 	setNavigationScroll();
 }
 
+// Values the theme itself writes for each stored preference. Anything else found
+// in local storage is replaced by the default before it is used.
+const midwinterStorageValues = {
+	midWinter_GUI_Mode:        ['compact', 'standard'],
+	midWinter_Color_Mode:      ['dark', 'light'],
+	midWinter_Color_Mode_Auto: ['on', 'off'],
+	midWinter_Font_Size:       ['small', 'regular', 'large']
+};
+
+function midwinterEscape(value) {
+	const entityMap = {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;', '`': '&#x60;'};
+
+	return String(value === undefined || value === null ? '' : value).replace(/[&<>"'`]/g, function(character) {
+		return entityMap[character];
+	});
+}
+
 function initStorageItem(name, default_value, data_attribute= '') {
 	let storage = Storages.localStorage;
 	if (storage.isSet(name) === false) {
+		storage.set(name, default_value);
+	} else if (Object.prototype.hasOwnProperty.call(midwinterStorageValues, name) && midwinterStorageValues[name].indexOf(storage.get(name)) === -1) {
 		storage.set(name, default_value);
 	}
 	if (data_attribute !=='') {
@@ -1093,25 +1113,25 @@ function dialog_client(event) {
 			content += '<div class="cactiFlexBoxContentBox">'
 				+             '<div class="header"><span>Browser</span></div>'
 				+             '<div class="content"><i class="'+env.browser.icon+'"></i></div>'
-				+             '<div class="footer"><span>'+ env.browser.name +'</span><span>'+ env.browser.version +'</span></div>'
+				+             '<div class="footer"><span>'+ midwinterEscape(env.browser.name) +'</span><span>'+ midwinterEscape(env.browser.version) +'</span></div>'
 				+ '</div>';
 
 			content += '<div class="cactiFlexBoxContentBox">'
 				+             '<div class="header"><span>OS</span></div>'
 				+             '<div class="content"><i class="'+env.os.icon+'"></i></div>'
-				+             '<div class="footer"><span>'+ env.os.name +'</span><span>'+ env.os.version +'</span></div>'
+				+             '<div class="footer"><span>'+ midwinterEscape(env.os.name) +'</span><span>'+ midwinterEscape(env.os.version) +'</span></div>'
 				+ '</div>';
 
 			content += '<div class="cactiFlexBoxContentBox">'
 				+             '<div class="header"><span>Type</span></div>'
 				+             '<div class="content"><i class="'+env.device.icon+'"></i></div>'
-				+             '<div class="footer"><span>'+ ((env.device.type == undefined) ? '-' : env.device.type) +'</span></div>'
+				+             '<div class="footer"><span>'+ ((env.device.type == undefined) ? '-' : midwinterEscape(env.device.type)) +'</span></div>'
 				+ '</div>';
 
 			content += '<div class="cactiFlexBoxContentBox">'
 				+             '<div class="header"><span>Network</span></div>'
 				+             '<div class="content"><i class="fas fa-network-wired"></i></div>'
-				+             '<div class="footer"><span>'+ ((env.device.type == undefined) ? '-' : env.device.type) +'</span></div>'
+				+             '<div class="footer"><span>'+ ((env.device.type == undefined) ? '-' : midwinterEscape(env.device.type)) +'</span></div>'
 				+ '</div>';
 
 			content += '</div>';
