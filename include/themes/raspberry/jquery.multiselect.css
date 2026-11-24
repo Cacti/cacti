@@ -37,7 +37,3 @@
 .ui-multiselect-measure > .ui-multiselect-checkboxes { margin: 4px; overflow-y: scroll; }
 
 .ui-multiselect-resize { border: 2px dotted #00F }
-
-@media print{
-    .ui-multiselect-menu {display: none;}
-}
