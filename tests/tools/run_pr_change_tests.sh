@@ -36,6 +36,9 @@ if [[ -f tests/fixtures/Core/RowGuardMatrix.php ]]; then
 		run_probe RowGuardMatrix.php "row-guard-$mode" "$mode"
 	done
 fi
+for fixture in DataDebugView UserGroupGraphPolicy; do
+	run_probe "$fixture.php" "$fixture"
+done
 if [[ -f tests/fixtures/Core/SpikekillRequestGate.php ]]; then
 	run_probe SpikekillRequestGate.php spike-get GET '' mutation
 	run_probe SpikekillRequestGate.php spike-dry GET dryrun mutation

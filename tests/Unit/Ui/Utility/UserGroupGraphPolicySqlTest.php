@@ -102,3 +102,15 @@ test('an enabled group still reports its own permissions', function () {
 	expect(array_column($graphs, 'local_graph_id'))->toBe([10]);
 	expect($graphs[0]['graph1'])->toBe(3);
 });
+
+test('the policy helpers build a valid Graph Perms query for a group with and without a policy', function () {
+	$pipes   = [];
+	$process = proc_open([PHP_BINARY, dirname(__DIR__, 3) . '/fixtures/Core/UserGroupGraphPolicy.php'], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+	expect(is_resource($process))->toBeTrue();
+	$output = stream_get_contents($pipes[1]);
+	$errors = stream_get_contents($pipes[2]);
+	fclose($pipes[1]);
+	fclose($pipes[2]);
+	expect(proc_close($process))->toBe(0)->and($errors)->toBe('');
+	expect(json_decode($output, true, 512, JSON_THROW_ON_ERROR)['passed'])->toBe(7);
+});
