@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2026-03-10 10:57-0400\n"
-"PO-Revision-Date: 2026-11-25 10:18+0000\n"
+"PO-Revision-Date: 2026-11-26 05:54+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Greek <https://translate.cacti.net/projects/cacti/core/el/>\n"
 "Language: el-GR\n"
@@ -1423,7 +1423,7 @@ msgstr "Εξαγωγή των συσκευών που εντοπίστηκαν �
 #: lib/clog_webapi.php:274 lib/clog_webapi.php:748 lib/html_filter.php:406
 #: managers.php:537 rrdcheck.php:254 user_log.php:326 utilities.php:1748
 msgid "Purge"
-msgstr "Διαγραφή"
+msgstr "Εκκαθάριση"
 
 #: automation_devices.php:613
 msgid "Purge the Discovered Devices from the Database"
@@ -1451,7 +1451,7 @@ msgstr "Συσκευές που ανακαλύφθηκαν"
 #: utilities.php:1380 utilities.php:1391 utilities.php:1414 utilities.php:1460
 #: utilities.php:1663
 msgid "N/A"
-msgstr "Μη Διαθέσιμο"
+msgstr "Μη Εφαρμόσιμο"
 
 #: automation_graph_rules.php:30 automation_networks.php:35
 #: automation_snmp.php:31 automation_tree_rules.php:31 cdef.php:30
@@ -3599,7 +3599,7 @@ msgstr "Η επισκευή προέλευσης δεδομένων έλαβε �
 #: include/global_arrays.php:1106 include/global_form.php:1003
 #: lib/api_aggregate.php:1834 lib/html.php:1437 rrdcheck.php:134
 msgid "Data Source"
-msgstr "Ανεπεξέργαστη πηγή"
+msgstr "Πηγή δεδομένων"
 
 #: data_debug.php:384
 msgid "The Data Source to Debug"
@@ -3694,7 +3694,7 @@ msgstr "Σύνοψη των ζητημάτων που βρέθηκαν για τ
 #: include/global_arrays.php:2483 lib/api_automation.php:229 rrdcheck.php:272
 #: support.php:1268 user_admin.php:1172 user_group_admin.php:1040
 msgid "Data Sources"
-msgstr "Data Sources"
+msgstr "Πηγές δεδομένων"
 
 #: data_debug.php:573 data_debug.php:992
 msgid "Not Debugging"
@@ -4841,7 +4841,7 @@ msgstr[1] "Τα παρακάτω γραφήματα χρησιμοποιούν �
 #: data_sources.php:647
 msgid "Leave the Graph Untouched"
 msgid_plural "Leave all Graphs untouched."
-msgstr[0] "Αφήστε το γράφημα ανέγγιχτο."
+msgstr[0] "Αφήστε το γράφημα ανέγγιχτο"
 msgstr[1] "Αφήστε όλα τα γραφήματα ανέγγιχτα."
 
 #: data_sources.php:651
@@ -4849,17 +4849,16 @@ msgid "Delete all Graph Items that reference this Data Source."
 msgid_plural "Delete all Graph Items that reference these Data Sources"
 msgstr[0] ""
 "Διαγράψτε όλα τα στοιχεία γραφήματος που αναφέρονται σε αυτήν την πηγή "
-"δεδομένων"
+"δεδομένων."
 msgstr[1] ""
-"Διαγραφή όλων των στοιχείων γραφήματος που αναφέρονται σε αυτές τις πηγές "
+"Διαγράψτε όλα τα στοιχεία γραφήματος που αναφέρονται σε αυτές τις πηγές "
 "δεδομένων"
 
 #: data_sources.php:655
 msgid "Delete all Graphs that reference this Data Source."
 msgid_plural "Delete all Graphs that reference these Data Sources"
-msgstr[0] "Διαγράψτε όλα τα γραφήματα που αναφέρονται σε αυτήν την πηγή δεδομένων"
-msgstr[1] ""
-"Διαγραφή όλων των γραφημάτων που παραπέμπουν σε αυτές τις πηγές δεδομένων"
+msgstr[0] "Διαγράψτε όλα τα γραφήματα που αναφέρονται σε αυτήν την πηγή δεδομένων."
+msgstr[1] "Διαγράψτε όλα τα γραφήματα που αναφέρονται σε αυτές τις πηγές δεδομένων"
 
 #: data_sources.php:662
 msgid "Click 'Continue' to Disable the following Data Source."
@@ -5100,7 +5099,7 @@ msgstr "1 λεπτό"
 
 #: data_sources.php:1572 utilities.php:602
 msgid "Data Source Name"
-msgstr "Πηγή δεδομένων"
+msgstr "Όνομα πηγής δεδομένων"
 
 #: data_sources.php:1575
 msgid "The name of this Data Source. Generally programmatically generated from the Data Template definition."
@@ -9723,7 +9722,7 @@ msgstr "Εισαγάγετε τον αριθμό θύρας UDP που θα χρ
 
 #: include/global_form.php:151
 msgid "SNMP Timeout"
-msgstr "Τέλος χρόνου"
+msgstr "Χρονικό όριο SNMP"
 
 #: include/global_form.php:152
 msgid "The maximum number of milliseconds Cacti will wait for an SNMP response (does not work with php-snmp support)."
@@ -13579,7 +13578,7 @@ msgstr "Εισαγάγετε τη δευτερεύουσα διεύθυνση IP
 
 #: include/global_settings.php:2445
 msgid "DNS Timeout"
-msgstr "Τέλος χρόνου"
+msgstr "Χρονικό όριο DNS"
 
 #: include/global_settings.php:2446
 msgid "Please enter the DNS timeout in milliseconds.  Cacti uses a PHP based DNS resolver."
@@ -22988,7 +22987,7 @@ msgstr "Πληροφορίες PHP"
 
 #: support.php:115
 msgid "ChangeLog"
-msgstr "ChangeLog"
+msgstr "Αρχείο αλλαγών"
 
 #: support.php:137
 #, php-format
@@ -23035,7 +23034,7 @@ msgstr "Ο χρήστης MariaDB/MySQL που εκτελεί αυτήν τη σ
 
 #: support.php:427
 msgid "Run Time"
-msgstr "Διάρκεια"
+msgstr "Χρόνος εκτέλεσης"
 
 #: support.php:429
 msgid "The Runtime of the current query in seconds."
