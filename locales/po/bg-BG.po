@@ -1,17 +1,5 @@
 msgid ""
-msgstr ""
-"Project-Id-Version: Cacti\n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-11-04 11:45-0800\n"
-"PO-Revision-Date: 2024-04-20 18:23-0400\n"
-"Last-Translator: Anonymous <anonymous@cacti.net>\n"
-"Language-Team: Bulgarian <http://translate.cacti.net/projects/cacti/core-v1-2-x/bg/>\n"
-"Language: bg_BG\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 3.4.2\n"
+msgstr "Project-Id-Version: Cacti\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-25 01:18+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Bulgarian <https://translate.cacti.net/projects/cacti/core-v1-2-x/bg/>\nLanguage: bg-BG\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -509,7 +497,7 @@ msgstr "Няма намерени графики"
 
 #: aggregate_graphs.php
 msgid " [ Custom Graphs List Applied - Clear to Reset ]"
-msgstr "[Приложен графичен списък на графиките - Филтър FROM списък]"
+msgstr " [Приложен графичен списък на графиките - Филтър FROM списък]"
 
 #: aggregate_graphs.php include/global_arrays.php
 msgid "Aggregate Graphs"
@@ -550,7 +538,7 @@ msgstr "Вътрешният идентификатор на базата дан
 
 #: aggregate_graphs.php graphs.php
 msgid "Aggregate Template"
-msgstr "Обобщен шаблон:"
+msgstr "Обобщен шаблон"
 
 #: aggregate_graphs.php
 msgid "The Aggregate Template that this Aggregate Graphs is based upon"
@@ -654,7 +642,7 @@ msgstr "Изискванията за пароли включват:"
 #: auth_changepassword.php
 #, php-format
 msgid "Must be at least %d characters in length"
-msgstr "Трябва да има дължина поне% d знака"
+msgstr "Трябва да има дължина поне%d знака"
 
 #: auth_changepassword.php
 msgid "Must include mixed case"
@@ -671,7 +659,7 @@ msgstr "Трябва да включва поне 1 специален знак"
 #: auth_changepassword.php
 #, php-format
 msgid "Cannot be reused for %d password changes"
-msgstr "Не може да се използва повторно за% d промени в паролата"
+msgstr "Не може да се използва повторно за%d промени в паролата"
 
 #: auth_changepassword.php
 msgid "There are problems with the Change Password page.  Contact your Cacti administrator right away."
@@ -790,7 +778,7 @@ msgstr "LDAP"
 
 #: auth_login.php user_admin.php user_group_admin.php
 msgid "Realm"
-msgstr "Област:"
+msgstr "Област"
 
 #: auth_login.php
 msgid "Keep me signed in"
@@ -1179,7 +1167,7 @@ msgstr "Разрешен"
 #: managers.php pollers.php user_admin.php user_domains.php
 #: user_group_admin.php utilities.php
 msgid "Disabled"
-msgstr "Изключен"
+msgstr "деактивиран"
 
 #: automation_graph_rules.php automation_tree_rules.php
 msgid "Rule Name"
@@ -1265,7 +1253,7 @@ msgstr "Кликнете върху „Напред“, за да отменит
 
 #: automation_networks.php data_input.php include/global_arrays.php
 msgid "SNMP Get"
-msgstr "Получете SNMP"
+msgstr "SNMP get"
 
 #: automation_networks.php tree.php
 msgid "Manual"
@@ -1369,7 +1357,7 @@ msgstr "Въведете IP или FQDNs на DNS сървъри"
 
 #: automation_networks.php
 msgid "Schedule Type"
-msgstr "Zeitplan"
+msgstr "Тип график"
 
 #: automation_networks.php
 msgid "Define the collection frequency."
@@ -1386,12 +1374,12 @@ msgstr "Определете броя на нишките, които да из�
 #: automation_networks.php
 #, php-format
 msgid "%d Thread"
-msgstr "% d Тема"
+msgstr "%d Тема"
 
 #: automation_networks.php include/global_arrays.php
 #, php-format
 msgid "%d Threads"
-msgstr "% d Теми"
+msgstr "%d Теми"
 
 #: automation_networks.php
 msgid "Run Limit"
@@ -1785,7 +1773,7 @@ msgstr "Последното стартиране"
 
 #: automation_networks.php pollers.php utilities.php
 msgid "Running"
-msgstr "실행 중"
+msgstr "Изпълнява се"
 
 #: automation_networks.php pollers.php utilities.php
 msgid "Idle"
@@ -1809,7 +1797,7 @@ msgstr "Обновяване"
 #: include/global_settings.php pollers.php
 #, php-format
 msgid "%d Seconds"
-msgstr "% d Секунди"
+msgstr "%d Секунди"
 
 #: automation_networks.php
 msgid "Clear Filtered"
@@ -1833,7 +1821,7 @@ msgstr "име"
 
 #: automation_snmp.php
 msgid "Automation SNMP Options has been Duplicated."
-msgstr "Автоматизация SNMP Опции"
+msgstr "Автоматизация SNMP Опции."
 
 #: automation_snmp.php
 msgid "Automation Item does not exist.  Can not Duplicate."
@@ -1957,17 +1945,17 @@ msgstr "Действие"
 #: automation_snmp.php lib/api_automation.php
 #, php-format
 msgid "Item#%d"
-msgstr "Артикул№{ 0}"
+msgstr "Елемент #%d"
 
 #: automation_snmp.php
 msgid "none"
-msgstr "нищо"
+msgstr "Няма"
 
 #: automation_snmp.php automation_templates.php cdef.php color_templates.php
 #: data_queries.php lib/api_automation.php lib/html.php lib/html_reports.php
 #: tree.php vdef.php
 msgid "Move Down"
-msgstr "Преместване нагоре"
+msgstr "Преместване надолу"
 
 #: automation_snmp.php automation_templates.php cdef.php color_templates.php
 #: data_queries.php lib/api_automation.php lib/html.php lib/html_reports.php
@@ -2026,7 +2014,7 @@ msgstr "Изтриване на шаблон (и) за автоматизаци�
 #: automation_templates.php include/global_arrays.php include/global_form.php
 #: lib/html_reports.php
 msgid "Device Template"
-msgstr "Шаблон на устройството"
+msgstr "Шаблон на устройство"
 
 #: automation_templates.php
 msgid "Select a Device Template that Devices will be matched to."
@@ -2231,7 +2219,7 @@ msgstr[1] "Кликнете върху „Напред“, за да изтри�
 msgid "Delete CDEF"
 msgid_plural "Delete CDEFs"
 msgstr[0] "Изтриване на CDEF"
-msgstr[1] "Изтриване на CDEF"
+msgstr[1] "Изтриване на CDEF дефиниции"
 
 #: cdef.php
 msgid "Click 'Continue' to duplicate the following CDEF. You can optionally change the title format for the new CDEF."
@@ -2267,7 +2255,7 @@ msgstr "Невалидно"
 #: lib/clog_webapi.php lib/html_utility.php lib/import.php lib/plugins.php
 #: lib/rrd.php lib/spikekill.php package_import.php utilities.php
 msgid "Unknown"
-msgstr "알려지지 않음"
+msgstr "Неизвестно"
 
 #: cdef.php
 msgid "Remove CDEF Item"
@@ -2318,7 +2306,7 @@ msgstr "Стойност на елемента"
 #: cdef.php vdef.php
 #, php-format
 msgid "Item #%d"
-msgstr "Елемент #% d"
+msgstr "Елемент #%d"
 
 #: cdef.php
 msgid "Delete CDEF Item"
@@ -2506,7 +2494,7 @@ msgstr "Цветен елемент"
 #: color_templates.php lib/api_aggregate.php lib/html.php lib/html_reports.php
 #, php-format
 msgid "Item # %d"
-msgstr "Елемент #% d"
+msgstr "Елемент #%d"
 
 #: color_templates.php graph_templates_inputs.php lib/api_aggregate.php
 #: lib/html.php
@@ -2540,14 +2528,14 @@ msgstr[1] "Дублирани шаблони за цвят"
 #: color_templates.php
 msgid "Click 'Continue' to Synchronize all Aggregate Graphs with the selected Color Template."
 msgid_plural "Click 'Continue' to Synchronize all Aggregate Graphs with the selected Color Templates."
-msgstr[0] "Кликнете върху „Напред“, за да създадете съвкупна графика от избраните графики."
-msgstr[1] "Кликнете върху „Напред“, за да създадете съвкупна графика от избраните графики."
+msgstr[0] "Кликнете върху „Напред“, за да синхронизирате всички съвкупни графики с избрания цветови шаблон."
+msgstr[1] "Кликнете върху „Напред“, за да синхронизирате всички съвкупни графики с избраните цветови шаблони."
 
 #: color_templates.php
 msgid "Synchronize Color Template"
 msgid_plural "Synchronize Color Templates"
-msgstr[0] "Синхронизиране на графиките с графичните шаблони"
-msgstr[1] "Синхронизиране на графиките с графичните шаблони"
+msgstr[0] "Синхронизиране на цветови шаблон"
+msgstr[1] "Синхронизиране на цветови шаблони"
 
 #: color_templates.php
 msgid "Color Template Items [new]"
@@ -2580,7 +2568,7 @@ msgstr "Шаблон за цвят [нов]"
 #: color_templates.php
 #, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
-msgstr "Цветовият шаблон „%s“ имаше% d агрегатни шаблони бяха изтласкани и% d не шаблонирани агрегати бяха изтласкани"
+msgstr "Цветовият шаблон „%s“ имаше%d агрегатни шаблони бяха изтласкани и%d не шаблонирани агрегати бяха изтласкани"
 
 #: color_templates.php
 #, php-format
@@ -2641,7 +2629,7 @@ msgstr "Изтрий Проверка"
 
 #: data_debug.php
 msgid "Data Source debug started."
-msgstr "Отстраняване на грешки в източника на данни"
+msgstr "Отстраняване на грешки в източника на данни."
 
 #: data_debug.php
 msgid "Data Source debug received an invalid Data Source ID."
@@ -2747,7 +2735,7 @@ msgstr "Определя дали RRDфайлът е записан правил
 
 #: data_debug.php
 msgid "Issues"
-msgstr "3.7.1."
+msgstr "Проблеми"
 
 #: data_debug.php
 msgid "Summary of issues found for the Data Source."
@@ -2768,11 +2756,11 @@ msgstr "Без проверки"
 
 #: data_debug.php lib/api_automation.php lib/graphs.php templates_import.php
 msgid "Not Found"
-msgstr "Не е намерен"
+msgstr "Не е намерено"
 
 #: data_debug.php
 msgid "Not Checked Yet"
-msgstr "Без проверки"
+msgstr "Все още не е проверено"
 
 #: data_debug.php
 msgid "Issues found!  Waiting on RRDfile update"
@@ -2784,7 +2772,7 @@ msgstr "Не е открито първоначално! Изчаква се о�
 
 #: data_debug.php
 msgid "Waiting on analysis and RRDfile update"
-msgstr "Беше ли обновен RRDfile?"
+msgstr "Изчакване на анализ и обновяване на RRDfile"
 
 #: data_debug.php
 msgid "RRDfile Owner"
@@ -2836,7 +2824,7 @@ msgstr "Успяхме ли да преобразуваме заглавието
 
 #: data_debug.php
 msgid "Data Source matches the RRDfile?"
-msgstr "Източникът на данни не бе анкетиран"
+msgstr "Източникът на данни съответства ли на RRDfile?"
 
 #: data_debug.php
 #, php-format
@@ -2922,7 +2910,7 @@ msgstr "Инструмент за отстраняване на неизправ
 
 #: data_debug.php
 msgid "No Device"
-msgstr "Изделие:"
+msgstr "Изделие"
 
 #: data_debug.php
 msgid "Delete All Checks"
@@ -3165,7 +3153,7 @@ msgstr[1] "Кликнете върху „Напред“, за да изтри�
 msgid "Delete Data Query"
 msgid_plural "Delete Data Queries"
 msgstr[0] "Изтриване на заявка за данни"
-msgstr[1] "Изтриване на заявка за данни"
+msgstr[1] "Изтриване на заявки за данни"
 
 #: data_queries.php
 msgid "Click 'Continue' to duplicate the following Data Query."
@@ -3180,8 +3168,8 @@ msgstr "Формат на името:"
 #: data_queries.php
 msgid "Duplicate Data Query"
 msgid_plural "Duplicate Data Queries"
-msgstr[0] "Изтриване на заявка за данни"
-msgstr[1] "Изтриване на заявка за данни"
+msgstr[0] "Дублиране на заявка за данни"
+msgstr[1] "Дублиране на заявки за данни"
 
 #: data_queries.php
 msgid "Click 'Continue' to delete the following Data Query Graph Association."
@@ -3309,7 +3297,7 @@ msgstr "Изтриване на асоциирана графика"
 
 #: data_queries.php include/global_arrays.php
 msgid "Data Queries"
-msgstr "Автоматизирани данни"
+msgstr "Заявки за данни"
 
 #: data_queries.php host.php utilities.php
 msgid "Data Query Name"
@@ -3424,7 +3412,7 @@ msgstr "Запазване на данни"
 
 #: data_source_profiles.php include/global_settings.php lib/html_reports.php
 msgid "Graph Timespan"
-msgstr "График на графика"
+msgstr "Времеви обхват на графиката"
 
 #: data_source_profiles.php
 msgid "Steps"
@@ -3456,7 +3444,7 @@ msgstr "Въведете валиден брой редове, за да пол�
 #: include/global_settings.php
 #, php-format
 msgid "%d Years"
-msgstr "% d години"
+msgstr "%d години"
 
 #: data_source_profiles.php
 msgid "1 Year"
@@ -3465,34 +3453,34 @@ msgstr "1 Година"
 #: data_source_profiles.php include/global_arrays.php rrdcleaner.php
 #, php-format
 msgid "%d Month"
-msgstr "% d Месец"
+msgstr "%d Месец"
 
 #: data_source_profiles.php include/global_arrays.php rrdcleaner.php
 #, php-format
 msgid "%d Months"
-msgstr "% d Месеци"
+msgstr "%d месеца"
 
 #: data_source_profiles.php include/global_arrays.php rrdcleaner.php
 #, php-format
 msgid "%d Week"
-msgstr "% d Седмица"
+msgstr "%d Седмица"
 
 #: data_source_profiles.php include/global_arrays.php
 #: include/global_settings.php rrdcleaner.php
 #, php-format
 msgid "%d Weeks"
-msgstr "% d седмици"
+msgstr "%d седмици"
 
 #: data_source_profiles.php include/global_arrays.php
 #, php-format
 msgid "%d Day"
-msgstr "% d ден"
+msgstr "%d ден"
 
 #: data_source_profiles.php include/global_arrays.php
 #: include/global_settings.php
 #, php-format
 msgid "%d Days"
-msgstr "% d дни"
+msgstr "%d дни"
 
 #: data_source_profiles.php include/global_arrays.php
 #: include/global_settings.php
@@ -3713,7 +3701,7 @@ msgstr "Включете информационния режим на източ
 #: data_sources.php
 #, php-format
 msgid "Edit Graph: '%s'."
-msgstr "Редактиране на графика: „{ 0 }“."
+msgstr "Редактиране на графика: „%s“."
 
 #: data_sources.php graphs.php
 msgid "Edit Device."
@@ -3725,11 +3713,11 @@ msgstr "Редактиране на шаблон за данни."
 
 #: data_sources.php
 msgid "Disable Data Source."
-msgstr "Деактивиране на източника на данни"
+msgstr "Деактивиране на източника на данни."
 
 #: data_sources.php
 msgid "Enable Data Source."
-msgstr "Активиране на източника на данни"
+msgstr "Активиране на източника на данни."
 
 #: data_sources.php
 msgid "Selected Data Template"
@@ -4142,7 +4130,7 @@ msgstr "Експортиране в CSV"
 
 #: graph.php lib/html.php
 msgid "Edit Graph Template"
-msgstr "Редактиране на шаблона на графиката."
+msgstr "Редактиране на шаблона на графиката"
 
 #: graph.php
 msgid "Click to view just this Graph in Real-time"
@@ -4195,7 +4183,7 @@ msgstr "Предварително"
 
 #: graph_realtime.php utilities.php
 msgid "Refresh Interval"
-msgstr "????‚?µ?Ђ???°?» ???° ???±???????Џ???°???µ"
+msgstr "Интервал на опресняване"
 
 #: graph_realtime.php lib/html_graph.php lib/html_reports.php lib/html_tree.php
 msgid "Thumbnails"
@@ -4204,11 +4192,11 @@ msgstr "Миниатюри"
 #: graph_realtime.php
 #, php-format
 msgid "%d seconds left."
-msgstr "Остават% d секунди."
+msgstr "Остават%d секунди."
 
 #: graph_realtime.php
 msgid " seconds left."
-msgstr "секунди."
+msgstr " секунди."
 
 #: graph_templates.php
 msgid "Change Settings"
@@ -4591,7 +4579,7 @@ msgstr "Конвертиране в графичен шаблон"
 
 #: graphs.php
 msgid "No Device - "
-msgstr "Няма устройство"
+msgstr "Няма устройство "
 
 #: graphs.php
 #, php-format
@@ -4770,7 +4758,7 @@ msgstr "Редактиране на шаблона на графиката."
 #: graphs.php
 #, php-format
 msgid "Edit Data Source: '%s'."
-msgstr "Източници на данни [ %s]"
+msgstr "Източници на данни [ %s]."
 
 #: graphs.php
 msgid "Unlock Graph."
@@ -4867,7 +4855,7 @@ msgstr "Настройки по подразбиране Запаметени"
 #: graphs_new.php
 #, php-format
 msgid "New Graphs for [ %s ] (%s %s)"
-msgstr "Нови графики за [{0 }]({ 1 }{ 2})"
+msgstr "Нови графики за [ %s ] (%s %s)"
 
 #: graphs_new.php
 msgid "New Graphs for [ All Devices ]"
@@ -4925,7 +4913,7 @@ msgstr "Грешка при анализа на XML файл с ресурс н�
 #: graphs_new.php
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'.  Field Name '%s' missing a 'direction' attribute"
-msgstr "Грешка при анализиране на XML файла на ресурса за заявка за данни за заявка за данни „{ 0 }“ с идентификатор „{ 1 }“. Име на полето „{ 2 }“ липсва атрибут „посока“"
+msgstr "Грешка при анализиране на XML файла на ресурса за заявка за данни „%s“ с идентификатор „%s“.  На полето с име „%s“ липсва атрибут „direction“"
 
 #: graphs_new.php
 #, php-format
@@ -4981,7 +4969,7 @@ msgstr "ПРЕДУПРЕЖДЕНИЕ: Страница с кактуси:%s за
 #: help.php
 #, php-format
 msgid "The Document page '%s' count not be reached.  The Cacti Documentation site is not reachable.  The http error was '%s'.  Consider downloading an official release to obtain the latest documentation and hosting the documentation locally."
-msgstr "Броят на страницата на документа „{ 0 }“ не е достигнат. Сайтът за документиране на кактуси не е достъпен. Грешката в http беше „{ 1 }“. Бихте могли да изтеглите официално издание, за да получите най - новата документация и да хоствате документацията на място."
+msgstr "Страницата от документацията „%s“ не може да бъде достигната.  Сайтът с документацията на Cacti не е достъпен.  HTTP грешката беше „%s“.  Обмислете изтеглянето на официално издание, за да получите най-новата документация и да я хоствате локално."
 
 #: help.php
 msgid "Cacti GitHub Site"
@@ -4989,7 +4977,7 @@ msgstr "Сайт на Cacti GitHub"
 
 #: help.php
 msgid "Open a ticket at "
-msgstr "Отворете заявка за обслужване на"
+msgstr "Отворете заявка за обслужване на "
 
 #: help.php
 #, php-format
@@ -4999,7 +4987,7 @@ msgstr "Помощният файл %s не се намира на уеб сай
 #: help.php
 #, php-format
 msgid "The Document page '%s' count not be reached locally."
-msgstr "Броят на страниците на документа „{ 0 }“ не е достигнат локално."
+msgstr "Страницата от документацията „%s“ не може да бъде достигната локално."
 
 #: host.php
 msgid "Change Device Settings"
@@ -5019,7 +5007,7 @@ msgstr "Поставете устройствата на дървото"
 
 #: host.php
 msgid "Data Query Re-indexed."
-msgstr "Индекс на заявките за данни"
+msgstr "Индекс на заявките за данни."
 
 #: host.php
 msgid "Device Data Query Re-indexed.  Verbose output displayed."
@@ -5031,7 +5019,7 @@ msgstr "Отстраняване на грешки в устройството �
 
 #: host.php
 msgid "Device Debugging Disabled for Device."
-msgstr "Устройството е забранено"
+msgstr "Устройството е забранено."
 
 #: host.php
 msgid "Poller Cache for Device Refreshed."
@@ -5044,12 +5032,12 @@ msgstr "ГРЕШКА: Устройство ["
 #: host.php
 #, php-format
 msgid "Device Reindex Completed in %0.2f seconds.  There were %d items updated."
-msgstr "Преиндексиране на устройството Завършено за% 0.2f секунди. Има актуализирани% d елемента."
+msgstr "Преиндексиране на устройството Завършено за%0.2f секунди. Има актуализирани%d елемента."
 
 #: host.php
 #, php-format
 msgid "Unable to add some Devices to Report '%s'"
-msgstr "Не могат да се добавят някои устройства към отчета „{ 0 }“"
+msgstr "Не могат да се добавят някои устройства към отчета „%s“"
 
 #: host.php
 msgid "Click 'Continue' to enable the following Device(s)."
@@ -5194,7 +5182,7 @@ msgstr "Изтриване на асоциацията с шаблони на г
 
 #: host.php host_templates.php
 msgid "No associated graph templates."
-msgstr "Асоциирани шаблони за графики"
+msgstr "Асоциирани шаблони за графики."
 
 #: host.php host_templates.php
 msgid "Add Graph Template"
@@ -5210,7 +5198,7 @@ msgstr "Информация за отстраняване на грешки в 
 
 #: host.php lib/functions.php tree.php user_admin.php user_group_admin.php
 msgid "Copy"
-msgstr "Копирайте"
+msgstr "копие"
 
 #: host.php
 msgid "Hide"
@@ -5232,7 +5220,7 @@ msgstr "Действия"
 #: host.php
 #, php-format
 msgid " [%d Items, %d Rows]"
-msgstr "[% d елементи,% d редове]"
+msgstr " [%d елементи,%d редове]"
 
 #: host.php
 msgid "Fail"
@@ -5308,7 +5296,7 @@ msgstr "Експортиране на устройства"
 
 #: host.php lib/api_automation.php
 msgid "Not Up"
-msgstr "Не е горе"
+msgstr "Не е активен"
 
 #: host.php lib/api_automation.php lib/html.php lib/html_utility.php
 #: pollers.php
@@ -5581,7 +5569,7 @@ msgstr ""
 
 #: include/global.php
 msgid "The Main Data Collector has returned to an Online Status"
-msgstr "Последният път, когато този Data Collector е бил напълно синхронизиран с главния Cacti сайт."
+msgstr "Последният път, когато този Data Collector е бил напълно синхронизиран с главния Cacti сайт"
 
 #: include/global.php
 msgid "The Main Data Collector has gone to an Offline or Recovering Status"
@@ -6052,7 +6040,7 @@ msgstr "Не се използва"
 #: include/global_arrays.php
 #, php-format
 msgid "Version %d"
-msgstr "Версия% d"
+msgstr "Версия%d"
 
 #: include/global_arrays.php
 msgid "[None]"
@@ -6090,7 +6078,7 @@ msgstr "DES"
 
 #: include/global_arrays.php
 msgid "AES"
-msgstr "DES"
+msgstr "AES"
 
 #: include/global_arrays.php
 msgid "AES-128"
@@ -6177,7 +6165,7 @@ msgstr "Избрани интервали за полъри"
 #: include/global_arrays.php
 #, php-format
 msgid "Every %d Seconds"
-msgstr "Всеки% d секунди"
+msgstr "Всеки%d секунди"
 
 #: include/global_arrays.php
 msgid "Every Minute"
@@ -6195,7 +6183,7 @@ msgstr "Всеки час"
 #: include/global_arrays.php include/global_settings.php
 #, php-format
 msgid "Every %d Hours"
-msgstr "Всеки% d часа"
+msgstr "На всеки %d часа"
 
 #: include/global_arrays.php
 #, php-format
@@ -6210,7 +6198,7 @@ msgstr "ПРОТОКОЛ"
 #: include/global_arrays.php include/global_settings.php rrdcleaner.php
 #, php-format
 msgid "%d Year"
-msgstr "% d Година"
+msgstr "%d Година"
 
 #: include/global_arrays.php
 msgid "Disabled/Manual"
@@ -6398,7 +6386,7 @@ msgstr "управление"
 
 #: include/global_arrays.php sites.php tree.php
 msgid "Sites"
-msgstr "за инжектиране e предната страна на бедрата"
+msgstr "Обекти"
 
 #: include/global_arrays.php tree.php user_admin.php user_group_admin.php
 msgid "Trees"
@@ -6591,7 +6579,7 @@ msgstr "Всички линии"
 #: include/global_arrays.php
 #, php-format
 msgid "%d Lines"
-msgstr "% d линии"
+msgstr "%d линии"
 
 #: include/global_arrays.php
 msgid "Console Access"
@@ -6720,7 +6708,7 @@ msgstr "Последен час"
 #: include/global_arrays.php
 #, php-format
 msgid "Last %d Hours"
-msgstr "Последно% d часа"
+msgstr "Последните %d часа"
 
 #: include/global_arrays.php
 msgid "Last Day"
@@ -6729,7 +6717,7 @@ msgstr "Последен ден"
 #: include/global_arrays.php
 #, php-format
 msgid "Last %d Days"
-msgstr "Последни% d дни"
+msgstr "Последни%d дни"
 
 #: include/global_arrays.php
 msgid "Last Week"
@@ -6738,7 +6726,7 @@ msgstr "Миналата седмица"
 #: include/global_arrays.php
 #, php-format
 msgid "Last %d Weeks"
-msgstr "Последно% d седмици"
+msgstr "Последните %d седмици"
 
 #: include/global_arrays.php
 msgid "Last Month"
@@ -6747,7 +6735,7 @@ msgstr "Последен Месец"
 #: include/global_arrays.php
 #, php-format
 msgid "Last %d Months"
-msgstr "Последни% d месеца"
+msgstr "Последните %d месеца"
 
 #: include/global_arrays.php
 msgid "Last Year"
@@ -6756,7 +6744,7 @@ msgstr "Миналата година"
 #: include/global_arrays.php
 #, php-format
 msgid "Last %d Years"
-msgstr "Последни% d години"
+msgstr "Последни%d години"
 
 #: include/global_arrays.php
 msgid "Day Shift"
@@ -6764,7 +6752,7 @@ msgstr "Дневна смяна"
 
 #: include/global_arrays.php
 msgid "This Day"
-msgstr "Всеки ден"
+msgstr "Този ден"
 
 #: include/global_arrays.php
 msgid "This Week"
@@ -6797,7 +6785,7 @@ msgstr "предходната година"
 #: include/global_arrays.php
 #, php-format
 msgid "%d Min"
-msgstr "% d Мин"
+msgstr "%d Мин"
 
 #: include/global_arrays.php
 msgid "Month Number, Day, Year"
@@ -6830,7 +6818,7 @@ msgstr "След повишаване"
 #: include/global_arrays.php
 #, php-format
 msgid "%d MBytes"
-msgstr "% d МБ"
+msgstr "%d МБ"
 
 #: include/global_arrays.php
 msgid "1 GByte"
@@ -6844,7 +6832,7 @@ msgstr "%s GB"
 #: include/global_arrays.php
 #, php-format
 msgid "%d GBytes"
-msgstr "% d GB"
+msgstr "%d GB"
 
 #: include/global_arrays.php
 msgid "2,000 Data Source Items"
@@ -6856,7 +6844,7 @@ msgstr "5000 Елементи на източника на данни"
 
 #: include/global_arrays.php
 msgid "10,000 Data Source Items"
-msgstr "10 000 Елементи на Източника на Данни"
+msgstr "10 000 елемента на източник на данни"
 
 #: include/global_arrays.php
 msgid "15,000 Data Source Items"
@@ -6902,7 +6890,7 @@ msgstr "%s часа"
 #: include/global_arrays.php
 #, php-format
 msgid "%d GByte"
-msgstr "% d GB"
+msgstr "%d GB"
 
 #: include/global_arrays.php utilities.php
 msgid "Unlimited"
@@ -6920,7 +6908,7 @@ msgstr "1 мегабайт"
 #: include/global_arrays.php
 #, php-format
 msgid "%d Megabytes"
-msgstr "% d мегабайта"
+msgstr "%d мегабайта"
 
 #: include/global_arrays.php
 msgid "Send Now"
@@ -6972,7 +6960,7 @@ msgstr "Текст"
 
 #: include/global_arrays.php include/global_form.php
 msgid "Tree"
-msgstr "‎درخت"
+msgstr "Дърво"
 
 #: include/global_arrays.php
 msgid "Horizontal Rule"
@@ -7116,7 +7104,7 @@ msgstr "не завършва с"
 
 #: include/global_arrays.php
 msgid "matches"
-msgstr "Кибрит"
+msgstr "Съвпадения"
 
 #: include/global_arrays.php
 msgid "is not equal to"
@@ -7181,7 +7169,7 @@ msgstr "Всяка седмица"
 #: include/global_arrays.php
 #, php-format
 msgid "Every %d Weeks"
-msgstr "Всеки% d седмици"
+msgstr "На всеки %d седмици"
 
 #: include/global_arrays.php
 msgctxt "A short textual representation of a month, three letters"
@@ -7416,7 +7404,7 @@ msgstr "Скъсан"
 
 #: include/global_arrays.php
 msgid "[Warning]"
-msgstr "ПРЕДУПРЕЖДЕНИЕ:"
+msgstr "ПРЕДУПРЕЖДЕНИЕ"
 
 #: include/global_arrays.php
 msgid "[Restart]"
@@ -7424,7 +7412,7 @@ msgstr "Ограничена"
 
 #: include/global_arrays.php
 msgid "[Success]"
-msgstr "Успешно!"
+msgstr "Успешно"
 
 #: include/global_arrays.php
 msgid "[Skipped]"
@@ -7513,7 +7501,7 @@ msgstr "Преглед на кеш за данни"
 
 #: include/global_arrays.php
 msgid "Clear Log"
-msgstr "Изчистване на списъка"
+msgstr "Изчистване на дневника"
 
 #: include/global_arrays.php utilities.php
 msgid "View User Log"
@@ -7713,7 +7701,7 @@ msgstr "SNMP Порт"
 
 #: include/global_form.php
 msgid "Enter the UDP port number to use for SNMP (default is 161)."
-msgstr "Въведете UDP порт номер който да се използва за SNMP (стандартно 161)"
+msgstr "Въведете UDP порт номер който да се използва за SNMP (стандартно 161)."
 
 #: include/global_form.php
 msgid "SNMP Timeout"
@@ -7957,7 +7945,7 @@ msgstr "Ако това поле трябва да се третира спец�
 
 #: include/global_form.php
 msgid "The name given to this data template."
-msgstr "Името зададено за този шаблон за данни"
+msgstr "Името зададено за този шаблон за данни."
 
 #: include/global_form.php
 msgid "Choose a name for this data source.  It can include replacement variables such as |host_description| or |query_fieldName|.  For a complete list of supported replacement tags, please see the Cacti documentation."
@@ -8254,7 +8242,7 @@ msgstr "Формат на дясната ос (- формат с права ос
 #: include/global_form.php
 #, php-format
 msgid "By default, the format of the axis labels gets determined automatically.  If you want to do this yourself, use this option with the same %lf arguments you know from the PRINT and GPRINT commands."
-msgstr "По подразбиране форматът на етикетите на осите се определя автоматично. Ако искате да направите това сами, използвайте тази опция със същите% lf аргументи, които познавате от командите PRINT и GPRINT."
+msgstr "По подразбиране форматът на етикетите на осите се определя автоматично. Ако искате да направите това сами, използвайте тази опция със същите%lf аргументи, които познавате от командите PRINT и GPRINT."
 
 #: include/global_form.php
 msgid "Right Axis Formatter (--right-axis-formatter &lt;formatname&gt;)"
@@ -8624,7 +8612,7 @@ msgstr "Имейл адрес, на който може да бъде дости
 
 #: include/global_form.php
 msgid "Enter the password for this user twice. Remember that passwords are case sensitive!"
-msgstr "Въведете паролата за този потребител два пъти. Запомнете, че паролите са чувствителни към малки и големи букви."
+msgstr "Въведете паролата за този потребител два пъти. Запомнете, че паролите са чувствителни към малки и големи букви!"
 
 #: include/global_form.php user_group_admin.php
 msgid "Determines if user is able to login."
@@ -8632,7 +8620,7 @@ msgstr "Определя дали потребителят може да вле�
 
 #: include/global_form.php tree.php
 msgid "Locked"
-msgstr "قفش شده"
+msgstr "Заключен"
 
 #: include/global_form.php
 msgid "Determines if the user account is locked."
@@ -8916,7 +8904,7 @@ msgstr "Името на полето, което ще се използва за
 
 #: include/global_form.php
 msgid "Operator."
-msgstr "Оператор"
+msgstr "Оператор."
 
 #: include/global_form.php
 msgid "Matching Pattern"
@@ -8928,7 +8916,7 @@ msgstr "Образецът, който трябва да бъде съпоста
 
 #: include/global_form.php
 msgid "Sequence."
-msgstr "Последователност"
+msgstr "Последователност."
 
 #: include/global_form.php
 msgid "A useful name for this Rule."
@@ -9008,19 +8996,19 @@ msgstr "Шаблонът за заместване на редове за изп
 
 #: include/global_languages.php
 msgid " T"
-msgstr "T"
+msgstr " T"
 
 #: include/global_languages.php
 msgid " G"
-msgstr "G"
+msgstr " G"
 
 #: include/global_languages.php
 msgid " M"
-msgstr "М"
+msgstr " М"
 
 #: include/global_languages.php
 msgid " K"
-msgstr "K"
+msgstr " K"
 
 #: include/global_settings.php
 msgid "Paths"
@@ -9400,7 +9388,7 @@ msgstr "Други настройки"
 
 #: include/global_settings.php
 msgid "Show only site specific locations"
-msgstr "Тук можете да зададете всякакви специфични за графиката опции."
+msgstr "Тук можете да зададете всякакви специфични за графиката опции"
 
 #: include/global_settings.php
 msgid "Show only locations that are available at a devices selected site."
@@ -9794,7 +9782,7 @@ msgstr "По подразбиране протокол за поверителн
 
 #: include/global_settings.php
 msgid "Privacy Passphrase (v3)"
-msgstr "Декларацията за поверителност (v3)."
+msgstr "Декларацията за поверителност (v3)"
 
 #: include/global_settings.php
 msgid "Default SNMPv3 Privacy Passphrase for all new Devices."
@@ -9878,7 +9866,7 @@ msgstr "Настройки на темата"
 
 #: include/global_settings.php lib/html.php
 msgid "Theme"
-msgstr "Теми:"
+msgstr "Теми"
 
 #: include/global_settings.php
 msgid "Please select one of the available Themes to skin your Cacti with."
@@ -9928,7 +9916,7 @@ msgstr ".  Това е ограничено от настройката на php
 
 #: include/global_settings.php
 msgid "The default number of rows to return from an autocomplete based select pattern match."
-msgstr "Броят на редовете по подразбиране, които да се върнат от съвпадението на избрания шаблон за автоматично довършване"
+msgstr "Броят на редовете по подразбиране, които да се върнат от съвпадението на избрания шаблон за автоматично довършване."
 
 #: include/global_settings.php
 msgid "Minimum Tree Width"
@@ -10385,7 +10373,7 @@ msgstr "Контролира деактивирането на проверка�
 
 #: include/global_settings.php
 msgid "Additional Data Collector Settings"
-msgstr "Състояние на колектора за отдалечени данни:"
+msgstr "Състояние на колектора за отдалечени данни"
 
 #: include/global_settings.php
 msgid "Invalid Data Logging"
@@ -10417,7 +10405,7 @@ msgstr "Стойност на скрипта и скрипта на сървър
 
 #: include/global_settings.php
 msgid "The maximum time that spine will wait on a script to complete.  This timeout value is in seconds and is only valid for the spine Data Collector."
-msgstr "Максималното време, което Cacti ще изчака при завършване на скрипта. Тази стойност за изчакване е в секунди"
+msgstr "Максималното време, което Cacti ще изчака при завършване на скрипта. Тази стойност за изчакване е в секунди."
 
 #: include/global_settings.php
 msgid "Periodic All Device Re-Index"
@@ -10500,7 +10488,7 @@ msgstr "1 Процес"
 #: include/global_settings.php
 #, php-format
 msgid "%d Processes"
-msgstr "% d Процеси"
+msgstr "%d процеса"
 
 #: include/global_settings.php
 msgid "Maintenance Background Generation Timeout"
@@ -10687,7 +10675,7 @@ msgstr "1 Промяна"
 #: include/global_settings.php
 #, php-format
 msgid "%d Changes"
-msgstr "% d Промени"
+msgstr "%d Промени"
 
 #: include/global_settings.php
 msgid "Account Locking"
@@ -10708,7 +10696,7 @@ msgstr "1 Опит"
 #: include/global_settings.php
 #, php-format
 msgid "%d Attempts"
-msgstr "% d Опитите"
+msgstr "%d Опитите"
 
 #: include/global_settings.php
 msgid "Auto Unlock"
@@ -10882,7 +10870,7 @@ msgstr "Търсене филтър"
 
 #: include/global_settings.php
 msgid "Search filter to use to locate the user in the LDAP directory, such as for windows: <i>'(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))'</i> or for OpenLDAP: <i>'(&(objectClass=account)(uid=&lt;username&gt))'</i>.  '&lt;username&gt' is replaced with the username that was supplied at the login prompt. "
-msgstr "Филтър за търсене, който да се използва за локализиране на потребителя в LDAP директорията, като например за Windows: <i>&#39;(&amp; (objectclass = user) (objectcategory = user) (userPrincipalName = &lt;потребителско име&gt; *))&#39;</i> или за OpenLDAP: <i>&#39;(&amp; (objectClass) = сметка) (uid = &lt;потребителско име&gt;)) &#39;</i> . &#39;&lt;името&#39;&gt; се заменя с потребителското име, което е предоставено при подканването."
+msgstr "Филтър за търсене, който да се използва за локализиране на потребителя в LDAP директорията, като например за Windows: <i>&#39;(&amp; (objectclass = user) (objectcategory = user) (userPrincipalName = &lt;потребителско име&gt; *))&#39;</i> или за OpenLDAP: <i>&#39;(&amp; (objectClass) = сметка) (uid = &lt;потребителско име&gt;)) &#39;</i> . &#39;&lt;името&#39;&gt; се заменя с потребителското име, което е предоставено при подканването. "
 
 #: include/global_settings.php user_domains.php
 msgid "Search Distinguished Name (DN)"
@@ -10906,7 +10894,7 @@ msgstr "LDAP CN настройки"
 
 #: include/global_settings.php user_domains.php
 msgid "Field that will replace the Full Name when creating a new user, taken from LDAP. (on windows: displayname) "
-msgstr "Поле, което ще замени пълното име при създаване на нов потребител, взето от LDAP. (на Windows: име на дисплея)"
+msgstr "Поле, което ще замени пълното име при създаване на нов потребител, взето от LDAP. (на Windows: име на дисплея) "
 
 #: include/global_settings.php package_import.php
 msgid "Email"
@@ -11022,7 +11010,7 @@ msgstr "Използва се портът на SMTP сървъра."
 
 #: include/global_settings.php
 msgid "SMTP Username"
-msgstr "SMTP  Потребителско име"
+msgstr "SMTP Потребителско име"
 
 #: include/global_settings.php
 msgid "The username to authenticate with when sending via SMTP. (Leave blank if you do not require authentication.)"
@@ -11501,7 +11489,7 @@ msgstr "Всяка стойност, която е тази много стан�
 #: include/global_settings.php
 #, php-format
 msgid "%d Standard Deviations"
-msgstr "% d Стандартни отклонения"
+msgstr "%d Стандартни отклонения"
 
 #: include/global_settings.php
 msgid "Variance Percentage"
@@ -11523,7 +11511,7 @@ msgstr "Тази стойност представлява броя на про�
 #: include/global_settings.php
 #, php-format
 msgid "%d High/Low Samples"
-msgstr "% d Висока / ниска проба"
+msgstr "%d Висока / ниска проба"
 
 #: include/global_settings.php
 msgid "Max Kills Per RRA"
@@ -11536,7 +11524,7 @@ msgstr "Тази стойност представлява максимални�
 #: include/global_settings.php
 #, php-format
 msgid "%d Spikes"
-msgstr "% d Шипове"
+msgstr "%d Шипове"
 
 #: include/global_settings.php
 msgid "RRDfile Backup Directory"
@@ -11757,7 +11745,7 @@ msgstr "1 Колона"
 #: include/global_settings.php lib/html_graph.php lib/html_tree.php
 #, php-format
 msgid "%d Columns"
-msgstr "% d колони"
+msgstr "%d колони"
 
 #: include/global_settings.php
 msgid "Tree View Thumbnail Columns"
@@ -12190,7 +12178,7 @@ msgstr "Проверка за наличност на устройството �
 
 #: lib/api_device.php
 msgid "SNMP Information"
-msgstr "Информация за SNMP"
+msgstr "SNMP информация"
 
 #: lib/api_device.php
 msgid "SNMP not in use"
@@ -12256,7 +12244,7 @@ msgstr "Графика:(%s%s)"
 #: lib/auth.php
 #, php-format
 msgid "Device:(%s%s)"
-msgstr "Устройство:(%s%)"
+msgstr "Устройство:(%s%s)"
 
 #: lib/auth.php
 #, php-format
@@ -12275,11 +12263,11 @@ msgstr "Устройство+шаблон:(%s%s)"
 
 #: lib/auth.php
 msgid "Restricted By: "
-msgstr "Ограничена"
+msgstr "Ограничена "
 
 #: lib/auth.php
 msgid "Granted By: "
-msgstr "Предоставено от:"
+msgstr "Предоставено от: "
 
 #: lib/auth.php
 msgid "Granted"
@@ -12350,7 +12338,7 @@ msgstr "Вашият Cacti администратор е принудил сло
 #: lib/auth.php
 #, php-format
 msgid "Password must be at least %d characters!"
-msgstr "Паролата трябва да е поне% d знака!"
+msgstr "Паролата трябва да е поне%d знака!"
 
 #: lib/auth.php
 msgid "Your password must contain at least 1 numerical character!"
@@ -12406,29 +12394,29 @@ msgstr "Влезте филтри"
 
 #: lib/clog_webapi.php
 msgid " - Admin Filter active"
-msgstr "- Активен е администраторският филтър"
+msgstr " - Активен е администраторският филтър"
 
 #: lib/clog_webapi.php
 msgid " - Admin Unfiltered"
-msgstr "- Админ Нефилтриран"
+msgstr " - Админ Нефилтриран"
 
 #: lib/clog_webapi.php
 msgid " - Admin view"
-msgstr "- Администраторски изглед"
+msgstr " - Администраторски изглед"
 
 #: lib/clog_webapi.php
 #, php-format
 msgid "Log [Total Lines: %d %s - Filter active]"
-msgstr "Вход [Общо линии:% d %s - Филтър е активен]"
+msgstr "Вход [Общо линии:%d %s - Филтър е активен]"
 
 #: lib/clog_webapi.php
 #, php-format
 msgid "Log [Total Lines: %d %s - Unfiltered]"
-msgstr "Вход [Общо линии:% d %s - Нефилтриран]"
+msgstr "Вход [Общо линии:%d %s - Нефилтриран]"
 
 #: lib/clog_webapi.php utilities.php
 msgid "Entries"
-msgstr "Получени съобщения"
+msgstr "Записи"
 
 #: lib/clog_webapi.php utilities.php
 msgid "File"
@@ -12452,7 +12440,7 @@ msgstr "Предупреждения"
 
 #: lib/clog_webapi.php
 msgid "Errors++"
-msgstr "Грешки: "
+msgstr "Грешки"
 
 #: lib/clog_webapi.php utilities.php
 msgid "Debug"
@@ -12500,7 +12488,7 @@ msgstr "Първо най-стари"
 
 #: lib/clog_webapi.php
 msgid "Matches"
-msgstr "Кибрит"
+msgstr "Съвпадения"
 
 #: lib/clog_webapi.php
 msgid "Does Not Match"
@@ -12554,7 +12542,7 @@ msgstr "Открита е промяна на индекса! CurrentIndex: %s, 
 #: lib/data_query.php
 #, php-format
 msgid "Transient Index Removal Detected! PreviousIndex: %s.  No action taken."
-msgstr "Откриване на индекса! PreviousIndex: %s"
+msgstr "Откриване на индекса! PreviousIndex: %s."
 
 #: lib/data_query.php
 #, php-format
@@ -12719,7 +12707,7 @@ msgstr "Намерен елемент [ %s = &#39; %s&#39;] индекс: %s"
 #: lib/data_query.php
 #, php-format
 msgid "Total: %f, Delta: %f, %s"
-msgstr "Общо:% f, Delta:% f, %s"
+msgstr "Общо:%f, Delta:%f, %s"
 
 #: lib/data_query.php
 #, php-format
@@ -12839,7 +12827,7 @@ msgstr "Изпълнението на SNMP за %s oids ( %s)"
 #: lib/data_query.php
 #, php-format
 msgid "Sort field returned no data for OID[%s], skipping."
-msgstr "Полето за сортиране не връща данни. Не може да продължи повторното индексиране за OID [ %s]"
+msgstr "Полето за сортиране не връща данни. Не може да продължи повторното индексиране за OID [ %s]."
 
 #: lib/data_query.php
 #, php-format
@@ -12904,7 +12892,7 @@ msgstr "Намерен елемент [ %s = &#39; %s&#39;] индекс: %s [о
 #: lib/data_query.php
 #, php-format
 msgid "Bogus rewrite_value item found, index='%s'"
-msgstr "Намерен е фалшив rewrite_value елемент, index =\"{ 0 }\""
+msgstr "Открит е невалиден елемент rewrite_value, index='%s'"
 
 #: lib/data_query.php
 msgid "Could not parse translation map (rewrite_value)"
@@ -12955,7 +12943,7 @@ msgstr "Отстраняването на грешки не е завършен�
 
 #: lib/dsdebug.php
 msgid "Failed fields: "
-msgstr "Неуспешни полета:"
+msgstr "Неуспешни полета: "
 
 #: lib/dsdebug.php
 msgid "Data Source is not set as Active"
@@ -12981,7 +12969,7 @@ msgstr "RRD файлът не е актуализиран след поискв�
 
 #: lib/dsdebug.php
 msgid "Data Source returned Bad Results for "
-msgstr "Източникът на данни върна лошите резултати за"
+msgstr "Източникът на данни върна лошите резултати за "
 
 #: lib/dsdebug.php
 msgid "Data Source was not polled"
@@ -12998,12 +12986,12 @@ msgstr "RRD файлът не е актуализиран след поискв�
 #: lib/functions.php settings.php
 #, php-format
 msgid "Settings save to Data Collector %d skipped due to heartbeat."
-msgstr "Настройките се запазват в Събирач на данни% d Неуспешно."
+msgstr "Настройките се запазват в Събирач на данни%d Неуспешно."
 
 #: lib/functions.php settings.php
 #, php-format
 msgid "Settings save to Data Collector %d Failed."
-msgstr "Настройките се запазват в Събирач на данни% d Неуспешно."
+msgstr "Настройките се запазват в Събирач на данни%d Неуспешно."
 
 #: lib/functions.php
 msgid "Message Not Found."
@@ -13057,7 +13045,7 @@ msgstr "Лист"
 
 #: lib/functions.php lib/html_tree.php
 msgid "Non Query Based"
-msgstr "Въз основа на заявките"
+msgstr "Небазиран на заявки"
 
 #: lib/functions.php
 #, php-format
@@ -13085,7 +13073,7 @@ msgstr "Неуспешно сввързавне към: %s"
 
 #: lib/functions.php
 msgid "SMTP error: "
-msgstr "Грешка в SMTP:"
+msgstr "Грешка в SMTP: "
 
 #: lib/functions.php
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
@@ -13199,7 +13187,7 @@ msgstr "Извикай помощ"
 
 #: lib/html.php lib/reports.php
 msgid "Data Query:"
-msgstr "Вземане на данни"
+msgstr "Вземане на данни:"
 
 #: lib/html.php
 #, fuzzy
@@ -13242,7 +13230,7 @@ msgstr "Предишен"
 #: lib/html.php
 #, php-format
 msgid "%d to %d of %s [ %s ]"
-msgstr "% d до% d от %s [ %s]"
+msgstr "%d до%d от %s [ %s]"
 
 #: lib/html.php lib/installer.php
 msgid "Next"
@@ -13251,7 +13239,7 @@ msgstr "Следващ"
 #: lib/html.php
 #, php-format
 msgid "All %d %s"
-msgstr "Всички% d %s"
+msgstr "Всички%d %s"
 
 #: lib/html.php
 #, fuzzy, php-format
@@ -13277,7 +13265,7 @@ msgstr "алфа-версия"
 
 #: lib/html.php
 msgid "No Source"
-msgstr "Скриптът/източникът използван за събиране на данни за този източник на данни."
+msgstr "Скриптът/източникът използван за събиране на данни за този източник на данни"
 
 #: lib/html.php
 msgid "Choose an action"
@@ -13385,7 +13373,7 @@ msgstr "Разни"
 
 #: lib/html.php
 msgid "Dashboards"
-msgstr "Скриване на таблото за управление на Какту"
+msgstr "Табла"
 
 #: lib/html.php
 msgid "Charts"
@@ -13397,7 +13385,7 @@ msgstr "Страница"
 
 #: lib/html.php
 msgid "Spine"
-msgstr "Гръбнак"
+msgstr "Spine"
 
 #: lib/html.php
 msgid "RRDProxy"
@@ -13433,11 +13421,11 @@ msgstr "Помощ при превода"
 
 #: lib/html.php
 msgid "Report a bug"
-msgstr "Доклад за дефект…"
+msgstr "Доклад за дефект"
 
 #: lib/html.php
 msgid "Cacti"
-msgstr "Кактусови"
+msgstr "Cacti"
 
 #: lib/html.php
 msgid "Click to Show/Hide Filter"
@@ -13501,7 +13489,7 @@ msgstr "За съжаление не можахме да обработим по
 
 #: lib/html.php
 msgid "Error:"
-msgstr "Грешка:"
+msgstr "Грешка: Файлът не може да бъде изтрит"
 
 #: lib/html.php
 msgid "Reason:"
@@ -13517,7 +13505,7 @@ msgstr "Операцията е успешна"
 
 #: lib/html.php pollers.php
 msgid "Connection Failed"
-msgstr "Свързването е неуспешно."
+msgstr "Свързването е неуспешно"
 
 #: lib/html.php
 msgid "The response to the last action was unexpected."
@@ -13730,7 +13718,7 @@ msgstr "Колони"
 #: lib/html_graph.php lib/html_tree.php
 #, php-format
 msgid "%d Column"
-msgstr "% d Графа"
+msgstr "%d колона"
 
 #: lib/html_graph.php lib/html_tree.php
 msgid "Custom"
@@ -14064,7 +14052,7 @@ msgstr "Трябва ли да се визуализират графиките 
 
 #: lib/html_reports.php
 msgid "Select a Site to filter for Devices and Graphs."
-msgstr "Изберете устройство, за да посочите графика"
+msgstr "Изберете устройство, за да посочите графика."
 
 #: lib/html_reports.php
 msgid "Select a Device Template to use to filter for Devices or Graphs."
@@ -14193,9 +14181,9 @@ msgid ", Using RegEx: \"%s\""
 msgstr ", Използване на RegEx: \"%s\""
 
 #: lib/html_reports.php
-#, fuzzy, php-format
+#, php-format
 msgid "Tree: %s"
-msgstr "Дърво:"
+msgstr "Дърво: %s"
 
 #: lib/html_reports.php
 #, php-format
@@ -14274,7 +14262,7 @@ msgstr "Няма намерени отчети"
 
 #: lib/html_tree.php
 msgid "Graph Template:"
-msgstr "Шаблони за елементи на графиката"
+msgstr "Шаблони за елементи на графиката:"
 
 #: lib/html_tree.php
 msgid "Template Based"
@@ -14286,11 +14274,11 @@ msgstr "Дърво:"
 
 #: lib/html_tree.php
 msgid "Site:"
-msgstr "Размер:"
+msgstr "Обект:"
 
 #: lib/html_tree.php
 msgid "Leaf:"
-msgstr "Лист"
+msgstr "Лист:"
 
 #: lib/html_tree.php
 msgid "Device Template:"
@@ -14440,7 +14428,7 @@ msgstr "Файлове на пакети"
 
 #: lib/import.php
 msgid "[preview] "
-msgstr "Преглед"
+msgstr "Преглед "
 
 #: lib/import.php
 msgid "Cacti would make the following changes if the Template was imported:"
@@ -14452,7 +14440,7 @@ msgstr "Cacti е импортирал следните елементи за ш�
 
 #: lib/import.php
 msgid "[success]"
-msgstr "Успешно!"
+msgstr "Успешно"
 
 #: lib/import.php
 msgid "[fail]"
@@ -14547,7 +14535,7 @@ msgstr "Неуспешно прилагане на определен интер
 #: lib/installer.php
 #, php-format
 msgid "Failed to apply '%s' as Automation Range"
-msgstr "Неуспешно прилагане на „{ 0 }“ като диапазон на автоматизация"
+msgstr "Неуспешно прилагане на „%s“ като диапазон за автоматизация"
 
 #: lib/installer.php
 msgid "No matching snmp option exists"
@@ -14665,12 +14653,12 @@ msgstr "Благодарим Ви, че отделихте време да из�
 #: lib/installer.php
 #, php-format
 msgid "Make sure you have read and followed the required steps needed to install Cacti before continuing. Install information can be found for <a href=\"%s\">Unix</a> and <a href=\"%s\">Win32</a>-based operating systems."
-msgstr "Уверете се, че сте прочели и следвали необходимите стъпки, необходими за инсталиране на Cacti, преди да продължите. Инсталиращата информация може да бъде намерена за <a href=\"%1$s\">Unix</a> и <a href=\"%2$s\">Win32-</a> базирани операционни системи."
+msgstr "Уверете се, че сте прочели и следвали необходимите стъпки, необходими за инсталиране на Cacti, преди да продължите. Инсталиращата информация може да бъде намерена за <a href=\"%s\">Unix</a> и <a href=\"%s\">Win32-</a> базирани операционни системи."
 
 #: lib/installer.php
 #, php-format
 msgid "This process will guide you through the steps for upgrading from version '%s'. "
-msgstr "Този процес ще ви преведе през стъпките за надстройване от версия „ %s“."
+msgstr "Този процес ще ви преведе през стъпките за надстройване от версия „ %s“. "
 
 #: lib/installer.php
 #, php-format
@@ -14695,7 +14683,7 @@ msgstr "Приемете GPL лицензионно споразумение"
 
 #: lib/installer.php
 msgid "Select default theme: "
-msgstr "Изберете тема по подразбиране:"
+msgstr "Изберете тема по подразбиране: "
 
 #: lib/installer.php
 msgid "Pre-installation Checks"
@@ -15080,7 +15068,7 @@ msgstr "Тази опция за скрипт ще активира отново
 
 #: lib/installer.php
 msgid "It is strongly suggested that you update your config.php to enable this feature by uncommenting the <b>$input_whitelist</b> variable and then running the three CLI script options above after the web based install has completed."
-msgstr "Настоятелно се препоръчва да актуализирате config.php, за да активирате тази функция, като <b>коментирате</b> променливата <b>$ input_whitelist</b> и след това стартирате трите опции за скрипт на CLI по-горе, след като уеб базираната инсталация приключи."
+msgstr "Настоятелно се препоръчва да актуализирате config.php, за да активирате тази функция, като коментирате променливата <b>$input_whitelist</b> и след това стартирате трите опции за скрипт на CLI по-горе, след като уеб базираната инсталация приключи."
 
 #: lib/installer.php
 msgid "Check the Checkbox below to acknowledge that you have read and understand this security concern"
@@ -15188,7 +15176,7 @@ msgstr "Съпоставянето на сървъра ви изглежда с�
 
 #: lib/installer.php
 msgid "Your server collation does NOT appear to be fully UTF8 compliant. "
-msgstr "Съпоставянето на сървъра НЕ изглежда напълно съвместимо с UTF8."
+msgstr "Съпоставянето на сървъра НЕ изглежда напълно съвместимо с UTF8. "
 
 #: lib/installer.php
 msgid "Under the [mysqld] section, locate the entries named 'character-set-server' and 'collation-server' and set them as follows:"
@@ -15204,11 +15192,11 @@ msgstr "По подразбиране съпоставянето на базат
 
 #: lib/installer.php
 msgid "Your database default collation does NOT appear to be full UTF8 compliant. "
-msgstr "По подразбиране сортирането по база данни НЕ изглежда пълно с UTF8."
+msgstr "По подразбиране сортирането по база данни НЕ изглежда пълно с UTF8. "
 
 #: lib/installer.php
 msgid "Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched.   Please ensure your database is changed to 'utf8mb4_unicode_ci' by running the following: "
-msgstr "Всички таблици, създадени от приставки, могат да имат проблеми, свързани с таблици на Cacti Core, ако съпоставянето не е съвместимо. Моля, уверете се, че вашата база данни е променена на &quot;utf8mb4_unicode_ci&quot;, като изпълните следното:"
+msgstr "Всички таблици, създадени от приставки, могат да имат проблеми, свързани с таблици на Cacti Core, ако съпоставянето не е съвместимо. Моля, уверете се, че вашата база данни е променена на &quot;utf8mb4_unicode_ci&quot;, като изпълните следното: "
 
 #: lib/installer.php
 msgid "Table Setup"
@@ -15241,7 +15229,7 @@ msgstr "Формат"
 
 #: lib/installer.php
 msgid "One or more tables are too large to convert during the installation.  You should use the cli/convert_tables.php script to perform the conversion, then refresh this page. For example: "
-msgstr "Една или повече таблици са твърде големи за конвертиране по време на инсталацията. Трябва да използвате скрипта cli / convert_tables.php, за да извършите преобразуването, след това обновете тази страница. Например:"
+msgstr "Една или повече таблици са твърде големи за конвертиране по време на инсталацията. Трябва да използвате скрипта cli / convert_tables.php, за да извършите преобразуването, след това обновете тази страница. Например: "
 
 #: lib/installer.php
 msgid "The following tables should be converted to UTF8 and InnoDB with a Dynamic row format.  Please select the tables that you wish to convert during the installation process."
@@ -15378,7 +15366,7 @@ msgstr "Импортирането на пакет #%s '%s' под профил 
 #: lib/installer.php
 #, php-format
 msgid "Mapping Automation Template for Device Template '%s'"
-msgstr "Съпоставяне на шаблон за автоматизация за шаблон на устройство '{ 0 }'"
+msgstr "Съпоставяне на шаблон за автоматизация към шаблон на устройство „%s“"
 
 #: lib/installer.php
 msgid "No templates were selected for import"
@@ -15438,7 +15426,7 @@ msgstr "Неуспешно актуализиране на набора от о�
 
 #: lib/installer.php
 msgid "Failed to find any automation option set"
-msgstr "Неуспешно намиране на данни за копиране!"
+msgstr "Неуспешно намиране на набор от опции за автоматизация"
 
 #: lib/installer.php
 #, php-format
@@ -15523,7 +15511,7 @@ msgstr "Фонът вече беше стартиран в%s, този опит 
 #: lib/installer.php
 #, php-format
 msgid "Exception occurred during installation: #%s - %s"
-msgstr "Възникна изключение по време на инсталацията: #{ 0} - %s"
+msgstr "Възникна изключение по време на инсталацията: #%s - %s"
 
 #: lib/installer.php
 #, php-format
@@ -15731,12 +15719,12 @@ msgstr "Ping не се извършва поради настройка."
 #: lib/plugins.php
 #, php-format
 msgid "%s Version %s or above is required for %s. "
-msgstr "%s Версия %s или по-висока е необходима за %s."
+msgstr "%s Версия %s или по-висока е необходима за %s. "
 
 #: lib/plugins.php
 #, php-format
 msgid "%s is required for %s, and it is not installed. "
-msgstr "%s е необходим за %s и не е инсталиран."
+msgstr "%s е необходим за %s и не е инсталиран. "
 
 #: lib/plugins.php
 msgid "Plugin cannot be installed."
@@ -15745,12 +15733,12 @@ msgstr "Приставката не може да бъде инсталиран�
 #: lib/plugins.php
 #, php-format
 msgid "The Plugin directory '%s' needs to be renamed to remove 'plugin_' from the name before it can be installed."
-msgstr "Директорията на приставката „{ 0 }“ трябва да бъде преименувана, за да се премахне „plugin_“ от името, преди да може да бъде инсталирана."
+msgstr "Директорията на приставката „%s“ трябва да бъде преименувана, за да се премахне 'plugin_' от името, преди да може да бъде инсталирана."
 
 #: lib/plugins.php
 #, php-format
 msgid "The Plugin in the directory '%s' does not include an version function '%s()'.  This function must exist for the plugin to be installed."
-msgstr "Приставката в указателя „{ 0 }“ не включва функция за версия „{1 }()“.  Тази функция трябва да съществува, за да бъде инсталиран плъгинът."
+msgstr "Приставката в директорията „%s“ не включва функция за версия „%s()“.  Тази функция трябва да съществува, за да може приставката да бъде инсталирана."
 
 #: lib/plugins.php
 #, php-format
@@ -15760,7 +15748,7 @@ msgstr ""
 #: lib/plugins.php
 #, php-format
 msgid "The Plugin in the directory '%s' does not include an install function '%s()'.  This function must exist for the plugin to be installed."
-msgstr "Плъгинът в указателя „{ 0 }“ не включва функция за инсталиране „{1 }()“.  Тази функция трябва да съществува, за да бъде инсталиран плъгинът."
+msgstr "Приставката в директорията „%s“ не включва функция за инсталиране „%s()“.  Тази функция трябва да съществува, за да може приставката да бъде инсталирана."
 
 #: lib/plugins.php plugins.php
 msgid "Plugins"
@@ -15782,7 +15770,7 @@ msgstr "Не е посочено"
 #: lib/reports.php
 #, php-format
 msgid "Device '%s' successfully added to Report."
-msgstr "Устройството „{ 0 }“ е добавено успешно към отчета."
+msgstr "Устройството „%s“ е добавено успешно към отчета."
 
 #: lib/reports.php
 msgid "Device not found! Unable to add to Report"
@@ -15821,7 +15809,7 @@ msgstr "Изберете Отчета, за да свържете тези гр�
 
 #: lib/reports.php
 msgid "Report:"
-msgstr "Отчет"
+msgstr "Отчет:"
 
 #: lib/reports.php
 msgid "Graph Timespan:"
@@ -15880,7 +15868,7 @@ msgstr ""
 #: lib/rrd.php
 #, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
-msgstr "Необходимият размер на RRD файла е „{ 0 }“, но наблюдаваната стъпка е „{ 1 }“"
+msgstr "Изискваният размер на стъпката на RRD файла е „%s“, но наблюдаваната стъпка е „%s“"
 
 #: lib/rrd.php
 #, php-format
@@ -15910,7 +15898,7 @@ msgstr "Файлът RRA &#39; %s&#39; има същите стъпки ( %s, %s
 #: lib/rrd.php
 #, php-format
 msgid "The pdp_per_row of '%s' is invalid for RRA '%s' should be '%s'.  Consider deleting and allowing Cacti to re-create RRDfile."
-msgstr "Pdp_per_row на „{ 0 }“ е невалиден за RRA „{ 1 }“ трябва да бъде „{ 2 }“. Помислете дали да не изтриете и позволите на кактусите да пресъздадат RRD файла."
+msgstr "Стойността pdp_per_row от „%s“ е невалидна за RRA „%s“, трябва да бъде „%s“.  Обмислете да изтриете RRD файла и да позволите на Cacti да го пресъздаде."
 
 #: lib/rrd.php
 #, php-format
@@ -15920,7 +15908,7 @@ msgstr "XFF за id cacti RRA &#39; %s&#39; трябва да бъде &#39; %s&
 #: lib/rrd.php
 #, php-format
 msgid "The number of rows for Cacti RRA id '%s' is incorrect.  The number of rows are '%s' but should be '%s'"
-msgstr "Броят редове за Cacti RRA ID '{ 0 }' е неправилен.  Броят на редовете е „{ 1 }“, но трябва да бъде „{ 2 }“"
+msgstr "Броят на редовете за Cacti RRA ID „%s“ е неправилен.  Броят на редовете е „%s“, но трябва да бъде „%s“"
 
 #: lib/rrd.php
 #, php-format
@@ -15946,7 +15934,7 @@ msgstr "Минимален пулс"
 
 #: lib/rrd.php
 msgid "Min"
-msgstr "мин."
+msgstr "мин"
 
 #: lib/rrd.php
 msgid "Max"
@@ -16020,12 +16008,12 @@ msgstr "Грешка при анализиране на XML на RRDtool"
 #: lib/rrd.php
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file"
-msgstr "RRA (CF = %s, ROWS =% d, PDP_PER_ROW =% d, XFF =% 1.2f) са премахнати от RRD файла"
+msgstr "RRA (CF = %s, ROWS =%d, PDP_PER_ROW =%d, XFF =%1.2f) са премахнати от RRD файла"
 
 #: lib/rrd.php
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file"
-msgstr "RRA (CF = %s, ROWS =% d, PDP_PER_ROW =% d, XFF =% 1.2f) добавяне към RRD файла"
+msgstr "RRA (CF = %s, ROWS =%d, PDP_PER_ROW =%d, XFF =%1.2f) добавяне към RRD файла"
 
 #: lib/rrd.php
 #, php-format
@@ -16195,6 +16183,10 @@ msgstr ""
 #| msgid "Windows Related"
 msgid "Window Range:  All"
 msgstr "Свързани с Windows"
+
+#: lib/spikekill.php
+msgid "FATAL: Unable to generate a random temporary file name.  Check the system entropy source!"
+msgstr ""
 
 #: lib/spikekill.php
 msgid "FATAL: RRDtool Command Failed.  Please verify that the RRDtool path is valid in Settings->Paths!"
@@ -16853,7 +16845,7 @@ msgstr "Изтриване на страница (и)"
 
 #: links.php
 msgid "Apply Filter"
-msgstr "Прилагане на стил"
+msgstr "Прилагане на филтър"
 
 #: links.php
 msgid "Reset filters"
@@ -16986,7 +16978,7 @@ msgstr "Вие сте излезли от Cacti поради прекъсван�
 
 #: logout.php
 msgid "You have been logged out of Cacti due to a Remote Data Collector state change"
-msgstr "Вие сте излезли от Cacti поради прекъсване на сесията."
+msgstr "Вие сте излезли от Cacti поради прекъсване на сесията"
 
 #: logout.php
 msgid "Logout of Cacti"
@@ -17097,7 +17089,7 @@ msgstr[1] "Кликнете върху „Напред“, за да изтри�
 msgid "Click 'Continue' to enable the following Notification Receiver"
 msgid_plural "Click 'Continue' to enable following Notification Receiver"
 msgstr[0] "Кликнете върху „Напред“, за да активирате следния получател на известия"
-msgstr[1] "Кликнете върху „Напред“, за да активирате следния получател на известия"
+msgstr[1] "Кликнете върху „Напред“, за да активирате следните получатели на известия"
 
 #: managers.php
 msgid "Click 'Continue' to disable the following Notification Receiver"
@@ -17173,7 +17165,7 @@ msgstr "Вижте cacti.log за повече информация.  Възмо
 #: package_import.php
 #, php-format
 msgid "The package \"%s\" download or validation failed"
-msgstr "Неуспешно изтегляне или валидиране на пакета „{ 0 }“"
+msgstr "Неуспешно изтегляне или валидиране на пакета „%s“"
 
 #: package_import.php
 msgid "See the cacti.log for more information.  It could be that you had either an API Key error or the package was tamered with, or the location is not available"
@@ -17185,7 +17177,7 @@ msgstr "Неуспешно изтегляне или валидиране на �
 
 #: package_import.php
 msgid "Package XML File Damaged."
-msgstr "Файлове на пакети"
+msgstr "Файлове на пакети."
 
 #: package_import.php
 msgid "The XML files appears to be invalid.  Please contact the package author"
@@ -17253,7 +17245,7 @@ msgstr "осиротял"
 
 #: package_import.php
 msgid "File Differences for: "
-msgstr "Разлики във файловете за:"
+msgstr "Разлики във файловете за: "
 
 #: package_import.php
 msgid "Local Package Import File"
@@ -17516,7 +17508,7 @@ msgstr "Максималното време на изпълнение от %d с
 
 #: poller.php
 msgid "WARNING: Cacti Polling Cycle Exceeded Poller Interval by "
-msgstr "ПРЕДУПРЕЖДЕНИЕ: Цикълът на гласуване на кактуси надхвърля интервала на Poller от"
+msgstr "ПРЕДУПРЕЖДЕНИЕ: Цикълът на гласуване на кактуси надхвърля интервала на Poller от "
 
 #: poller.php
 #, php-format
@@ -17714,7 +17706,7 @@ msgstr "Вече сте използвали това име на хост на 
 
 #: pollers.php
 msgid "Data Collector Statistics cleared."
-msgstr "Път до източник на данни"
+msgstr "Път до източник на данни."
 
 #: pollers.php
 msgid "Click 'Continue' to delete the following Data Collector.  Note, all devices will be disassociated from this Data Collector and mapped back to the Main Cacti Data Collector."
@@ -17767,8 +17759,8 @@ msgstr[1] "Кликнете върху „Напред“, за да актив�
 #: pollers.php
 msgid "Clear Statistics for Data Collector"
 msgid_plural "Clear Statistics for Data Collectors"
-msgstr[0] "Статусът на този събирач на данни."
-msgstr[1] "Статусът на този събирач на данни."
+msgstr[0] "Изчистване на статистиката за събирач на данни"
+msgstr[1] "Изчистване на статистиката за събирачи на данни"
 
 #: pollers.php sites.php
 #, php-format
@@ -18038,7 +18030,7 @@ msgstr "ЗАБЕЛЕЖКА: Настройките на пътя в този р�
 #: settings.php
 #, php-format
 msgid "Cacti Settings (%s)%s"
-msgstr "Настройки на кактуси ({0 }){ 1}"
+msgstr "Настройки на Cacti (%s)%s"
 
 #: settings.php
 msgid "Changing Permission Model Warning"
@@ -18249,8 +18241,8 @@ msgstr "Име на сайта:"
 #: sites.php
 msgid "Duplicate Site"
 msgid_plural "Duplicate Sites"
-msgstr[0] "Дублирай"
-msgstr[1] "Дублирай"
+msgstr[0] "Дублиране на сайт"
+msgstr[1] "Дублиране на сайтове"
 
 #: sites.php
 #, fuzzy
@@ -18368,7 +18360,7 @@ msgstr "Вижте cacti.log за повече информация и прег�
 #: templates_import.php
 #, php-format
 msgid "The Template XML file \"%s\" validation failed"
-msgstr "Неуспешно валидиране на XML файл на шаблон „{ 0 }“"
+msgstr "Неуспешно валидиране на XML файл на шаблон „%s“"
 
 #: templates_import.php
 msgid "Import Files [ If Files are missing, locate and install before using ]"
@@ -18542,7 +18534,7 @@ msgstr "Завършете редактирането на дървото"
 #: tree.php
 #, php-format
 msgid "This tree has been locked for Editing on %s by %s."
-msgstr "Това дърво е заключено за редактиране на%1$s от%2$s."
+msgstr "Това дърво е заключено за редактиране на%s от%s."
 
 #: tree.php
 msgid "To edit the tree, you must first unlock it and then lock it as yourself"
@@ -18686,11 +18678,11 @@ msgstr "Партидно копие"
 
 #: user_admin.php
 msgid "You are not allowed to delete the current login account"
-msgstr "Нямате право да променяте паролата си."
+msgstr "Нямате право да променяте паролата си"
 
 #: user_admin.php
 msgid "You are not allowed to disable the current login account"
-msgstr "Нямате право да променяте паролата си."
+msgstr "Нямате право да променяте паролата си"
 
 #: user_admin.php
 msgid "Click 'Continue' to delete the selected User(s)."
@@ -19160,7 +19152,7 @@ msgstr "поща"
 
 #: user_domains.php
 msgid "Field that will replace the email taken from LDAP. (on windows: mail) "
-msgstr "Поле, което ще замени имейла, взет от LDAP. (на Windows: поща)"
+msgstr "Поле, което ще замени имейла, взет от LDAP. (на Windows: поща) "
 
 #: user_domains.php
 msgid "Domain Properties"
@@ -19394,7 +19386,7 @@ msgstr "Изчисти"
 
 #: utilities.php
 msgid "Data Source Statistics Purged."
-msgstr "Път до източник на данни"
+msgstr "Път до източник на данни."
 
 #: utilities.php
 msgid "Database"
@@ -19437,7 +19429,7 @@ msgstr "ГРЕШКА: Инсталираната версия RRDtool не на�
 #: utilities.php
 #, php-format
 msgid "ERROR: RRDtool 1.2.x+ does not support the GIF images format, but %d\" graph(s) and/or templates have GIF set as the image format."
-msgstr "ГРЕШКА: RRDtool 1.2.x + не поддържа GIF формат на изображенията, но графиката (ите) и / или шаблоните на% d има GIF зададен като формат за изображение."
+msgstr "ГРЕШКА: RRDtool 1.2.x + не поддържа GIF формат на изображенията, но графиката (ите) и / или шаблоните на%d има GIF зададен като формат за изображение."
 
 #: utilities.php
 msgid "General Information"
@@ -19487,11 +19479,11 @@ msgstr "Име: "
 
 #: utilities.php
 msgid "Procs: "
-msgstr "1 Процес"
+msgstr "1 Процес "
 
 #: utilities.php
 msgid "Threads: "
-msgstr "Теми"
+msgstr "Теми "
 
 #: utilities.php
 msgid "Concurrent Processes"
@@ -19517,7 +19509,7 @@ msgstr "Текущи: %s, минимално необходими: %s"
 
 #: utilities.php
 msgid "Minimum Connections:"
-msgstr "Тестова връзка"
+msgstr "Тестова връзка:"
 
 #: utilities.php
 msgid "Assumes 100 spare connections for Web page users and other various connections."
@@ -19558,7 +19550,7 @@ msgstr "Статистика на паметта MySQL/MariaDB (източник
 
 #: utilities.php
 msgid "Max Total Memory Possible"
-msgstr "Максимална позволена памет:"
+msgstr "Максимална позволена памет"
 
 #: utilities.php
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
@@ -19566,7 +19558,7 @@ msgstr "Намалете MySQL/MariaDB паметта до по - малко о�
 
 #: utilities.php
 msgid "Max Core Memory Possible"
-msgstr "Максимална позволена памет:"
+msgstr "Максимална позволена памет"
 
 #: utilities.php
 msgid "Reduce Total Core Memory"
@@ -19722,12 +19714,12 @@ msgstr "Начин на показване"
 #: utilities.php
 #, php-format
 msgid "Log [Total Lines: %d - Non-Matching Items Hidden]"
-msgstr "Вход [Общо линии:% d - скрити елементи, които не съответстват]"
+msgstr "Вход [Общо линии:%d - скрити елементи, които не съответстват]"
 
 #: utilities.php
 #, php-format
 msgid "Log [Total Lines: %d - All Items Shown]"
-msgstr "Вход [Общо линии:% d - Показани са всички елементи]"
+msgstr "Вход [Общо линии:%d - Показани са всички елементи]"
 
 #: utilities.php
 msgid "Clear Cacti Log"
@@ -19779,7 +19771,7 @@ msgstr "Скрипт"
 
 #: utilities.php
 msgid "SNMP Version:"
-msgstr "SNMP Версия"
+msgstr "SNMP Версия:"
 
 #: utilities.php
 msgid "Community:"
@@ -19953,7 +19945,7 @@ msgstr "Статус на Boost"
 
 #: utilities.php
 msgid "Running Processes:"
-msgstr "Съвместни процеси"
+msgstr "Съвместни процеси:"
 
 #: utilities.php
 #, fuzzy
@@ -19994,7 +19986,7 @@ msgstr ""
 
 #: utilities.php
 msgid "Total Poller Items:"
-msgstr "Елементи на кеша за полъри"
+msgstr "Елементи на кеша за полъри:"
 
 #: utilities.php
 msgid "Total Data Sources:"
@@ -20002,7 +19994,7 @@ msgstr "Общо източници на данни:"
 
 #: utilities.php
 msgid "Remaining Data Sources:"
-msgstr "Източник на данни за отстраняване на грешки"
+msgstr "Източник на данни за отстраняване на грешки:"
 
 #: utilities.php
 msgid "TBD"
@@ -20039,7 +20031,7 @@ msgstr "Ср. Байтове / запис:"
 #: utilities.php
 #, php-format
 msgid "%d Bytes"
-msgstr "% d байта"
+msgstr "%d байта"
 
 #: utilities.php
 msgid "Max Record Length:"
@@ -20081,7 +20073,7 @@ msgstr "%d минути"
 #: utilities.php
 #, php-format
 msgid "%d seconds"
-msgstr "% d секунди"
+msgstr "%d секунди"
 
 #: utilities.php
 #, php-format
@@ -20142,7 +20134,7 @@ msgstr "Честота на актуализиране:"
 
 #: utilities.php
 msgid "Concurrent Processes:"
-msgstr "Съвместни процеси"
+msgstr "Съвместни процеси:"
 
 #: utilities.php
 msgid "Next Start Time:"
@@ -20221,7 +20213,7 @@ msgstr[1] "Кликнете върху „Напред“, за да изтри�
 msgid "Delete VDEF"
 msgid_plural "Delete VDEFs"
 msgstr[0] "Изтриване на VDEF"
-msgstr[1] "Изтриване на VDEF"
+msgstr[1] "Изтриване на VDEF дефиниции"
 
 #: vdef.php
 msgid "Click 'Continue' to duplicate the following VDEF. You can optionally change the title format for the new VDEF."
