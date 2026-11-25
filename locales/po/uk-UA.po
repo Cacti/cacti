@@ -4,19 +4,7 @@
 # Rostyslav Haitkulov <info@ubilling.net.ua>, 2022.
 #
 msgid ""
-msgstr ""
-"Project-Id-Version: Cacti 1.3.0.-1\n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-11-04 11:45-0800\n"
-"PO-Revision-Date: 2023-07-27 15:11+0000\n"
-"Last-Translator: Vladyslav V. Prodan <akapulko@gmail.com>\n"
-"Language-Team: Ukrainian <http://translate.cacti.net/projects/cacti/core-v1-2-x/uk/>\n"
-"Language: uk-UA\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti 1.3.0.-1\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-25 01:18+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Ukrainian <https://translate.cacti.net/projects/cacti/core-v1-2-x/uk/>\nLanguage: uk-UA\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -282,7 +270,7 @@ msgstr "Розмітити Графік(и) в Дереві"
 #: aggregate_graphs.php data_sources.php lib/html_reports.php user_admin.php
 #, php-format
 msgid "[edit: %s]"
-msgstr "[редагування: %s]"
+msgstr "[редагувати: %s]"
 
 #: aggregate_graphs.php
 msgid "Aggregate Graph does not Exist"
@@ -423,7 +411,7 @@ msgstr "Частина Агрегованого"
 #: lib/html_reports.php lib/html_tree.php links.php managers.php plugins.php
 #: pollers.php sites.php tree.php user_admin.php
 msgid "Go"
-msgstr "Вперед"
+msgstr "Перейти"
 
 #: aggregate_graphs.php automation_devices.php automation_snmp.php
 #: automation_templates.php cdef.php color.php data_debug.php data_input.php
@@ -718,7 +706,7 @@ msgstr "Зберегти"
 #: auth_changepassword.php auth_login.php
 #, php-format
 msgid "Version %s | %s"
-msgstr "Версія %s"
+msgstr "Версія %s | %s"
 
 #: auth_changepassword.php user_admin.php
 msgid "Password Too Short"
@@ -751,11 +739,11 @@ msgstr ""
 #: auth_login.php
 #, php-format
 msgid "Access Denied!  Guest user id %s does not exist.  Please contact your Administrator."
-msgstr "Доступ Заборонено, будь ласка зверніться до вашого Адміністратора Cacti."
+msgstr "Доступ заборонено!  Гостьовий користувач з ID %s не існує.  Будь ласка, зверніться до вашого адміністратора."
 
 #: auth_login.php
 msgid "Access Denied!  User account disabled."
-msgstr "Обліковий запис користувача Вимкнено"
+msgstr "Обліковий запис користувача Вимкнено."
 
 #: auth_login.php
 msgid "You do not have access to any area of Cacti.  Contact your administrator."
@@ -1833,7 +1821,7 @@ msgstr "Формат Імені"
 
 #: automation_snmp.php
 msgid "name"
-msgstr "ім`я"
+msgstr "Ім'я"
 
 #: automation_snmp.php
 msgid "Automation SNMP Options has been Duplicated."
@@ -1859,7 +1847,7 @@ msgstr "Версія SNMP: <b>%s</b>"
 #: automation_snmp.php
 #, php-format
 msgid "SNMP Community/Username: <b>%s</b>"
-msgstr "SNMP Community/Ім`я користувача: %s"
+msgstr "SNMP Community/Ім`я користувача: <b>%s</b>"
 
 #: automation_snmp.php
 msgid "Remove SNMP Item"
@@ -1886,7 +1874,7 @@ msgstr "Послідовність елементів."
 #: automation_snmp.php
 #, php-format
 msgid "SNMP Option Set [edit: %s]"
-msgstr "Набір SNMP Опцій  [редагування: %s]"
+msgstr "Набір SNMP Опцій [редагування: %s]"
 
 #: automation_snmp.php
 msgid "SNMP Option Set [new]"
@@ -2657,7 +2645,7 @@ msgstr "Відлагодження Джерела Даних запущено."
 
 #: data_debug.php
 msgid "Data Source debug received an invalid Data Source ID."
-msgstr "Відлагодженням Джерела Даних отримало невірний  ID Джерела Даних."
+msgstr "Відлагодженням Джерела Даних отримало невірний ID Джерела Даних."
 
 #: data_debug.php data_sources.php
 msgid "All RRDfile repairs succeeded."
@@ -3613,16 +3601,16 @@ msgstr[2] "Не чіпати всі <strong>Графіки</strong>."
 #: data_sources.php
 msgid "Delete all <strong>Graph Items</strong> that reference this Data Source."
 msgid_plural "Delete all <strong>Graph Items</strong> that reference these Data Sources."
-msgstr[0] "Видалити всі  <strong>Елементи Графіків</strong> що посилаються на це Джерело Даних."
-msgstr[1] "Видалити всі  <strong>Елементи Графіків</strong> що посилаються на ці Джерела Даних."
-msgstr[2] "Видалити всі  <strong>Елементи Графіків</strong> що посилаються на ці Джерела Даних."
+msgstr[0] "Видалити всі <strong>Елементи Графіків</strong> що посилаються на це Джерело Даних."
+msgstr[1] "Видалити всі <strong>Елементи Графіків</strong> що посилаються на ці Джерела Даних."
+msgstr[2] "Видалити всі <strong>Елементи Графіків</strong> що посилаються на ці Джерела Даних."
 
 #: data_sources.php
 msgid "Delete all <strong>Graphs</strong> that reference this Data Source."
 msgid_plural "Delete all <strong>Graphs</strong> that reference these Data Sources."
-msgstr[0] "Видалити всі  <strong>Графіки</strong> що посилаються на це Джерело Даних."
-msgstr[1] "Видалити всі  <strong>Графіки</strong> що посилаються на ці Джерела Даних."
-msgstr[2] "Видалити всі  <strong>Графіки</strong> що посилаються на ці Джерела Даних."
+msgstr[0] "Видалити всі <strong>Графіки</strong> що посилаються на це Джерело Даних."
+msgstr[1] "Видалити всі <strong>Графіки</strong> що посилаються на ці Джерела Даних."
+msgstr[2] "Видалити всі <strong>Графіки</strong> що посилаються на ці Джерела Даних."
 
 #: data_sources.php
 msgid "Delete Data Source"
@@ -4180,7 +4168,7 @@ msgstr "Експорт CSV"
 
 #: graph.php lib/html.php
 msgid "Edit Graph Template"
-msgstr "Редагувати Шаблон Графіків."
+msgstr "Редагувати Шаблон Графіків"
 
 #: graph.php
 msgid "Click to view just this Graph in Real-time"
@@ -4903,7 +4891,7 @@ msgstr "Нові Графіки для [ %s ] (%s %s)"
 
 #: graphs_new.php
 msgid "New Graphs for [ All Devices ]"
-msgstr "Нові Графіки для  [ Всіх Пристроїв ]"
+msgstr "Нові Графіки для [ Всіх Пристроїв ]"
 
 #: graphs_new.php
 msgid "New Graphs for None Host Type"
@@ -4957,7 +4945,7 @@ msgstr ""
 #: graphs_new.php
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'.  Field Name '%s' missing a 'direction' attribute"
-msgstr ""
+msgstr "Помилка аналізу XML-файлу ресурсу запиту даних для запиту даних \"%s\" з ідентифікатором \"%s\". У назві поля \"%s\" відсутній атрибут \"напрямок\""
 
 #: graphs_new.php
 #, php-format
@@ -5021,7 +5009,7 @@ msgstr ""
 
 #: help.php
 msgid "Open a ticket at "
-msgstr ""
+msgstr "Відкрийте квиток на "
 
 #: help.php
 #, php-format
@@ -5617,7 +5605,7 @@ msgstr ""
 
 #: include/global.php
 msgid "The Main Data Collector has gone to an Offline or Recovering Status"
-msgstr ""
+msgstr "Головний збирач даних перейшов у стан «Офлайн» або «Відновлюється»"
 
 #: include/global_arrays.php
 msgid "Save Successful."
@@ -6231,7 +6219,7 @@ msgstr ""
 #: include/global_arrays.php
 #, php-format
 msgid "%0.1f Minutes"
-msgstr "%d Хвилин"
+msgstr "%0.1f хвилин"
 
 #: include/global_arrays.php include/global_settings.php rrdcleaner.php
 #, php-format
@@ -7202,7 +7190,7 @@ msgstr "Кожен день"
 
 #: include/global_arrays.php
 msgid "Every Week"
-msgstr "Кожний тиждень"
+msgstr "Щотижня"
 
 #: include/global_arrays.php
 #, php-format
@@ -8580,7 +8568,7 @@ msgstr ""
 
 #: include/global_form.php
 msgid "External ID"
-msgstr ""
+msgstr "Зовнішній ідентифікатор"
 
 #: include/global_form.php
 msgid "External ID for linking Cacti data to external monitoring systems."
@@ -8592,7 +8580,7 @@ msgstr ""
 
 #: include/global_form.php
 msgid "A suitable Class for the Device Template."
-msgstr "Скопіювати Шаблони Пристроїв"
+msgstr "Скопіювати Шаблони Пристроїв."
 
 #: include/global_form.php
 msgid "A name for this data query."
@@ -9100,7 +9088,7 @@ msgstr ""
 
 #: include/global_settings.php
 msgid "PHP Mail() Function"
-msgstr ""
+msgstr "Функція PHP Mail()"
 
 #: include/global_settings.php lib/functions.php
 msgid "Sendmail"
@@ -9674,7 +9662,7 @@ msgstr ""
 
 #: include/global_settings.php
 msgid "The default Graph Height to be used for all new Graph Templates."
-msgstr "Чи це Профіль за замовчуванням для всіх нових Шаблонів Даних?"
+msgstr "Висота графіка за замовчуванням, що використовуватиметься для всіх нових шаблонів графіків."
 
 #: include/global_settings.php
 msgid "The default Graph Width to be used for all new Graph Templates."
@@ -10513,7 +10501,7 @@ msgstr ""
 #: include/global_settings.php
 #, php-format
 msgid "%d Processes"
-msgstr ""
+msgstr "%d Процеси"
 
 #: include/global_settings.php
 msgid "Maintenance Background Generation Timeout"
@@ -12193,7 +12181,7 @@ msgstr ""
 
 #: lib/api_device.php
 msgid "SNMP Information"
-msgstr ""
+msgstr "Інформація SNMP"
 
 #: lib/api_device.php
 msgid "SNMP not in use"
@@ -12278,11 +12266,11 @@ msgstr ""
 
 #: lib/auth.php
 msgid "Restricted By: "
-msgstr ""
+msgstr "Обмежено: "
 
 #: lib/auth.php
 msgid "Granted By: "
-msgstr ""
+msgstr "Надано: "
 
 #: lib/auth.php
 msgid "Granted"
@@ -12338,7 +12326,7 @@ msgstr ""
 #: lib/auth.php
 #, php-format
 msgid "Access Denied!  Template user id %s does not exist.  Please contact your Administrator."
-msgstr "Доступ Заборонено, будь ласка зверніться до вашого Адміністратора Cacti."
+msgstr "Доступ заборонено!  Шаблонний користувач з ID %s не існує.  Будь ласка, зверніться до вашого адміністратора."
 
 #: lib/auth.php
 #, fuzzy
@@ -12487,7 +12475,7 @@ msgstr ""
 
 #: lib/clog_webapi.php
 msgid "Threshold"
-msgstr "Потоки"
+msgstr "Пороги"
 
 #: lib/clog_webapi.php tree.php
 msgid "Display"
@@ -12958,7 +12946,7 @@ msgstr ""
 
 #: lib/dsdebug.php
 msgid "Failed fields: "
-msgstr ""
+msgstr "Поля з помилкою: "
 
 #: lib/dsdebug.php
 msgid "Data Source is not set as Active"
@@ -12984,7 +12972,7 @@ msgstr ""
 
 #: lib/dsdebug.php
 msgid "Data Source returned Bad Results for "
-msgstr ""
+msgstr "Джерело даних повернуло погані результати для "
 
 #: lib/dsdebug.php
 msgid "Data Source was not polled"
@@ -13088,7 +13076,7 @@ msgstr ""
 
 #: lib/functions.php
 msgid "SMTP error: "
-msgstr ""
+msgstr "Помилка SMTP: "
 
 #: lib/functions.php
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
@@ -14143,7 +14131,7 @@ msgstr ""
 #: lib/html_reports.php
 #, php-format
 msgid "Report Items %s"
-msgstr "Ім'я Звіту"
+msgstr "Елементи звіту %s"
 
 #: lib/html_reports.php
 #, php-format
@@ -14162,7 +14150,7 @@ msgstr ""
 #: lib/html_reports.php
 #, php-format
 msgid "Graph: %s"
-msgstr "Графіки"
+msgstr "Графік: %s"
 
 #: lib/html_reports.php
 msgid "Using CSS"
@@ -14171,7 +14159,7 @@ msgstr ""
 #: lib/html_reports.php
 #, php-format
 msgid "Device: %s"
-msgstr "Пристрої"
+msgstr "Пристрій: %s"
 
 #: lib/html_reports.php
 msgid ", Graph Template: All Templates"
@@ -14180,7 +14168,7 @@ msgstr "Ім'я Шаблону Графіків"
 #: lib/html_reports.php
 #, php-format
 msgid ", Graph Template: %s"
-msgstr "Шаблони Графіків"
+msgstr ", Шаблон графіка: %s"
 
 #: lib/html_reports.php
 #, php-format
@@ -14400,7 +14388,7 @@ msgstr ""
 #: lib/import.php
 #, php-format
 msgid "New Graph Template: %s"
-msgstr "Новий Шаблон Графіків"
+msgstr "Новий шаблон графіка: %s"
 
 #: lib/import.php
 #, php-format
@@ -14433,7 +14421,7 @@ msgstr ""
 
 #: lib/import.php
 msgid "[preview] "
-msgstr ""
+msgstr "[попередній перегляд] "
 
 #: lib/import.php
 msgid "Cacti would make the following changes if the Template was imported:"
@@ -14659,7 +14647,7 @@ msgstr ""
 #: lib/installer.php
 #, php-format
 msgid "This process will guide you through the steps for upgrading from version '%s'. "
-msgstr ""
+msgstr "Цей процес проведе вас через кроки для оновлення з версії \"%s\". "
 
 #: lib/installer.php
 #, php-format
@@ -14684,7 +14672,7 @@ msgstr ""
 
 #: lib/installer.php
 msgid "Select default theme: "
-msgstr ""
+msgstr "Виберіть тему за умовчанням: "
 
 #: lib/installer.php
 msgid "Pre-installation Checks"
@@ -14830,7 +14818,7 @@ msgstr ""
 
 #: lib/installer.php
 msgid "In the event of issues, It is highly recommended that you clear your browser cache, closing then reopening your browser (not just the tab Cacti is on) and retrying, before raising an issue with The Cacti Group"
-msgstr ""
+msgstr "У разі виникнення проблем настійно рекомендуємо очистити кеш-пам’ять браузера, закрити, а потім знову відкрити браузер (не лише вкладку Cacti), і повторити спробу, перш ніж порушувати проблему з The Cacti Group"
 
 #: lib/installer.php
 msgid "On rare occasions, we have had reports from users who experience some minor issues due to changes in the code.  These issues are caused by the browser retaining pre-upgrade code and whilst we have taken steps to minimise the chances of this, it may still occur.  If you need instructions on how to clear your browser cache, <a href='https://www.refreshyourcache.com' target='_blank'>https://www.refreshyourcache.com/</a> is a good starting point."
@@ -15173,7 +15161,7 @@ msgstr ""
 
 #: lib/installer.php
 msgid "Your server collation does NOT appear to be fully UTF8 compliant. "
-msgstr ""
+msgstr "Схоже, що ваше порівняння на сервері НЕ повністю сумісно з UTF8. "
 
 #: lib/installer.php
 msgid "Under the [mysqld] section, locate the entries named 'character-set-server' and 'collation-server' and set them as follows:"
@@ -15189,11 +15177,11 @@ msgstr ""
 
 #: lib/installer.php
 msgid "Your database default collation does NOT appear to be full UTF8 compliant. "
-msgstr ""
+msgstr "Схоже, стандартна сортування вашої бази даних НЕ повністю сумісна з UTF8. "
 
 #: lib/installer.php
 msgid "Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched.   Please ensure your database is changed to 'utf8mb4_unicode_ci' by running the following: "
-msgstr ""
+msgstr "Будь-які таблиці, створені плагінами, можуть мати проблеми, пов’язані з таблицями Cacti Core, якщо сортування не відповідає. Будь ласка, переконайтеся, що вашу базу даних змінено на 'utf8mb4_unicode_ci', виконавши наступне: "
 
 #: lib/installer.php
 msgid "Table Setup"
@@ -15226,7 +15214,7 @@ msgstr ""
 
 #: lib/installer.php
 msgid "One or more tables are too large to convert during the installation.  You should use the cli/convert_tables.php script to perform the conversion, then refresh this page. For example: "
-msgstr ""
+msgstr "Одна чи кілька таблиць завеликі для перетворення під час встановлення. Ви повинні використати сценарій cli/convert_tables.php для виконання перетворення, а потім оновити цю сторінку. Наприклад: "
 
 #: lib/installer.php
 msgid "The following tables should be converted to UTF8 and InnoDB with a Dynamic row format.  Please select the tables that you wish to convert during the installation process."
@@ -15358,7 +15346,7 @@ msgstr ""
 #: lib/installer.php
 #, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' failed"
-msgstr ""
+msgstr "Не вдалося імпортувати пакет №%s \"%s\" у профіль \"%s\""
 
 #: lib/installer.php
 #, php-format
@@ -15968,7 +15956,7 @@ msgstr ""
 
 #: lib/rrd.php
 msgid "Errors Found"
-msgstr "Кольорів Не Знайдено"
+msgstr "Знайдено помилки"
 
 #: lib/rrd.php
 msgid "Optional Tuning Recommendations"
@@ -16166,6 +16154,10 @@ msgid "Window Range:  All"
 msgstr ""
 
 #: lib/spikekill.php
+msgid "FATAL: Unable to generate a random temporary file name.  Check the system entropy source!"
+msgstr ""
+
+#: lib/spikekill.php
 msgid "FATAL: RRDtool Command Failed.  Please verify that the RRDtool path is valid in Settings->Paths!"
 msgstr ""
 
@@ -16314,7 +16306,7 @@ msgstr ""
 #: lib/template.php
 #, php-format
 msgid "NOTE: Graph not added for Data Query %s and index %s due to Data Source verification failure"
-msgstr ""
+msgstr "ПРИМІТКА: Графік не додано для запиту даних %s та індексу %s через помилку перевірки джерела даних"
 
 #: lib/utility.php
 msgid "Default collation used by the server when creating databases and tables."
@@ -17118,7 +17110,7 @@ msgstr "ERROR: Невірний ID Пристрою."
 
 #: package_import.php
 msgid "Error in Package"
-msgstr "Помилка в запиті даних."
+msgstr "Помилка в запиті даних"
 
 #: package_import.php
 msgid "See the cacti.log for more information.  It could be that you had either an API Key error or the package was tamered with, or the location is not available."
@@ -17127,7 +17119,7 @@ msgstr ""
 #: package_import.php
 #, php-format
 msgid "The package \"%s\" download or validation failed"
-msgstr ""
+msgstr "Не вдалося завантажити або перевірити пакет \"%s\""
 
 #: package_import.php
 msgid "See the cacti.log for more information.  It could be that you had either an API Key error or the package was tamered with, or the location is not available"
@@ -17155,7 +17147,7 @@ msgstr ""
 
 #: package_import.php
 msgid "Packages Details"
-msgstr "Подробиці Правила."
+msgstr "Подробиці Правила"
 
 #: package_import.php
 msgid "Device class"
@@ -17207,7 +17199,7 @@ msgstr "Сирота"
 
 #: package_import.php
 msgid "File Differences for: "
-msgstr ""
+msgstr "Відмінності файлів для: "
 
 #: package_import.php
 msgid "Local Package Import File"
@@ -17894,7 +17886,7 @@ msgstr ""
 #: rrdcheck.php
 #, php-format
 msgid "%d days"
-msgstr ""
+msgstr "%d днів"
 
 #: rrdcheck.php rrdcleaner.php user_domains.php user_group_admin.php
 msgctxt "filter: use"
@@ -18324,7 +18316,7 @@ msgstr ""
 #: templates_import.php
 #, php-format
 msgid "The Template XML file \"%s\" validation failed"
-msgstr ""
+msgstr "Не вдалося перевірити XML-файл шаблону \"%s\""
 
 #: templates_import.php
 msgid "Import Files [ If Files are missing, locate and install before using ]"
@@ -18588,7 +18580,7 @@ msgstr ""
 
 #: tree.php
 msgid "Unpublished Trees cannot be viewed from the Graph tab"
-msgstr ""
+msgstr "Неопубліковані дерева неможливо переглянути на вкладці «Графік»"
 
 #: tree.php
 msgid "A Tree must be locked in order to be edited."
@@ -18724,7 +18716,7 @@ msgstr ""
 
 #: user_admin.php user_group_admin.php
 msgid "<b>Note:</b> System Graph Policy is 'Permissive' meaning the User must have access to at least one of Graph, Device, or Graph Template to gain access to the Graph"
-msgstr ""
+msgstr "<b>Примітка.</b> Політика System Graph є «Дозвільною», тобто користувач повинен мати доступ принаймні до одного з Graph, Device або Graph Template, щоб отримати доступ до Graph"
 
 #: user_admin.php user_group_admin.php
 msgid "<b>Note:</b> System Graph Policy is 'Restrictive' meaning the User must have access to either the Graph or the Device and Graph Template to gain access to the Graph"
@@ -18736,7 +18728,7 @@ msgstr ""
 
 #: user_admin.php user_group_admin.php
 msgid "<b>Note:</b> System Graph Policy is 'Graph Template' meaning the User must have access to the Graph or Graph Template to gain access to the Graph"
-msgstr ""
+msgstr "<b>Примітка.</b> Політикою системного графіка є «Шаблон графіка», що означає, що користувач повинен мати доступ до графіка або шаблону графіка, щоб отримати доступ до графіка"
 
 #: user_admin.php user_group_admin.php
 msgid "Default Graph Policy"
@@ -19458,11 +19450,11 @@ msgstr ""
 
 #: utilities.php
 msgid "Procs: "
-msgstr ""
+msgstr "Процедури: "
 
 #: utilities.php
 msgid "Threads: "
-msgstr ""
+msgstr "Теми: "
 
 #: utilities.php
 msgid "Concurrent Processes"
@@ -19953,7 +19945,7 @@ msgstr ""
 
 #: utilities.php
 msgid "Total Poller Items:"
-msgstr "Елемент Кольору"
+msgstr "Елемент Кольору:"
 
 #: utilities.php
 msgid "Total Data Sources:"
@@ -19961,7 +19953,7 @@ msgstr ""
 
 #: utilities.php
 msgid "Remaining Data Sources:"
-msgstr "Має Джерела Даних"
+msgstr "Має Джерела Даних:"
 
 #: utilities.php
 msgid "TBD"
@@ -20022,7 +20014,7 @@ msgstr ""
 
 #: utilities.php
 msgid "Last End Time:"
-msgstr "Останній Запуск"
+msgstr "Останній Запуск:"
 
 #: utilities.php
 msgid "Never Run"
@@ -20040,7 +20032,7 @@ msgstr ""
 #: utilities.php
 #, php-format
 msgid "%d seconds"
-msgstr ""
+msgstr "%d секунд"
 
 #: utilities.php
 #, php-format
