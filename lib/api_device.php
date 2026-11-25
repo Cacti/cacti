@@ -862,7 +862,8 @@ function api_device_replicate_out(int $device_id, int $poller_id = 1) : bool {
 		WHERE pi.host_id = ?',
 		[$device_id]);
 
-	replicate_table_to_poller($rcnn_id, $data, 'poller_item', $poller_id);
+	// keep the Remote Data Collector's own poll schedule for existing items
+	replicate_table_to_poller($rcnn_id, $data, 'poller_item', ['rrd_next_step']);
 
 	$data = db_fetch_assoc_prepared('SELECT h.*
 		FROM host AS h
