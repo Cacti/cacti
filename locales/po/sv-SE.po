@@ -1,17 +1,5 @@
 msgid ""
-msgstr ""
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-11-04 11:45-0800\n"
-"PO-Revision-Date: 2026-11-16 07:18+0000\n"
-"Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
-"Language-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\n"
-"Language: sv-SE\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-25 01:18+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -15754,12 +15742,12 @@ msgstr "Grafen kräver %d datakällor, men RRD-filen innehåller %d. De extra da
 #: lib/rrd.php
 #, php-format
 msgid "Data Source '%s' is required by the Graph but is missing from the RRDfile and will be added"
-msgstr "Datakällan '%s' krävs av grafen men saknas i RRD-filen och kommer att läggas till."
+msgstr "Datakällan '%s' krävs av grafen men saknas i RRD-filen och kommer att läggas till"
 
 #: lib/rrd.php
 #, php-format
 msgid "Data Source '%s' is included in the RRDfile but is not required by the Graph and will be removed"
-msgstr "Datakällan '%s' finns i RRD-filen men krävs inte av grafen och kommer att tas bort."
+msgstr "Datakällan '%s' finns i RRD-filen men krävs inte av grafen och kommer att tas bort"
 
 #: lib/rrd.php
 #, php-format
@@ -16064,6 +16052,10 @@ msgstr "Fönsterslut:    %s (%s)"
 #: lib/spikekill.php
 msgid "Window Range:  All"
 msgstr "Fönsterintervall:  Alla"
+
+#: lib/spikekill.php
+msgid "FATAL: Unable to generate a random temporary file name.  Check the system entropy source!"
+msgstr ""
 
 #: lib/spikekill.php
 msgid "FATAL: RRDtool Command Failed.  Please verify that the RRDtool path is valid in Settings->Paths!"
