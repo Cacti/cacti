@@ -4,19 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr ""
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-11-04 11:45-0800\n"
-"PO-Revision-Date: 2024-04-20 19:06-0400\n"
-"Last-Translator: Anonymous <anonymous@cacti.net>\n"
-"Language-Team: Korean <http://translate.cacti.net/projects/cacti/core-v1-2-x/ko/>\n"
-"Language: ko_KR\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.4.2\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-25 01:18+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Korean <https://translate.cacti.net/projects/cacti/core-v1-2-x/ko/>\nLanguage: ko-KR\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -29,7 +17,7 @@ msgstr "Cacti는 RRDtool의 프레임 워크를 기반으로 완벽한 그래프
 #: about.php
 #, php-format
 msgid "Please see the official %sCacti website%s for information on how to use Cacti, get support, and updates."
-msgstr "정보, 지원 및 업데이트에 대해서는 공식  %sCacti 웹 사이트  %s를 참조하십시오."
+msgstr "정보, 지원 및 업데이트에 대해서는 공식 %sCacti 웹 사이트 %s를 참조하십시오."
 
 #: about.php
 msgid "Active Developers"
@@ -64,7 +52,7 @@ msgstr "감사합니다"
 #: about.php
 #, php-format
 msgid "A very special thanks to %sTobi Oetiker%s, the creator of %sRRDtool%s and the very popular %sMRTG%s."
-msgstr "%sTobi Oetiker  %s,  %sRRDtool  %s의 생성자 및 매우 인기있는  %sMRTG  %s에 매우 특별한 감사드립니다."
+msgstr "%sTobi Oetiker %s, %sRRDtool %s의 생성자 및 매우 인기있는 %sMRTG %s에 매우 특별한 감사드립니다."
 
 #: about.php
 msgid "The users of Cacti"
@@ -275,7 +263,7 @@ msgstr "트리 분기 아래에 다음 집계 그래프를 배치하려면 &#39;
 
 #: aggregate_graphs.php host.php
 msgid "Destination Branch:"
-msgstr "대상 브랜치"
+msgstr "대상 브랜치:"
 
 #: aggregate_graphs.php graphs.php
 msgid "Place Graph(s) on Tree"
@@ -344,7 +332,7 @@ msgstr "RRDtool 말한다 :"
 #: aggregate_graphs.php
 #, php-format
 msgid "Aggregate Graph %s"
-msgstr "그래프  %s 집계"
+msgstr "그래프 %s 집계"
 
 #: aggregate_graphs.php aggregate_templates.php graphs.php
 msgid "Prefix Replacement Values"
@@ -352,7 +340,7 @@ msgstr "대체 패턴"
 
 #: aggregate_graphs.php aggregate_templates.php graphs.php
 msgid "You may use these replacement values for the Prefix in the Aggregate Graph"
-msgstr "집계 그래프에서 접두사에 대해 이러한 대체 값을 사용할 수 있습니다."
+msgstr "집계 그래프에서 접두사에 대해 이러한 대체 값을 사용할 수 있습니다"
 
 #: aggregate_graphs.php aggregate_templates.php graphs.php
 #: lib/api_aggregate.php
@@ -465,7 +453,7 @@ msgstr "필터 지우기"
 #: lib/html.php lib/html_graph.php lib/html_tree.php tree.php user_admin.php
 #: user_group_admin.php utilities.php
 msgid "Graphs"
-msgstr "그래프 "
+msgstr "그래프"
 
 #: aggregate_graphs.php graphs.php lib/api_automation.php user_admin.php
 #: user_group_admin.php
@@ -514,7 +502,7 @@ msgstr "그래프가 없습니다"
 
 #: aggregate_graphs.php
 msgid " [ Custom Graphs List Applied - Clear to Reset ]"
-msgstr "[사용자 정의 그래프 목록 적용 - 필터 FROM 목록]"
+msgstr " [사용자 정의 그래프 목록 적용 - 필터 FROM 목록]"
 
 #: aggregate_graphs.php include/global_arrays.php
 msgid "Aggregate Graphs"
@@ -582,7 +570,7 @@ msgstr "색상 템플릿 삭제"
 #: aggregate_templates.php
 #, php-format
 msgid "Aggregate Template [edit: %s]"
-msgstr "집계 템플릿 [편집 :  %s]"
+msgstr "집계 템플릿 [편집 : %s]"
 
 #: aggregate_templates.php
 msgid "Aggregate Template [new]"
@@ -659,24 +647,24 @@ msgstr "암호 요구 사항은 다음과 같습니다."
 #: auth_changepassword.php
 #, php-format
 msgid "Must be at least %d characters in length"
-msgstr "길이는 % d 자 이상이어야합니다."
+msgstr "길이는 %d 자 이상이어야합니다"
 
 #: auth_changepassword.php
 msgid "Must include mixed case"
-msgstr "대소 문자가 혼합되어 있어야합니다."
+msgstr "대소 문자가 혼합되어 있어야합니다"
 
 #: auth_changepassword.php
 msgid "Must include at least 1 number"
-msgstr "최소 1 개의 숫자를 포함해야합니다."
+msgstr "최소 1 개의 숫자를 포함해야합니다"
 
 #: auth_changepassword.php
 msgid "Must include at least 1 special character"
-msgstr "최소 1 개의 특수 문자를 포함해야합니다."
+msgstr "최소 1 개의 특수 문자를 포함해야합니다"
 
 #: auth_changepassword.php
 #, php-format
 msgid "Cannot be reused for %d password changes"
-msgstr "% d 개의 암호 변경에 재사용 할 수 없습니다."
+msgstr "%d 개의 암호 변경에 재사용 할 수 없습니다"
 
 #: auth_changepassword.php
 msgid "There are problems with the Change Password page.  Contact your Cacti administrator right away."
@@ -720,7 +708,7 @@ msgstr "저장"
 #: auth_changepassword.php auth_login.php
 #, php-format
 msgid "Version %s | %s"
-msgstr "버전  %s  %s"
+msgstr "버전 %s %s"
 
 #: auth_changepassword.php user_admin.php
 msgid "Password Too Short"
@@ -795,7 +783,7 @@ msgstr "LDAP"
 
 #: auth_login.php user_admin.php user_group_admin.php
 msgid "Realm"
-msgstr "왕국"
+msgstr "영역"
 
 #: auth_login.php
 msgid "Keep me signed in"
@@ -866,7 +854,7 @@ msgstr "개인 정보 삭제"
 
 #: auth_profile.php
 msgid "Clear Private Data including Column sizing."
-msgstr "열 사이징을 포함한 개인 데이터 삭제"
+msgstr "열 사이징을 포함한 개인 데이터 삭제."
 
 #: auth_profile.php
 msgid "Logout Everywhere"
@@ -894,7 +882,7 @@ msgstr "모든 로그인 세션이 지워졌습니다."
 
 #: auth_profile.php
 msgid "User Sessions Cleared"
-msgstr "사용자 세션이 삭제되었습니다."
+msgstr "사용자 세션이 삭제되었습니다"
 
 #: auth_profile.php
 msgid "Reset"
@@ -911,7 +899,7 @@ msgstr "기기 삭제"
 #: automation_devices.php host.php lib/api_automation.php lib/html_utility.php
 #: pollers.php
 msgid "Down"
-msgstr "아래로"
+msgstr "다운"
 
 #: automation_devices.php host.php lib/api_automation.php lib/html_utility.php
 msgid "Up"
@@ -1130,7 +1118,7 @@ msgstr "규칙 &#39; %s&#39;을 (를) 삭제 하시겠습니까?"
 #: automation_graph_rules.php
 #, php-format
 msgid "Rule Selection [edit: %s]"
-msgstr "규칙 선택 [편집 :  %s]"
+msgstr "규칙 선택 [편집 : %s]"
 
 #: automation_graph_rules.php
 msgid "Rule Selection [new]"
@@ -1192,7 +1180,7 @@ msgstr "규칙 이름"
 
 #: automation_graph_rules.php
 msgid "The name of this rule."
-msgstr "이 규칙의 이름"
+msgstr "이 규칙의 이름."
 
 #: automation_graph_rules.php
 msgid "The internal database ID for this rule.  Useful in performing debugging and automation."
@@ -1302,7 +1290,7 @@ msgstr "파일을 찾을 수 없습니다."
 #: automation_networks.php
 #, php-format
 msgid "Network Discovery Range [edit: %s]"
-msgstr "네트워크 검색 범위 [편집 :  %s]"
+msgstr "네트워크 검색 범위 [편집 : %s]"
 
 #: automation_networks.php
 msgid "Network Discovery Range [new]"
@@ -1350,7 +1338,7 @@ msgstr "서브넷 범위"
 
 #: automation_networks.php
 msgid "Enter valid Network Ranges separated by commas.  You may use an IP address, a Network range such as 192.168.1.0/24 or 192.168.1.0/255.255.255.0, or using wildcards such as 192.168.*.*"
-msgstr "유효한 네트워크 범위를 쉼표로 구분하여 입력하십시오. 192.168.1.0/24 또는 192.168.1.0/255.255.255.0과 같은 네트워크 범위 또는 192.168. *. *와 같은 와일드 카드를 사용하여 IP 주소를 사용할 수 있습니다."
+msgstr "유효한 네트워크 범위를 쉼표로 구분하여 입력하십시오. 192.168.1.0/24 또는 192.168.1.0/255.255.255.0과 같은 네트워크 범위 또는 192.168. *. *와 같은 와일드 카드를 사용하여 IP 주소를 사용할 수 있습니다"
 
 #: automation_networks.php
 msgid "Total IP Addresses"
@@ -1391,12 +1379,12 @@ msgstr "이 네트워크 범위를 검색하는 데 사용할 스레드 수를 �
 #: automation_networks.php
 #, php-format
 msgid "%d Thread"
-msgstr "스레드 % d 개"
+msgstr "스레드 %d 개"
 
 #: automation_networks.php include/global_arrays.php
 #, php-format
 msgid "%d Threads"
-msgstr "스레드 % d 개"
+msgstr "스레드 %d 개"
 
 #: automation_networks.php
 msgid "Run Limit"
@@ -1454,7 +1442,7 @@ msgstr "다른 호스트에서 동일한 sysName 허용"
 
 #: automation_networks.php
 msgid "When discovering devices, allow duplicate sysnames to be added on different hosts"
-msgstr "장치를 발견 할 때 중복 된 sysnames를 다른 호스트에 추가 할 수 있습니다."
+msgstr "장치를 발견 할 때 중복 된 sysnames를 다른 호스트에 추가 할 수 있습니다"
 
 #: automation_networks.php
 msgid "Rerun Data Queries"
@@ -1701,7 +1689,7 @@ msgstr "요일 선택"
 
 #: automation_networks.php
 msgid "Select the month(s) of the year"
-msgstr "연도를 선택하십시오."
+msgstr "연도를 선택하십시오"
 
 #: automation_networks.php
 msgid "Select the day(s) of the month"
@@ -1773,7 +1761,7 @@ msgstr "Up / SNMP 호스트"
 
 #: automation_networks.php pollers.php
 msgid "Threads"
-msgstr "참여글"
+msgstr "스레드"
 
 #: automation_networks.php
 msgid "Last Runtime"
@@ -1837,7 +1825,7 @@ msgstr "이름"
 
 #: automation_snmp.php
 msgid "Automation SNMP Options has been Duplicated."
-msgstr "자동화 SNMP 옵션"
+msgstr "자동화 SNMP 옵션."
 
 #: automation_snmp.php
 msgid "Automation Item does not exist.  Can not Duplicate."
@@ -1868,7 +1856,7 @@ msgstr "SNMP 항목 제거"
 #: automation_snmp.php
 #, php-format
 msgid "SNMP Options [edit: %s]"
-msgstr "SNMP 옵션 [편집 :  %s]"
+msgstr "SNMP 옵션 [편집 : %s]"
 
 #: automation_snmp.php
 msgid "SNMP Options [new]"
@@ -1886,7 +1874,7 @@ msgstr "항목의 순서."
 #: automation_snmp.php
 #, php-format
 msgid "SNMP Option Set [edit: %s]"
-msgstr "SNMP 옵션 설정 [편집 :  %s]"
+msgstr "SNMP 옵션 설정 [편집 : %s]"
 
 #: automation_snmp.php
 msgid "SNMP Option Set [new]"
@@ -1961,7 +1949,7 @@ msgstr "실행"
 #: automation_snmp.php lib/api_automation.php
 #, php-format
 msgid "Item#%d"
-msgstr "항목 # % d"
+msgstr "항목 # %d"
 
 #: automation_snmp.php
 msgid "none"
@@ -2030,7 +2018,7 @@ msgstr "자동화 템플릿 삭제"
 #: automation_templates.php include/global_arrays.php include/global_form.php
 #: lib/html_reports.php
 msgid "Device Template"
-msgstr "기기 템플릿"
+msgstr "장치 템플릿"
 
 #: automation_templates.php
 msgid "Select a Device Template that Devices will be matched to."
@@ -2067,7 +2055,7 @@ msgstr "이 문자열은이 자동화 템플리트와 쌍을 이루기 위해 �
 #: automation_templates.php
 #, php-format
 msgid "Automation Templates [edit: %s]"
-msgstr "자동화 템플릿 [편집 :  %s]"
+msgstr "자동화 템플릿 [편집 : %s]"
 
 #: automation_templates.php
 msgid "Automation Templates for [Deleted Template]"
@@ -2136,7 +2124,7 @@ msgstr "적격 대상"
 #: automation_tree_rules.php
 #, php-format
 msgid "Tree Rule Selection [edit: %s]"
-msgstr "트리 규칙 선택 [편집 :  %s]"
+msgstr "트리 규칙 선택 [편집 : %s]"
 
 #: automation_tree_rules.php
 msgid "Tree Rules Selection [new]"
@@ -2257,7 +2245,7 @@ msgstr "다음 CDEF 항목을 삭제하려면 &#39;계속&#39;을 클릭하십�
 #: cdef.php
 #, php-format
 msgid "CDEF Name: %s"
-msgstr "CDEF 이름 :  %s"
+msgstr "CDEF 이름 : %s"
 
 #: cdef.php lib/html_reports.php
 msgid "Invalid"
@@ -2280,7 +2268,7 @@ msgstr "CDEF 미리보기"
 #: cdef.php
 #, php-format
 msgid "CDEF Items [edit: %s]"
-msgstr "CDEF 항목 [편집 :  %s]"
+msgstr "CDEF 항목 [편집 : %s]"
 
 #: cdef.php
 msgid "CDEF Item Type"
@@ -2301,7 +2289,7 @@ msgstr "이 CDEF 항목의 값을 입력하십시오."
 #: cdef.php
 #, php-format
 msgid "CDEF [edit: %s]"
-msgstr "CDEF [편집 :  %s]"
+msgstr "CDEF [편집 : %s]"
 
 #: cdef.php
 msgid "CDEF [new]"
@@ -2318,7 +2306,7 @@ msgstr "항목 값"
 #: cdef.php vdef.php
 #, php-format
 msgid "Item #%d"
-msgstr "항목 # % d"
+msgstr "항목 # %d"
 
 #: cdef.php
 msgid "Delete CDEF Item"
@@ -2355,7 +2343,7 @@ msgstr "이 CDEF를 사용하는 그래프 템플릿 수입니다."
 
 #: cdef.php
 msgid "No CDEFs"
-msgstr "CDEF가 없습니다."
+msgstr "CDEF가 없습니다"
 
 #: color.php
 msgid "Unnamed Color"
@@ -2364,7 +2352,7 @@ msgstr "이름없는 색"
 #: color.php
 msgid "Click 'Continue' to delete the following Color"
 msgid_plural "Click 'Continue' to delete the following Colors"
-msgstr[0] "다음 색상을 삭제하려면 &#39;계속&#39;을 클릭하십시오."
+msgstr[0] "다음 색상을 삭제하려면 &#39;계속&#39;을 클릭하십시오"
 
 #: color.php
 msgid "Delete Color"
@@ -2422,7 +2410,7 @@ msgstr "<strong>hex</strong> - 16 진수 값"
 #: color.php
 #, php-format
 msgid "Colors [edit: %s]"
-msgstr "색상 [편집 :  %s]"
+msgstr "색상 [편집 : %s]"
 
 #: color.php
 msgid "Colors [new]"
@@ -2504,7 +2492,7 @@ msgstr "색상 항목"
 #: color_templates.php lib/api_aggregate.php lib/html.php lib/html_reports.php
 #, php-format
 msgid "Item # %d"
-msgstr "항목 # % d"
+msgstr "항목 # %d"
 
 #: color_templates.php graph_templates_inputs.php lib/api_aggregate.php
 #: lib/html.php
@@ -2514,7 +2502,7 @@ msgstr "항목"
 #: color_templates.php
 msgid "Click 'Continue' to delete the following Color Template"
 msgid_plural "Click 'Continue' to delete following Color Templates"
-msgstr[0] "다음 색상 템플리트를 삭제하려면 &#39;계속&#39;을 클릭하십시오."
+msgstr[0] "다음 색상 템플리트를 삭제하려면 &#39;계속&#39;을 클릭하십시오"
 
 #: color_templates.php
 msgid "Delete Color Template"
@@ -2548,7 +2536,7 @@ msgstr "색상 템플릿 항목 [신규]"
 #: color_templates.php
 #, php-format
 msgid "Color Template Items [edit: %s]"
-msgstr "색상 템플릿 항목 [편집 :  %s]"
+msgstr "색상 템플릿 항목 [편집 : %s]"
 
 #: color_templates.php
 msgid "Delete Color Item"
@@ -2563,7 +2551,7 @@ msgstr "색상 템플릿을 찾을 수 없음"
 #: color_templates.php
 #, php-format
 msgid "Color Template [edit: %s]"
-msgstr "색상 템플릿 [편집 :  %s]"
+msgstr "색상 템플릿 [편집 : %s]"
 
 #: color_templates.php
 msgid "Color Template [new]"
@@ -2572,7 +2560,7 @@ msgstr "색상 템플릿 [신규]"
 #: color_templates.php
 #, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
-msgstr "색상 템플릿 '%s'에 % d 집계 템플릿이 푸시되었고 % d 비 템플릿 집계가 푸시되었습니다."
+msgstr "색상 템플릿 '%s'에 %d 집계 템플릿이 푸시되었고 %d 비 템플릿 집계가 푸시되었습니다"
 
 #: color_templates.php
 #, php-format
@@ -2616,12 +2604,12 @@ msgstr "색상 항목 제거"
 #: color_templates_items.php
 #, php-format
 msgid "Color Template Items [edit Report Item: %s]"
-msgstr "색상 템플릿 항목 [보고서 항목 편집 :  %s]"
+msgstr "색상 템플릿 항목 [보고서 항목 편집 : %s]"
 
 #: color_templates_items.php
 #, php-format
 msgid "Color Template Items [new Report Item: %s]"
-msgstr "색상 템플릿 항목 [새 보고서 항목 :  %s]"
+msgstr "색상 템플릿 항목 [새 보고서 항목 : %s]"
 
 #: data_debug.php
 msgid "Run Check"
@@ -2633,7 +2621,7 @@ msgstr "확인 삭제"
 
 #: data_debug.php
 msgid "Data Source debug started."
-msgstr "데이터 소스 디버그"
+msgstr "데이터 소스 디버그."
 
 #: data_debug.php
 msgid "Data Source debug received an invalid Data Source ID."
@@ -2691,7 +2679,7 @@ msgstr "데이터 소스 디버그 검사의 상태."
 
 #: data_debug.php lib/installer.php package_import.php
 msgid "Writable"
-msgstr "쓰기 가능 "
+msgstr "쓰기 가능"
 
 #: data_debug.php
 msgid "Determines if the Data Collector or the Web Site have Write access."
@@ -2760,11 +2748,11 @@ msgstr "수표 없음"
 
 #: data_debug.php lib/api_automation.php lib/graphs.php templates_import.php
 msgid "Not Found"
-msgstr "찾을 수 없습니다"
+msgstr "찾을 수 없음"
 
 #: data_debug.php
 msgid "Not Checked Yet"
-msgstr "수표 없음"
+msgstr "아직 확인되지 않음"
 
 #: data_debug.php
 msgid "Issues found!  Waiting on RRDfile update"
@@ -2776,7 +2764,7 @@ msgstr "이니셜을 찾지 못했습니다! RRDfile 업데이트 대기 중"
 
 #: data_debug.php
 msgid "Waiting on analysis and RRDfile update"
-msgstr "RRD 파일이 업데이트 되었습니까?"
+msgstr "분석 및 RRDfile 업데이트 대기 중"
 
 #: data_debug.php
 msgid "RRDfile Owner"
@@ -2788,7 +2776,7 @@ msgstr "웹 사이트는"
 
 #: data_debug.php
 msgid "Poller runs as"
-msgstr "폴러는 다음과 같이 실행됩니다."
+msgstr "폴러는 다음과 같이 실행됩니다"
 
 #: data_debug.php
 msgid "Is RRA Folder writeable by poller?"
@@ -2828,7 +2816,7 @@ msgstr "제목을 변환 할 수 있었습니까?"
 
 #: data_debug.php
 msgid "Data Source matches the RRDfile?"
-msgstr "데이터 소스가 폴링되지 않았습니다."
+msgstr "데이터 소스가 RRDfile과 일치합니까?"
 
 #: data_debug.php
 #, php-format
@@ -2880,7 +2868,7 @@ msgstr "문의"
 #: data_debug.php
 #, php-format
 msgid "For attribute '%s', issue found '%s'"
-msgstr "attrbitute ' %s'에 대해 ' %s'문제가 발견되었습니다."
+msgstr "attrbitute ' %s'에 대해 ' %s'문제가 발견되었습니다"
 
 #: data_debug.php data_sources.php
 msgid "Apply Suggested Fixes"
@@ -2905,7 +2893,7 @@ msgstr "완료하기 위해 데이터 소스 검사 대기"
 
 #: data_debug.php
 msgid "All Devices"
-msgstr "사용 가능한 장치"
+msgstr "모든 디바이스"
 
 #: data_debug.php
 #, php-format
@@ -2962,7 +2950,7 @@ msgstr ""
 #: data_input.php
 msgid "Click 'Continue' to delete the following Data Input Method"
 msgid_plural "Click 'Continue' to delete the following Data Input Method"
-msgstr[0] "다음 데이터 입력 방법을 삭제하려면 &#39;계속&#39;을 클릭하십시오."
+msgstr[0] "다음 데이터 입력 방법을 삭제하려면 &#39;계속&#39;을 클릭하십시오"
 
 #: data_input.php
 msgid "Click 'Continue' to duplicate the following Data Input Method(s). You can optionally change the title format for the new Data Input Method(s)."
@@ -2984,12 +2972,12 @@ msgstr "다음 데이터 입력란을 삭제하려면 &#39;계속&#39;을 클릭
 #: data_input.php
 #, php-format
 msgid "Field Name: %s"
-msgstr "필드 이름 :  %s"
+msgstr "필드 이름 : %s"
 
 #: data_input.php
 #, php-format
 msgid "Friendly Name: %s"
-msgstr "이름 :  %s"
+msgstr "이름 : %s"
 
 #: data_input.php host_templates.php
 msgid "Remove Data Input Field"
@@ -3002,7 +2990,7 @@ msgstr "이 스크립트에는 입력 값이없는 것으로 나타나므로 추
 #: data_input.php
 #, php-format
 msgid "Output Fields [edit: %s]"
-msgstr "출력 필드 [편집 :  %s]"
+msgstr "출력 필드 [편집 : %s]"
 
 #: data_input.php include/global_form.php
 msgid "Output Field"
@@ -3011,7 +2999,7 @@ msgstr "출력 필드"
 #: data_input.php
 #, php-format
 msgid "Input Fields [edit: %s]"
-msgstr "입력란 [편집 :  %s]"
+msgstr "입력란 [편집 : %s]"
 
 #: data_input.php
 msgid "Input Field"
@@ -3020,7 +3008,7 @@ msgstr "입력 필드"
 #: data_input.php
 #, php-format
 msgid "Data Input Method [edit: %s]"
-msgstr "데이터 입력 방법 [편집 :  %s]"
+msgstr "데이터 입력 방법 [편집 : %s]"
 
 #: data_input.php
 msgid "Data Input Method [new]"
@@ -3080,7 +3068,7 @@ msgstr "RRA 업데이트"
 
 #: data_input.php
 msgid "Output Fields can not be removed when Data Sources are present"
-msgstr "데이터 소스가있는 경우 출력 필드를 제거 할 수 없습니다."
+msgstr "데이터 소스가있는 경우 출력 필드를 제거 할 수 없습니다"
 
 #: data_input.php
 msgid "No Output Fields"
@@ -3162,7 +3150,7 @@ msgstr[0] "다음 데이터 쿼리를 삭제하려면 &#39;계속&#39;을 클릭
 
 #: data_queries.php lib/html_reports.php
 msgid "Name Format:"
-msgstr "이름 형식"
+msgstr "이름 형식:"
 
 #: data_queries.php
 msgid "Duplicate Data Query"
@@ -3176,7 +3164,7 @@ msgstr "다음 데이터 쿼리 그래프 연관을 삭제하려면 &#39;계속&
 #: data_queries.php
 #, php-format
 msgid "Graph Name: %s"
-msgstr "그래프 이름 :  %s"
+msgstr "그래프 이름 : %s"
 
 #: data_queries.php
 msgid "Remove Data Query Graph Template"
@@ -3185,11 +3173,11 @@ msgstr "그래프 템플릿으로 변환"
 #: data_queries.php
 #, php-format
 msgid "Associated Graph/Data Templates [edit: %s]"
-msgstr "연관된 그래프 / 데이터 템플릿 [편집 :  %s]"
+msgstr "연관된 그래프 / 데이터 템플릿 [편집 : %s]"
 
 #: data_queries.php
 msgid "Associated Graph/Data Templates [new]"
-msgstr "연관된 그래프 / 데이터 템플릿 [편집 :  %s]"
+msgstr "연관된 그래프 / 데이터 템플릿 [편집 : %s]"
 
 #: data_queries.php
 msgid "Associated Data Templates"
@@ -3198,7 +3186,7 @@ msgstr "연결된 데이터 템플릿"
 #: data_queries.php
 #, php-format
 msgid "Data Template - %s"
-msgstr "데이터 템플릿 -  %s"
+msgstr "데이터 템플릿 - %s"
 
 #: data_queries.php
 msgid "If this Graph Template requires the Data Template Data Source to the left, select the correct XML output column and then to enable the mapping either check or toggle here."
@@ -3250,7 +3238,7 @@ msgstr "편집하려는 데이터 쿼리 ID [%s] 이 (가) 존재하지 않습�
 #: data_queries.php
 #, php-format
 msgid "Data Queries [edit: %s]"
-msgstr "데이터 쿼리 [편집 :  %s]"
+msgstr "데이터 쿼리 [편집 : %s]"
 
 #: data_queries.php
 msgid "Data Queries [new]"
@@ -3258,7 +3246,7 @@ msgstr "데이터 쿼리 [신규]"
 
 #: data_queries.php
 msgid "Successfully located XML file"
-msgstr "XML 파일을 성공적으로 찾았습니다."
+msgstr "XML 파일을 성공적으로 찾았습니다"
 
 #: data_queries.php
 msgid "Could not locate XML file."
@@ -3283,7 +3271,7 @@ msgstr "XML 파일을 찾을 때까지 연결 읽기 전용"
 
 #: data_queries.php
 msgid "Mapped Graph Templates with Graphs are read only"
-msgstr "그래프가있는 매핑 된 그래프 템플릿은 읽기 전용입니다."
+msgstr "그래프가있는 매핑 된 그래프 템플릿은 읽기 전용입니다"
 
 #: data_queries.php
 msgid "No Graph Templates Defined."
@@ -3336,7 +3324,7 @@ msgstr "이 페이지에서 하트비트를 변경해도 기존 데이터 소스
 #: data_source_profiles.php
 msgid "Click 'Continue' to delete the following Data Source Profile"
 msgid_plural "Click 'Continue' to delete following Data Source Profiles"
-msgstr[0] "다음 데이터 소스 프로파일을 삭제하려면 &#39;계속&#39;을 클릭하십시오."
+msgstr[0] "다음 데이터 소스 프로파일을 삭제하려면 &#39;계속&#39;을 클릭하십시오"
 
 #: data_source_profiles.php
 msgid "Delete Data Source Profile"
@@ -3364,7 +3352,7 @@ msgstr "다음 데이터 소스 프로필 RRA를 삭제하려면 &#39;계속&#39
 #: data_source_profiles.php
 #, php-format
 msgid "Profile Name: %s"
-msgstr "프로필 이름 :  %s"
+msgstr "프로필 이름 : %s"
 
 #: data_source_profiles.php
 msgid "Remove Data Source Profile RRA"
@@ -3372,7 +3360,7 @@ msgstr "데이터 원본 프로필 RRA 제거"
 
 #: data_source_profiles.php
 msgid "Each Insert is New Row"
-msgstr "각 삽입은 새 행입니다."
+msgstr "각 삽입은 새 행입니다"
 
 #: data_source_profiles.php
 msgid "(Some Elements Read Only)"
@@ -3381,12 +3369,12 @@ msgstr "(일부 요소 읽기 전용)"
 #: data_source_profiles.php
 #, php-format
 msgid "RRA [edit: %s %s]"
-msgstr "RRA [편집 :  %s  %s]"
+msgstr "RRA [편집 : %s %s]"
 
 #: data_source_profiles.php
 #, php-format
 msgid "Data Source Profile [edit: %s]"
-msgstr "데이터 소스 프로필 [편집 :  %s]"
+msgstr "데이터 소스 프로필 [편집 : %s]"
 
 #: data_source_profiles.php
 msgid "Data Source Profile [new]"
@@ -3423,7 +3411,7 @@ msgstr "데이터 소스 프로필 항목 삭제"
 #: data_source_profiles.php
 #, php-format
 msgid "%s KBytes per Data Sources and %s Bytes for the Header"
-msgstr "데이터 원본 당  %s KBytes 및 헤더에 대한  %s 바이트"
+msgstr "데이터 원본 당 %s KBytes 및 헤더에 대한 %s 바이트"
 
 #: data_source_profiles.php
 #, php-format
@@ -3438,7 +3426,7 @@ msgstr "RRA 크기를 얻으려면 유효한 행 수를 입력하십시오."
 #: include/global_settings.php
 #, php-format
 msgid "%d Years"
-msgstr "% d 년"
+msgstr "%d년"
 
 #: data_source_profiles.php
 msgid "1 Year"
@@ -3447,28 +3435,28 @@ msgstr "1년"
 #: data_source_profiles.php include/global_arrays.php rrdcleaner.php
 #, php-format
 msgid "%d Month"
-msgstr "% d 개월"
+msgstr "%d개월"
 
 #: data_source_profiles.php include/global_arrays.php rrdcleaner.php
 #, php-format
 msgid "%d Months"
-msgstr "개월 % d 개월"
+msgstr "%d개월"
 
 #: data_source_profiles.php include/global_arrays.php rrdcleaner.php
 #, php-format
 msgid "%d Week"
-msgstr "% d주의"
+msgstr "%d주"
 
 #: data_source_profiles.php include/global_arrays.php
 #: include/global_settings.php rrdcleaner.php
 #, php-format
 msgid "%d Weeks"
-msgstr "% d 주"
+msgstr "%d주"
 
 #: data_source_profiles.php include/global_arrays.php
 #, php-format
 msgid "%d Day"
-msgstr "% d 일"
+msgstr "%d일"
 
 #: data_source_profiles.php include/global_arrays.php
 #: include/global_settings.php
@@ -3552,7 +3540,7 @@ msgstr "제안 된 이름 재 적용"
 #: data_sources.php
 msgid "Click 'Continue' to delete the following Data Source"
 msgid_plural "Click 'Continue' to delete following Data Sources"
-msgstr[0] "다음 데이터 소스를 삭제하려면 &#39;계속&#39;을 클릭하십시오."
+msgstr[0] "다음 데이터 소스를 삭제하려면 &#39;계속&#39;을 클릭하십시오"
 
 #: data_sources.php
 msgid "The following graph is using these data sources:"
@@ -3586,7 +3574,7 @@ msgstr[0] "이 데이터 소스에 대한 새 장치를 선택하고 &#39;계속
 
 #: data_sources.php
 msgid "New Device:"
-msgstr "새 기기"
+msgstr "새 기기:"
 
 #: data_sources.php
 msgid "Click 'Continue' to enable the following Data Source."
@@ -3621,12 +3609,12 @@ msgstr[0] "데이터 소스에 제안 된 이름 다시 적용"
 #: data_sources.php data_templates.php
 #, php-format
 msgid "Custom Data [data input: %s]"
-msgstr "맞춤 데이터 [데이터 입력 :  %s]"
+msgstr "맞춤 데이터 [데이터 입력 : %s]"
 
 #: data_sources.php
 #, php-format
 msgid "(From Device: %s)"
-msgstr "(장치에서 :  %s)"
+msgstr "(장치에서 : %s)"
 
 #: data_sources.php
 msgid "(From Data Template)"
@@ -3638,7 +3626,7 @@ msgstr "입력 한 내용 없음"
 
 #: data_sources.php data_templates.php
 msgid "No Input Fields for the Selected Data Input Source"
-msgstr "선택한 데이터 입력 소스에 대한 입력 필드가 없습니다."
+msgstr "선택한 데이터 입력 소스에 대한 입력 필드가 없습니다"
 
 #: data_sources.php
 msgid "The RRDfile could not be read, so no repairs were performed."
@@ -3657,7 +3645,7 @@ msgstr ""
 #: data_sources.php
 #, php-format
 msgid "Data Template Selection [edit: %s]"
-msgstr "데이터 템플릿 선택 [편집 :  %s]"
+msgstr "데이터 템플릿 선택 [편집 : %s]"
 
 #: data_sources.php
 msgid "Data Template Selection [new]"
@@ -3694,11 +3682,11 @@ msgstr "데이터 템플릿 편집."
 
 #: data_sources.php
 msgid "Disable Data Source."
-msgstr "데이터 원본 사용 안 함"
+msgstr "데이터 원본 사용 안 함."
 
 #: data_sources.php
 msgid "Enable Data Source."
-msgstr "데이터 소스 사용"
+msgstr "데이터 소스 사용."
 
 #: data_sources.php
 msgid "Selected Data Template"
@@ -3737,7 +3725,7 @@ msgstr "맞춤 데이터"
 #: data_sources.php
 #, php-format
 msgid "Data Source Item %s"
-msgstr "데이터 소스 항목  %s"
+msgstr "데이터 소스 항목 %s"
 
 #: data_sources.php data_templates.php package_import.php templates_import.php
 msgid "New"
@@ -3838,7 +3826,7 @@ msgstr "데이터 소스 없음"
 
 #: data_sources.php
 msgid "No Graphs"
-msgstr "그래프 "
+msgstr "그래프"
 
 #: data_sources.php include/global_arrays.php
 msgid "Aggregates"
@@ -3855,7 +3843,7 @@ msgstr "프로필 변경"
 #: data_templates.php
 #, php-format
 msgid "Field \"%s\" is missing an Output Field"
-msgstr "필드 \"%s\"에 출력 필드가 없습니다."
+msgstr "필드 \"%s\"에 출력 필드가 없습니다"
 
 #: data_templates.php
 msgid "Click 'Continue' to delete the following Data Template(s).  Any data sources attached to these templates will become individual Data Source(s) and all Templating benefits will be removed."
@@ -3896,7 +3884,7 @@ msgstr "데이터 원본 프로필 변경"
 #: data_templates.php
 #, php-format
 msgid "Data Templates [edit: %s]"
-msgstr "데이터 템플릿 [편집 :  %s]"
+msgstr "데이터 템플릿 [편집 : %s]"
 
 #: data_templates.php
 msgid "Edit Data Input Method."
@@ -3916,7 +3904,7 @@ msgstr "데이터 소스 생성 중에 사용자가 오른쪽 값을 무시할 �
 
 #: data_templates.php
 msgid "Data Templates in use can not be modified"
-msgstr "사용중인 데이터 템플릿은 수정할 수 없습니다."
+msgstr "사용중인 데이터 템플릿은 수정할 수 없습니다"
 
 #: data_templates.php
 #, php-format
@@ -3937,7 +3925,7 @@ msgstr "이 필드를 비워두면 값이 장치에서 파생됩니다."
 
 #: data_templates.php
 msgid "Custom Data Warning Message"
-msgstr "맞춤 데이터 [데이터 입력 :  %s]"
+msgstr "맞춤 데이터 [데이터 입력 : %s]"
 
 #: data_templates.php
 msgid "WARNING: Data Loss can Occur"
@@ -3945,7 +3933,7 @@ msgstr "경고: 데이터 손실이 발생할 수 있음"
 
 #: data_templates.php
 msgid "After you uncheck this checkbox and then Save the Data Template, any existing Data Sources based on this Data Template will loose their Custom Data.  This can result in broken Data Collection and Graphs"
-msgstr "이 확인란의 선택을 취소한 다음 데이터 템플릿 저장을 클릭하면 이 데이터 템플릿을 기반으로 하는 기존 데이터 소스의 사용자 지정 데이터가 손실됩니다. 이로 인해 데이터 수집 및 그래프가 손상될 수 있습니다."
+msgstr "이 확인란의 선택을 취소한 다음 데이터 템플릿 저장을 클릭하면 이 데이터 템플릿을 기반으로 하는 기존 데이터 소스의 사용자 지정 데이터가 손실됩니다. 이로 인해 데이터 수집 및 그래프가 손상될 수 있습니다"
 
 #: data_templates.php include/global_arrays.php
 msgid "Data Templates"
@@ -4012,7 +4000,7 @@ msgstr "GPRINT 프리셋"
 #: gprint_presets.php
 #, php-format
 msgid "GPRINT Presets [edit: %s]"
-msgstr "GPRINT 프리셋 [편집 :  %s]"
+msgstr "GPRINT 프리셋 [편집 : %s]"
 
 #: gprint_presets.php
 msgid "GPRINT Presets [new]"
@@ -4108,11 +4096,11 @@ msgstr "CSV"
 
 #: graph.php lib/html.php
 msgid "Edit Graph Template"
-msgstr "그래프 템플릿 편집."
+msgstr "그래프 템플릿 편집"
 
 #: graph.php
 msgid "Click to view just this Graph in Real-time"
-msgstr "실시간으로이 그래프 만 보려면 클릭하십시오."
+msgstr "실시간으로이 그래프 만 보려면 클릭하십시오"
 
 #: graph.php lib/html.php
 msgid "Utility View"
@@ -4170,11 +4158,11 @@ msgstr "썸네일"
 #: graph_realtime.php
 #, php-format
 msgid "%d seconds left."
-msgstr "% d 초 남았습니다."
+msgstr "%d 초 남았습니다."
 
 #: graph_realtime.php
 msgid " seconds left."
-msgstr "초 남았습니다."
+msgstr " 초 남았습니다."
 
 #: graph_templates.php
 msgid "Change Settings"
@@ -4249,7 +4237,7 @@ msgstr "그래프를 다음 그래프 템플릿과 동기화하려면 &#39;계�
 #: graph_templates.php
 #, php-format
 msgid "Graph Template Items [edit: %s]"
-msgstr "그래프 템플릿 항목 [편집 :  %s]"
+msgstr "그래프 템플릿 항목 [편집 : %s]"
 
 #: graph_templates.php include/global_arrays.php
 msgid "Graph Item Inputs"
@@ -4268,7 +4256,7 @@ msgstr "그래프 템플릿 없음"
 #: graph_templates.php
 #, php-format
 msgid "Graph Template [edit: %s]"
-msgstr "그래프 템플릿 [편집 :  %s]"
+msgstr "그래프 템플릿 [편집 : %s]"
 
 #: graph_templates.php
 msgid "Graph Template [new]"
@@ -4330,7 +4318,7 @@ msgstr ""
 #: graph_templates_inputs.php
 #, php-format
 msgid "Graph Item Inputs [edit graph: %s]"
-msgstr "그래프 항목 입력 [그래프 편집 :  %s]"
+msgstr "그래프 항목 입력 [그래프 편집 : %s]"
 
 #: graph_templates_inputs.php
 msgid "Associated Graph Items"
@@ -4339,7 +4327,7 @@ msgstr "연결된 그래프 항목"
 #: graph_templates_inputs.php
 #, php-format
 msgid "Item #%s"
-msgstr "항목 #  %s"
+msgstr "항목 # %s"
 
 #: graph_templates_items.php graphs_items.php
 msgid "Cur:"
@@ -4355,12 +4343,12 @@ msgstr "최대:"
 
 #: graph_templates_items.php graphs_items.php
 msgid "Min:"
-msgstr "최소"
+msgstr "최소:"
 
 #: graph_templates_items.php
 #, php-format
 msgid "Graph Template Items [edit graph: %s]"
-msgstr "그래프 템플릿 항목 [그래프 편집 :  %s]"
+msgstr "그래프 템플릿 항목 [그래프 편집 : %s]"
 
 #: graph_templates_items.php
 msgid "Data Template Filter"
@@ -4372,11 +4360,11 @@ msgstr "이 필터는 데이터 소스 드롭다운에 표시되는 데이터 �
 
 #: graph_view.php
 msgid "YOU DO NOT HAVE RIGHTS FOR TREE VIEW"
-msgstr "트리 뷰 (TREE VIEW)에 대한 권한이 없습니다."
+msgstr "트리 뷰 (TREE VIEW)에 대한 권한이 없습니다"
 
 #: graph_view.php
 msgid "YOU DO NOT HAVE RIGHTS FOR PREVIEW VIEW"
-msgstr "미리보기에는 권한이 없습니다."
+msgstr "미리보기에는 권한이 없습니다"
 
 #: graph_view.php
 msgid "Graph Preview Filters"
@@ -4388,7 +4376,7 @@ msgstr "[맞춤 그래프 목록 적용 - 목록에서 필터링]"
 
 #: graph_view.php
 msgid "YOU DO NOT HAVE RIGHTS FOR LIST VIEW"
-msgstr "당신은 목록보기에 대한 권리가 없다."
+msgstr "당신은 목록보기에 대한 권리가 없다"
 
 #: graph_view.php
 msgid "Graph List View Filters"
@@ -4455,7 +4443,7 @@ msgstr "소스 이름"
 
 #: graph_view.php graphs.php
 msgid "The Graph Template or Data Query that this Graph was based upon."
-msgstr "이 그래프가 기반으로 한 그래프 템플릿 또는 데이터 쿼리"
+msgstr "이 그래프가 기반으로 한 그래프 템플릿 또는 데이터 쿼리."
 
 #: graph_view.php graphs.php
 msgid "The size of this Graph when not in Preview mode."
@@ -4557,12 +4545,12 @@ msgstr "그래프 템플릿으로 변환"
 
 #: graphs.php
 msgid "No Device - "
-msgstr "장치"
+msgstr "장치 "
 
 #: graphs.php
 #, php-format
 msgid "Created graph: %s"
-msgstr "그래프 생성 :  %s"
+msgstr "그래프 생성 : %s"
 
 #: graphs.php lib/template.php
 msgid "ERROR: No Data Source associated. Check Template"
@@ -4710,12 +4698,12 @@ msgstr "그래프 항목 [새 항목]"
 #: graphs.php
 #, php-format
 msgid "Graph Items [edit: %s]"
-msgstr "그래프 항목 [편집 :  %s]"
+msgstr "그래프 항목 [편집 : %s]"
 
 #: graphs.php
 #, php-format
 msgid "Graph [edit: %s]"
-msgstr "그래프 [편집 :  %s]"
+msgstr "그래프 [편집 : %s]"
 
 #: graphs.php
 msgid "Graph [new]"
@@ -4736,7 +4724,7 @@ msgstr "그래프 템플릿 편집."
 #: graphs.php
 #, php-format
 msgid "Edit Data Source: '%s'."
-msgstr "데이터 소스 [ %s]"
+msgstr "데이터 소스 [ %s]."
 
 #: graphs.php
 msgid "Unlock Graph."
@@ -4781,7 +4769,7 @@ msgstr "[모든 장치]의 새로운 그래프"
 
 #: graphs.php
 msgid "Graph Management [ Non Device Based ]"
-msgstr "사용자 그룹 관리 [편집 :  %s]"
+msgstr "사용자 그룹 관리 [편집 : %s]"
 
 #: graphs.php
 #, php-format
@@ -4820,7 +4808,7 @@ msgstr "데이터 템플릿"
 #: graphs_items.php
 #, php-format
 msgid "Graph Items [graph: %s]"
-msgstr "그래프 항목 [그래프 :  %s]"
+msgstr "그래프 항목 [그래프 : %s]"
 
 #: graphs_items.php
 msgid "Choose the Data Source to associate with this Graph Item."
@@ -4886,7 +4874,7 @@ msgstr "모든 행 선택"
 #: graphs_new.php
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id of '%s'"
-msgstr "ID가 '%s'인 데이터 쿼리 '%s'에 대한 데이터 쿼리 리소스 XML 파일을 구문 분석하는 동안 오류가 발생했습니다."
+msgstr "ID가 '%s'인 데이터 쿼리 '%s'에 대한 데이터 쿼리 리소스 XML 파일을 구문 분석하는 동안 오류가 발생했습니다"
 
 #: graphs_new.php
 #, php-format
@@ -4896,7 +4884,7 @@ msgstr "ID가 '%s' 인 데이터 쿼리 '%s' 에 대한 데이터 쿼리 리소�
 #: graphs_new.php
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'"
-msgstr "ID가 '%s'인 데이터 쿼리 '%s'에 대한 데이터 쿼리 리소스 XML 파일을 구문 분석하는 동안 오류가 발생했습니다."
+msgstr "ID가 '%s'인 데이터 쿼리 '%s'에 대한 데이터 쿼리 리소스 XML 파일을 구문 분석하는 동안 오류가 발생했습니다"
 
 #: graphs_new.php
 #, php-format
@@ -4913,7 +4901,7 @@ msgstr "이 데이터 쿼리는 0 행을 반환했으며이 데이터 쿼리를 
 
 #: graphs_new.php
 msgid "You can run this Data Query in debug mode"
-msgstr "이 데이터 쿼리를 디버그 모드로 실행할 수 있습니다."
+msgstr "이 데이터 쿼리를 디버그 모드로 실행할 수 있습니다"
 
 #: graphs_new.php
 msgid "The index is disabled due to the Data Query having no associated Graph Templates."
@@ -4954,9 +4942,8 @@ msgid "Cacti GitHub Site"
 msgstr "Cacti GitHub 사이트"
 
 #: help.php
-#, fuzzy
 msgid "Open a ticket at "
-msgstr "문의하기"
+msgstr "문의하기 "
 
 #: help.php
 #, php-format
@@ -4986,7 +4973,7 @@ msgstr "트리에 장치 놓기"
 
 #: host.php
 msgid "Data Query Re-indexed."
-msgstr "데이터 쿼리 색인"
+msgstr "데이터 쿼리 색인."
 
 #: host.php
 msgid "Device Data Query Re-indexed.  Verbose output displayed."
@@ -5011,7 +4998,7 @@ msgstr "오류 : 장치 ["
 #: host.php
 #, php-format
 msgid "Device Reindex Completed in %0.2f seconds.  There were %d items updated."
-msgstr "장치 재 색인이 % 0.2f 초 안에 완료되었습니다. % d 개의 항목이 업데이트되었습니다."
+msgstr "장치 재 색인이 %0.2f 초 안에 완료되었습니다. %d 개의 항목이 업데이트되었습니다."
 
 #: host.php
 #, php-format
@@ -5020,7 +5007,7 @@ msgstr "'%s' 보고서에 일부 장치를 추가할 수 없습니다"
 
 #: host.php
 msgid "Click 'Continue' to enable the following Device(s)."
-msgstr "다음 장치를 사용하려면 &#39;계속&#39;을 클릭하십시오."
+msgstr "다음 장치를 활성화하려면 '계속'을 클릭하십시오."
 
 #: host.php
 msgid "Enable Device(s)"
@@ -5028,7 +5015,7 @@ msgstr "장치 사용"
 
 #: host.php
 msgid "Click 'Continue' to disable the following Device(s)."
-msgstr "다음 장치를 사용 중지하려면 &#39;계속&#39;을 클릭하십시오."
+msgstr "다음 장치를 비활성화하려면 '계속'을 클릭하십시오."
 
 #: host.php
 msgid "Disable Device(s)"
@@ -5064,7 +5051,7 @@ msgstr "장치 동기화"
 
 #: host.php
 msgid "Click 'Continue' to delete the following Device(s)."
-msgstr "다음 장치를 삭제하려면 &#39;계속&#39;을 클릭하십시오."
+msgstr "다음 장치를 삭제하려면 '계속'을 클릭하십시오."
 
 #: host.php
 msgid "Leave all Graph(s) and Data Source(s) untouched.  Data Source(s) will be disabled however."
@@ -5105,7 +5092,7 @@ msgstr "기기 [신품]"
 #: host.php
 #, php-format
 msgid "Device [edit: %s]"
-msgstr "장치 [편집 :  %s]"
+msgstr "장치 [편집 : %s]"
 
 #: host.php
 msgid "Disable Device Debug"
@@ -5149,11 +5136,11 @@ msgstr "편집"
 
 #: host.php
 msgid "Is Being Graphed"
-msgstr "도둑질하고있다."
+msgstr "도둑질하고있다"
 
 #: host.php
 msgid "Not Being Graphed"
-msgstr "도망 간다."
+msgstr "도망 간다"
 
 #: host.php
 msgid "Delete Graph Template Association"
@@ -5177,7 +5164,7 @@ msgstr "데이터 쿼리 디버그 정보"
 
 #: host.php lib/functions.php tree.php user_admin.php user_group_admin.php
 msgid "Copy"
-msgstr "복사"
+msgstr "사본"
 
 #: host.php
 msgid "Hide"
@@ -5199,7 +5186,7 @@ msgstr "작업"
 #: host.php
 #, php-format
 msgid " [%d Items, %d Rows]"
-msgstr "[% d 개 항목, % d 개 행]"
+msgstr " [%d 개 항목, %d 개 행]"
 
 #: host.php
 msgid "Fail"
@@ -5394,7 +5381,7 @@ msgstr "다음 그래프 템플리트를 삭제하려면 &#39;계속&#39;을 클
 #: host_templates.php
 #, php-format
 msgid "Graph Template Name: %s"
-msgstr "그래프 템플릿 이름 :  %s"
+msgstr "그래프 템플릿 이름 : %s"
 
 #: host_templates.php
 msgid "Click 'Continue' to delete the following Data Queries will be disassociated from the Device Template."
@@ -5403,12 +5390,12 @@ msgstr "&#39;계속&#39;을 클릭하여 다음 데이터를 삭제하면 장치
 #: host_templates.php
 #, php-format
 msgid "Data Query Name: %s"
-msgstr "데이터 쿼리 이름 :  %s"
+msgstr "데이터 쿼리 이름 : %s"
 
 #: host_templates.php
 #, php-format
 msgid "Device Templates [edit: %s]"
-msgstr "장치 템플릿 [편집 :  %s]"
+msgstr "장치 템플릿 [편집 : %s]"
 
 #: host_templates.php
 msgid "Device Templates [new]"
@@ -5488,7 +5475,7 @@ msgstr "장치 템플릿을 찾을 수 없음"
 
 #: include/auth.php
 msgid "Not Logged In"
-msgstr "로그인하지 않았습니다."
+msgstr "로그인하지 않았습니다"
 
 #: include/auth.php
 msgid "You must be logged in to access this area of Cacti."
@@ -5504,7 +5491,7 @@ msgstr "다시 로그인"
 
 #: include/auth.php lib/functions.php permission_denied.php
 msgid "Permission Denied"
-msgstr "사용 권한이 거부되었습니다."
+msgstr "사용 권한이 거부되었습니다"
 
 #: include/auth.php lib/functions.php permission_denied.php
 msgid "If you feel that this is an error. Please contact your Cacti Administrator."
@@ -5520,7 +5507,7 @@ msgstr "설치 진행 중"
 
 #: include/auth.php
 msgid "Only Cacti Administrators with Install/Upgrade privilege may login at this time"
-msgstr "현재 설치 / 업그레이드 권한이있는 Cacti 관리자 만 로그인 할 수 있습니다."
+msgstr "현재 설치 / 업그레이드 권한이있는 Cacti 관리자 만 로그인 할 수 있습니다"
 
 #: include/auth.php
 msgid "There is an Installation or Upgrade in progress."
@@ -5548,7 +5535,7 @@ msgstr ""
 
 #: include/global.php
 msgid "The Main Data Collector has returned to an Online Status"
-msgstr "이 데이터 수집기가 Cacti 주요 사이트와 완전히 동기화 된 마지막 시간입니다."
+msgstr "이 데이터 수집기가 Cacti 주요 사이트와 완전히 동기화 된 마지막 시간입니다"
 
 #: include/global.php
 msgid "The Main Data Collector has gone to an Offline or Recovering Status"
@@ -5564,7 +5551,7 @@ msgstr "저장 실패."
 
 #: include/global_arrays.php
 msgid "Save Failed due to field input errors (Check red fields)."
-msgstr "입력 오류로 인해 저장 실패 (빨간색 필드 확인)"
+msgstr "입력 오류로 인해 저장 실패 (빨간색 필드 확인)."
 
 #: include/global_arrays.php
 msgid "Passwords do not match, please retype."
@@ -5588,7 +5575,7 @@ msgstr "강조 표시된 디렉토리가 없습니다. 올바른 디렉토리를
 
 #: include/global_arrays.php
 msgid "The Cacti log file must have the extension '.log'"
-msgstr "Cacti 로그 파일의 확장자는 &#39;.log&#39;여야합니다."
+msgstr "Cacti 로그 파일의 확장자는 &#39;.log&#39;여야합니다"
 
 #: include/global_arrays.php
 msgid "Data Input for method does not appear to be whitelisted."
@@ -5604,11 +5591,11 @@ msgstr "이미 사용중인 사용자 이름."
 
 #: include/global_arrays.php
 msgid "The SNMP v3 Privacy Passphrases do not match"
-msgstr "SNMP v3 개인 정보 보안 문구가 일치하지 않습니다."
+msgstr "SNMP v3 개인 정보 보안 문구가 일치하지 않습니다"
 
 #: include/global_arrays.php
 msgid "The SNMP v3 Authentication Passphrases do not match"
-msgstr "SNMP v3 인증 암호가 일치하지 않습니다."
+msgstr "SNMP v3 인증 암호가 일치하지 않습니다"
 
 #: include/global_arrays.php
 msgid "XML: Cacti version does not exist."
@@ -5756,7 +5743,7 @@ msgstr "지정한 로그 파일이 Cacti 보관 파일이며 삭제되었습니�
 
 #: include/global_arrays.php
 msgid "Cacti log purged successfully"
-msgstr "Cacti 로그가 성공적으로 제거되었습니다."
+msgstr "Cacti 로그가 성공적으로 제거되었습니다"
 
 #: include/global_arrays.php
 msgid "If you force a password change, you must also allow the user to change their password."
@@ -5768,7 +5755,7 @@ msgstr "암호를 변경할 수 없습니다."
 
 #: include/global_arrays.php
 msgid "Unable to determine size of password field, please check permissions of db user"
-msgstr "암호 필드의 크기를 확인할 수 없습니다. db 사용자의 권한을 확인하십시오."
+msgstr "암호 필드의 크기를 확인할 수 없습니다. db 사용자의 권한을 확인하십시오"
 
 #: include/global_arrays.php
 #, fuzzy
@@ -5786,11 +5773,11 @@ msgstr "암호가 성공적으로 변경되었습니다."
 
 #: include/global_arrays.php
 msgid "Unable to clear log, no write permissions"
-msgstr "로그를 지울 수 없으며 쓰기 권한이 없습니다."
+msgstr "로그를 지울 수 없으며 쓰기 권한이 없습니다"
 
 #: include/global_arrays.php
 msgid "Unable to clear log, file does not exist"
-msgstr "로그를 지울 수 없습니다. 파일이 없습니다."
+msgstr "로그를 지울 수 없습니다. 파일이 없습니다"
 
 #: include/global_arrays.php
 msgid "CSRF Timeout, refreshing page."
@@ -5810,7 +5797,7 @@ msgstr "오프라인 작동을 위해 데이터 수집기 동기화"
 
 #: include/global_arrays.php
 msgid "Data Collector(s) not found when attempting synchronization"
-msgstr "동기화를 시도 할 때 데이터 수집기를 찾을 수 없습니다."
+msgstr "동기화를 시도 할 때 데이터 수집기를 찾을 수 없습니다"
 
 #: include/global_arrays.php
 msgid "Unable to establish MySQL connection with Remote Data Collector."
@@ -5854,11 +5841,11 @@ msgstr "보고서 항목 저장 실패"
 
 #: include/global_arrays.php
 msgid "Graph was not found attempting to Add to Report"
-msgstr "보고서에 추가하려고 시도한 그래프가 없습니다."
+msgstr "보고서에 추가하려고 시도한 그래프가 없습니다"
 
 #: include/global_arrays.php
 msgid "Unable to Add Graphs.  Current user is not owner"
-msgstr "그래프를 추가 할 수 없습니다. 현재 사용자는 소유자가 아닙니다."
+msgstr "그래프를 추가 할 수 없습니다. 현재 사용자는 소유자가 아닙니다"
 
 #: include/global_arrays.php
 msgid "Unable to Add all Graphs.  See error message for details."
@@ -6019,7 +6006,7 @@ msgstr "사용 중이 아닌"
 #: include/global_arrays.php
 #, php-format
 msgid "Version %d"
-msgstr "버전 % d"
+msgstr "버전 %d"
 
 #: include/global_arrays.php
 msgid "[None]"
@@ -6057,7 +6044,7 @@ msgstr "DES"
 
 #: include/global_arrays.php
 msgid "AES"
-msgstr "DES"
+msgstr "AES"
 
 #: include/global_arrays.php
 msgid "AES-128"
@@ -6144,7 +6131,7 @@ msgstr "선택한 폴러 간격"
 #: include/global_arrays.php
 #, php-format
 msgid "Every %d Seconds"
-msgstr "% d 초마다"
+msgstr "%d 초마다"
 
 #: include/global_arrays.php
 msgid "Every Minute"
@@ -6162,7 +6149,7 @@ msgstr "매시간"
 #: include/global_arrays.php include/global_settings.php
 #, php-format
 msgid "Every %d Hours"
-msgstr "% d 시간마다"
+msgstr "%d시간마다"
 
 #: include/global_arrays.php
 #, php-format
@@ -6177,7 +6164,7 @@ msgstr "%0.1f분"
 #: include/global_arrays.php include/global_settings.php rrdcleaner.php
 #, php-format
 msgid "%d Year"
-msgstr "% d 년"
+msgstr "%d년"
 
 #: include/global_arrays.php
 msgid "Disabled/Manual"
@@ -6381,7 +6368,7 @@ msgstr "데이터 수집기"
 
 #: include/global_arrays.php
 msgid "Aggregate"
-msgstr "Legacy)"
+msgstr "집계"
 
 #: include/global_arrays.php include/global_settings.php
 msgid "Automation"
@@ -6441,7 +6428,7 @@ msgstr "사용자 도메인"
 
 #: include/global_arrays.php
 msgid "Utilities"
-msgstr "도구 "
+msgstr "도구"
 
 #: include/global_arrays.php
 msgid "System Utilities"
@@ -6558,7 +6545,7 @@ msgstr "모든 라인"
 #: include/global_arrays.php
 #, php-format
 msgid "%d Lines"
-msgstr "% d 개 라인"
+msgstr "%d줄"
 
 #: include/global_arrays.php
 msgid "Console Access"
@@ -6687,7 +6674,7 @@ msgstr "최근"
 #: include/global_arrays.php
 #, php-format
 msgid "Last %d Hours"
-msgstr "마지막 % d 시간"
+msgstr "최근 %d시간"
 
 #: include/global_arrays.php
 msgid "Last Day"
@@ -6696,7 +6683,7 @@ msgstr "Last Day"
 #: include/global_arrays.php
 #, php-format
 msgid "Last %d Days"
-msgstr "마지막 % d 일"
+msgstr "마지막 %d 일"
 
 #: include/global_arrays.php
 msgid "Last Week"
@@ -6705,7 +6692,7 @@ msgstr "지난 주"
 #: include/global_arrays.php
 #, php-format
 msgid "Last %d Weeks"
-msgstr "지난 % d 주"
+msgstr "최근 %d주"
 
 #: include/global_arrays.php
 msgid "Last Month"
@@ -6714,7 +6701,7 @@ msgstr "지난 달"
 #: include/global_arrays.php
 #, php-format
 msgid "Last %d Months"
-msgstr "지난 % d 개월"
+msgstr "최근 %d개월"
 
 #: include/global_arrays.php
 msgid "Last Year"
@@ -6723,7 +6710,7 @@ msgstr "지난해"
 #: include/global_arrays.php
 #, php-format
 msgid "Last %d Years"
-msgstr "마지막 % d 년"
+msgstr "마지막 %d 년"
 
 #: include/global_arrays.php
 msgid "Day Shift"
@@ -6764,7 +6751,7 @@ msgstr "작년"
 #: include/global_arrays.php
 #, php-format
 msgid "%d Min"
-msgstr "% d 분"
+msgstr "%d 분"
 
 #: include/global_arrays.php
 msgid "Month Number, Day, Year"
@@ -6797,7 +6784,7 @@ msgstr "부스트 후"
 #: include/global_arrays.php
 #, php-format
 msgid "%d MBytes"
-msgstr "% d MBytes"
+msgstr "%d MBytes"
 
 #: include/global_arrays.php
 msgid "1 GByte"
@@ -6811,7 +6798,7 @@ msgstr "%s GBytes"
 #: include/global_arrays.php
 #, php-format
 msgid "%d GBytes"
-msgstr "% d GBytes"
+msgstr "%d GBytes"
 
 #: include/global_arrays.php
 msgid "2,000 Data Source Items"
@@ -6855,7 +6842,7 @@ msgstr "2 시간"
 
 #: include/global_arrays.php
 msgid "4 Hours"
-msgstr "4 시간"
+msgstr "4시간"
 
 #: include/global_arrays.php
 msgid "6 Hours"
@@ -6869,7 +6856,7 @@ msgstr "%s 시간"
 #: include/global_arrays.php
 #, php-format
 msgid "%d GByte"
-msgstr "% d GBytes"
+msgstr "%d GBytes"
 
 #: include/global_arrays.php utilities.php
 msgid "Unlimited"
@@ -6887,7 +6874,7 @@ msgstr "1 메가 바이트"
 #: include/global_arrays.php
 #, php-format
 msgid "%d Megabytes"
-msgstr "% d 메가 바이트"
+msgstr "%d 메가 바이트"
 
 #: include/global_arrays.php
 msgid "Send Now"
@@ -6983,7 +6970,7 @@ msgstr "월, 요일"
 
 #: include/global_arrays.php
 msgid "Year(s)"
-msgstr "년 "
+msgstr "년"
 
 #: include/global_arrays.php
 msgid "Keep Graph Types"
@@ -7071,7 +7058,7 @@ msgstr "로 시작"
 
 #: include/global_arrays.php
 msgid "does not begin with"
-msgstr "~으로 시작하지 않습니다."
+msgstr "~으로 시작하지 않습니다"
 
 #: include/global_arrays.php
 msgid "ends with"
@@ -7119,7 +7106,7 @@ msgstr "비었다"
 
 #: include/global_arrays.php
 msgid "is not empty"
-msgstr "비어 있지 않습니다."
+msgstr "비어 있지 않습니다"
 
 #: include/global_arrays.php
 msgid "matches regular expression"
@@ -7127,7 +7114,7 @@ msgstr "규칙과 일치하는"
 
 #: include/global_arrays.php
 msgid "does not match regular expression"
-msgstr "정규 표현식과 일치하지 않습니다."
+msgstr "정규 표현식과 일치하지 않습니다"
 
 #: include/global_arrays.php
 msgid "Fixed String"
@@ -7148,7 +7135,7 @@ msgstr "매주"
 #: include/global_arrays.php
 #, php-format
 msgid "Every %d Weeks"
-msgstr "% d 주마다"
+msgstr "%d주마다"
 
 #: include/global_arrays.php
 msgctxt "A short textual representation of a month, three letters"
@@ -7391,7 +7378,7 @@ msgstr "제한됨"
 
 #: include/global_arrays.php
 msgid "[Success]"
-msgstr "성공!"
+msgstr "[성공]"
 
 #: include/global_arrays.php
 msgid "[Skipped]"
@@ -7756,7 +7743,7 @@ msgstr "폴링 간격"
 
 #: include/global_form.php
 msgid "The frequency that data will be collected from the Data Source?"
-msgstr "데이터가 데이터 소스에서 수집되는 빈도"
+msgstr "데이터가 데이터 소스에서 수집되는 빈도?"
 
 #: include/global_form.php
 msgid "How long can data be missing before RRDtool records unknown data.  Increase this value if your Data Source is unstable and you wish to carry forward old data rather than show gaps in your graphs.  This value is multiplied by the X-Files Factor to determine the actual amount of time."
@@ -7920,7 +7907,7 @@ msgstr "특수 유형 코드"
 #: include/global_form.php
 #, php-format
 msgid "If this field should be treated specially by host templates, indicate so here. Valid keywords for this field are %s"
-msgstr "이 입력란을 호스트 템플릿별로 특별히 처리해야하는 경우 여기에서 지정하십시오. 이 입력란에 사용할 수있는 키워드는  %s입니다."
+msgstr "이 입력란을 호스트 템플릿별로 특별히 처리해야하는 경우 여기에서 지정하십시오. 이 입력란에 사용할 수있는 키워드는 %s입니다"
 
 #: include/global_form.php
 msgid "The name given to this data template."
@@ -8096,19 +8083,19 @@ msgstr "용도 <br> --alt-autoscale을 절대 최소값과 최대 값으로 확�
 
 #: include/global_form.php
 msgid "Use --alt-autoscale (ignoring given limits)"
-msgstr "--alt-autoscale을 사용하십시오 (주어진 제한 무시)."
+msgstr "--alt-autoscale을 사용하십시오 (주어진 제한 무시)"
 
 #: include/global_form.php
 msgid "Use --alt-autoscale-max (accepting a lower limit)"
-msgstr "--alt-autoscale-max (하한 허용)를 사용하십시오."
+msgstr "--alt-autoscale-max (하한 허용)를 사용하십시오"
 
 #: include/global_form.php
 msgid "Use --alt-autoscale-min (accepting an upper limit)"
-msgstr "--alt-autoscale-min을 사용하십시오 (상한값 허용)."
+msgstr "--alt-autoscale-min을 사용하십시오 (상한값 허용)"
 
 #: include/global_form.php
 msgid "Use --alt-autoscale (accepting both limits, RRDtool default)"
-msgstr "--alt-autoscale을 사용하십시오 (RRDtool 기본값 두 가지 모두 허용)."
+msgstr "--alt-autoscale을 사용하십시오 (RRDtool 기본값 두 가지 모두 허용)"
 
 #: include/global_form.php
 msgid "Logarithmic Scaling (--logarithmic)"
@@ -8148,7 +8135,7 @@ msgstr "하한선 (- 하한선)"
 
 #: include/global_form.php
 msgid "The minimum vertical value for the graph."
-msgstr "그래프의 최소 수직 치"
+msgstr "그래프의 최소 수직 치."
 
 #: include/global_form.php
 msgid "Grid Options"
@@ -8221,7 +8208,7 @@ msgstr "오른쪽 축 형식 (--right-axis-format &lt;format&gt;)"
 #: include/global_form.php
 #, php-format
 msgid "By default, the format of the axis labels gets determined automatically.  If you want to do this yourself, use this option with the same %lf arguments you know from the PRINT and GPRINT commands."
-msgstr "기본적으로 축 레이블의 형식은 자동으로 결정됩니다. 직접하고 싶다면이 옵션을 PRINT와 GPRINT 명령에서 알 수있는 것과 같은 % lf 인수와 함께 사용하십시오."
+msgstr "기본적으로 축 레이블의 형식은 자동으로 결정됩니다. 직접하고 싶다면이 옵션을 PRINT와 GPRINT 명령에서 알 수있는 것과 같은 %lf 인수와 함께 사용하십시오."
 
 #: include/global_form.php
 msgid "Right Axis Formatter (--right-axis-formatter &lt;formatname&gt;)"
@@ -8389,7 +8376,7 @@ msgstr "선 너비 (10 진수)"
 
 #: include/global_form.php
 msgid "In case LINE was chosen, specify width of line here.  You must include a decimal precision, for example 2.00"
-msgstr "LINE을 선택한 경우 여기에서 선의 너비를 지정하십시오. 소수점 자릿수 (예 : 2.00)를 포함해야합니다."
+msgstr "LINE을 선택한 경우 여기에서 선의 너비를 지정하십시오. 소수점 자릿수 (예 : 2.00)를 포함해야합니다"
 
 #: include/global_form.php
 msgid "Dashes (dashes[=on_s[,off_s[,on_s,off_s]...]])"
@@ -8615,7 +8602,7 @@ msgstr "여기에 사용자 계정 별 옵션을 설정하십시오."
 
 #: include/global_form.php
 msgid "Must Change Password at Next Login"
-msgstr "다음 로그인시 암호를 변경해야합니다."
+msgstr "다음 로그인시 암호를 변경해야합니다"
 
 #: include/global_form.php
 msgid "Maintain Custom Graph and User Settings"
@@ -8783,7 +8770,7 @@ msgstr "소스 그래프 GPRINT 제목 텍스트를 집계 그래프와 함께 �
 
 #: include/global_form.php
 msgid "Use this Option to create e.g. STACKed graphs.<br>AREA/STACK: 1st graph keeps AREA/STACK items, others convert to STACK<br>LINE1: all items convert to LINE1 items<br>LINE2: all items convert to LINE2 items<br>LINE3: all items convert to LINE3 items"
-msgstr "STACKed 그래프를 생성하려면이 옵션을 사용하십시오. <br> AREA / STACK : 첫 번째 그래프는 AREA / STACK 항목을 유지하고 다른 그래프는 STACK으로 변환합니다. <br> LINE1 : 모든 항목이 LINE1 항목으로 변환됩니다. <br> LINE2 : 모든 항목이 LINE2 항목으로 변환됩니다. <br> LINE3 : 모든 항목이 LINE3 항목으로 변환됩니다."
+msgstr "STACKed 그래프를 생성하려면이 옵션을 사용하십시오. <br> AREA / STACK : 첫 번째 그래프는 AREA / STACK 항목을 유지하고 다른 그래프는 STACK으로 변환합니다. <br> LINE1 : 모든 항목이 LINE1 항목으로 변환됩니다. <br> LINE2 : 모든 항목이 LINE2 항목으로 변환됩니다. <br> LINE3 : 모든 항목이 LINE3 항목으로 변환됩니다"
 
 #: include/global_form.php
 msgid "Totaling"
@@ -8883,7 +8870,7 @@ msgstr "이 규칙 항목에 사용될 필드 이름."
 
 #: include/global_form.php
 msgid "Operator."
-msgstr "운영자"
+msgstr "운영자."
 
 #: include/global_form.php
 msgid "Matching Pattern"
@@ -8895,7 +8882,7 @@ msgstr "일치시킬 패턴입니다."
 
 #: include/global_form.php
 msgid "Sequence."
-msgstr "순서"
+msgstr "순서."
 
 #: include/global_form.php
 msgid "A useful name for this Rule."
@@ -8975,19 +8962,19 @@ msgstr "트리 헤더로 사용할 대체 문자열 패턴. <br> 첫 번째 경�
 
 #: include/global_languages.php
 msgid " T"
-msgstr "제목"
+msgstr " 제목"
 
 #: include/global_languages.php
 msgid " G"
-msgstr "G"
+msgstr " G"
 
 #: include/global_languages.php
 msgid " M"
-msgstr "M"
+msgstr " M"
 
 #: include/global_languages.php
 msgid " K"
-msgstr "K"
+msgstr " K"
 
 #: include/global_settings.php
 msgid "Paths"
@@ -9183,7 +9170,7 @@ msgstr "RRDfile 자동 정리"
 
 #: include/global_settings.php
 msgid "Automatically archive or delete RRDfiles when their corresponding Data Sources are removed from Cacti"
-msgstr "Cacti에서 해당 데이터 소스가 제거되면 RRD 파일을 자동으로 보관 또는 삭제합니다."
+msgstr "Cacti에서 해당 데이터 소스가 제거되면 RRD 파일을 자동으로 보관 또는 삭제합니다"
 
 #: include/global_settings.php
 msgid "RRDfile Auto Clean Method"
@@ -9203,7 +9190,7 @@ msgstr "아카이브 디렉토리"
 
 #: include/global_settings.php
 msgid "This is the directory where RRDfiles are <strong>moved</strong> for archiving"
-msgstr "이것은 아카이브를 위해 RRD 파일이 <strong>이동</strong> 되는 디렉토리입니다."
+msgstr "이것은 아카이브를 위해 RRD 파일이 <strong>이동</strong> 되는 디렉토리입니다"
 
 #: include/global_settings.php
 msgid "Log Settings"
@@ -9367,7 +9354,7 @@ msgstr "기타 설정"
 
 #: include/global_settings.php
 msgid "Show only site specific locations"
-msgstr "그래프 특정 옵션을 여기에 설정하십시오."
+msgstr "그래프 특정 옵션을 여기에 설정하십시오"
 
 #: include/global_settings.php
 msgid "Show only locations that are available at a devices selected site."
@@ -9443,7 +9430,7 @@ msgstr "이 옵션을 선택하면 양식 및 설정 도움말이 인라인으�
 
 #: include/global_settings.php
 msgid "Local Page Help Only"
-msgstr "도와주세요."
+msgstr "도와주세요"
 
 #: include/global_settings.php
 msgid "By default Cacti page help is located at docs.cacti.net.  However, if your system does not have access to the Internet, you may download the documentation locally in HTML format and host it in the 'docs' location of you Cacti server.  If you choose only to leverage the local location for page help documentation, check this checkbox."
@@ -9749,7 +9736,7 @@ msgstr "인증 패스 프레이즈 (v3)"
 
 #: include/global_settings.php
 msgid "Default SNMP v3 Authorization Passphrase for all new Devices."
-msgstr "모든 새 장치에 대한 기본 SNMP v3 인증 암호"
+msgstr "모든 새 장치에 대한 기본 SNMP v3 인증 암호."
 
 #: include/global_settings.php
 msgid "Privacy Protocol (v3)"
@@ -9761,11 +9748,11 @@ msgstr "모든 새 장치에 대한 기본 SNMPv3 개인 정보 프로토콜."
 
 #: include/global_settings.php
 msgid "Privacy Passphrase (v3)"
-msgstr "Privacy Passphrase (v3)."
+msgstr "Privacy Passphrase (v3)"
 
 #: include/global_settings.php
 msgid "Default SNMPv3 Privacy Passphrase for all new Devices."
-msgstr "모든 새 장치에 대한 기본 SNMPv3 개인 정보 보호문"
+msgstr "모든 새 장치에 대한 기본 SNMPv3 개인 정보 보호문."
 
 #: include/global_settings.php
 msgid "Enter the SNMP v3 Context for all new Devices."
@@ -10047,7 +10034,7 @@ msgstr "캐시 디렉토리"
 
 #: include/global_settings.php
 msgid "This is the location, on the web server where the RRDfiles and PNG files will be cached.  This cache will be managed by the poller.  Make sure you have the correct read and write permissions on this folder"
-msgstr "이 위치는 RRD 파일과 PNG 파일이 캐시 될 웹 서버의 위치입니다. 이 캐시는 폴러가 관리합니다. 이 폴더에 대해 올바른 읽기 및 쓰기 권한이 있는지 확인하십시오."
+msgstr "이 위치는 RRD 파일과 PNG 파일이 캐시 될 웹 서버의 위치입니다. 이 캐시는 폴러가 관리합니다. 이 폴더에 대해 올바른 읽기 및 쓰기 권한이 있는지 확인하십시오"
 
 #: include/global_settings.php
 msgid "RRDtool Graph Options"
@@ -10099,7 +10086,7 @@ msgstr "Theme 기반의 폰트 컨트롤을 사용하지 않을 때, Pangon font
 
 #: include/global_settings.php
 msgid "Enter Valid Font Config Value"
-msgstr "유효한 글꼴 구성 값을 입력하십시오."
+msgstr "유효한 글꼴 구성 값을 입력하십시오"
 
 #: include/global_settings.php
 msgid "Title Font Size"
@@ -10356,7 +10343,7 @@ msgstr "원격 데이터 수집기 상태 :"
 
 #: include/global_settings.php
 msgid "Invalid Data Logging"
-msgstr "데이터 로깅이 잘못되었습니다."
+msgstr "데이터 로깅이 잘못되었습니다"
 
 #: include/global_settings.php
 msgid "How would you like the Data Collector output errors logged?  Options include: 'Detailed' which details every error, 'Summary' which provides the number of output errors per Device, and 'None', which does not provide error counts."
@@ -10399,9 +10386,8 @@ msgid "At what frequency do you wish to Re-Index all Devices.  This Re-Index wil
 msgstr "모든 장치를 몇 빈도로 재검색하시겠습니까? 이 재인덱스는 선택한 빈도로 자정에 발생합니다."
 
 #: include/global_settings.php
-#, fuzzy
 msgid "Weekly on Sunday"
-msgstr "        // 매주 일요일마다"
+msgstr "매주 일요일"
 
 #: include/global_settings.php
 msgid "Monthly on Sunady"
@@ -10468,7 +10454,7 @@ msgstr "1 프로세스"
 #: include/global_settings.php
 #, php-format
 msgid "%d Processes"
-msgstr "프로세스 % d 개"
+msgstr "프로세스 %d개"
 
 #: include/global_settings.php
 msgid "Maintenance Background Generation Timeout"
@@ -10655,7 +10641,7 @@ msgstr "1 변경"
 #: include/global_settings.php
 #, php-format
 msgid "%d Changes"
-msgstr "% d 개 변경"
+msgstr "%d 개 변경"
 
 #: include/global_settings.php
 msgid "Account Locking"
@@ -10676,7 +10662,7 @@ msgstr "1 회 시도"
 #: include/global_settings.php
 #, php-format
 msgid "%d Attempts"
-msgstr "% d 회 시도"
+msgstr "%d 회 시도"
 
 #: include/global_settings.php
 msgid "Auto Unlock"
@@ -10850,7 +10836,7 @@ msgstr "검색 필터"
 
 #: include/global_settings.php
 msgid "Search filter to use to locate the user in the LDAP directory, such as for windows: <i>'(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))'</i> or for OpenLDAP: <i>'(&(objectClass=account)(uid=&lt;username&gt))'</i>.  '&lt;username&gt' is replaced with the username that was supplied at the login prompt. "
-msgstr "window : <i>&#39;(&amp; (objectclass = user) (objectcategory = user) (userPrincipalName = &lt;username&gt; *))&#39;</i> 또는 OpenLDAP의 경우와 같이 LDAP 디렉토리에서 사용자를 찾는 데 사용할 검색 필터 : <i>&#39;(&amp; (objectClass = 계정) (uid = &lt;사용자 이름&gt;)) &#39;</i> . &#39;&lt;username&gt;&#39;은 로그인 프롬프트에서 제공 한 사용자 이름으로 바뀝니다."
+msgstr "window : <i>&#39;(&amp; (objectclass = user) (objectcategory = user) (userPrincipalName = &lt;username&gt; *))&#39;</i> 또는 OpenLDAP의 경우와 같이 LDAP 디렉토리에서 사용자를 찾는 데 사용할 검색 필터 : <i>&#39;(&amp; (objectClass = 계정) (uid = &lt;사용자 이름&gt;)) &#39;</i> . &#39;&lt;username&gt;&#39;은 로그인 프롬프트에서 제공 한 사용자 이름으로 바뀝니다. "
 
 #: include/global_settings.php user_domains.php
 msgid "Search Distinguished Name (DN)"
@@ -10874,7 +10860,7 @@ msgstr "LDAP 설정"
 
 #: include/global_settings.php user_domains.php
 msgid "Field that will replace the Full Name when creating a new user, taken from LDAP. (on windows: displayname) "
-msgstr "LDAP에서 가져온 새 사용자를 만들 때 성명을 대체 할 입력란입니다. (윈도우에서 : displayname)"
+msgstr "LDAP에서 가져온 새 사용자를 만들 때 성명을 대체 할 입력란입니다. (윈도우에서 : displayname) "
 
 #: include/global_settings.php package_import.php
 msgid "Email"
@@ -10902,7 +10888,7 @@ msgstr "이메일 옵션"
 
 #: include/global_settings.php
 msgid "Notify Primary Admin of Issues"
-msgstr "문제의 기본 관리자에게 알립니다."
+msgstr "문제의 기본 관리자에게 알립니다"
 
 #: include/global_settings.php
 msgid "In cases where the Cacti server is experiencing problems, should the Primary Administrator be notified by Email?  The Primary Administrator's Cacti user account is specified under the Authentication tab on Cacti's settings page. It defaults to the 'admin' account."
@@ -10994,7 +10980,7 @@ msgstr "SMTP ID"
 
 #: include/global_settings.php
 msgid "The username to authenticate with when sending via SMTP. (Leave blank if you do not require authentication.)"
-msgstr "SMTP를 통해 보낼 때 인증 할 사용자 이름입니다. 인증이 필요하지 않으면 비워 둡니다."
+msgstr "SMTP를 통해 보낼 때 인증 할 사용자 이름입니다. 인증이 필요하지 않으면 비워 둡니다"
 
 #: include/global_settings.php
 msgid "SMTP Password"
@@ -11002,7 +10988,7 @@ msgstr "SMTP 비밀번호"
 
 #: include/global_settings.php
 msgid "The password to authenticate with when sending via SMTP. (Leave blank if you do not require authentication.)"
-msgstr "SMTP를 통해 보낼 때 인증 할 암호입니다. 인증이 필요하지 않으면 비워 둡니다."
+msgstr "SMTP를 통해 보낼 때 인증 할 암호입니다. 인증이 필요하지 않으면 비워 둡니다"
 
 #: include/global_settings.php
 msgid "SMTP Security"
@@ -11110,7 +11096,7 @@ msgstr "시스템 수준 RRD 업데이터"
 
 #: include/global_settings.php
 msgid "Before RRD On-demand Update Can be Cleared, a poller run must always pass"
-msgstr "RRD 온 디맨드 업데이트를 삭제하기 전에 폴러 실행이 항상 통과해야합니다."
+msgstr "RRD 온 디맨드 업데이트를 삭제하기 전에 폴러 실행이 항상 통과해야합니다"
 
 #: include/global_settings.php
 msgid "How Often Should Boost Update All RRDs"
@@ -11469,7 +11455,7 @@ msgstr "평균보다 많은 표준 편차 인 값은 제외됩니다. 좋은 숫
 #: include/global_settings.php
 #, php-format
 msgid "%d Standard Deviations"
-msgstr "% d 표준 편차"
+msgstr "%d 표준 편차"
 
 #: include/global_settings.php
 msgid "Variance Percentage"
@@ -11491,7 +11477,7 @@ msgstr "이 값은 분산 평균을 계산하기 전에 샘플 세트에서 고 
 #: include/global_settings.php
 #, php-format
 msgid "%d High/Low Samples"
-msgstr "% d 높음 / 낮음 샘플"
+msgstr "%d 높음 / 낮음 샘플"
 
 #: include/global_settings.php
 msgid "Max Kills Per RRA"
@@ -11504,7 +11490,7 @@ msgstr "이 값은 그래프 RRA에서 제거 할 최대 스파이크 수를 나
 #: include/global_settings.php
 #, php-format
 msgid "%d Spikes"
-msgstr "% d 개의 스파이크"
+msgstr "%d 개의 스파이크"
 
 #: include/global_settings.php
 msgid "RRDfile Backup Directory"
@@ -11580,7 +11566,7 @@ msgstr "Cacti가 날짜를 어떻게 제시하길 원하시나요? 이 설정은
 
 #: include/global_settings.php
 msgid "Cacti Server Timezone"
-msgstr "Cacti Server v  %s - 유지 관리"
+msgstr "Cacti Server v %s - 유지 관리"
 
 #: include/global_settings.php
 msgid "My Browsers Timezone"
@@ -11676,7 +11662,7 @@ msgstr "그래프가 미래로 확장되도록 허용"
 
 #: include/global_settings.php
 msgid "When displaying Graphs, allow Graph Dates to extend 'to future'"
-msgstr "그래프를 표시 할 때 그래프 날짜를 &#39;미래로&#39;확장 할 수 있습니다."
+msgstr "그래프를 표시 할 때 그래프 날짜를 &#39;미래로&#39;확장 할 수 있습니다"
 
 #: include/global_settings.php
 msgid "First Day of the Week"
@@ -11915,12 +11901,12 @@ msgstr "활성 / 설치됨"
 #: install/install.php
 #, php-format
 msgid "Cacti Server v%s - Maintenance"
-msgstr "Cacti Server v  %s - 유지 관리"
+msgstr "Cacti Server v %s - 유지 관리"
 
 #: install/install.php
 #, php-format
 msgid "Cacti Server v%s - Installation Wizard"
-msgstr "Cacti Server v  %s - 설치 마법사"
+msgstr "Cacti Server v %s - 설치 마법사"
 
 #: install/install.php
 msgid "Refresh current page"
@@ -11933,7 +11919,7 @@ msgstr "초기화하는 중"
 #: install/install.php
 #, php-format
 msgid "Please wait while the installation system for Cacti Version %s initializes. You must have JavaScript enabled for this to work."
-msgstr "Cacti Version  %s의 설치 시스템이 초기화되는 동안 기다려주십시오. 이 기능을 사용하려면 JavaScript를 활성화해야합니다."
+msgstr "Cacti Version %s의 설치 시스템이 초기화되는 동안 기다려주십시오. 이 기능을 사용하려면 JavaScript를 활성화해야합니다."
 
 #: install/install.php
 msgid "FATAL: We are unable to continue with this installation. In order to install Cacti, PHP must be at version 5.4 or later."
@@ -11969,7 +11955,7 @@ msgstr "아래의 집계 그래프에 대해 선택된 그래프는 여러 그�
 
 #: lib/api_aggregate.php
 msgid "Press 'Return' to return and select different Graphs"
-msgstr "&#39;돌아 가기&#39;를 눌러 다른 그래프로 돌아가서 선택하십시오."
+msgstr "&#39;돌아 가기&#39;를 눌러 다른 그래프로 돌아가서 선택하십시오"
 
 #: lib/api_aggregate.php
 msgid "The Graphs chosen for the Aggregate Graph do not use Graph Templates.  Aggregate does not support creating Aggregate Graphs from non-templated graphs."
@@ -11997,11 +11983,11 @@ msgstr "건너 뛰기"
 
 #: lib/api_aggregate.php
 msgid "Aggregate Items are not modifiable"
-msgstr "집계 항목은 수정할 수 없습니다."
+msgstr "집계 항목은 수정할 수 없습니다"
 
 #: lib/api_aggregate.php
 msgid "Aggregate Items are not editable"
-msgstr "집계 항목을 편집 할 수 없습니다."
+msgstr "집계 항목을 편집 할 수 없습니다"
 
 #: lib/api_aggregate.php
 msgid "Override this Value"
@@ -12116,12 +12102,12 @@ msgstr "트리 규칙 생성 (그래프)"
 #: lib/api_automation.php
 #, php-format
 msgid "Rule Item [edit rule item for %s: %s]"
-msgstr "규칙 항목 [ %s의 규칙 항목 편집 :  %s]"
+msgstr "규칙 항목 [ %s의 규칙 항목 편집 : %s]"
 
 #: lib/api_automation.php
 #, php-format
 msgid "Rule Item [new rule item for %s: %s]"
-msgstr "규칙 항목 [ %s의 새 규칙 항목 :  %s]"
+msgstr "규칙 항목 [ %s의 새 규칙 항목 : %s]"
 
 #: lib/api_automation.php
 msgid "Added by Cacti Automation"
@@ -12138,7 +12124,7 @@ msgstr "원격 폴러 %s 이 (가) 다운되었습니다. 다시 시작되면 Fu
 
 #: lib/api_device.php
 msgid "ERROR: Device ID is Blank"
-msgstr "오류 : 기기 ID가 비어 있습니다."
+msgstr "오류 : 기기 ID가 비어 있습니다"
 
 #: lib/api_device.php
 msgid "ERROR: Device["
@@ -12150,7 +12136,7 @@ msgstr "오류 : 원격 수집기에 연결하지 못했습니다."
 
 #: lib/api_device.php
 msgid "Device is Disabled"
-msgstr "기기가 사용 중지되었습니다."
+msgstr "기기가 사용 중지되었습니다"
 
 #: lib/api_device.php
 msgid "Device Availability Check Bypassed"
@@ -12178,11 +12164,11 @@ msgstr "호스트"
 
 #: lib/api_device.php
 msgid "System:"
-msgstr "시스템"
+msgstr "시스템:"
 
 #: lib/api_device.php
 msgid "Uptime:"
-msgstr "운영 시간"
+msgstr "운영 시간:"
 
 #: lib/api_device.php
 msgid "Hostname:"
@@ -12214,40 +12200,40 @@ msgstr "웹 기본"
 
 #: lib/auth.php
 msgid "Device:(Hide Disabled)"
-msgstr "기기가 사용 중지되었습니다."
+msgstr "기기가 사용 중지되었습니다"
 
 #: lib/auth.php
 #, php-format
 msgid "Graph:(%s%s)"
-msgstr "그래프: (%s% 초)"
+msgstr "그래프:(%s%s)"
 
 #: lib/auth.php
 #, php-format
 msgid "Device:(%s%s)"
-msgstr "장치: (%s% 초)"
+msgstr "장치:(%s%s)"
 
 #: lib/auth.php
 #, php-format
 msgid "Template:(%s%s)"
-msgstr "템플릿: (%s% 초)"
+msgstr "템플릿:(%s%s)"
 
 #: lib/auth.php
 #, php-format
 msgid "Graph+Device+Template:(%s%s)"
-msgstr "그래프 + 장치 + 템플릿: (%s% 초)"
+msgstr "그래프+장치+템플릿:(%s%s)"
 
 #: lib/auth.php
 #, php-format
 msgid "Device+Template:(%s%s)"
-msgstr "장치 + 템플릿: (%s% 초)"
+msgstr "장치+템플릿:(%s%s)"
 
 #: lib/auth.php
 msgid "Restricted By: "
-msgstr "제한됨"
+msgstr "제한됨 "
 
 #: lib/auth.php
 msgid "Granted By: "
-msgstr "부여 :"
+msgstr "부여 : "
 
 #: lib/auth.php
 msgid "Granted"
@@ -12318,7 +12304,7 @@ msgstr "Cacti 관리자가 로그인을 위해 복잡한 비밀번호를 설정�
 #: lib/auth.php
 #, php-format
 msgid "Password must be at least %d characters!"
-msgstr "비밀번호는 % d 자 이상이어야합니다!"
+msgstr "비밀번호는 %d 자 이상이어야합니다!"
 
 #: lib/auth.php
 msgid "Your password must contain at least 1 numerical character!"
@@ -12326,7 +12312,7 @@ msgstr "비밀번호는 숫자가 1 자 이상이어야합니다!"
 
 #: lib/auth.php
 msgid "Your password must contain a mix of lower case and upper case characters!"
-msgstr "암호에는 소문자와 대문자가 혼합되어 있어야합니다."
+msgstr "암호에는 소문자와 대문자가 혼합되어 있어야합니다!"
 
 #: lib/auth.php
 msgid "Your password must contain at least 1 special character!"
@@ -12374,25 +12360,25 @@ msgstr "로그 필터"
 
 #: lib/clog_webapi.php
 msgid " - Admin Filter active"
-msgstr "- Admin Filter active"
+msgstr " - Admin Filter active"
 
 #: lib/clog_webapi.php
 msgid " - Admin Unfiltered"
-msgstr "- 관리되지 않은 필터"
+msgstr " - 관리되지 않은 필터"
 
 #: lib/clog_webapi.php
 msgid " - Admin view"
-msgstr "- 관리자보기"
+msgstr " - 관리자보기"
 
 #: lib/clog_webapi.php
 #, php-format
 msgid "Log [Total Lines: %d %s - Filter active]"
-msgstr "로그 [총선 : % d  %s - 필터 작동 중]"
+msgstr "로그 [총선 : %d %s - 필터 작동 중]"
 
 #: lib/clog_webapi.php
 #, php-format
 msgid "Log [Total Lines: %d %s - Unfiltered]"
-msgstr "로그 [총선 : % d  %s - 필터링되지 않음]"
+msgstr "로그 [총선 : %d %s - 필터링되지 않음]"
 
 #: lib/clog_webapi.php utilities.php
 msgid "Entries"
@@ -12512,22 +12498,22 @@ msgstr "데이터 업데이트 쿼리 캐시 완료 정렬"
 #: lib/data_query.php
 #, php-format
 msgid "Found %s Local Data ID's to Verify"
-msgstr "변환 할 %s 테이블을 찾았습니다."
+msgstr "변환 할 %s 테이블을 찾았습니다"
 
 #: lib/data_query.php
 #, php-format
 msgid "Index Change Detected! CurrentIndex: %s, PreviousIndex: %s"
-msgstr "색인 변경이 감지되었습니다! CurrentIndex :  %s, 이전 인덱스 :  %s"
+msgstr "색인 변경이 감지되었습니다! CurrentIndex : %s, 이전 인덱스 : %s"
 
 #: lib/data_query.php
 #, php-format
 msgid "Transient Index Removal Detected! PreviousIndex: %s.  No action taken."
-msgstr "색인 제거가 감지되었습니다! 이전 색인 :  %s"
+msgstr "색인 제거가 감지되었습니다! 이전 색인 :  %s."
 
 #: lib/data_query.php
 #, php-format
 msgid "Index Removal Detected! PreviousIndex: %s"
-msgstr "색인 제거가 감지되었습니다! 이전 색인 :  %s"
+msgstr "색인 제거가 감지되었습니다! 이전 색인 : %s"
 
 #: lib/data_query.php
 #, php-format
@@ -12596,12 +12582,12 @@ msgstr "새 정렬 필드 유효성이 검사되었습니다. 필드 정렬 정�
 #: lib/data_query.php
 #, php-format
 msgid "Could not find data query XML file at '%s'"
-msgstr "&#39; %s&#39;에서 데이터 쿼리 XML 파일을 찾을 수 없습니다."
+msgstr "&#39; %s&#39;에서 데이터 쿼리 XML 파일을 찾을 수 없습니다"
 
 #: lib/data_query.php
 #, php-format
 msgid "Found data query XML file at '%s'"
-msgstr "&#39; %s&#39;에 데이터 쿼리 XML 파일이 있습니다."
+msgstr "&#39; %s&#39;에 데이터 쿼리 XML 파일이 있습니다"
 
 #: lib/data_query.php
 msgid "Error parsing XML file into an array."
@@ -12614,11 +12600,11 @@ msgstr "XML 파일을 확인했습니다."
 #: lib/data_query.php
 #, php-format
 msgid "Invalid field &lt;index_order&gt;%s&lt;/index_order&gt;"
-msgstr "잘못된 필드 &lt;index_order&gt;  %s &lt;/ index_order&gt;"
+msgstr "잘못된 필드 &lt;index_order&gt; %s &lt;/ index_order&gt;"
 
 #: lib/data_query.php
 msgid "Must contain &lt;direction&gt;input&lt;/direction&gt; or &lt;direction&gt;input-output&lt;/direction&gt; fields only"
-msgstr "&lt;방향&gt; 입력 &lt;/ 방향&gt; 또는 &lt;방향&gt; 입출력 &lt;/ 방향&gt; 필드 만 포함해야합니다."
+msgstr "&lt;방향&gt; 입력 &lt;/ 방향&gt; 또는 &lt;방향&gt; 입출력 &lt;/ 방향&gt; 필드 만 포함해야합니다"
 
 #: lib/data_query.php
 msgid "Data Query returned no indexes."
@@ -12626,7 +12612,7 @@ msgstr "오류 : 데이터 쿼리가 인덱스를 반환하지 않았습니다."
 
 #: lib/data_query.php
 msgid "&lt;arg_num_indexes&gt; exists in XML file but no data returned., 'Index Count Changed' not supported"
-msgstr "&lt;arg_num_indexes&gt; XML 파일에 &#39;Index Count Changed&#39;가 없습니다."
+msgstr "&lt;arg_num_indexes&gt; XML 파일에 &#39;Index Count Changed&#39;가 없습니다"
 
 #: lib/data_query.php
 #, php-format
@@ -12636,15 +12622,15 @@ msgstr "num &#39;개의 인덱스&#39; %s &#39;에 대한 스크립트 실행 �
 #: lib/data_query.php
 #, php-format
 msgid "Found number of indexes: %s"
-msgstr "발견 된 인덱스 수 :  %s"
+msgstr "발견 된 인덱스 수 : %s"
 
 #: lib/data_query.php
 msgid "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' not supported"
-msgstr "&lt;arg_num_indexes&gt; XML 파일에 &#39;Index Count Changed&#39;가 없습니다."
+msgstr "&lt;arg_num_indexes&gt; XML 파일에 &#39;Index Count Changed&#39;가 없습니다"
 
 #: lib/data_query.php
 msgid "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting arg_index entries"
-msgstr "&lt;arg_num_indexes&gt; XML 파일에 누락되었습니다. &#39;인덱스 개수 변경됨&#39;arg_index 항목 수를 계산하여 에뮬레이트되었습니다."
+msgstr "&lt;arg_num_indexes&gt; XML 파일에 누락되었습니다. &#39;인덱스 개수 변경됨&#39;arg_index 항목 수를 계산하여 에뮬레이트되었습니다"
 
 #: lib/data_query.php
 msgid "ERROR: Data Query returned no indexes."
@@ -12653,21 +12639,21 @@ msgstr "오류 : 데이터 쿼리가 인덱스를 반환하지 않았습니다."
 #: lib/data_query.php
 #, php-format
 msgid "Executing script for list of indexes '%s', Index Count: %s"
-msgstr "인덱스 &#39; %s&#39;목록에 대한 스크립트 실행, 인덱스 개수 :  %s"
+msgstr "인덱스 &#39; %s&#39;목록에 대한 스크립트 실행, 인덱스 개수 : %s"
 
 #: lib/data_query.php
 msgid "Click to show Data Query output for 'index'"
-msgstr "&#39;index&#39;에 대한 데이터 쿼리 출력을 표시하려면 클릭하십시오."
+msgstr "&#39;index&#39;에 대한 데이터 쿼리 출력을 표시하려면 클릭하십시오"
 
 #: lib/data_query.php
 #, php-format
 msgid "Found index: %s"
-msgstr "발견 색인 :  %s"
+msgstr "발견 색인 : %s"
 
 #: lib/data_query.php
 #, php-format
 msgid "Click to show Data Query output for field '%s'"
-msgstr "&#39; %s&#39;필드에 대한 데이터 쿼리 출력을 표시하려면 클릭하십시오."
+msgstr "&#39; %s&#39;필드에 대한 데이터 쿼리 출력을 표시하려면 클릭하십시오"
 
 #: lib/data_query.php
 #, php-format
@@ -12682,17 +12668,17 @@ msgstr "스크립트 쿼리 &#39; %s&#39;실행 중"
 #: lib/data_query.php
 #, php-format
 msgid "Found item [%s='%s'] index: %s"
-msgstr "발견 된 항목 [ %s = &#39; %s&#39;] 색인 :  %s"
+msgstr "발견 된 항목 [ %s = &#39; %s&#39;] 색인 : %s"
 
 #: lib/data_query.php
 #, php-format
 msgid "Total: %f, Delta: %f, %s"
-msgstr "총계 : % f, 델타 : % f,  %s"
+msgstr "총계 : %f, 델타 : %f, %s"
 
 #: lib/data_query.php
 #, php-format
 msgid "Invalid host_id: %s"
-msgstr "잘못된 host_id :  %s"
+msgstr "잘못된 host_id : %s"
 
 #: lib/data_query.php
 msgid "Auto Bulk Walk Size Selected."
@@ -12705,7 +12691,7 @@ msgstr "SNMP 세션을로드하지 못했습니다."
 #: lib/data_query.php
 #, php-format
 msgid "Tested Bulk Walk Size %d with a response of %2.4f."
-msgstr "%2.4f 의 응답으로 테스트된 벌크 워크 크기 %d."
+msgstr "벌크 워크 크기 %d 테스트 완료 (응답: %2.4f)."
 
 #: lib/data_query.php
 #, php-format
@@ -12724,20 +12710,20 @@ msgstr "Bulk Walk Size는 %d에서 고정됩니다."
 #: lib/data_query.php
 #, php-format
 msgid "Executing SNMP get for num of indexes @ '%s' Index Count: %s"
-msgstr "SNMP를 실행하면 인덱스 수 &#39; %s&#39;에 대해 얻습니다. 인덱스 수 :  %s"
+msgstr "SNMP를 실행하면 인덱스 수 &#39; %s&#39;에 대해 얻습니다. 인덱스 수 : %s"
 
 #: lib/data_query.php
 msgid "&lt;oid_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting oid_index entries"
-msgstr "&lt;oid_num_indexes&gt; XML 파일에 누락되었습니다. &#39;Index Count Changed&#39;oid_index 항목을 계산하여 에뮬레이트되었습니다."
+msgstr "&lt;oid_num_indexes&gt; XML 파일에 누락되었습니다. &#39;Index Count Changed&#39;oid_index 항목을 계산하여 에뮬레이트되었습니다"
 
 #: lib/data_query.php
 #, php-format
 msgid "Executing SNMP walk for list of indexes @ '%s' Index Count: %s"
-msgstr "@ &#39; %s&#39;인덱스 목록에 SNMP walk 실행 인덱스 개수 :  %s"
+msgstr "@ &#39; %s&#39;인덱스 목록에 SNMP walk 실행 인덱스 개수 : %s"
 
 #: lib/data_query.php
 msgid "No SNMP data returned"
-msgstr "반환 된 SNMP 데이터가 없습니다."
+msgstr "반환 된 SNMP 데이터가 없습니다"
 
 #: lib/data_query.php
 #, php-format
@@ -12747,7 +12733,7 @@ msgstr "OID에있는 색인 : &#39; %s&#39;값 : &#39; %s&#39;"
 #: lib/data_query.php
 #, php-format
 msgid "List of indexes filtered by value @ '%s' Index Count: %s"
-msgstr "@ &#39; %s&#39;인덱스 목록 필터링 인덱스 개수 :  %s"
+msgstr "@ &#39; %s&#39;인덱스 목록 필터링 인덱스 개수 : %s"
 
 #: lib/data_query.php
 #, php-format
@@ -12757,7 +12743,7 @@ msgstr "OID에서 필터링 된 인덱스 : &#39; %s&#39;값 : &#39; %s&#39;"
 #: lib/data_query.php
 #, php-format
 msgid "Filtering list of indexes @ '%s' Index Count: %s"
-msgstr "@ &#39; %s&#39;인덱스 목록 필터링 인덱스 개수 :  %s"
+msgstr "@ &#39; %s&#39;인덱스 목록 필터링 인덱스 개수 : %s"
 
 #: lib/data_query.php
 #, php-format
@@ -12782,7 +12768,7 @@ msgstr "위치한 입력 필드 &#39; %s&#39;[가져 오기]"
 #: lib/data_query.php
 #, php-format
 msgid "Found OID rewrite rule: 's/%s/%s/'"
-msgstr "발견 된 OID 다시 쓰기 규칙 : &#39;s /  %s /  %s /&#39;"
+msgstr "발견 된 OID 다시 쓰기 규칙 : &#39;s / %s / %s /&#39;"
 
 #: lib/data_query.php
 #, php-format
@@ -12802,7 +12788,7 @@ msgstr "필드 &#39; %s&#39; %s"
 #: lib/data_query.php
 #, php-format
 msgid "Executing SNMP get for %s oids (%s)"
-msgstr "%s oids ( %s)에 대해 SNMP 실행을 실행 중입니다."
+msgstr "%s oids ( %s)에 대해 SNMP 실행을 실행 중입니다"
 
 #: lib/data_query.php
 #, php-format
@@ -12827,7 +12813,7 @@ msgstr "데이터 &#39; %s&#39;에 대한 결과 건너 뛰기 [key = &#39; %s&#
 #: lib/data_query.php
 #, php-format
 msgid "Got SNMP get result for data @ '%s' [value='%s'] (index: %s)"
-msgstr "SNMP @ &#39; %s&#39;에 대한 결과 가져 오기 [값 = &#39; %s&#39;] (색인 :  %s)"
+msgstr "SNMP @ &#39; %s&#39;에 대한 결과 가져 오기 [값 = &#39; %s&#39;] (색인 : %s)"
 
 #: lib/data_query.php
 #, php-format
@@ -12852,7 +12838,7 @@ msgstr "VALUE_INDEX_PARSE에 인덱스 [%s] 이 (가) 없습니다."
 #: lib/data_query.php
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from %s]"
-msgstr "발견 된 항목 [ %s = &#39; %s&#39;] 색인 :  %s [from  %s]"
+msgstr "발견 된 항목 [ %s = &#39; %s&#39;] 색인 : %s [from %s]"
 
 #: lib/data_query.php
 #, php-format
@@ -12862,12 +12848,12 @@ msgstr "발견된 옥텟 문자열 '%s' 디코딩된 값: '%s'"
 #: lib/data_query.php
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid parse]"
-msgstr "발견 된 항목 [ %s = &#39; %s&#39;] 색인 :  %s [from regexp oid parse]"
+msgstr "발견 된 항목 [ %s = &#39; %s&#39;] 색인 : %s [from regexp oid parse]"
 
 #: lib/data_query.php
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid value parse]"
-msgstr "발견 된 항목 [ %s = &#39; %s&#39;] 색인 :  %s [from regexp oid value parse]"
+msgstr "발견 된 항목 [ %s = &#39; %s&#39;] 색인 : %s [from regexp oid value parse]"
 
 #: lib/data_query.php
 #, php-format
@@ -12898,19 +12884,19 @@ msgstr "알 수없는 색인"
 #: lib/data_query.php
 #, php-format
 msgid "You must select an XML output column for Data Source '%s' and toggle the checkbox to its right"
-msgstr "데이터 소스 ' %s'에 대한 XML 출력 열을 선택하고 오른쪽으로 확인란을 전환해야합니다."
+msgstr "데이터 소스 ' %s'에 대한 XML 출력 열을 선택하고 오른쪽으로 확인란을 전환해야합니다"
 
 #: lib/data_query.php
 msgid "Your Graph Template has not Data Templates in use.  Please correct your Graph Template"
-msgstr "그래프 템플릿에 데이터 템플릿이 사용되지 않았습니다. 그래프 템플릿을 수정하십시오."
+msgstr "그래프 템플릿에 데이터 템플릿이 사용되지 않았습니다. 그래프 템플릿을 수정하십시오"
 
 #: lib/database.php
 msgid "Failed to determine password field length, can not continue as may corrupt password"
-msgstr "암호 필드 길이를 확인하지 못했습니다. 암호가 손상 될 수 있으므로 계속할 수 없습니다."
+msgstr "암호 필드 길이를 확인하지 못했습니다. 암호가 손상 될 수 있으므로 계속할 수 없습니다"
 
 #: lib/database.php
 msgid "Failed to alter password field length, can not continue as may corrupt password"
-msgstr "암호 필드 길이를 변경하는 데 실패했으며 암호를 손상시킬 수 있으므로 계속할 수 없습니다."
+msgstr "암호 필드 길이를 변경하는 데 실패했으며 암호를 손상시킬 수 있으므로 계속할 수 없습니다"
 
 #: lib/dsdebug.php
 #, php-format
@@ -12919,15 +12905,15 @@ msgstr "데이터 소스 ID %s 이 (가) 존재하지 않습니다"
 
 #: lib/dsdebug.php
 msgid "Debug not completed after 5 pollings"
-msgstr "5 개의 폴링 이후 디버그가 완료되지 않았습니다."
+msgstr "5 개의 폴링 이후 디버그가 완료되지 않았습니다"
 
 #: lib/dsdebug.php
 msgid "Failed fields: "
-msgstr "실패한 입력란 :"
+msgstr "실패한 입력란 : "
 
 #: lib/dsdebug.php
 msgid "Data Source is not set as Active"
-msgstr "데이터 소스가 활성으로 설정되지 않았습니다."
+msgstr "데이터 소스가 활성으로 설정되지 않았습니다"
 
 #: lib/dsdebug.php
 #, php-format
@@ -12941,7 +12927,7 @@ msgstr "RRD 파일은 Poller에서 쓸 수 없습니다. RRD파일 소유자: %s
 
 #: lib/dsdebug.php
 msgid "RRDfile does not match Data Source"
-msgstr "RRD 파일이 데이터 프로필과 일치하지 않습니다."
+msgstr "RRD 파일이 데이터 프로필과 일치하지 않습니다"
 
 #: lib/dsdebug.php
 msgid "RRDfile not updated after polling"
@@ -12949,11 +12935,11 @@ msgstr "폴링 후 RRD 파일이 업데이트되지 않음"
 
 #: lib/dsdebug.php
 msgid "Data Source returned Bad Results for "
-msgstr "데이터 소스가 잘못된 결과를 반환했습니다."
+msgstr "데이터 소스가 잘못된 결과를 반환했습니다. "
 
 #: lib/dsdebug.php
 msgid "Data Source was not polled"
-msgstr "데이터 소스가 폴링되지 않았습니다."
+msgstr "데이터 소스가 폴링되지 않았습니다"
 
 #: lib/dsdebug.php
 msgid "No issues found"
@@ -12966,12 +12952,12 @@ msgstr "폴링 후 RRD 파일이 업데이트되지 않음"
 #: lib/functions.php settings.php
 #, php-format
 msgid "Settings save to Data Collector %d skipped due to heartbeat."
-msgstr "데이터 수집기 % d에 설정이 저장되지 않았습니다."
+msgstr "데이터 수집기 %d에 설정이 저장되지 않았습니다."
 
 #: lib/functions.php settings.php
 #, php-format
 msgid "Settings save to Data Collector %d Failed."
-msgstr "데이터 수집기 % d에 설정이 저장되지 않았습니다."
+msgstr "데이터 수집기 %d에 설정이 저장되지 않았습니다."
 
 #: lib/functions.php
 msgid "Message Not Found."
@@ -12980,7 +12966,7 @@ msgstr "메시지를 찾을 수 없습니다."
 #: lib/functions.php
 #, php-format
 msgid "Error %s is not readable"
-msgstr "오류  %s을 (를) 읽을 수 없습니다."
+msgstr "오류 %s을 (를) 읽을 수 없습니다"
 
 #: lib/functions.php
 msgid "Logged in a Guest"
@@ -13039,21 +13025,21 @@ msgstr "메일러 오류 : <b>TO</b> 주소 세트가 없습니다! <br> <i>메�
 #: lib/functions.php
 #, php-format
 msgid "Authentication failed: %s"
-msgstr "인증 실패 :  %s"
+msgstr "인증 실패 : %s"
 
 #: lib/functions.php
 #, php-format
 msgid "HELO failed: %s"
-msgstr "HELO 실패 :  %s"
+msgstr "HELO 실패 : %s"
 
 #: lib/functions.php
 #, php-format
 msgid "Connect failed: %s"
-msgstr "연결 실패 :  %s"
+msgstr "연결 실패 : %s"
 
 #: lib/functions.php
 msgid "SMTP error: "
-msgstr "SMTP 오류 :"
+msgstr "SMTP 오류 : "
 
 #: lib/functions.php
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
@@ -13061,7 +13047,7 @@ msgstr "Cacti에서 생성 된 테스트 메시지입니다. 이 메시지는 �
 
 #: lib/functions.php
 msgid "Your email settings are currently set as follows"
-msgstr "이메일 설정은 현재 다음과 같이 설정되어 있습니다."
+msgstr "이메일 설정은 현재 다음과 같이 설정되어 있습니다"
 
 #: lib/functions.php
 msgid "Method"
@@ -13128,12 +13114,12 @@ msgstr "경고: PollerID: %s 에 유효하지 않은 호스트 이름: %s 이 (�
 #: lib/functions.php
 #, php-format
 msgid "- Beta %s"
-msgstr "- 베타  %s"
+msgstr "- 베타 %s"
 
 #: lib/functions.php
 #, php-format
 msgid "Version %s %s"
-msgstr "버전  %s  %s"
+msgstr "버전 %s %s"
 
 #: lib/functions.php
 #, php-format
@@ -13163,7 +13149,7 @@ msgstr "StdDev 제거"
 
 #: lib/html.php
 msgid "Get Page Help"
-msgstr "도와주세요."
+msgstr "도와주세요"
 
 #: lib/html.php lib/reports.php
 msgid "Data Query:"
@@ -13219,7 +13205,7 @@ msgstr "다음"
 #: lib/html.php
 #, php-format
 msgid "All %d %s"
-msgstr "전체 % d  %s"
+msgstr "전체 %d %s"
 
 #: lib/html.php
 #, fuzzy, php-format
@@ -13229,7 +13215,7 @@ msgstr "현재"
 #: lib/html.php
 #, php-format
 msgid "No %s Found"
-msgstr " %s을 찾을 수 없습니다."
+msgstr "%s을 찾을 수 없습니다"
 
 #: lib/html.php
 msgid "#"
@@ -13405,7 +13391,7 @@ msgstr "버그 보고하기"
 
 #: lib/html.php
 msgid "Cacti"
-msgstr "선인장"
+msgstr "Cacti"
 
 #: lib/html.php
 msgid "Click to Show/Hide Filter"
@@ -13425,7 +13411,7 @@ msgstr "클립 보드 ID"
 
 #: lib/html.php
 msgid "Copy operation is unavailable at this time"
-msgstr "현재 복사 작업을 사용할 수 없습니다."
+msgstr "현재 복사 작업을 사용할 수 없습니다"
 
 #: lib/html.php
 msgid "Failed to find data to copy!"
@@ -13433,27 +13419,27 @@ msgstr "복사 할 데이터를 찾지 못했습니다!"
 
 #: lib/html.php
 msgid "Clipboard has been updated"
-msgstr "클립 보드가 업데이트되었습니다."
+msgstr "클립 보드가 업데이트되었습니다"
 
 #: lib/html.php
 msgid "Sorry, your clipboard could not be updated at this time"
-msgstr "죄송합니다. 현재 클립 보드를 업데이트 할 수 없습니다."
+msgstr "죄송합니다. 현재 클립 보드를 업데이트 할 수 없습니다"
 
 #: lib/html.php
 msgid "Passphrase length meets 8 character minimum"
-msgstr "암호 길이가 최소 8자를 충족시킵니다."
+msgstr "암호 길이가 최소 8자를 충족시킵니다"
 
 #: lib/html.php
 msgid "Passphrase too short"
-msgstr "암호가 너무 짧다."
+msgstr "암호가 너무 짧다"
 
 #: lib/html.php
 msgid "Passphrase matches but too short"
-msgstr "암호는 일치하지만 너무 짧습니다."
+msgstr "암호는 일치하지만 너무 짧습니다"
 
 #: lib/html.php
 msgid "Passphrase too short and not matching"
-msgstr "암호가 너무 짧고 일치하지 않습니다."
+msgstr "암호가 너무 짧고 일치하지 않습니다"
 
 #: lib/html.php
 msgid "Passphrases match"
@@ -13461,7 +13447,7 @@ msgstr "암호가 일치 함"
 
 #: lib/html.php
 msgid "Passphrases do not match"
-msgstr "암호가 일치하지 않습니다."
+msgstr "암호가 일치하지 않습니다"
 
 #: lib/html.php
 msgid "Sorry, we could not process your last action."
@@ -13477,7 +13463,7 @@ msgstr "이유:"
 
 #: lib/html.php
 msgid "Action failed"
-msgstr "작업이 실패했습니다."
+msgstr "작업이 실패했습니다"
 
 #: lib/html.php pollers.php
 msgid "Connection Successful"
@@ -13493,7 +13479,7 @@ msgstr "마지막 행동에 대한 반응은 예상치 못했습니다."
 
 #: lib/html.php
 msgid "Some Actions failed"
-msgstr "일부 조치가 실패했습니다."
+msgstr "일부 조치가 실패했습니다"
 
 #: lib/html.php
 msgid "Note, we could not process all your actions.  Details are below."
@@ -13617,7 +13603,7 @@ msgstr "파일 발견"
 
 #: lib/html_form.php
 msgid "Path is a Directory and not a File"
-msgstr "경로는 파일이 아닌 디렉토리입니다."
+msgstr "경로는 파일이 아닌 디렉토리입니다"
 
 #: lib/html_form.php
 msgid "File is Not Found"
@@ -13625,7 +13611,7 @@ msgstr "파일을 찾을 수 없음"
 
 #: lib/html_form.php
 msgid "Enter a valid file path"
-msgstr "유효한 파일 경로를 입력하십시오."
+msgstr "유효한 파일 경로를 입력하십시오"
 
 #: lib/html_form.php
 msgid "Directory Found"
@@ -13633,7 +13619,7 @@ msgstr "디렉토리 발견"
 
 #: lib/html_form.php
 msgid "Path is a File and not a Directory"
-msgstr "경로는 파일이면서 디렉토리가 아닙니다."
+msgstr "경로는 파일이면서 디렉토리가 아닙니다"
 
 #: lib/html_form.php
 msgid "Directory is Not found"
@@ -13641,7 +13627,7 @@ msgstr "디렉토리를 찾을 수 없음"
 
 #: lib/html_form.php
 msgid "Enter a valid directory path"
-msgstr "올바른 디렉토리 경로를 입력하십시오."
+msgstr "올바른 디렉토리 경로를 입력하십시오"
 
 #: lib/html_form.php
 #, php-format
@@ -13658,7 +13644,7 @@ msgstr "저장되지 않은 양식 데이터 경고"
 
 #: lib/html_form.php
 msgid "Unsaved Changes Detected"
-msgstr "저장되지 않은 변경 사항이 감지되었습니다."
+msgstr "저장되지 않은 변경 사항이 감지되었습니다"
 
 #: lib/html_form.php
 #, fuzzy
@@ -13685,11 +13671,11 @@ msgstr ""
 #: lib/html_form_template.php
 #, php-format
 msgid "Data Query Data Sources must be created through %s"
-msgstr "데이터 쿼리 데이터 소스는  %s을 (를) 통해 만들어야합니다."
+msgstr "데이터 쿼리 데이터 소스는 %s을 (를) 통해 만들어야합니다"
 
 #: lib/html_graph.php lib/html_tree.php
 msgid "Save the current Graphs, Columns, Thumbnail, Preset, and Timeshift preferences to your profile"
-msgstr "현재 Graphs, Columns, Thumbnail, Preset 및 Timeshift 환경 설정을 프로파일에 저장하십시오."
+msgstr "현재 Graphs, Columns, Thumbnail, Preset 및 Timeshift 환경 설정을 프로파일에 저장하십시오"
 
 #: lib/html_graph.php lib/html_tree.php
 msgid "Columns"
@@ -13760,27 +13746,27 @@ msgstr "%s에서 그래프 만들기"
 #: lib/html_graph.php
 #, php-format
 msgid "Create %s Graphs from %s"
-msgstr "%s에서  %s 그래프 만들기"
+msgstr "%s에서 %s 그래프 만들기"
 
 #: lib/html_graph.php
 #, php-format
 msgid "Graph [Template: %s]"
-msgstr "그래프 [템플릿 :  %s]"
+msgstr "그래프 [템플릿 : %s]"
 
 #: lib/html_graph.php
 #, php-format
 msgid "Graph Items [Template: %s]"
-msgstr "그래프 항목 [템플릿 :  %s]"
+msgstr "그래프 항목 [템플릿 : %s]"
 
 #: lib/html_graph.php
 #, php-format
 msgid "Data Source [Template: %s]"
-msgstr "데이터 소스 [템플릿 :  %s]"
+msgstr "데이터 소스 [템플릿 : %s]"
 
 #: lib/html_graph.php
 #, php-format
 msgid "Custom Data [Template: %s]"
-msgstr "맞춤 데이터 [템플릿 :  %s]"
+msgstr "맞춤 데이터 [템플릿 : %s]"
 
 #: lib/html_reports.php
 msgid "New Report"
@@ -13788,7 +13774,7 @@ msgstr "새 보고서"
 
 #: lib/html_reports.php
 msgid "Give this Report a descriptive Name"
-msgstr "이 보고서에 설명적인 이름을 지정하십시오."
+msgstr "이 보고서에 설명적인 이름을 지정하십시오"
 
 #: lib/html_reports.php
 msgid "Enable Report"
@@ -13920,11 +13906,11 @@ msgstr "이 값은 기본 이메일 제목으로 사용됩니다. 공백으로 �
 
 #: lib/html_reports.php
 msgid "This Name will be used as the default E-mail Sender"
-msgstr "이 이름은 기본 전자 메일 보낸 사람으로 사용됩니다."
+msgstr "이 이름은 기본 전자 메일 보낸 사람으로 사용됩니다"
 
 #: lib/html_reports.php
 msgid "This Address will be used as the E-mail Senders address"
-msgstr "이 주소는 전자 메일 보낸 사람 주소로 사용됩니다."
+msgstr "이 주소는 전자 메일 보낸 사람 주소로 사용됩니다"
 
 #: lib/html_reports.php
 msgid "To Email Address(es)"
@@ -13948,7 +13934,7 @@ msgstr "이미지 첨부 유형"
 
 #: lib/html_reports.php
 msgid "Select one of the given Types for the Image Attachments"
-msgstr "Image Attachments에 대해 지정된 유형 중 하나를 선택하십시오."
+msgstr "Image Attachments에 대해 지정된 유형 중 하나를 선택하십시오"
 
 #: lib/html_reports.php
 msgid "Date/Time moved to the same time Tomorrow"
@@ -13964,7 +13950,7 @@ msgstr "다음 보고서의 소유권을 가져 오려면 &#39;계속&#39;을 �
 
 #: lib/html_reports.php
 msgid "Click 'Continue' to duplicate the following Report(s).  You may optionally change the title for the new Reports"
-msgstr "다음 보고서를 복제하려면 &#39;계속&#39;을 클릭하십시오. 새로운 리포트의 제목을 선택적으로 변경할 수 있습니다."
+msgstr "다음 보고서를 복제하려면 &#39;계속&#39;을 클릭하십시오. 새로운 리포트의 제목을 선택적으로 변경할 수 있습니다"
 
 #: lib/html_reports.php
 msgid "Click 'Continue' to enable the following Report(s)."
@@ -13985,22 +13971,22 @@ msgstr "지금 다음 보고서를 보내려면 &#39;계속&#39;을 클릭하십
 #: lib/html_reports.php
 #, php-format
 msgid "Unable to send Report '%s'.  Please set destination e-mail addresses"
-msgstr "보고서 &#39; %s&#39;을 (를) 보낼 수 없습니다. 대상 전자 메일 주소를 설정하십시오."
+msgstr "보고서 &#39; %s&#39;을 (를) 보낼 수 없습니다. 대상 전자 메일 주소를 설정하십시오"
 
 #: lib/html_reports.php
 #, php-format
 msgid "Unable to send Report '%s'.  Please set an e-mail subject"
-msgstr "보고서 &#39; %s&#39;을 (를) 보낼 수 없습니다. 이메일 제목을 설정하십시오."
+msgstr "보고서 &#39; %s&#39;을 (를) 보낼 수 없습니다. 이메일 제목을 설정하십시오"
 
 #: lib/html_reports.php
 #, php-format
 msgid "Unable to send Report '%s'.  Please set an e-mail From Name"
-msgstr "보고서 &#39; %s&#39;을 (를) 보낼 수 없습니다. 이름에서 전자 메일을 설정하십시오."
+msgstr "보고서 &#39; %s&#39;을 (를) 보낼 수 없습니다. 이름에서 전자 메일을 설정하십시오"
 
 #: lib/html_reports.php
 #, php-format
 msgid "Unable to send Report '%s'.  Please set an e-mail from address"
-msgstr "보고서 &#39; %s&#39;을 (를) 보낼 수 없습니다. 주소에서 전자 메일을 설정하십시오."
+msgstr "보고서 &#39; %s&#39;을 (를) 보낼 수 없습니다. 주소에서 전자 메일을 설정하십시오"
 
 #: lib/html_reports.php
 msgid "Item Type to be added."
@@ -14032,7 +14018,7 @@ msgstr "모든 자식 분기 그래프를 렌더링해야합니까?"
 
 #: lib/html_reports.php
 msgid "Select a Site to filter for Devices and Graphs."
-msgstr "장치를 선택하여 그래프 지정"
+msgstr "장치를 선택하여 그래프 지정."
 
 #: lib/html_reports.php
 msgid "Select a Device Template to use to filter for Devices or Graphs."
@@ -14089,12 +14075,12 @@ msgstr "항목의 글자 크기"
 #: lib/html_reports.php
 #, php-format
 msgid "Report Item [edit Report: %s]"
-msgstr "보고서 항목 [보고서 편집 :  %s]"
+msgstr "보고서 항목 [보고서 편집 : %s]"
 
 #: lib/html_reports.php
 #, php-format
 msgid "Report Item [new Report: %s]"
-msgstr "보고서 항목 [새 보고서 :  %s]"
+msgstr "보고서 항목 [새 보고서 : %s]"
 
 #: lib/html_reports.php
 msgid "Events"
@@ -14144,7 +14130,7 @@ msgstr "CSS 사용"
 #: lib/html_reports.php
 #, php-format
 msgid "Device: %s"
-msgstr "(장치에서 :  %s)"
+msgstr "(장치에서 : %s)"
 
 #: lib/html_reports.php
 msgid ", Graph Template: All Templates"
@@ -14153,7 +14139,7 @@ msgstr "장치 템플릿에 그래프 템플릿 추가"
 #: lib/html_reports.php
 #, php-format
 msgid ", Graph Template: %s"
-msgstr "그래프 [템플릿 :  %s]"
+msgstr "그래프 [템플릿 : %s]"
 
 #: lib/html_reports.php
 #, php-format
@@ -14161,14 +14147,14 @@ msgid ", Using RegEx: \"%s\""
 msgstr ", 정규식 사용: \"%s\""
 
 #: lib/html_reports.php
-#, fuzzy, php-format
+#, php-format
 msgid "Tree: %s"
-msgstr "트리:"
+msgstr "트리: %s"
 
 #: lib/html_reports.php
 #, php-format
 msgid ", Device: %s"
-msgstr "(장치에서 :  %s)"
+msgstr "(장치에서 : %s)"
 
 #: lib/html_reports.php
 #, fuzzy, php-format
@@ -14238,7 +14224,7 @@ msgstr "멀티"
 
 #: lib/html_reports.php
 msgid "No Reports Found"
-msgstr "보고 없음"
+msgstr "보고서를 찾을 수 없습니다"
 
 #: lib/html_tree.php
 msgid "Graph Template:"
@@ -14258,7 +14244,7 @@ msgstr "사이트:"
 
 #: lib/html_tree.php
 msgid "Leaf:"
-msgstr "잎"
+msgstr "잎:"
 
 #: lib/html_tree.php
 msgid "Device Template:"
@@ -14291,7 +14277,7 @@ msgstr "선택된"
 #: lib/html_utility.php
 #, php-format
 msgid "The regular expression \"%s\" is not valid. Error is %s"
-msgstr "검색어 &quot; %s&quot;이 (가) 유효하지 않습니다. 오류는  %s입니다."
+msgstr "검색어 &quot; %s&quot;이 (가) 유효하지 않습니다. 오류는 %s입니다"
 
 #: lib/html_utility.php
 msgid "Cacti regular expressions are limited to 50 characters only for security reasons."
@@ -14309,11 +14295,11 @@ msgstr "정규 표현식 입력"
 
 #: lib/html_utility.php
 msgid "There was an internal error!"
-msgstr "내부 오류가 발생했습니다."
+msgstr "내부 오류가 발생했습니다!"
 
 #: lib/html_utility.php
 msgid "Backtrack limit was exhausted!"
-msgstr "역 추적 제한이 고갈되었습니다."
+msgstr "역 추적 제한이 고갈되었습니다!"
 
 #: lib/html_utility.php
 msgid "Recursion limit was exhausted!"
@@ -14366,16 +14352,16 @@ msgstr "열리지 못함"
 
 #: lib/import.php
 msgid "not exists"
-msgstr "존재하지 않는다."
+msgstr "존재하지 않는다"
 
 #: lib/import.php
 msgid "not writable"
-msgstr "쓰기 가능 "
+msgstr "쓰기 가능"
 
 #: lib/import.php
 #, php-format
 msgid "New Graph Template: %s"
-msgstr "그래프 [템플릿 :  %s]"
+msgstr "그래프 [템플릿 : %s]"
 
 #: lib/import.php
 #, php-format
@@ -14408,7 +14394,7 @@ msgstr "패키지 파일"
 
 #: lib/import.php
 msgid "[preview] "
-msgstr "미리보기"
+msgstr "미리보기 "
 
 #: lib/import.php
 msgid "Cacti would make the following changes if the Template was imported:"
@@ -14420,7 +14406,7 @@ msgstr "Cacti가 템플릿에 대해 다음 항목을 가져 왔습니다."
 
 #: lib/import.php
 msgid "[success]"
-msgstr "성공!"
+msgstr "[성공]"
 
 #: lib/import.php
 msgid "[fail]"
@@ -14448,11 +14434,11 @@ msgstr "Unmet Dependency :"
 
 #: lib/installer.php
 msgid "Path was not writable"
-msgstr "경로에 쓸 수 없습니다."
+msgstr "경로에 쓸 수 없습니다"
 
 #: lib/installer.php
 msgid "Path is not writable"
-msgstr "경로에 쓸 수 없습니다."
+msgstr "경로에 쓸 수 없습니다"
 
 #: lib/installer.php
 msgid "The external CSRF secret must be outside the Cacti document root"
@@ -14471,23 +14457,23 @@ msgstr ""
 #: lib/installer.php
 #, php-format
 msgid "Failed to set specified %sRRDTool version: %s"
-msgstr "지정된  %sRRDTool 버전을 설정하지 못했습니다 :  %s"
+msgstr "지정된 %sRRDTool 버전을 설정하지 못했습니다 : %s"
 
 #: lib/installer.php
 msgid "Invalid Theme Specified"
-msgstr "잘못된 테마가 지정되었습니다."
+msgstr "잘못된 테마가 지정되었습니다"
 
 #: lib/installer.php
 msgid "Resource is not writable"
-msgstr "리소스에 쓸 수 없습니다."
+msgstr "리소스에 쓸 수 없습니다"
 
 #: lib/installer.php
 msgid "File not found"
-msgstr "파일을 찾을 수 없습니다."
+msgstr "파일을 찾을 수 없습니다"
 
 #: lib/installer.php
 msgid "PHP did not return expected result"
-msgstr "PHP가 예상 한 결과를 반환하지 않았습니다."
+msgstr "PHP가 예상 한 결과를 반환하지 않았습니다"
 
 #: lib/installer.php
 msgid "Unexpected path parameter"
@@ -14496,21 +14482,21 @@ msgstr "예기치 않은 경로 매개 변수"
 #: lib/installer.php
 #, php-format
 msgid "Failed to apply specified profile %s != %s"
-msgstr "지정한 프로필  %s! =  %s을 적용하지 못했습니다."
+msgstr "지정한 프로필 %s! = %s을 적용하지 못했습니다"
 
 #: lib/installer.php
 #, php-format
 msgid "Failed to apply specified mode: %s"
-msgstr "지정한 모드를 적용하지 못했습니다 :  %s"
+msgstr "지정한 모드를 적용하지 못했습니다 : %s"
 
 #: lib/installer.php
 #, php-format
 msgid "Failed to apply specified automation override: %s"
-msgstr "지정한 자동화 재정의를 적용하지 못했습니다 :  %s"
+msgstr "지정한 자동화 재정의를 적용하지 못했습니다 : %s"
 
 #: lib/installer.php
 msgid "Failed to apply specified cron interval"
-msgstr "지정된 cron 간격을 적용하지 못했습니다."
+msgstr "지정된 cron 간격을 적용하지 못했습니다"
 
 #: lib/installer.php
 #, php-format
@@ -14519,7 +14505,7 @@ msgstr "'%s' 을 (를) 자동화 범위로 적용하지 못했습니다"
 
 #: lib/installer.php
 msgid "No matching snmp option exists"
-msgstr "일치하는 snmp 옵션이 없습니다."
+msgstr "일치하는 snmp 옵션이 없습니다"
 
 #: lib/installer.php
 #, fuzzy
@@ -14533,7 +14519,7 @@ msgstr ""
 
 #: lib/installer.php
 msgid "No matching template exists"
-msgstr "일치하는 템플릿이 없습니다."
+msgstr "일치하는 템플릿이 없습니다"
 
 #: lib/installer.php
 msgid "Unable to load the tables requiring conversion"
@@ -14554,12 +14540,12 @@ msgstr "Cacti Group에보고 해주십시오."
 #: lib/installer.php
 #, php-format
 msgid "Unknown Reason: %s"
-msgstr "알 수없는 이유 :  %s"
+msgstr "알 수없는 이유 : %s"
 
 #: lib/installer.php
 #, php-format
 msgid "You are attempting to install Cacti %s onto a 0.6.x database. Unfortunately, this can not be performed."
-msgstr "0.6.x 데이터베이스에 Cacti  %s을 (를) 설치하려고합니다. 불행하게도, 이것은 수행 될 수 없습니다."
+msgstr "0.6.x 데이터베이스에 Cacti %s을 (를) 설치하려고합니다. 불행하게도, 이것은 수행 될 수 없습니다."
 
 #: lib/installer.php
 msgid "To be able continue, you <b>MUST</b> create a new database, import \"cacti.sql\" into it:"
@@ -14571,7 +14557,7 @@ msgstr "그런 다음 새 데이터베이스를 가리 키도록 &quot;/ config.
 
 #: lib/installer.php
 msgid "NOTE: Your existing data will not be modified, nor will it or any history be available to the new install"
-msgstr "참고 : 기존 데이터는 수정되지 않으며 새로 설치 한 날짜 또는 기록도 사용할 수 없습니다."
+msgstr "참고 : 기존 데이터는 수정되지 않으며 새로 설치 한 날짜 또는 기록도 사용할 수 없습니다"
 
 #: lib/installer.php
 msgid "You have created a new database, but have not yet imported the 'cacti.sql' file. At the command line, execute the following to continue:"
@@ -14591,7 +14577,7 @@ msgstr "Linux / UNIX에서는 쉘에서 &#39;root&#39;로 다음을 실행하십
 
 #: lib/installer.php
 msgid "On Windows, you must follow the instructions here <a target='_blank' href='https://dev.mysql.com/downloads/timezones.html'>Time zone description table</a>.  Once that is complete, you can issue the following command to grant the Cacti user access to the tables:"
-msgstr "Windows에서는 <a target='_blank' href='https://dev.mysql.com/downloads/timezones.html'>표준 시간대 설명 테이블</a> 의 지침을 따라야 <a target='_blank' href='https://dev.mysql.com/downloads/timezones.html'>합니다</a> . 완료되면 다음 명령을 실행하여 Cacti 사용자에게 테이블에 대한 액세스 권한을 부여 할 수 있습니다."
+msgstr "Windows에서는 <a target='_blank' href='https://dev.mysql.com/downloads/timezones.html'>표준 시간대 설명 테이블</a> 의 지침을 따라야 합니다. 완료되면 다음 명령을 실행하여 Cacti 사용자에게 테이블에 대한 액세스 권한을 부여 할 수 있습니다."
 
 #: lib/installer.php
 msgid "Then run the following within MySQL as an administrator:"
@@ -14624,7 +14610,7 @@ msgstr "라이선스 계약"
 #: lib/installer.php
 #, php-format
 msgid "This version of Cacti (%s) does not appear to have a valid version code, please contact the Cacti Development Team to ensure this is corrected.  If you are seeing this error in a release, please raise a report immediately on GitHub"
-msgstr "이 버전의 Cacti ( %s)는 유효한 버전 코드가없는 것으로 보입니다. Cacti Development Team에 연락하여이 코드가 적용되었는지 확인하십시오. 릴리스에서이 오류가 표시되는 경우 GitHub에서 즉시 보고서를 제출하십시오."
+msgstr "이 버전의 Cacti ( %s)는 유효한 버전 코드가없는 것으로 보입니다. Cacti Development Team에 연락하여이 코드가 적용되었는지 확인하십시오. 릴리스에서이 오류가 표시되는 경우 GitHub에서 즉시 보고서를 제출하십시오"
 
 #: lib/installer.php
 msgid "Thanks for taking the time to download and install Cacti, the complete graphing solution for your network. Before you can start making cool graphs, there are a few pieces of data that Cacti needs to know."
@@ -14633,12 +14619,12 @@ msgstr "네트워크에 완벽한 그래프 솔루션 인 Cacti를 다운로드�
 #: lib/installer.php
 #, php-format
 msgid "Make sure you have read and followed the required steps needed to install Cacti before continuing. Install information can be found for <a href=\"%s\">Unix</a> and <a href=\"%s\">Win32</a>-based operating systems."
-msgstr "계속하기 전에 Cacti 설치에 필요한 단계를 읽고 따라야합니다. <a href=\"%1$s\">Unix</a> 및 <a href=\"%2$s\">Win32</a> 기반 운영 체제에 대한 설치 정보를 찾을 수 있습니다."
+msgstr "계속하기 전에 Cacti 설치에 필요한 단계를 읽고 따라야합니다. <a href=\"%s\">Unix</a> 및 <a href=\"%s\">Win32</a> 기반 운영 체제에 대한 설치 정보를 찾을 수 있습니다."
 
 #: lib/installer.php
 #, php-format
 msgid "This process will guide you through the steps for upgrading from version '%s'. "
-msgstr "이 프로세스는 버전 &#39; %s&#39;에서 업그레이드하는 단계를 안내합니다."
+msgstr "이 프로세스는 버전 &#39; %s&#39;에서 업그레이드하는 단계를 안내합니다. "
 
 #: lib/installer.php
 #, php-format
@@ -14647,7 +14633,7 @@ msgstr "또한 업그레이드 인 경우 <a href=\"%s\">업그레이드</a> 정
 
 #: lib/installer.php
 msgid "It is NOT recommended to downgrade as the database structure may be inconsistent"
-msgstr "데이터베이스 구조가 일치하지 않을 수 있으므로 다운 그레이드하지 않는 것이 좋습니다."
+msgstr "데이터베이스 구조가 일치하지 않을 수 있으므로 다운 그레이드하지 않는 것이 좋습니다"
 
 #: lib/installer.php
 msgid "Cacti is licensed under the GNU General Public License, you must agree to its provisions before continuing:"
@@ -14663,7 +14649,7 @@ msgstr "GPL 라이센스 계약서 수락"
 
 #: lib/installer.php
 msgid "Select default theme: "
-msgstr "기본 테마 선택 :"
+msgstr "기본 테마 선택 : "
 
 #: lib/installer.php
 msgid "Pre-installation Checks"
@@ -14828,11 +14814,11 @@ msgstr "<strong> %s의</strong> <strong> %s의</strong> 다운 그레이드"
 
 #: lib/installer.php
 msgid "You appear to be downgrading to a previous version.  Database changes made for the newer version will not be reversed and <i>could</i> cause issues."
-msgstr "이전 버전으로 다운 그레이드되는 것으로 보입니다. 최신 버전에 대한 데이터베이스 변경 사항은 취소되지 않고 문제 <i>가</i> 발생할 <i>수</i> 있습니다."
+msgstr "이전 버전으로 다운 그레이드되는 것으로 보입니다. 최신 버전에 대한 데이터베이스 변경 사항은 취소되지 않고 문제가 발생할 <i>수</i> 있습니다."
 
 #: lib/installer.php
 msgid "Please select the type of installation"
-msgstr "설치 유형을 선택하십시오."
+msgstr "설치 유형을 선택하십시오"
 
 #: lib/installer.php
 msgid "Installation options:"
@@ -14941,7 +14927,7 @@ msgstr "계속하기 전에이 값들이 모두 올바른지 확인하십시오.
 
 #: lib/installer.php
 msgid "One or more paths appear to be incorrect, unable to proceed"
-msgstr "하나 이상의 경로가 잘못되어 진행할 수 없습니다."
+msgstr "하나 이상의 경로가 잘못되어 진행할 수 없습니다"
 
 #: lib/installer.php
 msgid "Directory Permission Checks"
@@ -14957,7 +14943,7 @@ msgstr "설치가 완료되면 이러한 디렉토리 중 일부를 읽기 전�
 
 #: lib/installer.php
 msgid "These directories will be required to stay read writable after the install so that the Cacti remote synchronization process can update them as the Main Cacti Web Site changes"
-msgstr "이 디렉토리들은 Cacti 원격 동기화 프로세스가 Main Cacti 웹 사이트 변경에 따라 업데이트 할 수 있도록 설치 후에 읽기 가능한 상태로 있어야합니다."
+msgstr "이 디렉토리들은 Cacti 원격 동기화 프로세스가 Main Cacti 웹 사이트 변경에 따라 업데이트 할 수 있도록 설치 후에 읽기 가능한 상태로 있어야합니다"
 
 #: lib/installer.php
 msgid "If you are installing packages, once the packages are installed, you should change the scripts directory back to read only as this presents some exposure to the web site."
@@ -14973,7 +14959,7 @@ msgstr "설치시에만 쓰기 가능"
 
 #: lib/installer.php package_import.php
 msgid "Not Writable"
-msgstr "쓰기 가능 "
+msgstr "쓰기 가능"
 
 #: lib/installer.php
 msgid "Required Writable after Install Complete"
@@ -14998,7 +14984,7 @@ msgstr "사용자 &#39; %s&#39;은 읽기 / 쓰기를 가능하게하는 수정 
 
 #: lib/installer.php
 msgid "An example of how to set folder permissions is shown here, though you may need to adjust this depending on your operating system, user accounts and desired permissions."
-msgstr "폴더 사용 권한을 설정하는 방법의 예가 여기에 표시되어 있지만 운영 체제, 사용자 계정 및 원하는 사용 권한에 따라이를 조정해야 할 수도 있습니다"
+msgstr "폴더 사용 권한을 설정하는 방법의 예가 여기에 표시되어 있지만 운영 체제, 사용자 계정 및 원하는 사용 권한에 따라이를 조정해야 할 수도 있습니다."
 
 #: lib/installer.php
 msgid "EXAMPLE:"
@@ -15010,7 +14996,7 @@ msgstr "설치가 CSRF 경로를 완료하면 읽기 전용으로 설정해야�
 
 #: lib/installer.php
 msgid "All folders are writable"
-msgstr "모든 폴더에 쓸 수 있습니다."
+msgstr "모든 폴더에 쓸 수 있습니다"
 
 #: lib/installer.php
 msgid "Input Validation Whitelist Protection"
@@ -15052,7 +15038,7 @@ msgstr "<b>$ input_whitelist</b> 변수를 주석 해제 한 다음 웹 기반 �
 
 #: lib/installer.php
 msgid "Check the Checkbox below to acknowledge that you have read and understand this security concern"
-msgstr "이 보안 문제를 읽고 이해했음을 확인하려면 아래 확인란을 선택하십시오."
+msgstr "이 보안 문제를 읽고 이해했음을 확인하려면 아래 확인란을 선택하십시오"
 
 #: lib/installer.php
 msgid "I have read this statement"
@@ -15084,7 +15070,7 @@ msgstr "장치에서 먼저 다른 옵션 집합을 사용해야하는 경우 �
 
 #: lib/installer.php
 msgid "All options may be adjusted post installation"
-msgstr "모든 옵션은 설치 후 조정할 수 있습니다."
+msgstr "모든 옵션은 설치 후 조정할 수 있습니다"
 
 #: lib/installer.php
 msgid "Default Options"
@@ -15152,11 +15138,11 @@ msgstr "서버 데이터 정렬"
 
 #: lib/installer.php
 msgid "Your server collation appears to be UTF8 compliant"
-msgstr "서버 데이터 정렬은 UTF8과 호환되는 것으로 보입니다."
+msgstr "서버 데이터 정렬은 UTF8과 호환되는 것으로 보입니다"
 
 #: lib/installer.php
 msgid "Your server collation does NOT appear to be fully UTF8 compliant. "
-msgstr "서버 데이터 정렬은 완전히 UTF8과 호환되지 않습니다."
+msgstr "서버 데이터 정렬은 완전히 UTF8과 호환되지 않습니다. "
 
 #: lib/installer.php
 msgid "Under the [mysqld] section, locate the entries named 'character-set-server' and 'collation-server' and set them as follows:"
@@ -15168,15 +15154,15 @@ msgstr "데이터베이스 데이터 정렬"
 
 #: lib/installer.php
 msgid "Your database default collation appears to be UTF8 compliant"
-msgstr "데이터베이스 기본 데이터 정렬은 UTF8과 호환되는 것으로 보입니다."
+msgstr "데이터베이스 기본 데이터 정렬은 UTF8과 호환되는 것으로 보입니다"
 
 #: lib/installer.php
 msgid "Your database default collation does NOT appear to be full UTF8 compliant. "
-msgstr "데이터베이스 기본 데이터 정렬은 전체 UTF8과 호환되지 않습니다."
+msgstr "데이터베이스 기본 데이터 정렬은 전체 UTF8과 호환되지 않습니다. "
 
 #: lib/installer.php
 msgid "Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched.   Please ensure your database is changed to 'utf8mb4_unicode_ci' by running the following: "
-msgstr "데이터 정렬이 일치하지 않으면 플러그인이 만든 테이블에 Cacti Core 테이블과 연결된 문제가있을 수 있습니다. 다음을 실행하여 데이터베이스가 &#39;utf8mb4_unicode_ci&#39;로 변경되었는지 확인하십시오."
+msgstr "데이터 정렬이 일치하지 않으면 플러그인이 만든 테이블에 Cacti Core 테이블과 연결된 문제가있을 수 있습니다. 다음을 실행하여 데이터베이스가 &#39;utf8mb4_unicode_ci&#39;로 변경되었는지 확인하십시오. "
 
 #: lib/installer.php
 msgid "Table Setup"
@@ -15209,7 +15195,7 @@ msgstr "원시 형식"
 
 #: lib/installer.php
 msgid "One or more tables are too large to convert during the installation.  You should use the cli/convert_tables.php script to perform the conversion, then refresh this page. For example: "
-msgstr "하나 이상의 테이블이 너무 커서 설치 중에 변환 할 수 없습니다. 변환을 수행하려면 cli / convert_tables.php 스크립트를 사용하고이 페이지를 새로 고쳐야합니다. 예 :"
+msgstr "하나 이상의 테이블이 너무 커서 설치 중에 변환 할 수 없습니다. 변환을 수행하려면 cli / convert_tables.php 스크립트를 사용하고이 페이지를 새로 고쳐야합니다. 예 : "
 
 #: lib/installer.php
 msgid "The following tables should be converted to UTF8 and InnoDB with a Dynamic row format.  Please select the tables that you wish to convert during the installation process."
@@ -15217,7 +15203,7 @@ msgstr "다음 표는 UTF8 및 InnoDB로 변환해야합니다. 설치 프로세
 
 #: lib/installer.php
 msgid "All your tables appear to be UTF8 and Dynamic row format compliant"
-msgstr "모든 테이블이 UTF8 호환으로 표시됩니다."
+msgstr "모든 테이블이 UTF8 호환으로 표시됩니다"
 
 #: lib/installer.php
 msgid "Confirm Upgrade"
@@ -15241,11 +15227,11 @@ msgstr "저 무적 감지"
 
 #: lib/installer.php
 msgid "YOU MUST MANUALLY CHANGE THE CACTI DATABASE TO REVERT ANY UPGRADE CHANGES THAT HAVE BEEN MADE.<br/>THE INSTALLER HAS NO METHOD TO DO THIS AUTOMATICALLY FOR YOU"
-msgstr "업그레이드 된 변경 사항을 취소하려면 CACTI 데이터베이스를 수동으로 변경해야합니다. <br/> 설치자는 자동으로이 작업을 수행 할 방법이 없습니다."
+msgstr "업그레이드 된 변경 사항을 취소하려면 CACTI 데이터베이스를 수동으로 변경해야합니다. <br/> 설치자는 자동으로이 작업을 수행 할 방법이 없습니다"
 
 #: lib/installer.php
 msgid "Downgrading should only be performed when absolutely necessary and doing so may break your installation"
-msgstr "다운 그레이드는 절대적으로 필요한 경우에만 수행해야하며 그렇게하면 설치 작업이 중단 될 수 있습니다."
+msgstr "다운 그레이드는 절대적으로 필요한 경우에만 수행해야하며 그렇게하면 설치 작업이 중단 될 수 있습니다"
 
 #: lib/installer.php
 msgid "Your Cacti Server is almost ready.  Please check that you are happy to proceed."
@@ -15259,11 +15245,11 @@ msgstr "&#39; %s&#39;을 (를) 누른 다음 &#39; %s&#39;을 (를) 클릭하여
 #: lib/installer.php
 #, php-format
 msgid "Installing Cacti Server v%s"
-msgstr "Cacti Server v  %s 설치하기"
+msgstr "Cacti Server v %s 설치하기"
 
 #: lib/installer.php
 msgid "Your Cacti Server is now installing"
-msgstr "Cacti Server가 설치 중입니다."
+msgstr "Cacti Server가 설치 중입니다"
 
 #: lib/installer.php
 #, php-format
@@ -15282,11 +15268,11 @@ msgstr "Cacti Server v  %s이 (가) 설치 / 업데이트되었습니다. 이제
 #: lib/installer.php
 #, php-format
 msgid "Your Cacti Server v%s has been installed/updated with errors"
-msgstr "Cacti Server v  %s에 오류가 설치 / 업데이트되었습니다."
+msgstr "Cacti Server v %s에 오류가 설치 / 업데이트되었습니다"
 
 #: lib/installer.php
 msgid "Get Help"
-msgstr "도와주세요."
+msgstr "도와주세요"
 
 #: lib/installer.php
 msgid "Report Issue"
@@ -15326,7 +15312,7 @@ msgstr ""
 #: lib/installer.php
 #, php-format
 msgid "Found %s templates to install"
-msgstr "설치할 %s 템플릿을 찾았습니다."
+msgstr "설치할 %s 템플릿을 찾았습니다"
 
 #: lib/installer.php
 #, php-format
@@ -15336,12 +15322,12 @@ msgstr "패키지 # %s '%s'을 (를) 가져 오려고합니다."
 #: lib/installer.php
 #, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' succeeded"
-msgstr "프로필 '%s'에서 패키지 # %s '%s'을 (를) 가져 왔습니다."
+msgstr "프로필 '%s'에서 패키지 # %s '%s'을 (를) 가져 왔습니다"
 
 #: lib/installer.php
 #, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' failed"
-msgstr "프로필 '%s'에서 패키지 # %s '%s'을 (를) 가져 오지 못했습니다."
+msgstr "프로필 '%s'에서 패키지 # %s '%s'을 (를) 가져 오지 못했습니다"
 
 #: lib/installer.php
 #, php-format
@@ -15373,7 +15359,7 @@ msgstr "자동화 네트워크 (%s) 업데이트, 모드 \"%s\"=> \"%s\", 서브
 
 #: lib/installer.php
 msgid "Failed to find automation network, no changes were made"
-msgstr "자동화 네트워크를 찾지 못했습니다. 변경 사항이 없습니다."
+msgstr "자동화 네트워크를 찾지 못했습니다. 변경 사항이 없습니다"
 
 #: lib/installer.php
 msgid "Adding extra snmp settings for automation"
@@ -15406,12 +15392,12 @@ msgstr "자동화 옵션 세트 %s 업데이트 실패"
 
 #: lib/installer.php
 msgid "Failed to find any automation option set"
-msgstr "복사 할 데이터를 찾지 못했습니다!"
+msgstr "자동화 옵션 세트를 찾지 못했습니다"
 
 #: lib/installer.php
 #, php-format
 msgid "Device Template for First Cacti Device is %s"
-msgstr "장치 템플릿 [편집 :  %s]"
+msgstr "장치 템플릿 [편집 : %s]"
 
 #: lib/installer.php
 msgid "Creating Graphs for Default Device"
@@ -15423,7 +15409,7 @@ msgstr "장치 기본값"
 
 #: lib/installer.php
 msgid "No templated graphs for Default Device were found"
-msgstr "기본 장치에 대한 템플릿 그래프가 없습니다."
+msgstr "기본 장치에 대한 템플릿 그래프가 없습니다"
 
 #: lib/installer.php
 msgid "WARNING: Device Template for your Operating System Not Found.  You will need to import Device Templates or Cacti Packages to monitor your Cacti server."
@@ -15448,7 +15434,7 @@ msgstr "RSA 키 페어 생성"
 #: lib/installer.php
 #, php-format
 msgid "Found %s tables to convert"
-msgstr "변환 할 %s 테이블을 찾았습니다."
+msgstr "변환 할 %s 테이블을 찾았습니다"
 
 #: lib/installer.php
 #, php-format
@@ -15457,7 +15443,7 @@ msgstr "테이블 # %s '%s'변환 중"
 
 #: lib/installer.php
 msgid "No tables where found or selected for conversion"
-msgstr "변환을 위해 찾거나 선택한 테이블이 없습니다."
+msgstr "변환을 위해 찾거나 선택한 테이블이 없습니다"
 
 #: lib/installer.php
 #, php-format
@@ -15481,12 +15467,12 @@ msgstr "경고 : v %s의 업그레이드 기능을 찾지 못했습니다"
 
 #: lib/installer.php
 msgid "Install aborted due to no EULA acceptance"
-msgstr "EULA 승인이 없어 설치가 중단되었습니다."
+msgstr "EULA 승인이 없어 설치가 중단되었습니다"
 
 #: lib/installer.php
 #, php-format
 msgid "Background was already started at %s, this attempt at %s was skipped"
-msgstr "백그라운드가 이미 %s에서 시작되었습니다. %s에서의이 시도는 생략되었습니다."
+msgstr "백그라운드가 이미 %s에서 시작되었습니다. %s에서의이 시도는 생략되었습니다"
 
 #: lib/installer.php
 #, php-format
@@ -15496,7 +15482,7 @@ msgstr "설치 중 예외 발생: # %s - %s"
 #: lib/installer.php
 #, php-format
 msgid "Installation was started at %s, completed at %s"
-msgstr "설치가  %s에서 시작되어  %s에서 완료되었습니다."
+msgstr "설치가 %s에서 시작되어 %s에서 완료되었습니다"
 
 #: lib/installer.php
 msgid "Both"
@@ -15537,7 +15523,7 @@ msgstr "PHP 옵션 %s을 (를) 설정하지 못했습니다. %s (%s 여야 함)"
 
 #: lib/installer.php
 msgid "No Remote Data Collectors found for full synchronization"
-msgstr "동기화를 시도 할 때 데이터 수집기를 찾을 수 없습니다."
+msgstr "동기화를 시도 할 때 데이터 수집기를 찾을 수 없습니다"
 
 #: lib/ldap.php
 msgid "Authentication Success"
@@ -15553,7 +15539,7 @@ msgstr "PHP LDAP를 사용할 수 없음"
 
 #: lib/ldap.php
 msgid "No username defined"
-msgstr "사용자 이름이 정의되지 않았습니다."
+msgstr "사용자 이름이 정의되지 않았습니다"
 
 #: lib/ldap.php
 #, php-format
@@ -15602,15 +15588,15 @@ msgstr "서버 (%s) 에서 그룹 DN을 비교할 수 없습니다"
 
 #: lib/ldap.php
 msgid "More than one matching user found"
-msgstr "일치하는 사용자가 두 명 이상 있습니다."
+msgstr "일치하는 사용자가 두 명 이상 있습니다"
 
 #: lib/ldap.php
 msgid "Unable to find user from DN"
-msgstr "DN에서 사용자를 찾을 수 없습니다."
+msgstr "DN에서 사용자를 찾을 수 없습니다"
 
 #: lib/ldap.php
 msgid "Unable to find users DN"
-msgstr "사용자 DN을 찾을 수 없습니다."
+msgstr "사용자 DN을 찾을 수 없습니다"
 
 #: lib/ldap.php
 #, php-format
@@ -15632,7 +15618,7 @@ msgstr "서버 (%s) 에서 예기치 않은 오류 %s (Ldap 오류: %s)"
 
 #: lib/ping.php
 msgid "ICMP Ping timed out"
-msgstr "ICMP Ping 시간이 초과되었습니다."
+msgstr "ICMP Ping 시간이 초과되었습니다"
 
 #: lib/ping.php
 #, php-format
@@ -15641,11 +15627,11 @@ msgstr "ICMP Ping 성공 ( %s 밀리 초)"
 
 #: lib/ping.php
 msgid "ICMP ping Timed out"
-msgstr "ICMP 핑 시간 초과"
+msgstr "ICMP Ping 시간이 초과되었습니다"
 
 #: lib/ping.php
 msgid "Destination address not specified"
-msgstr "대상 주소가 지정되지 않았습니다."
+msgstr "대상 주소가 지정되지 않았습니다"
 
 #: lib/ping.php
 msgid "default"
@@ -15658,7 +15644,7 @@ msgstr "IPv6 지원을 위해 PHP 5.5.4 이상으로 업그레이드하십시오
 #: lib/ping.php
 #, php-format
 msgid "UDP ping error: %s"
-msgstr "UDP 핑 오류 :  %s"
+msgstr "UDP 핑 오류 : %s"
 
 #: lib/ping.php
 #, php-format
@@ -15672,16 +15658,14 @@ msgid "TCP Ping Success Connection Refused (%s ms)"
 msgstr "TCP Ping 성공 ( %s 밀리 초)"
 
 #: lib/ping.php
-#, fuzzy, php-format
-#| msgid "TCP ping: socket_connect(), reason: %s"
+#, php-format
 msgid "TCP Ping Failed: socket_connect(), reason: %s"
-msgstr "TCP ping : socket_connect (), 이유 :  %s"
+msgstr "TCP ping : socket_connect (), 이유 : %s"
 
 #: lib/ping.php
-#, fuzzy, php-format
-#| msgid "TCP ping: socket_select() failed, reason: %s"
+#, php-format
 msgid "TCP Ping Failed: socket_select() failed, reason: %s"
-msgstr "TCP ping : socket_select ()가 실패했습니다. 이유는  %s입니다."
+msgstr "TCP ping : socket_select ()가 실패했습니다. 이유는 %s입니다"
 
 #: lib/ping.php
 #, php-format
@@ -15690,7 +15674,7 @@ msgstr "TCP Ping 성공 ( %s 밀리 초)"
 
 #: lib/ping.php
 msgid "TCP ping timed out"
-msgstr "TCP 핑이 시간 초과되었습니다."
+msgstr "TCP 핑이 시간 초과되었습니다"
 
 #: lib/ping.php
 msgid "Ping not performed due to setting."
@@ -15699,12 +15683,12 @@ msgstr "설정으로 인해 핑이 수행되지 않았습니다."
 #: lib/plugins.php
 #, php-format
 msgid "%s Version %s or above is required for %s. "
-msgstr "%s 에 %s 버전 %s 이상이 필요합니다."
+msgstr "%s 에 %s 버전 %s 이상이 필요합니다. "
 
 #: lib/plugins.php
 #, php-format
 msgid "%s is required for %s, and it is not installed. "
-msgstr "%s에는  %s이 (가) 필요하며 설치되지 않았습니다."
+msgstr "%s에는 %s이 (가) 필요하며 설치되지 않았습니다. "
 
 #: lib/plugins.php
 msgid "Plugin cannot be installed."
@@ -15737,7 +15721,7 @@ msgstr "플러그인"
 #: lib/plugins.php
 #, php-format
 msgid "Requires: Cacti >= %s"
-msgstr "요구 사항 : Cacti&gt; =  %s"
+msgstr "요구 사항 : Cacti&gt; = %s"
 
 #: lib/plugins.php
 msgid "Legacy Plugin"
@@ -15754,7 +15738,7 @@ msgstr "'%s' 장치가 보고서에 성공적으로 추가되었습니다."
 
 #: lib/reports.php
 msgid "Device not found! Unable to add to Report"
-msgstr "보고서에 추가하려고 시도한 그래프가 없습니다."
+msgstr "보고서에 추가하려고 시도한 그래프가 없습니다"
 
 #: lib/reports.php
 #, php-format
@@ -15764,7 +15748,7 @@ msgstr "장치 '%s'이(가) 보고서에 이미 있으므로 보고서에 추가
 #: lib/reports.php
 #, php-format
 msgid "Problems sending Report '%s' Problem with e-mail Subsystem Error is '%s'"
-msgstr "보고서 '%s'을 (를) 보내는 데 문제가 있음 전자 메일 하위 시스템 오류 문제는 '%s'입니다."
+msgstr "보고서 '%s'을 (를) 보내는 데 문제가 있음 전자 메일 하위 시스템 오류 문제는 '%s'입니다"
 
 #: lib/reports.php
 #, php-format
@@ -15789,7 +15773,7 @@ msgstr "이 그래프를 연관 시키려면 리포트를 선택하십시오. �
 
 #: lib/reports.php
 msgid "Report:"
-msgstr "보고서"
+msgstr "보고서:"
 
 #: lib/reports.php
 msgid "Graph Timespan:"
@@ -15807,7 +15791,7 @@ msgstr "생성 된 보고서 그래프 항목 &#39; <i> %s</i> &#39;"
 #: lib/reports.php
 #, php-format
 msgid "Failed Adding Report Graph Item '<i>%s</i>' Already Exists"
-msgstr "이미 추가 된 보고서 그래프 항목 &#39; <i> %s</i> &#39;을 (를) 추가하지 못했습니다."
+msgstr "이미 추가 된 보고서 그래프 항목 &#39; <i> %s</i> &#39;을 (를) 추가하지 못했습니다"
 
 #: lib/reports.php
 #, php-format
@@ -15853,27 +15837,27 @@ msgstr "필요한 RRD 파일 단계 크기는 '%s' 이지만 관찰된 단계는
 #: lib/rrd.php
 #, php-format
 msgid "Type for Data Source '%s' should be '%s'"
-msgstr "데이터 원본 &#39; %s&#39;의 형식이 &#39; %s&#39;이어야합니다."
+msgstr "데이터 원본 &#39; %s&#39;의 형식이 &#39; %s&#39;이어야합니다"
 
 #: lib/rrd.php
 #, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
-msgstr "데이터 원본 &#39; %s&#39;의 하트 비트가 &#39; %s&#39;이어야합니다."
+msgstr "데이터 원본 &#39; %s&#39;의 하트 비트가 &#39; %s&#39;이어야합니다"
 
 #: lib/rrd.php
 #, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
-msgstr "데이터 원본 &#39; %s&#39;의 RRD 최소값은 &#39; %s&#39;이어야합니다."
+msgstr "데이터 원본 &#39; %s&#39;의 RRD 최소값은 &#39; %s&#39;이어야합니다"
 
 #: lib/rrd.php
 #, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
-msgstr "선인장 RRA &#39; %s&#39;의 CF / 스텝 수 ( %s,  %s)가 &#39; %s&#39;"
+msgstr "선인장 RRA &#39; %s&#39;의 CF / 스텝 수 ( %s, %s)가 &#39; %s&#39;"
 
 #: lib/rrd.php
 #, php-format
 msgid "File RRA '%s' has same CF/steps (%s, %s) as '%s'"
-msgstr "파일 RRA &#39; %s&#39;은 (는) &#39; %s&#39;(으)로 동일한 CF / 단계 ( %s,  %s)"
+msgstr "파일 RRA &#39; %s&#39;은 (는) &#39; %s&#39;(으)로 동일한 CF / 단계 ( %s, %s)"
 
 #: lib/rrd.php
 #, php-format
@@ -15883,7 +15867,7 @@ msgstr "'%s' 의 pdp_per_row가 유효하지 않습니다. RRA '%s' 은 (는) '%
 #: lib/rrd.php
 #, php-format
 msgid "The XFF for Cacti RRA id is '%s' but should be '%s'"
-msgstr "선인장에 대한 XFF RRA id &#39; %s&#39;은 (는) &#39; %s&#39;이어야합니다."
+msgstr "선인장에 대한 XFF RRA id &#39; %s&#39;은 (는) &#39; %s&#39;이어야합니다"
 
 #: lib/rrd.php
 #, php-format
@@ -15893,12 +15877,12 @@ msgstr "Cacti RRA ID '%s' 의 행 수가 잘못되었습니다. 행 수는 '%s' 
 #: lib/rrd.php
 #, php-format
 msgid "The RRA '%s' missing in the existing Cacti RRDfile"
-msgstr "RRA &#39; %s&#39;은 (는) RRDfile에 없습니다."
+msgstr "RRA &#39; %s&#39;은 (는) RRDfile에 없습니다"
 
 #: lib/rrd.php
 #, php-format
 msgid "RRA '%s' missing in Cacti definition"
-msgstr "Cacti 정의에서 RRA &#39; %s&#39;이 누락되었습니다."
+msgstr "Cacti 정의에서 RRA &#39; %s&#39;이 누락되었습니다"
 
 #: lib/rrd.php
 msgid "RRD File Information"
@@ -15914,7 +15898,7 @@ msgstr "최소 하트 비트"
 
 #: lib/rrd.php
 msgid "Min"
-msgstr "최소"
+msgstr "분"
 
 #: lib/rrd.php
 msgid "Max"
@@ -15951,11 +15935,11 @@ msgstr "CDP 알 수없는 데이터 요소 (0)"
 #: lib/rrd.php
 #, php-format
 msgid "rename %s to %s"
-msgstr "%s에서  %s (으)로 이름 바꾸기"
+msgstr "%s에서 %s (으)로 이름 바꾸기"
 
 #: lib/rrd.php
 msgid "Errors Found"
-msgstr " %s을 찾을 수 없습니다."
+msgstr "오류가 발견됨"
 
 #: lib/rrd.php
 msgid "Optional Tuning Recommendations"
@@ -15969,36 +15953,36 @@ msgstr "유효한 파일 경로를 입력하십시오."
 
 #: lib/rrd.php
 msgid "Error while parsing the XML of rrdtool dump"
-msgstr "rrdtool 덤프의 XML을 구문 분석하는 동안 오류가 발생했습니다."
+msgstr "rrdtool 덤프의 XML을 구문 분석하는 동안 오류가 발생했습니다"
 
 #: lib/rrd.php
 #, php-format
 msgid "ERROR while writing XML file: %s"
-msgstr "XML 파일을 쓰는 동안 오류가 발생했습니다 :  %s"
+msgstr "XML 파일을 쓰는 동안 오류가 발생했습니다 : %s"
 
 #: lib/rrd.php
 #, php-format
 msgid "ERROR: RRDfile %s not writeable"
-msgstr "오류 : RRD 파일  %s을 (를) 쓸 수 없습니다."
+msgstr "오류 : RRD 파일 %s을 (를) 쓸 수 없습니다"
 
 #: lib/rrd.php
 msgid "Error while parsing the XML of RRDtool dump"
-msgstr "RRDtool 덤프의 XML을 구문 분석하는 동안 오류가 발생했습니다."
+msgstr "RRDtool 덤프의 XML을 구문 분석하는 동안 오류가 발생했습니다"
 
 #: lib/rrd.php
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file"
-msgstr "RRA (CF =  %s, ROWS = % d, PDP_PER_ROW = % d, XFF = % 1.2f)가 RRD 파일에서 제거되었습니다."
+msgstr "RRA (CF = %s, ROWS = %d, PDP_PER_ROW = %d, XFF = %1.2f)가 RRD 파일에서 제거되었습니다"
 
 #: lib/rrd.php
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file"
-msgstr "RRA (CF =  %s, ROWS = % d, PDP_PER_ROW = % d, XFF = % 1.2f) RRD 파일에 추가"
+msgstr "RRA (CF = %s, ROWS = %d, PDP_PER_ROW = %d, XFF = %1.2f) RRD 파일에 추가"
 
 #: lib/rrd.php
 #, php-format
 msgid "Website does not have write access to %s, may be unable to create/update RRDs"
-msgstr "웹 사이트에  %s에 대한 쓰기 권한이 없으며 RRD를 만들거나 업데이트 할 수 없음"
+msgstr "웹 사이트에 %s에 대한 쓰기 권한이 없으며 RRD를 만들거나 업데이트 할 수 없음"
 
 #: lib/rrd.php
 msgid "(Custom)"
@@ -16006,7 +15990,7 @@ msgstr "사용자 정의"
 
 #: lib/rrd.php
 msgid "Failed to open data file, poller may not have run yet"
-msgstr "데이터 파일을 열지 못했습니다. 폴러가 아직 실행되지 않았을 수 있습니다."
+msgstr "데이터 파일을 열지 못했습니다. 폴러가 아직 실행되지 않았을 수 있습니다"
 
 #: lib/rrd.php
 msgid "RRA Folder"
@@ -16165,6 +16149,10 @@ msgid "Window Range:  All"
 msgstr "Windows 관련"
 
 #: lib/spikekill.php
+msgid "FATAL: Unable to generate a random temporary file name.  Check the system entropy source!"
+msgstr ""
+
+#: lib/spikekill.php
 msgid "FATAL: RRDtool Command Failed.  Please verify that the RRDtool path is valid in Settings->Paths!"
 msgstr ""
 
@@ -16305,7 +16293,7 @@ msgstr "제거 된 그래프 템플릿에서 그래프 생성 시도"
 #: lib/template.php
 #, php-format
 msgid "Created: %s"
-msgstr "생성됨 :  %s"
+msgstr "생성됨 : %s"
 
 #: lib/template.php
 msgid "ERROR: Whitelist Validation Failed. Check Data Input Method"
@@ -16749,7 +16737,7 @@ msgstr "%s 튜닝"
 
 #: lib/utility.php
 msgid "Note: Many changes below require a database restart"
-msgstr "참고 : 아래의 많은 변경 사항은 데이터베이스를 다시 시작해야합니다."
+msgstr "참고 : 아래의 많은 변경 사항은 데이터베이스를 다시 시작해야합니다"
 
 #: lib/utility.php
 msgid "Current Value"
@@ -16766,17 +16754,17 @@ msgstr "댓글"
 #: lib/utility.php
 #, php-format
 msgid "PHP %s is the minimum version"
-msgstr "PHP  %s이 (는) 최소 버전입니다."
+msgstr "PHP %s이 (는) 최소 버전입니다"
 
 #: lib/utility.php
 #, php-format
 msgid "A minimum of %s memory limit"
-msgstr "최소  %s MB 메모리 제한"
+msgstr "최소 %s MB 메모리 제한"
 
 #: lib/utility.php
 #, php-format
 msgid "A minimum of %s m execution time"
-msgstr "최소  %sm 실행 시간"
+msgstr "최소 %sm 실행 시간"
 
 #: lib/utility.php
 msgid "A valid timezone that matches MySQL and the system"
@@ -16938,7 +16926,7 @@ msgstr "얼마나 자주이 페이지가 자동으로 새로 고침되기를 원
 #: links.php
 #, php-format
 msgid "External Links [edit: %s]"
-msgstr "외부 링크 [편집 :  %s]"
+msgstr "외부 링크 [편집 : %s]"
 
 #: links.php
 msgid "External Links [new]"
@@ -16954,7 +16942,7 @@ msgstr "Cacti에서 세션 시간 초과로 인해 로그 아웃되었습니다.
 
 #: logout.php
 msgid "You have been logged out of Cacti due to a Remote Data Collector state change"
-msgstr "Cacti에서 세션 시간 초과로 인해 로그 아웃되었습니다."
+msgstr "Cacti에서 세션 시간 초과로 인해 로그 아웃되었습니다"
 
 #: logout.php
 msgid "Logout of Cacti"
@@ -16967,7 +16955,7 @@ msgstr "자동 로그 아웃"
 #: logout.php
 #, php-format
 msgid "Please close your browser or %sLogin Again%s"
-msgstr "브라우저를 닫거나  %s 다시 로그인하십시오  %s"
+msgstr "브라우저를 닫거나 %s 다시 로그인하십시오 %s"
 
 #: logout.php utilities.php
 #, php-format
@@ -16988,7 +16976,7 @@ msgstr "ID"
 
 #: managers.php
 msgid "Receivers"
-msgstr "수신자 "
+msgstr "수신자"
 
 #: managers.php
 msgid "No SNMP Notification Receivers"
@@ -16997,7 +16985,7 @@ msgstr "SNMP 알림 수신자 없음"
 #: managers.php
 #, php-format
 msgid "SNMP Notification Receiver [edit: %s]"
-msgstr "SNMP 알림 수신자 [편집 :  %s]"
+msgstr "SNMP 알림 수신자 [편집 : %s]"
 
 #: managers.php
 msgid "SNMP Notification Receiver [new]"
@@ -17058,22 +17046,22 @@ msgstr "SNMP 알림 로그 항목 없음"
 #: managers.php
 msgid "Click 'Continue' to delete the following Notification Receiver"
 msgid_plural "Click 'Continue' to delete following Notification Receiver"
-msgstr[0] "다음 알림 수신기를 삭제하려면 &#39;계속&#39;을 클릭하십시오."
+msgstr[0] "다음 알림 수신기를 삭제하려면 &#39;계속&#39;을 클릭하십시오"
 
 #: managers.php
 msgid "Click 'Continue' to enable the following Notification Receiver"
 msgid_plural "Click 'Continue' to enable following Notification Receiver"
-msgstr[0] "&#39;계속&#39;을 클릭하여 다음 알림 수신기를 사용하도록 설정하십시오."
+msgstr[0] "&#39;계속&#39;을 클릭하여 다음 알림 수신기를 사용하도록 설정하십시오"
 
 #: managers.php
 msgid "Click 'Continue' to disable the following Notification Receiver"
 msgid_plural "Click 'Continue' to disable following Notification Receiver"
-msgstr[0] "다음 알림 수신자를 사용 중지하려면 &#39;계속&#39;을 클릭하십시오."
+msgstr[0] "다음 알림 수신자를 사용 중지하려면 &#39;계속&#39;을 클릭하십시오"
 
 #: managers.php
 #, php-format
 msgid "%s Notification Receivers"
-msgstr "알림 수신기  %s 개"
+msgstr "알림 수신기 %s 개"
 
 #: managers.php
 msgid "Click 'Continue' to forward the following Notification Objects to this Notification Receiver."
@@ -17142,7 +17130,7 @@ msgstr "패키지 \"%s\" 다운로드 또는 유효성 검사 실패"
 
 #: package_import.php
 msgid "See the cacti.log for more information.  It could be that you had either an API Key error or the package was tamered with, or the location is not available"
-msgstr "자세한 내용은 cacti.log를 참조하세요. API 키 오류가 있거나 패키지가 길들여졌거나 위치를 사용할 수 없는 것일 수 있습니다."
+msgstr "자세한 내용은 cacti.log를 참조하세요. API 키 오류가 있거나 패키지가 길들여졌거나 위치를 사용할 수 없는 것일 수 있습니다"
 
 #: package_import.php
 msgid "The package download or validation failed"
@@ -17150,15 +17138,15 @@ msgstr "패키지 다운로드 또는 유효성 검사 실패"
 
 #: package_import.php
 msgid "Package XML File Damaged."
-msgstr "패키지 파일"
+msgstr "패키지 파일."
 
 #: package_import.php
 msgid "The XML files appears to be invalid.  Please contact the package author"
-msgstr "XML 파일이 유효하지 않은 것 같습니다. 패키지 작성자에게 문의하세요."
+msgstr "XML 파일이 유효하지 않은 것 같습니다. 패키지 작성자에게 문의하세요"
 
 #: package_import.php
 msgid "Check the package repository file for files that should exist and find the one that is missing"
-msgstr "패키지 저장소 파일에서 있어야 할 파일이 있는지 확인하고 누락된 파일을 찾습니다."
+msgstr "패키지 저장소 파일에서 있어야 할 파일이 있는지 확인하고 누락된 파일을 찾습니다"
 
 #: package_import.php
 msgid "The XML files for the package does not exist"
@@ -17218,7 +17206,7 @@ msgstr "고아"
 
 #: package_import.php
 msgid "File Differences for: "
-msgstr "다음에 대한 파일 차이점:"
+msgstr "다음에 대한 파일 차이점: "
 
 #: package_import.php
 msgid "Local Package Import File"
@@ -17365,7 +17353,7 @@ msgstr "플러그인 없음"
 
 #: plugins.php
 msgid "Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click 'Uninstall' below.  Otherwise click 'Cancel'"
-msgstr "이 플러그인을 제거하면 모든 플러그인 데이터 및 설정이 제거됩니다. 플러그인을 정말로 제거하려면 아래의 &#39;제거&#39;를 클릭하십시오. 그렇지 않으면 &#39;취소&#39;를 클릭하십시오."
+msgstr "이 플러그인을 제거하면 모든 플러그인 데이터 및 설정이 제거됩니다. 플러그인을 정말로 제거하려면 아래의 &#39;제거&#39;를 클릭하십시오. 그렇지 않으면 &#39;취소&#39;를 클릭하십시오"
 
 #: plugins.php
 msgid "Are you sure you want to Uninstall?"
@@ -17374,7 +17362,7 @@ msgstr "제거 하시겠습니까?"
 #: plugins.php
 #, php-format
 msgid "Not Compatible, %s"
-msgstr "호환되지 않음,  %s"
+msgstr "호환되지 않음, %s"
 
 #: plugins.php
 msgid "Order Before Previous Plugin"
@@ -17427,28 +17415,28 @@ msgstr ""
 
 #: plugins.php
 msgid "Plugin is not compatible (Pre-1.x)"
-msgstr "플러그인이 호환되지 않습니다 (Pre-1.x)."
+msgstr "플러그인이 호환되지 않습니다 (Pre-1.x)"
 
 #: plugins.php
 msgid "Plugin directories can not include spaces"
-msgstr "플러그인 디렉토리는 공백을 포함 할 수 없습니다."
+msgstr "플러그인 디렉토리는 공백을 포함 할 수 없습니다"
 
 #: plugins.php
 #, php-format
 msgid "Plugin directory is not correct.  Should be '%s' but is '%s'"
-msgstr "플러그인 디렉토리가 올바르지 않습니다. &#39; %s&#39;이어야하지만 &#39; %s&#39;입니다."
+msgstr "플러그인 디렉토리가 올바르지 않습니다. &#39; %s&#39;이어야하지만 &#39; %s&#39;입니다"
 
 #: plugins.php
 msgid "Plugin is lacking an INFO file"
-msgstr "플러그인에 INFO 파일이 없습니다."
+msgstr "플러그인에 INFO 파일이 없습니다"
 
 #: plugins.php
 msgid "Plugin is integrated into Cacti core"
-msgstr "플러그인이 Cacti 코어에 통합되었습니다."
+msgstr "플러그인이 Cacti 코어에 통합되었습니다"
 
 #: plugins.php
 msgid "Plugin is not compatible"
-msgstr "플러그인이 호환되지 않습니다."
+msgstr "플러그인이 호환되지 않습니다"
 
 #: plugins.php
 msgid "Enable Plugin Locally"
@@ -17481,7 +17469,7 @@ msgstr "폴러 ID %d 의 최대 런타임 %d 초를 초과했습니다. 종료 �
 
 #: poller.php
 msgid "WARNING: Cacti Polling Cycle Exceeded Poller Interval by "
-msgstr "경고: 선인장 폴링 주기가 폴러 간격을 초과했습니다."
+msgstr "경고: 선인장 폴링 주기가 폴러 간격을 초과했습니다. "
 
 #: poller.php
 #, php-format
@@ -17548,7 +17536,7 @@ msgstr "데이터 수집기의 호스트 이름입니다. 원격 폴러가 재 �
 
 #: pollers.php sites.php
 msgid "TimeZone"
-msgstr "시간ㄷ"
+msgstr "시간대"
 
 #: pollers.php
 msgid "The TimeZone for the Data Collector."
@@ -17560,7 +17548,7 @@ msgstr "이 데이터 수집기 데이터베이스에 대한 참고 사항."
 
 #: pollers.php
 msgid "Collection Settings"
-msgstr "컬렉션 설정"
+msgstr "수집 설정"
 
 #: pollers.php
 msgid "Processes"
@@ -17679,7 +17667,7 @@ msgstr "이 데이터베이스 호스트 이름 '%s'을 (를) 이미 사용했�
 
 #: pollers.php
 msgid "Data Collector Statistics cleared."
-msgstr "데이터 출처 통계"
+msgstr "데이터 출처 통계."
 
 #: pollers.php
 msgid "Click 'Continue' to delete the following Data Collector.  Note, all devices will be disassociated from this Data Collector and mapped back to the Main Cacti Data Collector."
@@ -17724,12 +17712,12 @@ msgstr[0] "&#39;계속&#39;을 클릭하여 다음 데이터 수집기를 활성
 #: pollers.php
 msgid "Clear Statistics for Data Collector"
 msgid_plural "Clear Statistics for Data Collectors"
-msgstr[0] "이 데이터 수집기의 상태."
+msgstr[0] "이 데이터 수집기의 상태"
 
 #: pollers.php sites.php
 #, php-format
 msgid "Site [edit: %s]"
-msgstr "사이트 [편집 :  %s]"
+msgstr "사이트 [편집 : %s]"
 
 #: pollers.php sites.php
 msgid "Site [new]"
@@ -17849,7 +17837,7 @@ msgstr "확인 실행"
 
 #: rrdcheck.php
 msgid "RRD check is disabled, please enable in Configuration -> Settings -> Data"
-msgstr "RRD 검사가 비활성화되어 있습니다. 구성 - > 설정 - > 데이터에서 활성화하십시오."
+msgstr "RRD 검사가 비활성화되어 있습니다. 구성 - > 설정 - > 데이터에서 활성화하십시오"
 
 #: rrdcheck.php utilities.php
 msgid "RRDfile Checker"
@@ -18010,7 +17998,7 @@ msgstr "그래프 사용 권한 모델을 변경한 후에도 그래프를 적�
 
 #: settings.php
 msgid "Poller Interval must be less than Cron Interval"
-msgstr "폴러 간격은 크론 간격보다 작아야합니다."
+msgstr "폴러 간격은 크론 간격보다 작아야합니다"
 
 #: settings.php
 msgid "Send a Test Email"
@@ -18170,7 +18158,7 @@ msgstr "대체 이름"
 
 #: sites.php
 msgid "Used for cases where a Site has an alternate named used to describe it"
-msgstr "사이트에 설명하는 대체 이름이있는 경우에 사용됩니다."
+msgstr "사이트에 설명하는 대체 이름이있는 경우에 사용됩니다"
 
 #: sites.php
 msgid "If the Site is known by another name enter it here."
@@ -18240,12 +18228,12 @@ msgstr "이 사이트와 관련된 국가."
 
 #: sites.php
 msgid "No Sites Found"
-msgstr "찾을 수있는 사이트가 없습니다."
+msgstr "찾을 수있는 사이트가 없습니다"
 
 #: spikekill.php
 #, php-format
 msgid "FATAL: Spike Kill method '%s' is Invalid"
-msgstr "치명적 : 스파이크 킬 방법 &#39; %s&#39;이 (가) 유효하지 않습니다."
+msgstr "치명적 : 스파이크 킬 방법 &#39; %s&#39;이 (가) 유효하지 않습니다"
 
 #: spikekill.php
 msgid "FATAL: Spike Kill Not Allowed"
@@ -18332,7 +18320,7 @@ msgstr "Field Name"
 
 #: templates_import.php
 msgid "Not Readable"
-msgstr "쓰기 가능 "
+msgstr "쓰기 가능"
 
 #: templates_import.php
 msgid "Import Templates [ None selected imports all, Check to import selectively ]"
@@ -18370,7 +18358,7 @@ msgstr "오류"
 
 #: templates_import.php
 msgid "Failed to access temporary folder, import functionality is disabled"
-msgstr "임시 폴더에 액세스하지 못했습니다. 가져 오기 기능을 사용할 수 없습니다."
+msgstr "임시 폴더에 액세스하지 못했습니다. 가져 오기 기능을 사용할 수 없습니다"
 
 #: tree.php
 msgctxt "dropdown action"
@@ -18396,7 +18384,7 @@ msgstr "권한이 거부되었습니다. 요청한 작업에 대한 권한이 �
 #: tree.php
 msgctxt "ordering of tree items"
 msgid "inherit"
-msgstr "상속 "
+msgstr "상속"
 
 #: tree.php
 msgctxt "ordering of tree items"
@@ -18461,7 +18449,7 @@ msgstr[0] "나무 게시 취소"
 #: tree.php
 #, php-format
 msgid "Trees [edit: %s]"
-msgstr "나무 [편집 :  %s]"
+msgstr "나무 [편집 : %s]"
 
 #: tree.php
 msgid "Trees [new]"
@@ -18570,7 +18558,7 @@ msgstr "공개됨"
 
 #: tree.php
 msgid "Unpublished Trees cannot be viewed from the Graph tab"
-msgstr "게시되지 않은 트리는 그래프 탭에서 볼 수 없습니다."
+msgstr "게시되지 않은 트리는 그래프 탭에서 볼 수 없습니다"
 
 #: tree.php
 msgid "A Tree must be locked in order to be edited."
@@ -18630,11 +18618,11 @@ msgstr "일괄 복사"
 
 #: user_admin.php
 msgid "You are not allowed to delete the current login account"
-msgstr "암호를 변경할 수 없습니다."
+msgstr "암호를 변경할 수 없습니다"
 
 #: user_admin.php
 msgid "You are not allowed to disable the current login account"
-msgstr "암호를 변경할 수 없습니다."
+msgstr "암호를 변경할 수 없습니다"
 
 #: user_admin.php
 msgid "Click 'Continue' to delete the selected User(s)."
@@ -18706,19 +18694,19 @@ msgstr "거부"
 
 #: user_admin.php user_group_admin.php
 msgid "<b>Note:</b> System Graph Policy is 'Permissive' meaning the User must have access to at least one of Graph, Device, or Graph Template to gain access to the Graph"
-msgstr "<b>참고 :</b> 시스템 그래프 정책은 사용자가 그래프, 장치 또는 그래프 템플릿 중 하나 이상에 액세스 할 수 있어야 그래프에 액세스 할 수 있음을 의미하는 &#39;허용&#39;입니다."
+msgstr "<b>참고 :</b> 시스템 그래프 정책은 사용자가 그래프, 장치 또는 그래프 템플릿 중 하나 이상에 액세스 할 수 있어야 그래프에 액세스 할 수 있음을 의미하는 &#39;허용&#39;입니다"
 
 #: user_admin.php user_group_admin.php
 msgid "<b>Note:</b> System Graph Policy is 'Restrictive' meaning the User must have access to either the Graph or the Device and Graph Template to gain access to the Graph"
-msgstr "<b>참고 :</b> 시스템 그래프 정책은 &#39;제한적&#39;입니다. 이는 사용자가 그래프 또는 장치 및 그래프 템플릿에 액세스하여 그래프에 액세스 할 수 있어야 함을 의미합니다."
+msgstr "<b>참고 :</b> 시스템 그래프 정책은 &#39;제한적&#39;입니다. 이는 사용자가 그래프 또는 장치 및 그래프 템플릿에 액세스하여 그래프에 액세스 할 수 있어야 함을 의미합니다"
 
 #: user_admin.php user_group_admin.php
 msgid "<b>Note:</b> System Graph Policy is 'Device' meaning the User must have access to the Graph or Device to gain access to the Graph"
-msgstr "<b>참고 :</b> 시스템 그래프 정책은 &#39;제한적&#39;입니다. 이는 사용자가 그래프 또는 장치 및 그래프 템플릿에 액세스하여 그래프에 액세스 할 수 있어야 함을 의미합니다."
+msgstr "<b>참고 :</b> 시스템 그래프 정책은 &#39;제한적&#39;입니다. 이는 사용자가 그래프 또는 장치 및 그래프 템플릿에 액세스하여 그래프에 액세스 할 수 있어야 함을 의미합니다"
 
 #: user_admin.php user_group_admin.php
 msgid "<b>Note:</b> System Graph Policy is 'Graph Template' meaning the User must have access to the Graph or Graph Template to gain access to the Graph"
-msgstr "<b>참고 :</b> 시스템 그래프 정책은 사용자가 그래프, 장치 또는 그래프 템플릿 중 하나 이상에 액세스 할 수 있어야 그래프에 액세스 할 수 있음을 의미하는 &#39;허용&#39;입니다."
+msgstr "<b>참고 :</b> 시스템 그래프 정책은 사용자가 그래프, 장치 또는 그래프 템플릿 중 하나 이상에 액세스 할 수 있어야 그래프에 액세스 할 수 있음을 의미하는 &#39;허용&#39;입니다"
 
 #: user_admin.php user_group_admin.php
 msgid "Default Graph Policy"
@@ -18738,7 +18726,7 @@ msgstr "효과적인 정책"
 
 #: user_admin.php user_group_admin.php
 msgid "No Matching Graphs Found"
-msgstr "일치하는 그래프가 없습니다."
+msgstr "일치하는 그래프가 없습니다"
 
 #: user_admin.php user_group_admin.php
 msgid "Revoke Access"
@@ -18851,7 +18839,7 @@ msgstr "사용자 권한"
 #: user_admin.php user_group_admin.php
 #, php-format
 msgid "User Settings %s"
-msgstr "사용자 설정  %s"
+msgstr "사용자 설정 %s"
 
 #: user_admin.php user_group_admin.php
 msgid "Permissions"
@@ -18886,7 +18874,7 @@ msgstr "파일을 찾을 수 없습니다."
 #: user_admin.php
 #, php-format
 msgid "User Management %s"
-msgstr "사용자 관리  %s"
+msgstr "사용자 관리 %s"
 
 #: user_admin.php
 msgid "User Management"
@@ -18967,7 +18955,7 @@ msgstr "사용자가 없습니다"
 #: user_admin.php user_group_admin.php
 #, php-format
 msgid "Graph Permissions %s"
-msgstr "그래프 권한  %s"
+msgstr "그래프 권한 %s"
 
 #: user_admin.php
 msgid "Show All"
@@ -18976,12 +18964,12 @@ msgstr "모두 보여주기"
 #: user_admin.php
 #, php-format
 msgid "Group Membership %s"
-msgstr "그룹 회원  %s"
+msgstr "그룹 회원 %s"
 
 #: user_admin.php user_group_admin.php
 #, php-format
 msgid "Devices Permission %s"
-msgstr "장치 사용 권한  %s"
+msgstr "장치 사용 권한 %s"
 
 #: user_admin.php user_group_admin.php
 msgid "Only Show Exceptions"
@@ -18990,12 +18978,12 @@ msgstr "예외 표시"
 #: user_admin.php user_group_admin.php
 #, php-format
 msgid "Template Permission %s"
-msgstr "템플릿 권한  %s"
+msgstr "템플릿 권한 %s"
 
 #: user_admin.php user_group_admin.php
 #, php-format
 msgid "Tree Permission %s"
-msgstr "트리 권한  %s"
+msgstr "트리 권한 %s"
 
 #: user_domains.php
 msgid "Click 'Continue' to delete the following User Domain."
@@ -19037,7 +19025,7 @@ msgstr "선택한 도메인 기본값으로 만들기"
 #: user_domains.php
 #, php-format
 msgid "User Domain [edit: %s]"
-msgstr "사용자 도메인 [편집 :  %s]"
+msgstr "사용자 도메인 [편집 : %s]"
 
 #: user_domains.php
 msgid "User Domain [new]"
@@ -19099,7 +19087,7 @@ msgstr "이메일"
 
 #: user_domains.php
 msgid "Field that will replace the email taken from LDAP. (on windows: mail) "
-msgstr "LDAP에서 가져온 전자 메일을 대체 할 필드입니다. (창문에 : 메일)"
+msgstr "LDAP에서 가져온 전자 메일을 대체 할 필드입니다. (창문에 : 메일) "
 
 #: user_domains.php
 msgid "Domain Properties"
@@ -19135,7 +19123,7 @@ msgstr "사용자 도메인을 찾을 수 없음"
 
 #: user_group_admin.php
 msgid "Defer to the Users Setting"
-msgstr "사용자 설정을 연기하십시오."
+msgstr "사용자 설정을 연기하십시오"
 
 #: user_group_admin.php
 msgid "Show the Page that the User pointed their browser to"
@@ -19212,7 +19200,7 @@ msgstr "이 사용자 그룹의 사용자가 로그인 할 때 수행 할 작업
 #: user_group_admin.php
 msgid "Click 'Continue' to delete the following User Group"
 msgid_plural "Click 'Continue' to delete following User Groups"
-msgstr[0] "다음 사용자 그룹을 삭제하려면 &#39;계속&#39;을 클릭하십시오."
+msgstr[0] "다음 사용자 그룹을 삭제하려면 &#39;계속&#39;을 클릭하십시오"
 
 #: user_group_admin.php
 msgid "Delete User Group"
@@ -19271,7 +19259,7 @@ msgstr "그룹 멤버"
 
 #: user_group_admin.php
 msgid "No Matching Group Members Found"
-msgstr "일치하는 그룹 회원이 없습니다."
+msgstr "일치하는 그룹 회원이 없습니다"
 
 #: user_group_admin.php
 msgid "Add to Group"
@@ -19300,7 +19288,7 @@ msgstr "회원"
 #: user_group_admin.php
 #, php-format
 msgid "User Group Management [edit: %s]"
-msgstr "사용자 그룹 관리 [편집 :  %s]"
+msgstr "사용자 그룹 관리 [편집 : %s]"
 
 #: user_group_admin.php
 msgid "User Group Management [new]"
@@ -19325,7 +19313,7 @@ msgstr "지우기"
 
 #: utilities.php
 msgid "Data Source Statistics Purged."
-msgstr "데이터 출처 통계"
+msgstr "데이터 출처 통계."
 
 #: utilities.php
 msgid "Database"
@@ -19363,12 +19351,12 @@ msgstr "구성 설정"
 #: utilities.php
 #, php-format
 msgid "ERROR: Installed RRDtool version does not exceed configured version.<br>Please visit the %s and select the correct RRDtool Utility Version."
-msgstr "오류 : 설치된 RRDtool 버전이 구성된 버전을 초과하지 않습니다. <br>  %s을 (를) 방문하여 올바른 RRDtool 유틸리티 버전을 선택하십시오."
+msgstr "오류 : 설치된 RRDtool 버전이 구성된 버전을 초과하지 않습니다. <br> %s을 (를) 방문하여 올바른 RRDtool 유틸리티 버전을 선택하십시오."
 
 #: utilities.php
 #, php-format
 msgid "ERROR: RRDtool 1.2.x+ does not support the GIF images format, but %d\" graph(s) and/or templates have GIF set as the image format."
-msgstr "오류 : RRDtool 1.2.x +는 GIF 이미지 형식을 지원하지 않지만 % d &quot;그래프 및 / 또는 템플릿에는 GIF가 이미지 형식으로 설정되어 있습니다."
+msgstr "오류 : RRDtool 1.2.x +는 GIF 이미지 형식을 지원하지 않지만 %d &quot;그래프 및 / 또는 템플릿에는 GIF가 이미지 형식으로 설정되어 있습니다."
 
 #: utilities.php
 msgid "General Information"
@@ -19418,11 +19406,11 @@ msgstr "이름: "
 
 #: utilities.php
 msgid "Procs: "
-msgstr "1 프로세스"
+msgstr "1 프로세스 "
 
 #: utilities.php
 msgid "Threads: "
-msgstr "참여글"
+msgstr "참여글 "
 
 #: utilities.php
 msgid "Concurrent Processes"
@@ -19448,7 +19436,7 @@ msgstr "현재: %s, 최소 필수: %s"
 
 #: utilities.php
 msgid "Minimum Connections:"
-msgstr "연결 테스트"
+msgstr "연결 테스트:"
 
 #: utilities.php
 msgid "Assumes 100 spare connections for Web page users and other various connections."
@@ -19553,7 +19541,7 @@ msgstr "메모리 제한을 &#39;무제한&#39;으로 설정했습니다."
 #: utilities.php
 #, php-format
 msgid "It is highly suggested that you alter you php.ini memory_limit to %s or higher."
-msgstr "php.ini memory_limit를  %s 이상으로 변경하는 것이 좋습니다."
+msgstr "php.ini memory_limit를 %s 이상으로 변경하는 것이 좋습니다."
 
 #: utilities.php
 msgid "This suggested memory value is calculated based on the number of data source present and is only to be used as a suggestion, actual values may vary system to system based on requirements."
@@ -19585,7 +19573,7 @@ msgstr "댓글"
 
 #: utilities.php
 msgid "Unable to retrieve table status"
-msgstr "테이블 상태를 검색 할 수 없습니다."
+msgstr "테이블 상태를 검색 할 수 없습니다"
 
 #: utilities.php
 msgid "PHP Module Information"
@@ -19653,12 +19641,12 @@ msgstr "표시 순서"
 #: utilities.php
 #, php-format
 msgid "Log [Total Lines: %d - Non-Matching Items Hidden]"
-msgstr "로그 [총선 수 : % d - 일치하지 않는 항목 숨김]"
+msgstr "로그 [총선 수 : %d - 일치하지 않는 항목 숨김]"
 
 #: utilities.php
 #, php-format
 msgid "Log [Total Lines: %d - All Items Shown]"
-msgstr "로그 [총선 : % d - 표시된 모든 항목]"
+msgstr "로그 [총선 : %d - 표시된 모든 항목]"
 
 #: utilities.php
 msgid "Clear Cacti Log"
@@ -19714,7 +19702,7 @@ msgstr "SNMP 버전 :"
 
 #: utilities.php
 msgid "Community:"
-msgstr "커뮤니티"
+msgstr "커뮤니티:"
 
 #: utilities.php
 msgid "OID:"
@@ -19726,7 +19714,7 @@ msgstr "회원:"
 
 #: utilities.php
 msgid "Script:"
-msgstr "ìµìí ì´ë¦ê³¼ ëªë ¹ì ìë ¥íìì¼ í©ëë¤."
+msgstr "스크립트:"
 
 #: utilities.php
 msgid "Script Server:"
@@ -19862,7 +19850,7 @@ msgstr "기타"
 
 #: utilities.php
 msgid "Cannot open directory"
-msgstr "디렉토리를 열 수 없습니다."
+msgstr "디렉토리를 열 수 없습니다"
 
 #: utilities.php
 msgid "Directory Does NOT Exist!!"
@@ -19884,7 +19872,7 @@ msgstr "부스트 상태"
 
 #: utilities.php
 msgid "Running Processes:"
-msgstr "동시 프로세스"
+msgstr "동시 프로세스:"
 
 #: utilities.php
 #, fuzzy
@@ -19925,7 +19913,7 @@ msgstr ""
 
 #: utilities.php
 msgid "Total Poller Items:"
-msgstr "폴러 캐시 항목"
+msgstr "폴러 캐시 항목:"
 
 #: utilities.php
 msgid "Total Data Sources:"
@@ -19933,7 +19921,7 @@ msgstr "총 데이터 출처 :"
 
 #: utilities.php
 msgid "Remaining Data Sources:"
-msgstr "데이터 소스 디버깅"
+msgstr "데이터 소스 디버깅:"
 
 #: utilities.php
 msgid "TBD"
@@ -19970,7 +19958,7 @@ msgstr "평균 바이트 / 레코드 :"
 #: utilities.php
 #, php-format
 msgid "%d Bytes"
-msgstr "% d 바이트"
+msgstr "%d 바이트"
 
 #: utilities.php
 msgid "Max Record Length:"
@@ -20073,7 +20061,7 @@ msgstr "업데이트 빈도 :"
 
 #: utilities.php
 msgid "Concurrent Processes:"
-msgstr "동시 프로세스"
+msgstr "동시 프로세스:"
 
 #: utilities.php
 msgid "Next Start Time:"
@@ -20134,7 +20122,7 @@ msgstr "로그 항목"
 #: utilities.php
 #, php-format
 msgid "Severity Level: %s"
-msgstr "심각도 수준 :  %s"
+msgstr "심각도 수준 : %s"
 
 #: vdef.php
 #, fuzzy
@@ -20173,7 +20161,7 @@ msgstr "&#39;계속&#39;을 클릭하여 다음 VDEF를 삭제하십시오."
 #: vdef.php
 #, php-format
 msgid "VDEF Name: %s"
-msgstr "VDEF 이름 :  %s"
+msgstr "VDEF 이름 : %s"
 
 #: vdef.php
 msgid "Remove VDEF Item"
@@ -20186,7 +20174,7 @@ msgstr "VDEF 미리보기"
 #: vdef.php
 #, php-format
 msgid "VDEF Items [edit: %s]"
-msgstr "VDEF 항목 [편집 :  %s]"
+msgstr "VDEF 항목 [편집 : %s]"
 
 #: vdef.php
 msgid "VDEF Items [new]"
@@ -20211,7 +20199,7 @@ msgstr "이 VDEF 항목의 값을 입력하십시오."
 #: vdef.php
 #, php-format
 msgid "VDEFs [edit: %s]"
-msgstr "VDEFs [편집 :  %s]"
+msgstr "VDEFs [편집 : %s]"
 
 #: vdef.php
 msgid "VDEFs [new]"
