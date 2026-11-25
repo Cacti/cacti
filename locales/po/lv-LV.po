@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.2.20\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-25 10:18+0000\n"
+"PO-Revision-Date: 2026-11-26 05:54+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Latvian <https://translate.cacti.net/projects/cacti/core/lv/>"
 "\n"
@@ -43,7 +43,7 @@ msgstr "Izstrādātāji, kas strādā pie Cacti, tās arhitektūras, dokumentāc
 
 #: about.php:63
 msgid "Honorable Mentions"
-msgstr "Īpašas atzinības"
+msgstr "Godājami pieminēt"
 
 #: about.php:64
 msgid "Contributors to Docuemntation, QA, Packaging, the Forums and our YouTube page."
@@ -56,8 +56,9 @@ msgstr "Grupas dalībnieks"
 #: about.php:75
 msgid "Members of the original Cacti Group that have since moved on in their careers.  We continue to wish them the best."
 msgstr ""
-"Sākotnējās Cacti Group dalībnieki, kuri kopš tā laika ir devušies tālāk savā "
-"karjerā.  Mēs arī turpmāk novēlam viņiem visu to labāko."
+"Sākotnējie Cacti grupas dalībnieki, kuri devušies citos savas profesionālas "
+"karjeras izaugsmes virzienos.  Mēs novēlam viņiem visu to labāko savas "
+"karjeras attīstībā."
 
 #: about.php:85
 msgid "Thanks"
@@ -5830,7 +5831,7 @@ msgstr "Pievienojiet pārskatam atlasītos grafikus"
 
 #: graph_view.php:1132 lib/html.php:3119
 msgid "Ok"
-msgstr "Labi"
+msgstr "Kārtībā"
 
 #: graph_xport.php:122 graph_xport.php:161 include/global_form.php:1955
 #: include/global_form.php:2223 lib/html.php:2167 links.php:377
@@ -6741,7 +6742,7 @@ msgstr "Nav noteikts"
 #: host.php:1538 host.php:1541 host.php:1796 include/global_settings.php:795
 #: lib/html.php:2566 lib/html.php:2569 lib/html_reports.php:1099
 msgid "Site"
-msgstr "Atrašanās vieta"
+msgstr "Objekts"
 
 #: host.php:1625
 msgid "Export Devices"
@@ -8148,7 +8149,7 @@ msgstr "Problēmu novēršana"
 
 #: include/global_arrays.php:1139 rrdcheck.php:106
 msgid "RRDfile Checker"
-msgstr "RRDfile tīrītājs"
+msgstr "RRDfile pārbaudītājs"
 
 #: include/global_arrays.php:1140
 msgid "Technical Info"
@@ -10344,7 +10345,7 @@ msgstr "Ja tika izvēlēta LĪNIJA, šeit norādiet līnijas platumu. Ir jāiek�
 
 #: include/global_form.php:1120
 msgid "Dashes (dashes[=on_s[,off_s[,on_s,off_s]...]])"
-msgstr "Svītras (domuzīmes[=on_s[,off_s[,on_s,off_s]...]])"
+msgstr "Svītras (dashes[=on_s[,off_s[,on_s,off_s]...]])"
 
 #: include/global_form.php:1125
 msgid "The dashes modifier enables dashed line style."
@@ -10352,7 +10353,7 @@ msgstr "Domuzīmju modifikators iespējo pārtraukto līniju stilu."
 
 #: include/global_form.php:1128
 msgid "Dash Offset (dash-offset=offset)"
-msgstr "Domuzīmes nobīde (dash-offset=nobīde)"
+msgstr "Domuzīmes nobīde (dash-offset=offset)"
 
 #: include/global_form.php:1133 include/global_form.php:1141
 msgid "The dash-offset parameter specifies an offset into the pattern at which the stroke begins."
@@ -18877,7 +18878,7 @@ msgstr "Min"
 
 #: lib/rrd.php:3540
 msgid "Max"
-msgstr "Maks"
+msgstr "Maks."
 
 #: lib/rrd.php:3541
 msgid "Last DS"
@@ -19500,7 +19501,7 @@ msgstr "OID"
 
 #: managers.php:586
 msgid "Kind"
-msgstr "Laipni"
+msgstr "Veids"
 
 #: managers.php:587 utilities.php:2014
 msgid "Max-Access"
@@ -20994,7 +20995,7 @@ msgstr "Gadījumos, kad jums jāveic atkļūdošana tikai vienam datu kolektoram
 
 #: pollers.php:89 sites.php:119
 msgid "TimeZone"
-msgstr "Laika zona"
+msgstr "Laika josla"
 
 #: pollers.php:90
 msgid "The TimeZone for the Data Collector."
@@ -21359,7 +21360,7 @@ msgstr "Resursdatora apraksts"
 
 #: rrdcheck.php:163
 msgid "Local Data ID"
-msgstr "Lokālo datu ID"
+msgstr "Lokālais datu ID"
 
 #: rrdcheck.php:168
 msgid "Message"
