@@ -38,7 +38,7 @@ _HTML_TAG = re.compile(r'<[^>]+>')
 # "100% of" or French "50 % des" is not a placeholder.
 _CONVERSION = r'[bcdeEfFgGosuxX]'
 _PLACEHOLDER = re.compile(
-    r'%(?!%)'               # % not followed by % (ignore literal '%%')
+    r'(?<!%)%(?!%)'               # % not followed by % (ignore literal '%%')
     r'(?:[0-9]+\$)?'        # optional positional index, e.g. 1$
     r"[#0\-+']*"            # optional flags
     r'(?:[0-9]+|\*)?'       # optional width
@@ -49,7 +49,7 @@ _PLACEHOLDER = re.compile(
 
 # Positional: must include %<n>$ prefix
 _POSITIONAL = re.compile(
-    r'%(?!%)'
+    r'(?<!%)%(?!%)'
     r'[0-9]+\$'             # required positional index
     r"[#0\-+']*"
     r'(?:[0-9]+|\*)?'
@@ -76,11 +76,14 @@ def _audit_pair(msgid: str, msgstr: str, loc: str) -> int:
         errors += 1
 
     # 2. Positional placeholder requirement for multi-variable strings
-    src_fmt = _PLACEHOLDER.findall(msgid)
-    tgt_fmt = _PLACEHOLDER.findall(msgstr)
+    # Consume literal percent pairs before identifying real conversions.
+    source_format = msgid.replace('%%', '')
+    target_format = msgstr.replace('%%', '')
+    src_fmt = _PLACEHOLDER.findall(source_format)
+    tgt_fmt = _PLACEHOLDER.findall(target_format)
 
     if len(src_fmt) > 1:
-        positional = _POSITIONAL.findall(msgstr)
+        positional = _POSITIONAL.findall(target_format)
         if tgt_fmt and len(positional) < len(tgt_fmt):
             print(
                 f'ERROR [{loc}] Non-positional placeholders in multi-variable string '
