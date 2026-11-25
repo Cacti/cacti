@@ -4,19 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr ""
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-11-04 11:45-0800\n"
-"PO-Revision-Date: 2024-04-20 18:56-0400\n"
-"Last-Translator: Anonymous <anonymous@cacti.net>\n"
-"Language-Team: Hindi <http://translate.cacti.net/projects/cacti/core-v1-2-x/hi/>\n"
-"Language: hi_IN\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n==0 || n==1);\n"
-"X-Generator: Poedit 3.4.2\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-25 01:18+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Hindi <https://translate.cacti.net/projects/cacti/core-v1-2-x/hi/>\nLanguage: hi-IN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n==0 || n==1);\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -263,7 +251,7 @@ msgstr "एसोसिएट ग्राफ़"
 
 #: aggregate_graphs.php
 msgid "Click 'Continue' to disassociate the following Graph(s) from the Aggregate."
-msgstr "निम्नलिखित ग्राफ (ओं) को अलग करने के लिए &#39;जारी रखें&#39; पर क्लिक करें"
+msgstr "निम्नलिखित ग्राफ (ओं) को अलग करने के लिए &#39;जारी रखें&#39; पर क्लिक करें।"
 
 #: aggregate_graphs.php
 msgid "Dis-Associate Graph(s)"
@@ -448,7 +436,7 @@ msgstr "सेट / फ़िल्टर ताज़ा करें"
 #: lib/html_reports.php lib/html_tree.php links.php managers.php plugins.php
 #: pollers.php sites.php tree.php user_admin.php user_domains.php
 msgid "Clear"
-msgstr "明确"
+msgstr "साफ़ करें"
 
 #: aggregate_graphs.php automation_snmp.php automation_templates.php cdef.php
 #: color.php data_debug.php data_input.php data_queries.php
@@ -478,7 +466,7 @@ msgstr "ग्राफ शीर्षक"
 #: host_templates.php lib/api_automation.php pollers.php sites.php tree.php
 #: user_admin.php user_group_admin.php
 msgid "ID"
-msgstr "ID"
+msgstr "आईडी"
 
 #: aggregate_graphs.php
 msgid "Included in Aggregate"
@@ -514,7 +502,7 @@ msgstr "कोई रेखांकन नहीं मिला"
 
 #: aggregate_graphs.php
 msgid " [ Custom Graphs List Applied - Clear to Reset ]"
-msgstr "[कस्टम ग्राफ सूची लागू - सूची से फ़िल्टर करें]"
+msgstr " [कस्टम ग्राफ सूची लागू - सूची से फ़िल्टर करें]"
 
 #: aggregate_graphs.php include/global_arrays.php
 msgid "Aggregate Graphs"
@@ -533,7 +521,7 @@ msgstr "खाका"
 #: lib/api_automation.php lib/auth.php lib/html.php lib/html_reports.php
 #: managers.php user_admin.php user_group_admin.php utilities.php
 msgid "Any"
-msgstr "कोई भी@ label"
+msgstr "कोई भी"
 
 #: aggregate_graphs.php automation_graph_rules.php automation_networks.php
 #: automation_tree_rules.php data_debug.php data_sources.php data_templates.php
@@ -659,7 +647,7 @@ msgstr "पासवर्ड आवश्यकताओं में शाम
 #: auth_changepassword.php
 #, php-format
 msgid "Must be at least %d characters in length"
-msgstr "लंबाई में कम से कम% d वर्ण होने चाहिए"
+msgstr "लंबाई में कम से कम%d वर्ण होने चाहिए"
 
 #: auth_changepassword.php
 msgid "Must include mixed case"
@@ -1013,7 +1001,7 @@ msgstr "SNMP"
 #: managers.php package_import.php plugins.php pollers.php templates_import.php
 #: user_admin.php user_group_admin.php utilities.php
 msgid "Status"
-msgstr "ऑर्डर स्थिति"
+msgstr "स्थिति"
 
 #: automation_devices.php
 msgid "Last Check"
@@ -1270,7 +1258,7 @@ msgstr "नेटवर्क डिस्कवरी को रद्द क�
 
 #: automation_networks.php data_input.php include/global_arrays.php
 msgid "SNMP Get"
-msgstr "SNMP मिलता है"
+msgstr "SNMP get"
 
 #: automation_networks.php tree.php
 msgid "Manual"
@@ -1350,7 +1338,7 @@ msgstr "सबनेट रेंज"
 
 #: automation_networks.php
 msgid "Enter valid Network Ranges separated by commas.  You may use an IP address, a Network range such as 192.168.1.0/24 or 192.168.1.0/255.255.255.0, or using wildcards such as 192.168.*.*"
-msgstr "अल्पविराम द्वारा अलग किए गए मान्य नेटवर्क रेंज दर्ज करें। आप एक आईपी पते, 192.168.1.0/24 या 192.168.1.0/255.255.255.0 जैसे नेटवर्क रेंज का उपयोग कर सकते हैं, या 192.168 जैसे वाइल्डकार्ड का उपयोग कर सकते हैं। *।"
+msgstr "अल्पविराम द्वारा अलग किए गए मान्य नेटवर्क रेंज दर्ज करें। आप एक आईपी पते, 192.168.1.0/24 या 192.168.1.0/255.255.255.0 जैसे नेटवर्क रेंज का उपयोग कर सकते हैं, या 192.168 जैसे वाइल्डकार्ड का उपयोग कर सकते हैं। *"
 
 #: automation_networks.php
 msgid "Total IP Addresses"
@@ -1391,12 +1379,12 @@ msgstr "इस नेटवर्क रेंज की खोज के लि
 #: automation_networks.php
 #, php-format
 msgid "%d Thread"
-msgstr "% d थ्रेड"
+msgstr "%d थ्रेड"
 
 #: automation_networks.php include/global_arrays.php
 #, php-format
 msgid "%d Threads"
-msgstr "% d थ्रेड्स"
+msgstr "%d थ्रेड्स"
 
 #: automation_networks.php
 msgid "Run Limit"
@@ -1409,24 +1397,24 @@ msgstr "चयनित रन सीमा के बाद, खोज प्�
 #: automation_networks.php pollers.php
 #, php-format
 msgid "%d Minute"
-msgstr "% d मिनट"
+msgstr "%d मिनट"
 
 #: automation_networks.php data_sources.php include/global_arrays.php
 #: include/global_settings.php pollers.php
 #, php-format
 msgid "%d Minutes"
-msgstr "% d मिनट"
+msgstr "%d मिनट"
 
 #: automation_networks.php include/global_arrays.php
 #, php-format
 msgid "%d Hour"
-msgstr "% d घंटा"
+msgstr "%d घंटा"
 
 #: automation_networks.php data_source_profiles.php include/global_arrays.php
 #: include/global_settings.php
 #, php-format
 msgid "%d Hours"
-msgstr "% d घंटे"
+msgstr "%d घंटे"
 
 #: automation_networks.php
 msgid "Enable this Network Range."
@@ -1618,7 +1606,7 @@ msgstr "माह के दिन"
 
 #: automation_networks.php
 msgid "What Day(s) of the Month will this Network Range be discovered."
-msgstr "इस नेटवर्क रेंज को माह के किस दिन खोजा जाएगा"
+msgstr "इस नेटवर्क रेंज को माह के किस दिन खोजा जाएगा।"
 
 #: automation_networks.php
 msgid "Last"
@@ -1814,7 +1802,7 @@ msgstr "रीफ्रैश करो"
 #: include/global_settings.php pollers.php
 #, php-format
 msgid "%d Seconds"
-msgstr "% d सेकंड्स"
+msgstr "%d सेकंड"
 
 #: automation_networks.php
 msgid "Clear Filtered"
@@ -1834,11 +1822,11 @@ msgstr "नाम स्वरूप"
 
 #: automation_snmp.php
 msgid "name"
-msgstr "नांऽ"
+msgstr "नाम"
 
 #: automation_snmp.php
 msgid "Automation SNMP Options has been Duplicated."
-msgstr "स्वचालन SNMP विकल्प"
+msgstr "स्वचालन SNMP विकल्प।"
 
 #: automation_snmp.php
 msgid "Automation Item does not exist.  Can not Duplicate."
@@ -1909,7 +1897,7 @@ msgstr "मद"
 #: automation_snmp.php include/auth.php include/global_settings.php
 #: package_import.php permission_denied.php plugins.php
 msgid "Version"
-msgstr "सरूप"
+msgstr "संस्करण"
 
 #: automation_snmp.php include/global_settings.php
 msgid "Community"
@@ -1962,7 +1950,7 @@ msgstr "कार्रवाई"
 #: automation_snmp.php lib/api_automation.php
 #, php-format
 msgid "Item#%d"
-msgstr "मद #% d"
+msgstr "मद #%d"
 
 #: automation_snmp.php
 msgid "none"
@@ -2022,7 +2010,7 @@ msgstr "कोई SNMP विकल्प सेट नहीं मिला"
 
 #: automation_templates.php
 msgid "Click 'Continue' to delete the following Automation Template(s)."
-msgstr "फोलिंग ऑटोमेशन टेम्प्लेट को हटाने के लिए &#39;जारी रखें&#39; पर क्लिक करें"
+msgstr "फोलिंग ऑटोमेशन टेम्प्लेट को हटाने के लिए &#39;जारी रखें&#39; पर क्लिक करें।"
 
 #: automation_templates.php
 msgid "Delete Automation Template(s)"
@@ -2323,7 +2311,7 @@ msgstr "आइटम मान"
 #: cdef.php vdef.php
 #, php-format
 msgid "Item #%d"
-msgstr "आइटम #% d"
+msgstr "आइटम #%d"
 
 #: cdef.php
 msgid "Delete CDEF Item"
@@ -2376,7 +2364,7 @@ msgstr[1] "निम्न रंग हटाने के लिए &#39;ज�
 msgid "Delete Color"
 msgid_plural "Delete Colors"
 msgstr[0] "रंग हटाएँ"
-msgstr[1] "रंग हटाएँ"
+msgstr[1] "रंगों को हटाएँ"
 
 #: color.php
 msgid "Cacti has imported the following items:"
@@ -2511,7 +2499,7 @@ msgstr "रंग की वस्तु"
 #: color_templates.php lib/api_aggregate.php lib/html.php lib/html_reports.php
 #, php-format
 msgid "Item # %d"
-msgstr "आइटम #% d"
+msgstr "आइटम #%d"
 
 #: color_templates.php graph_templates_inputs.php lib/api_aggregate.php
 #: lib/html.php
@@ -2528,7 +2516,7 @@ msgstr[1] "कलर टेम्प्लेट को हटाने के �
 msgid "Delete Color Template"
 msgid_plural "Delete Color Templates"
 msgstr[0] "रंग टेम्पलेट हटाएँ"
-msgstr[1] "रंग टेम्पलेट हटाएँ"
+msgstr[1] "रंग टेम्पलेट्स हटाएँ"
 
 #: color_templates.php
 msgid "Click 'Continue' to duplicate the following Color Template. You can optionally change the title format for the new color template."
@@ -2539,20 +2527,20 @@ msgstr[1] "कलर टेम्प्लेट के बाद डुप्�
 #: color_templates.php
 msgid "Duplicate Color Template"
 msgid_plural "Duplicate Color Templates"
-msgstr[0] "डुप्लिकेट रंग टेम्पलेट"
-msgstr[1] "डुप्लिकेट रंग टेम्पलेट"
+msgstr[0] "रंग टेम्पलेट डुप्लिकेट करें"
+msgstr[1] "रंग टेम्पलेट्स डुप्लिकेट करें"
 
 #: color_templates.php
 msgid "Click 'Continue' to Synchronize all Aggregate Graphs with the selected Color Template."
 msgid_plural "Click 'Continue' to Synchronize all Aggregate Graphs with the selected Color Templates."
-msgstr[0] "चयनित ग्राफ़ (ओं) से एक एग्रीगेट ग्राफ़ बनाने के लिए &#39;जारी रखें&#39; पर क्लिक करें।"
-msgstr[1] "चयनित ग्राफ़ (ओं) से एक एग्रीगेट ग्राफ़ बनाने के लिए &#39;जारी रखें&#39; पर क्लिक करें।"
+msgstr[0] "चयनित रंग टेम्पलेट के साथ सभी एग्रीगेट ग्राफ़ को सिंक्रनाइज़ करने के लिए &#39;जारी रखें&#39; पर क्लिक करें।"
+msgstr[1] "चयनित रंग टेम्पलेट्स के साथ सभी एग्रीगेट ग्राफ़ को सिंक्रनाइज़ करने के लिए &#39;जारी रखें&#39; पर क्लिक करें।"
 
 #: color_templates.php
 msgid "Synchronize Color Template"
 msgid_plural "Synchronize Color Templates"
-msgstr[0] "रेखांकन को ग्राफ टेम्प्लेट (ओं) में सिंक्रनाइज़ करें"
-msgstr[1] "रेखांकन को ग्राफ टेम्प्लेट (ओं) में सिंक्रनाइज़ करें"
+msgstr[0] "रंग टेम्पलेट सिंक्रनाइज़ करें"
+msgstr[1] "रंग टेम्पलेट्स सिंक्रनाइज़ करें"
 
 #: color_templates.php
 msgid "Color Template Items [new]"
@@ -2585,7 +2573,7 @@ msgstr "रंग टेम्पलेट [नया]"
 #: color_templates.php
 #, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
-msgstr "कलर टेम्प्लेट '%s' में% d एग्रीगेट टेम्प्लेट बाहर धकेल दिए गए और% d नॉन-टेम्पलेटेड एग्रीगेट्स को बाहर धकेल दिया गया"
+msgstr "कलर टेम्प्लेट '%s' में%d एग्रीगेट टेम्प्लेट बाहर धकेल दिए गए और%d नॉन-टेम्पलेटेड एग्रीगेट्स को बाहर धकेल दिया गया"
 
 #: color_templates.php
 #, php-format
@@ -2646,7 +2634,7 @@ msgstr "चेक हटाएं"
 
 #: data_debug.php
 msgid "Data Source debug started."
-msgstr "डेटा स्रोत डीबग"
+msgstr "डेटा स्रोत डीबग।"
 
 #: data_debug.php
 msgid "Data Source debug received an invalid Data Source ID."
@@ -2680,7 +2668,7 @@ msgstr "डेटा स्रोत डीबग करने के लिए"
 
 #: data_debug.php lib/html.php utilities.php
 msgid "User"
-msgstr "उपयोगकर्ता "
+msgstr "उपयोगकर्ता"
 
 #: data_debug.php
 msgid "The User who requested the Debug."
@@ -2732,7 +2720,7 @@ msgstr "आरआरडी मैच"
 
 #: data_debug.php
 msgid "Determines if the RRDfile matches the Data Source Template."
-msgstr "निर्धारित करता है कि क्या RRDfile डेटा स्रोत टेम्पलेट से मेल खाता है"
+msgstr "निर्धारित करता है कि क्या RRDfile डेटा स्रोत टेम्पलेट से मेल खाता है।"
 
 #: data_debug.php
 msgid "Valid Data"
@@ -2789,7 +2777,7 @@ msgstr "कोई आरंभिक नहीं मिला! RRDfile अप�
 
 #: data_debug.php
 msgid "Waiting on analysis and RRDfile update"
-msgstr "क्या RRDfile अपडेट किया गया था?"
+msgstr "विश्लेषण और RRDfile अपडेट की प्रतीक्षा की जा रही है"
 
 #: data_debug.php
 msgid "RRDfile Owner"
@@ -2841,7 +2829,7 @@ msgstr "क्या हम शीर्षक बदलने में सक�
 
 #: data_debug.php
 msgid "Data Source matches the RRDfile?"
-msgstr "डेटा स्रोत को प्रदूषित नहीं किया गया था"
+msgstr "क्या डेटा स्रोत RRDfile से मेल खाता है?"
 
 #: data_debug.php
 #, php-format
@@ -2949,7 +2937,7 @@ msgstr "प्रोफाइल"
 #: host.php host_templates.php lib/clog_webapi.php lib/html_reports.php
 #: plugins.php tree.php user_admin.php utilities.php
 msgid "All"
-msgstr "所有"
+msgstr "सभी"
 
 #: data_debug.php utilities.php
 msgid "Failed"
@@ -3170,7 +3158,7 @@ msgstr[1] "डेटा क्वेरी के बाद हटाने क�
 msgid "Delete Data Query"
 msgid_plural "Delete Data Queries"
 msgstr[0] "डेटा क्वेरी हटाएं"
-msgstr[1] "डेटा क्वेरी हटाएं"
+msgstr[1] "डेटा क्वेरीज़ हटाएं"
 
 #: data_queries.php
 msgid "Click 'Continue' to duplicate the following Data Query."
@@ -3185,8 +3173,8 @@ msgstr "नाम प्रारूप:"
 #: data_queries.php
 msgid "Duplicate Data Query"
 msgid_plural "Duplicate Data Queries"
-msgstr[0] "डेटा क्वेरी हटाएं"
-msgstr[1] "डेटा क्वेरी हटाएं"
+msgstr[0] "डेटा क्वेरी डुप्लिकेट करें"
+msgstr[1] "डेटा क्वेरीज़ डुप्लिकेट करें"
 
 #: data_queries.php
 msgid "Click 'Continue' to delete the following Data Query Graph Association."
@@ -3362,7 +3350,7 @@ msgstr[1] "डेटा स्रोत प्रोफ़ाइलों को
 msgid "Delete Data Source Profile"
 msgid_plural "Delete Data Source Profiles"
 msgstr[0] "डेटा स्रोत प्रोफ़ाइल हटाएं"
-msgstr[1] "डेटा स्रोत प्रोफ़ाइल हटाएं"
+msgstr[1] "डेटा स्रोत प्रोफ़ाइलें हटाएं"
 
 #: data_source_profiles.php
 msgid "Click 'Continue' to duplicate the following Data Source Profile. You can optionally change the title format for the new Data Source Profile"
@@ -3461,7 +3449,7 @@ msgstr "RRA आकार प्राप्त करने के लिए प
 #: include/global_settings.php
 #, php-format
 msgid "%d Years"
-msgstr "% d वष"
+msgstr "%d वष"
 
 #: data_source_profiles.php
 msgid "1 Year"
@@ -3470,17 +3458,17 @@ msgstr "1 वर्ष"
 #: data_source_profiles.php include/global_arrays.php rrdcleaner.php
 #, php-format
 msgid "%d Month"
-msgstr "% d महीना"
+msgstr "%d महीना"
 
 #: data_source_profiles.php include/global_arrays.php rrdcleaner.php
 #, php-format
 msgid "%d Months"
-msgstr "% d माह"
+msgstr "%d महीने"
 
 #: data_source_profiles.php include/global_arrays.php rrdcleaner.php
 #, php-format
 msgid "%d Week"
-msgstr "% d वीक"
+msgstr "%d सप्ताह"
 
 #: data_source_profiles.php include/global_arrays.php
 #: include/global_settings.php rrdcleaner.php
@@ -3606,13 +3594,13 @@ msgstr[1] "इन डेटा स्रोतों को संदर्भ�
 msgid "Delete Data Source"
 msgid_plural "Delete Data Sources"
 msgstr[0] "डेटा स्रोत हटाएं"
-msgstr[1] "डेटा स्रोत हटाएं"
+msgstr[1] "डेटा स्रोतों को हटाएं"
 
 #: data_sources.php
 msgid "Choose a new Device for this Data Source and click 'Continue'."
 msgid_plural "Choose a new Device for these Data Sources and click 'Continue'"
 msgstr[0] "इस डेटा स्रोत के लिए एक नया उपकरण चुनें और &#39;जारी रखें&#39; पर क्लिक करें।"
-msgstr[1] "इन डेटा स्रोतों के लिए एक नया उपकरण चुनें और &#39;जारी रखें&#39; पर क्लिक करें।"
+msgstr[1] "इन डेटा स्रोतों के लिए एक नया उपकरण चुनें और &#39;जारी रखें&#39; पर क्लिक करें"
 
 #: data_sources.php
 msgid "New Device:"
@@ -3628,7 +3616,7 @@ msgstr[1] "सभी निम्न डेटा स्रोतों को �
 msgid "Enable Data Source"
 msgid_plural "Enable Data Sources"
 msgstr[0] "डेटा स्रोत सक्षम करें"
-msgstr[1] "डेटा स्रोत सक्षम करें"
+msgstr[1] "डेटा स्रोतों को सक्षम करें"
 
 #: data_sources.php
 msgid "Click 'Continue' to disable the following Data Source."
@@ -3718,7 +3706,7 @@ msgstr "डेटा स्रोत जानकारी मोड चाल�
 #: data_sources.php
 #, php-format
 msgid "Edit Graph: '%s'."
-msgstr "ग्राफ़ संपादित करें: '{ 0 }'."
+msgstr "ग्राफ़ संपादित करें: '%s'।"
 
 #: data_sources.php graphs.php
 msgid "Edit Device."
@@ -3730,11 +3718,11 @@ msgstr "डेटा टेम्प्लेट संपादित करे
 
 #: data_sources.php
 msgid "Disable Data Source."
-msgstr "डेटा स्रोत को अक्षम करें"
+msgstr "डेटा स्रोत को अक्षम करें।"
 
 #: data_sources.php
 msgid "Enable Data Source."
-msgstr "डेटा स्रोत सक्षम करें"
+msgstr "डेटा स्रोत सक्षम करें।"
 
 #: data_sources.php
 msgid "Selected Data Template"
@@ -3850,11 +3838,11 @@ msgstr "इस डेटा क्वेरी का उपयोग करक�
 
 #: data_sources.php
 msgid "The frequency that data is collected for this Data Source."
-msgstr "इस डेटा स्रोत के लिए डेटा को एकत्रित करने की आवृत्ति"
+msgstr "इस डेटा स्रोत के लिए डेटा को एकत्रित करने की आवृत्ति।"
 
 #: data_sources.php
 msgid "If this Data Source is no long in use by Graphs, it can be Deleted."
-msgstr "यदि यह डेटा स्रोत रेखांकन द्वारा उपयोग में लंबा नहीं है, तो इसे हटाया जा सकता है"
+msgstr "यदि यह डेटा स्रोत रेखांकन द्वारा उपयोग में लंबा नहीं है, तो इसे हटाया जा सकता है।"
 
 #: data_sources.php
 msgid "Whether or not data will be collected for this Data Source. Controlled at the Data Template level."
@@ -4147,7 +4135,7 @@ msgstr "सीएसवी निर्यात"
 
 #: graph.php lib/html.php
 msgid "Edit Graph Template"
-msgstr "ग्राफ़ टेम्पलेट संपादित करें।"
+msgstr "ग्राफ़ टेम्पलेट संपादित करें"
 
 #: graph.php
 msgid "Click to view just this Graph in Real-time"
@@ -4209,11 +4197,11 @@ msgstr "थम्बनेल्स"
 #: graph_realtime.php
 #, php-format
 msgid "%d seconds left."
-msgstr "% d सेकंड बचे हैं।"
+msgstr "%d सेकंड बचे हैं।"
 
 #: graph_realtime.php
 msgid " seconds left."
-msgstr "सेकंड बचे हैं।"
+msgstr " सेकंड बचे हैं।"
 
 #: graph_templates.php
 msgid "Change Settings"
@@ -4596,7 +4584,7 @@ msgstr "ग्राफ़ टेम्पलेट में कनवर्ट
 
 #: graphs.php
 msgid "No Device - "
-msgstr "उपकरण नहीं"
+msgstr "उपकरण नहीं "
 
 #: graphs.php
 #, php-format
@@ -4736,7 +4724,7 @@ msgstr "वर्तमान में इस ग्राफ़ टेम्�
 
 #: graphs.php
 msgid "Press 'Return' to return and select different Graphs."
-msgstr "अलग-अलग रेखांकन चुनने के लिए &#39;रिटर्न&#39; दबाएँ"
+msgstr "अलग-अलग रेखांकन चुनने के लिए &#39;रिटर्न&#39; दबाएँ।"
 
 #: graphs.php
 msgid "Click 'Continue' to apply Automation Rules to the following Graphs."
@@ -4775,7 +4763,7 @@ msgstr "ग्राफ़ टेम्पलेट संपादित कर
 #: graphs.php
 #, php-format
 msgid "Edit Data Source: '%s'."
-msgstr "डेटा स्रोत [ %s]"
+msgstr "डेटा स्रोत [ %s]।"
 
 #: graphs.php
 msgid "Unlock Graph."
@@ -4872,7 +4860,7 @@ msgstr "डिफ़ॉल्ट सेटिंग्स सहेजे गए
 #: graphs_new.php
 #, php-format
 msgid "New Graphs for [ %s ] (%s %s)"
-msgstr "[%s] ({1 }{ 2}) के लिए नए ग्राफ़"
+msgstr "[ %s ] (%s %s) के लिए नए ग्राफ़"
 
 #: graphs_new.php
 msgid "New Graphs for [ All Devices ]"
@@ -4930,7 +4918,7 @@ msgstr "आईडी '%s' के साथ डेटा क्वेरी '%s' 
 #: graphs_new.php
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'.  Field Name '%s' missing a 'direction' attribute"
-msgstr "आईडी '{ 1 }' के साथ डेटा क्वेरी '{ 0 }' के लिए डेटा क्वेरी रिसोर्स XML फ़ाइल को पार्स करने में त्रुटि।  फ़ील्ड का नाम '{ 2 }' में एक 'दिशा' विशेषता नहीं है"
+msgstr "आईडी '%2$s' वाली डेटा क्वेरी '%1$s' के लिए डेटा क्वेरी संसाधन XML फ़ाइल पार्स करने में त्रुटि। फ़ील्ड नाम '%3$s' में 'direction' विशेषता अनुपस्थित है"
 
 #: graphs_new.php
 #, php-format
@@ -4986,7 +4974,7 @@ msgstr "चेतावनी: कैक्टि पेज:%s यूज़र �
 #: help.php
 #, php-format
 msgid "The Document page '%s' count not be reached.  The Cacti Documentation site is not reachable.  The http error was '%s'.  Consider downloading an official release to obtain the latest documentation and hosting the documentation locally."
-msgstr "दस्तावेज़ पृष्ठ '{ 0 }' गणना तक नहीं पहुंचा जा सकता है। कैक्टि डॉक्यूमेंटेशन साइट से संपर्क नहीं हो पा रहा है। HTTP त्रुटि '{ 1 }' थी। नवीनतम दस्तावेज़ प्राप्त करने और स्थानीय रूप से दस्तावेज़ों की मेज़बानी करने के लिए आधिकारिक रिलीज़ डाउनलोड करने पर विचार करें।"
+msgstr "दस्तावेज़ पृष्ठ '%s' तक नहीं पहुँचा जा सका। Cacti दस्तावेज़ीकरण साइट उपलब्ध नहीं है। HTTP त्रुटि '%s' थी। नवीनतम दस्तावेज़ प्राप्त करने और दस्तावेज़ों को स्थानीय रूप से होस्ट करने के लिए आधिकारिक रिलीज़ डाउनलोड करने पर विचार करें।"
 
 #: help.php
 msgid "Cacti GitHub Site"
@@ -4994,7 +4982,7 @@ msgstr "Cacti GitHub साइट"
 
 #: help.php
 msgid "Open a ticket at "
-msgstr "पर टिकट खोलें"
+msgstr "पर टिकट खोलें "
 
 #: help.php
 #, php-format
@@ -5004,7 +4992,7 @@ msgstr "सहायता फ़ाइल %s कैक्टि दस्ता
 #: help.php
 #, php-format
 msgid "The Document page '%s' count not be reached locally."
-msgstr "दस्तावेज़ पृष्ठ '{ 0 }' पर स्थानीय रूप से नहीं पहुँचा जा सकता है।"
+msgstr "दस्तावेज़ पृष्ठ '%s' तक स्थानीय रूप से नहीं पहुँचा जा सका।"
 
 #: host.php
 msgid "Change Device Settings"
@@ -5012,7 +5000,7 @@ msgstr "डिवाइस सेटिंग्स बदलें"
 
 #: host.php pollers.php
 msgid "Clear Statistics"
-msgstr "सांख्यिकी साफ़ करें"
+msgstr "आँकड़े साफ़ करें"
 
 #: host.php
 msgid "Sync to Device Template"
@@ -5024,7 +5012,7 @@ msgstr "ट्री पर डिवाइस (ओं) को रखें"
 
 #: host.php
 msgid "Data Query Re-indexed."
-msgstr "डेटा क्वेरी इंडेक्स"
+msgstr "डेटा क्वेरी इंडेक्स।"
 
 #: host.php
 msgid "Device Data Query Re-indexed.  Verbose output displayed."
@@ -5036,7 +5024,7 @@ msgstr "डिवाइस के लिए डिवाइस डिबगि�
 
 #: host.php
 msgid "Device Debugging Disabled for Device."
-msgstr "डिवाइस अक्षम है"
+msgstr "डिवाइस अक्षम है।"
 
 #: host.php
 msgid "Poller Cache for Device Refreshed."
@@ -5054,7 +5042,7 @@ msgstr "डिवाइस रीइंडेक्स %0.2f सेकंड म
 #: host.php
 #, php-format
 msgid "Unable to add some Devices to Report '%s'"
-msgstr "रिपोर्ट '{ 0 }' में कुछ डिवाइस जोड़ने में असमर्थ"
+msgstr "रिपोर्ट '%s' में कुछ डिवाइस जोड़ने में असमर्थ"
 
 #: host.php
 msgid "Click 'Continue' to enable the following Device(s)."
@@ -5086,7 +5074,7 @@ msgstr "बदलें डिवाइस (एस) एसएनएमपी व
 
 #: host.php
 msgid "Click 'Continue' to clear the counters for the following Device(s)."
-msgstr "निम्न डिवाइस (ओं) के लिए काउंटरों को खाली करने के लिए &#39;जारी रखें&#39; पर क्लिक करें"
+msgstr "निम्न डिवाइस (ओं) के लिए काउंटरों को खाली करने के लिए &#39;जारी रखें&#39; पर क्लिक करें।"
 
 #: host.php
 msgid "Clear Statistics on Device(s)"
@@ -5237,7 +5225,7 @@ msgstr "कार्रवाइयाँ"
 #: host.php
 #, php-format
 msgid " [%d Items, %d Rows]"
-msgstr "[% d आइटम,% d पंक्तियाँ]"
+msgstr " [%d आइटम,%d पंक्तियाँ]"
 
 #: host.php
 msgid "Fail"
@@ -5331,7 +5319,7 @@ msgstr "वह नाम जिसके द्वारा इस उपकर�
 #: host.php include/global_form.php lib/api_automation.php managers.php
 #: pollers.php user_admin.php user_group_admin.php
 msgid "Hostname"
-msgstr "होस्टनांऽ"
+msgstr "होस्टनाम"
 
 #: host.php
 msgid "Either an IP address, or hostname.  If a hostname, it must be resolvable by either DNS, or from your hosts file."
@@ -5403,7 +5391,7 @@ msgstr "सिंक डिवाइस"
 
 #: host_templates.php
 msgid "Click 'Continue' to delete the following Device Template(s)."
-msgstr "निम्नलिखित डिवाइस टेम्पलेट (ओं) को हटाने के लिए &#39;जारी रखें&#39; पर क्लिक करें"
+msgstr "निम्नलिखित डिवाइस टेम्पलेट (ओं) को हटाने के लिए &#39;जारी रखें&#39; पर क्लिक करें।"
 
 #: host_templates.php
 msgid "Delete Device Template(s)"
@@ -5427,7 +5415,7 @@ msgstr "डिवाइस टेंप्लेट के लिए उपक�
 
 #: host_templates.php
 msgid "Click 'Continue' to delete the following Graph Template will be disassociated from the Device Template."
-msgstr "निम्न खाका को हटाने के लिए &#39;जारी रखें&#39; पर क्लिक करें डिवाइस टेम्पलेट से अलग हो जाएगा"
+msgstr "निम्न खाका को हटाने के लिए &#39;जारी रखें&#39; पर क्लिक करें डिवाइस टेम्पलेट से अलग हो जाएगा।"
 
 #: host_templates.php
 #, php-format
@@ -5522,7 +5510,7 @@ msgstr "असाइन नहीं किए गए"
 
 #: host_templates.php
 msgid "No Device Templates Found"
-msgstr "कोई उपकरण टेम्पलेट नहीं मिला"
+msgstr "कोई डिवाइस टेम्पलेट नहीं मिला"
 
 #: include/auth.php
 msgid "Not Logged In"
@@ -5586,7 +5574,7 @@ msgstr ""
 
 #: include/global.php
 msgid "The Main Data Collector has returned to an Online Status"
-msgstr "पिछली बार इस डेटा कलेक्टर को मुख्य कैक्टि साइट के साथ पूरा किया गया था।"
+msgstr "पिछली बार इस डेटा कलेक्टर को मुख्य कैक्टि साइट के साथ पूरा किया गया था"
 
 #: include/global.php
 msgid "The Main Data Collector has gone to an Offline or Recovering Status"
@@ -5606,7 +5594,7 @@ msgstr "फ़ील्ड इनपुट त्रुटियों के �
 
 #: include/global_arrays.php
 msgid "Passwords do not match, please retype."
-msgstr "पासवर्ड मेल नहीं खाते हैं, कृपया पुनः लिखें"
+msgstr "पासवर्ड मेल नहीं खाते हैं, कृपया पुनः लिखें।"
 
 #: include/global_arrays.php
 msgid "You must select at least one field."
@@ -5630,7 +5618,7 @@ msgstr "Cacti लॉग फ़ाइल में एक्सटेंशन �
 
 #: include/global_arrays.php
 msgid "Data Input for method does not appear to be whitelisted."
-msgstr "विधि के लिए डेटा इनपुट श्वेतसूची में प्रकट नहीं होता है"
+msgstr "विधि के लिए डेटा इनपुट श्वेतसूची में प्रकट नहीं होता है।"
 
 #: include/global_arrays.php
 msgid "Data Source does not exist."
@@ -5674,11 +5662,11 @@ msgstr "नामित टेम्पलेट या अतिथि उप�
 
 #: include/global_arrays.php
 msgid "User delete not permitted for designated template or guest user."
-msgstr "उपयोगकर्ता हटाए गए नामित टेम्पलेट या अतिथि उपयोगकर्ता के लिए अनुमत नहीं"
+msgstr "उपयोगकर्ता हटाए गए नामित टेम्पलेट या अतिथि उपयोगकर्ता के लिए अनुमत नहीं।"
 
 #: include/global_arrays.php
 msgid "User delete not permitted for designated graph export user."
-msgstr "उपयोगकर्ता को नामित ग्राफ़ निर्यात उपयोगकर्ता के लिए अनुमति नहीं"
+msgstr "उपयोगकर्ता को नामित ग्राफ़ निर्यात उपयोगकर्ता के लिए अनुमति नहीं।"
 
 #: include/global_arrays.php
 msgid "Data Template includes deleted Data Source Profile.  Please resave the Data Template with an existing Data Source Profile."
@@ -5754,11 +5742,11 @@ msgstr "आपको सूची में से कम से कम एक �
 
 #: include/global_arrays.php
 msgid "Device Template updated.  Remember to Sync Devices to push all changes to Devices that use this Device Template."
-msgstr "डिवाइस टेम्पलेट अपडेट किया गया। इस उपकरण टेम्पलेट का उपयोग करने वाले उपकरणों में सभी परिवर्तनों को धकेलने के लिए टेम्प्लेट टेम्पलेट को याद रखें"
+msgstr "डिवाइस टेम्पलेट अपडेट किया गया। इस उपकरण टेम्पलेट का उपयोग करने वाले उपकरणों में सभी परिवर्तनों को धकेलने के लिए टेम्प्लेट टेम्पलेट को याद रखें।"
 
 #: include/global_arrays.php
 msgid "Save Successful. Settings replicated to Remote Data Collectors."
-msgstr "संग्रहण सफल। दूरस्थ डेटा कलेक्टरों के लिए प्रतिकृति सेटिंग्स"
+msgstr "संग्रहण सफल। दूरस्थ डेटा कलेक्टरों के लिए प्रतिकृति सेटिंग्स।"
 
 #: include/global_arrays.php
 msgid "Save Failed.  Minimum Values must be less than Maximum Value."
@@ -5798,7 +5786,7 @@ msgstr "Cacti लॉग सफलतापूर्वक पूर्ण हु
 
 #: include/global_arrays.php
 msgid "If you force a password change, you must also allow the user to change their password."
-msgstr "यदि आप पासवर्ड बदलने के लिए बाध्य करते हैं, तो आपको उपयोगकर्ता को अपना पासवर्ड बदलने की अनुमति भी देनी चाहिए"
+msgstr "यदि आप पासवर्ड बदलने के लिए बाध्य करते हैं, तो आपको उपयोगकर्ता को अपना पासवर्ड बदलने की अनुमति भी देनी चाहिए।"
 
 #: include/global_arrays.php
 msgid "You are not allowed to change your password."
@@ -5820,7 +5808,7 @@ msgstr "LDAP / AD आधारित पासवर्ड परिवर्त
 
 #: include/global_arrays.php
 msgid "Password successfully changed."
-msgstr "कूटशब्द सफलतापूर्वक बदला गया"
+msgstr "कूटशब्द सफलतापूर्वक बदला गया।"
 
 #: include/global_arrays.php
 msgid "Unable to clear log, no write permissions"
@@ -6057,7 +6045,7 @@ msgstr "बेकार"
 #: include/global_arrays.php
 #, php-format
 msgid "Version %d"
-msgstr "संस्करण% d"
+msgstr "संस्करण%d"
 
 #: include/global_arrays.php
 msgid "[None]"
@@ -6091,11 +6079,11 @@ msgstr "एसएचए-512"
 
 #: include/global_arrays.php
 msgid "DES"
-msgstr "डेस"
+msgstr "DES"
 
 #: include/global_arrays.php
 msgid "AES"
-msgstr "डेस"
+msgstr "AES"
 
 #: include/global_arrays.php
 msgid "AES-128"
@@ -6182,7 +6170,7 @@ msgstr "चयनित पोलर इंटरवल"
 #: include/global_arrays.php
 #, php-format
 msgid "Every %d Seconds"
-msgstr "हर% d सेकंड"
+msgstr "हर%d सेकंड"
 
 #: include/global_arrays.php
 msgid "Every Minute"
@@ -6191,7 +6179,7 @@ msgstr "हर मिनट"
 #: include/global_arrays.php
 #, php-format
 msgid "Every %d Minutes"
-msgstr "प्रत्येक% d मिनट"
+msgstr "प्रत्येक %d मिनट"
 
 #: include/global_arrays.php
 msgid "Every Hour"
@@ -6200,7 +6188,7 @@ msgstr "प्रत्येक घंटे"
 #: include/global_arrays.php include/global_settings.php
 #, php-format
 msgid "Every %d Hours"
-msgstr "हर %d घंटे में"
+msgstr "प्रत्येक %d घंटे"
 
 #: include/global_arrays.php
 #, php-format
@@ -6215,7 +6203,7 @@ msgstr "घंटे"
 #: include/global_arrays.php include/global_settings.php rrdcleaner.php
 #, php-format
 msgid "%d Year"
-msgstr "% d वष"
+msgstr "%d वर्ष"
 
 #: include/global_arrays.php
 msgid "Disabled/Manual"
@@ -6323,7 +6311,7 @@ msgstr "हेडर"
 
 #: include/global_arrays.php lib/html.php
 msgid "Graph"
-msgstr "काल ग्राफ"
+msgstr "ग्राफ़"
 
 #: include/global_arrays.php tree.php
 msgid "Data Query Index"
@@ -6443,7 +6431,7 @@ msgstr "VDEFs"
 
 #: include/global_arrays.php
 msgid "Import/Export"
-msgstr "दरामद करो / बरामद करो"
+msgstr "आयात/निर्यात"
 
 #: include/global_arrays.php
 msgid "Import Templates"
@@ -6596,7 +6584,7 @@ msgstr "सभी लाइनें"
 #: include/global_arrays.php
 #, php-format
 msgid "%d Lines"
-msgstr "% d लाइन्स"
+msgstr "%d लाइन्स"
 
 #: include/global_arrays.php
 msgid "Console Access"
@@ -6720,12 +6708,12 @@ msgstr "पिछले आधे घंटे"
 
 #: include/global_arrays.php
 msgid "Last Hour"
-msgstr "पिछला घैंटा"
+msgstr "पिछला घंटा"
 
 #: include/global_arrays.php
 #, php-format
 msgid "Last %d Hours"
-msgstr "अंतिम% d घंटे"
+msgstr "अंतिम%d घंटे"
 
 #: include/global_arrays.php
 msgid "Last Day"
@@ -6734,16 +6722,16 @@ msgstr "आखरी दिन"
 #: include/global_arrays.php
 #, php-format
 msgid "Last %d Days"
-msgstr "अंतिम% d दिन"
+msgstr "अंतिम%d दिन"
 
 #: include/global_arrays.php
 msgid "Last Week"
-msgstr "पिछला खोज"
+msgstr "पिछला सप्ताह"
 
 #: include/global_arrays.php
 #, php-format
 msgid "Last %d Weeks"
-msgstr "अंतिम% d सप्ताह"
+msgstr "अंतिम%d सप्ताह"
 
 #: include/global_arrays.php
 msgid "Last Month"
@@ -6752,7 +6740,7 @@ msgstr "पिछले माह"
 #: include/global_arrays.php
 #, php-format
 msgid "Last %d Months"
-msgstr "अंतिम% d महीने"
+msgstr "अंतिम%d महीने"
 
 #: include/global_arrays.php
 msgid "Last Year"
@@ -6761,7 +6749,7 @@ msgstr "पिछले साल"
 #: include/global_arrays.php
 #, php-format
 msgid "Last %d Years"
-msgstr "अंतिम% d वर्ष"
+msgstr "अंतिम%d वर्ष"
 
 #: include/global_arrays.php
 msgid "Day Shift"
@@ -6802,7 +6790,7 @@ msgstr "पिछला साल"
 #: include/global_arrays.php
 #, php-format
 msgid "%d Min"
-msgstr "% d मिन"
+msgstr "%d मिन"
 
 #: include/global_arrays.php
 msgid "Month Number, Day, Year"
@@ -6835,7 +6823,7 @@ msgstr "बूस्ट के बाद"
 #: include/global_arrays.php
 #, php-format
 msgid "%d MBytes"
-msgstr "% d एमबीटीज़"
+msgstr "%d एमबीटीज़"
 
 #: include/global_arrays.php
 msgid "1 GByte"
@@ -6849,7 +6837,7 @@ msgstr "%s GBytes"
 #: include/global_arrays.php
 #, php-format
 msgid "%d GBytes"
-msgstr "% d GBytes"
+msgstr "%d GBytes"
 
 #: include/global_arrays.php
 msgid "2,000 Data Source Items"
@@ -6907,7 +6895,7 @@ msgstr "%s घंटे"
 #: include/global_arrays.php
 #, php-format
 msgid "%d GByte"
-msgstr "% d GBytes"
+msgstr "%d GBytes"
 
 #: include/global_arrays.php utilities.php
 msgid "Unlimited"
@@ -6925,7 +6913,7 @@ msgstr "1 मेगाबाइट"
 #: include/global_arrays.php
 #, php-format
 msgid "%d Megabytes"
-msgstr "% d मेगाबाइट्स"
+msgstr "%d मेगाबाइट्स"
 
 #: include/global_arrays.php
 msgid "Send Now"
@@ -6977,7 +6965,7 @@ msgstr "टेक्स्ट"
 
 #: include/global_arrays.php include/global_form.php
 msgid "Tree"
-msgstr "वृक्षugiou"
+msgstr "ट्री"
 
 #: include/global_arrays.php
 msgid "Horizontal Rule"
@@ -7186,7 +7174,7 @@ msgstr "प्रति सप्ताह"
 #: include/global_arrays.php
 #, php-format
 msgid "Every %d Weeks"
-msgstr "हर% d वीक"
+msgstr "हर%d वीक"
 
 #: include/global_arrays.php
 msgctxt "A short textual representation of a month, three letters"
@@ -7421,7 +7409,7 @@ msgstr "असफल"
 
 #: include/global_arrays.php
 msgid "[Warning]"
-msgstr "चेतावनी:"
+msgstr "चेतावनी"
 
 #: include/global_arrays.php
 msgid "[Restart]"
@@ -7429,7 +7417,7 @@ msgstr "प्रतिबंधत"
 
 #: include/global_arrays.php
 msgid "[Success]"
-msgstr "सफ़ल!"
+msgstr "[सफल]"
 
 #: include/global_arrays.php
 msgid "[Skipped]"
@@ -7518,7 +7506,7 @@ msgstr "डेटा क्वेरी कैश देखें"
 
 #: include/global_arrays.php
 msgid "Clear Log"
-msgstr "अभिलेख साफ करो"
+msgstr "लॉग साफ़ करें"
 
 #: include/global_arrays.php utilities.php
 msgid "View User Log"
@@ -7710,7 +7698,7 @@ msgstr "SNMP इंजन आईडी (v3)"
 
 #: include/global_form.php
 msgid "Enter the SNMP v3 Engine Id to use for this device. Leave this field empty to use the SNMP Engine ID being defined per SNMPv3 Notification receiver."
-msgstr "इस उपकरण का उपयोग करने के लिए SNMP v3 इंजन आईडी दर्ज करें। SNMPv3 अधिसूचना रिसीवर के अनुसार परिभाषित SNMP इंजन आईडी का उपयोग करने के लिए इस क्षेत्र को खाली छोड़ दें"
+msgstr "इस उपकरण का उपयोग करने के लिए SNMP v3 इंजन आईडी दर्ज करें। SNMPv3 अधिसूचना रिसीवर के अनुसार परिभाषित SNMP इंजन आईडी का उपयोग करने के लिए इस क्षेत्र को खाली छोड़ दें।"
 
 #: include/global_form.php
 msgid "SNMP Port"
@@ -7878,7 +7866,7 @@ msgstr "हेक्स मान"
 
 #: include/global_form.php
 msgid "The hex value for this color; valid range: 000000-FFFFFF."
-msgstr "इस रंग के लिए हेक्स मूल्य; मान्य श्रेणी: 000000-FFFFFF"
+msgstr "इस रंग के लिए हेक्स मूल्य; मान्य श्रेणी: 000000-FFFFFF।"
 
 #: include/global_form.php
 msgid "Any named color should be read only."
@@ -7902,7 +7890,7 @@ msgstr "इनपुट स्ट्रिंग"
 
 #: include/global_form.php
 msgid "The data that is sent to the script, which includes the complete path to the script and input sources in &lt;&gt; brackets."
-msgstr "वह डेटा जो स्क्रिप्ट को भेजा जाता है, जिसमें स्क्रिप्ट और इनपुट स्रोतों का पूरा रास्ता शामिल है &lt;&gt; कोष्ठक"
+msgstr "वह डेटा जो स्क्रिप्ट को भेजा जाता है, जिसमें स्क्रिप्ट और इनपुट स्रोतों का पूरा रास्ता शामिल है &lt;&gt; कोष्ठक।"
 
 #: include/global_form.php
 msgid "White List Check"
@@ -7941,7 +7929,7 @@ msgstr "नियमित अभिव्यक्ति मैच"
 
 #: include/global_form.php
 msgid "If you want to require a certain regular expression to be matched against input data, enter it here (preg_match format)."
-msgstr "यदि आप इनपुट डेटा से मेल खाने के लिए एक निश्चित नियमित अभिव्यक्ति की आवश्यकता चाहते हैं, तो इसे यहां दर्ज करें (preg_match प्रारूप)"
+msgstr "यदि आप इनपुट डेटा से मेल खाने के लिए एक निश्चित नियमित अभिव्यक्ति की आवश्यकता चाहते हैं, तो इसे यहां दर्ज करें (preg_match प्रारूप)।"
 
 #: include/global_form.php
 msgid "Allow Empty Input"
@@ -7949,7 +7937,7 @@ msgstr "खाली इनपुट की अनुमति दें"
 
 #: include/global_form.php
 msgid "Check here if you want to allow NULL input in this field from the user."
-msgstr "यदि आप उपयोगकर्ता से इस क्षेत्र में NULL इनपुट की अनुमति चाहते हैं तो यहां देखें"
+msgstr "यदि आप उपयोगकर्ता से इस क्षेत्र में NULL इनपुट की अनुमति चाहते हैं तो यहां देखें।"
 
 #: include/global_form.php
 msgid "Special Type Code"
@@ -8259,7 +8247,7 @@ msgstr "सही एक्सिस प्रारूप (- सटीक-अ�
 #: include/global_form.php
 #, php-format
 msgid "By default, the format of the axis labels gets determined automatically.  If you want to do this yourself, use this option with the same %lf arguments you know from the PRINT and GPRINT commands."
-msgstr "डिफ़ॉल्ट रूप से, अक्ष लेबल का प्रारूप स्वचालित रूप से निर्धारित हो जाता है। यदि आप इसे स्वयं करना चाहते हैं, तो इस विकल्प का उपयोग उन्हीं% lf तर्कों के साथ करें जिन्हें आप PRINT और GPRINT कमांड से जानते हैं।"
+msgstr "डिफ़ॉल्ट रूप से, अक्ष लेबल का प्रारूप स्वचालित रूप से निर्धारित हो जाता है। यदि आप इसे स्वयं करना चाहते हैं, तो इस विकल्प का उपयोग उन्हीं%lf तर्कों के साथ करें जिन्हें आप PRINT और GPRINT कमांड से जानते हैं।"
 
 #: include/global_form.php
 msgid "Right Axis Formatter (--right-axis-formatter &lt;formatname&gt;)"
@@ -8335,7 +8323,7 @@ msgstr "ग्राफ आइटम प्रकार"
 
 #: include/global_form.php
 msgid "How data for this item is represented visually on the graph."
-msgstr "इस आइटम के डेटा को ग्राफ़ पर नेत्रहीन कैसे दर्शाया जाता है"
+msgstr "इस आइटम के डेटा को ग्राफ़ पर नेत्रहीन कैसे दर्शाया जाता है।"
 
 #: include/global_form.php
 msgid "The data source to use for this graph item."
@@ -8435,7 +8423,7 @@ msgstr "डैश (डैश [= on_s [, off_s [, on_s, off_s] ...]))"
 
 #: include/global_form.php
 msgid "The dashes modifier enables dashed line style."
-msgstr "डैश डैशफ़ॉर्म धराशायी रेखा शैली को सक्षम बनाता है"
+msgstr "डैश डैशफ़ॉर्म धराशायी रेखा शैली को सक्षम बनाता है।"
 
 #: include/global_form.php
 msgid "Dash Offset (dash-offset=offset)"
@@ -8471,7 +8459,7 @@ msgstr "इस ग्राफ़ आइटम इनपुट के लिए 
 
 #: include/global_form.php
 msgid "Enter a description for this graph item input to describe what this input is used for."
-msgstr "इस ग्राफ़ आइटम इनपुट के लिए एक विवरण दर्ज करें कि यह इनपुट किस लिए उपयोग किया जाता है"
+msgstr "इस ग्राफ़ आइटम इनपुट के लिए एक विवरण दर्ज करें कि यह इनपुट किस लिए उपयोग किया जाता है।"
 
 #: include/global_form.php
 msgid "Field Type"
@@ -8613,7 +8601,7 @@ msgstr "सॉर्टिंग प्रकार"
 
 #: include/global_form.php
 msgid "Choose how items in this tree will be sorted."
-msgstr "चुनें कि इस पेड़ की वस्तुओं को कैसे छाँटा जाएगा"
+msgstr "चुनें कि इस पेड़ की वस्तुओं को कैसे छाँटा जाएगा।"
 
 #: include/global_form.php
 msgid "Publish"
@@ -8781,7 +8769,7 @@ msgstr "SNMP अधिसूचना प्राप्तकर्ता अ�
 
 #: include/global_form.php
 msgid "Check this box if you temporary do not want to send SNMP notifications to this host."
-msgstr "यदि आप अस्थायी रूप से इस होस्ट को SNMP सूचनाएं नहीं भेजना चाहते हैं तो इस बॉक्स को देखें"
+msgstr "यदि आप अस्थायी रूप से इस होस्ट को SNMP सूचनाएं नहीं भेजना चाहते हैं तो इस बॉक्स को देखें।"
 
 #: include/global_form.php
 msgid "Maximum Log Size"
@@ -8809,7 +8797,7 @@ msgstr "पूर्व प्रत्यय"
 
 #: include/global_form.php
 msgid "A Prefix for all GPRINT lines to distinguish e.g. different hosts."
-msgstr "सभी जीपीआरआईएन लाइनों के लिए एक उपसर्ग जो अलग-अलग मेजबानों को अलग करता है"
+msgstr "सभी जीपीआरआईएन लाइनों के लिए एक उपसर्ग जो अलग-अलग मेजबानों को अलग करता है।"
 
 #: include/global_form.php
 msgid "Include Prefix Text"
@@ -8933,7 +8921,7 @@ msgstr "जिस पैटर्न से मिलान किया जा�
 
 #: include/global_form.php
 msgid "Sequence."
-msgstr "अनुक्रम"
+msgstr "अनुक्रम।"
 
 #: include/global_form.php
 msgid "A useful name for this Rule."
@@ -9013,19 +9001,19 @@ msgstr "ट्री हेडर के रूप में उपयोग क
 
 #: include/global_languages.php
 msgid " T"
-msgstr "T"
+msgstr " T"
 
 #: include/global_languages.php
 msgid " G"
-msgstr "G"
+msgstr " G"
 
 #: include/global_languages.php
 msgid " M"
-msgstr "M"
+msgstr " M"
 
 #: include/global_languages.php
 msgid " K"
-msgstr "Kcard symbol"
+msgstr " Kcard symbol"
 
 #: include/global_settings.php
 msgid "Paths"
@@ -9229,7 +9217,7 @@ msgstr "RRDfile ऑटो क्लीन विधि"
 
 #: include/global_settings.php
 msgid "The method used to Clean RRDfiles from Cacti after their Data Sources are deleted."
-msgstr "डेटा स्रोतों को हटाने के बाद Cacti से RRDfiles को साफ़ करने के लिए उपयोग की जाने वाली विधि"
+msgstr "डेटा स्रोतों को हटाने के बाद Cacti से RRDfiles को साफ़ करने के लिए उपयोग की जाने वाली विधि।"
 
 #: include/global_settings.php
 msgid "Archive"
@@ -9405,7 +9393,7 @@ msgstr "अन्य सेटिंग्स"
 
 #: include/global_settings.php
 msgid "Show only site specific locations"
-msgstr "किसी भी ग्राफ़ विशिष्ट विकल्पों को यहाँ सेट करें।"
+msgstr "किसी भी ग्राफ़ विशिष्ट विकल्पों को यहाँ सेट करें"
 
 #: include/global_settings.php
 msgid "Show only locations that are available at a devices selected site."
@@ -9517,7 +9505,7 @@ msgstr "कैक्टि डैशबोर्ड छिपाएँ"
 
 #: include/global_settings.php
 msgid "For use with Cacti's External Link Support.  Using this setting, you can hide the Cacti Dashboard, so you can display just your own page."
-msgstr "Cacti के बाहरी लिंक समर्थन के साथ उपयोग के लिए। इस सेटिंग का उपयोग करके, आप कैक्टि डैशबोर्ड को छिपा सकते हैं, जिससे आप बस अपना पेज प्रदर्शित कर सकते हैं"
+msgstr "Cacti के बाहरी लिंक समर्थन के साथ उपयोग के लिए। इस सेटिंग का उपयोग करके, आप कैक्टि डैशबोर्ड को छिपा सकते हैं, जिससे आप बस अपना पेज प्रदर्शित कर सकते हैं।"
 
 #: include/global_settings.php
 msgid "Enable Drag-N-Drop"
@@ -9799,7 +9787,7 @@ msgstr "सभी नए उपकरणों के लिए डिफ़ॉ�
 
 #: include/global_settings.php
 msgid "Privacy Passphrase (v3)"
-msgstr "गोपनीयता पासफ़्रेज़ (v3)।"
+msgstr "गोपनीयता पासफ़्रेज़ (v3)"
 
 #: include/global_settings.php
 msgid "Default SNMPv3 Privacy Passphrase for all new Devices."
@@ -9811,7 +9799,7 @@ msgstr "सभी नए उपकरणों के लिए SNMP v3 सं�
 
 #: include/global_settings.php
 msgid "Default SNMP v3 Engine Id for all new Devices. Leave this field empty to use the SNMP Engine ID being defined per SNMPv3 Notification receiver."
-msgstr "सभी नए उपकरणों के लिए डिफ़ॉल्ट SNMP v3 इंजन आईडी। SNMPv3 अधिसूचना रिसीवर के अनुसार परिभाषित SNMP इंजन आईडी का उपयोग करने के लिए इस क्षेत्र को खाली छोड़ दें"
+msgstr "सभी नए उपकरणों के लिए डिफ़ॉल्ट SNMP v3 इंजन आईडी। SNMPv3 अधिसूचना रिसीवर के अनुसार परिभाषित SNMP इंजन आईडी का उपयोग करने के लिए इस क्षेत्र को खाली छोड़ दें।"
 
 #: include/global_settings.php
 msgid "Port Number"
@@ -9887,7 +9875,7 @@ msgstr "थीम"
 
 #: include/global_settings.php
 msgid "Please select one of the available Themes to skin your Cacti with."
-msgstr "कृपया अपने Cacti को त्वचा के साथ उपलब्ध थीम में से एक का चयन करें"
+msgstr "कृपया अपने Cacti को त्वचा के साथ उपलब्ध थीम में से एक का चयन करें।"
 
 #: include/global_settings.php
 msgid "Table Settings"
@@ -10390,7 +10378,7 @@ msgstr "OID ट्री चलते समय OID बढ़ाने के �
 
 #: include/global_settings.php
 msgid "Additional Data Collector Settings"
-msgstr "दूरस्थ डेटा संग्राहक स्थिति:"
+msgstr "दूरस्थ डेटा संग्राहक स्थिति"
 
 #: include/global_settings.php
 msgid "Invalid Data Logging"
@@ -10422,7 +10410,7 @@ msgstr "स्क्रिप्ट और स्क्रिप्ट सर्
 
 #: include/global_settings.php
 msgid "The maximum time that spine will wait on a script to complete.  This timeout value is in seconds and is only valid for the spine Data Collector."
-msgstr "कैक्टि एक स्क्रिप्ट पर पूरा होने के लिए इंतजार करेगा। यह टाइमआउट मान सेकंड में है"
+msgstr "कैक्टि एक स्क्रिप्ट पर पूरा होने के लिए इंतजार करेगा। यह टाइमआउट मान सेकंड में है।"
 
 #: include/global_settings.php
 msgid "Periodic All Device Re-Index"
@@ -10505,7 +10493,7 @@ msgstr "1 प्रक्रिया"
 #: include/global_settings.php
 #, php-format
 msgid "%d Processes"
-msgstr "% d प्रक्रियाएं"
+msgstr "%d प्रोसेस"
 
 #: include/global_settings.php
 msgid "Maintenance Background Generation Timeout"
@@ -10561,7 +10549,7 @@ msgstr "समर्थन प्रमाणीकरण कुकीज़"
 
 #: include/global_settings.php
 msgid "If a user authenticates and selects 'Keep me signed in', an authentication cookie will be created on the user's computer allowing that user to stay logged in.  The authentication cookie expires after 90 days of non-use."
-msgstr "यदि कोई उपयोगकर्ता प्रमाणित करता है और &#39;मुझे साइन इन रखता है&#39; का चयन करता है, तो उपयोगकर्ता के कंप्यूटर पर एक प्रमाणीकरण कुकी बनाई जाएगी जिससे उपयोगकर्ता लॉग इन रह सकता है। 90 दिनों के उपयोग के बाद प्रमाणीकरण कुकी समाप्त हो जाती है"
+msgstr "यदि कोई उपयोगकर्ता प्रमाणित करता है और &#39;मुझे साइन इन रखता है&#39; का चयन करता है, तो उपयोगकर्ता के कंप्यूटर पर एक प्रमाणीकरण कुकी बनाई जाएगी जिससे उपयोगकर्ता लॉग इन रह सकता है। 90 दिनों के उपयोग के बाद प्रमाणीकरण कुकी समाप्त हो जाती है।"
 
 #: include/global_settings.php
 msgid "Special Users"
@@ -10577,7 +10565,7 @@ msgstr "प्राथमिक प्रशासनिक खाते का
 
 #: include/global_settings.php user_domains.php
 msgid "No User"
-msgstr "बरतूनी:"
+msgstr "बरतूनी"
 
 #: include/global_settings.php
 msgid "Guest User"
@@ -10633,7 +10621,7 @@ msgstr "मिक्स केस की आवश्यकता है"
 
 #: include/global_settings.php
 msgid "This will require new passwords to contains both lower and upper-case characters."
-msgstr "इसके लिए नए पासवर्ड की आवश्यकता होगी जिसमें निचले और ऊपरी-दोनों प्रकार के वर्ण हों"
+msgstr "इसके लिए नए पासवर्ड की आवश्यकता होगी जिसमें निचले और ऊपरी-दोनों प्रकार के वर्ण हों।"
 
 #: include/global_settings.php
 msgid "Require Number"
@@ -10649,7 +10637,7 @@ msgstr "विशेष चरित्र की आवश्यकता ह�
 
 #: include/global_settings.php
 msgid "This will require new passwords to contain at least 1 special character."
-msgstr "इसके लिए कम से कम 1 विशेष वर्ण वाले नए पासवर्ड की आवश्यकता होगी"
+msgstr "इसके लिए कम से कम 1 विशेष वर्ण वाले नए पासवर्ड की आवश्यकता होगी।"
 
 #: include/global_settings.php
 msgid "Force Complexity Upon Old Passwords"
@@ -10692,7 +10680,7 @@ msgstr "1 बदलें"
 #: include/global_settings.php
 #, php-format
 msgid "%d Changes"
-msgstr "% d चेंज"
+msgstr "%d चेंज"
 
 #: include/global_settings.php
 msgid "Account Locking"
@@ -10713,7 +10701,7 @@ msgstr "1 प्रयास"
 #: include/global_settings.php
 #, php-format
 msgid "%d Attempts"
-msgstr "% d प्रयास"
+msgstr "%d प्रयास"
 
 #: include/global_settings.php
 msgid "Auto Unlock"
@@ -10887,7 +10875,7 @@ msgstr "फ़िल्टर खोजें"
 
 #: include/global_settings.php
 msgid "Search filter to use to locate the user in the LDAP directory, such as for windows: <i>'(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))'</i> or for OpenLDAP: <i>'(&(objectClass=account)(uid=&lt;username&gt))'</i>.  '&lt;username&gt' is replaced with the username that was supplied at the login prompt. "
-msgstr "खोज फ़िल्टर खिड़कियों के लिए के रूप में LDAP निर्देशिका में उपयोगकर्ता का पता लगाने का, उपयोग करने के लिए: <i>&#39;(&amp; (objectClass = उपयोगकर्ता) (objectcategory = उपयोगकर्ता) (userPrincipalName = &lt;उपयोगकर्ता नाम&gt; *))&#39;</i> या OpenLDAP के लिए: <i>&#39;(&amp; (objectClass = खाता) (uid = &lt;username&gt;)) &#39;</i> । &#39;&lt;username&gt;&#39; को उस उपयोगकर्ता नाम से बदला जाता है जिसे लॉगिन प्रॉम्प्ट पर आपूर्ति किया गया था।"
+msgstr "खोज फ़िल्टर खिड़कियों के लिए के रूप में LDAP निर्देशिका में उपयोगकर्ता का पता लगाने का, उपयोग करने के लिए: <i>&#39;(&amp; (objectClass = उपयोगकर्ता) (objectcategory = उपयोगकर्ता) (userPrincipalName = &lt;उपयोगकर्ता नाम&gt; *))&#39;</i> या OpenLDAP के लिए: <i>&#39;(&amp; (objectClass = खाता) (uid = &lt;username&gt;)) &#39;</i> । &#39;&lt;username&gt;&#39; को उस उपयोगकर्ता नाम से बदला जाता है जिसे लॉगिन प्रॉम्प्ट पर आपूर्ति किया गया था। "
 
 #: include/global_settings.php user_domains.php
 msgid "Search Distinguished Name (DN)"
@@ -10911,7 +10899,7 @@ msgstr "LDAP CN सेटिंग्स"
 
 #: include/global_settings.php user_domains.php
 msgid "Field that will replace the Full Name when creating a new user, taken from LDAP. (on windows: displayname) "
-msgstr "वह फ़ील्ड जो LDAP से लिया गया एक नया उपयोगकर्ता बनाते समय पूरा नाम बदल देगा। (खिड़कियों पर: displayname)"
+msgstr "वह फ़ील्ड जो LDAP से लिया गया एक नया उपयोगकर्ता बनाते समय पूरा नाम बदल देगा। (खिड़कियों पर: displayname) "
 
 #: include/global_settings.php package_import.php
 msgid "Email"
@@ -11409,7 +11397,7 @@ msgstr "हैश किए गए डिवाइस आईडी के आध
 
 #: include/global_settings.php
 msgid "Proxy Server"
-msgstr "प्रतिनिधि सर्वर"
+msgstr "प्रॉक्सी सर्वर"
 
 #: include/global_settings.php
 msgid "The DNS hostname or IP address of the RRDtool proxy server."
@@ -11445,7 +11433,7 @@ msgstr "यदि दोनों मुख्य और बैकअप प्�
 
 #: include/global_settings.php
 msgid "The DNS hostname or IP address of the RRDtool backup proxy server if proxy is running in MSR mode."
-msgstr "यदि DNS MSR मोड में चल रहा हो तो DNS होस्टनाम या RRDtool बैकअप प्रॉक्सी सर्वर का IP पता"
+msgstr "यदि DNS MSR मोड में चल रहा हो तो DNS होस्टनाम या RRDtool बैकअप प्रॉक्सी सर्वर का IP पता।"
 
 #: include/global_settings.php
 msgid "TCP port for encrypted communication with the backup proxy."
@@ -11506,7 +11494,7 @@ msgstr "किसी भी मूल्य जो औसत से ऊपर �
 #: include/global_settings.php
 #, php-format
 msgid "%d Standard Deviations"
-msgstr "% d मानक विचलन"
+msgstr "%d मानक विचलन"
 
 #: include/global_settings.php
 msgid "Variance Percentage"
@@ -11528,7 +11516,7 @@ msgstr "यह मान उच्च और निम्न औसत नमू
 #: include/global_settings.php
 #, php-format
 msgid "%d High/Low Samples"
-msgstr "% d उच्च / निम्न नमूने"
+msgstr "%d उच्च / निम्न नमूने"
 
 #: include/global_settings.php
 msgid "Max Kills Per RRA"
@@ -11541,7 +11529,7 @@ msgstr "यह मान ग्राफ़ RRA से निकालने क
 #: include/global_settings.php
 #, php-format
 msgid "%d Spikes"
-msgstr "% d स्पाइक्स"
+msgstr "%d स्पाइक्स"
 
 #: include/global_settings.php
 msgid "RRDfile Backup Directory"
@@ -11762,7 +11750,7 @@ msgstr "1 स्तंभ"
 #: include/global_settings.php lib/html_graph.php lib/html_tree.php
 #, php-format
 msgid "%d Columns"
-msgstr "% d कॉलम"
+msgstr "%d कॉलम"
 
 #: include/global_settings.php
 msgid "Tree View Thumbnail Columns"
@@ -11794,7 +11782,7 @@ msgstr "डिफ़ॉल्ट पेड़"
 
 #: include/global_settings.php
 msgid "The default graph tree to use when displaying graphs in tree mode."
-msgstr "ट्री मोड में रेखांकन प्रदर्शित करते समय उपयोग करने के लिए डिफ़ॉल्ट ग्राफ ट्री"
+msgstr "ट्री मोड में रेखांकन प्रदर्शित करते समय उपयोग करने के लिए डिफ़ॉल्ट ग्राफ ट्री।"
 
 #: include/global_settings.php
 msgid "Graphs Per Page"
@@ -11822,7 +11810,7 @@ msgstr "कस्टम फ़ॉन्ट्स का उपयोग कर�
 
 #: include/global_settings.php
 msgid "Choose whether to use your own custom fonts and font sizes or utilize the system defaults."
-msgstr "चुनें कि क्या अपने स्वयं के कस्टम फ़ॉन्ट और फ़ॉन्ट आकार का उपयोग करें या सिस्टम डिफ़ॉल्ट का उपयोग करें"
+msgstr "चुनें कि क्या अपने स्वयं के कस्टम फ़ॉन्ट और फ़ॉन्ट आकार का उपयोग करें या सिस्टम डिफ़ॉल्ट का उपयोग करें।"
 
 #: include/global_settings.php
 msgid "Title Font File"
@@ -12195,7 +12183,7 @@ msgstr "डिवाइस की उपलब्धता की जाँच �
 
 #: lib/api_device.php
 msgid "SNMP Information"
-msgstr "एसएनएमपी सूचना"
+msgstr "SNMP जानकारी"
 
 #: lib/api_device.php
 msgid "SNMP not in use"
@@ -12215,15 +12203,15 @@ msgstr "होस्ट"
 
 #: lib/api_device.php
 msgid "System:"
-msgstr "तंत्रः"
+msgstr "तंत्रः:"
 
 #: lib/api_device.php
 msgid "Uptime:"
-msgstr "चालू रहने का समय"
+msgstr "चालू रहने का समय:"
 
 #: lib/api_device.php
 msgid "Hostname:"
-msgstr "#-#-#-#-# balsa.HEAD.hi.po (Balsa 2.x) #-#-#-#-# उपयोगकर्ता का नाम #-#-#-#-# eel.HEAD.hi.po (eel VERSION) #-#-#-#-# उपयोगकर्ता का नाम: (_U)"
+msgstr "होस्टनाम:"
 
 #: lib/api_device.php
 msgid "Location:"
@@ -12280,11 +12268,11 @@ msgstr "डिवाइस+टेम्पलेट:(%s%s)"
 
 #: lib/auth.php
 msgid "Restricted By: "
-msgstr "प्रतिबंधत"
+msgstr "प्रतिबंधत "
 
 #: lib/auth.php
 msgid "Granted By: "
-msgstr "द्वारा दिया गया:"
+msgstr "द्वारा दिया गया: "
 
 #: lib/auth.php
 msgid "Granted"
@@ -12300,7 +12288,7 @@ msgstr "शाखा:"
 
 #: lib/auth.php lib/html_tree.php lib/reports.php
 msgid "Device:"
-msgstr "उपकरणः"
+msgstr "उपकरणः:"
 
 #: lib/auth.php
 msgid "Your account has been locked.  Please contact your Administrator."
@@ -12355,7 +12343,7 @@ msgstr "आपके Cacti व्यवस्थापक ने लॉगिन
 #: lib/auth.php
 #, php-format
 msgid "Password must be at least %d characters!"
-msgstr "पासवर्ड कम से कम% d वर्ण का होना चाहिए!"
+msgstr "पासवर्ड कम से कम%d वर्ण का होना चाहिए!"
 
 #: lib/auth.php
 msgid "Your password must contain at least 1 numerical character!"
@@ -12411,25 +12399,25 @@ msgstr "लॉग फ़िल्टर करें"
 
 #: lib/clog_webapi.php
 msgid " - Admin Filter active"
-msgstr "- व्यवस्थापक फ़िल्टर सक्रिय"
+msgstr " - व्यवस्थापक फ़िल्टर सक्रिय"
 
 #: lib/clog_webapi.php
 msgid " - Admin Unfiltered"
-msgstr "- व्यवस्थापक अनफ़िल्टर्ड"
+msgstr " - व्यवस्थापक अनफ़िल्टर्ड"
 
 #: lib/clog_webapi.php
 msgid " - Admin view"
-msgstr "- व्यवस्थापक दृश्य"
+msgstr " - व्यवस्थापक दृश्य"
 
 #: lib/clog_webapi.php
 #, php-format
 msgid "Log [Total Lines: %d %s - Filter active]"
-msgstr "लॉग [कुल पंक्तियाँ:% d %s - फ़िल्टर सक्रिय]"
+msgstr "लॉग [कुल पंक्तियाँ:%d %s - फ़िल्टर सक्रिय]"
 
 #: lib/clog_webapi.php
 #, php-format
 msgid "Log [Total Lines: %d %s - Unfiltered]"
-msgstr "लॉग [कुल पंक्तियाँ:% d %s - अनफ़िल्टर्ड]"
+msgstr "लॉग [कुल पंक्तियाँ:%d %s - अनफ़िल्टर्ड]"
 
 #: lib/clog_webapi.php utilities.php
 msgid "Entries"
@@ -12489,7 +12477,7 @@ msgstr "माचिस"
 
 #: lib/clog_webapi.php
 msgid "Threshold"
-msgstr "थ्रैड"
+msgstr "थ्रेशोल्ड"
 
 #: lib/clog_webapi.php tree.php
 msgid "Display"
@@ -12559,7 +12547,7 @@ msgstr "सूचकांक परिवर्तन का पता चल�
 #: lib/data_query.php
 #, php-format
 msgid "Transient Index Removal Detected! PreviousIndex: %s.  No action taken."
-msgstr "सूचकांक हटाने का पता चला! पिछलाइंडेक्स: %s"
+msgstr "सूचकांक हटाने का पता चला! पिछलाइंडेक्स: %s।"
 
 #: lib/data_query.php
 #, php-format
@@ -12724,7 +12712,7 @@ msgstr "मिली वस्तु [ %s = &#39; %s&#39;] सूचकांक
 #: lib/data_query.php
 #, php-format
 msgid "Total: %f, Delta: %f, %s"
-msgstr "कुल:% f, डेल्टा:% f, %s"
+msgstr "कुल:%f, डेल्टा:%f, %s"
 
 #: lib/data_query.php
 #, php-format
@@ -12844,7 +12832,7 @@ msgstr "%s oids के लिए SNMP प्राप्त करना ( %s)"
 #: lib/data_query.php
 #, php-format
 msgid "Sort field returned no data for OID[%s], skipping."
-msgstr "सॉर्ट फ़ील्ड में डेटा नहीं है। OID [ %s] के लिए पुन: अनुक्रमणिका जारी नहीं रख सकते"
+msgstr "सॉर्ट फ़ील्ड में डेटा नहीं है। OID [ %s] के लिए पुन: अनुक्रमणिका जारी नहीं रख सकते।"
 
 #: lib/data_query.php
 #, php-format
@@ -12854,7 +12842,7 @@ msgstr "डेटा के लिए परिणाम मिले @ &#39; %s
 #: lib/data_query.php
 #, php-format
 msgid "Setting result for data @ '%s' [key='%s', value='%s']"
-msgstr "डेटा @ '{ 0 }' के लिए परिणाम सेट करना [key= '{ 1 }', value= '{ 2 }']"
+msgstr "डेटा @ '%s' के लिए परिणाम सेट किया जा रहा है [key='%s', value='%s']"
 
 #: lib/data_query.php
 #, php-format
@@ -12864,7 +12852,7 @@ msgstr "डेटा @ &#39; %s&#39; [कुंजी = &#39; %s&#39;, मान
 #: lib/data_query.php
 #, php-format
 msgid "Got SNMP get result for data @ '%s' [value='%s'] (index: %s)"
-msgstr "डेटा के लिए SNMP GET परिणाम मिला @ '{ 0 }' [VALUE= '{ 1 }'] (सूचकांक: %s)"
+msgstr "डेटा @ '%s' के लिए SNMP get परिणाम प्राप्त हुआ [value='%s'] (सूचकांक: %s)"
 
 #: lib/data_query.php
 #, php-format
@@ -12909,7 +12897,7 @@ msgstr "पाया गया आइटम [ %s = &#39; %s&#39;] सूचक�
 #: lib/data_query.php
 #, php-format
 msgid "Bogus rewrite_value item found, index='%s'"
-msgstr "फर्जी rewrite_value आइटम मिला, index='{ 0 }'"
+msgstr "अमान्य rewrite_value आइटम मिला, index='%s'"
 
 #: lib/data_query.php
 msgid "Could not parse translation map (rewrite_value)"
@@ -12960,7 +12948,7 @@ msgstr "डिबग 5 मतदान के बाद पूरा नही�
 
 #: lib/dsdebug.php
 msgid "Failed fields: "
-msgstr "विफल फ़ील्ड:"
+msgstr "विफल फ़ील्ड: "
 
 #: lib/dsdebug.php
 msgid "Data Source is not set as Active"
@@ -12986,7 +12974,7 @@ msgstr "मतदान के बाद आरआरडी फ़ाइल अ�
 
 #: lib/dsdebug.php
 msgid "Data Source returned Bad Results for "
-msgstr "डेटा स्रोत ने खराब परिणाम लौटाए"
+msgstr "डेटा स्रोत ने खराब परिणाम लौटाए "
 
 #: lib/dsdebug.php
 msgid "Data Source was not polled"
@@ -13003,12 +12991,12 @@ msgstr "मतदान के बाद आरआरडी फ़ाइल अ�
 #: lib/functions.php settings.php
 #, php-format
 msgid "Settings save to Data Collector %d skipped due to heartbeat."
-msgstr "सेटिंग्स डेटा कलेक्टर में सहेजने में% d विफल।"
+msgstr "सेटिंग्स डेटा कलेक्टर में सहेजने में%d विफल।"
 
 #: lib/functions.php settings.php
 #, php-format
 msgid "Settings save to Data Collector %d Failed."
-msgstr "सेटिंग्स डेटा कलेक्टर में सहेजने में% d विफल।"
+msgstr "सेटिंग्स डेटा कलेक्टर में सहेजने में%d विफल।"
 
 #: lib/functions.php
 msgid "Message Not Found."
@@ -13090,7 +13078,7 @@ msgstr "कनेक्ट विफल: %s"
 
 #: lib/functions.php
 msgid "SMTP error: "
-msgstr "SMTP त्रुटि:"
+msgstr "SMTP त्रुटि: "
 
 #: lib/functions.php
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
@@ -13247,7 +13235,7 @@ msgstr "पिछला"
 #: lib/html.php
 #, php-format
 msgid "%d to %d of %s [ %s ]"
-msgstr "%s [%s] का %d से %d"
+msgstr "%3$s में से %1$d से %2$d [ %4$s ]"
 
 #: lib/html.php lib/installer.php
 msgid "Next"
@@ -13256,7 +13244,7 @@ msgstr "अगला"
 #: lib/html.php
 #, php-format
 msgid "All %d %s"
-msgstr "सभी% d %s"
+msgstr "सभी%d %s"
 
 #: lib/html.php
 #, fuzzy, php-format
@@ -13402,7 +13390,7 @@ msgstr "कैक्टि प्रोजेक्ट पेज"
 
 #: lib/html.php
 msgid "Spine"
-msgstr "रीढ़ की हड्डी"
+msgstr "Spine"
 
 #: lib/html.php
 msgid "RRDProxy"
@@ -13442,7 +13430,7 @@ msgstr "किसी बग की रिपोर्ट करें"
 
 #: lib/html.php
 msgid "Cacti"
-msgstr "कैक्टस"
+msgstr "Cacti"
 
 #: lib/html.php
 msgid "Click to Show/Hide Filter"
@@ -13506,7 +13494,7 @@ msgstr "क्षमा करें, हम आपकी अंतिम क्
 
 #: lib/html.php
 msgid "Error:"
-msgstr "त्रुटी:"
+msgstr "त्रुटि:"
 
 #: lib/html.php
 msgid "Reason:"
@@ -13735,7 +13723,7 @@ msgstr "स्तंभे"
 #: lib/html_graph.php lib/html_tree.php
 #, php-format
 msgid "%d Column"
-msgstr "% d स्तम्भ"
+msgstr "%d स्तम्भ"
 
 #: lib/html_graph.php lib/html_tree.php
 msgid "Custom"
@@ -13751,7 +13739,7 @@ msgstr "प्रारंभ तिथि चयनकर्ता"
 
 #: lib/html_graph.php lib/html_reports.php lib/html_tree.php
 msgid "To"
-msgstr "को"
+msgstr "तक"
 
 #: lib/html_graph.php lib/html_tree.php
 msgid "End Date Selector"
@@ -14069,7 +14057,7 @@ msgstr "क्या सभी बच्चों की शाखा रेख�
 
 #: lib/html_reports.php
 msgid "Select a Site to filter for Devices and Graphs."
-msgstr "ग्राफ़ निर्दिष्ट करने के लिए एक उपकरण का चयन करें"
+msgstr "ग्राफ़ निर्दिष्ट करने के लिए एक उपकरण का चयन करें।"
 
 #: lib/html_reports.php
 msgid "Select a Device Template to use to filter for Devices or Graphs."
@@ -14259,7 +14247,7 @@ msgstr "अगला रन"
 
 #: lib/html_reports.php
 msgid "Report Title"
-msgstr "रिपोर्ट का शीर्षक"
+msgstr "रिपोर्ट शीर्षक"
 
 #: lib/html_reports.php
 msgid "Report Disabled - No Owner"
@@ -14287,15 +14275,15 @@ msgstr "टेम्पलेट आधारित है"
 
 #: lib/html_tree.php lib/reports.php
 msgid "Tree:"
-msgstr "वृक्षugiou"
+msgstr "वृक्षugiou:"
 
 #: lib/html_tree.php
 msgid "Site:"
-msgstr "साइटः"
+msgstr "साइटः:"
 
 #: lib/html_tree.php
 msgid "Leaf:"
-msgstr "पत्ती"
+msgstr "पत्ती:"
 
 #: lib/html_tree.php
 msgid "Device Template:"
@@ -14307,7 +14295,7 @@ msgstr "आवेदन किया है"
 
 #: lib/html_tree.php
 msgid "Filter"
-msgstr "छलनी "
+msgstr "छलनी"
 
 #: lib/html_tree.php
 msgid "Graph Filters"
@@ -14433,7 +14421,7 @@ msgstr "आयात परिणाम"
 
 #: lib/import.php
 msgid "Cacti would make the following changes if the Package was imported:"
-msgstr "यदि पैकेज आयात किया गया था तो कैक्टि निम्नलिखित परिवर्तन करेगा"
+msgstr "यदि पैकेज आयात किया गया था तो कैक्टि निम्नलिखित परिवर्तन करेगा:"
 
 #: lib/import.php
 msgid "Cacti has imported the following items for the Package:"
@@ -14445,7 +14433,7 @@ msgstr "पैकेज फ़ाइलें"
 
 #: lib/import.php
 msgid "[preview] "
-msgstr "पूर्वावलोकन"
+msgstr "पूर्वावलोकन "
 
 #: lib/import.php
 msgid "Cacti would make the following changes if the Template was imported:"
@@ -14457,7 +14445,7 @@ msgstr "Cacti ने खाके के लिए निम्नलिखि�
 
 #: lib/import.php
 msgid "[success]"
-msgstr "सफ़ल!"
+msgstr "[सफल]"
 
 #: lib/import.php
 msgid "[fail]"
@@ -14552,7 +14540,7 @@ msgstr "निर्दिष्ट क्रोन अंतराल लाग
 #: lib/installer.php
 #, php-format
 msgid "Failed to apply '%s' as Automation Range"
-msgstr "'{ 0 }' को ऑटोमेशन रेंज के रूप में लागू करने में विफल"
+msgstr "'%s' को ऑटोमेशन रेंज के रूप में लागू करने में विफल"
 
 #: lib/installer.php
 msgid "No matching snmp option exists"
@@ -14644,7 +14632,7 @@ msgstr "आरंभ@ action End of document"
 
 #: lib/installer.php
 msgid "Upgrade"
-msgstr "अपग्रेड  करो"
+msgstr "अपग्रेड करो"
 
 #: lib/installer.php
 msgid "Downgrade"
@@ -14670,12 +14658,12 @@ msgstr "Cacti को डाउनलोड करने और स्थाप�
 #: lib/installer.php
 #, php-format
 msgid "Make sure you have read and followed the required steps needed to install Cacti before continuing. Install information can be found for <a href=\"%s\">Unix</a> and <a href=\"%s\">Win32</a>-based operating systems."
-msgstr "सुनिश्चित करें कि आपने जारी रखने से पहले कैक्टि को स्थापित करने के लिए आवश्यक आवश्यक चरणों को पढ़ा है और उनका पालन किया है। इंस्टॉल की गई जानकारी <a href=\"%1$s\">यूनिक्स</a> और <a href=\"%2$s\">Win32-</a> आधारित ऑपरेटिंग सिस्टम के लिए पाई जा सकती है।"
+msgstr "सुनिश्चित करें कि आपने जारी रखने से पहले कैक्टि को स्थापित करने के लिए आवश्यक आवश्यक चरणों को पढ़ा है और उनका पालन किया है। इंस्टॉल की गई जानकारी <a href=\"%s\">यूनिक्स</a> और <a href=\"%s\">Win32-</a> आधारित ऑपरेटिंग सिस्टम के लिए पाई जा सकती है।"
 
 #: lib/installer.php
 #, php-format
 msgid "This process will guide you through the steps for upgrading from version '%s'. "
-msgstr "यह प्रक्रिया आपको संस्करण &#39; %s&#39; से अपग्रेड करने के चरणों के माध्यम से मार्गदर्शन करेगी।"
+msgstr "यह प्रक्रिया आपको संस्करण &#39; %s&#39; से अपग्रेड करने के चरणों के माध्यम से मार्गदर्शन करेगी। "
 
 #: lib/installer.php
 #, php-format
@@ -14700,7 +14688,7 @@ msgstr "GPL लाइसेंस अनुबंध स्वीकार क�
 
 #: lib/installer.php
 msgid "Select default theme: "
-msgstr "डिफ़ॉल्ट विषय चुनें:"
+msgstr "डिफ़ॉल्ट विषय चुनें: "
 
 #: lib/installer.php
 msgid "Pre-installation Checks"
@@ -14848,7 +14836,7 @@ msgstr "<strong> %s</strong> <strong>से %s</strong> से अपग्र�
 
 #: lib/installer.php
 msgid "In the event of issues, It is highly recommended that you clear your browser cache, closing then reopening your browser (not just the tab Cacti is on) and retrying, before raising an issue with The Cacti Group"
-msgstr "मुद्दों की स्थिति में, यह अत्यधिक अनुशंसा की जाती है कि आप अपना ब्राउज़र कैश साफ़ करें, बंद करना फिर अपना ब्राउज़र फिर से खोलना (न केवल टैब कैक्टि चालू है) और फिर से प्रयास करना, कैक्टि समूह के साथ एक मुद्दा उठाने से पहले।"
+msgstr "मुद्दों की स्थिति में, यह अत्यधिक अनुशंसा की जाती है कि आप अपना ब्राउज़र कैश साफ़ करें, बंद करना फिर अपना ब्राउज़र फिर से खोलना (न केवल टैब कैक्टि चालू है) और फिर से प्रयास करना, कैक्टि समूह के साथ एक मुद्दा उठाने से पहले"
 
 #: lib/installer.php
 msgid "On rare occasions, we have had reports from users who experience some minor issues due to changes in the code.  These issues are caused by the browser retaining pre-upgrade code and whilst we have taken steps to minimise the chances of this, it may still occur.  If you need instructions on how to clear your browser cache, <a href='https://www.refreshyourcache.com' target='_blank'>https://www.refreshyourcache.com/</a> is a good starting point."
@@ -15035,7 +15023,7 @@ msgstr "उपयोगकर्ता &#39; %s&#39; को पढ़ने / �
 
 #: lib/installer.php
 msgid "An example of how to set folder permissions is shown here, though you may need to adjust this depending on your operating system, user accounts and desired permissions."
-msgstr "फ़ोल्डर अनुमतियाँ कैसे सेट की जाए, इसका एक उदाहरण यहाँ दिखाया गया है, हालाँकि आपको अपने ऑपरेटिंग सिस्टम, उपयोगकर्ता खातों और वांछित अनुमतियों के आधार पर इसे समायोजित करने की आवश्यकता हो सकती है"
+msgstr "फ़ोल्डर अनुमतियाँ कैसे सेट की जाए, इसका एक उदाहरण यहाँ दिखाया गया है, हालाँकि आपको अपने ऑपरेटिंग सिस्टम, उपयोगकर्ता खातों और वांछित अनुमतियों के आधार पर इसे समायोजित करने की आवश्यकता हो सकती है।"
 
 #: lib/installer.php
 msgid "EXAMPLE:"
@@ -15085,7 +15073,7 @@ msgstr "यह स्क्रिप्ट विकल्प किसी भ�
 
 #: lib/installer.php
 msgid "It is strongly suggested that you update your config.php to enable this feature by uncommenting the <b>$input_whitelist</b> variable and then running the three CLI script options above after the web based install has completed."
-msgstr "यह दृढ़ता से सुझाव दिया जाता है कि आप इस <b>इनपुट</b> को <b>$ input_whitelist</b> वैरिएबल को <b>अनइंस्टॉल करने</b> और फिर वेब आधारित इंस्टॉल पूरा होने के बाद ऊपर दिए तीन CLI स्क्रिप्ट विकल्पों को चलाने के लिए अपने config.php को अपडेट करें।"
+msgstr "यह दृढ़ता से सुझाव दिया जाता है कि आप इस इनपुट को <b>$input_whitelist</b> वैरिएबल को अनइंस्टॉल करने और फिर वेब आधारित इंस्टॉल पूरा होने के बाद ऊपर दिए तीन CLI स्क्रिप्ट विकल्पों को चलाने के लिए अपने config.php को अपडेट करें।"
 
 #: lib/installer.php
 msgid "Check the Checkbox below to acknowledge that you have read and understand this security concern"
@@ -15173,7 +15161,7 @@ msgstr "कृपया उस इंस्ट्रूमेंट टेम्
 
 #: lib/installer.php package_import.php plugins.php
 msgid "Author"
-msgstr "लेखक "
+msgstr "लेखक"
 
 #: lib/installer.php package_import.php
 msgid "Homepage"
@@ -15193,7 +15181,7 @@ msgstr "आपका सर्वर टकराव UTF8 के अनुरू
 
 #: lib/installer.php
 msgid "Your server collation does NOT appear to be fully UTF8 compliant. "
-msgstr "आपका सर्वर टकराव पूरी तरह से UTF8 के अनुरूप प्रतीत नहीं होता है।"
+msgstr "आपका सर्वर टकराव पूरी तरह से UTF8 के अनुरूप प्रतीत नहीं होता है। "
 
 #: lib/installer.php
 msgid "Under the [mysqld] section, locate the entries named 'character-set-server' and 'collation-server' and set them as follows:"
@@ -15209,11 +15197,11 @@ msgstr "आपका डेटाबेस डिफ़ॉल्ट टकरा
 
 #: lib/installer.php
 msgid "Your database default collation does NOT appear to be full UTF8 compliant. "
-msgstr "आपका डेटाबेस डिफ़ॉल्ट टकराव पूर्ण UTF8 अनुरूप प्रतीत नहीं होता है।"
+msgstr "आपका डेटाबेस डिफ़ॉल्ट टकराव पूर्ण UTF8 अनुरूप प्रतीत नहीं होता है। "
 
 #: lib/installer.php
 msgid "Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched.   Please ensure your database is changed to 'utf8mb4_unicode_ci' by running the following: "
-msgstr "अगर तालमेल का मिलान नहीं होता है, तो प्लगइन्स द्वारा बनाई गई किसी भी तालिका में कैक्टि कोर तालिकाओं के खिलाफ जुड़े मुद्दे हो सकते हैं। कृपया सुनिश्चित करें कि आपका डेटाबेस निम्नलिखित को चलाकर &#39;utf8mb4_unicode_ci&#39; में बदल गया है:"
+msgstr "अगर तालमेल का मिलान नहीं होता है, तो प्लगइन्स द्वारा बनाई गई किसी भी तालिका में कैक्टि कोर तालिकाओं के खिलाफ जुड़े मुद्दे हो सकते हैं। कृपया सुनिश्चित करें कि आपका डेटाबेस निम्नलिखित को चलाकर &#39;utf8mb4_unicode_ci&#39; में बदल गया है: "
 
 #: lib/installer.php
 msgid "Table Setup"
@@ -15246,7 +15234,7 @@ msgstr "स्वरूप"
 
 #: lib/installer.php
 msgid "One or more tables are too large to convert during the installation.  You should use the cli/convert_tables.php script to perform the conversion, then refresh this page. For example: "
-msgstr "स्थापना के दौरान परिवर्तित करने के लिए एक या अधिक तालिकाएँ बहुत बड़ी हैं। रूपांतरण करने के लिए आपको cli / convert_tables.php स्क्रिप्ट का उपयोग करना चाहिए, फिर इस पृष्ठ को ताज़ा करें उदाहरण के लिए:"
+msgstr "स्थापना के दौरान परिवर्तित करने के लिए एक या अधिक तालिकाएँ बहुत बड़ी हैं। रूपांतरण करने के लिए आपको cli / convert_tables.php स्क्रिप्ट का उपयोग करना चाहिए, फिर इस पृष्ठ को ताज़ा करें उदाहरण के लिए: "
 
 #: lib/installer.php
 msgid "The following tables should be converted to UTF8 and InnoDB with a Dynamic row format.  Please select the tables that you wish to convert during the installation process."
@@ -15270,7 +15258,7 @@ msgstr "स्थापना की पुष्टि करें"
 
 #: lib/installer.php plugins.php
 msgid "Install"
-msgstr "इन्स्टाल करें "
+msgstr "इन्स्टाल करें"
 
 #: lib/installer.php
 msgid "DOWNGRADE DETECTED"
@@ -15383,7 +15371,7 @@ msgstr "प्रोफ़ाइल '%s' के तहत पैकेज #%s '%
 #: lib/installer.php
 #, php-format
 msgid "Mapping Automation Template for Device Template '%s'"
-msgstr "डिवाइस टेम्पलेट '{ 0 }' के लिए मैपिंग ऑटोमेशन टेम्पलेट"
+msgstr "डिवाइस टेम्पलेट '%s' के लिए ऑटोमेशन टेम्पलेट मैप किया जा रहा है"
 
 #: lib/installer.php
 msgid "No templates were selected for import"
@@ -15443,7 +15431,7 @@ msgstr "ऑटोमेशन विकल्प सेट %s को अपड�
 
 #: lib/installer.php
 msgid "Failed to find any automation option set"
-msgstr "कॉपी करने के लिए डेटा खोजने में विफल!"
+msgstr "कोई भी स्वचालन विकल्प सेट खोजने में विफल"
 
 #: lib/installer.php
 #, php-format
@@ -15528,7 +15516,7 @@ msgstr "पृष्ठभूमि को%s पर पहले ही शु�
 #: lib/installer.php
 #, php-format
 msgid "Exception occurred during installation: #%s - %s"
-msgstr "इंस्टॉलेशन के दौरान अपवाद हुआ: #{ 0} - %s"
+msgstr "इंस्टॉलेशन के दौरान अपवाद उत्पन्न हुआ: #%s - %s"
 
 #: lib/installer.php
 #, php-format
@@ -15736,12 +15724,12 @@ msgstr "सेटिंग के कारण पिंग ने प्रद�
 #: lib/plugins.php
 #, php-format
 msgid "%s Version %s or above is required for %s. "
-msgstr "%s का संस्करण %s या उससे ऊपर का %s के लिए आवश्यक है।"
+msgstr "%s का संस्करण %s या उससे ऊपर का %s के लिए आवश्यक है। "
 
 #: lib/plugins.php
 #, php-format
 msgid "%s is required for %s, and it is not installed. "
-msgstr "%s के लिए %s की आवश्यकता है, और यह स्थापित नहीं है।"
+msgstr "%s के लिए %s की आवश्यकता है, और यह स्थापित नहीं है। "
 
 #: lib/plugins.php
 msgid "Plugin cannot be installed."
@@ -15750,12 +15738,12 @@ msgstr "प्लगइन स्थापित नहीं किया ज�
 #: lib/plugins.php
 #, php-format
 msgid "The Plugin directory '%s' needs to be renamed to remove 'plugin_' from the name before it can be installed."
-msgstr "प्लगइन निर्देशिका '{ 0 }' को स्थापित करने से पहले नाम से 'plugin_' को हटाने के लिए नाम बदलने की आवश्यकता है।"
+msgstr "प्लगइन को इंस्टॉल करने से पहले प्लगइन निर्देशिका '%s' के नाम से 'plugin_' हटाने के लिए इसका नाम बदलना आवश्यक है।"
 
 #: lib/plugins.php
 #, php-format
 msgid "The Plugin in the directory '%s' does not include an version function '%s()'.  This function must exist for the plugin to be installed."
-msgstr "'{ 0 }' निर्देशिका में प्लगइन में '{ 1}()' संस्करण फ़ंक्शन शामिल नहीं है। प्लगइन को इंस्टॉल करने के लिए यह फ़ंक्शन मौजूद होना चाहिए।"
+msgstr "निर्देशिका '%s' में स्थित प्लगइन में संस्करण फ़ंक्शन '%s()' शामिल नहीं है। प्लगइन को इंस्टॉल करने के लिए यह फ़ंक्शन मौजूद होना आवश्यक है।"
 
 #: lib/plugins.php
 #, php-format
@@ -15765,7 +15753,7 @@ msgstr ""
 #: lib/plugins.php
 #, php-format
 msgid "The Plugin in the directory '%s' does not include an install function '%s()'.  This function must exist for the plugin to be installed."
-msgstr "'{ 0 }' निर्देशिका में प्लगइन में '{ 1}()' इंस्टॉल फ़ंक्शन शामिल नहीं है। प्लगइन को इंस्टॉल करने के लिए यह फ़ंक्शन मौजूद होना चाहिए।"
+msgstr "निर्देशिका '%s' में स्थित प्लगइन में इंस्टॉल फ़ंक्शन '%s()' शामिल नहीं है। प्लगइन को इंस्टॉल करने के लिए यह फ़ंक्शन मौजूद होना आवश्यक है।"
 
 #: lib/plugins.php plugins.php
 msgid "Plugins"
@@ -15787,7 +15775,7 @@ msgstr "नहीं बताया हुआ"
 #: lib/reports.php
 #, php-format
 msgid "Device '%s' successfully added to Report."
-msgstr "डिवाइस '{ 0 }' सफलतापूर्वक रिपोर्ट में जोड़ा गया।"
+msgstr "डिवाइस '%s' सफलतापूर्वक रिपोर्ट में जोड़ा गया।"
 
 #: lib/reports.php
 msgid "Device not found! Unable to add to Report"
@@ -15826,7 +15814,7 @@ msgstr "इन ग्राफ़ों को संबद्ध करने �
 
 #: lib/reports.php
 msgid "Report:"
-msgstr "रिपोर्ट"
+msgstr "रिपोर्ट:"
 
 #: lib/reports.php
 msgid "Graph Timespan:"
@@ -15885,7 +15873,7 @@ msgstr ""
 #: lib/rrd.php
 #, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
-msgstr "आवश्यक RRDfile चरण का आकार '{ 0 }' है, लेकिन देखा गया चरण '{ 1 }' है"
+msgstr "आवश्यक RRDfile स्टेप आकार '%s' है, लेकिन देखा गया स्टेप '%s' है"
 
 #: lib/rrd.php
 #, php-format
@@ -15915,7 +15903,7 @@ msgstr "फ़ाइल RRA &#39; %s&#39; में &#39; %s&#39; के सम�
 #: lib/rrd.php
 #, php-format
 msgid "The pdp_per_row of '%s' is invalid for RRA '%s' should be '%s'.  Consider deleting and allowing Cacti to re-create RRDfile."
-msgstr "'{ 0 }' का pdp_per_row RRA '{ 1 }' के लिए अमान्य है '{ 2 }' होना चाहिए। कैक्टि को RRDfile को फिर से बनाने के लिए हटाने और अनुमति देने पर विचार करें।"
+msgstr "'%s' का pdp_per_row RRA '%s' के लिए अमान्य है, यह '%s' होना चाहिए। इसे हटाने और Cacti को RRDfile पुनः बनाने की अनुमति देने पर विचार करें।"
 
 #: lib/rrd.php
 #, php-format
@@ -15925,7 +15913,7 @@ msgstr "Cacti RRA आईडी &#39; %s&#39; के लिए XFF &#39; %s&#39; 
 #: lib/rrd.php
 #, php-format
 msgid "The number of rows for Cacti RRA id '%s' is incorrect.  The number of rows are '%s' but should be '%s'"
-msgstr "Cacti RRA id '{ 0 }' के लिए पंक्तियों की संख्या गलत है। पंक्तियों की संख्या '{ 1 }' है लेकिन '{ 2 }' होनी चाहिए"
+msgstr "Cacti RRA आईडी '%s' के लिए पंक्तियों की संख्या गलत है। पंक्तियों की संख्या '%s' है, लेकिन '%s' होनी चाहिए"
 
 #: lib/rrd.php
 #, php-format
@@ -15959,7 +15947,7 @@ msgstr "अधिकतम"
 
 #: lib/rrd.php
 msgid "Last DS"
-msgstr "अंतिम डी.एस."
+msgstr "अंतिम डी.एस"
 
 #: lib/rrd.php
 msgid "Unknown Sec"
@@ -16025,12 +16013,12 @@ msgstr "RRDtool डंप के XML को पार्स करते सम�
 #: lib/rrd.php
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file"
-msgstr "आरआरडी फ़ाइल से हटाए गए RRA (CF = %s, ROWS =% d, PDP_PER_ROW =% d, XFF =% 1.2f)"
+msgstr "आरआरडी फ़ाइल से हटाए गए RRA (CF = %s, ROWS =%d, PDP_PER_ROW =%d, XFF =%1.2f)"
 
 #: lib/rrd.php
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file"
-msgstr "RRA (CF = %s, ROWS =% d, PDP_PER_ROW =% d, XFF =% 1.2f) RRD फाइल में जोड़"
+msgstr "RRA (CF = %s, ROWS =%d, PDP_PER_ROW =%d, XFF =%1.2f) RRD फाइल में जोड़"
 
 #: lib/rrd.php
 #, php-format
@@ -16200,6 +16188,10 @@ msgstr ""
 #| msgid "Windows Related"
 msgid "Window Range:  All"
 msgstr "विंडोज से संबंधित"
+
+#: lib/spikekill.php
+msgid "FATAL: Unable to generate a random temporary file name.  Check the system entropy source!"
+msgstr ""
 
 #: lib/spikekill.php
 msgid "FATAL: RRDtool Command Failed.  Please verify that the RRDtool path is valid in Settings->Paths!"
@@ -16640,7 +16632,7 @@ msgstr "MySQL 5.6+ और MariaDB 10.0+ महान रिलीज़ है�
 #: lib/utility.php
 #, php-format
 msgid "It is STRONGLY recommended that you enable InnoDB in any %s version greater than 5.5.3."
-msgstr "यह अनुशंसा की जाती है कि आप InnoDB को 5.1 से अधिक किसी भी %s संस्करण में सक्षम करें"
+msgstr "यह अनुशंसा की जाती है कि आप InnoDB को 5.1 से अधिक किसी भी %s संस्करण में सक्षम करें।"
 
 #: lib/utility.php
 msgid "When using Cacti with languages other than English, it is important to use the utf8mb4_unicode_ci collation type as some characters take more than a single byte."
@@ -16653,7 +16645,7 @@ msgstr "अंग्रेजी के अलावा अन्य भाष�
 #: lib/utility.php
 #, php-format
 msgid "It is recommended that you enable InnoDB in any %s version greater than 5.1."
-msgstr "यह अनुशंसा की जाती है कि आप InnoDB को 5.1 से अधिक किसी भी %s संस्करण में सक्षम करें"
+msgstr "यह अनुशंसा की जाती है कि आप InnoDB को 5.1 से अधिक किसी भी %s संस्करण में सक्षम करें।"
 
 #: lib/utility.php
 #, php-format
@@ -16842,7 +16834,7 @@ msgstr "पृष्ठ सक्षम करें"
 
 #: links.php
 msgid "Click 'Continue' to Disable the following Page(s)."
-msgstr "निम्न पृष्ठ को जारी रखने के लिए &#39;जारी रखें&#39; पर क्लिक करें"
+msgstr "निम्न पृष्ठ को जारी रखने के लिए &#39;जारी रखें&#39; पर क्लिक करें।"
 
 #: links.php
 msgid "Disable Page(s)"
@@ -16858,7 +16850,7 @@ msgstr "पृष्ठ हटाएं"
 
 #: links.php
 msgid "Apply Filter"
-msgstr "फ़िल्टर्स लागू करें (p) View - >"
+msgstr "फ़िल्टर लागू करें"
 
 #: links.php
 msgid "Reset filters"
@@ -16991,7 +16983,7 @@ msgstr "सत्र समय समाप्त होने के कार�
 
 #: logout.php
 msgid "You have been logged out of Cacti due to a Remote Data Collector state change"
-msgstr "सत्र समय समाप्त होने के कारण आप कैक्टि से लॉग आउट हो गए हैं।"
+msgstr "सत्र समय समाप्त होने के कारण आप कैक्टि से लॉग आउट हो गए हैं"
 
 #: logout.php
 msgid "Logout of Cacti"
@@ -17096,7 +17088,7 @@ msgstr "कोई SNMP अधिसूचना लॉग प्रविष्�
 msgid "Click 'Continue' to delete the following Notification Receiver"
 msgid_plural "Click 'Continue' to delete following Notification Receiver"
 msgstr[0] "निम्नलिखित अधिसूचना प्राप्तकर्ता को हटाने के लिए &#39;जारी रखें&#39; पर क्लिक करें"
-msgstr[1] "निम्नलिखित अधिसूचना प्राप्तकर्ता को हटाने के लिए &#39;जारी रखें&#39; पर क्लिक करें"
+msgstr[1] "निम्नलिखित अधिसूचना प्राप्तकर्ताओं को हटाने के लिए &#39;जारी रखें&#39; पर क्लिक करें"
 
 #: managers.php
 msgid "Click 'Continue' to enable the following Notification Receiver"
@@ -17178,7 +17170,7 @@ msgstr "अधिक जानकारी के लिए cacti.log देख�
 #: package_import.php
 #, php-format
 msgid "The package \"%s\" download or validation failed"
-msgstr "पैकेज \"{ 0 }\" डाउनलोड या सत्यापन विफल रहा"
+msgstr "पैकेज \"%s\" का डाउनलोड या सत्यापन विफल रहा"
 
 #: package_import.php
 msgid "See the cacti.log for more information.  It could be that you had either an API Key error or the package was tamered with, or the location is not available"
@@ -17190,7 +17182,7 @@ msgstr "पैकेज डाउनलोड या सत्यापन व�
 
 #: package_import.php
 msgid "Package XML File Damaged."
-msgstr "पैकेज फ़ाइलें"
+msgstr "पैकेज फ़ाइलें।"
 
 #: package_import.php
 msgid "The XML files appears to be invalid.  Please contact the package author"
@@ -17229,9 +17221,8 @@ msgid "Filename"
 msgstr "नाम बदलें"
 
 #: package_import.php templates_import.php
-#, fuzzy
 msgid "Differences"
-msgstr "भिन्नताएँ:"
+msgstr "भिन्नताएँ"
 
 #: package_import.php templates_import.php
 msgid "Unchanged"
@@ -17259,7 +17250,7 @@ msgstr "अनाथ"
 
 #: package_import.php
 msgid "File Differences for: "
-msgstr "इसके लिए फ़ाइल अंतर:"
+msgstr "इसके लिए फ़ाइल अंतर: "
 
 #: package_import.php
 msgid "Local Package Import File"
@@ -17386,7 +17377,7 @@ msgstr "आवश्यक है"
 
 #: plugins.php
 msgid "This Plugin requires the following Plugins be installed first."
-msgstr "इस प्लगइन को पहले प्लगइन्स स्थापित करने की आवश्यकता है"
+msgstr "इस प्लगइन को पहले प्लगइन्स स्थापित करने की आवश्यकता है।"
 
 #: plugins.php
 msgid "The version of this Plugin."
@@ -17522,7 +17513,7 @@ msgstr "परागकण आईडी %d के लिए %d सेकंड �
 
 #: poller.php
 msgid "WARNING: Cacti Polling Cycle Exceeded Poller Interval by "
-msgstr "चेतावनी: कैक्टि पोलिंग साइकिल पोलर इंटरवल को पार कर गया"
+msgstr "चेतावनी: कैक्टि पोलिंग साइकिल पोलर इंटरवल को पार कर गया "
 
 #: poller.php
 #, php-format
@@ -17720,7 +17711,7 @@ msgstr "आपने पहले ही इस डेटाबेस होस�
 
 #: pollers.php
 msgid "Data Collector Statistics cleared."
-msgstr "डेटा स्रोत सांख्यिकी"
+msgstr "डेटा स्रोत सांख्यिकी।"
 
 #: pollers.php
 msgid "Click 'Continue' to delete the following Data Collector.  Note, all devices will be disassociated from this Data Collector and mapped back to the Main Cacti Data Collector."
@@ -17756,7 +17747,7 @@ msgstr[1] "निम्नलिखित डेटा कलेक्टरो�
 msgid "Enable Data Collector"
 msgid_plural "Enable Data Collectors"
 msgstr[0] "डेटा संग्राहक सक्षम करें"
-msgstr[1] "डेटा संग्राहक सक्षम करें"
+msgstr[1] "डेटा संग्राहकों को सक्षम करें"
 
 #: pollers.php
 msgid "Click 'Continue' to Synchronize the Remote Data Collector for Offline Operation."
@@ -17773,8 +17764,8 @@ msgstr[1] "निम्नलिखित डेटा कलेक्टरो�
 #: pollers.php
 msgid "Clear Statistics for Data Collector"
 msgid_plural "Clear Statistics for Data Collectors"
-msgstr[0] "इस डेटा कलेक्टर की स्थिति।"
-msgstr[1] "इस डेटा कलेक्टर की स्थिति।"
+msgstr[0] "डेटा संग्राहक के आँकड़े साफ़ करें"
+msgstr[1] "डेटा संग्राहकों के आँकड़े साफ़ करें"
 
 #: pollers.php sites.php
 #, php-format
@@ -17823,7 +17814,7 @@ msgstr "इस डेटा कलेक्टर के लिए पोलर 
 
 #: pollers.php
 msgid "Polling Time"
-msgstr "मतदान का समय"
+msgstr "पोलिंग समय"
 
 #: pollers.php
 msgid "The last data collection time for this Data Collector."
@@ -17936,7 +17927,7 @@ msgstr "अगस्त"
 #: rrdcheck.php
 #, php-format
 msgid "%d hours"
-msgstr "% d घंटे"
+msgstr "%d घंटे"
 
 #: rrdcheck.php
 #, php-format
@@ -17956,7 +17947,7 @@ msgstr "जाएं"
 #: rrdcheck.php rrdcleaner.php user_group_admin.php
 msgctxt "filter: reset"
 msgid "Clear"
-msgstr "明确"
+msgstr "साफ़ करें"
 
 #: rrdcheck.php
 msgctxt "filter: purge"
@@ -17995,7 +17986,7 @@ msgstr "टेम्पलेट आईडी"
 
 #: rrdcleaner.php
 msgid "Last Modified"
-msgstr "पिछली मर्तबा परिवर्धित"
+msgstr "अंतिम बार संशोधित"
 
 #: rrdcleaner.php
 msgid "Size [KB]"
@@ -18250,13 +18241,13 @@ msgstr[1] "निम्नलिखित पेड़ों को हटान
 
 #: sites.php
 msgid "Site Name:"
-msgstr "साइट नाम"
+msgstr "साइट नाम:"
 
 #: sites.php
 msgid "Duplicate Site"
 msgid_plural "Duplicate Sites"
-msgstr[0] "प्रतिलिपि"
-msgstr[1] "प्रतिलिपि"
+msgstr[0] "साइट की प्रतिलिपि बनाएँ"
+msgstr[1] "साइटों की प्रतिलिपि बनाएँ"
 
 #: sites.php
 #, fuzzy
@@ -18374,7 +18365,7 @@ msgstr "अधिक जानकारी के लिए cacti.log देख�
 #: templates_import.php
 #, php-format
 msgid "The Template XML file \"%s\" validation failed"
-msgstr "टेम्पलेट XML फ़ाइल \"{ 0 }\" सत्यापन विफल रहा"
+msgstr "टेम्पलेट XML फ़ाइल \"%s\" सत्यापन विफल रहा"
 
 #: templates_import.php
 msgid "Import Files [ If Files are missing, locate and install before using ]"
@@ -18481,8 +18472,8 @@ msgstr[1] "निम्नलिखित पेड़ों को हटान
 #: tree.php
 msgid "Delete Tree"
 msgid_plural "Delete Trees"
-msgstr[0] "पेड़ हटाओ"
-msgstr[1] "पेड़ हटाओ"
+msgstr[0] "ट्री हटाएं"
+msgstr[1] "ट्रीज़ हटाएं"
 
 #: tree.php
 msgid "Click 'Continue' to publish the following Tree."
@@ -18692,11 +18683,11 @@ msgstr "बैच कॉपी"
 
 #: user_admin.php
 msgid "You are not allowed to delete the current login account"
-msgstr "आपको अपना पासवर्ड बदलने की अनुमति नहीं है।"
+msgstr "आपको अपना पासवर्ड बदलने की अनुमति नहीं है"
 
 #: user_admin.php
 msgid "You are not allowed to disable the current login account"
-msgstr "आपको अपना पासवर्ड बदलने की अनुमति नहीं है।"
+msgstr "आपको अपना पासवर्ड बदलने की अनुमति नहीं है"
 
 #: user_admin.php
 msgid "Click 'Continue' to delete the selected User(s)."
@@ -18720,11 +18711,11 @@ msgstr "बरतूनी-नांऽ::"
 
 #: user_admin.php
 msgid "Full Name:"
-msgstr "पूरा नामः"
+msgstr "पूरा नामः:"
 
 #: user_admin.php
 msgid "Realm:"
-msgstr "फ्रेम"
+msgstr "फ्रेम:"
 
 #: user_admin.php
 msgid "Copy User"
@@ -19004,7 +18995,7 @@ msgstr "डोमेन"
 
 #: user_admin.php
 msgid "User ID"
-msgstr "उपयोगकर्ता "
+msgstr "उपयोगकर्ता"
 
 #: user_admin.php user_group_admin.php
 msgid "Graph Policy"
@@ -19069,7 +19060,7 @@ msgstr[1] "उपयोगकर्ता डोमेन का अनुसर
 msgid "Delete User Domain"
 msgid_plural "Delete User Domains"
 msgstr[0] "उपयोगकर्ता डोमेन हटाएं"
-msgstr[1] "उपयोगकर्ता डोमेन हटाएं"
+msgstr[1] "उपयोगकर्ता डोमेनों को हटाएं"
 
 #: user_domains.php
 msgid "Click 'Continue' to disable the following User Domain."
@@ -19081,7 +19072,7 @@ msgstr[1] "उपयोगकर्ता डोमेन के बाद अ�
 msgid "Disable User Domain"
 msgid_plural "Disable User Domains"
 msgstr[0] "उपयोगकर्ता डोमेन अक्षम करें"
-msgstr[1] "उपयोगकर्ता डोमेन अक्षम करें"
+msgstr[1] "उपयोगकर्ता डोमेनों को अक्षम करें"
 
 #: user_domains.php
 msgid "Click 'Continue' to enable the following User Domain."
@@ -19166,7 +19157,7 @@ msgstr "ईमेल"
 
 #: user_domains.php
 msgid "Field that will replace the email taken from LDAP. (on windows: mail) "
-msgstr "फ़ील्ड जो LDAP से लिए गए ईमेल को बदल देगा। (खिड़कियों पर: मेल)"
+msgstr "फ़ील्ड जो LDAP से लिए गए ईमेल को बदल देगा। (खिड़कियों पर: मेल) "
 
 #: user_domains.php
 msgid "Domain Properties"
@@ -19274,7 +19265,7 @@ msgstr "क्या इस समूह के उपयोगकर्ता�
 
 #: user_group_admin.php
 msgid "What to do when a User from this User Group logs in."
-msgstr "जब कोई उपयोगकर्ता इस उपयोगकर्ता समूह से लॉग इन करता है तो क्या करें"
+msgstr "जब कोई उपयोगकर्ता इस उपयोगकर्ता समूह से लॉग इन करता है तो क्या करें।"
 
 #: user_group_admin.php
 msgid "Click 'Continue' to delete the following User Group"
@@ -19286,7 +19277,7 @@ msgstr[1] "उपयोगकर्ता समूहों का अनुस
 msgid "Delete User Group"
 msgid_plural "Delete User Groups"
 msgstr[0] "उपयोगकर्ता समूह हटाएं"
-msgstr[1] "उपयोगकर्ता समूह हटाएं"
+msgstr[1] "उपयोगकर्ता समूहों को हटाएं"
 
 #: user_group_admin.php
 msgid "Click 'Continue' to Copy the following User Group to a new User Group."
@@ -19400,7 +19391,7 @@ msgstr "明确"
 
 #: utilities.php
 msgid "Data Source Statistics Purged."
-msgstr "डेटा स्रोत सांख्यिकी"
+msgstr "डेटा स्रोत सांख्यिकी।"
 
 #: utilities.php
 msgid "Database"
@@ -19443,7 +19434,7 @@ msgstr "त्रुटि: स्थापित RRDtool संस्करण 
 #: utilities.php
 #, php-format
 msgid "ERROR: RRDtool 1.2.x+ does not support the GIF images format, but %d\" graph(s) and/or templates have GIF set as the image format."
-msgstr "ERROR: RRDtool 1.2.x + GIF छवियों के प्रारूप का समर्थन नहीं करता है, लेकिन% d &quot;ग्राफ़ (ओं) और / या टेम्पलेट्स में GIF को छवि प्रारूप के रूप में सेट किया गया है।"
+msgstr "ERROR: RRDtool 1.2.x + GIF छवियों के प्रारूप का समर्थन नहीं करता है, लेकिन%d &quot;ग्राफ़ (ओं) और / या टेम्पलेट्स में GIF को छवि प्रारूप के रूप में सेट किया गया है।"
 
 #: utilities.php
 msgid "General Information"
@@ -19489,15 +19480,15 @@ msgstr "मतदान के लिए कोई आइटम नहीं"
 
 #: utilities.php
 msgid "Name: "
-msgstr "नाम"
+msgstr "नाम "
 
 #: utilities.php
 msgid "Procs: "
-msgstr "1 प्रक्रिया"
+msgstr "1 प्रक्रिया "
 
 #: utilities.php
 msgid "Threads: "
-msgstr "थ्रैड"
+msgstr "थ्रैड "
 
 #: utilities.php
 msgid "Concurrent Processes"
@@ -19523,7 +19514,7 @@ msgstr "वर्तमान: %s, न्यूनतम आवश्यक: %s"
 
 #: utilities.php
 msgid "Minimum Connections:"
-msgstr "कनेक्शन जांचें"
+msgstr "कनेक्शन जांचें:"
 
 #: utilities.php
 msgid "Assumes 100 spare connections for Web page users and other various connections."
@@ -19564,7 +19555,7 @@ msgstr "MySQL/MariaDB मेमोरी सांख्यिकी (स्र�
 
 #: utilities.php
 msgid "Max Total Memory Possible"
-msgstr "अधिकतम पोलर मेमोरी की अनुमति है:"
+msgstr "अधिकतम पोलर मेमोरी की अनुमति है"
 
 #: utilities.php
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
@@ -19572,7 +19563,7 @@ msgstr "MySQL/MariaDB मेमोरी को 80% of सिस्टम मे
 
 #: utilities.php
 msgid "Max Core Memory Possible"
-msgstr "अधिकतम पोलर मेमोरी की अनुमति है:"
+msgstr "अधिकतम पोलर मेमोरी की अनुमति है"
 
 #: utilities.php
 msgid "Reduce Total Core Memory"
@@ -19727,12 +19718,12 @@ msgstr "प्रस्तुति का क्रम"
 #: utilities.php
 #, php-format
 msgid "Log [Total Lines: %d - Non-Matching Items Hidden]"
-msgstr "लॉग [कुल पंक्तियाँ:% d - गैर-मिलान आइटम छिपा हुआ]"
+msgstr "लॉग [कुल पंक्तियाँ:%d - गैर-मिलान आइटम छिपा हुआ]"
 
 #: utilities.php
 #, php-format
 msgid "Log [Total Lines: %d - All Items Shown]"
-msgstr "लॉग [कुल पंक्तियाँ:% d - सभी आइटम दिखाए गए]"
+msgstr "लॉग [कुल पंक्तियाँ:%d - सभी आइटम दिखाए गए]"
 
 #: utilities.php
 msgid "Clear Cacti Log"
@@ -19788,7 +19779,7 @@ msgstr "SNMP संस्करण:"
 
 #: utilities.php
 msgid "Community:"
-msgstr "कम्युनिटी"
+msgstr "कम्युनिटी:"
 
 #: utilities.php
 msgid "OID:"
@@ -19800,7 +19791,7 @@ msgstr "बरतूनी:"
 
 #: utilities.php
 msgid "Script:"
-msgstr "स्क्रिप्ट"
+msgstr "स्क्रिप्ट:"
 
 #: utilities.php
 msgid "Script Server:"
@@ -19958,7 +19949,7 @@ msgstr "बूस्ट स्टेटस"
 
 #: utilities.php
 msgid "Running Processes:"
-msgstr "समवर्ती प्रक्रियाएँ"
+msgstr "समवर्ती प्रक्रियाएँ:"
 
 #: utilities.php
 #, fuzzy
@@ -19999,7 +19990,7 @@ msgstr ""
 
 #: utilities.php
 msgid "Total Poller Items:"
-msgstr "पोलर कैश आइटम"
+msgstr "पोलर कैश आइटम:"
 
 #: utilities.php
 msgid "Total Data Sources:"
@@ -20007,7 +19998,7 @@ msgstr "कुल डेटा स्रोत:"
 
 #: utilities.php
 msgid "Remaining Data Sources:"
-msgstr "डेटा स्रोत डीबगिंग"
+msgstr "डेटा स्रोत डीबगिंग:"
 
 #: utilities.php
 msgid "TBD"
@@ -20044,7 +20035,7 @@ msgstr "औसत बाइट्स / रिकॉर्ड:"
 #: utilities.php
 #, php-format
 msgid "%d Bytes"
-msgstr "% d बाइट्स"
+msgstr "%d बाइट्स"
 
 #: utilities.php
 msgid "Max Record Length:"
@@ -20072,7 +20063,7 @@ msgstr "अंतिम प्रारंभ समय:"
 
 #: utilities.php
 msgid "Never Run"
-msgstr "कभी मत दौडना"
+msgstr "कभी नहीं चला"
 
 #: utilities.php
 msgid "Last Run Duration:"
@@ -20081,17 +20072,17 @@ msgstr "अंतिम रन अवधि:"
 #: utilities.php
 #, php-format
 msgid "%d minutes"
-msgstr "% d मिनट"
+msgstr "%d मिनट"
 
 #: utilities.php
 #, php-format
 msgid "%d seconds"
-msgstr "% d सेकंड"
+msgstr "%d सेकंड"
 
 #: utilities.php
 #, php-format
 msgid "%0.2f percent of update frequency)"
-msgstr "अद्यतन आवृत्ति का% 0.2f प्रतिशत)"
+msgstr "अद्यतन आवृत्ति का%0.2f प्रतिशत)"
 
 #: utilities.php
 msgid "RRD Updates:"
@@ -20147,7 +20138,7 @@ msgstr "आवृत्ति अद्यतन करें:"
 
 #: utilities.php
 msgid "Concurrent Processes:"
-msgstr "समवर्ती प्रक्रियाएँ"
+msgstr "समवर्ती प्रक्रियाएँ:"
 
 #: utilities.php
 msgid "Next Start Time:"
