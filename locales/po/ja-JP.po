@@ -1,17 +1,5 @@
 msgid ""
-msgstr ""
-"Project-Id-Version: cacti\n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-11-04 11:45-0800\n"
-"PO-Revision-Date: 2024-11-22 08:46+0000\n"
-"Last-Translator: Nakayama Kito <nakayamakito@icloud.com>\n"
-"Language-Team: Japanese <http://translate.cacti.net/projects/cacti/core-v1-2-x/ja/>\n"
-"Language: ja-JP\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: cacti\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-25 01:18+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Japanese <https://translate.cacti.net/projects/cacti/core-v1-2-x/ja/>\nLanguage: ja-JP\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -279,7 +267,7 @@ msgstr "ツリーにグラフを配置"
 #: aggregate_graphs.php data_sources.php lib/html_reports.php user_admin.php
 #, php-format
 msgid "[edit: %s]"
-msgstr "[編集:%s]"
+msgstr "[編集：%s]"
 
 #: aggregate_graphs.php
 msgid "Aggregate Graph does not Exist"
@@ -727,7 +715,7 @@ msgstr "パスワード検証パス"
 
 #: auth_changepassword.php user_admin.php
 msgid "Passwords do Not Match"
-msgstr "パスワードが一致しません。もう一度入力してください。"
+msgstr "パスワードが一致しません。もう一度入力してください"
 
 #: auth_changepassword.php user_admin.php
 msgid "Passwords Match"
@@ -845,7 +833,7 @@ msgstr "メールアドレス"
 
 #: auth_profile.php
 msgid "An Email Address you be reached at."
-msgstr "メールアドレス"
+msgstr "メールアドレス。"
 
 #: auth_profile.php
 msgid "Clear User Settings"
@@ -861,7 +849,7 @@ msgstr "個人データの消去"
 
 #: auth_profile.php
 msgid "Clear Private Data including Column sizing."
-msgstr "列のサイズ変更を含む個人データの消去"
+msgstr "列のサイズ変更を含む個人データの消去。"
 
 #: auth_profile.php
 msgid "Logout Everywhere"
@@ -906,7 +894,7 @@ msgstr "デバイスを削除"
 #: automation_devices.php host.php lib/api_automation.php lib/html_utility.php
 #: pollers.php
 msgid "Down"
-msgstr "下"
+msgstr "ダウン"
 
 #: automation_devices.php host.php lib/api_automation.php lib/html_utility.php
 msgid "Up"
@@ -996,7 +984,7 @@ msgstr "OS"
 
 #: automation_devices.php host.php include/global_arrays.php
 msgid "Uptime"
-msgstr "あなたのアップタイムロボットAPIキー："
+msgstr "稼働時間"
 
 #: automation_devices.php include/global_arrays.php utilities.php
 msgid "SNMP"
@@ -1137,15 +1125,15 @@ msgstr "非表示"
 
 #: automation_graph_rules.php
 msgid "Rule Details."
-msgstr "ルールの詳細"
+msgstr "ルールの詳細。"
 
 #: automation_graph_rules.php
 msgid "Matching Devices."
-msgstr "マッチングデバイス"
+msgstr "マッチングデバイス。"
 
 #: automation_graph_rules.php
 msgid "Matching Objects."
-msgstr "一致するオブジェクト"
+msgstr "一致するオブジェクト。"
 
 #: automation_graph_rules.php
 msgid "Device Selection Criteria"
@@ -1187,7 +1175,7 @@ msgstr "ルール名"
 
 #: automation_graph_rules.php
 msgid "The name of this rule."
-msgstr "このルールの名前"
+msgstr "このルールの名前。"
 
 #: automation_graph_rules.php
 msgid "The internal database ID for this rule.  Useful in performing debugging and automation."
@@ -1345,7 +1333,7 @@ msgstr "サブネット範囲"
 
 #: automation_networks.php
 msgid "Enter valid Network Ranges separated by commas.  You may use an IP address, a Network range such as 192.168.1.0/24 or 192.168.1.0/255.255.255.0, or using wildcards such as 192.168.*.*"
-msgstr "有効なネットワーク範囲をカンマで区切って入力してください。 IPアドレス、192.168.1.0 / 24や192.168.1.0 / 255.555.255.0などのネットワーク範囲、または192.168。*。*などのワイルドカードを使用できます。"
+msgstr "有効なネットワーク範囲をカンマで区切って入力してください。 IPアドレス、192.168.1.0 / 24や192.168.1.0 / 255.555.255.0などのネットワーク範囲、または192.168。*。*などのワイルドカードを使用できます"
 
 #: automation_networks.php
 msgid "Total IP Addresses"
@@ -1402,7 +1390,7 @@ msgid "After the selected Run Limit, the discovery process will be terminated."
 msgstr "実行制限を選択すると、検出プロセスは終了します。"
 
 #: automation_networks.php pollers.php
-#, fuzzy, php-format
+#, php-format
 msgid "%d Minute"
 msgstr "%d分"
 
@@ -1625,7 +1613,7 @@ msgstr "月の週"
 
 #: automation_networks.php
 msgid "What Week(s) of the Month will this Network Range be discovered."
-msgstr "このネットワーク範囲は今週の何曜日に発見されますか"
+msgstr "このネットワーク範囲は今週の何曜日に発見されますか。"
 
 #: automation_networks.php
 msgid "First"
@@ -1832,7 +1820,7 @@ msgstr "名前"
 
 #: automation_snmp.php
 msgid "Automation SNMP Options has been Duplicated."
-msgstr "自動化SNMPオプション"
+msgstr "自動化SNMPオプション。"
 
 #: automation_snmp.php
 msgid "Automation Item does not exist.  Can not Duplicate."
@@ -1844,7 +1832,7 @@ msgstr "[続行]をクリックして、次のSNMPオプション項目を削除
 
 #: automation_snmp.php
 msgid "SNMP Option:"
-msgstr "SNMPオプション"
+msgstr "SNMPオプション："
 
 #: automation_snmp.php
 #, php-format
@@ -1876,7 +1864,7 @@ msgstr "配列"
 
 #: automation_snmp.php lib/html_reports.php
 msgid "Sequence of Item."
-msgstr "項目のシーケンス"
+msgstr "項目のシーケンス。"
 
 #: automation_snmp.php
 #, php-format
@@ -2359,7 +2347,7 @@ msgstr "無名の色"
 #: color.php
 msgid "Click 'Continue' to delete the following Color"
 msgid_plural "Click 'Continue' to delete the following Colors"
-msgstr[0] "次の色を削除するには、[続行]をクリックしてください。"
+msgstr[0] "次の色を削除するには、[続行]をクリックしてください"
 
 #: color.php
 msgid "Delete Color"
@@ -2412,7 +2400,7 @@ msgstr "<strong>name</strong> - カラーネーム"
 
 #: color.php
 msgid "<strong>hex</strong> - The Hex Value"
-msgstr "<strong>hex</strong> - <strong>16進値</strong>"
+msgstr "<strong>hex</strong> - 16進値"
 
 #: color.php
 #, php-format
@@ -2470,7 +2458,7 @@ msgstr "色"
 
 #: color.php
 msgid "The Color as shown on the screen."
-msgstr "画面に表示される色"
+msgstr "画面に表示される色。"
 
 #: color.php
 msgid "Colors in use cannot be Deleted.  In use is defined as being referenced either by a Graph or a Graph Template."
@@ -2509,7 +2497,7 @@ msgstr "アイテム"
 #: color_templates.php
 msgid "Click 'Continue' to delete the following Color Template"
 msgid_plural "Click 'Continue' to delete following Color Templates"
-msgstr[0] "次のカラーテンプレートを削除するには、[続行]をクリックしてください。"
+msgstr[0] "次のカラーテンプレートを削除するには、[続行]をクリックしてください"
 
 #: color_templates.php
 msgid "Delete Color Template"
@@ -2628,7 +2616,7 @@ msgstr "チェックを削除"
 
 #: data_debug.php
 msgid "Data Source debug started."
-msgstr "データソースのデバッグ"
+msgstr "データソースのデバッグ。"
 
 #: data_debug.php
 msgid "Data Source debug received an invalid Data Source ID."
@@ -2702,7 +2690,7 @@ msgstr "データソースがポーラーキャッシュにあるかどうかを
 
 #: data_debug.php data_sources.php data_templates.php plugins.php
 msgid "Active"
-msgstr "操作"
+msgstr "アクティブ"
 
 #: data_debug.php
 msgid "Determines if the Data Source is Enabled."
@@ -2755,11 +2743,11 @@ msgstr "銀行振り込み"
 
 #: data_debug.php lib/api_automation.php lib/graphs.php templates_import.php
 msgid "Not Found"
-msgstr "みつかりません"
+msgstr "見つかりません"
 
 #: data_debug.php
 msgid "Not Checked Yet"
-msgstr "チェックなし"
+msgstr "未確認"
 
 #: data_debug.php
 msgid "Issues found!  Waiting on RRDfile update"
@@ -2771,7 +2759,7 @@ msgstr "頭文字が見つかりません！ RRDファイルの更新待ち"
 
 #: data_debug.php
 msgid "Waiting on analysis and RRDfile update"
-msgstr "RRDファイルは更新されましたか？"
+msgstr "分析と RRDfile の更新を待機しています"
 
 #: data_debug.php
 msgid "RRDfile Owner"
@@ -2823,7 +2811,7 @@ msgstr "タイトルを変換できましたか？"
 
 #: data_debug.php
 msgid "Data Source matches the RRDfile?"
-msgstr "データソースはポーリングされませんでした"
+msgstr "データソースは RRDfile と一致していますか？"
 
 #: data_debug.php
 #, php-format
@@ -2957,7 +2945,7 @@ msgstr ""
 #: data_input.php
 msgid "Click 'Continue' to delete the following Data Input Method"
 msgid_plural "Click 'Continue' to delete the following Data Input Method"
-msgstr[0] "次のデータ入力方法を削除するには、[続行]をクリックしてください。"
+msgstr[0] "次のデータ入力方法を削除するには、[続行]をクリックしてください"
 
 #: data_input.php
 msgid "Click 'Continue' to duplicate the following Data Input Method(s). You can optionally change the title format for the new Data Input Method(s)."
@@ -3059,7 +3047,7 @@ msgstr "項目の並び順"
 
 #: data_input.php
 msgid "(Not In Use)"
-msgstr "ユーザー名は既に使用されています。"
+msgstr "ユーザー名は既に使用されています"
 
 #: data_input.php
 msgid "No Input Fields"
@@ -3157,7 +3145,7 @@ msgstr[0] "次のデータクエリを削除するには、[続行]をクリッ�
 
 #: data_queries.php lib/html_reports.php
 msgid "Name Format:"
-msgstr "名前の形式"
+msgstr "名前の形式："
 
 #: data_queries.php
 msgid "Duplicate Data Query"
@@ -3318,7 +3306,7 @@ msgstr "このデータクエリを使用しているグラフテンプレート
 
 #: data_queries.php
 msgid "The Data Input Method used to collect data for Data Sources associated with this Data Query."
-msgstr "このデータクエリに関連付けられたデータソースのデータを収集するために使用されるデータ入力メソッド"
+msgstr "このデータクエリに関連付けられたデータソースのデータを収集するために使用されるデータ入力メソッド。"
 
 #: data_queries.php
 msgid "No Data Queries Found"
@@ -3331,7 +3319,7 @@ msgstr "このページからハートビートを変更しても、既存のデ
 #: data_source_profiles.php
 msgid "Click 'Continue' to delete the following Data Source Profile"
 msgid_plural "Click 'Continue' to delete following Data Source Profiles"
-msgstr[0] "次のデータソースプロファイルを削除するには、[続行]をクリックします。"
+msgstr[0] "次のデータソースプロファイルを削除するには、[続行]をクリックします"
 
 #: data_source_profiles.php
 msgid "Delete Data Source Profile"
@@ -3363,7 +3351,7 @@ msgstr "プロファイル名: %s"
 
 #: data_source_profiles.php
 msgid "Remove Data Source Profile RRA"
-msgstr "データソースプロファイルRRAを削除します。"
+msgstr "データソースプロファイルRRAを削除します"
 
 #: data_source_profiles.php
 msgid "Each Insert is New Row"
@@ -3474,7 +3462,7 @@ msgstr "%d 日"
 #: data_source_profiles.php include/global_arrays.php
 #: include/global_settings.php
 msgid "1 Hour"
-msgstr "1時間"
+msgstr "1 時間"
 
 #: data_source_profiles.php include/global_arrays.php
 msgid "Data Source Profiles"
@@ -3547,7 +3535,7 @@ msgstr "推奨名を再適用"
 #: data_sources.php
 msgid "Click 'Continue' to delete the following Data Source"
 msgid_plural "Click 'Continue' to delete following Data Sources"
-msgstr[0] "次のデータソースを削除するには、[続行]をクリックします。"
+msgstr[0] "次のデータソースを削除するには、[続行]をクリックします"
 
 #: data_sources.php
 msgid "The following graph is using these data sources:"
@@ -3581,7 +3569,7 @@ msgstr[0] "このデータソースに新しいデバイスを選択して、[�
 
 #: data_sources.php
 msgid "New Device:"
-msgstr "新しい装置"
+msgstr "新しい装置："
 
 #: data_sources.php
 msgid "Click 'Continue' to enable the following Data Source."
@@ -3689,11 +3677,11 @@ msgstr "データテンプレートを編集します。"
 
 #: data_sources.php
 msgid "Disable Data Source."
-msgstr "データソースを無効にする"
+msgstr "データソースを無効にする。"
 
 #: data_sources.php
 msgid "Enable Data Source."
-msgstr "データソースを有効にする"
+msgstr "データソースを有効にする。"
 
 #: data_sources.php
 msgid "Selected Data Template"
@@ -3764,7 +3752,7 @@ msgstr "外部ソース"
 
 #: data_sources.php include/global_arrays.php include/global_settings.php
 msgid "1 Minute"
-msgstr "1分"
+msgstr "1 分"
 
 #: data_sources.php
 msgid "Data Sources [ All Devices ]"
@@ -4031,7 +4019,7 @@ msgstr "フォーマット"
 
 #: gprint_presets.php
 msgid "The GPRINT format string."
-msgstr "GPRINTフォーマット文字列"
+msgstr "GPRINTフォーマット文字列。"
 
 #: gprint_presets.php
 msgid "GPRINTs that are in use cannot be Deleted.  In use is defined as being referenced by either a Graph or a Graph Template."
@@ -4103,7 +4091,7 @@ msgstr "知恵袋CSVエクスポート"
 
 #: graph.php lib/html.php
 msgid "Edit Graph Template"
-msgstr "グラフテンプレートを編集します。"
+msgstr "グラフテンプレートを編集します"
 
 #: graph.php
 msgid "Click to view just this Graph in Real-time"
@@ -4156,7 +4144,7 @@ msgstr "プリセット"
 
 #: graph_realtime.php utilities.php
 msgid "Refresh Interval"
-msgstr "ãªãã¬ãã·ã¥éé"
+msgstr "リフレッシュ間隔"
 
 #: graph_realtime.php lib/html_graph.php lib/html_reports.php lib/html_tree.php
 msgid "Thumbnails"
@@ -4169,7 +4157,7 @@ msgstr "残り%d秒。"
 
 #: graph_realtime.php
 msgid " seconds left."
-msgstr "残り秒。"
+msgstr " 残り秒。"
 
 #: graph_templates.php
 msgid "Change Settings"
@@ -4434,7 +4422,7 @@ msgstr "このグラフのタイトル。通常は、グラフテンプレート
 
 #: graph_view.php
 msgid "The device for this Graph."
-msgstr "このグループの名前"
+msgstr "このグループの名前。"
 
 #: graph_view.php graphs.php
 msgid "Source Type"
@@ -4552,12 +4540,12 @@ msgstr "グラフテンプレートに変換"
 
 #: graphs.php
 msgid "No Device - "
-msgstr "デバイスがありません"
+msgstr "デバイスがありません "
 
 #: graphs.php
 #, php-format
 msgid "Created graph: %s"
-msgstr "グラフを作成しました: %s"
+msgstr "作成したグラフ：%s"
 
 #: graphs.php lib/template.php
 msgid "ERROR: No Data Source associated. Check Template"
@@ -4908,7 +4896,7 @@ msgstr "このデータクエリは0行を返しました。おそらくこの�
 
 #: graphs_new.php
 msgid "You can run this Data Query in debug mode"
-msgstr "このデータクエリはデバッグモードで実行できます。"
+msgstr "このデータクエリはデバッグモードで実行できます"
 
 #: graphs_new.php
 msgid "The index is disabled due to the Data Query having no associated Graph Templates."
@@ -4968,7 +4956,7 @@ msgstr "デバイス設定を変更する"
 
 #: host.php pollers.php
 msgid "Clear Statistics"
-msgstr "統計を消去"
+msgstr "統計をクリア"
 
 #: host.php
 msgid "Sync to Device Template"
@@ -4980,7 +4968,7 @@ msgstr "ツリーにデバイスを配置"
 
 #: host.php
 msgid "Data Query Re-indexed."
-msgstr "データクエリインデックス"
+msgstr "データクエリインデックス。"
 
 #: host.php
 msgid "Device Data Query Re-indexed.  Verbose output displayed."
@@ -4992,7 +4980,7 @@ msgstr "デバイスのデバイスデバッグが有効になっています。
 
 #: host.php
 msgid "Device Debugging Disabled for Device."
-msgstr "デバイスは無効です"
+msgstr "デバイスは無効です。"
 
 #: host.php
 msgid "Poller Cache for Device Refreshed."
@@ -5014,7 +5002,7 @@ msgstr "レポート'%s'にいくつかのデバイスを追加できません"
 
 #: host.php
 msgid "Click 'Continue' to enable the following Device(s)."
-msgstr "次のデバイスを有効にするには、[続行]をクリックします。"
+msgstr "「続行」をクリックして、次のデバイスを有効にします。"
 
 #: host.php
 msgid "Enable Device(s)"
@@ -5022,7 +5010,7 @@ msgstr "デバイスを有効にする"
 
 #: host.php
 msgid "Click 'Continue' to disable the following Device(s)."
-msgstr "次のデバイスを無効にするには、[続行]をクリックします。"
+msgstr "「続行」をクリックして、次のデバイスを無効にします。"
 
 #: host.php
 msgid "Disable Device(s)"
@@ -5058,7 +5046,7 @@ msgstr "デバイスを同期する"
 
 #: host.php
 msgid "Click 'Continue' to delete the following Device(s)."
-msgstr "次のデバイスを削除するには、[続行]をクリックしてください。"
+msgstr "「続行」をクリックして、次のデバイスを削除します。"
 
 #: host.php
 msgid "Leave all Graph(s) and Data Source(s) untouched.  Data Source(s) will be disabled however."
@@ -5155,7 +5143,7 @@ msgstr "グラフテンプレートの関連付けを削除する"
 
 #: host.php host_templates.php
 msgid "No associated graph templates."
-msgstr "関連グラフテンプレート"
+msgstr "関連グラフテンプレート。"
 
 #: host.php host_templates.php
 msgid "Add Graph Template"
@@ -5193,7 +5181,7 @@ msgstr "操作"
 #: host.php
 #, php-format
 msgid " [%d Items, %d Rows]"
-msgstr "[%dアイテム、%d行]"
+msgstr " [%dアイテム、%d行]"
 
 #: host.php
 msgid "Fail"
@@ -5217,7 +5205,7 @@ msgstr "クエリを削除"
 
 #: host.php
 msgid "No Associated Data Queries."
-msgstr "連想データ照会"
+msgstr "連想データ照会。"
 
 #: host.php host_templates.php
 msgid "Add Data Query"
@@ -5351,7 +5339,7 @@ msgstr "有効性"
 
 #: host.php
 msgid "The availability percentage based upon ping results since the counters were cleared for this Device."
-msgstr "このデバイスのカウンタがクリアされてからのpingに基づくアベイラビリティパーセンテージ"
+msgstr "このデバイスのカウンタがクリアされてからのpingに基づくアベイラビリティパーセンテージ。"
 
 #: host_templates.php
 msgid "Sync Devices"
@@ -5418,7 +5406,7 @@ msgstr "デバイステンプレートにグラフテンプレートを追加す
 
 #: host_templates.php
 msgid "No associated data queries."
-msgstr "連想データ照会"
+msgstr "連想データ照会。"
 
 #: host_templates.php
 msgid "Add Data Query to Device Template"
@@ -5514,7 +5502,7 @@ msgstr "インストール中"
 
 #: include/auth.php
 msgid "Only Cacti Administrators with Install/Upgrade privilege may login at this time"
-msgstr "現時点では、インストール/アップグレード権限を持つCacti管理者だけがログインできます。"
+msgstr "現時点では、インストール/アップグレード権限を持つCacti管理者だけがログインできます"
 
 #: include/auth.php
 msgid "There is an Installation or Upgrade in progress."
@@ -5542,7 +5530,7 @@ msgstr ""
 
 #: include/global.php
 msgid "The Main Data Collector has returned to an Online Status"
-msgstr "このData CollectorがメインのCactiサイトと完全に同期した最後の時。"
+msgstr "このData CollectorがメインのCactiサイトと完全に同期した最後の時"
 
 #: include/global.php
 msgid "The Main Data Collector has gone to an Offline or Recovering Status"
@@ -5582,7 +5570,7 @@ msgstr "強調表示されているディレクトリは存在しません。有
 
 #: include/global_arrays.php
 msgid "The Cacti log file must have the extension '.log'"
-msgstr "Cactiログファイルの拡張子は.logです。"
+msgstr "Cactiログファイルの拡張子は.logです"
 
 #: include/global_arrays.php
 msgid "Data Input for method does not appear to be whitelisted."
@@ -5928,7 +5916,7 @@ msgstr "データクエリのインデックス数が変わると、再インデ
 
 #: include/global_arrays.php
 msgid "Every polling cycle, a Re-Index will be performed.  Very expensive."
-msgstr "ポーリングサイクルごとに、再インデックスが実行されます。とても高い"
+msgstr "ポーリングサイクルごとに、再インデックスが実行されます。とても高い。"
 
 #: include/global_arrays.php
 msgid "SNMP Field Name (Dropdown)"
@@ -5968,7 +5956,7 @@ msgstr "西"
 
 #: include/global_arrays.php
 msgid "East"
-msgstr "东"
+msgstr "東"
 
 #: include/global_arrays.php
 msgid "Left"
@@ -6008,7 +5996,7 @@ msgstr "期間"
 
 #: include/global_arrays.php
 msgid "Not In Use"
-msgstr "ユーザー名は既に使用されています。"
+msgstr "ユーザー名は既に使用されています"
 
 #: include/global_arrays.php
 #, fuzzy, php-format
@@ -6047,11 +6035,11 @@ msgstr "SHA-512"
 
 #: include/global_arrays.php
 msgid "DES"
-msgstr "不均衡症候群"
+msgstr "DES"
 
 #: include/global_arrays.php
 msgid "AES"
-msgstr "不均衡症候群"
+msgstr "AES"
 
 #: include/global_arrays.php
 msgid "AES-128"
@@ -6109,27 +6097,27 @@ msgstr "UDP Ping"
 
 #: include/global_arrays.php
 msgid "NONE - Syslog Only if Selected"
-msgstr "NONE  - 選択した場合のみSyslog"
+msgstr "NONE - 選択した場合のみSyslog"
 
 #: include/global_arrays.php
 msgid "LOW - Statistics and Errors"
-msgstr "LOW  - 統計とエラー"
+msgstr "LOW - 統計とエラー"
 
 #: include/global_arrays.php
 msgid "MEDIUM - Statistics, Errors and Results"
-msgstr "MEDIUM  - 統計、エラー、結果"
+msgstr "MEDIUM - 統計、エラー、結果"
 
 #: include/global_arrays.php
 msgid "HIGH - Statistics, Errors, Results and Major I/O Events"
-msgstr "HIGH  - 統計、エラー、結果、および主要なI / Oイベント"
+msgstr "HIGH - 統計、エラー、結果、および主要なI / Oイベント"
 
 #: include/global_arrays.php
 msgid "DEBUG - Statistics, Errors, Results, I/O and Program Flow"
-msgstr "DEBUG  - 統計、エラー、結果、I / O、プログラムフロー"
+msgstr "DEBUG - 統計、エラー、結果、I / O、プログラムフロー"
 
 #: include/global_arrays.php
 msgid "DEVEL - Developer DEBUG Level"
-msgstr "DEVEL  - 開発者向けDEBUGレベル"
+msgstr "DEVEL - 開発者向けDEBUGレベル"
 
 #: include/global_arrays.php
 msgid "Selected Poller Interval"
@@ -6553,7 +6541,7 @@ msgstr "すべての行"
 #: include/global_arrays.php
 #, php-format
 msgid "%d Lines"
-msgstr "%dライン"
+msgstr "%d 行"
 
 #: include/global_arrays.php
 msgid "Console Access"
@@ -6682,7 +6670,7 @@ msgstr "最終時間"
 #: include/global_arrays.php
 #, php-format
 msgid "Last %d Hours"
-msgstr "過去%d時間"
+msgstr "最後の%d時間"
 
 #: include/global_arrays.php
 msgid "Last Day"
@@ -6700,7 +6688,7 @@ msgstr "先週"
 #: include/global_arrays.php
 #, php-format
 msgid "Last %d Weeks"
-msgstr "過去%d週間"
+msgstr "最後の%d週"
 
 #: include/global_arrays.php
 msgid "Last Month"
@@ -6871,9 +6859,9 @@ msgid "Unlimited"
 msgstr "無制限"
 
 #: include/global_arrays.php include/global_settings.php
-#, fuzzy, php-format
+#, php-format
 msgid "%s Minutes"
-msgstr "%s分"
+msgstr "%s 分"
 
 #: include/global_arrays.php
 msgid "1 Megabyte"
@@ -6886,7 +6874,7 @@ msgstr "%d メガバイト"
 
 #: include/global_arrays.php
 msgid "Send Now"
-msgstr "今すぐ送信します。"
+msgstr "今すぐ送信します"
 
 #: include/global_arrays.php
 msgid "Take Ownership"
@@ -7143,7 +7131,7 @@ msgstr "毎週"
 #: include/global_arrays.php
 #, php-format
 msgid "Every %d Weeks"
-msgstr "%d週間ごと"
+msgstr "週%dごと"
 
 #: include/global_arrays.php
 msgctxt "A short textual representation of a month, three letters"
@@ -7386,7 +7374,7 @@ msgstr "メンバーに限定"
 
 #: include/global_arrays.php
 msgid "[Success]"
-msgstr "成功！"
+msgstr "成功"
 
 #: include/global_arrays.php
 msgid "[Skipped]"
@@ -7475,7 +7463,7 @@ msgstr "データクエリキャッシュの表示"
 
 #: include/global_arrays.php
 msgid "Clear Log"
-msgstr "ログを消去する"
+msgstr "ログをクリア"
 
 #: include/global_arrays.php utilities.php
 msgid "View User Log"
@@ -7683,7 +7671,7 @@ msgstr "SNMP タイムアウト"
 
 #: include/global_form.php
 msgid "The maximum number of milliseconds Cacti will wait for an SNMP response (does not work with php-snmp support)."
-msgstr "CactiがSNMP応答を待つ最大ミリ秒数（php-snmpサポートでは機能しません）。"
+msgstr "CactiがSNMP応答を待つ最大ミリ秒数（php-snmpサポートでは動作しません）。"
 
 #: include/global_form.php
 msgid "Maximum OIDs Per Get Request"
@@ -7771,7 +7759,7 @@ msgstr "連結機能"
 
 #: include/global_form.php
 msgid "How data is to be entered in RRAs."
-msgstr "RRAにデータを入力する方法"
+msgstr "RRAにデータを入力する方法。"
 
 #: include/global_form.php
 msgid "Is this the default storage profile?"
@@ -7807,7 +7795,7 @@ msgstr "デフォルトタイムスパン"
 
 #: include/global_form.php
 msgid "When viewing a Graph based upon the RRA in question, the default Timespan to show for that Graph."
-msgstr "問題のRRAに基づいてグラフを表示するときに、そのグラフに対して表示するデフォルトのタイムスパン"
+msgstr "問題のRRAに基づいてグラフを表示するときに、そのグラフに対して表示するデフォルトのタイムスパン。"
 
 #: include/global_form.php
 msgid "Based upon the Aggregation Level, the Rows, and the Polling Interval the amount of data that will be retained in the RRA"
@@ -7827,7 +7815,7 @@ msgstr "この CDEF の名前です。"
 
 #: include/global_form.php
 msgid "The name of this Color."
-msgstr "この色の名前"
+msgstr "この色の名前。"
 
 #: include/global_form.php
 msgid "Hex Value"
@@ -7983,7 +7971,7 @@ msgstr "データソースの種類"
 
 #: include/global_form.php
 msgid "How data is represented in the RRA."
-msgstr "RRAにおけるデータの表現方法"
+msgstr "RRAにおけるデータの表現方法。"
 
 #: include/global_form.php
 msgid "The maximum amount of time that can pass before data is entered as 'unknown'. (Usually 2x300=600)"
@@ -8087,7 +8075,7 @@ msgstr "オートスケールオプション"
 
 #: include/global_form.php
 msgid "Use <br> --alt-autoscale to scale to the absolute minimum and maximum <br> --alt-autoscale-max to scale to the maximum value, using a given lower limit <br> --alt-autoscale-min to scale to the minimum value, using a given upper limit <br> --alt-autoscale (with limits) to scale using both lower and upper limits (RRDtool default) <br>"
-msgstr "つかいます<br> --alt-autoscaleで絶対最小値と最大値に合わせます<br> --alt-autoscale-maxは、与えられた下限を使って最大値にスケールします<br> --alt-autoscale-min  - 与えられた上限を使って最小値にスケールする<br>下限と上限の両方を使用して拡大縮小する--alt-autoscale（制限あり）（RRDtoolのデフォルト） <br>"
+msgstr "つかいます<br> --alt-autoscaleで絶対最小値と最大値に合わせます<br> --alt-autoscale-maxは、与えられた下限を使って最大値にスケールします<br> --alt-autoscale-min - 与えられた上限を使って最小値にスケールする<br>下限と上限の両方を使用して拡大縮小する--alt-autoscale（制限あり）（RRDtoolのデフォルト） <br>"
 
 #: include/global_form.php
 msgid "Use --alt-autoscale (ignoring given limits)"
@@ -8103,7 +8091,7 @@ msgstr "--alt-autoscale-minを使用してください（上限を受け入れ�
 
 #: include/global_form.php
 msgid "Use --alt-autoscale (accepting both limits, RRDtool default)"
-msgstr "--alt-autoscaleを使用します（両方の制限を受け入れます、RRDtoolのデフォルト）。"
+msgstr "--alt-autoscaleを使用します（両方の制限を受け入れます、RRDtoolのデフォルト）"
 
 #: include/global_form.php
 msgid "Logarithmic Scaling (--logarithmic)"
@@ -8151,7 +8139,7 @@ msgstr "グリッドオプション"
 
 #: include/global_form.php
 msgid "Unit Grid Value (--unit/--y-grid)"
-msgstr "単位グリッド値（--unit /  -   -  y-grid）"
+msgstr "単位グリッド値（--unit / - - y-grid）"
 
 #: include/global_form.php
 msgid "Sets the exponent value on the Y-axis for numbers. Note: This option is deprecated and replaced by the --y-grid option.  In this option, Y-axis grid lines appear at each grid step interval.  Labels are placed every label factor lines."
@@ -8300,7 +8288,7 @@ msgstr "このグラフ項目に使用するデータソース。"
 
 #: include/global_form.php
 msgid "The color to use for the legend."
-msgstr "凡例に使用する色"
+msgstr "凡例に使用する色。"
 
 #: include/global_form.php
 msgid "Opacity/Alpha Channel"
@@ -8384,7 +8372,7 @@ msgstr "行幅（10進数）"
 
 #: include/global_form.php
 msgid "In case LINE was chosen, specify width of line here.  You must include a decimal precision, for example 2.00"
-msgstr "LINEを選択した場合は、ここで線幅を指定してください。 2.00など、10進数の精度を含める必要があります。"
+msgstr "LINEを選択した場合は、ここで線幅を指定してください。 2.00など、10進数の精度を含める必要があります"
 
 #: include/global_form.php
 msgid "Dashes (dashes[=on_s[,off_s[,on_s,off_s]...]])"
@@ -8642,7 +8630,7 @@ msgstr "ログイン設定"
 
 #: include/global_form.php
 msgid "What to do when this user logs in."
-msgstr "このユーザーがログインしたときの対処方法"
+msgstr "このユーザーがログインしたときの対処方法。"
 
 #: include/global_form.php
 msgid "Show the page that user pointed their browser to."
@@ -8810,7 +8798,7 @@ msgstr "再注文タイプ"
 
 #: include/global_form.php
 msgid "Reordering of Graphs."
-msgstr "グラフの並べ替え"
+msgstr "グラフの並べ替え。"
 
 #: include/global_form.php
 msgid "Please name this Aggregate Graph."
@@ -8870,7 +8858,7 @@ msgstr "操作"
 
 #: include/global_form.php
 msgid "Logical operation to combine rules."
-msgstr "ルールを結合するための論理演算"
+msgstr "ルールを結合するための論理演算。"
 
 #: include/global_form.php
 msgid "The Field Name that shall be used for this Rule Item."
@@ -8878,7 +8866,7 @@ msgstr "この規則項目に使用されるフィールド名。"
 
 #: include/global_form.php
 msgid "Operator."
-msgstr "- オペレーター - タンク"
+msgstr "- オペレーター - タンク。"
 
 #: include/global_form.php
 msgid "Matching Pattern"
@@ -8890,7 +8878,7 @@ msgstr "照合するパターン。"
 
 #: include/global_form.php
 msgid "Sequence."
-msgstr "配列"
+msgstr "配列。"
 
 #: include/global_form.php
 msgid "A useful name for this Rule."
@@ -8970,19 +8958,19 @@ msgstr "ツリーヘッダーとして使用するための置換文字列パタ
 
 #: include/global_languages.php
 msgid " T"
-msgstr "・"
+msgstr " ・"
 
 #: include/global_languages.php
 msgid " G"
-msgstr "G"
+msgstr " G"
 
 #: include/global_languages.php
 msgid " M"
-msgstr "M"
+msgstr " M"
 
 #: include/global_languages.php
 msgid " K"
-msgstr "K"
+msgstr " K"
 
 #: include/global_settings.php
 msgid "Paths"
@@ -8994,7 +8982,7 @@ msgstr "デバイスデフォルト"
 
 #: include/global_settings.php
 msgid "Poller"
-msgstr "収集キャッシュ管理"
+msgstr "ポーラー"
 
 #: include/global_settings.php
 msgid "Data"
@@ -9106,7 +9094,7 @@ msgstr "PHP バイナリパス"
 
 #: include/global_settings.php
 msgid "The path to your PHP binary file (may require a php recompile to get this file)."
-msgstr "あなたのPHPバイナリファイルへのパス（このファイルを入手するにはphpの再コンパイルが必要かもしれません）"
+msgstr "あなたのPHPバイナリファイルへのパス（このファイルを入手するにはphpの再コンパイルが必要かもしれません）。"
 
 #: include/global_settings.php
 msgid "Logging"
@@ -9126,7 +9114,7 @@ msgstr "ポーラー標準エラーログのパス"
 
 #: include/global_settings.php
 msgid "If you are having issues with Cacti's Data Collectors, set this file path and the Data Collectors standard error will be redirected to this file"
-msgstr "Cactiのデータコレクタに問題がある場合は、このファイルパスを設定すると、データコレクタの標準エラーがこのファイルにリダイレクトされます。"
+msgstr "Cactiのデータコレクタに問題がある場合は、このファイルパスを設定すると、データコレクタの標準エラーがこのファイルにリダイレクトされます"
 
 #: include/global_settings.php
 msgid "Rotate the Cacti Log"
@@ -9186,7 +9174,7 @@ msgstr "RRDファイルの自動クリーニング方法"
 
 #: include/global_settings.php
 msgid "The method used to Clean RRDfiles from Cacti after their Data Sources are deleted."
-msgstr "データソースが削除された後にCactiからRRDファイルを削除するために使用される方法"
+msgstr "データソースが削除された後にCactiからRRDファイルを削除するために使用される方法。"
 
 #: include/global_settings.php
 msgid "Archive"
@@ -9198,7 +9186,7 @@ msgstr "アーカイブディレクトリ"
 
 #: include/global_settings.php
 msgid "This is the directory where RRDfiles are <strong>moved</strong> for archiving"
-msgstr "これはRRDファイルがアーカイブのために<strong>移動さ</strong>れるディレクトリです。"
+msgstr "これはRRDファイルがアーカイブのために<strong>移動さ</strong>れるディレクトリです"
 
 #: include/global_settings.php
 msgid "Log Settings"
@@ -9314,7 +9302,7 @@ msgstr "言語"
 
 #: include/global_settings.php
 msgid "Default language for this system."
-msgstr "このシステムのデフォルト言語"
+msgstr "このシステムのデフォルト言語。"
 
 #: include/global_settings.php
 msgid "Auto Language Detection"
@@ -9334,7 +9322,7 @@ msgstr "Cactiには、複数の代替言語翻訳プロセッサのサポート�
 
 #: include/global_settings.php
 msgid "Client TimeZone Support"
-msgstr "MySQL  -  TimeZoneのサポート"
+msgstr "MySQL - TimeZoneのサポート"
 
 #: include/global_settings.php
 msgid "How should Cacti support Client Dates based upon the Client browsers timezone."
@@ -9362,7 +9350,7 @@ msgstr "その他の設定"
 
 #: include/global_settings.php
 msgid "Show only site specific locations"
-msgstr "ここでグラフ固有のオプションを設定します。"
+msgstr "ここでグラフ固有のオプションを設定します"
 
 #: include/global_settings.php
 msgid "Show only locations that are available at a devices selected site."
@@ -9374,7 +9362,7 @@ msgstr "グラフ/データソースがチェックされている"
 
 #: include/global_settings.php
 msgid "Should the Has Graphs and Has Data Sources be Checked by Default."
-msgstr "[グラフあり]と[データソースあり]がデフォルトでチェックされるべきか"
+msgstr "[グラフあり]と[データソースあり]がデフォルトでチェックされるべきか。"
 
 #: include/global_settings.php utilities.php
 msgid "RRDtool Version"
@@ -9812,7 +9800,7 @@ msgstr "すべての新しいデバイスのデフォルトのpingタイムア�
 
 #: include/global_settings.php
 msgid "The number of times Cacti will attempt to ping a Device before marking it as down."
-msgstr "Cactiがデバイスを停止とマークするまでにpingを試行する回数"
+msgstr "Cactiがデバイスを停止とマークするまでにpingを試行する回数。"
 
 #: include/global_settings.php
 msgid "Up/Down Settings"
@@ -9832,7 +9820,7 @@ msgstr "回復回数"
 
 #: include/global_settings.php
 msgid "The number of polling intervals a Device must remain up before returning Device to an up status and issuing a notice."
-msgstr "デバイスが稼働状態に戻って通知を発行する前に、デバイスが稼働し続けなければならないポーリング間隔の数"
+msgstr "デバイスが稼働状態に戻って通知を発行する前に、デバイスが稼働し続けなければならないポーリング間隔の数。"
 
 #: include/global_settings.php
 msgid "Theme Settings"
@@ -9990,7 +9978,7 @@ msgstr "1ページあたりの最大行数"
 
 #: include/global_settings.php
 msgid "User defined number of lines for the CLOG to tail when selecting 'All lines'."
-msgstr "「すべての行」を選択したときに、CLOGが調整するためのユーザー定義行数"
+msgstr "「すべての行」を選択したときに、CLOGが調整するためのユーザー定義行数。"
 
 #: include/global_settings.php
 msgid "Log Tail Refresh"
@@ -9998,7 +9986,7 @@ msgstr "ログテールリフレッシュ"
 
 #: include/global_settings.php
 msgid "How often do you want the Cacti log display to update."
-msgstr "Cactiログ表示を更新する頻度"
+msgstr "Cactiログ表示を更新する頻度。"
 
 #: include/global_settings.php
 msgid "Log Viewer Settings"
@@ -10042,7 +10030,7 @@ msgstr "キャッシュディレクトリ"
 
 #: include/global_settings.php
 msgid "This is the location, on the web server where the RRDfiles and PNG files will be cached.  This cache will be managed by the poller.  Make sure you have the correct read and write permissions on this folder"
-msgstr "これは、RRDファイルとPNGファイルがキャッシュされるWebサーバー上の場所です。このキャッシュはポーラーによって管理されます。このフォルダに正しい読み取りおよび書き込み権限があることを確認してください。"
+msgstr "これは、RRDファイルとPNGファイルがキャッシュされるWebサーバー上の場所です。このキャッシュはポーラーによって管理されます。このフォルダに正しい読み取りおよび書き込み権限があることを確認してください"
 
 #: include/global_settings.php
 msgid "RRDtool Graph Options"
@@ -10343,7 +10331,7 @@ msgstr "OIDチェックの増加を無効にする"
 
 #: include/global_settings.php
 msgid "Controls disabling check for increasing OID while walking OID tree."
-msgstr "OIDツリーを歩いている間、OIDの増加のチェックを無効にする制御"
+msgstr "OIDツリーを歩いている間、OIDの増加のチェックを無効にする制御。"
 
 #: include/global_settings.php
 msgid "Additional Data Collector Settings"
@@ -10379,7 +10367,7 @@ msgstr "スクリプトとスクリプトサーバーのタイムアウト値"
 
 #: include/global_settings.php
 msgid "The maximum time that spine will wait on a script to complete.  This timeout value is in seconds and is only valid for the spine Data Collector."
-msgstr "Cactiがスクリプトの完了を待つ最大時間。このタイムアウト値は秒単位です"
+msgstr "Cactiがスクリプトの完了を待つ最大時間。このタイムアウト値は秒単位です。"
 
 #: include/global_settings.php
 msgid "Periodic All Device Re-Index"
@@ -10682,7 +10670,7 @@ msgstr "この数分後にアカウントのロックが自動的に解除され
 
 #: include/global_settings.php
 msgid "1 Day"
-msgstr "1日"
+msgstr "1 日"
 
 #: include/global_settings.php
 msgid "LDAP General Settings"
@@ -10844,7 +10832,7 @@ msgstr "検索フィルター"
 
 #: include/global_settings.php
 msgid "Search filter to use to locate the user in the LDAP directory, such as for windows: <i>'(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))'</i> or for OpenLDAP: <i>'(&(objectClass=account)(uid=&lt;username&gt))'</i>.  '&lt;username&gt' is replaced with the username that was supplied at the login prompt. "
-msgstr "検索フィルタは、Windows用として、LDAPディレクトリ内のユーザーを検索するために使用する： <i>&#39;（＆（オブジェクトクラス=ユーザー）（objectCategoryの=ユーザー）（userPrincipalNameの= &lt;ユーザー名&gt; *））&#39;</i>またはOpenLDAPのために<i>：「（＆（objectClassの=アカウント）（uid = &lt;ユーザー名&gt;）） &#39;</i> 。 &#39;&lt;username&gt;&#39;はログインプロンプトで提供されたユーザー名に置き換えられます。"
+msgstr "検索フィルタは、Windows用として、LDAPディレクトリ内のユーザーを検索するために使用する： <i>&#39;（＆（オブジェクトクラス=ユーザー）（objectCategoryの=ユーザー）（userPrincipalNameの= &lt;ユーザー名&gt; *））&#39;</i>またはOpenLDAPのために<i>：「（＆（objectClassの=アカウント）（uid = &lt;ユーザー名&gt;）） &#39;</i> 。 &#39;&lt;username&gt;&#39;はログインプロンプトで提供されたユーザー名に置き換えられます。 "
 
 #: include/global_settings.php user_domains.php
 msgid "Search Distinguished Name (DN)"
@@ -10868,7 +10856,7 @@ msgstr "LDAP CN設定"
 
 #: include/global_settings.php user_domains.php
 msgid "Field that will replace the Full Name when creating a new user, taken from LDAP. (on windows: displayname) "
-msgstr "LDAPから取得した、新しいユーザーを作成するときに氏名を置き換えるフィールド。 （Windowsの場合：displayname）"
+msgstr "LDAPから取得した、新しいユーザーを作成するときに氏名を置き換えるフィールド。 （Windowsの場合：displayname） "
 
 #: include/global_settings.php package_import.php
 msgid "Email"
@@ -11270,7 +11258,7 @@ msgstr "メンテナンス時間"
 
 #: include/global_settings.php
 msgid "What time of day should Weekly, Monthly, and Yearly Data be updated?  Format is HH:MM [am/pm]"
-msgstr "毎週、毎月、および毎年のデータを更新する時刻は何時ですか。形式はHH：MM [am / pm]です。"
+msgstr "毎週、毎月、および毎年のデータを更新する時刻は何時ですか。形式はHH：MM [am / pm]です"
 
 #: include/global_settings.php
 msgid "Memory Limit for Data Source Statistics Data Collector"
@@ -11566,7 +11554,7 @@ msgstr "初めてグラフページにアクセスしたときにデフォルト
 
 #: include/global_settings.php
 msgid "TimeZone Support"
-msgstr "MySQL  -  TimeZoneのサポート"
+msgstr "MySQL - TimeZoneのサポート"
 
 #: include/global_settings.php
 msgid "How would you like Cacti to present dates?  This setting will also change the way that Cacti Graphs dates are represented."
@@ -11574,7 +11562,7 @@ msgstr "Cactiで日付をどのように提示しますか？この設定は、C
 
 #: include/global_settings.php
 msgid "Cacti Server Timezone"
-msgstr "Cacti Server v％s  - メンテナンス"
+msgstr "Cacti Server v％s - メンテナンス"
 
 #: include/global_settings.php
 msgid "My Browsers Timezone"
@@ -11622,7 +11610,7 @@ msgstr "テーブルの水平スクロールを有効にし、レスポンシブ
 
 #: include/global_settings.php
 msgid "The date format to use in Cacti."
-msgstr "Cactiで使用する日付フォーマット"
+msgstr "Cactiで使用する日付フォーマット。"
 
 #: include/global_settings.php
 msgid "The date separator to be used in Cacti."
@@ -11654,7 +11642,7 @@ msgstr "まれに使用するデフォルトのRRA。"
 
 #: include/global_settings.php
 msgid "The default Timespan displayed when viewing Graphs and other time specific data."
-msgstr "グラフやその他の時間固有のデータを表示するときに表示されるデフォルトのタイムスパン"
+msgstr "グラフやその他の時間固有のデータを表示するときに表示されるデフォルトのタイムスパン。"
 
 #: include/global_settings.php
 msgid "Default Timeshift"
@@ -11702,7 +11690,7 @@ msgstr "サムネイルセクション"
 
 #: include/global_settings.php
 msgid "Which portions of Cacti display Thumbnails by default."
-msgstr "Cactiのどの部分にデフォルトでサムネイルが表示されているか"
+msgstr "Cactiのどの部分にデフォルトでサムネイルが表示されているか。"
 
 #: include/global_settings.php
 msgid "Preview Thumbnail Columns"
@@ -11909,12 +11897,12 @@ msgstr "アクティブ/インストール済み"
 #: install/install.php
 #, php-format
 msgid "Cacti Server v%s - Maintenance"
-msgstr "Cactiサーバーv %s -メンテナンス"
+msgstr "Cacti Server v%s - メンテナンス"
 
 #: install/install.php
 #, php-format
 msgid "Cacti Server v%s - Installation Wizard"
-msgstr "Cactiサーバーv %s -インストールウィザード"
+msgstr "Cacti Server v%s - インストールウィザード"
 
 #: install/install.php
 msgid "Refresh current page"
@@ -11963,7 +11951,7 @@ msgstr "以下の集約グラフ用に選択されたグラフは、複数のグ
 
 #: lib/api_aggregate.php
 msgid "Press 'Return' to return and select different Graphs"
-msgstr "別のグラフに戻って選択するには、Returnキーを押します。"
+msgstr "別のグラフに戻って選択するには、Returnキーを押します"
 
 #: lib/api_aggregate.php
 msgid "The Graphs chosen for the Aggregate Graph do not use Graph Templates.  Aggregate does not support creating Aggregate Graphs from non-templated graphs."
@@ -12033,7 +12021,7 @@ msgstr "マッチした天体: [ %s ]"
 
 #: lib/api_automation.php
 msgid "Device Status"
-msgstr "デバイスの状態"
+msgstr "デバイスステータス"
 
 #: lib/api_automation.php
 msgid "There are no Objects that match this rule."
@@ -12053,7 +12041,7 @@ msgstr "得られた支店"
 
 #: lib/api_automation.php
 msgid "No Items Found"
-msgstr "ページは見つかりませんでした。"
+msgstr "ページは見つかりませんでした"
 
 #: lib/api_automation.php
 msgid "Field"
@@ -12152,7 +12140,7 @@ msgstr "デバイスの利用可能性チェックのバイパス"
 
 #: lib/api_device.php
 msgid "SNMP Information"
-msgstr "SNMP情報"
+msgstr "SNMP 情報"
 
 #: lib/api_device.php
 msgid "SNMP not in use"
@@ -12176,7 +12164,7 @@ msgstr "システム："
 
 #: lib/api_device.php
 msgid "Uptime:"
-msgstr "あなたのアップタイムロボットAPIキー："
+msgstr "稼働時間:"
 
 #: lib/api_device.php
 msgid "Hostname:"
@@ -12237,15 +12225,15 @@ msgstr "デバイス+テンプレート： （%s%s）"
 
 #: lib/auth.php
 msgid "Restricted By: "
-msgstr "メンバーに限定"
+msgstr "メンバーに限定 "
 
 #: lib/auth.php
 msgid "Granted By: "
-msgstr "許可を与える："
+msgstr "許可を与える： "
 
 #: lib/auth.php
 msgid "Granted"
-msgstr "付与されているパーミッションは何ですか?"
+msgstr "付与済み"
 
 #: lib/auth.php
 msgid "Restricted"
@@ -12352,7 +12340,7 @@ msgstr "%s バイト"
 #: lib/clog_webapi.php utilities.php
 #, php-format
 msgid "%s - WEBUI NOTE: Cacti Log Cleared from Web Management Interface."
-msgstr "%s - WEBUIメモ： Web管理インターフェースからCactiログがクリアされました。"
+msgstr "%s - WEBUI注：CactiログはWeb管理インターフェースから消去されました。"
 
 #: lib/clog_webapi.php
 msgid "Click 'Continue' to purge the Log File.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog."
@@ -12368,15 +12356,15 @@ msgstr "ログのフィルター"
 
 #: lib/clog_webapi.php
 msgid " - Admin Filter active"
-msgstr "- 管理フィルタがアクティブ"
+msgstr " - 管理フィルタがアクティブ"
 
 #: lib/clog_webapi.php
 msgid " - Admin Unfiltered"
-msgstr "- 管理者フィルタなし"
+msgstr " - 管理者フィルタなし"
 
 #: lib/clog_webapi.php
 msgid " - Admin view"
-msgstr "- 管理者ビュー"
+msgstr " - 管理者ビュー"
 
 #: lib/clog_webapi.php
 #, php-format
@@ -12466,7 +12454,7 @@ msgstr "一致"
 
 #: lib/clog_webapi.php
 msgid "Does Not Match"
-msgstr "パスワードが一致しません。もう一度入力してください。"
+msgstr "パスワードが一致しません。もう一度入力してください"
 
 #: lib/clog_webapi.php
 msgid "System Device"
@@ -12560,7 +12548,7 @@ msgstr "クエリ完了のためのポーラーキャッシュの更新"
 
 #: lib/data_query.php
 msgid "No Index Changes Detected, Skipping Re-Index and Poller Cache Re-population"
-msgstr "インデックスの変更は検出されず、インデックスの再作成とポーラーキャッシュの再作成はスキップされます。"
+msgstr "インデックスの変更は検出されず、インデックスの再作成とポーラーキャッシュの再作成はスキップされます"
 
 #: lib/data_query.php
 msgid "Automation Executing for Data Query complete"
@@ -12801,7 +12789,7 @@ msgstr "%s oids (%s)に対してSNMP GETを実行しています"
 #: lib/data_query.php
 #, php-format
 msgid "Sort field returned no data for OID[%s], skipping."
-msgstr "ソートフィールドはOID [%s]のデータを返しませんでした。スキップします。"
+msgstr "ソートフィールドがデータではありません。 OIDのインデックスの再作成を続行できません[%s]。"
 
 #: lib/data_query.php
 #, php-format
@@ -12917,7 +12905,7 @@ msgstr "5回のポーリング後にデバッグが完了しない"
 
 #: lib/dsdebug.php
 msgid "Failed fields: "
-msgstr "失敗したフィールド"
+msgstr "失敗したフィールド "
 
 #: lib/dsdebug.php
 msgid "Data Source is not set as Active"
@@ -12943,7 +12931,7 @@ msgstr "ポーリング後にRRDファイルが更新されない"
 
 #: lib/dsdebug.php
 msgid "Data Source returned Bad Results for "
-msgstr "データソースから返された悪い結果"
+msgstr "データソースから返された悪い結果 "
 
 #: lib/dsdebug.php
 msgid "Data Source was not polled"
@@ -13047,7 +13035,7 @@ msgstr "接続に失敗しました: %s"
 
 #: lib/functions.php
 msgid "SMTP error: "
-msgstr "SMTPエラー："
+msgstr "SMTPエラー： "
 
 #: lib/functions.php
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
@@ -13153,7 +13141,7 @@ msgstr "データソース、グラフ"
 
 #: lib/html.php
 msgid "Remote Server"
-msgstr "StdDevを削除します。"
+msgstr "StdDevを削除します"
 
 #: lib/html.php
 msgid "Get Page Help"
@@ -13161,7 +13149,7 @@ msgstr "助けをもらう"
 
 #: lib/html.php lib/reports.php
 msgid "Data Query:"
-msgstr "データ問合せ"
+msgstr "データ問合せ："
 
 #: lib/html.php
 #, fuzzy
@@ -13223,7 +13211,7 @@ msgstr "現在のページ: %s"
 #: lib/html.php
 #, php-format
 msgid "No %s Found"
-msgstr "%sが見つかりませんでした。"
+msgstr "%sが見つかりませんでした"
 
 #: lib/html.php
 msgid "#"
@@ -13263,7 +13251,7 @@ msgstr "RRAあたりのキル数"
 
 #: lib/html.php
 msgid "Remove StdDev"
-msgstr "StdDevを削除します。"
+msgstr "StdDevを削除します"
 
 #: lib/html.php
 msgid "Gap Fill Range"
@@ -13359,7 +13347,7 @@ msgstr "サボテンプロジェクトページ"
 
 #: lib/html.php
 msgid "Spine"
-msgstr "脊椎"
+msgstr "Spine"
 
 #: lib/html.php
 msgid "RRDProxy"
@@ -13399,7 +13387,7 @@ msgstr "バグを報告"
 
 #: lib/html.php
 msgid "Cacti"
-msgstr "サボテン"
+msgstr "Cacti"
 
 #: lib/html.php
 msgid "Click to Show/Hide Filter"
@@ -13435,7 +13423,7 @@ msgstr "申し訳ありませんが、この時点ではクリップボードを
 
 #: lib/html.php
 msgid "Passphrase length meets 8 character minimum"
-msgstr "パスフレーズの長さは最小8文字です。"
+msgstr "パスフレーズの長さは最小8文字です"
 
 #: lib/html.php
 msgid "Passphrase too short"
@@ -13479,7 +13467,7 @@ msgstr "操作成功"
 
 #: lib/html.php pollers.php
 msgid "Connection Failed"
-msgstr "æ¥ç¶å¤±æ"
+msgstr "接続に失敗しました"
 
 #: lib/html.php
 msgid "The response to the last action was unexpected."
@@ -13778,7 +13766,7 @@ msgstr "カスタムデータ[テンプレート：%s]"
 
 #: lib/html_reports.php
 msgid "New Report"
-msgstr "管理者に報告"
+msgstr "新規レポート"
 
 #: lib/html_reports.php
 msgid "Give this Report a descriptive Name"
@@ -14002,7 +13990,7 @@ msgstr "追加するアイテムの種類。"
 
 #: lib/html_reports.php
 msgid "Graph Tree"
-msgstr "このグラフツリーの名前です。"
+msgstr "このグラフツリーの名前です"
 
 #: lib/html_reports.php
 msgid "Select a Tree to use."
@@ -14026,7 +14014,7 @@ msgstr "すべての子がグラフを分岐させるべきですか？"
 
 #: lib/html_reports.php
 msgid "Select a Site to filter for Devices and Graphs."
-msgstr "グラフを指定するデバイスを選択"
+msgstr "グラフを指定するデバイスを選択。"
 
 #: lib/html_reports.php
 msgid "Select a Device Template to use to filter for Devices or Graphs."
@@ -14208,7 +14196,7 @@ msgstr "回数"
 
 #: lib/html_reports.php
 msgid "Last Run"
-msgstr "前回の実行"
+msgstr "最終実行"
 
 #: lib/html_reports.php
 msgid "Next Run"
@@ -14236,7 +14224,7 @@ msgstr "レポートが見つかりません"
 
 #: lib/html_tree.php
 msgid "Graph Template:"
-msgstr "グラフのテンプレート"
+msgstr "グラフのテンプレート："
 
 #: lib/html_tree.php
 msgid "Template Based"
@@ -14252,11 +14240,11 @@ msgstr "サイト:"
 
 #: lib/html_tree.php
 msgid "Leaf:"
-msgstr "葉っぱ"
+msgstr "葉っぱ："
 
 #: lib/html_tree.php
 msgid "Device Template:"
-msgstr "デバイステンプレート"
+msgstr "デバイステンプレート："
 
 #: lib/html_tree.php
 msgid "Applied"
@@ -14402,7 +14390,7 @@ msgstr "パッケージファイル"
 
 #: lib/import.php
 msgid "[preview] "
-msgstr "プレビュー"
+msgstr "プレビュー "
 
 #: lib/import.php
 msgid "Cacti would make the following changes if the Template was imported:"
@@ -14414,7 +14402,7 @@ msgstr "Cactiはテンプレート用に以下のアイテムをインポート�
 
 #: lib/import.php
 msgid "[success]"
-msgstr "成功！"
+msgstr "成功"
 
 #: lib/import.php
 msgid "[fail]"
@@ -14565,7 +14553,7 @@ msgstr "新しいデータベースを指すように &quot;include / config.php
 
 #: lib/installer.php
 msgid "NOTE: Your existing data will not be modified, nor will it or any history be available to the new install"
-msgstr "注：既存のデータは変更されません。また、新しいインストールでは変更されません。"
+msgstr "注：既存のデータは変更されません。また、新しいインストールでは変更されません"
 
 #: lib/installer.php
 msgid "You have created a new database, but have not yet imported the 'cacti.sql' file. At the command line, execute the following to continue:"
@@ -14609,7 +14597,7 @@ msgstr "ダウングレード"
 
 #: lib/installer.php utilities.php
 msgid "Cacti Version"
-msgstr "XML: Cacti バージョンが存在しません。"
+msgstr "XML: Cacti バージョンが存在しません"
 
 #: lib/installer.php
 msgid "License Agreement"
@@ -14657,7 +14645,7 @@ msgstr "GPLライセンス契約に同意する"
 
 #: lib/installer.php
 msgid "Select default theme: "
-msgstr "デフォルトのテーマを選択："
+msgstr "デフォルトのテーマを選択： "
 
 #: lib/installer.php
 msgid "Pre-installation Checks"
@@ -14728,7 +14716,7 @@ msgstr "指定された値は、実行コンフィグとINIファイルで異な
 
 #: lib/installer.php
 msgid "PHP - Module Support (Required)"
-msgstr "PHP  - モジュールサポート（必須）"
+msgstr "PHP - モジュールサポート（必須）"
 
 #: lib/installer.php
 msgid "Cacti requires several PHP Modules to be installed to work properly. If any of these are not installed, you will be unable to continue the installation until corrected. In addition, for optimal system performance Cacti should be run with certain MySQL system variables set.  Please follow the MySQL recommendations at your discretion.  Always seek the MySQL documentation if you have any questions."
@@ -14752,7 +14740,7 @@ msgstr "必須"
 
 #: lib/installer.php
 msgid "PHP - Module Support (Optional)"
-msgstr "PHP  - モジュールサポート（オプション）"
+msgstr "PHP - モジュールサポート（オプション）"
 
 #: lib/installer.php
 msgid "The following PHP extensions are recommended, and should be installed before continuing your Cacti install.  NOTE: If you are planning on supporting SNMPv3 with IPv6, you should not install the php-snmp module at this time."
@@ -14768,7 +14756,7 @@ msgstr "オプション"
 
 #: lib/installer.php
 msgid "MySQL - TimeZone Support"
-msgstr "MySQL  -  TimeZoneのサポート"
+msgstr "MySQL - TimeZoneのサポート"
 
 #: lib/installer.php
 msgid "Your MySQL TimeZone database is not populated.  Please populate this database before proceeding."
@@ -14784,7 +14772,7 @@ msgstr "あなたのCactiデータベースアカウントはMySQL TimeZoneデ�
 
 #: lib/installer.php
 msgid "MySQL - Settings"
-msgstr "MySQL  - 設定"
+msgstr "MySQL - 設定"
 
 #: lib/installer.php
 msgid "These MySQL performance tuning settings will help your Cacti system perform better without issues for a longer time."
@@ -14801,11 +14789,11 @@ msgstr "インストールの種類"
 #: lib/installer.php
 #, php-format
 msgid "Upgrade from <strong>%s</strong> to <strong>%s</strong>"
-msgstr "<strong>%s</strong>から</strong>%s<strong>にアップグレード"
+msgstr "<strong>%s</strong>から<strong>%s</strong>にアップグレード"
 
 #: lib/installer.php
 msgid "In the event of issues, It is highly recommended that you clear your browser cache, closing then reopening your browser (not just the tab Cacti is on) and retrying, before raising an issue with The Cacti Group"
-msgstr "問題が発生した場合は、The Cacti Groupで問題が発生する前に、ブラウザのキャッシュをクリアし、ブラウザを閉じてから再度開き（Cactiがオンになっているタブだけではない）、再試行することを強くお勧めします。"
+msgstr "問題が発生した場合は、The Cacti Groupで問題が発生する前に、ブラウザのキャッシュをクリアし、ブラウザを閉じてから再度開き（Cactiがオンになっているタブだけではない）、再試行することを強くお勧めします"
 
 #: lib/installer.php
 msgid "On rare occasions, we have had reports from users who experience some minor issues due to changes in the code.  These issues are caused by the browser retaining pre-upgrade code and whilst we have taken steps to minimise the chances of this, it may still occur.  If you need instructions on how to clear your browser cache, <a href='https://www.refreshyourcache.com' target='_blank'>https://www.refreshyourcache.com/</a> is a good starting point."
@@ -14818,11 +14806,11 @@ msgstr "キャッシュをクリアしてブラウザを再起動しても問題
 #: lib/installer.php
 #, php-format
 msgid "Downgrade from <strong>%s</strong> to <strong>%s</strong>"
-msgstr "<strong>%s</strong>から</strong>%s<strong>にダウングレード"
+msgstr "<strong>%s</strong>から<strong>%s</strong>にダウングレード"
 
 #: lib/installer.php
 msgid "You appear to be downgrading to a previous version.  Database changes made for the newer version will not be reversed and <i>could</i> cause issues."
-msgstr "以前のバージョンにダウングレードしているようです。新しいバージョンに対して行われたデータベースの変更は元に戻されず、問題を引き起こす<i>可能</i>性<i>が</i>あります。"
+msgstr "以前のバージョンにダウングレードしているようです。新しいバージョンに対して行われたデータベースの変更は元に戻されず、問題を引き起こす<i>可能性</i>があります。"
 
 #: lib/installer.php
 msgid "Please select the type of installation"
@@ -14951,7 +14939,7 @@ msgstr "インストールが完了したら、セキュリティを高めるた
 
 #: lib/installer.php
 msgid "These directories will be required to stay read writable after the install so that the Cacti remote synchronization process can update them as the Main Cacti Web Site changes"
-msgstr "メインCacti Webサイトが変更されたときにCactiリモート同期プロセスがそれらを更新できるように、これらのディレクトリはインストール後も読み書き可能にしておく必要があります。"
+msgstr "メインCacti Webサイトが変更されたときにCactiリモート同期プロセスがそれらを更新できるように、これらのディレクトリはインストール後も読み書き可能にしておく必要があります"
 
 #: lib/installer.php
 msgid "If you are installing packages, once the packages are installed, you should change the scripts directory back to read only as this presents some exposure to the web site."
@@ -14992,7 +14980,7 @@ msgstr "ユーザー'%s'には、読み取り/書き込みを有効にするた�
 
 #: lib/installer.php
 msgid "An example of how to set folder permissions is shown here, though you may need to adjust this depending on your operating system, user accounts and desired permissions."
-msgstr "フォルダのアクセス権を設定する方法の例はここに示されています、あなたはあなたのオペレーティングシステム、ユーザーアカウントおよび望ましいアクセス権によってこれを調整する必要があるかもしれません"
+msgstr "フォルダのアクセス権を設定する方法の例はここに示されています、あなたはあなたのオペレーティングシステム、ユーザーアカウントおよび望ましいアクセス権によってこれを調整する必要があるかもしれません。"
 
 #: lib/installer.php
 msgid "EXAMPLE:"
@@ -15042,7 +15030,7 @@ msgstr "このスクリプトオプションは、無効なデータソースを
 
 #: lib/installer.php
 msgid "It is strongly suggested that you update your config.php to enable this feature by uncommenting the <b>$input_whitelist</b> variable and then running the three CLI script options above after the web based install has completed."
-msgstr "<b>$ input_whitelist</b>変数のコメントを<b>外し</b> 、Webベースのインストールの完了後に上記の3つのCLIスクリプトオプションを実行することにより、config.phpを更新してこの機能を有効にすることを強くお勧めします。"
+msgstr "<b>$input_whitelist</b>変数のコメントを外し、Webベースのインストールの完了後に上記の3つのCLIスクリプトオプションを実行することにより、config.phpを更新してこの機能を有効にすることを強くお勧めします。"
 
 #: lib/installer.php
 msgid "Check the Checkbox below to acknowledge that you have read and understand this security concern"
@@ -15110,7 +15098,7 @@ msgstr "プロファイルが見つからなかったため、インストール
 
 #: lib/installer.php
 msgid "This may occur if you have a blank database and have not yet imported the cacti.sql file"
-msgstr "空のデータベースがあり、cacti.sqlファイルをまだインポートしていない場合に発生することがあります。"
+msgstr "空のデータベースがあり、cacti.sqlファイルをまだインポートしていない場合に発生することがあります"
 
 #: lib/installer.php
 msgid "Template Setup"
@@ -15150,7 +15138,7 @@ msgstr "サーバーの照合順序はUTF8に準拠しているようです"
 
 #: lib/installer.php
 msgid "Your server collation does NOT appear to be fully UTF8 compliant. "
-msgstr "サーバーの照合順序が完全にUTF8に準拠していないようです。"
+msgstr "サーバーの照合順序が完全にUTF8に準拠していないようです。 "
 
 #: lib/installer.php
 msgid "Under the [mysqld] section, locate the entries named 'character-set-server' and 'collation-server' and set them as follows:"
@@ -15166,11 +15154,11 @@ msgstr "データベースのデフォルトの照合順序はUTF8に準拠し�
 
 #: lib/installer.php
 msgid "Your database default collation does NOT appear to be full UTF8 compliant. "
-msgstr "データベースのデフォルト照合は完全なUTF-8に準拠しているようには見えません。"
+msgstr "データベースのデフォルト照合は完全なUTF-8に準拠しているようには見えません。 "
 
 #: lib/installer.php
 msgid "Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched.   Please ensure your database is changed to 'utf8mb4_unicode_ci' by running the following: "
-msgstr "照合が一致しない場合、プラグインによって作成されたテーブルにはCacti Coreテーブルとリンクした問題があるかもしれません。次のコマンドを実行して、データベースが「utf8mb4_unicode_ci」に変更されていることを確認してください。"
+msgstr "照合が一致しない場合、プラグインによって作成されたテーブルにはCacti Coreテーブルとリンクした問題があるかもしれません。次のコマンドを実行して、データベースが「utf8mb4_unicode_ci」に変更されていることを確認してください。 "
 
 #: lib/installer.php
 msgid "Table Setup"
@@ -15203,7 +15191,7 @@ msgstr "row 形式"
 
 #: lib/installer.php
 msgid "One or more tables are too large to convert during the installation.  You should use the cli/convert_tables.php script to perform the conversion, then refresh this page. For example: "
-msgstr "1つ以上のテーブルが大きすぎるため、インストール中に変換できません。 cli / convert_tables.phpスクリプトを使用して変換を実行してから、このページを更新してください。例えば："
+msgstr "1つ以上のテーブルが大きすぎるため、インストール中に変換できません。 cli / convert_tables.phpスクリプトを使用して変換を実行してから、このページを更新してください。例えば： "
 
 #: lib/installer.php
 msgid "The following tables should be converted to UTF8 and InnoDB with a Dynamic row format.  Please select the tables that you wish to convert during the installation process."
@@ -15235,11 +15223,11 @@ msgstr "ダウングレードが検出されました"
 
 #: lib/installer.php
 msgid "YOU MUST MANUALLY CHANGE THE CACTI DATABASE TO REVERT ANY UPGRADE CHANGES THAT HAVE BEEN MADE.<br/>THE INSTALLER HAS NO METHOD TO DO THIS AUTOMATICALLY FOR YOU"
-msgstr "アップグレードされた変更を元に戻すには、CACTIデータベースを手動で変更する必要があります。 <br/>インストール担当者には、あなたがこれを自動的に行う方法はありません。"
+msgstr "アップグレードされた変更を元に戻すには、CACTIデータベースを手動で変更する必要があります。 <br/>インストール担当者には、あなたがこれを自動的に行う方法はありません"
 
 #: lib/installer.php
 msgid "Downgrading should only be performed when absolutely necessary and doing so may break your installation"
-msgstr "絶対に必要なときにのみダウングレードを実行してください。"
+msgstr "絶対に必要なときにのみダウングレードを実行してください"
 
 #: lib/installer.php
 msgid "Your Cacti Server is almost ready.  Please check that you are happy to proceed."
@@ -15400,7 +15388,7 @@ msgstr "自動化オプションセット%sの更新に失敗しました"
 
 #: lib/installer.php
 msgid "Failed to find any automation option set"
-msgstr "コピーするデータが見つかりませんでした。"
+msgstr "コピーするデータが見つかりませんでした"
 
 #: lib/installer.php
 #, php-format
@@ -15693,12 +15681,12 @@ msgstr "設定によりpingが実行されません。"
 #: lib/plugins.php
 #, php-format
 msgid "%s Version %s or above is required for %s. "
-msgstr "%sには%sバージョン%s以上が必要です。"
+msgstr "%sには%sバージョン%s以上が必要です。 "
 
 #: lib/plugins.php
 #, php-format
 msgid "%s is required for %s, and it is not installed. "
-msgstr "%sには%sが必要ですが、インストールされていません。"
+msgstr "%sには%sが必要ですが、インストールされていません。 "
 
 #: lib/plugins.php
 msgid "Plugin cannot be installed."
@@ -15763,7 +15751,7 @@ msgstr "レポート'%s'の送信の問題電子メールサブシステムエ�
 #: lib/reports.php
 #, php-format
 msgid "Report '%s' Sent Successfully"
-msgstr "レポート '%s' が正常に送信されました。"
+msgstr "レポート '%s' が正常に送信されました"
 
 #: lib/reports.php
 msgid "(No Graph Template)"
@@ -15791,7 +15779,7 @@ msgstr "グラフタイムスパン："
 
 #: lib/reports.php
 msgid "Graph Alignment:"
-msgstr "グラフの配置"
+msgstr "グラフの配置："
 
 #: lib/reports.php
 #, php-format
@@ -15908,7 +15896,7 @@ msgstr "最小ハートビート"
 
 #: lib/rrd.php
 msgid "Min"
-msgstr "最小"
+msgstr "分"
 
 #: lib/rrd.php
 msgid "Max"
@@ -15949,7 +15937,7 @@ msgstr "%sの名前を%sに変更"
 
 #: lib/rrd.php
 msgid "Errors Found"
-msgstr "%sが見つかりませんでした。"
+msgstr "エラーが見つかりました"
 
 #: lib/rrd.php
 msgid "Optional Tuning Recommendations"
@@ -16157,6 +16145,10 @@ msgstr ""
 #| msgid "Windows Related"
 msgid "Window Range:  All"
 msgstr "Windows関連"
+
+#: lib/spikekill.php
+msgid "FATAL: Unable to generate a random temporary file name.  Check the system entropy source!"
+msgstr ""
 
 #: lib/spikekill.php
 msgid "FATAL: RRDtool Command Failed.  Please verify that the RRDtool path is valid in Settings->Paths!"
@@ -16927,7 +16919,7 @@ msgstr "自動ページ更新"
 
 #: links.php
 msgid "How often do you wish this page to be refreshed automatically."
-msgstr "このページを自動的に更新する頻度"
+msgstr "このページを自動的に更新する頻度。"
 
 #: links.php
 #, php-format
@@ -16948,7 +16940,7 @@ msgstr "セッションタイムアウトによりCactiからログアウトし�
 
 #: logout.php
 msgid "You have been logged out of Cacti due to a Remote Data Collector state change"
-msgstr "セッションタイムアウトによりCactiからログアウトしました。"
+msgstr "セッションタイムアウトによりCactiからログアウトしました"
 
 #: logout.php
 msgid "Logout of Cacti"
@@ -17052,17 +17044,17 @@ msgstr "SNMP通知ログエントリがない"
 #: managers.php
 msgid "Click 'Continue' to delete the following Notification Receiver"
 msgid_plural "Click 'Continue' to delete following Notification Receiver"
-msgstr[0] "次の通知受信者を削除するには、[続行]をクリックしてください。"
+msgstr[0] "次の通知受信者を削除するには、[続行]をクリックしてください"
 
 #: managers.php
 msgid "Click 'Continue' to enable the following Notification Receiver"
 msgid_plural "Click 'Continue' to enable following Notification Receiver"
-msgstr[0] "次の通知受信者を有効にするには、[続行]をクリックします。"
+msgstr[0] "次の通知受信者を有効にするには、[続行]をクリックします"
 
 #: managers.php
 msgid "Click 'Continue' to disable the following Notification Receiver"
 msgid_plural "Click 'Continue' to disable following Notification Receiver"
-msgstr[0] "次の通知受信者を無効にするには、[続行]をクリックします。"
+msgstr[0] "次の通知受信者を無効にするには、[続行]をクリックします"
 
 #: managers.php
 #, php-format
@@ -17144,7 +17136,7 @@ msgstr "パッケージのダウンロードまたは検証に失敗しました
 
 #: package_import.php
 msgid "Package XML File Damaged."
-msgstr "パッケージファイル"
+msgstr "パッケージファイル。"
 
 #: package_import.php
 msgid "The XML files appears to be invalid.  Please contact the package author"
@@ -17212,7 +17204,7 @@ msgstr "孤児"
 
 #: package_import.php
 msgid "File Differences for: "
-msgstr "次のファイルの差異："
+msgstr "次のファイルの差異： "
 
 #: package_import.php
 msgid "Local Package Import File"
@@ -17327,7 +17319,7 @@ msgstr "メイン/リモートステータス"
 
 #: plugins.php
 msgid "The status of this Plugin."
-msgstr "このプラグインのステータス"
+msgstr "このプラグインのステータス。"
 
 #: plugins.php
 msgid "The author of this Plugin."
@@ -17343,7 +17335,7 @@ msgstr "このプラグインは以下のプラグインが最初にインスト
 
 #: plugins.php
 msgid "The version of this Plugin."
-msgstr "このプラグインのバージョン"
+msgstr "このプラグインのバージョン。"
 
 #: plugins.php
 msgid "Load Order"
@@ -17359,7 +17351,7 @@ msgstr "プラグインが見つかりません"
 
 #: plugins.php
 msgid "Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click 'Uninstall' below.  Otherwise click 'Cancel'"
-msgstr "このプラグインをアンインストールすると、すべてのプラグインのデータと設定が削除されます。本当にプラグインをアンインストールする場合は、下の[アンインストール]をクリックしてください。それ以外の場合は[キャンセル]をクリックしてください。"
+msgstr "このプラグインをアンインストールすると、すべてのプラグインのデータと設定が削除されます。本当にプラグインをアンインストールする場合は、下の[アンインストール]をクリックしてください。それ以外の場合は[キャンセル]をクリックしてください"
 
 #: plugins.php
 msgid "Are you sure you want to Uninstall?"
@@ -17475,7 +17467,7 @@ msgstr "ポーラーID %dの最大実行時間%d秒を超えました。終了�
 
 #: poller.php
 msgid "WARNING: Cacti Polling Cycle Exceeded Poller Interval by "
-msgstr "警告：サボテンのポーリングサイクルがポーラー間隔を超えました"
+msgstr "警告：サボテンのポーリングサイクルがポーラー間隔を超えました "
 
 #: poller.php
 #, php-format
@@ -17554,7 +17546,7 @@ msgstr "このデータコレクタデータベースに関する注意事項。
 
 #: pollers.php
 msgid "Collection Settings"
-msgstr "コースコレクションの設定"
+msgstr "収集設定"
 
 #: pollers.php
 msgid "Processes"
@@ -17673,7 +17665,7 @@ msgstr "このデータベースホスト名'%s'は既に使用されていま�
 
 #: pollers.php
 msgid "Data Collector Statistics cleared."
-msgstr "データソースのパス"
+msgstr "データソースのパス。"
 
 #: pollers.php
 msgid "Click 'Continue' to delete the following Data Collector.  Note, all devices will be disassociated from this Data Collector and mapped back to the Main Cacti Data Collector."
@@ -17718,7 +17710,7 @@ msgstr[0] "次のデータコレクタを有効にするには、[続行]をク�
 #: pollers.php
 msgid "Clear Statistics for Data Collector"
 msgid_plural "Clear Statistics for Data Collectors"
-msgstr[0] "このデータコレクタのステータス。"
+msgstr[0] "このデータコレクタのステータス"
 
 #: pollers.php sites.php
 #, php-format
@@ -17885,7 +17877,7 @@ msgstr "%d 時間"
 #: rrdcheck.php
 #, php-format
 msgid "%d day"
-msgstr "%d 日"
+msgstr "%d 日間"
 
 #: rrdcheck.php
 #, php-format
@@ -18144,7 +18136,7 @@ msgstr "このサイトのデフォルトのマップズーム。値は0〜23で
 
 #: sites.php
 msgid "0 - 23"
-msgstr "0  -  23"
+msgstr "0 - 23"
 
 #: sites.php
 msgid "Additional Information"
@@ -18152,7 +18144,7 @@ msgstr "追加情報"
 
 #: sites.php
 msgid "Additional area use for random notes related to this Site."
-msgstr "このサイトに関連するランダムなメモのための追加領域の使用"
+msgstr "このサイトに関連するランダムなメモのための追加領域の使用。"
 
 #: sites.php
 msgid "Enter some useful information about the Site."
@@ -18164,7 +18156,7 @@ msgstr "代替名"
 
 #: sites.php
 msgid "Used for cases where a Site has an alternate named used to describe it"
-msgstr "サイトにそれを説明するために使用される代替名がある場合に使用されます。"
+msgstr "サイトにそれを説明するために使用される代替名がある場合に使用されます"
 
 #: sites.php
 msgid "If the Site is known by another name enter it here."
@@ -18210,7 +18202,7 @@ msgstr "サイト名"
 
 #: sites.php
 msgid "The name of this Site."
-msgstr "このサイトの名前"
+msgstr "このサイトの名前。"
 
 #: sites.php
 msgid "The unique id associated with this Site."
@@ -18624,11 +18616,11 @@ msgstr "バッチコピー"
 
 #: user_admin.php
 msgid "You are not allowed to delete the current login account"
-msgstr "パスワードを変更することは許可されていません。"
+msgstr "パスワードを変更することは許可されていません"
 
 #: user_admin.php
 msgid "You are not allowed to disable the current login account"
-msgstr "パスワードを変更することは許可されていません。"
+msgstr "パスワードを変更することは許可されていません"
 
 #: user_admin.php
 msgid "Click 'Continue' to delete the selected User(s)."
@@ -18700,19 +18692,19 @@ msgstr "却下"
 
 #: user_admin.php user_group_admin.php
 msgid "<b>Note:</b> System Graph Policy is 'Permissive' meaning the User must have access to at least one of Graph, Device, or Graph Template to gain access to the Graph"
-msgstr "<b>注：</b>システムグラフポリシーは「許容」です。つまり、グラフにアクセスするには、ユーザーはグラフ、デバイス、またはグラフテンプレートの少なくとも1つにアクセスできなければなりません。"
+msgstr "<b>注：</b>システムグラフポリシーは「許容」です。つまり、グラフにアクセスするには、ユーザーはグラフ、デバイス、またはグラフテンプレートの少なくとも1つにアクセスできなければなりません"
 
 #: user_admin.php user_group_admin.php
 msgid "<b>Note:</b> System Graph Policy is 'Restrictive' meaning the User must have access to either the Graph or the Device and Graph Template to gain access to the Graph"
-msgstr "<b>注：</b>システムグラフポリシーは「制限的」であり、グラフにアクセスするにはユーザーがグラフまたはデバイスとグラフテンプレートのいずれかにアクセスできる必要があります。"
+msgstr "<b>注：</b>システムグラフポリシーは「制限的」であり、グラフにアクセスするにはユーザーがグラフまたはデバイスとグラフテンプレートのいずれかにアクセスできる必要があります"
 
 #: user_admin.php user_group_admin.php
 msgid "<b>Note:</b> System Graph Policy is 'Device' meaning the User must have access to the Graph or Device to gain access to the Graph"
-msgstr "<b>注：</b>システムグラフポリシーは「制限的」であり、グラフにアクセスするにはユーザーがグラフまたはデバイスとグラフテンプレートのいずれかにアクセスできる必要があります。"
+msgstr "<b>注：</b>システムグラフポリシーは「制限的」であり、グラフにアクセスするにはユーザーがグラフまたはデバイスとグラフテンプレートのいずれかにアクセスできる必要があります"
 
 #: user_admin.php user_group_admin.php
 msgid "<b>Note:</b> System Graph Policy is 'Graph Template' meaning the User must have access to the Graph or Graph Template to gain access to the Graph"
-msgstr "<b>注：</b>システムグラフポリシーは「許容」です。つまり、グラフにアクセスするには、ユーザーはグラフ、デバイス、またはグラフテンプレートの少なくとも1つにアクセスできなければなりません。"
+msgstr "<b>注：</b>システムグラフポリシーは「許容」です。つまり、グラフにアクセスするには、ユーザーはグラフ、デバイス、またはグラフテンプレートの少なくとも1つにアクセスできなければなりません"
 
 #: user_admin.php user_group_admin.php
 msgid "Default Graph Policy"
@@ -19081,7 +19073,7 @@ msgstr "サボテンがLDAPサーバーに対して認証を試みるモード�
 
 #: user_domains.php
 msgid "Search base for searching the LDAP directory, such as <i>\"dc=win2kdomain,dc=local\"</i> or <i>\"ou=people,dc=domain,dc=local\"</i>."
-msgstr "<i>&quot;dc = win2kdomain、dc = local&quot;</i>や<i>&quot;ou = people、dc = domain、dc = local&quot;</i>など、LDAPディレクトリを検索するための検索ベース"
+msgstr "<i>&quot;dc = win2kdomain、dc = local&quot;</i>や<i>&quot;ou = people、dc = domain、dc = local&quot;</i>など、LDAPディレクトリを検索するための検索ベース。"
 
 #: user_domains.php
 msgid "Search filter to use to locate the user in the LDAP directory, such as for windows: <i>\"(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))\"</i> or for OpenLDAP: <i>\"(&(objectClass=account)(uid=&lt;username&gt))\"</i>.  \"&lt;username&gt\" is replaced with the username that was supplied at the login prompt."
@@ -19093,7 +19085,7 @@ msgstr "メールアドレス"
 
 #: user_domains.php
 msgid "Field that will replace the email taken from LDAP. (on windows: mail) "
-msgstr "LDAPから取得したEメールを置き換えるフィールド。 （Windowsの場合：メール）"
+msgstr "LDAPから取得したEメールを置き換えるフィールド。 （Windowsの場合：メール） "
 
 #: user_domains.php
 msgid "Domain Properties"
@@ -19137,11 +19129,11 @@ msgstr "ユーザーが自分のブラウザをポイントしたページを表
 
 #: user_group_admin.php
 msgid "Show the Console"
-msgstr "デフォルトでコンソール画面を表示します。"
+msgstr "デフォルトでコンソール画面を表示します"
 
 #: user_group_admin.php
 msgid "Show the default Graph Screen"
-msgstr "デフォルトでグラフ画面を表示します。"
+msgstr "デフォルトでグラフ画面を表示します"
 
 #: user_group_admin.php
 msgid "Restrict Access"
@@ -19153,11 +19145,11 @@ msgstr "グループ名"
 
 #: user_group_admin.php
 msgid "The name of this Group."
-msgstr "このグループの名前"
+msgstr "このグループの名前。"
 
 #: user_group_admin.php
 msgid "Group Description"
-msgstr "グループの説明 "
+msgstr "グループの説明"
 
 #: user_group_admin.php
 msgid "A more descriptive name for this group, that can include spaces or special characters."
@@ -19201,12 +19193,12 @@ msgstr "このグループのユーザーはグラフプレビューにアクセ
 
 #: user_group_admin.php
 msgid "What to do when a User from this User Group logs in."
-msgstr "このユーザーグループのユーザーがログインしたときの対処方法"
+msgstr "このユーザーグループのユーザーがログインしたときの対処方法。"
 
 #: user_group_admin.php
 msgid "Click 'Continue' to delete the following User Group"
 msgid_plural "Click 'Continue' to delete following User Groups"
-msgstr[0] "次のユーザーグループを削除するには、[続行]をクリックします。"
+msgstr[0] "次のユーザーグループを削除するには、[続行]をクリックします"
 
 #: user_group_admin.php
 msgid "Delete User Group"
@@ -19319,7 +19311,7 @@ msgstr "クリア"
 
 #: utilities.php
 msgid "Data Source Statistics Purged."
-msgstr "データソースのパス"
+msgstr "データソースのパス。"
 
 #: utilities.php
 msgid "Database"
@@ -19408,15 +19400,15 @@ msgstr "投票する項目はありません"
 
 #: utilities.php
 msgid "Name: "
-msgstr "名前:"
+msgstr "名前: "
 
 #: utilities.php
 msgid "Procs: "
-msgstr "1プロセス"
+msgstr "1プロセス "
 
 #: utilities.php
 msgid "Threads: "
-msgstr "スレッド"
+msgstr "スレッド "
 
 #: utilities.php
 msgid "Concurrent Processes"
@@ -19442,7 +19434,7 @@ msgstr "現在：%s、最小必須：%s"
 
 #: utilities.php
 msgid "Minimum Connections:"
-msgstr "テスト接続"
+msgstr "テスト接続："
 
 #: utilities.php
 msgid "Assumes 100 spare connections for Web page users and other various connections."
@@ -19519,7 +19511,7 @@ msgstr "PHPのバージョン"
 
 #: utilities.php
 msgid "PHP Version 5.5.0+ is recommended due to strong password hashing support."
-msgstr "強力なパスワードハッシュサポートのため、PHPバージョン5.5.0以降を推奨"
+msgstr "強力なパスワードハッシュサポートのため、PHPバージョン5.5.0以降を推奨。"
 
 #: utilities.php
 msgid "PHP OS"
@@ -19598,7 +19590,7 @@ msgstr "結果"
 
 #: utilities.php
 msgid "Success - Password"
-msgstr "成功 -  PSWD"
+msgstr "成功 - PSWD"
 
 #: utilities.php
 msgid "Success - Token"
@@ -19606,7 +19598,7 @@ msgstr "成功 - トークン"
 
 #: utilities.php
 msgid "Success - Password Change"
-msgstr "成功 -  PSWD"
+msgstr "成功 - PSWD"
 
 #: utilities.php vdef.php
 msgctxt "Button: use filter settings"
@@ -19703,7 +19695,7 @@ msgstr "スクリプト"
 
 #: utilities.php
 msgid "SNMP Version:"
-msgstr "SNMPバージョン"
+msgstr "SNMPバージョン："
 
 #: utilities.php
 msgid "Community:"
@@ -19715,7 +19707,7 @@ msgstr "OID："
 
 #: utilities.php
 msgid "User:"
-msgstr "ユーザー"
+msgstr "ユーザー："
 
 #: utilities.php
 msgid "Script:"
@@ -19723,7 +19715,7 @@ msgstr "スクリプト(T):"
 
 #: utilities.php
 msgid "Script Server:"
-msgstr "スクリプトサーバー"
+msgstr "スクリプトサーバー："
 
 #: utilities.php
 msgid "RRD:"
@@ -19867,7 +19859,7 @@ msgstr "現在のブーストステータス"
 
 #: utilities.php
 msgid "Boost On-demand Updating:"
-msgstr "オンデマンドの強化"
+msgstr "オンデマンドの強化："
 
 #: utilities.php
 #, fuzzy
@@ -19877,7 +19869,7 @@ msgstr "ブーストステータス"
 
 #: utilities.php
 msgid "Running Processes:"
-msgstr "並行プロセス"
+msgstr "並行プロセス："
 
 #: utilities.php
 #, fuzzy
@@ -19918,7 +19910,7 @@ msgstr ""
 
 #: utilities.php
 msgid "Total Poller Items:"
-msgstr "ポーラーキャッシュアイテム"
+msgstr "ポーラーキャッシュアイテム："
 
 #: utilities.php
 msgid "Total Data Sources:"
@@ -19926,7 +19918,7 @@ msgstr "合計データソース："
 
 #: utilities.php
 msgid "Remaining Data Sources:"
-msgstr "データソースのデバッグ"
+msgstr "データソースのデバッグ："
 
 #: utilities.php
 msgid "TBD"
@@ -19950,7 +19942,7 @@ msgstr "ストレージ統計の向上"
 
 #: utilities.php
 msgid "Database Engine:"
-msgstr "データベースエンジン"
+msgstr "データベースエンジン："
 
 #: utilities.php
 msgid "Current Boost Table(s) Size:"
@@ -19967,7 +19959,7 @@ msgstr "%d バイト"
 
 #: utilities.php
 msgid "Max Record Length:"
-msgstr "最大レコード長"
+msgstr "最大レコード長："
 
 #: utilities.php
 msgid "Max Allowed Boost Table Size:"
@@ -19975,7 +19967,7 @@ msgstr "最大許容ブーストテーブルサイズ："
 
 #: utilities.php
 msgid "Estimated Maximum Records:"
-msgstr "推定最大レコード数"
+msgstr "推定最大レコード数："
 
 #: utilities.php
 msgid "Previous Runtime Statistics"
@@ -20066,7 +20058,7 @@ msgstr "更新頻度："
 
 #: utilities.php
 msgid "Concurrent Processes:"
-msgstr "並行プロセス"
+msgstr "並行プロセス："
 
 #: utilities.php
 msgid "Next Start Time:"
@@ -20074,7 +20066,7 @@ msgstr "次の開始時間："
 
 #: utilities.php
 msgid "Maximum Records:"
-msgstr "最大レコード数"
+msgstr "最大レコード数："
 
 #: utilities.php
 msgid "Records"
@@ -20090,11 +20082,11 @@ msgstr "画像キャッシングステータス："
 
 #: utilities.php
 msgid "Cache Directory:"
-msgstr "キャッシュディレクトリ"
+msgstr "キャッシュディレクトリ："
 
 #: utilities.php
 msgid "Cached Files:"
-msgstr "キャッシュファイル"
+msgstr "キャッシュファイル："
 
 #: utilities.php
 msgid "Cached Files Size:"
@@ -20216,7 +20208,7 @@ msgstr "VDEFアイテムを削除"
 
 #: vdef.php
 msgid "The name of this VDEF."
-msgstr "このVDEFの名前"
+msgstr "このVDEFの名前。"
 
 #: vdef.php
 msgid "VDEF Name"
