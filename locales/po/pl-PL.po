@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2026-03-10 10:57-0400\n"
-"PO-Revision-Date: 2026-11-25 10:18+0000\n"
+"PO-Revision-Date: 2026-11-26 05:54+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Polish <https://translate.cacti.net/projects/cacti/core/pl/>\n"
 "Language: pl-PL\n"
@@ -2522,11 +2522,11 @@ msgstr "Port"
 #: automation_snmp.php:738 include/global_settings.php:737
 #: include/global_settings.php:999 support.php:768
 msgid "Timeout"
-msgstr "Upłynął limit czasu"
+msgstr "Limit czasu"
 
 #: automation_snmp.php:742 include/global_settings.php:1007
 msgid "Retries"
-msgstr "Powroty"
+msgstr "Ponowne próby"
 
 #: automation_snmp.php:746
 msgid "Max OIDS"
@@ -3926,7 +3926,7 @@ msgstr "Debugowanie"
 #: lib/html_graph.php:219 lib/html_graph.php:1005 lib/html_reports.php:1071
 #: utilities.php:293 utilities.php:747
 msgid "Site"
-msgstr "Lokalizacja"
+msgstr "Obiekt"
 
 #: data_debug.php:1064 data_sources.php:1114 data_sources.php:1828
 #: graphs.php:860 graphs.php:2410 graphs.php:3113 graphs_new.php:310
@@ -4887,7 +4887,7 @@ msgstr[2] "Następujące wykresy używają tych źródeł danych."
 #: data_sources.php:647
 msgid "Leave the Graph Untouched"
 msgid_plural "Leave all Graphs untouched."
-msgstr[0] "Pozostaw wykres bez zmian."
+msgstr[0] "Pozostaw wykres bez zmian"
 msgstr[1] "Pozostaw wszystkie wykresy bez zmian."
 msgstr[2] "Pozostaw wszystkie wykresy bez zmian."
 
@@ -4895,7 +4895,7 @@ msgstr[2] "Pozostaw wszystkie wykresy bez zmian."
 msgid "Delete all Graph Items that reference this Data Source."
 msgid_plural "Delete all Graph Items that reference these Data Sources"
 msgstr[0] ""
-"Usuń wszystkie elementy wykresów, które odwołują się do tego źródła danych"
+"Usuń wszystkie elementy wykresów, które odwołują się do tego źródła danych."
 msgstr[1] ""
 "Usuń wszystkie elementy wykresów, które odwołują się do tych źródeł danych"
 msgstr[2] ""
@@ -4904,7 +4904,7 @@ msgstr[2] ""
 #: data_sources.php:655
 msgid "Delete all Graphs that reference this Data Source."
 msgid_plural "Delete all Graphs that reference these Data Sources"
-msgstr[0] "Usuń wszystkie wykresy, które odwołują się do tego źródła danych"
+msgstr[0] "Usuń wszystkie wykresy, które odwołują się do tego źródła danych."
 msgstr[1] "Usuń wszystkie wykresy, które odwołują się do tych źródeł danych"
 msgstr[2] "Usuń wszystkie wykresy, które odwołują się do tych źródeł danych"
 
@@ -5380,7 +5380,7 @@ msgstr "Liczba źródeł danych korzystających z tego szablonu danych."
 
 #: data_templates.php:1124
 msgid "Input Method"
-msgstr "Zmiana układów klawiatury"
+msgstr "Metoda wprowadzania danych"
 
 #: data_templates.php:1127
 msgid "The method that is used to place Data into the Data Source RRDfile."
@@ -6461,7 +6461,7 @@ msgstr "Kliknąć \"Continue\" (Kontynuuj), aby włączyć następujące urządz
 
 #: host.php:503
 msgid "Enable Device"
-msgstr "Włączyć urządzenie(-a)"
+msgstr "Włączyć urządzenie"
 
 #: host.php:504
 msgid "Enable Devices"
@@ -7877,7 +7877,7 @@ msgstr "Co godzine"
 #: include/global_settings.php:3000
 #, php-format
 msgid "Every %d Hours"
-msgstr "Co %d godz."
+msgstr "Co %d godzin"
 
 #: include/global_arrays.php:781
 #, php-format
@@ -8116,7 +8116,7 @@ msgstr "Konsola"
 
 #: include/global_arrays.php:1084
 msgid "Console Page"
-msgstr "Góra strony konsoli"
+msgstr "Strona konsoli"
 
 #: include/global_arrays.php:1087 lib/html_form_template.php:657
 #: lib/html_form_template.php:669
@@ -8137,7 +8137,7 @@ msgstr "Lokalizacje"
 #: tree.php:2053 tree.php:2103 user_admin.php:1471 user_admin.php:2535
 #: user_group_admin.php:1325 user_group_admin.php:2153
 msgid "Trees"
-msgstr "Trees"
+msgstr "Drzewa"
 
 #: include/global_arrays.php:1098 include/global_arrays.php:1163
 #: include/global_arrays.php:1180
@@ -8161,7 +8161,7 @@ msgstr "Automatyzacja"
 #: include/global_arrays.php:1117 include/global_arrays.php:1183
 #: include/global_arrays.php:1379 lib/html_filter.php:518
 msgid "Presets"
-msgstr "Presets"
+msgstr "Ustawienia wstępne"
 
 #: include/global_arrays.php:1118
 msgid "Data Profiles"
@@ -8307,7 +8307,7 @@ msgstr "Związane z hiperwizorem"
 
 #: include/global_arrays.php:1201
 msgid "ILO, IPMI, iDrac, etc."
-msgstr "MOP, IPMI, iDrac itp."
+msgstr "ILO, IPMI, iDrac itp."
 
 #: include/global_arrays.php:1202
 msgid "Licensing Related"
@@ -8654,7 +8654,7 @@ msgstr "Zmiana dzienna"
 
 #: include/global_arrays.php:1593
 msgid "This Day"
-msgstr "Ostatni dzień"
+msgstr "Ten dzień"
 
 #: include/global_arrays.php:1594
 msgid "This Week"
@@ -8687,7 +8687,7 @@ msgstr "Poprzedni rok"
 #: include/global_arrays.php:1605
 #, php-format
 msgid "%d Min"
-msgstr "%d Min"
+msgstr "%d minut"
 
 #: include/global_arrays.php:1660
 msgid "Month Number, Day, Year"
@@ -8846,7 +8846,7 @@ msgstr "Przejmij"
 
 #: include/global_arrays.php:1812
 msgid "Inline PNG Image"
-msgstr "Obraz PNG w linii produkcyjnej"
+msgstr "Osadzony obraz PNG"
 
 #: include/global_arrays.php:1816
 msgid "Inline JPEG Image"
@@ -9742,7 +9742,7 @@ msgstr "Wybierz protokół SNMPv3 Privacy Protocol."
 
 #: include/global_form.php:115
 msgid "SNMP Privacy Passphrase (v3)"
-msgstr "Paszport prywatności SNMP (v3)"
+msgstr "Hasło prywatności SNMP (v3)"
 
 #: include/global_form.php:116
 msgid "Choose the SNMPv3 Privacy Passphrase."
@@ -9774,7 +9774,7 @@ msgstr "Wprowadź numer portu UDP, który ma być używany dla SNMP (domyślnie 
 
 #: include/global_form.php:151
 msgid "SNMP Timeout"
-msgstr "SNMP Timeout"
+msgstr "Limit czasu SNMP"
 
 #: include/global_form.php:152
 msgid "The maximum number of milliseconds Cacti will wait for an SNMP response (does not work with php-snmp support)."
@@ -10558,7 +10558,7 @@ msgstr "Modyfikujący kreski umożliwia zmianę stylu linii przerywanej."
 
 #: include/global_form.php:1144
 msgid "Dash Offset (dash-offset=offset)"
-msgstr "Dash Offset (offset kreski = offset)"
+msgstr "Przesunięcie kreski (dash-offset=offset)"
 
 #: include/global_form.php:1149 include/global_form.php:1157
 msgid "The dash-offset parameter specifies an offset into the pattern at which the stroke begins."
@@ -11332,7 +11332,7 @@ msgstr "Droga do twojego snmpget binarne."
 
 #: include/global_settings.php:197
 msgid "snmpbulkwalk Binary Path"
-msgstr "snmpbulkwalk Binary Path"
+msgstr "Ścieżka do pliku binarnego snmpbulkwalk"
 
 #: include/global_settings.php:198
 msgid "The path to your snmpbulkwalk binary."
@@ -13643,7 +13643,7 @@ msgstr "Wprowadź drugorzędny adres IP DNS, aby wykorzystać go do wyszukiwania
 
 #: include/global_settings.php:2445
 msgid "DNS Timeout"
-msgstr "DNS Timeout"
+msgstr "Limit czasu DNS"
 
 #: include/global_settings.php:2446
 msgid "Please enter the DNS timeout in milliseconds.  Cacti uses a PHP based DNS resolver."
@@ -13651,7 +13651,7 @@ msgstr "Proszę wprowadzić limit czasu DNS w milisekundach.  Cacti używa resol
 
 #: include/global_settings.php:2453
 msgid "Internet Proxy Settings"
-msgstr "Ustawienia główne"
+msgstr "Ustawienia internetowego serwera proxy"
 
 #: include/global_settings.php:2458
 msgid "Internet Proxy Address"
@@ -17397,7 +17397,7 @@ msgstr "Adres ten będzie wykorzystywany jako adres nadawcy poczty elektroniczne
 
 #: lib/html_reports.php:168
 msgid "Notification List"
-msgstr "Powiadomienia"
+msgstr "Lista powiadomień"
 
 #: lib/html_reports.php:170
 msgid "You may select a Notification List to receive this Report."
@@ -18753,7 +18753,7 @@ msgstr "Silnik"
 
 #: lib/installer.php:3044 support.php:971
 msgid "Row Format"
-msgstr "Surowy format"
+msgstr "Format wierszy"
 
 #: lib/installer.php:3077
 msgid "One or more tables are too large to convert during the installation.  You should use the cli/convert_tables.php script to perform the conversion, then refresh this page. For example: "
