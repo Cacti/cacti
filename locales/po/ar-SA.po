@@ -4,19 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr ""
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-11-04 11:45-0800\n"
-"PO-Revision-Date: 2024-05-25 11:07-0400\n"
-"Last-Translator: Anonymous <anonymous@cacti.net>\n"
-"Language-Team: Arabic (Saudi Arabia) <http://translate.cacti.net/projects/cacti/core-v1-2-x/ar_SA/>\n"
-"Language: ar_SA\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
-"X-Generator: Poedit 3.4.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-25 01:18+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Arabic (Saudi Arabia) <https://translate.cacti.net/projects/cacti/core-v1-2-x/ar_SA/>\nLanguage: ar-SA\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -448,7 +436,7 @@ msgstr "مجموعة / تحديث الفلاتر"
 #: lib/html_reports.php lib/html_tree.php links.php managers.php plugins.php
 #: pollers.php sites.php tree.php user_admin.php user_domains.php
 msgid "Clear"
-msgstr "واضح"
+msgstr "مسح"
 
 #: aggregate_graphs.php automation_snmp.php automation_templates.php cdef.php
 #: color.php data_debug.php data_input.php data_queries.php
@@ -487,7 +475,7 @@ msgstr "المدرجة في التجميع"
 #: aggregate_graphs.php graph_realtime.php graph_templates.php graph_view.php
 #: graphs.php lib/html_graph.php lib/html_tree.php lib/spikekill.php
 msgid "Size"
-msgstr "مداخل خلفية الحجم"
+msgstr "الحجم"
 
 #: aggregate_graphs.php aggregate_templates.php automation_tree_rules.php
 #: cdef.php color.php color_templates.php data_input.php data_queries.php
@@ -514,7 +502,7 @@ msgstr "لا توجد الرسوم البيانية"
 
 #: aggregate_graphs.php
 msgid " [ Custom Graphs List Applied - Clear to Reset ]"
-msgstr "[تطبيق قائمة الرسم البياني المخصص - تصفية قائمة FROM]"
+msgstr " [تطبيق قائمة الرسم البياني المخصص - تصفية قائمة FROM]"
 
 #: aggregate_graphs.php include/global_arrays.php
 msgid "Aggregate Graphs"
@@ -911,7 +899,7 @@ msgstr "حذف الجهاز (الأجهزة)"
 #: automation_devices.php host.php lib/api_automation.php lib/html_utility.php
 #: pollers.php
 msgid "Down"
-msgstr "المرض"
+msgstr "متوقف"
 
 #: automation_devices.php host.php lib/api_automation.php lib/html_utility.php
 msgid "Up"
@@ -1049,7 +1037,7 @@ msgstr "تصدير إلى ملف"
 
 #: automation_devices.php data_debug.php lib/clog_webapi.php managers.php
 msgid "Purge"
-msgstr "شربة، مسهل. يسهل"
+msgstr "تطهير"
 
 #: automation_devices.php
 msgid "Purge Discovered Devices"
@@ -1270,7 +1258,7 @@ msgstr "انقر فوق &quot;متابعة&quot; للإلغاء أثناء اك�
 
 #: automation_networks.php data_input.php include/global_arrays.php
 msgid "SNMP Get"
-msgstr "SNMP"
+msgstr "جلب SNMP (get)"
 
 #: automation_networks.php tree.php
 msgid "Manual"
@@ -1424,7 +1412,7 @@ msgstr "%d ساعة"
 
 #: automation_networks.php data_source_profiles.php include/global_arrays.php
 #: include/global_settings.php
-#, fuzzy, php-format
+#, php-format
 msgid "%d Hours"
 msgstr "%d د ساعات"
 
@@ -1650,7 +1638,7 @@ msgstr[5] "ثانية"
 
 #: automation_networks.php
 msgid "Third"
-msgstr "﻿الأول"
+msgstr "الثالث"
 
 #: automation_networks.php
 msgid "Day(s) of Week"
@@ -1838,11 +1826,11 @@ msgstr "تنسيق الاسم"
 
 #: automation_snmp.php
 msgid "name"
-msgstr "اسم"
+msgstr "الاسم"
 
 #: automation_snmp.php
 msgid "Automation SNMP Options has been Duplicated."
-msgstr "أتمتة SNMP خيارات"
+msgstr "أتمتة SNMP خيارات."
 
 #: automation_snmp.php
 msgid "Automation Item does not exist.  Can not Duplicate."
@@ -2255,27 +2243,27 @@ msgstr[5] ""
 #: cdef.php
 msgid "Click 'Continue' to duplicate the following CDEF. You can optionally change the title format for the new CDEF."
 msgid_plural "Click 'Continue' to duplicate the following CDEFs. You can optionally change the title format for the new CDEFs."
-msgstr[0] "انقر فوق \"متابعة\" لتكرار CDEF التالي. يمكنك اختياريا تغيير تنسيق العنوان ل CDEF الجديد."
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "انقر فوق \"متابعة\" لتكرار عناصر CDEF التالية. يمكنك اختياريا تغيير تنسيق العنوان لعناصر CDEF الجديدة."
+msgstr[1] "انقر فوق \"متابعة\" لتكرار CDEF التالي. يمكنك اختياريا تغيير تنسيق العنوان ل CDEF الجديد."
+msgstr[2] "انقر فوق \"متابعة\" لتكرار عناصر CDEF التالية. يمكنك اختياريا تغيير تنسيق العنوان لعناصر CDEF الجديدة."
+msgstr[3] "انقر فوق \"متابعة\" لتكرار عناصر CDEF التالية. يمكنك اختياريا تغيير تنسيق العنوان لعناصر CDEF الجديدة."
+msgstr[4] "انقر فوق \"متابعة\" لتكرار عناصر CDEF التالية. يمكنك اختياريا تغيير تنسيق العنوان لعناصر CDEF الجديدة."
+msgstr[5] "انقر فوق \"متابعة\" لتكرار عناصر CDEF التالية. يمكنك اختياريا تغيير تنسيق العنوان لعناصر CDEF الجديدة."
 
 #: cdef.php color_templates.php data_source_profiles.php data_templates.php
 #: graph_templates.php host_templates.php vdef.php
 msgid "Title Format:"
-msgstr "شكل العنوان"
+msgstr "شكل العنوان:"
 
 #: cdef.php
 msgid "Duplicate CDEF"
 msgid_plural "Duplicate CDEFs"
-msgstr[0] "نسخة مكررة من CDEF"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "نسخ مكررة من CDEF"
+msgstr[1] "نسخة مكررة من CDEF"
+msgstr[2] "نسختان مكررتان من CDEF"
+msgstr[3] "نسخ مكررة من CDEF"
+msgstr[4] "نسخ مكررة من CDEF"
+msgstr[5] "نسخ مكررة من CDEF"
 
 #: cdef.php
 msgid "Click 'Continue' to delete the following CDEF Item."
@@ -2288,7 +2276,7 @@ msgstr "اسم CDEF: %s"
 
 #: cdef.php lib/html_reports.php
 msgid "Invalid"
-msgstr "عاجز، مقعد"
+msgstr "غير صالح"
 
 #: cdef.php data_input.php host.php lib/api_automation.php lib/auth.php
 #: lib/clog_webapi.php lib/html_utility.php lib/import.php lib/plugins.php
@@ -2575,42 +2563,42 @@ msgstr[5] ""
 #: color_templates.php
 msgid "Click 'Continue' to duplicate the following Color Template. You can optionally change the title format for the new color template."
 msgid_plural "Click 'Continue' to duplicate following Color Templates. You can optionally change the title format for the new color templates."
-msgstr[0] "انقر فوق \"متابعة\" لتكرار قالب اللون التالي. يمكنك اختياريا تغيير تنسيق العنوان لقالب اللون الجديد."
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "انقر فوق \"متابعة\" لتكرار قوالب الألوان التالية. يمكنك اختياريا تغيير تنسيق العنوان لقوالب الألوان الجديدة."
+msgstr[1] "انقر فوق \"متابعة\" لتكرار قالب اللون التالي. يمكنك اختياريا تغيير تنسيق العنوان لقالب اللون الجديد."
+msgstr[2] "انقر فوق \"متابعة\" لتكرار قوالب الألوان التالية. يمكنك اختياريا تغيير تنسيق العنوان لقوالب الألوان الجديدة."
+msgstr[3] "انقر فوق \"متابعة\" لتكرار قوالب الألوان التالية. يمكنك اختياريا تغيير تنسيق العنوان لقوالب الألوان الجديدة."
+msgstr[4] "انقر فوق \"متابعة\" لتكرار قوالب الألوان التالية. يمكنك اختياريا تغيير تنسيق العنوان لقوالب الألوان الجديدة."
+msgstr[5] "انقر فوق \"متابعة\" لتكرار قوالب الألوان التالية. يمكنك اختياريا تغيير تنسيق العنوان لقوالب الألوان الجديدة."
 
 #: color_templates.php
 msgid "Duplicate Color Template"
 msgid_plural "Duplicate Color Templates"
-msgstr[0] "قالب ألوان مكرر"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "قوالب ألوان مكررة"
+msgstr[1] "قالب ألوان مكرر"
+msgstr[2] "قالبا ألوان مكرران"
+msgstr[3] "قوالب ألوان مكررة"
+msgstr[4] "قوالب ألوان مكررة"
+msgstr[5] "قوالب ألوان مكررة"
 
 #: color_templates.php
 msgid "Click 'Continue' to Synchronize all Aggregate Graphs with the selected Color Template."
 msgid_plural "Click 'Continue' to Synchronize all Aggregate Graphs with the selected Color Templates."
-msgstr[0] "انقر فوق &quot;متابعة&quot; لإنشاء Aggregate Graph من القائمة (الرسوم) المحددة."
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "انقر فوق \"متابعة\" لمزامنة جميع الرسوم البيانية التجميعية مع قوالب الألوان المحددة."
+msgstr[1] "انقر فوق \"متابعة\" لمزامنة جميع الرسوم البيانية التجميعية مع قالب الألوان المحدد."
+msgstr[2] "انقر فوق \"متابعة\" لمزامنة جميع الرسوم البيانية التجميعية مع قالبي الألوان المحددين."
+msgstr[3] "انقر فوق \"متابعة\" لمزامنة جميع الرسوم البيانية التجميعية مع قوالب الألوان المحددة."
+msgstr[4] "انقر فوق \"متابعة\" لمزامنة جميع الرسوم البيانية التجميعية مع قوالب الألوان المحددة."
+msgstr[5] "انقر فوق \"متابعة\" لمزامنة جميع الرسوم البيانية التجميعية مع قوالب الألوان المحددة."
 
 #: color_templates.php
 msgid "Synchronize Color Template"
 msgid_plural "Synchronize Color Templates"
-msgstr[0] "مزامنة الرسوم البيانية إلى قالب (نماذج) Graph"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "مزامنة قوالب الألوان"
+msgstr[1] "مزامنة قالب الألوان"
+msgstr[2] "مزامنة قوالب الألوان"
+msgstr[3] "مزامنة قوالب الألوان"
+msgstr[4] "مزامنة قوالب الألوان"
+msgstr[5] "مزامنة قوالب الألوان"
 
 #: color_templates.php
 msgid "Color Template Items [new]"
@@ -2643,7 +2631,7 @@ msgstr "قالب اللون [جديد]"
 #: color_templates.php
 #, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
-msgstr "تم دفع %d قالب اللون \"%s\" للخارج ودفع %d من التجميعات غير النموذجية للخارج"
+msgstr "تم دفع %2$d من قوالب التجميع و%3$d من التجميعات غير القالبية من قالب الألوان '%1$s'"
 
 #: color_templates.php
 #, php-format
@@ -2704,7 +2692,7 @@ msgstr "حذف الشيك"
 
 #: data_debug.php
 msgid "Data Source debug started."
-msgstr "تصحيح مصدر البيانات"
+msgstr "تصحيح مصدر البيانات."
 
 #: data_debug.php
 msgid "Data Source debug received an invalid Data Source ID."
@@ -2831,11 +2819,11 @@ msgstr "لا الشيكات"
 
 #: data_debug.php lib/api_automation.php lib/graphs.php templates_import.php
 msgid "Not Found"
-msgstr "لم يتم العثور على شيء"
+msgstr "غير موجود"
 
 #: data_debug.php
 msgid "Not Checked Yet"
-msgstr "لا الشيكات"
+msgstr "لم يتم الفحص بعد"
 
 #: data_debug.php
 msgid "Issues found!  Waiting on RRDfile update"
@@ -2847,7 +2835,7 @@ msgstr "لا يوجد مبدئي! في انتظار تحديث RRDfile"
 
 #: data_debug.php
 msgid "Waiting on analysis and RRDfile update"
-msgstr "هل تم تحديث RRDfile؟"
+msgstr "في انتظار التحليل وتحديث RRDfile"
 
 #: data_debug.php
 msgid "RRDfile Owner"
@@ -2899,7 +2887,7 @@ msgstr "هل كنا قادرين على تحويل العنوان؟"
 
 #: data_debug.php
 msgid "Data Source matches the RRDfile?"
-msgstr "لم يتم استقصاء مصدر البيانات"
+msgstr "هل يتطابق مصدر البيانات مع RRDfile؟"
 
 #: data_debug.php
 #, php-format
@@ -2985,7 +2973,7 @@ msgstr "مستكشف أخطاء مصدر البيانات ومصلحها [ %s ]"
 
 #: data_debug.php
 msgid "No Device"
-msgstr "الجهاز:"
+msgstr "الجهاز"
 
 #: data_debug.php
 msgid "Delete All Checks"
@@ -3033,12 +3021,12 @@ msgstr ""
 #: data_input.php
 msgid "Click 'Continue' to delete the following Data Input Method"
 msgid_plural "Click 'Continue' to delete the following Data Input Method"
-msgstr[0] "انقر فوق \"متابعة\" لحذف طريقة إدخال البيانات التالية"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "انقر فوق \"متابعة\" لحذف طرق إدخال البيانات التالية"
+msgstr[1] "انقر فوق \"متابعة\" لحذف طريقة إدخال البيانات التالية"
+msgstr[2] "انقر فوق \"متابعة\" لحذف طرق إدخال البيانات التالية"
+msgstr[3] "انقر فوق \"متابعة\" لحذف طرق إدخال البيانات التالية"
+msgstr[4] "انقر فوق \"متابعة\" لحذف طرق إدخال البيانات التالية"
+msgstr[5] "انقر فوق \"متابعة\" لحذف طرق إدخال البيانات التالية"
 
 #: data_input.php
 msgid "Click 'Continue' to duplicate the following Data Input Method(s). You can optionally change the title format for the new Data Input Method(s)."
@@ -3051,12 +3039,12 @@ msgstr "اسم الإدخال:"
 #: data_input.php
 msgid "Delete Data Input Method"
 msgid_plural "Delete Data Input Methods"
-msgstr[0] "حذف طريقة إدخال البيانات"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "حذف طرق إدخال البيانات"
+msgstr[1] "حذف طريقة إدخال البيانات"
+msgstr[2] "حذف طرق إدخال البيانات"
+msgstr[3] "حذف طرق إدخال البيانات"
+msgstr[4] "حذف طرق إدخال البيانات"
+msgstr[5] "حذف طرق إدخال البيانات"
 
 #: data_input.php
 msgid "Click 'Continue' to delete the following Data Input Field."
@@ -3141,7 +3129,7 @@ msgstr "اسم مألوف"
 
 #: data_input.php
 msgid "Field Order"
-msgstr "الترتيب:"
+msgstr "الترتيب"
 
 #: data_input.php
 msgid "(Not In Use)"
@@ -3240,22 +3228,22 @@ msgstr[5] ""
 #: data_queries.php
 msgid "Delete Data Query"
 msgid_plural "Delete Data Queries"
-msgstr[0] "حذف استعلام البيانات"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "حذف استعلامات البيانات"
+msgstr[1] "حذف استعلام البيانات"
+msgstr[2] "حذف استعلامي البيانات"
+msgstr[3] "حذف استعلامات البيانات"
+msgstr[4] "حذف استعلامات البيانات"
+msgstr[5] "حذف استعلامات البيانات"
 
 #: data_queries.php
 msgid "Click 'Continue' to duplicate the following Data Query."
 msgid_plural "Click 'Continue' to duplicate following Data Queries."
-msgstr[0] "انقر فوق \"متابعة\" لتكرار استعلام البيانات التالي."
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "انقر فوق \"متابعة\" لتكرار استعلامات البيانات التالية."
+msgstr[1] "انقر فوق \"متابعة\" لتكرار استعلام البيانات التالي."
+msgstr[2] "انقر فوق \"متابعة\" لتكرار استعلامي البيانات التاليين."
+msgstr[3] "انقر فوق \"متابعة\" لتكرار استعلامات البيانات التالية."
+msgstr[4] "انقر فوق \"متابعة\" لتكرار استعلامات البيانات التالية."
+msgstr[5] "انقر فوق \"متابعة\" لتكرار استعلامات البيانات التالية."
 
 #: data_queries.php lib/html_reports.php
 msgid "Name Format:"
@@ -3264,12 +3252,12 @@ msgstr "تنسيق الاسم:"
 #: data_queries.php
 msgid "Duplicate Data Query"
 msgid_plural "Duplicate Data Queries"
-msgstr[0] "استعلام بيانات مكررة"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "استعلامات بيانات مكررة"
+msgstr[1] "استعلام بيانات مكرر"
+msgstr[2] "استعلاما بيانات مكرران"
+msgstr[3] "استعلامات بيانات مكررة"
+msgstr[4] "استعلامات بيانات مكررة"
+msgstr[5] "استعلامات بيانات مكررة"
 
 #: data_queries.php
 msgid "Click 'Continue' to delete the following Data Query Graph Association."
@@ -3460,22 +3448,22 @@ msgstr[5] ""
 #: data_source_profiles.php
 msgid "Click 'Continue' to duplicate the following Data Source Profile. You can optionally change the title format for the new Data Source Profile"
 msgid_plural "Click 'Continue' to duplicate following Data Source Profiles. You can optionally change the title format for the new Data Source Profiles."
-msgstr[0] "انقر فوق \"متابعة\" لتكرار ملف تعريف مصدر البيانات التالي. يمكنك اختياريا تغيير تنسيق العنوان لملف تعريف مصدر البيانات الجديد"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "انقر فوق \"متابعة\" لتكرار ملفات تعريف مصادر البيانات التالية. يمكنك اختياريا تغيير تنسيق العنوان لملفات تعريف مصادر البيانات الجديدة."
+msgstr[1] "انقر فوق \"متابعة\" لتكرار ملف تعريف مصدر البيانات التالي. يمكنك اختياريا تغيير تنسيق العنوان لملف تعريف مصدر البيانات الجديد"
+msgstr[2] "انقر فوق \"متابعة\" لتكرار ملفات تعريف مصادر البيانات التالية. يمكنك اختياريا تغيير تنسيق العنوان لملفات تعريف مصادر البيانات الجديدة."
+msgstr[3] "انقر فوق \"متابعة\" لتكرار ملفات تعريف مصادر البيانات التالية. يمكنك اختياريا تغيير تنسيق العنوان لملفات تعريف مصادر البيانات الجديدة."
+msgstr[4] "انقر فوق \"متابعة\" لتكرار ملفات تعريف مصادر البيانات التالية. يمكنك اختياريا تغيير تنسيق العنوان لملفات تعريف مصادر البيانات الجديدة."
+msgstr[5] "انقر فوق \"متابعة\" لتكرار ملفات تعريف مصادر البيانات التالية. يمكنك اختياريا تغيير تنسيق العنوان لملفات تعريف مصادر البيانات الجديدة."
 
 #: data_source_profiles.php
 msgid "Duplicate Data Source Profile"
 msgid_plural "Duplicate Date Source Profiles"
-msgstr[0] "ملف تعريف مصدر البيانات المكرر"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "ملفات تعريف مصدر البيانات المكررة"
+msgstr[1] "ملف تعريف مصدر البيانات المكرر"
+msgstr[2] "ملفا تعريف مصدر البيانات المكرران"
+msgstr[3] "ملفات تعريف مصدر البيانات المكررة"
+msgstr[4] "ملفات تعريف مصدر البيانات المكررة"
+msgstr[5] "ملفات تعريف مصدر البيانات المكررة"
 
 #: data_source_profiles.php
 msgid "Unable to duplicate Data Source Profile.  Check Cacti Log for errors."
@@ -3596,7 +3584,7 @@ msgstr "يوم %d"
 
 #: data_source_profiles.php include/global_arrays.php
 #: include/global_settings.php
-#, fuzzy, php-format
+#, php-format
 msgid "%d Days"
 msgstr "%d أيام"
 
@@ -3687,62 +3675,62 @@ msgstr[5] ""
 #: data_sources.php
 msgid "The following graph is using these data sources:"
 msgid_plural "The following graphs are using these data sources:"
-msgstr[0] "يستخدم الرسم البياني التالي مصادر البيانات هذه:"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "تستخدم الرسوم البيانية التالية مصادر البيانات هذه:"
+msgstr[1] "يستخدم الرسم البياني التالي مصادر البيانات هذه:"
+msgstr[2] "تستخدم الرسوم البيانية التالية مصادر البيانات هذه:"
+msgstr[3] "تستخدم الرسوم البيانية التالية مصادر البيانات هذه:"
+msgstr[4] "تستخدم الرسوم البيانية التالية مصادر البيانات هذه:"
+msgstr[5] "تستخدم الرسوم البيانية التالية مصادر البيانات هذه:"
 
 #: data_sources.php
 msgid "Leave the <strong>Graph</strong> untouched."
 msgid_plural "Leave all <strong>Graphs</strong> untouched."
-msgstr[0] "اترك <strong>الرسم البياني</strong> دون تغيير."
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "اترك جميع <strong>الرسوم البيانية</strong> دون تغيير."
+msgstr[1] "اترك <strong>الرسم البياني</strong> دون تغيير."
+msgstr[2] "اترك جميع <strong>الرسوم البيانية</strong> دون تغيير."
+msgstr[3] "اترك جميع <strong>الرسوم البيانية</strong> دون تغيير."
+msgstr[4] "اترك جميع <strong>الرسوم البيانية</strong> دون تغيير."
+msgstr[5] "اترك جميع <strong>الرسوم البيانية</strong> دون تغيير."
 
 #: data_sources.php
 msgid "Delete all <strong>Graph Items</strong> that reference this Data Source."
 msgid_plural "Delete all <strong>Graph Items</strong> that reference these Data Sources."
-msgstr[0] "حذف كافة <strong>عناصر الرسم البياني</strong> التي تشير إلى مصدر البيانات هذا."
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "حذف كافة <strong>عناصر الرسم البياني</strong> التي تشير إلى مصادر البيانات هذه."
+msgstr[1] "حذف كافة <strong>عناصر الرسم البياني</strong> التي تشير إلى مصدر البيانات هذا."
+msgstr[2] "حذف كافة <strong>عناصر الرسم البياني</strong> التي تشير إلى مصادر البيانات هذه."
+msgstr[3] "حذف كافة <strong>عناصر الرسم البياني</strong> التي تشير إلى مصادر البيانات هذه."
+msgstr[4] "حذف كافة <strong>عناصر الرسم البياني</strong> التي تشير إلى مصادر البيانات هذه."
+msgstr[5] "حذف كافة <strong>عناصر الرسم البياني</strong> التي تشير إلى مصادر البيانات هذه."
 
 #: data_sources.php
 msgid "Delete all <strong>Graphs</strong> that reference this Data Source."
 msgid_plural "Delete all <strong>Graphs</strong> that reference these Data Sources."
-msgstr[0] "حذف كافة <strong>الرسوم البيانية</strong> التي تشير إلى مصدر البيانات هذا."
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "حذف كافة <strong>الرسوم البيانية</strong> التي تشير إلى مصادر البيانات هذه."
+msgstr[1] "حذف كافة <strong>الرسوم البيانية</strong> التي تشير إلى مصدر البيانات هذا."
+msgstr[2] "حذف كافة <strong>الرسوم البيانية</strong> التي تشير إلى مصادر البيانات هذه."
+msgstr[3] "حذف كافة <strong>الرسوم البيانية</strong> التي تشير إلى مصادر البيانات هذه."
+msgstr[4] "حذف كافة <strong>الرسوم البيانية</strong> التي تشير إلى مصادر البيانات هذه."
+msgstr[5] "حذف كافة <strong>الرسوم البيانية</strong> التي تشير إلى مصادر البيانات هذه."
 
 #: data_sources.php
 msgid "Delete Data Source"
 msgid_plural "Delete Data Sources"
-msgstr[0] "حذف مصدر البيانات"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "حذف مصادر البيانات"
+msgstr[1] "حذف مصدر البيانات"
+msgstr[2] "حذف مصادر البيانات"
+msgstr[3] "حذف مصادر البيانات"
+msgstr[4] "حذف مصادر البيانات"
+msgstr[5] "حذف مصادر البيانات"
 
 #: data_sources.php
 msgid "Choose a new Device for this Data Source and click 'Continue'."
 msgid_plural "Choose a new Device for these Data Sources and click 'Continue'"
-msgstr[0] "اختر جهازا جديدا لمصدر البيانات هذا وانقر فوق \"متابعة\"."
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "اختر جهازا جديدا لمصادر البيانات هذه وانقر فوق \"متابعة\""
+msgstr[1] "اختر جهازا جديدا لمصدر البيانات هذا وانقر فوق \"متابعة\"."
+msgstr[2] "اختر جهازا جديدا لمصادر البيانات هذه وانقر فوق \"متابعة\""
+msgstr[3] "اختر جهازا جديدا لمصادر البيانات هذه وانقر فوق \"متابعة\""
+msgstr[4] "اختر جهازا جديدا لمصادر البيانات هذه وانقر فوق \"متابعة\""
+msgstr[5] "اختر جهازا جديدا لمصادر البيانات هذه وانقر فوق \"متابعة\""
 
 #: data_sources.php
 msgid "New Device:"
@@ -3751,12 +3739,12 @@ msgstr "جهاز جديد:"
 #: data_sources.php
 msgid "Click 'Continue' to enable the following Data Source."
 msgid_plural "Click 'Continue' to enable all following Data Sources."
-msgstr[0] "انقر فوق \"متابعة\" لتمكين مصدر البيانات التالي."
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "انقر فوق \"متابعة\" لتمكين جميع مصادر البيانات التالية."
+msgstr[1] "انقر فوق \"متابعة\" لتمكين مصدر البيانات التالي."
+msgstr[2] "انقر فوق \"متابعة\" لتمكين جميع مصادر البيانات التالية."
+msgstr[3] "انقر فوق \"متابعة\" لتمكين جميع مصادر البيانات التالية."
+msgstr[4] "انقر فوق \"متابعة\" لتمكين جميع مصادر البيانات التالية."
+msgstr[5] "انقر فوق \"متابعة\" لتمكين جميع مصادر البيانات التالية."
 
 #: data_sources.php
 #, fuzzy
@@ -3772,12 +3760,12 @@ msgstr[5] ""
 #: data_sources.php
 msgid "Click 'Continue' to disable the following Data Source."
 msgid_plural "Click 'Continue' to disable all following Data Sources."
-msgstr[0] "انقر فوق \"متابعة\" لتعطيل مصدر البيانات التالي."
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "انقر فوق \"متابعة\" لتعطيل جميع مصادر البيانات التالية."
+msgstr[1] "انقر فوق \"متابعة\" لتعطيل مصدر البيانات التالي."
+msgstr[2] "انقر فوق \"متابعة\" لتعطيل جميع مصادر البيانات التالية."
+msgstr[3] "انقر فوق \"متابعة\" لتعطيل جميع مصادر البيانات التالية."
+msgstr[4] "انقر فوق \"متابعة\" لتعطيل جميع مصادر البيانات التالية."
+msgstr[5] "انقر فوق \"متابعة\" لتعطيل جميع مصادر البيانات التالية."
 
 #: data_sources.php
 #, fuzzy
@@ -3793,22 +3781,22 @@ msgstr[5] ""
 #: data_sources.php
 msgid "Click 'Continue' to re-apply the suggested name to the following Data Source."
 msgid_plural "Click 'Continue' to re-apply the suggested names to all following Data Sources."
-msgstr[0] "انقر فوق \"متابعة\" لإعادة تطبيق الاسم المقترح على مصدر البيانات التالي."
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "انقر فوق \"متابعة\" لإعادة تطبيق الأسماء المقترحة على جميع مصادر البيانات التالية."
+msgstr[1] "انقر فوق \"متابعة\" لإعادة تطبيق الاسم المقترح على مصدر البيانات التالي."
+msgstr[2] "انقر فوق \"متابعة\" لإعادة تطبيق الأسماء المقترحة على جميع مصادر البيانات التالية."
+msgstr[3] "انقر فوق \"متابعة\" لإعادة تطبيق الأسماء المقترحة على جميع مصادر البيانات التالية."
+msgstr[4] "انقر فوق \"متابعة\" لإعادة تطبيق الأسماء المقترحة على جميع مصادر البيانات التالية."
+msgstr[5] "انقر فوق \"متابعة\" لإعادة تطبيق الأسماء المقترحة على جميع مصادر البيانات التالية."
 
 #: data_sources.php
 msgid "Reapply Suggested Naming to Data Source"
 msgid_plural "Reapply Suggested Naming to Data Sources"
-msgstr[0] "إعادة تطبيق التسمية المقترحة على مصدر البيانات"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "إعادة تطبيق التسمية المقترحة على مصادر البيانات"
+msgstr[1] "إعادة تطبيق التسمية المقترحة على مصدر البيانات"
+msgstr[2] "إعادة تطبيق التسمية المقترحة على مصادر البيانات"
+msgstr[3] "إعادة تطبيق التسمية المقترحة على مصادر البيانات"
+msgstr[4] "إعادة تطبيق التسمية المقترحة على مصادر البيانات"
+msgstr[5] "إعادة تطبيق التسمية المقترحة على مصادر البيانات"
 
 #: data_sources.php data_templates.php
 #, php-format
@@ -3878,7 +3866,7 @@ msgstr "تحرير الرسم البياني: \"%s\"."
 
 #: data_sources.php graphs.php
 msgid "Edit Device."
-msgstr "تحرير الجهاز"
+msgstr "تحرير الجهاز."
 
 #: data_sources.php
 msgid "Edit Data Template."
@@ -3886,11 +3874,11 @@ msgstr "تحرير قالب البيانات."
 
 #: data_sources.php
 msgid "Disable Data Source."
-msgstr "تعطيل مصدر البيانات"
+msgstr "تعطيل مصدر البيانات."
 
 #: data_sources.php
 msgid "Enable Data Source."
-msgstr "تمكين مصدر البيانات"
+msgstr "تمكين مصدر البيانات."
 
 #: data_sources.php
 msgid "Selected Data Template"
@@ -3961,7 +3949,7 @@ msgstr "خارجي"
 
 #: data_sources.php include/global_arrays.php include/global_settings.php
 msgid "1 Minute"
-msgstr "1 دقيقة"
+msgstr "دقيقة واحدة"
 
 #: data_sources.php
 msgid "Data Sources [ All Devices ]"
@@ -4383,7 +4371,7 @@ msgstr "%d ثانية متبقية."
 
 #: graph_realtime.php
 msgid " seconds left."
-msgstr "الثواني المتبقية."
+msgstr " الثواني المتبقية."
 
 #: graph_templates.php
 msgid "Change Settings"
@@ -4766,7 +4754,7 @@ msgstr "تحويل إلى قالب الرسم البياني"
 
 #: graphs.php
 msgid "No Device - "
-msgstr "جهاز"
+msgstr "جهاز "
 
 #: graphs.php
 #, php-format
@@ -4894,7 +4882,7 @@ msgstr "مصدر (مصادر) البيانات التالي قيد الاستخ�
 
 #: graphs.php
 msgid "Please confirm"
-msgstr "قم بالتآكيد."
+msgstr "قم بالتآكيد"
 
 #: graphs.php
 msgid "Select the Aggregate Template to use and press 'Continue' to create your Aggregate Graph.  Otherwise press 'Cancel' to return."
@@ -5182,7 +5170,7 @@ msgstr "تغيير إعدادات الجهاز"
 
 #: host.php pollers.php
 msgid "Clear Statistics"
-msgstr "مسح الاحصائيات"
+msgstr "مسح الإحصائيات"
 
 #: host.php
 msgid "Sync to Device Template"
@@ -5194,7 +5182,7 @@ msgstr "وضع الجهاز في التقرير"
 
 #: host.php
 msgid "Data Query Re-indexed."
-msgstr "فهرس استعلام البيانات"
+msgstr "فهرس استعلام البيانات."
 
 #: host.php
 msgid "Device Data Query Re-indexed.  Verbose output displayed."
@@ -5206,7 +5194,7 @@ msgstr "تم تمكين تصحيح أخطاء الجهاز للجهاز."
 
 #: host.php
 msgid "Device Debugging Disabled for Device."
-msgstr "الجهاز معطل"
+msgstr "الجهاز معطل."
 
 #: host.php
 msgid "Poller Cache for Device Refreshed."
@@ -5386,7 +5374,7 @@ msgstr "بيانات تصحيح الاستعلام عن البيانات"
 
 #: host.php lib/functions.php tree.php user_admin.php user_group_admin.php
 msgid "Copy"
-msgstr "نسخ"
+msgstr "نسخة"
 
 #: host.php
 msgid "Hide"
@@ -5547,7 +5535,7 @@ msgstr "مقدار الوقت المستغرق لجمع البيانات من ه
 
 #: host.php
 msgid "Current (ms)"
-msgstr "الحالي (بالثانية)"
+msgstr "الحالي (مللي ثانية)"
 
 #: host.php
 msgid "The current ping time in milliseconds to reach the Device."
@@ -5694,7 +5682,7 @@ msgstr "غير معين"
 
 #: host_templates.php
 msgid "No Device Templates Found"
-msgstr "لم يتم العثور على قوالب الأجهزة"
+msgstr "لم يتم العثور على قوالب أجهزة"
 
 #: include/auth.php
 msgid "Not Logged In"
@@ -5994,7 +5982,7 @@ msgstr "تغيير كلمة المرور المستندة إلى LDAP / AD غي�
 
 #: include/global_arrays.php
 msgid "Password successfully changed."
-msgstr "تم تغيير كلمة المرور بنجاح‪.‬"
+msgstr "تم تغيير كلمة المرور بنجاح‪.‬."
 
 #: include/global_arrays.php
 msgid "Unable to clear log, no write permissions"
@@ -6363,7 +6351,7 @@ msgid "Every Minute"
 msgstr "كل دقيقة"
 
 #: include/global_arrays.php
-#, fuzzy, php-format
+#, php-format
 msgid "Every %d Minutes"
 msgstr "كل %d دقيقة"
 
@@ -7539,7 +7527,7 @@ msgstr "البرتغالية"
 
 #: include/global_arrays.php
 msgid "Portuguese (Brazil)"
-msgstr "البرتغالية (البرازيل)."
+msgstr "البرتغالية (البرازيل)"
 
 #: include/global_arrays.php
 msgid "Russian"
@@ -7595,16 +7583,15 @@ msgstr "فشل"
 
 #: include/global_arrays.php
 msgid "[Warning]"
-msgstr "تحذير:"
+msgstr "تحذير"
 
 #: include/global_arrays.php
 msgid "[Restart]"
 msgstr "[إعادة تشغيل]"
 
 #: include/global_arrays.php
-#, fuzzy
 msgid "[Success]"
-msgstr "نجاح"
+msgstr "نجح"
 
 #: include/global_arrays.php
 msgid "[Skipped]"
@@ -7693,7 +7680,7 @@ msgstr "عرض بيانات استعلام ذاكرة التخزين المؤق�
 
 #: include/global_arrays.php
 msgid "Clear Log"
-msgstr "سجل تطهيرها"
+msgstr "مسح السجل"
 
 #: include/global_arrays.php utilities.php
 msgid "View User Log"
@@ -7737,7 +7724,7 @@ msgstr "رابط خارجي"
 
 #: include/global_arrays.php
 msgid "(Action)"
-msgstr "العمل:"
+msgstr "العمل"
 
 #: include/global_arrays.php
 msgid "Cacti Help"
@@ -7801,7 +7788,7 @@ msgstr "ساعات"
 
 #: include/global_arrays.php lib/api_device.php
 msgid "minutes"
-msgstr "دقيقة"
+msgstr "دقائق"
 
 #: include/global_arrays.php
 msgid "seconds"
@@ -9096,7 +9083,7 @@ msgstr "اسم الحقل الذي يجب استخدامه في عنصر الق�
 
 #: include/global_form.php
 msgid "Operator."
-msgstr "جراح"
+msgstr "جراح."
 
 #: include/global_form.php
 msgid "Matching Pattern"
@@ -9108,7 +9095,7 @@ msgstr "النمط المراد مقارنته."
 
 #: include/global_form.php
 msgid "Sequence."
-msgstr "تسلسل، تتابع، متوالية"
+msgstr "تسلسل، تتابع، متوالية."
 
 #: include/global_form.php
 msgid "A useful name for this Rule."
@@ -9188,19 +9175,19 @@ msgstr "نمط سلسلة الاستبدال لاستخدامه كرأس شجر�
 
 #: include/global_languages.php
 msgid " T"
-msgstr "T"
+msgstr " T"
 
 #: include/global_languages.php
 msgid " G"
-msgstr "ز"
+msgstr " ز"
 
 #: include/global_languages.php
 msgid " M"
-msgstr "M"
+msgstr " M"
 
 #: include/global_languages.php
 msgid " K"
-msgstr "ك"
+msgstr " ك"
 
 #: include/global_settings.php
 msgid "Paths"
@@ -9974,7 +9961,7 @@ msgstr "بروتوكول خصوصية SNMPv3 الافتراضي لجميع ال�
 
 #: include/global_settings.php
 msgid "Privacy Passphrase (v3)"
-msgstr "عبارة الخصوصية (الإصدار 3)."
+msgstr "عبارة الخصوصية (الإصدار 3)"
 
 #: include/global_settings.php
 msgid "Default SNMPv3 Privacy Passphrase for all new Devices."
@@ -10564,7 +10551,7 @@ msgstr "ضوابط تعطيل الاختيار لزيادة OID أثناء ال�
 
 #: include/global_settings.php
 msgid "Additional Data Collector Settings"
-msgstr "حالة جامع البيانات عن بعد:"
+msgstr "حالة جامع البيانات عن بعد"
 
 #: include/global_settings.php
 msgid "Invalid Data Logging"
@@ -10596,7 +10583,7 @@ msgstr "قيمة المهلة Script و Script Server"
 
 #: include/global_settings.php
 msgid "The maximum time that spine will wait on a script to complete.  This timeout value is in seconds and is only valid for the spine Data Collector."
-msgstr "الحد الأقصى للوقت الذي سينتظره Cacti على برنامج نصي لإكماله. قيمة المهلة هذه بالثواني"
+msgstr "الحد الأقصى للوقت الذي سينتظره Cacti على برنامج نصي لإكماله. قيمة المهلة هذه بالثواني."
 
 #: include/global_settings.php
 msgid "Periodic All Device Re-Index"
@@ -10751,7 +10738,7 @@ msgstr "اسم الحساب الإداري الأساسي الذي سيتلقى 
 
 #: include/global_settings.php user_domains.php
 msgid "No User"
-msgstr "المستخدم.:"
+msgstr "المستخدم."
 
 #: include/global_settings.php
 msgid "Guest User"
@@ -11061,7 +11048,7 @@ msgstr "تصفية البحث"
 
 #: include/global_settings.php
 msgid "Search filter to use to locate the user in the LDAP directory, such as for windows: <i>'(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))'</i> or for OpenLDAP: <i>'(&(objectClass=account)(uid=&lt;username&gt))'</i>.  '&lt;username&gt' is replaced with the username that was supplied at the login prompt. "
-msgstr "استخدم فلتر البحث لتحديد موقع المستخدم في دليل LDAP ، مثل النوافذ: <i>&quot;(&amp; (objectclass = user) (objectcategory = user) (userPrincipalName = &lt;username&gt; *)) &#39;</i> أو لـ OpenLDAP: <i>&#39; (&amp; (objectClass = حساب) (uid = &lt;username&gt;)) &#39;</i> . يتم استبدال &quot;&lt;username&gt;&quot; باسم المستخدم الذي تم توفيره في موجه تسجيل الدخول."
+msgstr "استخدم فلتر البحث لتحديد موقع المستخدم في دليل LDAP ، مثل النوافذ: <i>&quot;(&amp; (objectclass = user) (objectcategory = user) (userPrincipalName = &lt;username&gt; *)) &#39;</i> أو لـ OpenLDAP: <i>&#39; (&amp; (objectClass = حساب) (uid = &lt;username&gt;)) &#39;</i> . يتم استبدال &quot;&lt;username&gt;&quot; باسم المستخدم الذي تم توفيره في موجه تسجيل الدخول. "
 
 #: include/global_settings.php user_domains.php
 msgid "Search Distinguished Name (DN)"
@@ -11085,7 +11072,7 @@ msgstr "إعدادات LDAP CN"
 
 #: include/global_settings.php user_domains.php
 msgid "Field that will replace the Full Name when creating a new user, taken from LDAP. (on windows: displayname) "
-msgstr "الحقل الذي سيحل محل الاسم الكامل عند إنشاء مستخدم جديد ، مأخوذ من LDAP. (على النوافذ: displayname)"
+msgstr "الحقل الذي سيحل محل الاسم الكامل عند إنشاء مستخدم جديد ، مأخوذ من LDAP. (على النوافذ: displayname) "
 
 #: include/global_settings.php package_import.php
 msgid "Email"
@@ -12395,7 +12382,7 @@ msgstr "النظام:"
 
 #: lib/api_device.php
 msgid "Uptime:"
-msgstr "مدة التشغيل"
+msgstr "مدة التشغيل:"
 
 #: lib/api_device.php
 msgid "Hostname:"
@@ -12407,7 +12394,7 @@ msgstr "موقعك:"
 
 #: lib/api_device.php
 msgid "Contact:"
-msgstr "بيانتت اتصال"
+msgstr "بيانتت اتصال:"
 
 #: lib/api_device.php lib/functions.php
 msgid "Ping Results"
@@ -12437,22 +12424,22 @@ msgstr "الرسم البياني: (%s%s)"
 #: lib/auth.php
 #, php-format
 msgid "Device:(%s%s)"
-msgstr "الجهاز: (%s%ق)"
+msgstr "الجهاز:(%s%s)"
 
 #: lib/auth.php
 #, php-format
 msgid "Template:(%s%s)"
-msgstr "قالب:(%s%ق)"
+msgstr "القالب:(%s%s)"
 
 #: lib/auth.php
 #, php-format
 msgid "Graph+Device+Template:(%s%s)"
-msgstr "رسم بياني + جهاز + قالب: (%s%ق)"
+msgstr "الرسم البياني+الجهاز+القالب:(%s%s)"
 
 #: lib/auth.php
 #, php-format
 msgid "Device+Template:(%s%s)"
-msgstr "الجهاز+القالب:(%s%ق)"
+msgstr "الجهاز+القالب:(%s%s)"
 
 #: lib/auth.php
 msgid "Restricted By: "
@@ -12460,7 +12447,7 @@ msgstr "مصدر مقيد "
 
 #: lib/auth.php
 msgid "Granted By: "
-msgstr "تم منحها بواسطة:"
+msgstr "تم منحها بواسطة: "
 
 #: lib/auth.php
 msgid "Granted"
@@ -12468,7 +12455,7 @@ msgstr "مُنح"
 
 #: lib/auth.php
 msgid "Restricted"
-msgstr "مصدر مقيد "
+msgstr "مصدر مقيد"
 
 #: lib/auth.php
 msgid "Branch:"
@@ -12587,15 +12574,15 @@ msgstr "فلاتر السجل"
 
 #: lib/clog_webapi.php
 msgid " - Admin Filter active"
-msgstr "- مرشح الإدارة النشط"
+msgstr " - مرشح الإدارة النشط"
 
 #: lib/clog_webapi.php
 msgid " - Admin Unfiltered"
-msgstr "- المشرف غير المرشح"
+msgstr " - المشرف غير المرشح"
 
 #: lib/clog_webapi.php
 msgid " - Admin view"
-msgstr "- عرض المسؤول"
+msgstr " - عرض المسؤول"
 
 #: lib/clog_webapi.php
 #, php-format
@@ -13140,7 +13127,7 @@ msgstr "التصحيح لم يكتمل بعد 5 استطلاعات"
 
 #: lib/dsdebug.php
 msgid "Failed fields: "
-msgstr "الحقول الفاشلة:"
+msgstr "الحقول الفاشلة: "
 
 #: lib/dsdebug.php
 msgid "Data Source is not set as Active"
@@ -13166,7 +13153,7 @@ msgstr "لم يتم تحديث ملف RRD بعد الاقتراع"
 
 #: lib/dsdebug.php
 msgid "Data Source returned Bad Results for "
-msgstr "مصدر البيانات إرجاع &quot;نتائج سيئة&quot; لـ"
+msgstr "مصدر البيانات إرجاع &quot;نتائج سيئة&quot; لـ "
 
 #: lib/dsdebug.php
 msgid "Data Source was not polled"
@@ -13270,7 +13257,7 @@ msgstr "فشل الاتصال: %s"
 
 #: lib/functions.php
 msgid "SMTP error: "
-msgstr "خطأ SMTP:"
+msgstr "خطأ SMTP: "
 
 #: lib/functions.php
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
@@ -13534,7 +13521,7 @@ msgstr "SpikeKill النتائج"
 
 #: lib/html.php
 msgid "Standard Mode"
-msgstr "وضع المسح."
+msgstr "وضع المسح"
 
 #: lib/html.php
 msgid "Compact Mode"
@@ -13581,9 +13568,8 @@ msgid "Cacti Project Page"
 msgstr "صفحة مشروع الصبار"
 
 #: lib/html.php
-#, fuzzy
 msgid "Spine"
-msgstr "المسار إلى ملف التكوين العمود الفقري. افتراضيًا ، في cwd of Spine أو / etc إذا لم يتم تحديدها."
+msgstr "Spine"
 
 #: lib/html.php
 msgid "RRDProxy"
@@ -13623,7 +13609,7 @@ msgstr "الإبلاغ عن خطأ"
 
 #: lib/html.php
 msgid "Cacti"
-msgstr "صبار"
+msgstr "Cacti"
 
 #: lib/html.php
 msgid "Click to Show/Hide Filter"
@@ -13775,7 +13761,7 @@ msgstr "وضع التكبير"
 
 #: lib/html.php
 msgid "Quick"
-msgstr "سريع. حي. حبلى"
+msgstr "سريع"
 
 #: lib/html.php
 msgid "Open in new tab"
@@ -13914,7 +13900,7 @@ msgid "Columns"
 msgstr "اعمدة"
 
 #: lib/html_graph.php lib/html_tree.php
-#, fuzzy, php-format
+#, php-format
 msgid "%d Column"
 msgstr "%d عمود"
 
@@ -14432,7 +14418,7 @@ msgstr "التكرار"
 
 #: lib/html_reports.php
 msgid "Last Run"
-msgstr "التشغيل الماضي"
+msgstr "آخر تشغيل"
 
 #: lib/html_reports.php
 msgid "Next Run"
@@ -14468,7 +14454,7 @@ msgstr "على أساس قالب"
 
 #: lib/html_tree.php lib/reports.php
 msgid "Tree:"
-msgstr "شجرة"
+msgstr "شجرة:"
 
 #: lib/html_tree.php
 msgid "Site:"
@@ -14476,7 +14462,7 @@ msgstr "الموقع:"
 
 #: lib/html_tree.php
 msgid "Leaf:"
-msgstr "ورقة"
+msgstr "ورقة:"
 
 #: lib/html_tree.php
 msgid "Device Template:"
@@ -14564,7 +14550,7 @@ msgstr "خطأ في التحقق من الصحة للمتغير %s بقيمة %s
 
 #: lib/html_validate.php
 msgid "Validation Error"
-msgstr "عنوان / خطأ التحقق  مساحة الخريطة"
+msgstr "عنوان / خطأ التحقق مساحة الخريطة"
 
 #: lib/import.php
 msgid "stream wrapper rejected"
@@ -14626,7 +14612,7 @@ msgstr "ملفات الحزمة"
 
 #: lib/import.php
 msgid "[preview] "
-msgstr "معاينة"
+msgstr "معاينة "
 
 #: lib/import.php
 msgid "Cacti would make the following changes if the Template was imported:"
@@ -14637,9 +14623,8 @@ msgid "Cacti has imported the following items for the Template:"
 msgstr "قامت Cacti باستيراد العناصر التالية للقالب:"
 
 #: lib/import.php
-#, fuzzy
 msgid "[success]"
-msgstr "نجاح"
+msgstr "نجح"
 
 #: lib/import.php
 msgid "[fail]"
@@ -14882,7 +14867,7 @@ msgstr "قبول اتفاقية ترخيص GPL"
 
 #: lib/installer.php
 msgid "Select default theme: "
-msgstr "حدد المظهر الافتراضي:"
+msgstr "حدد المظهر الافتراضي: "
 
 #: lib/installer.php
 msgid "Pre-installation Checks"
@@ -14916,7 +14901,7 @@ msgstr "توصيات PHP"
 
 #: lib/installer.php
 msgid "Current"
-msgstr "بريدك الإلكتروني الحالي غير مسموح"
+msgstr "الحالي"
 
 #: lib/installer.php
 msgid "Recommended"
@@ -15268,7 +15253,7 @@ msgstr "سيعيد خيار البرنامج النصي هذا تمكين أي �
 
 #: lib/installer.php
 msgid "It is strongly suggested that you update your config.php to enable this feature by uncommenting the <b>$input_whitelist</b> variable and then running the three CLI script options above after the web based install has completed."
-msgstr "يُقترح بشدة أن تقوم بتحديث config.php الخاص بك لتمكين هذه الميزة عن طريق إلغاء <b>التعليق على</b> المتغير <b>$ input_whitelist</b> ثم تشغيل خيارات البرنامج النصي CLI الثلاثة أعلاه بعد اكتمال التثبيت المستند إلى الويب."
+msgstr "يُقترح بشدة أن تقوم بتحديث config.php الخاص بك لتمكين هذه الميزة عن طريق إلغاء التعليق على المتغير <b>$input_whitelist</b> ثم تشغيل خيارات البرنامج النصي CLI الثلاثة أعلاه بعد اكتمال التثبيت المستند إلى الويب."
 
 #: lib/installer.php
 msgid "Check the Checkbox below to acknowledge that you have read and understand this security concern"
@@ -15312,7 +15297,7 @@ msgstr "الخيارات الافتراضية"
 
 #: lib/installer.php
 msgid "Scan Mode"
-msgstr "وضع المسح."
+msgstr "وضع المسح"
 
 #: lib/installer.php
 msgid "Network Range"
@@ -15376,7 +15361,7 @@ msgstr "يظهر ترتيب الخادم الخاص بك متوافقًا مع U
 
 #: lib/installer.php
 msgid "Your server collation does NOT appear to be fully UTF8 compliant. "
-msgstr "لا يظهر ترتيب الخادم الخاص بك متوافقًا تمامًا مع UTF8."
+msgstr "لا يظهر ترتيب الخادم الخاص بك متوافقًا تمامًا مع UTF8. "
 
 #: lib/installer.php
 msgid "Under the [mysqld] section, locate the entries named 'character-set-server' and 'collation-server' and set them as follows:"
@@ -15392,11 +15377,11 @@ msgstr "يبدو أن الترتيب الافتراضي لقاعدة البيا�
 
 #: lib/installer.php
 msgid "Your database default collation does NOT appear to be full UTF8 compliant. "
-msgstr "لا يظهر الترتيب الافتراضي لقاعدة البيانات الخاص بك على أنه متوافق تمامًا مع UTF8."
+msgstr "لا يظهر الترتيب الافتراضي لقاعدة البيانات الخاص بك على أنه متوافق تمامًا مع UTF8. "
 
 #: lib/installer.php
 msgid "Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched.   Please ensure your database is changed to 'utf8mb4_unicode_ci' by running the following: "
-msgstr "قد تحتوي أي جداول تم إنشاؤها بواسطة المكونات الإضافية على مشكلات مرتبطة بجداول Cacti Core في حالة عدم مطابقة الترتيب. الرجاء التأكد من تغيير قاعدة البيانات الخاصة بك إلى &quot;utf8mb4_unicode_ci&quot; عن طريق تشغيل ما يلي:"
+msgstr "قد تحتوي أي جداول تم إنشاؤها بواسطة المكونات الإضافية على مشكلات مرتبطة بجداول Cacti Core في حالة عدم مطابقة الترتيب. الرجاء التأكد من تغيير قاعدة البيانات الخاصة بك إلى &quot;utf8mb4_unicode_ci&quot; عن طريق تشغيل ما يلي: "
 
 #: lib/installer.php
 msgid "Table Setup"
@@ -15429,7 +15414,7 @@ msgstr "تنسيق الصف"
 
 #: lib/installer.php
 msgid "One or more tables are too large to convert during the installation.  You should use the cli/convert_tables.php script to perform the conversion, then refresh this page. For example: "
-msgstr "جدول واحد أو أكثر كبير جدًا بحيث لا يمكن تحويله أثناء التثبيت. يجب عليك استخدام البرنامج النصي cli / convert_tables.php لتنفيذ التحويل ، ثم تحديث هذه الصفحة. فمثلا:"
+msgstr "جدول واحد أو أكثر كبير جدًا بحيث لا يمكن تحويله أثناء التثبيت. يجب عليك استخدام البرنامج النصي cli / convert_tables.php لتنفيذ التحويل ، ثم تحديث هذه الصفحة. فمثلا: "
 
 #: lib/installer.php
 msgid "The following tables should be converted to UTF8 and InnoDB with a Dynamic row format.  Please select the tables that you wish to convert during the installation process."
@@ -15626,7 +15611,7 @@ msgstr "فشل تحديث مجموعة خيارات التنفيذ التلقا�
 
 #: lib/installer.php
 msgid "Failed to find any automation option set"
-msgstr "تعذّر العثور على البيانات لنسخها!"
+msgstr "تعذّر العثور على أي مجموعة خيارات أتمتة"
 
 #: lib/installer.php
 #, php-format
@@ -16013,7 +15998,7 @@ msgstr "التقرير:"
 
 #: lib/reports.php
 msgid "Graph Timespan:"
-msgstr "المخطط الزمني"
+msgstr "المخطط الزمني:"
 
 #: lib/reports.php
 msgid "Graph Alignment:"
@@ -16134,7 +16119,7 @@ msgstr "أدنى ضربات القلب"
 
 #: lib/rrd.php
 msgid "Min"
-msgstr "بحد أدنى"
+msgstr "دقيقة"
 
 #: lib/rrd.php
 msgid "Max"
@@ -16383,6 +16368,10 @@ msgstr ""
 #| msgid "Windows Related"
 msgid "Window Range:  All"
 msgstr "النوافذ ذات الصلة"
+
+#: lib/spikekill.php
+msgid "FATAL: Unable to generate a random temporary file name.  Check the system entropy source!"
+msgstr ""
 
 #: lib/spikekill.php
 msgid "FATAL: RRDtool Command Failed.  Please verify that the RRDtool path is valid in Settings->Paths!"
@@ -16786,10 +16775,8 @@ msgid "Not applicable to this engine"
 msgstr "لا تفضيلات"
 
 #: lib/utility.php
-#, fuzzy
-#| msgid "Support"
 msgid "Supported"
-msgstr "الدعم"
+msgstr "مدعوم"
 
 #: lib/utility.php
 #, php-format
@@ -17069,7 +17056,7 @@ msgstr "نمط"
 
 #: links.php
 msgid "Edit Page"
-msgstr "تعديل الصفحـة"
+msgstr "تعديل الصفحة"
 
 #: links.php
 msgid "View Page"
@@ -17203,9 +17190,8 @@ msgid "SNMP Notification Receivers"
 msgstr "استقبال إشعارات SNMP"
 
 #: managers.php
-#, fuzzy
 msgid "Id"
-msgstr " الهویة الشخصیة"
+msgstr "المعرف"
 
 #: managers.php
 msgid "Receivers"
@@ -17279,32 +17265,32 @@ msgstr "لا توجد إدخالات سجل إعلام SNMP"
 #: managers.php
 msgid "Click 'Continue' to delete the following Notification Receiver"
 msgid_plural "Click 'Continue' to delete following Notification Receiver"
-msgstr[0] "انقر فوق \"متابعة\" لحذف مستقبل الإشعارات التالي"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "انقر فوق \"متابعة\" لحذف مستقبلي الإشعارات التالين"
+msgstr[1] "انقر فوق \"متابعة\" لحذف مستقبل الإشعارات التالي"
+msgstr[2] "انقر فوق \"متابعة\" لحذف مستقبلي الإشعارات التالين"
+msgstr[3] "انقر فوق \"متابعة\" لحذف مستقبلي الإشعارات التالين"
+msgstr[4] "انقر فوق \"متابعة\" لحذف مستقبلي الإشعارات التالين"
+msgstr[5] "انقر فوق \"متابعة\" لحذف مستقبلي الإشعارات التالين"
 
 #: managers.php
 msgid "Click 'Continue' to enable the following Notification Receiver"
 msgid_plural "Click 'Continue' to enable following Notification Receiver"
-msgstr[0] "انقر فوق \"متابعة\" لتمكين مستقبل الإشعارات التالي"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "انقر فوق \"متابعة\" لتمكين مستقبلي الإشعارات التالين"
+msgstr[1] "انقر فوق \"متابعة\" لتمكين مستقبل الإشعارات التالي"
+msgstr[2] "انقر فوق \"متابعة\" لتمكين مستقبلي الإشعارات التالين"
+msgstr[3] "انقر فوق \"متابعة\" لتمكين مستقبلي الإشعارات التالين"
+msgstr[4] "انقر فوق \"متابعة\" لتمكين مستقبلي الإشعارات التالين"
+msgstr[5] "انقر فوق \"متابعة\" لتمكين مستقبلي الإشعارات التالين"
 
 #: managers.php
 msgid "Click 'Continue' to disable the following Notification Receiver"
 msgid_plural "Click 'Continue' to disable following Notification Receiver"
-msgstr[0] "انقر فوق \"متابعة\" لتعطيل مستقبل الإشعارات التالي"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "انقر فوق \"متابعة\" لتعطيل مستقبلي الإشعارات التالين"
+msgstr[1] "انقر فوق \"متابعة\" لتعطيل مستقبل الإشعارات التالي"
+msgstr[2] "انقر فوق \"متابعة\" لتعطيل مستقبلي الإشعارات التالين"
+msgstr[3] "انقر فوق \"متابعة\" لتعطيل مستقبلي الإشعارات التالين"
+msgstr[4] "انقر فوق \"متابعة\" لتعطيل مستقبلي الإشعارات التالين"
+msgstr[5] "انقر فوق \"متابعة\" لتعطيل مستقبلي الإشعارات التالين"
 
 #: managers.php
 #, php-format
@@ -17418,7 +17404,7 @@ msgstr "استيراد أسماء ملفات الحزمة [لا شيء محدد 
 
 #: package_import.php
 msgid "Package"
-msgstr "الباقة "
+msgstr "الباقة"
 
 #: package_import.php
 msgid "Filename"
@@ -17718,7 +17704,7 @@ msgstr "تم تجاوز الحد الأقصى لوقت التشغيل البال
 
 #: poller.php
 msgid "WARNING: Cacti Polling Cycle Exceeded Poller Interval by "
-msgstr "تحذير: تجاوزت دورة استقصاء الصبار فترة الاستقصاء بمقدار"
+msgstr "تحذير: تجاوزت دورة استقصاء الصبار فترة الاستقصاء بمقدار "
 
 #: poller.php
 #, php-format
@@ -17785,7 +17771,7 @@ msgstr "اسم المضيف لمجمع البيانات. قد يكون من ال
 
 #: pollers.php sites.php
 msgid "TimeZone"
-msgstr "وحدة زمنية"
+msgstr "المنطقة الزمنية"
 
 #: pollers.php
 msgid "The TimeZone for the Data Collector."
@@ -17797,7 +17783,7 @@ msgstr "ملاحظات لقاعدة بيانات جامعي البيانات ه�
 
 #: pollers.php
 msgid "Collection Settings"
-msgstr "إعدادات التجميعة"
+msgstr "إعدادات الجمع"
 
 #: pollers.php
 msgid "Processes"
@@ -17916,97 +17902,97 @@ msgstr "لقد استخدمت بالفعل اسم مضيف قاعدة البيا
 
 #: pollers.php
 msgid "Data Collector Statistics cleared."
-msgstr "احصائيات مصادر البيانات"
+msgstr "احصائيات مصادر البيانات."
 
 #: pollers.php
 msgid "Click 'Continue' to delete the following Data Collector.  Note, all devices will be disassociated from this Data Collector and mapped back to the Main Cacti Data Collector."
 msgid_plural "Click 'Continue' to delete all following Data Collectors.  Note, all devices will be disassociated from these Data Collectors and mapped back to the Main Cacti Data Collector."
-msgstr[0] "انقر فوق \"متابعة\" لحذف أداة تجميع البيانات التالية.  ملاحظة، سيتم فصل جميع الأجهزة من مجمع البيانات هذا وتعيينها مرة أخرى إلى مجمع بيانات الصبار الرئيسي."
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "انقر فوق \"متابعة\" لحذف جميع أدوات تجميع البيانات التالية.  ملاحظة، سيتم فصل جميع الأجهزة عن أدوات تجميع البيانات هذه وتعيينها مرة أخرى إلى مجمع بيانات Cacti الرئيسي."
+msgstr[1] "انقر فوق \"متابعة\" لحذف أداة تجميع البيانات التالية.  ملاحظة، سيتم فصل جميع الأجهزة عن أداة تجميع البيانات هذه وتعيينها مرة أخرى إلى مجمع بيانات Cacti الرئيسي."
+msgstr[2] "انقر فوق \"متابعة\" لحذف أداتي تجميع البيانات التاليتين.  ملاحظة، سيتم فصل جميع الأجهزة عن أداتي تجميع البيانات هاتين وتعيينها مرة أخرى إلى مجمع بيانات Cacti الرئيسي."
+msgstr[3] "انقر فوق \"متابعة\" لحذف جميع أدوات تجميع البيانات التالية.  ملاحظة، سيتم فصل جميع الأجهزة عن أدوات تجميع البيانات هذه وتعيينها مرة أخرى إلى مجمع بيانات Cacti الرئيسي."
+msgstr[4] "انقر فوق \"متابعة\" لحذف جميع أدوات تجميع البيانات التالية.  ملاحظة، سيتم فصل جميع الأجهزة عن أدوات تجميع البيانات هذه وتعيينها مرة أخرى إلى مجمع بيانات Cacti الرئيسي."
+msgstr[5] "انقر فوق \"متابعة\" لحذف جميع أدوات تجميع البيانات التالية.  ملاحظة، سيتم فصل جميع الأجهزة عن أدوات تجميع البيانات هذه وتعيينها مرة أخرى إلى مجمع بيانات Cacti الرئيسي."
 
 #: pollers.php
 msgid "Delete Data Collector"
 msgid_plural "Delete Data Collectors"
-msgstr[0] "حذف جامع البيانات"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "حذف جامعي البيانات"
+msgstr[1] "حذف جامع البيانات"
+msgstr[2] "حذف جامعي البيانات"
+msgstr[3] "حذف جامعي البيانات"
+msgstr[4] "حذف جامعي البيانات"
+msgstr[5] "حذف جامعي البيانات"
 
 #: pollers.php
 msgid "Click 'Continue' to disable the following Data Collector."
 msgid_plural "Click 'Continue' to disable the following Data Collectors."
-msgstr[0] "انقر فوق \"متابعة\" لتعطيل أداة تجميع البيانات التالية."
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "انقر فوق \"متابعة\" لتعطيل أدوات تجميع البيانات التالية."
+msgstr[1] "انقر فوق \"متابعة\" لتعطيل أداة تجميع البيانات التالية."
+msgstr[2] "انقر فوق \"متابعة\" لتعطيل أداتي تجميع البيانات التاليتين."
+msgstr[3] "انقر فوق \"متابعة\" لتعطيل أدوات تجميع البيانات التالية."
+msgstr[4] "انقر فوق \"متابعة\" لتعطيل أدوات تجميع البيانات التالية."
+msgstr[5] "انقر فوق \"متابعة\" لتعطيل أدوات تجميع البيانات التالية."
 
 #: pollers.php
 msgid "Disable Data Collector"
 msgid_plural "Disable Data Collectors"
-msgstr[0] "تعطيل جامع البيانات"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "تعطيل جامعي البيانات"
+msgstr[1] "تعطيل جامع البيانات"
+msgstr[2] "تعطيل جامعي البيانات"
+msgstr[3] "تعطيل جامعي البيانات"
+msgstr[4] "تعطيل جامعي البيانات"
+msgstr[5] "تعطيل جامعي البيانات"
 
 #: pollers.php
 msgid "Click 'Continue' to enable the following Data Collector."
 msgid_plural "Click 'Continue' to enable the following Data Collectors."
-msgstr[0] "انقر فوق \"متابعة\" لتمكين أداة تجميع البيانات التالية."
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "انقر فوق \"متابعة\" لتمكين أدوات تجميع البيانات التالية."
+msgstr[1] "انقر فوق \"متابعة\" لتمكين أداة تجميع البيانات التالية."
+msgstr[2] "انقر فوق \"متابعة\" لتمكين أداتي تجميع البيانات التاليتين."
+msgstr[3] "انقر فوق \"متابعة\" لتمكين أدوات تجميع البيانات التالية."
+msgstr[4] "انقر فوق \"متابعة\" لتمكين أدوات تجميع البيانات التالية."
+msgstr[5] "انقر فوق \"متابعة\" لتمكين أدوات تجميع البيانات التالية."
 
 #: pollers.php
 msgid "Enable Data Collector"
 msgid_plural "Enable Data Collectors"
-msgstr[0] "تمكين جامع البيانات"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "تمكين جامعي البيانات"
+msgstr[1] "تمكين جامع البيانات"
+msgstr[2] "تمكين جامعي البيانات"
+msgstr[3] "تمكين جامعي البيانات"
+msgstr[4] "تمكين جامعي البيانات"
+msgstr[5] "تمكين جامعي البيانات"
 
 #: pollers.php
 msgid "Click 'Continue' to Synchronize the Remote Data Collector for Offline Operation."
 msgid_plural "Click 'Continue' to Synchronize the Remote Data Collectors for Offline Operation."
-msgstr[0] "انقر فوق \"متابعة\" لمزامنة أداة تجميع البيانات عن بعد للتشغيل في وضع عدم الاتصال."
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "انقر فوق \"متابعة\" لمزامنة أدوات تجميع البيانات عن بعد للتشغيل في وضع عدم الاتصال."
+msgstr[1] "انقر فوق \"متابعة\" لمزامنة أداة تجميع البيانات عن بعد للتشغيل في وضع عدم الاتصال."
+msgstr[2] "انقر فوق \"متابعة\" لمزامنة أداتي تجميع البيانات عن بعد للتشغيل في وضع عدم الاتصال."
+msgstr[3] "انقر فوق \"متابعة\" لمزامنة أدوات تجميع البيانات عن بعد للتشغيل في وضع عدم الاتصال."
+msgstr[4] "انقر فوق \"متابعة\" لمزامنة أدوات تجميع البيانات عن بعد للتشغيل في وضع عدم الاتصال."
+msgstr[5] "انقر فوق \"متابعة\" لمزامنة أدوات تجميع البيانات عن بعد للتشغيل في وضع عدم الاتصال."
 
 #: pollers.php
 msgid "Click 'Continue' to Clear Data Collector Statistics for the Data Collector."
 msgid_plural "Click 'Continue' to Clear DAta Collector Statistics for the Data Collectors."
-msgstr[0] "انقر فوق \"متابعة\" لمسح إحصائيات جامع البيانات لمجمع البيانات."
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "انقر فوق \"متابعة\" لمسح إحصائيات جامعي البيانات."
+msgstr[1] "انقر فوق \"متابعة\" لمسح إحصائيات جامع البيانات لمجمع البيانات."
+msgstr[2] "انقر فوق \"متابعة\" لمسح إحصائيات جامعي البيانات."
+msgstr[3] "انقر فوق \"متابعة\" لمسح إحصائيات جامعي البيانات."
+msgstr[4] "انقر فوق \"متابعة\" لمسح إحصائيات جامعي البيانات."
+msgstr[5] "انقر فوق \"متابعة\" لمسح إحصائيات جامعي البيانات."
 
 #: pollers.php
 msgid "Clear Statistics for Data Collector"
 msgid_plural "Clear Statistics for Data Collectors"
-msgstr[0] "حالة جامع البيانات هذا."
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "مسح إحصائيات جامعي البيانات"
+msgstr[1] "مسح إحصائيات جامع البيانات"
+msgstr[2] "مسح إحصائيات جامعي البيانات"
+msgstr[3] "مسح إحصائيات جامعي البيانات"
+msgstr[4] "مسح إحصائيات جامعي البيانات"
+msgstr[5] "مسح إحصائيات جامعي البيانات"
 
 #: pollers.php sites.php
 #, php-format
@@ -18169,17 +18155,17 @@ msgstr "العمر"
 #: rrdcheck.php
 #, php-format
 msgid "%d hours"
-msgstr "%d ساعات"
+msgstr "%d د ساعات"
 
 #: rrdcheck.php
 #, php-format
 msgid "%d day"
-msgstr "%d يوم"
+msgstr "يوم %d"
 
 #: rrdcheck.php
 #, php-format
 msgid "%d days"
-msgstr "٪ d من الأيام"
+msgstr "%d أيام"
 
 #: rrdcheck.php rrdcleaner.php user_domains.php user_group_admin.php
 msgctxt "filter: use"
@@ -18189,7 +18175,7 @@ msgstr "أذهب"
 #: rrdcheck.php rrdcleaner.php user_group_admin.php
 msgctxt "filter: reset"
 msgid "Clear"
-msgstr "واضح"
+msgstr "مسح"
 
 #: rrdcheck.php
 msgctxt "filter: purge"
@@ -18466,32 +18452,32 @@ msgstr "لم يتم العثور على موقع النموذج! غير قادر
 #: sites.php
 msgid "Click 'Continue' to Delete the following Site.  Note, all Devices will be disassociated from this site."
 msgid_plural "Click 'Continue' to delete all following Sites.  Note, all devices will be disassociated from this site."
-msgstr[0] "انقر فوق \"متابعة\" لحذف الموقع التالي.  لاحظ أنه سيتم فصل جميع الأجهزة عن هذا الموقع."
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "انقر فوق \"متابعة\" لحذف جميع المواقع التالية.  لاحظ أنه سيتم فصل جميع الأجهزة عن هذه المواقع."
+msgstr[1] "انقر فوق \"متابعة\" لحذف الموقع التالي.  لاحظ أنه سيتم فصل جميع الأجهزة عن هذا الموقع."
+msgstr[2] "انقر فوق \"متابعة\" لحذف جميع المواقع التالية.  لاحظ أنه سيتم فصل جميع الأجهزة عن هذه المواقع."
+msgstr[3] "انقر فوق \"متابعة\" لحذف جميع المواقع التالية.  لاحظ أنه سيتم فصل جميع الأجهزة عن هذه المواقع."
+msgstr[4] "انقر فوق \"متابعة\" لحذف جميع المواقع التالية.  لاحظ أنه سيتم فصل جميع الأجهزة عن هذه المواقع."
+msgstr[5] "انقر فوق \"متابعة\" لحذف جميع المواقع التالية.  لاحظ أنه سيتم فصل جميع الأجهزة عن هذه المواقع."
 
 #: sites.php
 msgid "Delete Site"
 msgid_plural "Delete Sites"
-msgstr[0] "حذف الموقع"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "حذف المواقع"
+msgstr[1] "حذف الموقع"
+msgstr[2] "حذف المواقع"
+msgstr[3] "حذف المواقع"
+msgstr[4] "حذف المواقع"
+msgstr[5] "حذف المواقع"
 
 #: sites.php
 msgid "Click 'Continue' to Duplicate the following Site."
 msgid_plural "Click 'Continue' to Duplicate all following Sites."
-msgstr[0] "انقر فوق \"متابعة\" لتكرار الموقع التالي."
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "انقر فوق \"متابعة\" لتكرار جميع المواقع التالية."
+msgstr[1] "انقر فوق \"متابعة\" لتكرار الموقع التالي."
+msgstr[2] "انقر فوق \"متابعة\" لتكرار جميع المواقع التالية."
+msgstr[3] "انقر فوق \"متابعة\" لتكرار جميع المواقع التالية."
+msgstr[4] "انقر فوق \"متابعة\" لتكرار جميع المواقع التالية."
+msgstr[5] "انقر فوق \"متابعة\" لتكرار جميع المواقع التالية."
 
 #: sites.php
 msgid "Site Name:"
@@ -18500,12 +18486,12 @@ msgstr "اسم الموقع:"
 #: sites.php
 msgid "Duplicate Site"
 msgid_plural "Duplicate Sites"
-msgstr[0] "موقع مكرر"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "مواقع مكررة"
+msgstr[1] "موقع مكرر"
+msgstr[2] "موقعان مكرران"
+msgstr[3] "مواقع مكررة"
+msgstr[4] "مواقع مكررة"
+msgstr[5] "مواقع مكررة"
 
 #: sites.php
 #, fuzzy
@@ -18725,82 +18711,82 @@ msgstr "عَدَدِيٌّ"
 #: tree.php
 msgid "Click 'Continue' to delete the following Tree."
 msgid_plural "Click 'Continue' to delete following Trees."
-msgstr[0] "انقر فوق \"متابعة\" لحذف الشجرة التالية."
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "انقر فوق \"متابعة\" لحذف الأشجار التالية."
+msgstr[1] "انقر فوق \"متابعة\" لحذف الشجرة التالية."
+msgstr[2] "انقر فوق \"متابعة\" لحذف الأشجار التالية."
+msgstr[3] "انقر فوق \"متابعة\" لحذف الأشجار التالية."
+msgstr[4] "انقر فوق \"متابعة\" لحذف الأشجار التالية."
+msgstr[5] "انقر فوق \"متابعة\" لحذف الأشجار التالية."
 
 #: tree.php
 msgid "Delete Tree"
 msgid_plural "Delete Trees"
-msgstr[0] "حذف الشجرة"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "حذف الأشجار"
+msgstr[1] "حذف الشجرة"
+msgstr[2] "حذف الأشجار"
+msgstr[3] "حذف الأشجار"
+msgstr[4] "حذف الأشجار"
+msgstr[5] "حذف الأشجار"
 
 #: tree.php
 msgid "Click 'Continue' to publish the following Tree."
 msgid_plural "Click 'Continue' to publish following Trees."
-msgstr[0] "انقر فوق \"متابعة\" لنشر الشجرة التالية."
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "انقر فوق \"متابعة\" لنشر الأشجار التالية."
+msgstr[1] "انقر فوق \"متابعة\" لنشر الشجرة التالية."
+msgstr[2] "انقر فوق \"متابعة\" لنشر الأشجار التالية."
+msgstr[3] "انقر فوق \"متابعة\" لنشر الأشجار التالية."
+msgstr[4] "انقر فوق \"متابعة\" لنشر الأشجار التالية."
+msgstr[5] "انقر فوق \"متابعة\" لنشر الأشجار التالية."
 
 #: tree.php
 msgid "Publish Tree"
 msgid_plural "Publish Trees"
-msgstr[0] "نشر الشجرة"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "نشر الأشجار"
+msgstr[1] "نشر الشجرة"
+msgstr[2] "نشر الأشجار"
+msgstr[3] "نشر الأشجار"
+msgstr[4] "نشر الأشجار"
+msgstr[5] "نشر الأشجار"
 
 #: tree.php
 msgid "Click 'Continue' to un-publish the following Tree."
 msgid_plural "Click 'Continue' to un-publish following Trees."
-msgstr[0] "انقر فوق \"متابعة\" لإلغاء نشر الشجرة التالية."
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "انقر فوق \"متابعة\" لإلغاء نشر الأشجار التالية."
+msgstr[1] "انقر فوق \"متابعة\" لإلغاء نشر الشجرة التالية."
+msgstr[2] "انقر فوق \"متابعة\" لإلغاء نشر الأشجار التالية."
+msgstr[3] "انقر فوق \"متابعة\" لإلغاء نشر الأشجار التالية."
+msgstr[4] "انقر فوق \"متابعة\" لإلغاء نشر الأشجار التالية."
+msgstr[5] "انقر فوق \"متابعة\" لإلغاء نشر الأشجار التالية."
 
 #: tree.php
 msgid "Un-publish Tree"
 msgid_plural "Un-publish Trees"
-msgstr[0] "إلغاء نشر الشجرة"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "إلغاء نشر الأشجار"
+msgstr[1] "إلغاء نشر الشجرة"
+msgstr[2] "إلغاء نشر الأشجار"
+msgstr[3] "إلغاء نشر الأشجار"
+msgstr[4] "إلغاء نشر الأشجار"
+msgstr[5] "إلغاء نشر الأشجار"
 
 #: tree.php
 msgid "Click 'Continue' to un-lock the following Tree."
 msgid_plural "Click 'Continue' to un-lock following Trees."
-msgstr[0] "انقر فوق \"متابعة\" لإلغاء قفل الشجرة التالية."
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "انقر فوق \"متابعة\" لإلغاء قفل الأشجار التالية."
+msgstr[1] "انقر فوق \"متابعة\" لإلغاء قفل الشجرة التالية."
+msgstr[2] "انقر فوق \"متابعة\" لإلغاء قفل الأشجار التالية."
+msgstr[3] "انقر فوق \"متابعة\" لإلغاء قفل الأشجار التالية."
+msgstr[4] "انقر فوق \"متابعة\" لإلغاء قفل الأشجار التالية."
+msgstr[5] "انقر فوق \"متابعة\" لإلغاء قفل الأشجار التالية."
 
 #: tree.php
 msgid "Un-lock Tree"
 msgid_plural "Un-lock Trees"
-msgstr[0] "شجرة غير مقفلة"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "إلغاء قفل الأشجار"
+msgstr[1] "إلغاء قفل الشجرة"
+msgstr[2] "إلغاء قفل الشجرتين"
+msgstr[3] "إلغاء قفل الأشجار"
+msgstr[4] "إلغاء قفل الأشجار"
+msgstr[5] "إلغاء قفل الأشجار"
 
 #: tree.php
 #, php-format
@@ -19344,42 +19330,42 @@ msgstr "إذن الشجرة %s"
 #: user_domains.php
 msgid "Click 'Continue' to delete the following User Domain."
 msgid_plural "Click 'Continue' to delete following User Domains."
-msgstr[0] "انقر فوق \"متابعة\" لحذف مجال المستخدم التالي."
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "انقر فوق \"متابعة\" لحذف مجالات المستخدمين التالية."
+msgstr[1] "انقر فوق \"متابعة\" لحذف مجال المستخدم التالي."
+msgstr[2] "انقر فوق \"متابعة\" لحذف مجالات المستخدمين التالية."
+msgstr[3] "انقر فوق \"متابعة\" لحذف مجالات المستخدمين التالية."
+msgstr[4] "انقر فوق \"متابعة\" لحذف مجالات المستخدمين التالية."
+msgstr[5] "انقر فوق \"متابعة\" لحذف مجالات المستخدمين التالية."
 
 #: user_domains.php
 msgid "Delete User Domain"
 msgid_plural "Delete User Domains"
-msgstr[0] "حذف مجال المستخدم"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "حذف مجالات المستخدمين"
+msgstr[1] "حذف مجال المستخدم"
+msgstr[2] "حذف مجالات المستخدمين"
+msgstr[3] "حذف مجالات المستخدمين"
+msgstr[4] "حذف مجالات المستخدمين"
+msgstr[5] "حذف مجالات المستخدمين"
 
 #: user_domains.php
 msgid "Click 'Continue' to disable the following User Domain."
 msgid_plural "Click 'Continue' to disable following User Domains."
-msgstr[0] "انقر فوق \"متابعة\" لتعطيل مجال المستخدم التالي."
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "انقر فوق \"متابعة\" لتعطيل مجالات المستخدمين التالية."
+msgstr[1] "انقر فوق \"متابعة\" لتعطيل مجال المستخدم التالي."
+msgstr[2] "انقر فوق \"متابعة\" لتعطيل مجالات المستخدمين التالية."
+msgstr[3] "انقر فوق \"متابعة\" لتعطيل مجالات المستخدمين التالية."
+msgstr[4] "انقر فوق \"متابعة\" لتعطيل مجالات المستخدمين التالية."
+msgstr[5] "انقر فوق \"متابعة\" لتعطيل مجالات المستخدمين التالية."
 
 #: user_domains.php
 msgid "Disable User Domain"
 msgid_plural "Disable User Domains"
-msgstr[0] "تعطيل مجال المستخدم"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "تعطيل مجالات المستخدمين"
+msgstr[1] "تعطيل مجال المستخدم"
+msgstr[2] "تعطيل مجالات المستخدمين"
+msgstr[3] "تعطيل مجالات المستخدمين"
+msgstr[4] "تعطيل مجالات المستخدمين"
+msgstr[5] "تعطيل مجالات المستخدمين"
 
 #: user_domains.php
 msgid "Click 'Continue' to enable the following User Domain."
@@ -19388,12 +19374,12 @@ msgstr "انقر فوق &quot;متابعة&quot; لتمكين نطاق المس�
 #: user_domains.php
 msgid "Enabled User Domain"
 msgid_plural "Enable User Domains"
-msgstr[0] "مجال المستخدم الممكن"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "مجالات المستخدم الممكنة"
+msgstr[1] "مجال المستخدم الممكن"
+msgstr[2] "مجالا المستخدم الممكنان"
+msgstr[3] "مجالات المستخدم الممكنة"
+msgstr[4] "مجالات المستخدم الممكنة"
+msgstr[5] "مجالات المستخدم الممكنة"
 
 #: user_domains.php
 msgid "Click 'Continue' to make the following the following User Domain the default one."
@@ -19468,7 +19454,7 @@ msgstr "البريد"
 
 #: user_domains.php
 msgid "Field that will replace the email taken from LDAP. (on windows: mail) "
-msgstr "الحقل الذي سيحل محل البريد الإلكتروني الذي تم التقاطه من LDAP. (على ويندوز: البريد)"
+msgstr "الحقل الذي سيحل محل البريد الإلكتروني الذي تم التقاطه من LDAP. (على ويندوز: البريد) "
 
 #: user_domains.php
 msgid "Domain Properties"
@@ -19581,32 +19567,32 @@ msgstr "ما يجب فعله عند قيام مستخدم من مجموعة ال
 #: user_group_admin.php
 msgid "Click 'Continue' to delete the following User Group"
 msgid_plural "Click 'Continue' to delete following User Groups"
-msgstr[0] "انقر فوق \"متابعة\" لحذف مجموعة المستخدمين التالية"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "انقر فوق \"متابعة\" لحذف مجموعات المستخدمين التالية"
+msgstr[1] "انقر فوق \"متابعة\" لحذف مجموعة المستخدمين التالية"
+msgstr[2] "انقر فوق \"متابعة\" لحذف مجموعات المستخدمين التالية"
+msgstr[3] "انقر فوق \"متابعة\" لحذف مجموعات المستخدمين التالية"
+msgstr[4] "انقر فوق \"متابعة\" لحذف مجموعات المستخدمين التالية"
+msgstr[5] "انقر فوق \"متابعة\" لحذف مجموعات المستخدمين التالية"
 
 #: user_group_admin.php
 msgid "Delete User Group"
 msgid_plural "Delete User Groups"
-msgstr[0] "حذف مجموعة المستخدمين"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "حذف مجموعات المستخدمين"
+msgstr[1] "حذف مجموعة المستخدمين"
+msgstr[2] "حذف مجموعات المستخدمين"
+msgstr[3] "حذف مجموعات المستخدمين"
+msgstr[4] "حذف مجموعات المستخدمين"
+msgstr[5] "حذف مجموعات المستخدمين"
 
 #: user_group_admin.php
 msgid "Click 'Continue' to Copy the following User Group to a new User Group."
 msgid_plural "Click 'Continue' to Copy following User Groups to new User Groups."
-msgstr[0] "انقر فوق \"متابعة\" لنسخ مجموعة المستخدمين التالية إلى مجموعة مستخدمين جديدة."
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "انقر فوق \"متابعة\" لنسخ مجموعات المستخدمين التالية إلى مجموعات مستخدمين جديدة."
+msgstr[1] "انقر فوق \"متابعة\" لنسخ مجموعة المستخدمين التالية إلى مجموعة مستخدمين جديدة."
+msgstr[2] "انقر فوق \"متابعة\" لنسخ مجموعات المستخدمين التالية إلى مجموعات مستخدمين جديدة."
+msgstr[3] "انقر فوق \"متابعة\" لنسخ مجموعات المستخدمين التالية إلى مجموعات مستخدمين جديدة."
+msgstr[4] "انقر فوق \"متابعة\" لنسخ مجموعات المستخدمين التالية إلى مجموعات مستخدمين جديدة."
+msgstr[5] "انقر فوق \"متابعة\" لنسخ مجموعات المستخدمين التالية إلى مجموعات مستخدمين جديدة."
 
 #: user_group_admin.php
 msgid "Group Prefix:"
@@ -19619,52 +19605,52 @@ msgstr "مجموعة جديدة"
 #: user_group_admin.php
 msgid "Copy User Group"
 msgid_plural "Copy User Groups"
-msgstr[0] "نسخ مجموعة المستخدمين"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "نسخ مجموعات المستخدمين"
+msgstr[1] "نسخ مجموعة المستخدمين"
+msgstr[2] "نسخ مجموعات المستخدمين"
+msgstr[3] "نسخ مجموعات المستخدمين"
+msgstr[4] "نسخ مجموعات المستخدمين"
+msgstr[5] "نسخ مجموعات المستخدمين"
 
 #: user_group_admin.php
 msgid "Click 'Continue' to enable the following User Group."
 msgid_plural "Click 'Continue' to enable following User Groups."
-msgstr[0] "انقر فوق \"متابعة\" لتمكين مجموعة المستخدمين التالية."
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "انقر فوق \"متابعة\" لتمكين مجموعات المستخدمين التالية."
+msgstr[1] "انقر فوق \"متابعة\" لتمكين مجموعة المستخدمين التالية."
+msgstr[2] "انقر فوق \"متابعة\" لتمكين مجموعات المستخدمين التالية."
+msgstr[3] "انقر فوق \"متابعة\" لتمكين مجموعات المستخدمين التالية."
+msgstr[4] "انقر فوق \"متابعة\" لتمكين مجموعات المستخدمين التالية."
+msgstr[5] "انقر فوق \"متابعة\" لتمكين مجموعات المستخدمين التالية."
 
 #: user_group_admin.php
 msgid "Enable User Group"
 msgid_plural "Enable User Groups"
-msgstr[0] "تمكين مجموعة المستخدمين"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "تمكين مجموعات المستخدمين"
+msgstr[1] "تمكين مجموعة المستخدمين"
+msgstr[2] "تمكين مجموعات المستخدمين"
+msgstr[3] "تمكين مجموعات المستخدمين"
+msgstr[4] "تمكين مجموعات المستخدمين"
+msgstr[5] "تمكين مجموعات المستخدمين"
 
 #: user_group_admin.php
 msgid "Click 'Continue' to disable the following User Group."
 msgid_plural "Click 'Continue' to disable following User Groups."
-msgstr[0] "انقر فوق \"متابعة\" لتعطيل مجموعة المستخدمين التالية."
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "انقر فوق \"متابعة\" لتعطيل مجموعات المستخدمين التالية."
+msgstr[1] "انقر فوق \"متابعة\" لتعطيل مجموعة المستخدمين التالية."
+msgstr[2] "انقر فوق \"متابعة\" لتعطيل مجموعات المستخدمين التالية."
+msgstr[3] "انقر فوق \"متابعة\" لتعطيل مجموعات المستخدمين التالية."
+msgstr[4] "انقر فوق \"متابعة\" لتعطيل مجموعات المستخدمين التالية."
+msgstr[5] "انقر فوق \"متابعة\" لتعطيل مجموعات المستخدمين التالية."
 
 #: user_group_admin.php
 msgid "Disable User Group"
 msgid_plural "Disable User Groups"
-msgstr[0] "تعطيل مجموعة المستخدمين"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "تعطيل مجموعات المستخدمين"
+msgstr[1] "تعطيل مجموعة المستخدمين"
+msgstr[2] "تعطيل مجموعات المستخدمين"
+msgstr[3] "تعطيل مجموعات المستخدمين"
+msgstr[4] "تعطيل مجموعات المستخدمين"
+msgstr[5] "تعطيل مجموعات المستخدمين"
 
 #: user_group_admin.php
 msgid "Login Name"
@@ -19704,7 +19690,7 @@ msgstr "نهج الشجرة الافتراضي لمجموعة المستخدم �
 
 #: user_group_admin.php
 msgid "Members"
-msgstr "الطلاب"
+msgstr "الأعضاء"
 
 #: user_group_admin.php
 #, php-format
@@ -19734,7 +19720,7 @@ msgstr "واضح"
 
 #: utilities.php
 msgid "Data Source Statistics Purged."
-msgstr "احصائيات مصادر البيانات"
+msgstr "احصائيات مصادر البيانات."
 
 #: utilities.php
 msgid "Database"
@@ -19806,7 +19792,7 @@ msgstr "المجموع : %s"
 
 #: utilities.php
 msgid "Poller Information"
-msgstr "معلومات مستضد"
+msgstr "معلومات المستطلع (Poller)"
 
 #: utilities.php
 msgid "Different version of Cacti and Spine!"
@@ -19823,15 +19809,15 @@ msgstr "لا توجد عناصر للاستطلاع"
 
 #: utilities.php
 msgid "Name: "
-msgstr "الاسم:"
+msgstr "الاسم: "
 
 #: utilities.php
 msgid "Procs: "
-msgstr "1 عملية"
+msgstr "1 عملية "
 
 #: utilities.php
 msgid "Threads: "
-msgstr "مواضيع"
+msgstr "مواضيع "
 
 #: utilities.php
 msgid "Concurrent Processes"
@@ -19857,7 +19843,7 @@ msgstr "الخادم المحلي: الحالي: %s ، الحد الأدنى ا�
 
 #: utilities.php
 msgid "Minimum Connections:"
-msgstr "اختبار الاتصال"
+msgstr "اختبار الاتصال:"
 
 #: utilities.php
 msgid "Assumes 100 spare connections for Web page users and other various connections."
@@ -20031,7 +20017,7 @@ msgstr "أذهب"
 #: utilities.php vdef.php
 msgctxt "Button: reset filter settings"
 msgid "Clear"
-msgstr "واضح"
+msgstr "مسح"
 
 #: utilities.php
 msgctxt "Button: delete all table entries"
@@ -20126,7 +20112,7 @@ msgstr "المجتمع المحلي:"
 
 #: utilities.php
 msgid "OID:"
-msgstr "OID"
+msgstr "OID:"
 
 #: utilities.php
 msgid "User:"
@@ -20134,7 +20120,7 @@ msgstr "المستخدم.:"
 
 #: utilities.php
 msgid "Script:"
-msgstr "السيناريو"
+msgstr "السيناريو:"
 
 #: utilities.php
 msgid "Script Server:"
@@ -20293,7 +20279,7 @@ msgstr "تعزيز الوضع"
 
 #: utilities.php
 msgid "Running Processes:"
-msgstr "العمليات المتزامنة"
+msgstr "العمليات المتزامنة:"
 
 #: utilities.php
 #, fuzzy
@@ -20334,7 +20320,7 @@ msgstr ""
 
 #: utilities.php
 msgid "Total Poller Items:"
-msgstr "مخبأ بولير العناصر"
+msgstr "مخبأ بولير العناصر:"
 
 #: utilities.php
 msgid "Total Data Sources:"
@@ -20342,7 +20328,7 @@ msgstr "مجموع مصادر البيانات:"
 
 #: utilities.php
 msgid "Remaining Data Sources:"
-msgstr "تصحيح مصدر البيانات"
+msgstr "تصحيح مصدر البيانات:"
 
 #: utilities.php
 msgid "TBD"
@@ -20350,7 +20336,7 @@ msgstr "يحدد لاحقًا"
 
 #: utilities.php
 msgid "Queued Boost Records:"
-msgstr "المشاركات المعلقة"
+msgstr "المشاركات المعلقة:"
 
 #: utilities.php
 msgid "Approximate in Process:"
@@ -20414,12 +20400,12 @@ msgid "Last Run Duration:"
 msgstr "آخر مدة تشغيل:"
 
 #: utilities.php
-#, fuzzy, php-format
+#, php-format
 msgid "%d minutes"
 msgstr "%d دقيقة (دقائق)"
 
 #: utilities.php
-#, fuzzy, php-format
+#, php-format
 msgid "%d seconds"
 msgstr "%d ثواني"
 
@@ -20482,7 +20468,7 @@ msgstr "تحديث التردد:"
 
 #: utilities.php
 msgid "Concurrent Processes:"
-msgstr "العمليات المتزامنة"
+msgstr "العمليات المتزامنة:"
 
 #: utilities.php
 msgid "Next Start Time:"
@@ -20576,22 +20562,22 @@ msgstr[5] ""
 #: vdef.php
 msgid "Click 'Continue' to duplicate the following VDEF. You can optionally change the title format for the new VDEF."
 msgid_plural "Click 'Continue' to duplicate following VDEFs. You can optionally change the title format for the new VDEFs."
-msgstr[0] "انقر فوق \"متابعة\" لتكرار VDEF التالي. يمكنك اختياريا تغيير تنسيق العنوان ل VDEF الجديد."
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "انقر فوق \"متابعة\" لتكرار عناصر VDEF التالية. يمكنك اختياريا تغيير تنسيق العنوان لعناصر VDEF الجديدة."
+msgstr[1] "انقر فوق \"متابعة\" لتكرار VDEF التالي. يمكنك اختياريا تغيير تنسيق العنوان ل VDEF الجديد."
+msgstr[2] "انقر فوق \"متابعة\" لتكرار عناصر VDEF التالية. يمكنك اختياريا تغيير تنسيق العنوان لعناصر VDEF الجديدة."
+msgstr[3] "انقر فوق \"متابعة\" لتكرار عناصر VDEF التالية. يمكنك اختياريا تغيير تنسيق العنوان لعناصر VDEF الجديدة."
+msgstr[4] "انقر فوق \"متابعة\" لتكرار عناصر VDEF التالية. يمكنك اختياريا تغيير تنسيق العنوان لعناصر VDEF الجديدة."
+msgstr[5] "انقر فوق \"متابعة\" لتكرار عناصر VDEF التالية. يمكنك اختياريا تغيير تنسيق العنوان لعناصر VDEF الجديدة."
 
 #: vdef.php
 msgid "Duplicate VDEF"
 msgid_plural "Duplicate VDEFs"
-msgstr[0] "VDEF مكررة"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "نسخ مكررة من VDEF"
+msgstr[1] "VDEF مكررة"
+msgstr[2] "نسختان مكررتان من VDEF"
+msgstr[3] "نسخ مكررة من VDEF"
+msgstr[4] "نسخ مكررة من VDEF"
+msgstr[5] "نسخ مكررة من VDEF"
 
 #: vdef.php
 msgid "VDEF or VDEF Item not found."
