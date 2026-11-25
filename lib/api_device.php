@@ -784,7 +784,8 @@ function api_device_replicate_out($device_id, $poller_id = 1) {
 		array($device_id));
 
 	if ($poller_id > 1) {
-		replicate_table_to_poller($rcnn_id, $data, 'poller_item', $poller_id);
+		// keep the Remote Data Collector's own poll schedule for existing items
+		replicate_table_to_poller($rcnn_id, $data, 'poller_item', array('rrd_next_step'));
 	}
 
 	$data = db_fetch_assoc_prepared('SELECT h.*
