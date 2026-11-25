@@ -2,7 +2,8 @@
 'use strict';
 
 // Shared support for the theme tests: a recording stand-in for jQuery and a loader that
-// evaluates a theme's main.js in a fresh context. Not a test file itself.
+// evaluates a theme's main.js in a fresh context. It defines no tests; the .test.js name
+// marks it as test code for the tools that tell test files from shipped code by name.
 
 const fs = require('node:fs');
 const path = require('node:path');

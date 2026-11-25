@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
 
-const {root, fakeJQuery, fakeDocument, loadTheme} = require('./theme_test_support.js');
+const {root, fakeJQuery, fakeDocument, loadTheme} = require('./theme_support.test.js');
 
 const source = fs.readFileSync(path.join(root, 'include', 'themes', 'midwinter', 'main.js'), 'utf8');
 

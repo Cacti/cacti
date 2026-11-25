@@ -4,7 +4,7 @@
 const assert = require('node:assert/strict');
 const test = require('node:test');
 
-const {fakeJQuery, fakeDocument, loadTheme} = require('./theme_test_support.js');
+const {fakeJQuery, fakeDocument, loadTheme} = require('./theme_support.test.js');
 
 const olderThemes = ['modern', 'dark', 'paw', 'deepness', 'paper-plane', 'sunrise'];
 
