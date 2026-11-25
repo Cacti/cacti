@@ -4,19 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr ""
-"Project-Id-Version: Cacti 1.2.20\n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-11-04 11:45-0800\n"
-"PO-Revision-Date: 2026-05-10 08:18+0000\n"
-"Last-Translator: \"Coool (github.com/Coool)\" <coool@mail.lv>\n"
-"Language-Team: Latvian <https://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\n"
-"Language: lv-LV\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\n"
-"X-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-25 00:19+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Latvian <https://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -1497,7 +1485,7 @@ msgstr "Paziņojums no e-pasta adreses"
 
 #: automation_networks.php
 msgid "The Email Address to be used as the senders Email for the Notification Email.  If left blank, Cacti will use the default Automation Notification Email Address if specified, otherwise, it will use the Cacti system default Email Address"
-msgstr "E-pasta adrese, kas jāizmanto kā paziņojuma e-pasta sūtītāja e-pasts. Ja lauks atstāts tukšs, Cacti izmantos noklusējuma automatizācijas paziņojumu e-pasta adresi, ja tā būs norādīta, pretējā gadījumā tā izmantos Cacti sistēmas noklusējuma e-pasta adresi."
+msgstr "E-pasta adrese, kas jāizmanto kā paziņojuma e-pasta sūtītāja e-pasts. Ja lauks atstāts tukšs, Cacti izmantos noklusējuma automatizācijas paziņojumu e-pasta adresi, ja tā būs norādīta, pretējā gadījumā tā izmantos Cacti sistēmas noklusējuma e-pasta adresi"
 
 #: automation_networks.php
 msgid "Discovery Timing"
@@ -2243,9 +2231,9 @@ msgstr[2] "Dzēst CDEF vienumus"
 #: cdef.php
 msgid "Click 'Continue' to duplicate the following CDEF. You can optionally change the title format for the new CDEF."
 msgid_plural "Click 'Continue' to duplicate the following CDEFs. You can optionally change the title format for the new CDEFs."
-msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai dublētu šādu CDEF. Pēc izvēles varat mainīt jaunā CDEF nosaukuma formātu."
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai dublētu šādus CDEF. Pēc izvēles varat mainīt jauno CDEF nosaukuma formātu."
+msgstr[1] "Noklikšķiniet uz \"Turpināt\", lai dublētu šādu CDEF. Pēc izvēles varat mainīt jaunā CDEF nosaukuma formātu."
+msgstr[2] "Noklikšķiniet uz \"Turpināt\", lai dublētu šādus CDEF. Pēc izvēles varat mainīt jauno CDEF nosaukuma formātu."
 
 #: cdef.php color_templates.php data_source_profiles.php data_templates.php
 #: graph_templates.php host_templates.php vdef.php
@@ -2543,16 +2531,16 @@ msgstr[2] ""
 #: color_templates.php
 msgid "Click 'Continue' to duplicate the following Color Template. You can optionally change the title format for the new color template."
 msgid_plural "Click 'Continue' to duplicate following Color Templates. You can optionally change the title format for the new color templates."
-msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai dublētu šādu krāsu veidni. Pēc izvēles varat mainīt jaunās krāsu veidnes nosaukuma formātu."
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai dublētu šādas krāsu veidnes. Pēc izvēles varat mainīt jauno krāsu veidņu nosaukuma formātu."
+msgstr[1] "Noklikšķiniet uz \"Turpināt\", lai dublētu šādu krāsu veidni. Pēc izvēles varat mainīt jaunās krāsu veidnes nosaukuma formātu."
+msgstr[2] "Noklikšķiniet uz \"Turpināt\", lai dublētu šādas krāsu veidnes. Pēc izvēles varat mainīt jauno krāsu veidņu nosaukuma formātu."
 
 #: color_templates.php
 msgid "Duplicate Color Template"
 msgid_plural "Duplicate Color Templates"
-msgstr[0] "Dublēt krāsu veidni"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Dublēt krāsu veidnes"
+msgstr[1] "Dublēt krāsu veidni"
+msgstr[2] "Dublēt krāsu veidnes"
 
 #: color_templates.php
 msgid "Click 'Continue' to Synchronize all Aggregate Graphs with the selected Color Template."
@@ -2564,9 +2552,9 @@ msgstr[2] "Noklikšķiniet uz 'Turpināt', lai sinhronizētu visus apkopotos gra
 #: color_templates.php
 msgid "Synchronize Color Template"
 msgid_plural "Synchronize Color Templates"
-msgstr[0] "Sinhronizēt krāsu veidni"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Sinhronizēt krāsu veidnes"
+msgstr[1] "Sinhronizēt krāsu veidni"
+msgstr[2] "Sinhronizēt krāsu veidnes"
 
 #: color_templates.php
 msgid "Color Template Items [new]"
@@ -2599,7 +2587,7 @@ msgstr "Krāsu veidne [jauna]"
 #: color_templates.php
 #, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
-msgstr "Krāsu veidnei “%s” bija izstumtas %d apkopotās veidnes un %d neveidnes apkopotās veidnes."
+msgstr "Krāsu veidnei “%s” bija izstumtas %d apkopotās veidnes un %d neveidnes apkopotās veidnes"
 
 #: color_templates.php
 #, php-format
@@ -2989,9 +2977,9 @@ msgstr ""
 #: data_input.php
 msgid "Click 'Continue' to delete the following Data Input Method"
 msgid_plural "Click 'Continue' to delete the following Data Input Method"
-msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai dzēstu šādu datu ievades metodi"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai dzēstu šādas datu ievades metodes"
+msgstr[1] "Noklikšķiniet uz \"Turpināt\", lai dzēstu šādu datu ievades metodi"
+msgstr[2] "Noklikšķiniet uz \"Turpināt\", lai dzēstu šādas datu ievades metodes"
 
 #: data_input.php
 msgid "Click 'Continue' to duplicate the following Data Input Method(s). You can optionally change the title format for the new Data Input Method(s)."
@@ -3004,9 +2992,9 @@ msgstr "Ievades nosaukums:"
 #: data_input.php
 msgid "Delete Data Input Method"
 msgid_plural "Delete Data Input Methods"
-msgstr[0] "Dzēst datu ievades metodi"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Dzēst datu ievades metodes"
+msgstr[1] "Dzēst datu ievades metodi"
+msgstr[2] "Dzēst datu ievades metodes"
 
 #: data_input.php
 msgid "Click 'Continue' to delete the following Data Input Field."
@@ -3187,16 +3175,16 @@ msgstr[2] ""
 #: data_queries.php
 msgid "Delete Data Query"
 msgid_plural "Delete Data Queries"
-msgstr[0] "Dzēst datu vaicājumu"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Dzēst datu vaicājumus"
+msgstr[1] "Dzēst datu vaicājumu"
+msgstr[2] "Dzēst datu vaicājumus"
 
 #: data_queries.php
 msgid "Click 'Continue' to duplicate the following Data Query."
 msgid_plural "Click 'Continue' to duplicate following Data Queries."
-msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai dublētu šādu datu vaicājumu."
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai dublētu šādus datu vaicājumus."
+msgstr[1] "Noklikšķiniet uz \"Turpināt\", lai dublētu šādu datu vaicājumu."
+msgstr[2] "Noklikšķiniet uz \"Turpināt\", lai dublētu šādus datu vaicājumus."
 
 #: data_queries.php lib/html_reports.php
 msgid "Name Format:"
@@ -3205,9 +3193,9 @@ msgstr "Nosaukuma formāts:"
 #: data_queries.php
 msgid "Duplicate Data Query"
 msgid_plural "Duplicate Data Queries"
-msgstr[0] "Datu vaicājuma dublikāts"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Datu vaicājumu dublikāti"
+msgstr[1] "Datu vaicājuma dublikāts"
+msgstr[2] "Datu vaicājumu dublikāti"
 
 #: data_queries.php
 msgid "Click 'Continue' to delete the following Data Query Graph Association."
@@ -3391,16 +3379,16 @@ msgstr[2] "Dzēst datu avota profilus"
 #: data_source_profiles.php
 msgid "Click 'Continue' to duplicate the following Data Source Profile. You can optionally change the title format for the new Data Source Profile"
 msgid_plural "Click 'Continue' to duplicate following Data Source Profiles. You can optionally change the title format for the new Data Source Profiles."
-msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai dublētu šo datu avota profilu. Varat pēc izvēles mainīt jaunā datu avota profila nosaukuma formātu"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai dublētu šos datu avota profilus. Varat pēc izvēles mainīt jauno datu avota profilu nosaukuma formātu."
+msgstr[1] "Noklikšķiniet uz \"Turpināt\", lai dublētu šo datu avota profilu. Varat pēc izvēles mainīt jaunā datu avota profila nosaukuma formātu"
+msgstr[2] "Noklikšķiniet uz \"Turpināt\", lai dublētu šos datu avota profilus. Varat pēc izvēles mainīt jauno datu avota profilu nosaukuma formātu."
 
 #: data_source_profiles.php
 msgid "Duplicate Data Source Profile"
 msgid_plural "Duplicate Date Source Profiles"
-msgstr[0] "Datu avota profila dublikāts"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Datu avota profilu dublikāti"
+msgstr[1] "Datu avota profila dublikāts"
+msgstr[2] "Datu avota profilu dublikāti"
 
 #: data_source_profiles.php
 msgid "Unable to duplicate Data Source Profile.  Check Cacti Log for errors."
@@ -3644,9 +3632,9 @@ msgstr[2] "Dzēst datu avotus"
 #: data_sources.php
 msgid "Choose a new Device for this Data Source and click 'Continue'."
 msgid_plural "Choose a new Device for these Data Sources and click 'Continue'"
-msgstr[0] "Izvēlieties šim datu avotam jaunu ierīci un noklikšķiniet uz \"Turpināt\"."
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Izvēlieties šiem datu avotiem jaunu ierīci un noklikšķiniet uz \"Turpināt\""
+msgstr[1] "Izvēlieties šim datu avotam jaunu ierīci un noklikšķiniet uz \"Turpināt\"."
+msgstr[2] "Izvēlieties šiem datu avotiem jaunu ierīci un noklikšķiniet uz \"Turpināt\""
 
 #: data_sources.php
 msgid "New Device:"
@@ -3655,9 +3643,9 @@ msgstr "Jauna ierīce:"
 #: data_sources.php
 msgid "Click 'Continue' to enable the following Data Source."
 msgid_plural "Click 'Continue' to enable all following Data Sources."
-msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai iespējotu šādu datu avotu."
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai iespējotu visus šādus datu avotus."
+msgstr[1] "Noklikšķiniet uz \"Turpināt\", lai iespējotu šādu datu avotu."
+msgstr[2] "Noklikšķiniet uz \"Turpināt\", lai iespējotu visus šādus datu avotus."
 
 #: data_sources.php
 msgid "Enable Data Source"
@@ -3669,9 +3657,9 @@ msgstr[2] "Iespējot datu avotus"
 #: data_sources.php
 msgid "Click 'Continue' to disable the following Data Source."
 msgid_plural "Click 'Continue' to disable all following Data Sources."
-msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai atspējotu šādu datu avotu."
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai atspējotu visus šādus datu avotus."
+msgstr[1] "Noklikšķiniet uz \"Turpināt\", lai atspējotu šādu datu avotu."
+msgstr[2] "Noklikšķiniet uz \"Turpināt\", lai atspējotu visus šādus datu avotus."
 
 #: data_sources.php
 msgid "Disable Data Source"
@@ -3683,16 +3671,16 @@ msgstr[2] "Atspējot datu avotus"
 #: data_sources.php
 msgid "Click 'Continue' to re-apply the suggested name to the following Data Source."
 msgid_plural "Click 'Continue' to re-apply the suggested names to all following Data Sources."
-msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai atkārtoti lietotu ieteikto nosaukumu šim datu avotam."
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai atkārtoti lietotu ieteiktos nosaukumus visiem šiem datu avotiem."
+msgstr[1] "Noklikšķiniet uz \"Turpināt\", lai atkārtoti lietotu ieteikto nosaukumu šim datu avotam."
+msgstr[2] "Noklikšķiniet uz \"Turpināt\", lai atkārtoti lietotu ieteiktos nosaukumus visiem šiem datu avotiem."
 
 #: data_sources.php
 msgid "Reapply Suggested Naming to Data Source"
 msgid_plural "Reapply Suggested Naming to Data Sources"
-msgstr[0] "Atkārtoti lietot ieteikto nosaukumdošanu datu avotam"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Atkārtoti lietot ieteikto nosaukumdošanu datu avotiem"
+msgstr[1] "Atkārtoti lietot ieteikto nosaukumdošanu datu avotam"
+msgstr[2] "Atkārtoti lietot ieteikto nosaukumdošanu datu avotiem"
 
 #: data_sources.php data_templates.php
 #, php-format
@@ -9212,7 +9200,7 @@ msgstr "Poller standarta kļūdu žurnāla ceļš"
 
 #: include/global_settings.php
 msgid "If you are having issues with Cacti's Data Collectors, set this file path and the Data Collectors standard error will be redirected to this file"
-msgstr "Ja jums ir problēmas ar Cacti's Data Collectors, iestatiet šo faila ceļu, un Data Collectors standarta kļūda tiks novirzīta uz šo failu."
+msgstr "Ja jums ir problēmas ar Cacti's Data Collectors, iestatiet šo faila ceļu, un Data Collectors standarta kļūda tiks novirzīta uz šo failu"
 
 #: include/global_settings.php
 msgid "Rotate the Cacti Log"
@@ -12976,7 +12964,7 @@ msgstr "Nezināms indekss"
 #: lib/data_query.php
 #, php-format
 msgid "You must select an XML output column for Data Source '%s' and toggle the checkbox to its right"
-msgstr "Jums ir jāatlasa XML izvades kolonna datu avotam “%s” un jāieslēdz izvēles rūtiņa tās labajā pusē."
+msgstr "Jums ir jāatlasa XML izvades kolonna datu avotam “%s” un jāieslēdz izvēles rūtiņa tās labajā pusē"
 
 #: lib/data_query.php
 msgid "Your Graph Template has not Data Templates in use.  Please correct your Graph Template"
@@ -14662,7 +14650,7 @@ msgstr "Šī kļūda var tikt ģenerēta arī tad, ja kaktusu datu bāzes lietot
 
 #: lib/installer.php
 msgid "You <b>MUST</b> also import MySQL TimeZone information into MySQL and grant the Cacti user SELECT access to the mysql.time_zone_name table"
-msgstr "Jums <b>OBLIGĀTI</b> JĀIEMPORTĒ arī MySQL TimeZone informācija MySQL un piešķiriet Cacti lietotājam SELECT piekļuvi tabulai mysql.time_zone_name."
+msgstr "Jums <b>OBLIGĀTI</b> JĀIEMPORTĒ arī MySQL TimeZone informācija MySQL un piešķiriet Cacti lietotājam SELECT piekļuvi tabulai mysql.time_zone_name"
 
 #: lib/installer.php
 msgid "On Linux/UNIX, run the following as 'root' in a shell:"
@@ -16242,6 +16230,10 @@ msgid "Window Range:  All"
 msgstr "Windows saistīta"
 
 #: lib/spikekill.php
+msgid "FATAL: Unable to generate a random temporary file name.  Check the system entropy source!"
+msgstr ""
+
+#: lib/spikekill.php
 msgid "FATAL: RRDtool Command Failed.  Please verify that the RRDtool path is valid in Settings->Paths!"
 msgstr ""
 
@@ -16765,7 +16757,7 @@ msgstr "Izmantojot moderno SSD tipa krātuvi, vairāki io pavedieni ir izdevīgi
 #: lib/utility.php
 #, php-format
 msgid "As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential"
-msgstr "No %s %s varat kontrolēt, cik bieži %s izskalo darījumus diskā. Noklusējums ir 1 sekunde, bet augstās I/O sistēmās, iestatot vērtību, kas lielāka par 1, diska ievade/izvade var būt vairāk secīga."
+msgstr "No %s %s varat kontrolēt, cik bieži %s izskalo darījumus diskā. Noklusējums ir 1 sekunde, bet augstās I/O sistēmās, iestatot vērtību, kas lielāka par 1, diska ievade/izvade var būt vairāk secīga"
 
 #: lib/utility.php
 msgid "With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics.  Depending on your MariaDB/MySQL versions, this value can go as high as 64.  But try to keep the number less than your total SMT threads on the database server."
@@ -17027,7 +17019,7 @@ msgstr "Jūs esat atteicies no Cacti konta darbības apturēšanas dēļ."
 
 #: logout.php
 msgid "You have been logged out of Cacti due to a Remote Data Collector state change"
-msgstr "Jūs esat atteicies no Cacti sesijas noildzes dēļ."
+msgstr "Jūs esat atteicies no Cacti sesijas noildzes dēļ"
 
 #: logout.php
 msgid "Logout of Cacti"
@@ -17132,23 +17124,23 @@ msgstr "Nav SNMP paziņojumu žurnāla ierakstu"
 #: managers.php
 msgid "Click 'Continue' to delete the following Notification Receiver"
 msgid_plural "Click 'Continue' to delete following Notification Receiver"
-msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai dzēstu šādu paziņojuma saņēmēju"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai dzēstu šādus paziņojuma saņēmējus"
+msgstr[1] "Noklikšķiniet uz \"Turpināt\", lai dzēstu šādu paziņojuma saņēmēju"
+msgstr[2] "Noklikšķiniet uz \"Turpināt\", lai dzēstu šādus paziņojuma saņēmējus"
 
 #: managers.php
 msgid "Click 'Continue' to enable the following Notification Receiver"
 msgid_plural "Click 'Continue' to enable following Notification Receiver"
-msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai iespējotu šādu paziņojuma saņēmēju"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai iespējotu šādus paziņojuma saņēmējus"
+msgstr[1] "Noklikšķiniet uz \"Turpināt\", lai iespējotu šādu paziņojuma saņēmēju"
+msgstr[2] "Noklikšķiniet uz \"Turpināt\", lai iespējotu šādus paziņojuma saņēmējus"
 
 #: managers.php
 msgid "Click 'Continue' to disable the following Notification Receiver"
 msgid_plural "Click 'Continue' to disable following Notification Receiver"
-msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai atspējotu šo paziņojuma saņēmēju"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai atspējotu šos paziņojuma saņēmējus"
+msgstr[1] "Noklikšķiniet uz \"Turpināt\", lai atspējotu šo paziņojuma saņēmēju"
+msgstr[2] "Noklikšķiniet uz \"Turpināt\", lai atspējotu šos paziņojuma saņēmējus"
 
 #: managers.php
 #, php-format
@@ -17763,65 +17755,65 @@ msgstr "Datu apkopotāja statistika ir notīrīta."
 #: pollers.php
 msgid "Click 'Continue' to delete the following Data Collector.  Note, all devices will be disassociated from this Data Collector and mapped back to the Main Cacti Data Collector."
 msgid_plural "Click 'Continue' to delete all following Data Collectors.  Note, all devices will be disassociated from these Data Collectors and mapped back to the Main Cacti Data Collector."
-msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai dzēstu šādu datu vācēju.  Ņemiet vērā, ka visas ierīces tiks atdalītas no šī datu kolektora un kartētas atpakaļ uz galveno kaktusu datu kolektoru."
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai dzēstu visus šādus datu vācējus.  Ņemiet vērā, ka visas ierīces tiks atdalītas no šiem datu kolektoriem un kartētas atpakaļ uz galveno Cacti datu kolektoru."
+msgstr[1] "Noklikšķiniet uz \"Turpināt\", lai dzēstu šādu datu vācēju.  Ņemiet vērā, ka visas ierīces tiks atdalītas no šī datu kolektora un kartētas atpakaļ uz galveno Cacti datu kolektoru."
+msgstr[2] "Noklikšķiniet uz \"Turpināt\", lai dzēstu visus šādus datu vācējus.  Ņemiet vērā, ka visas ierīces tiks atdalītas no šiem datu kolektoriem un kartētas atpakaļ uz galveno Cacti datu kolektoru."
 
 #: pollers.php
 msgid "Delete Data Collector"
 msgid_plural "Delete Data Collectors"
-msgstr[0] "Dzēst datu savācēju"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Dzēst datu savācējus"
+msgstr[1] "Dzēst datu savācēju"
+msgstr[2] "Dzēst datu savācējus"
 
 #: pollers.php
 msgid "Click 'Continue' to disable the following Data Collector."
 msgid_plural "Click 'Continue' to disable the following Data Collectors."
-msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai atspējotu šo datu apkopotāju."
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai atspējotu šos datu apkopotājus."
+msgstr[1] "Noklikšķiniet uz \"Turpināt\", lai atspējotu šo datu apkopotāju."
+msgstr[2] "Noklikšķiniet uz \"Turpināt\", lai atspējotu šos datu apkopotājus."
 
 #: pollers.php
 msgid "Disable Data Collector"
 msgid_plural "Disable Data Collectors"
-msgstr[0] "Atspējot datu savācēju"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Atspējot datu savācējus"
+msgstr[1] "Atspējot datu savācēju"
+msgstr[2] "Atspējot datu savācējus"
 
 #: pollers.php
 msgid "Click 'Continue' to enable the following Data Collector."
 msgid_plural "Click 'Continue' to enable the following Data Collectors."
-msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai iespējotu šādu datu apkopotāju."
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai iespējotu šādus datu apkopotājus."
+msgstr[1] "Noklikšķiniet uz \"Turpināt\", lai iespējotu šādu datu apkopotāju."
+msgstr[2] "Noklikšķiniet uz \"Turpināt\", lai iespējotu šādus datu apkopotājus."
 
 #: pollers.php
 msgid "Enable Data Collector"
 msgid_plural "Enable Data Collectors"
-msgstr[0] "Iespējot datu savācēju"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Iespējot datu savācējus"
+msgstr[1] "Iespējot datu savācēju"
+msgstr[2] "Iespējot datu savācējus"
 
 #: pollers.php
 msgid "Click 'Continue' to Synchronize the Remote Data Collector for Offline Operation."
 msgid_plural "Click 'Continue' to Synchronize the Remote Data Collectors for Offline Operation."
-msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai sinhronizētu attālo datu savācēju bezsaistes darbībai."
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai sinhronizētu attālos datu savācējus bezsaistes darbībai."
+msgstr[1] "Noklikšķiniet uz \"Turpināt\", lai sinhronizētu attālo datu savācēju bezsaistes darbībai."
+msgstr[2] "Noklikšķiniet uz \"Turpināt\", lai sinhronizētu attālos datu savācējus bezsaistes darbībai."
 
 #: pollers.php
 msgid "Click 'Continue' to Clear Data Collector Statistics for the Data Collector."
 msgid_plural "Click 'Continue' to Clear DAta Collector Statistics for the Data Collectors."
-msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai notīrītu datu savācēja statistiku datu savācējam."
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai notīrītu datu savācēja statistiku datu savācējiem."
+msgstr[1] "Noklikšķiniet uz \"Turpināt\", lai notīrītu datu savācēja statistiku datu savācējam."
+msgstr[2] "Noklikšķiniet uz \"Turpināt\", lai notīrītu datu savācēja statistiku datu savācējiem."
 
 #: pollers.php
 msgid "Clear Statistics for Data Collector"
 msgid_plural "Clear Statistics for Data Collectors"
-msgstr[0] "Notīrīt statistiku datu vācējam"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Notīrīt statistiku datu vācējiem"
+msgstr[1] "Notīrīt statistiku datu vācējam"
+msgstr[2] "Notīrīt statistiku datu vācējiem"
 
 #: pollers.php sites.php
 #, php-format
@@ -18280,9 +18272,9 @@ msgstr "Veidnes vietne netika atrasta! Nevar dublēt."
 #: sites.php
 msgid "Click 'Continue' to Delete the following Site.  Note, all Devices will be disassociated from this site."
 msgid_plural "Click 'Continue' to delete all following Sites.  Note, all devices will be disassociated from this site."
-msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai dzēstu šo vietni.  Ņemiet vērā, ka visas ierīces tiks atsaistītas no šīs vietnes."
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai dzēstu visas šīs vietnes.  Ņemiet vērā, ka visas ierīces tiks atsaistītas no šīm vietnēm."
+msgstr[1] "Noklikšķiniet uz \"Turpināt\", lai dzēstu šo vietni.  Ņemiet vērā, ka visas ierīces tiks atsaistītas no šīs vietnes."
+msgstr[2] "Noklikšķiniet uz \"Turpināt\", lai dzēstu visas šīs vietnes.  Ņemiet vērā, ka visas ierīces tiks atsaistītas no šīm vietnēm."
 
 #: sites.php
 msgid "Delete Site"
@@ -18294,9 +18286,9 @@ msgstr[2] "Dzēst vietnes"
 #: sites.php
 msgid "Click 'Continue' to Duplicate the following Site."
 msgid_plural "Click 'Continue' to Duplicate all following Sites."
-msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai dublētu šo vietni."
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai dublētu visas šīs vietnes."
+msgstr[1] "Noklikšķiniet uz \"Turpināt\", lai dublētu šo vietni."
+msgstr[2] "Noklikšķiniet uz \"Turpināt\", lai dublētu visas šīs vietnes."
 
 #: sites.php
 msgid "Site Name:"
@@ -18527,9 +18519,9 @@ msgstr "ciparu"
 #: tree.php
 msgid "Click 'Continue' to delete the following Tree."
 msgid_plural "Click 'Continue' to delete following Trees."
-msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai dzēstu šo koku."
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai dzēstu šos kokus."
+msgstr[1] "Noklikšķiniet uz \"Turpināt\", lai dzēstu šo koku."
+msgstr[2] "Noklikšķiniet uz \"Turpināt\", lai dzēstu šos kokus."
 
 #: tree.php
 msgid "Delete Tree"
@@ -18541,9 +18533,9 @@ msgstr[2] "Dzēst kokus"
 #: tree.php
 msgid "Click 'Continue' to publish the following Tree."
 msgid_plural "Click 'Continue' to publish following Trees."
-msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai publicētu šādu koku."
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai publicētu šādus kokus."
+msgstr[1] "Noklikšķiniet uz \"Turpināt\", lai publicētu šādu koku."
+msgstr[2] "Noklikšķiniet uz \"Turpināt\", lai publicētu šādus kokus."
 
 #: tree.php
 msgid "Publish Tree"
@@ -18555,23 +18547,23 @@ msgstr[2] "Publicēt kokus"
 #: tree.php
 msgid "Click 'Continue' to un-publish the following Tree."
 msgid_plural "Click 'Continue' to un-publish following Trees."
-msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai atceltu šī koka publicēšanu."
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai atceltu šo koku publicēšanu."
+msgstr[1] "Noklikšķiniet uz \"Turpināt\", lai atceltu šī koka publicēšanu."
+msgstr[2] "Noklikšķiniet uz \"Turpināt\", lai atceltu šo koku publicēšanu."
 
 #: tree.php
 msgid "Un-publish Tree"
 msgid_plural "Un-publish Trees"
-msgstr[0] "Atcelt koka publicēšanu"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Atcelt koku publicēšanu"
+msgstr[1] "Atcelt koka publicēšanu"
+msgstr[2] "Atcelt koku publicēšanu"
 
 #: tree.php
 msgid "Click 'Continue' to un-lock the following Tree."
 msgid_plural "Click 'Continue' to un-lock following Trees."
-msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai atbloķētu šo koku."
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai atbloķētu šos kokus."
+msgstr[1] "Noklikšķiniet uz \"Turpināt\", lai atbloķētu šo koku."
+msgstr[2] "Noklikšķiniet uz \"Turpināt\", lai atbloķētu šos kokus."
 
 #: tree.php
 msgid "Un-lock Tree"
@@ -18828,15 +18820,15 @@ msgstr "Noliegt"
 
 #: user_admin.php user_group_admin.php
 msgid "<b>Note:</b> System Graph Policy is 'Permissive' meaning the User must have access to at least one of Graph, Device, or Graph Template to gain access to the Graph"
-msgstr "<b>Piezīme.</b> Sistēmas grafika politika ir “atļaujoša”, kas nozīmē, ka lietotājam ir jābūt piekļuvei vismaz vienai no diagrammām, ierīcēm vai diagrammas veidnēm, lai piekļūtu grafikam."
+msgstr "<b>Piezīme.</b> Sistēmas grafika politika ir “atļaujoša”, kas nozīmē, ka lietotājam ir jābūt piekļuvei vismaz vienai no diagrammām, ierīcēm vai diagrammas veidnēm, lai piekļūtu grafikam"
 
 #: user_admin.php user_group_admin.php
 msgid "<b>Note:</b> System Graph Policy is 'Restrictive' meaning the User must have access to either the Graph or the Device and Graph Template to gain access to the Graph"
-msgstr "<b>Piezīme.</b> Sistēmas grafika politika ir “ierobežojoša”, kas nozīmē, ka lietotājam ir jābūt piekļuvei grafikam vai ierīcei un grafika veidnei, lai piekļūtu grafikam."
+msgstr "<b>Piezīme.</b> Sistēmas grafika politika ir “ierobežojoša”, kas nozīmē, ka lietotājam ir jābūt piekļuvei grafikam vai ierīcei un grafika veidnei, lai piekļūtu grafikam"
 
 #: user_admin.php user_group_admin.php
 msgid "<b>Note:</b> System Graph Policy is 'Device' meaning the User must have access to the Graph or Device to gain access to the Graph"
-msgstr "<b>Piezīme.</b> Sistēmas grafika politika ir “ierīce”, kas nozīmē, ka lietotājam ir jābūt piekļuvei grafikam vai ierīcei, lai piekļūtu grafikam."
+msgstr "<b>Piezīme.</b> Sistēmas grafika politika ir “ierīce”, kas nozīmē, ka lietotājam ir jābūt piekļuvei grafikam vai ierīcei, lai piekļūtu grafikam"
 
 #: user_admin.php user_group_admin.php
 msgid "<b>Note:</b> System Graph Policy is 'Graph Template' meaning the User must have access to the Graph or Graph Template to gain access to the Graph"
@@ -19118,30 +19110,30 @@ msgstr "Koka atļauja %s"
 #: user_domains.php
 msgid "Click 'Continue' to delete the following User Domain."
 msgid_plural "Click 'Continue' to delete following User Domains."
-msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai dzēstu šādu lietotāja domēnu."
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai dzēstu šādus lietotāja domēnus."
+msgstr[1] "Noklikšķiniet uz \"Turpināt\", lai dzēstu šādu lietotāja domēnu."
+msgstr[2] "Noklikšķiniet uz \"Turpināt\", lai dzēstu šādus lietotāja domēnus."
 
 #: user_domains.php
 msgid "Delete User Domain"
 msgid_plural "Delete User Domains"
-msgstr[0] "Dzēst lietotāja domēnu"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Dzēst lietotāja domēnus"
+msgstr[1] "Dzēst lietotāja domēnu"
+msgstr[2] "Dzēst lietotāja domēnus"
 
 #: user_domains.php
 msgid "Click 'Continue' to disable the following User Domain."
 msgid_plural "Click 'Continue' to disable following User Domains."
-msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai atspējotu šo lietotāja domēnu."
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai atspējotu šos lietotāja domēnus."
+msgstr[1] "Noklikšķiniet uz \"Turpināt\", lai atspējotu šo lietotāja domēnu."
+msgstr[2] "Noklikšķiniet uz \"Turpināt\", lai atspējotu šos lietotāja domēnus."
 
 #: user_domains.php
 msgid "Disable User Domain"
 msgid_plural "Disable User Domains"
-msgstr[0] "Atspējot lietotāja domēnu"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Atspējot lietotāja domēnus"
+msgstr[1] "Atspējot lietotāja domēnu"
+msgstr[2] "Atspējot lietotāja domēnus"
 
 #: user_domains.php
 msgid "Click 'Continue' to enable the following User Domain."
@@ -19150,9 +19142,9 @@ msgstr "Noklikšķiniet uz \"Turpināt\", lai iespējotu šādu lietotāja domē
 #: user_domains.php
 msgid "Enabled User Domain"
 msgid_plural "Enable User Domains"
-msgstr[0] "Iespējots lietotāja domēns"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Iespējot lietotāja domēnus"
+msgstr[1] "Iespējots lietotāja domēns"
+msgstr[2] "Iespējot lietotāja domēnus"
 
 #: user_domains.php
 msgid "Click 'Continue' to make the following the following User Domain the default one."
@@ -19340,9 +19332,9 @@ msgstr "Kā rīkoties, kad piesakās lietotājs no šīs lietotāju grupas."
 #: user_group_admin.php
 msgid "Click 'Continue' to delete the following User Group"
 msgid_plural "Click 'Continue' to delete following User Groups"
-msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai dzēstu šo lietotāju grupu"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai dzēstu šīs lietotāju grupas"
+msgstr[1] "Noklikšķiniet uz \"Turpināt\", lai dzēstu šo lietotāju grupu"
+msgstr[2] "Noklikšķiniet uz \"Turpināt\", lai dzēstu šīs lietotāju grupas"
 
 #: user_group_admin.php
 msgid "Delete User Group"
@@ -19354,9 +19346,9 @@ msgstr[2] "Dzēst lietotāju grupas"
 #: user_group_admin.php
 msgid "Click 'Continue' to Copy the following User Group to a new User Group."
 msgid_plural "Click 'Continue' to Copy following User Groups to new User Groups."
-msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai kopētu tālāk norādīto lietotāju grupu uz jaunu lietotāju grupu."
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai kopētu tālāk norādītās lietotāju grupas uz jaunām lietotāju grupām."
+msgstr[1] "Noklikšķiniet uz \"Turpināt\", lai kopētu tālāk norādīto lietotāju grupu uz jaunu lietotāju grupu."
+msgstr[2] "Noklikšķiniet uz \"Turpināt\", lai kopētu tālāk norādītās lietotāju grupas uz jaunām lietotāju grupām."
 
 #: user_group_admin.php
 msgid "Group Prefix:"
@@ -19376,9 +19368,9 @@ msgstr[2] "Kopēt lietotāju grupas"
 #: user_group_admin.php
 msgid "Click 'Continue' to enable the following User Group."
 msgid_plural "Click 'Continue' to enable following User Groups."
-msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai iespējotu šādu lietotāju grupu."
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai iespējotu šādas lietotāju grupas."
+msgstr[1] "Noklikšķiniet uz \"Turpināt\", lai iespējotu šādu lietotāju grupu."
+msgstr[2] "Noklikšķiniet uz \"Turpināt\", lai iespējotu šādas lietotāju grupas."
 
 #: user_group_admin.php
 msgid "Enable User Group"
@@ -19390,9 +19382,9 @@ msgstr[2] "Iespējot lietotāju grupas"
 #: user_group_admin.php
 msgid "Click 'Continue' to disable the following User Group."
 msgid_plural "Click 'Continue' to disable following User Groups."
-msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai atspējotu šo lietotāju grupu."
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai atspējotu šīs lietotāju grupas."
+msgstr[1] "Noklikšķiniet uz \"Turpināt\", lai atspējotu šo lietotāju grupu."
+msgstr[2] "Noklikšķiniet uz \"Turpināt\", lai atspējotu šīs lietotāju grupas."
 
 #: user_group_admin.php
 msgid "Disable User Group"
@@ -20301,9 +20293,9 @@ msgstr[2] "Dzēst VDEF vienumus"
 #: vdef.php
 msgid "Click 'Continue' to duplicate the following VDEF. You can optionally change the title format for the new VDEF."
 msgid_plural "Click 'Continue' to duplicate following VDEFs. You can optionally change the title format for the new VDEFs."
-msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai dublētu šādu VDEF. Pēc izvēles varat mainīt jaunā VDEF nosaukuma formātu."
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai dublētu šādus VDEF. Pēc izvēles varat mainīt jauno VDEF nosaukuma formātu."
+msgstr[1] "Noklikšķiniet uz \"Turpināt\", lai dublētu šādu VDEF. Pēc izvēles varat mainīt jaunā VDEF nosaukuma formātu."
+msgstr[2] "Noklikšķiniet uz \"Turpināt\", lai dublētu šādus VDEF. Pēc izvēles varat mainīt jauno VDEF nosaukuma formātu."
 
 #: vdef.php
 msgid "Duplicate VDEF"
