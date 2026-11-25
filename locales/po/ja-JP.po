@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: cacti\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-25 10:18+0000\n"
+"PO-Revision-Date: 2026-11-26 05:54+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Japanese <https://translate.cacti.net/projects/cacti/core/ja/>"
 "\n"
@@ -1777,7 +1777,7 @@ msgstr "無効なネットワーク'%s'の検出を実行できません"
 #: automation_networks.php:439
 #, php-format
 msgid "ERROR: You must specify the day of the week.  Disabling Network %s!."
-msgstr "エラー：曜日を指定しなければなりません。ネットワーク%s！を無効にしています。"
+msgstr "エラー：曜日を指定する必要があります。ネットワーク%sを無効にしています。"
 
 #: automation_networks.php:445
 #, php-format
@@ -10274,7 +10274,7 @@ msgstr "ダッシュ修飾子は、破線スタイルを有効にします。"
 
 #: include/global_form.php:1128
 msgid "Dash Offset (dash-offset=offset)"
-msgstr "ダッシュオフセット（ダッシュオフセット=オフセット）"
+msgstr "ダッシュオフセット (dash-offset=offset)"
 
 #: include/global_form.php:1133 include/global_form.php:1141
 msgid "The dash-offset parameter specifies an offset into the pattern at which the stroke begins."
@@ -14889,7 +14889,7 @@ msgstr "タイプ= '%s' [%s]が見つかりました。"
 #: lib/data_query.php:135
 #, php-format
 msgid "Unknown Type = '%s'."
-msgstr "不明なタイプ = '%s'。"
+msgstr "不明なタイプ = '%s'."
 
 #: lib/data_query.php:172
 msgid "WARNING: Sort Field Association has Changed.  Re-mapping issues may occur!"
