@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-10-24 02:18+0000\n"
-"Last-Translator: Ekaterine papava <papava.e@gtu.ge>\n"
+"PO-Revision-Date: 2026-11-25 10:18+0000\n"
+"Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Georgian <https://translate.cacti.net/projects/cacti/core/ka/>"
 "\n"
 "Language: ka-GE\n"
@@ -648,7 +648,7 @@ msgstr "არა"
 #: user_domains.php:717 user_domains.php:721 user_group_admin.php:1984
 #: vdef.php:906
 msgid "Yes"
-msgstr "კი"
+msgstr "დიახ"
 
 #: aggregate_graphs.php:1788 graphs.php:3134 lib/api_automation.php:685
 msgid "No Graphs Found"
@@ -673,7 +673,7 @@ msgstr "გრაფიკების აგრეგაცია"
 #: user_group_admin.php:2235 user_group_admin.php:2358
 #: user_group_admin.php:2361 utilities.php:972 utilities.php:975
 msgid "Template"
-msgstr "ნიმუში"
+msgstr "შაბლონი"
 
 #: aggregate_graphs.php:1998 automation_devices.php:591
 #: automation_devices.php:625 automation_devices.php:644
@@ -4572,7 +4572,7 @@ msgstr ""
 
 #: data_source_profiles.php:641 include/global_form.php:323
 msgid "Data Retention"
-msgstr "მონაცემების შენარჩუნება"
+msgstr "მონაცემების შენახვა"
 
 #: data_source_profiles.php:642 include/global_settings.php:1207
 #: lib/html_reports.php:1170
@@ -5408,7 +5408,7 @@ msgstr "Cacti-ის გრაფიკები რეალურ დროშ
 #: graph_realtime.php:436 lib/html_graph.php:357 lib/html_reports.php:124
 #: lib/html_tree.php:1350
 msgid "Thumbnails"
-msgstr "მინატურები"
+msgstr "მინიატიურები"
 
 #: graph_realtime.php:440
 #, php-format
@@ -7961,7 +7961,7 @@ msgstr "აღმოჩენილი მოწყობილობები"
 #: include/global_arrays.php:1369 lib/html_filter.php:189
 #: lib/html_graph.php:371 lib/html_graph.php:374 lib/html_tree.php:1364
 msgid "Presets"
-msgstr "პრესეტები"
+msgstr "წინასწარ განსაზღვრული"
 
 #: include/global_arrays.php:1109
 msgid "Data Profiles"
@@ -11287,7 +11287,7 @@ msgstr ""
 
 #: include/global_settings.php:473 include/global_settings.php:2943
 msgid "Date Separator"
-msgstr "მონაცემების გამყოფი"
+msgstr "თარიღის გამყოფი"
 
 #: include/global_settings.php:474
 msgid "The System default date separator to be used in Cacti."
@@ -14777,7 +14777,7 @@ msgstr "მოწყობილობა ჩრთ/გმრთ"
 
 #: lib/clog_webapi.php:592
 msgid "Recaches"
-msgstr "ემთხვევა"
+msgstr "ხელახალი კეშირებები"
 
 #: lib/clog_webapi.php:593
 msgid "Security Issues"
@@ -15534,7 +15534,7 @@ msgstr "გვერდის დახმარება"
 
 #: lib/html.php:298 settings.php:360
 msgid "Templates Selected"
-msgstr "არჩეული ნიმუშები"
+msgstr "არჩეული შაბლონები"
 
 #: lib/html.php:352 settings.php:328 settings.php:350 settings.php:401
 msgid "Enter keyword"
@@ -15790,7 +15790,7 @@ msgstr "მალსახმობები"
 
 #: lib/html.php:3066
 msgid "Spine"
-msgstr "ხერხემალი"
+msgstr "Spine"
 
 #: lib/html.php:3068
 msgid "Help in Translating"
@@ -16183,16 +16183,16 @@ msgstr "%d სვეტი"
 
 #: lib/html_graph.php:376 lib/html_tree.php:1369
 msgid "Custom"
-msgstr "მომხმარებლის"
+msgstr "მორგებული"
 
 #: lib/html_graph.php:390 lib/html_reports.php:2065 lib/html_reports.php:2076
 #: lib/html_tree.php:1383
 msgid "From"
-msgstr "ვისგან"
+msgstr "საწყისი"
 
 #: lib/html_graph.php:395 lib/html_tree.php:1388
 msgid "Start Date Selector"
-msgstr "დაწყების თარიღის ამრჩევი"
+msgstr "საწყისი თარიღის ამომრჩევი"
 
 #: lib/html_graph.php:399 lib/html_reports.php:2066 lib/html_reports.php:2077
 #: lib/html_tree.php:1392
@@ -16201,19 +16201,19 @@ msgstr "სადამდე"
 
 #: lib/html_graph.php:404 lib/html_tree.php:1397
 msgid "End Date Selector"
-msgstr "დასრულების თარიღის ამრჩევი"
+msgstr "საბოლოო თარიღის ამომრჩევი"
 
 #: lib/html_graph.php:409 lib/html_tree.php:1402
 msgid "Shift Time Backward"
-msgstr "დროის წანაცვლება უკან"
+msgstr "დროის უკან გადაწევა"
 
 #: lib/html_graph.php:410 lib/html_tree.php:1403
 msgid "Define Shifting Interval"
-msgstr "წანაცვლების ინტერვალის აღწერა"
+msgstr "გადაწევის ინტერვალის განსაზღვრა"
 
 #: lib/html_graph.php:422 lib/html_tree.php:1415
 msgid "Shift Time Forward"
-msgstr "დროის წანაცვლება წინ"
+msgstr "დროის წინ გადაწევა"
 
 #: lib/html_graph.php:427 lib/html_tree.php:1420
 msgid "Refresh selected time span"
@@ -16233,7 +16233,7 @@ msgstr "ინტერვალი"
 
 #: lib/html_graph.php:460 lib/html_tree.php:1453
 msgid "Stop"
-msgstr "გაჩერება"
+msgstr "შეჩერება"
 
 #: lib/html_graph.php:649 lib/html_graph.php:679
 #, php-format
@@ -17400,7 +17400,7 @@ msgstr ""
 
 #: lib/installer.php:2360
 msgid "Remote Poller Variables"
-msgstr "გამომთხოვის ცვლადების წაშლა"
+msgstr "დაშორებული Poller-ის ცვლადები"
 
 #: lib/installer.php:2362
 msgid "The variables that must be set in the config.php file include the following:"
