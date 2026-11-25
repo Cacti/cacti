@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-25 10:19+0000\n"
+"PO-Revision-Date: 2026-11-26 05:54+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://translate.cacti.net/"
 "projects/cacti/core/zh_Hant/>\n"
@@ -24102,7 +24102,7 @@ msgstr "使用者:"
 
 #: utilities.php:1186
 msgid "Script:"
-msgstr "腳本:"
+msgstr "腳本："
 
 #: utilities.php:1188
 msgid "Script Server:"
