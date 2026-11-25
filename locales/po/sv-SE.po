@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-24 09:13+0000\n"
+"PO-Revision-Date: 2026-11-25 10:19+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Swedish <https://translate.cacti.net/projects/cacti/core/sv/>"
 "\n"
@@ -1018,7 +1018,7 @@ msgstr ""
 #: auth_login.php:134
 msgid "User was Authenticated, but the Template Account is disabled. Using Guest Account"
 msgstr ""
-"Användaren autentiserades, men mallkontot är inaktiverat. Gästkontot används."
+"Användaren autentiserades, men mallkontot är inaktiverat. Gästkontot används"
 
 #: auth_login.php:141
 #, php-format
@@ -1066,7 +1066,7 @@ msgstr "Logga in"
 
 #: auth_login.php:377
 msgid "Invalid User Name/Password Please Retype"
-msgstr "Ogiltigt användarnamn eller lösenord. Ange dem igen."
+msgstr "Ogiltigt användarnamn eller lösenord. Ange dem igen"
 
 #: auth_login.php:381
 msgid "User Account Disabled"
@@ -1234,7 +1234,7 @@ msgstr "Aktiverad"
 
 #: auth_profile.php:604
 msgid "Enabling..."
-msgstr "Aktiverar …"
+msgstr "Aktiverar ..."
 
 #: auth_profile.php:697
 msgid "Private Data Cleared"
@@ -1263,7 +1263,7 @@ msgstr "Felaktig hash för återställningslänk"
 #: auth_resetpassword.php:98
 msgid "Reset password token was sent. Check your mailbox"
 msgstr ""
-"En återställningstoken för lösenordet har skickats. Kontrollera din inkorg."
+"En återställningstoken för lösenordet har skickats. Kontrollera din inkorg"
 
 #: auth_resetpassword.php:261
 msgid "Please enter your Cacti username or email address."
@@ -1839,12 +1839,12 @@ msgstr "Importera regel för nätverksupptäckt"
 #, php-format
 msgid "Can Not Restart Discovery for Discovery in Progress for Network '%s'"
 msgstr ""
-"Det går inte att starta om upptäckten medan den pågår för nätverket ”%s”."
+"Det går inte att starta om upptäckten medan den pågår för nätverket ”%s”"
 
 #: automation_networks.php:370
 #, php-format
 msgid "Can Not Perform Discovery for Disabled Network '%s'"
-msgstr "Det går inte att söka efter enheter i det inaktiverade nätverket ”%s”."
+msgstr "Det går inte att söka efter enheter i det inaktiverade nätverket ”%s”"
 
 #: automation_networks.php:439
 #, php-format
@@ -2287,7 +2287,7 @@ msgstr "Veckodagar"
 
 #: automation_networks.php:912 automation_networks.php:970
 msgid "What Day(s) of the week will this Network Range be discovered."
-msgstr "Vilka veckodagar ska nätverksintervallet genomsökas?"
+msgstr "Vilka veckodagar ska nätverksintervallet genomsökas?."
 
 #: automation_networks.php:914 automation_networks.php:972
 #: include/global_arrays.php:2080
@@ -2330,7 +2330,7 @@ msgstr "Årets månader"
 
 #: automation_networks.php:928
 msgid "What Months(s) of the Year will this Network Range be discovered."
-msgstr "Vilka månader ska nätverksintervallet genomsökas?"
+msgstr "Vilka månader ska nätverksintervallet genomsökas?."
 
 #: automation_networks.php:930 include/global_arrays.php:2034
 msgid "January"
@@ -2386,7 +2386,7 @@ msgstr "Månadens dagar"
 
 #: automation_networks.php:949
 msgid "What Day(s) of the Month will this Network Range be discovered."
-msgstr "Vilka dagar i månaden ska nätverksintervallet genomsökas?"
+msgstr "Vilka dagar i månaden ska nätverksintervallet genomsökas?."
 
 #: automation_networks.php:950 automation_networks.php:962
 msgid "Last"
@@ -2398,7 +2398,7 @@ msgstr "Veckor i månaden"
 
 #: automation_networks.php:957
 msgid "What Week(s) of the Month will this Network Range be discovered."
-msgstr "Vilka veckor i månaden ska nätverksintervallet genomsökas?"
+msgstr "Vilka veckor i månaden ska nätverksintervallet genomsökas?."
 
 #: automation_networks.php:959
 msgid "First"
@@ -4060,9 +4060,7 @@ msgstr "Problem hittades! Väntar på uppdatering av RRD-filen"
 
 #: data_debug.php:745
 msgid "No Initial found!  Waiting on RRDfile update"
-msgstr ""
-"Inga problem hittades vid den första kontrollen. Väntar på uppdatering av "
-"RRD-filen"
+msgstr "Inget initialvärde hittades! Väntar på uppdatering av RRD-fil"
 
 #: data_debug.php:749
 msgid "Waiting on analysis and RRDfile update"
@@ -4163,7 +4161,7 @@ msgstr "Resultat"
 
 #: data_debug.php:854
 msgid "<not set>"
-msgstr "&lt;inte angiven&gt;"
+msgstr "<ej angiven>"
 
 #: data_debug.php:891 data_debug.php:945
 msgid "Data Source Repair Recommendations"
@@ -4754,7 +4752,7 @@ msgstr "Datakällprofilens RRA:er (skrivskyddade)"
 
 #: data_source_profiles.php:641 include/global_form.php:323
 msgid "Data Retention"
-msgstr "Lagringstid"
+msgstr "Lagringstid för data"
 
 #: data_source_profiles.php:642 include/global_settings.php:1207
 #: lib/html_reports.php:1170
@@ -4987,13 +4985,13 @@ msgstr[1] "Följande grafer använder dessa datakällor."
 #: data_sources.php:551
 msgid "Leave the Graph Untouched"
 msgid_plural "Leave all Graphs untouched."
-msgstr[0] "Lämna grafen orörd"
+msgstr[0] "Lämna grafen orörd."
 msgstr[1] "Lämna alla grafer orörda."
 
 #: data_sources.php:555
 msgid "Delete all Graph Items that reference this Data Source."
 msgid_plural "Delete all Graph Items that reference these Data Sources"
-msgstr[0] "Ta bort alla grafobjekt som refererar till denna datakälla."
+msgstr[0] "Ta bort alla grafobjekt som refererar till denna datakälla"
 msgstr[1] "Ta bort alla grafobjekt som hänvisar till dessa datakällor"
 
 #: data_sources.php:559
@@ -6139,7 +6137,7 @@ msgstr "Välj datakällan som ska kopplas till detta grafobjekt."
 
 #: graphs.php:1724
 msgid "There were not Aggregate Templates found for the selected Graphs"
-msgstr "Inga mallar för aggregerade grafer hittades för de valda graferna."
+msgstr "Inga mallar för aggregerade grafer hittades för de valda graferna"
 
 #: graphs.php:1758
 msgid "Click 'Continue' to Delete the following Graph."
@@ -6538,19 +6536,19 @@ msgstr "Välj alla rader"
 #: graphs_new.php:678
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id of '%s'"
-msgstr "Fel vid tolkning av XML-resursfilen för datafrågan ”%s” med ID ”%s”."
+msgstr "Fel vid tolkning av XML-resursfilen för datafrågan ”%1$s” med ID ”%2$s”"
 
 #: graphs_new.php:695
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'.  Field Name '%s' missing a 'direction' attribute"
 msgstr ""
-"Fel vid tolkning av XML-resursfilen för datafrågan ”%s” med ID ”%s”. Fältet "
-"”%s” saknar attributet ”direction”."
+"Fel vid tolkning av XML-resursfilen för datafrågan ”%1$s” med ID ”%2$s”. "
+"Fältet ”%3$s” saknar attributet ”direction”"
 
 #: graphs_new.php:699
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'"
-msgstr "Fel vid tolkning av XML-resursfilen för datafrågan ”%s” med ID ”%s”."
+msgstr "Fel vid tolkning av XML-resursfilen för datafrågan ”%1$s” med ID ”%2$s”"
 
 #: graphs_new.php:740
 #, php-format
@@ -7034,7 +7032,7 @@ msgstr "Den plats som är kopplad till denna enhet"
 msgid "The Availability/Reachability method used to communicate with the device.  In some cases, the Availability/Reachability method will be 'none', which is not uncommon for some devices"
 msgstr ""
 "Metoden för tillgänglighets- och nåbarhetskontroll som används för enheten. "
-"För vissa enheter är metoden ”ingen”."
+"För vissa enheter är metoden ”ingen”"
 
 #: host.php:1808
 msgid "In State"
@@ -7577,7 +7575,7 @@ msgstr "Den angivna loggfilen var en Cacti-arkivfil och togs bort."
 
 #: include/global_arrays.php:300
 msgid "Cacti log purged successfully"
-msgstr "Cacti-loggen har rensats."
+msgstr "Cacti-loggen har rensats"
 
 #: include/global_arrays.php:303
 msgid "If you force a password change, you must also allow the user to change their password."
@@ -7593,7 +7591,7 @@ msgstr "Du har inte tillåtelse att ändra lösenord."
 msgid "Unable to determine size of password field, please check permissions of db user"
 msgstr ""
 "Det går inte att avgöra lösenordsfältets storlek. Kontrollera "
-"databasanvändarens behörigheter."
+"databasanvändarens behörigheter"
 
 #: include/global_arrays.php:312
 msgid "Unable to increase size of password field, pleas check permission of db user"
@@ -7609,11 +7607,11 @@ msgstr "Lösenordet har ändrats."
 
 #: include/global_arrays.php:321
 msgid "Unable to clear log, no write permissions"
-msgstr "Det gick inte att rensa loggen eftersom skrivbehörighet saknas."
+msgstr "Det gick inte att rensa loggen eftersom skrivbehörighet saknas"
 
 #: include/global_arrays.php:324
 msgid "Unable to clear log, file does not exist"
-msgstr "Det gick inte att rensa loggen eftersom filen inte finns."
+msgstr "Det gick inte att rensa loggen eftersom filen inte finns"
 
 #: include/global_arrays.php:327
 msgid "CSRF Timeout, refreshing page."
@@ -9960,7 +9958,7 @@ msgstr "Insamlingsintervall"
 
 #: include/global_form.php:234
 msgid "The frequency that data will be collected from the Data Source?"
-msgstr "Hur ofta data ska samlas in från datakällan."
+msgstr "Hur ofta data ska samlas in från datakällan"
 
 #: include/global_form.php:242
 msgid "How long can data be missing before RRDtool records unknown data.  Increase this value if your Data Source is unstable and you wish to carry forward old data rather than show gaps in your graphs.  This value is multiplied by the X-Files Factor to determine the actual amount of time."
@@ -10745,7 +10743,7 @@ msgstr "Linjebredd (decimal)"
 msgid "In case LINE was chosen, specify width of line here.  You must include a decimal precision, for example 2.00"
 msgstr ""
 "Om LINE har valts anger du linjebredden här. Ange decimaler, till exempel "
-"2.00."
+"2.00"
 
 #: include/global_form.php:1120
 msgid "Dashes (dashes[=on_s[,off_s[,on_s,off_s]...]])"
@@ -10825,7 +10823,7 @@ msgstr "Ge den här värden en meningsfull beskrivning."
 msgid "Fully qualified hostname or IP address for this device. IPv6 address insert into brackets (example: [2001:abcd:1234::1])"
 msgstr ""
 "Fullständigt kvalificerat värdnamn eller IP-adress för enheten. Ange IPv6-"
-"adresser inom hakparenteser, till exempel [2001:abcd:1234::1]."
+"adresser inom hakparenteser, till exempel [2001:abcd:1234::1]"
 
 #: include/global_form.php:1265
 msgid "The physical location of the Device.  This free form text can be a room, rack location, etc."
@@ -11249,7 +11247,7 @@ msgstr ""
 "Använd detta alternativ för att exempelvis skapa staplade grafer.<br>AREA/"
 "STACK: Den första grafen behåller AREA/STACK-objekt, övriga omvandlas till "
 "STACK.<br>LINE1: Alla objekt omvandlas till LINE1.<br>LINE2: Alla objekt "
-"omvandlas till LINE2.<br>LINE3: Alla objekt omvandlas till LINE3."
+"omvandlas till LINE2.<br>LINE3: Alla objekt omvandlas till LINE3"
 
 #: include/global_form.php:1986 include/global_form.php:2072
 #: include/global_form.php:2177
@@ -11631,7 +11629,7 @@ msgstr "Sökväg till datainsamlarens standardfellogg"
 msgid "If you are having issues with Cacti's Data Collectors, set this file path and the Data Collectors standard error will be redirected to this file"
 msgstr ""
 "Om du har problem med Cactis datainsamlare kan du ange en filsökväg. "
-"Insamlarnas standardfel omdirigeras då till filen."
+"Insamlarnas standardfel omdirigeras då till filen"
 
 #: include/global_settings.php:244
 msgid "Boost Debug Log"
@@ -11727,7 +11725,7 @@ msgstr "Expandera loggdetaljer"
 msgid "What level of expansion do you want on the log file? Increase expansion can slow search results"
 msgstr ""
 "Hur utförligt ska loggdetaljerna visas? Mer utförlig information kan göra "
-"sökningar långsammare."
+"sökningar långsammare"
 
 #: include/global_settings.php:330
 msgid "Log Input Validation Issues"
@@ -11930,7 +11928,7 @@ msgstr "”Har grafer” och ”Har datakällor” markerade"
 
 #: include/global_settings.php:492
 msgid "Should the Has Graphs and Has Data Sources be Checked by Default."
-msgstr "Ska ”Har grafer” och ”Har datakällor” vara markerade som standard?"
+msgstr "Ska ”Har grafer” och ”Har datakällor” vara markerade som standard?."
 
 #: include/global_settings.php:497 lib/installer.php:2994 support.php:1218
 #: support.php:1223
@@ -12624,7 +12622,7 @@ msgstr "Fördröjning av autokomplettering"
 msgid "The number of milliseconds to wait before initiating a call to the server for autocomplete. Any value less than 500 will assume 500ms"
 msgstr ""
 "Antalet millisekunder att vänta innan servern anropas för automatisk "
-"komplettering. Värden under 500 behandlas som 500 ms."
+"komplettering. Värden under 500 behandlas som 500 ms"
 
 #: include/global_settings.php:1093 include/global_settings.php:3111
 msgid "Minimum Tree Width"
@@ -12777,7 +12775,7 @@ msgid "This is the location, on the web server where the RRDfiles and PNG files 
 msgstr ""
 "Platsen på webbservern där RRD- och PNG-filerna ska cachas. Cachen hanteras "
 "av datainsamlaren. Kontrollera att du har rätt läs- och skrivbehörigheter "
-"för mappen."
+"för mappen"
 
 #: include/global_settings.php:1229
 msgid "RRDtool Graph Options"
@@ -13495,7 +13493,7 @@ msgid "An account will automatically be unlocked after this many minutes.  Even 
 msgstr ""
 "Ett konto låses upp automatiskt efter detta antal minuter. Kontot förblir "
 "låst tills tiden har gått ut, även om rätt lösenord anges. Högst 1 440 "
-"minuter (1 dag)."
+"minuter (1 dag)"
 
 #: include/global_settings.php:1845 include/global_settings.php:3224
 msgid "1 Day"
@@ -14077,7 +14075,7 @@ msgstr "Maximal körtid för RRD-uppdateringsskript"
 msgid "If the boost poller exceeds this runtime, a warning will be placed in the cacti log,"
 msgstr ""
 "Om Boost-processen överskrider denna körtid skrivs en varning till Cactis "
-"logg."
+"logg.,"
 
 #: include/global_settings.php:2377
 msgid "Enable Direct Population of Boost Table"
@@ -14189,7 +14187,7 @@ msgstr "Tidsfönster för timmedelvärde"
 msgid "The number of consecutive hours that represent the hourly average.  Keep in mind that a setting too high can result in very large memory tables"
 msgstr ""
 "Antalet på varandra följande timmar som timmedelvärdet omfattar. Ett för "
-"högt värde kan ge mycket stora minnestabeller."
+"högt värde kan ge mycket stora minnestabeller"
 
 #: include/global_settings.php:2479
 msgid "Maintenance Time"
@@ -15446,7 +15444,7 @@ msgstr "Mallkolumn '"
 msgid "Remote Poller %s is Down, you will need to perform a FullSync once it is up again"
 msgstr ""
 "Den fjärranslutna datainsamlaren %s är otillgänglig. Utför en fullständig "
-"synkronisering när den är tillgänglig igen."
+"synkronisering när den är tillgänglig igen"
 
 #: lib/api_device.php:1599
 msgid "ERROR: Device ID is Blank"
@@ -15671,7 +15669,7 @@ msgstr "Ditt lösenord måste innehålla minst ett specialtecken!"
 
 #: lib/auth.php:4593
 msgid "This password appears to be a well known password, please use a different one"
-msgstr "Lösenordet verkar vara välkänt. Använd ett annat."
+msgstr "Lösenordet verkar vara välkänt. Använd ett annat"
 
 #: lib/auth.php:4902
 msgid "Cacti Login Failure"
@@ -16024,7 +16022,7 @@ msgstr "Ogiltigt fält &lt;index_order&gt;%s&lt;/index_order&gt;"
 msgid "Must contain &lt;direction&gt;input&lt;/direction&gt; or &lt;direction&gt;input-output&lt;/direction&gt; fields only"
 msgstr ""
 "Får endast innehålla fälten &lt;direction&gt;input&lt;/direction&gt; eller "
-"&lt;direction&gt;input-output&lt;/direction&gt;"
+"&lt;direction&gt;input-output&lt;/direction&gt"
 
 #: lib/data_query.php:686
 msgid "Data Query returned no indexes."
@@ -16034,7 +16032,7 @@ msgstr "Datafrågan returnerade inga index."
 msgid "&lt;arg_num_indexes&gt; exists in XML file but no data returned., 'Index Count Changed' not supported"
 msgstr ""
 "&lt;arg_num_indexes&gt; finns i XML-filen men inga data returnerades. ”Index "
-"Count Changed” stöds inte."
+"Count Changed” stöds inte"
 
 #: lib/data_query.php:690
 #, php-format
@@ -16049,13 +16047,13 @@ msgstr "Hittade antal index: %s"
 #: lib/data_query.php:697
 msgid "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' not supported"
 msgstr ""
-"&lt;arg_num_indexes&gt; saknas i XML-filen. ”Index Count Changed” stöds inte."
+"&lt;arg_num_indexes&gt; saknas i XML-filen. ”Index Count Changed” stöds inte"
 
 #: lib/data_query.php:699
 msgid "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting arg_index entries"
 msgstr ""
 "&lt;arg_num_indexes&gt; saknas i XML-filen. ”Index Count Changed” emuleras "
-"genom att räkna arg_index-poster."
+"genom att räkna arg_index-poster"
 
 #: lib/data_query.php:710
 msgid "ERROR: Data Query returned no indexes."
@@ -16078,12 +16076,12 @@ msgstr "Hittade index: %s"
 #: lib/data_query.php:735 lib/data_query.php:1233
 #, php-format
 msgid "Click to show Data Query output for field '%s'"
-msgstr "Klicka för att visa datafrågans utdata för fältet ”%s”."
+msgstr "Klicka för att visa datafrågans utdata för fältet ”%s”"
 
 #: lib/data_query.php:741
 #, php-format
 msgid "Sort field returned no data for field name %s, skipping"
-msgstr "Sorteringsfältet returnerade inga data för fältnamnet %s. Hoppar över."
+msgstr "Sorteringsfältet returnerade inga data för fältnamnet %s. Hoppar över"
 
 #: lib/data_query.php:743
 #, php-format
@@ -16141,7 +16139,7 @@ msgstr "Kör SNMP-get för antal index @ '%s', antal index: %s"
 msgid "&lt;oid_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting oid_index entries"
 msgstr ""
 "&lt;oid_num_indexes&gt; saknas i XML-filen. ”Index Count Changed” emuleras "
-"genom att räkna oid_index-poster."
+"genom att räkna oid_index-poster"
 
 #: lib/data_query.php:940
 #, php-format
@@ -16618,8 +16616,8 @@ msgstr "Version %s %s"
 #, php-format
 msgid "WARNING: Key Cacti Include File \"%s\" missing.  Please locate and replace this file as we checked in \"%s\""
 msgstr ""
-"VARNING: Den viktiga Cacti-inkluderingsfilen ”%s” saknas. Leta reda på och "
-"återställ filen. Följande sökvägar kontrollerades: ”%s”."
+"VARNING: Den viktiga Cacti-inkluderingsfilen ”%1$s” saknas. Leta reda på och "
+"återställ filen. Följande sökvägar kontrollerades: ”%2$s”"
 
 #: lib/functions.php:8996
 msgid "System Device"
@@ -16831,7 +16829,7 @@ msgstr "Intervall för att fylla luckor"
 
 #: lib/html.php:2814
 msgid "Float Range"
-msgstr "Ersätt värden i intervall"
+msgstr "Flyttalsintervall"
 
 #: lib/html.php:2815
 msgid "Absolute Maximum"
@@ -18288,7 +18286,7 @@ msgid "This version of Cacti (%s) does not appear to have a valid version code, 
 msgstr ""
 "Den här versionen av Cacti (%s) verkar sakna en giltig versionskod. Kontakta "
 "Cactis utvecklare så att felet kan rättas. Om felet finns i en utgåva, "
-"rapportera det omedelbart på GitHub."
+"rapportera det omedelbart på GitHub"
 
 #: lib/installer.php:1906
 msgid "Thanks for taking the time to download and install Cacti, the complete graphing solution for your network. Before you can start making cool graphs, there are a few pieces of data that Cacti needs to know."
@@ -18503,7 +18501,7 @@ msgid "In the event of issues, It is highly recommended that you clear your brow
 msgstr ""
 "Om problem uppstår rekommenderas att du rensar webbläsarens cache, stänger "
 "och öppnar hela webbläsaren igen och försöker på nytt innan du rapporterar "
-"problemet till Cacti-gruppen."
+"problemet till Cacti-gruppen"
 
 #: lib/installer.php:2242
 msgid "On rare occasions, we have had reports from users who experience some minor issues due to changes in the code.  These issues are caused by the browser retaining pre-upgrade code and whilst we have taken steps to minimise the chances of this, it may still occur.  If you need instructions on how to clear your browser cache, <a href='https://www.refreshyourcache.com' target='_blank'>https://www.refreshyourcache.com/</a> is a good starting point."
@@ -18692,7 +18690,7 @@ msgid "These directories will be required to stay read writable after the instal
 msgstr ""
 "Dessa kataloger måste vara läs- och skrivbara även efter installationen så "
 "att Cactis fjärrsynkronisering kan uppdatera dem när den primära Cacti-"
-"webbplatsen ändras."
+"webbplatsen ändras"
 
 #: lib/installer.php:2492
 msgid "If you are installing packages, once the packages are installed, you should change the scripts directory back to read only as this presents some exposure to the web site."
@@ -18851,7 +18849,7 @@ msgstr ""
 msgid "If your devices require a different set of options to be used first, you may define them below and they will be utilized before the defaults"
 msgstr ""
 "Om enheterna först kräver andra alternativ kan du ange dem nedan. De används "
-"då före standardalternativen."
+"då före standardalternativen"
 
 #: lib/installer.php:2684
 msgid "All options may be adjusted post installation"
@@ -18976,7 +18974,7 @@ msgstr "Tabellinställning"
 msgid "You have more tables than your PHP configuration will allow us to display/convert.  Please modify the max_input_vars setting in php.ini to a value above %s"
 msgstr ""
 "Det finns fler tabeller än PHP-konfigurationen tillåter att visa eller "
-"konvertera. Ändra max_input_vars i php.ini till ett värde över %s."
+"konvertera. Ändra max_input_vars i php.ini till ett värde över %s"
 
 #: lib/installer.php:2846
 msgid "Conversion of tables may take some time especially on larger tables.  The conversion of these tables will occur in the background but will not prevent the installer from completing.  This may slow down some servers if there are not enough resources for MySQL to handle the conversion."
@@ -19410,7 +19408,7 @@ msgstr "Installationen avbröts eftersom licensavtalet inte godkändes"
 #: lib/installer.php:3920
 #, php-format
 msgid "Background was already started at %s, this attempt at %s was skipped"
-msgstr "Bakgrundsprocessen startades redan %s. Försöket %s hoppades över."
+msgstr "Bakgrundsprocessen startades redan %1$s. Försöket %2$s hoppades över"
 
 #: lib/installer.php:3946
 #, php-format
@@ -19851,7 +19849,7 @@ msgstr ""
 #: lib/reports.php:634
 #, php-format
 msgid "Report '%s' Sent Successfully"
-msgstr "Rapporten '%s' skickades."
+msgstr "Rapporten '%s' skickades"
 
 #: lib/reports.php:1109 lib/reports.php:1448
 msgid "(No Graph Template)"
@@ -20266,15 +20264,16 @@ msgstr ""
 #, php-format
 msgid "InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size.  If you database is very large or remote, you can consider increasing this size.  If remote, it can by as high as 80% of the systems memory.  However, cautions must be taken to reduce the swappiness of the system, or to remove swap to keep the system from swapping."
 msgstr ""
-"InnoDB behåller så många tabeller och index som möjligt i systemminnet. Gör "
-"därför innodb_buffer_pool tillräckligt stor för att rymma så mycket som "
-"möjligt av dem. Storleken på katalogen /var/lib/mysql/cacti kan hjälpa dig "
-"att bestämma värdet. Rekommendationen är 25 procent av systemets totala "
-"minne, men behovet beror på systemets storlek. För en mycket stor databas "
-"eller en databas på en separat server kan du överväga ett högre värde, upp "
-"till 80 procent av systemminnet på en separat server. Minska dock systemets "
-"benägenhet att använda växlingsutrymme eller ta bort växlingsutrymmet för "
-"att undvika växling."
+"InnoDB håller så många tabeller och index i systemminnet som möjligt. Därför "
+"bör du göra innodb_buffer_pool tillräckligt stor för att rymma så mycket av "
+"tabellerna och indexen som möjligt i minnet. Att kontrollera storleken på "
+"katalogen /var/lib/mysql/cacti hjälper till att fastställa detta värde. Vi "
+"rekommenderar 25%% av systemets totala minne, men dina krav varierar "
+"beroende på systemets storlek. Om din databas är mycket stor eller "
+"fjärransluten kan du överväga att öka denna storlek. Om den är fjärransluten "
+"kan den vara så hög som 80% av systemets minne. Försiktighet måste dock "
+"iakttas för att minska systemets swappiness eller ta bort swap för att "
+"förhindra att systemet swappar."
 
 #: lib/utility.php:1260
 msgid "This settings should remain ON unless your Cacti instances is running on either ZFS or FusionI/O which both have internal journaling to accommodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance."
@@ -20315,9 +20314,9 @@ msgstr ""
 #, php-format
 msgid "As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential"
 msgstr ""
-"Från och med %s %s kan du styra hur ofta %s skriver transaktioner till disk. "
-"Standardvärdet är 1 sekund, men i system med hög I/O-belastning kan ett "
-"högre värde göra diskskrivningarna mer sekventiella."
+"Från och med %1$s %2$s kan du styra hur ofta %3$s skriver transaktioner till "
+"disk. Standardvärdet är 1 sekund, men i system med hög I/O-belastning kan "
+"ett högre värde göra diskskrivningarna mer sekventiella"
 
 #: lib/utility.php:1303
 msgid "With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics.  Depending on your MariaDB/MySQL versions, this value can go as high as 64.  But try to keep the number less than your total SMT threads on the database server."
@@ -20634,7 +20633,7 @@ msgstr "Automatisk siduppdatering"
 
 #: links.php:585
 msgid "How often do you wish this page to be refreshed automatically."
-msgstr "Hur ofta ska sidan uppdateras automatiskt?"
+msgstr "Hur ofta ska sidan uppdateras automatiskt?."
 
 #: links.php:593
 #, php-format
@@ -20864,7 +20863,7 @@ msgstr "Fel uppstod när mallarna paketerades. Felen visas nedan. "
 #, php-format
 msgid "A Critical Template file '%s' is missing.  Please locate this file before packaging"
 msgstr ""
-"En viktig mallfil, '%s', saknas. Leta reda på filen innan du skapar paketet."
+"En viktig mallfil, '%s', saknas. Leta reda på filen innan du skapar paketet"
 
 #: package.php:562
 msgid "Package Templates"
@@ -20943,7 +20942,10 @@ msgstr "Tilldela olika sökbara attribut till paketet."
 
 #: package.php:774
 msgid "Some Packages require additional changes outside of Cacti's scope such as setting up an SNMP Agent Extension on the Devices to be monitored.  You should add those instructions here.."
-msgstr "Vissa paket kräver ytterligare ändringar utanför Cactis räckvidd, t.ex. att konfigurera ett SNMP-agenttillägg på de enheter som ska övervakas.  Du bör lägga till dessa instruktioner här..."
+msgstr ""
+"Vissa paket kräver ytterligare ändringar utanför Cactis räckvidd, t.ex. att "
+"konfigurera ett SNMP-agenttillägg på de enheter som ska övervakas.  Du bör "
+"lägga till dessa instruktioner här."
 
 #: package.php:781
 msgid "Author Information"
@@ -22347,7 +22349,7 @@ msgstr "SSL-information om fjärrdatabas"
 msgid "Starting in MariaDB 11.4 and above, SSL is autonegotiated between the client and server.  So, this option may not be required"
 msgstr ""
 "Från och med MariaDB 11.4 förhandlas SSL automatiskt mellan klient och "
-"server. Alternativet kanske därför inte behövs."
+"server. Alternativet kanske därför inte behövs"
 
 #: pollers.php:199 pollers.php:242
 msgid "Remote Database SSL"
@@ -22638,7 +22640,7 @@ msgstr "RRD-kontroll"
 msgid "RRD check is disabled, please enable in Configuration -> Settings -> Data"
 msgstr ""
 "RRD-kontroll är inaktiverad. Aktivera den under Konfiguration -> "
-"Inställningar -> Data."
+"Inställningar -> Data"
 
 #: rrdcheck.php:145
 msgid "RRDcheck Problems"
@@ -23000,7 +23002,7 @@ msgstr "Alternativt namn"
 
 #: sites.php:178
 msgid "Used for cases where a Site has an alternate named used to describe it"
-msgstr "Används när platsen har ett alternativt namn."
+msgstr "Används när platsen har ett alternativt namn"
 
 #: sites.php:180
 msgid "If the Site is known by another name enter it here."
@@ -23563,10 +23565,10 @@ msgstr "Största möjliga totala minne"
 #, php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr ""
-"Minska MySQL/MariaDB-minnet till mindre än 80 % av systemminnet. Reservera "
-"ytterligare cacheminne för RRD-filer om databasen och RRD-filerna finns på "
-"samma system. Se de totala värdena för kärna och klienter nedan för en "
-"förklaring av beräkningsmetoden."
+"Minska minnet för MySQL/MariaDB till mindre än 80% av systemminnet. Bevara "
+"ytterligare cacheminne för RRD-filer om databasen finns på samma system som "
+"RRD-filerna. Se Kärn- och klientsummor nedan för en förklaring av "
+"beräkningsmetoden."
 
 #: support.php:1612 support.php:1617 support.php:1645
 msgid "Max Core Memory Possible"
@@ -23748,7 +23750,7 @@ msgstr "FEL"
 msgid "Failed to access temporary folder, import functionality is disabled"
 msgstr ""
 "Det gick inte att komma åt den tillfälliga mappen. Importfunktionen är "
-"inaktiverad."
+"inaktiverad"
 
 #: tree.php:32
 msgctxt "dropdown action"
@@ -23890,7 +23892,7 @@ msgstr "Detta träd har låsts för redigering den %1$s av %2$s."
 msgid "To edit the tree, you must first unlock it and then lock it as yourself"
 msgstr ""
 "För att redigera trädet måste du först låsa upp det och sedan låsa det för "
-"ditt eget konto."
+"ditt eget konto"
 
 #: tree.php:855
 msgid "Tree Items"
@@ -24136,26 +24138,26 @@ msgid "<b>Note:</b> System Graph Policy is 'Permissive' meaning the User must ha
 msgstr ""
 "<b>Obs!</b> Systemets grafpolicy är ”Tillåtande”. Användaren måste ha "
 "åtkomst till minst en av grafen, enheten eller grafmallen för att få åtkomst "
-"till grafen."
+"till grafen"
 
 #: user_admin.php:765 user_group_admin.php:730
 msgid "<b>Note:</b> System Graph Policy is 'Restrictive' meaning the User must have access to either the Graph or the Device and Graph Template to gain access to the Graph"
 msgstr ""
 "<b>Obs!</b> Systemets grafpolicy är ”Restriktiv”. Användaren måste ha "
 "åtkomst till antingen grafen eller både enheten och grafmallen för att få "
-"åtkomst till grafen."
+"åtkomst till grafen"
 
 #: user_admin.php:767 user_group_admin.php:732
 msgid "<b>Note:</b> System Graph Policy is 'Device' meaning the User must have access to the Graph or Device to gain access to the Graph"
 msgstr ""
 "<b>Obs!</b> Systemets grafpolicy är ”Enhet”. Användaren måste ha åtkomst "
-"till grafen eller enheten för att få åtkomst till grafen."
+"till grafen eller enheten för att få åtkomst till grafen"
 
 #: user_admin.php:769 user_group_admin.php:734
 msgid "<b>Note:</b> System Graph Policy is 'Graph Template' meaning the User must have access to the Graph or Graph Template to gain access to the Graph"
 msgstr ""
 "<b>Obs!</b> Systemets grafpolicy är ”Grafmall”. Användaren måste ha åtkomst "
-"till grafen eller grafmallen för att få åtkomst till grafen."
+"till grafen eller grafmallen för att få åtkomst till grafen"
 
 #: user_admin.php:773 user_group_admin.php:742
 msgid "Default Graph Policy"
