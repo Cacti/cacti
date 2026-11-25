@@ -4,19 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr ""
-"Project-Id-Version: Cacti Chinese Language File\n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-11-04 11:45-0800\n"
-"PO-Revision-Date: 2024-06-23 04:09+0000\n"
-"Last-Translator: tql <fttx31@126.com>\n"
-"Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\n"
-"Language: zh-CN\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti Chinese Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-25 01:18+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Chinese (Simplified Han script) <https://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\nLanguage: zh-CN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -1270,7 +1258,7 @@ msgstr "点击 '继续' 以取消正在进行的网络发现."
 
 #: automation_networks.php data_input.php include/global_arrays.php
 msgid "SNMP Get"
-msgstr "SNMP 获取"
+msgstr "SNMP get"
 
 #: automation_networks.php tree.php
 msgid "Manual"
@@ -1409,7 +1397,7 @@ msgstr "在选定的运行限制之后,发现过程将被终止."
 #: automation_networks.php pollers.php
 #, php-format
 msgid "%d Minute"
-msgstr "%d分钟"
+msgstr "%d 分钟"
 
 #: automation_networks.php data_sources.php include/global_arrays.php
 #: include/global_settings.php pollers.php
@@ -1420,7 +1408,7 @@ msgstr "%d分钟"
 #: automation_networks.php include/global_arrays.php
 #, php-format
 msgid "%d Hour"
-msgstr "%d小时"
+msgstr "%d 小时"
 
 #: automation_networks.php data_source_profiles.php include/global_arrays.php
 #: include/global_settings.php
@@ -1622,7 +1610,7 @@ msgstr "本月的哪些天将会发现这个网络范围."
 
 #: automation_networks.php
 msgid "Last"
-msgstr "当前"
+msgstr "最近"
 
 #: automation_networks.php
 msgid "Week(s) of Month"
@@ -1833,7 +1821,7 @@ msgstr "名称格式"
 
 #: automation_snmp.php
 msgid "name"
-msgstr "主机名"
+msgstr "名称"
 
 #: automation_snmp.php
 msgid "Automation SNMP Options has been Duplicated."
@@ -1965,7 +1953,7 @@ msgstr "项目#%d"
 
 #: automation_snmp.php
 msgid "none"
-msgstr "空"
+msgstr "无"
 
 #: automation_snmp.php automation_templates.php cdef.php color_templates.php
 #: data_queries.php lib/api_automation.php lib/html.php lib/html_reports.php
@@ -2764,7 +2752,7 @@ msgstr "未找到"
 
 #: data_debug.php
 msgid "Not Checked Yet"
-msgstr "不检查"
+msgstr "尚未检查"
 
 #: data_debug.php
 msgid "Issues found!  Waiting on RRDfile update"
@@ -3447,12 +3435,12 @@ msgstr "1 年"
 #: data_source_profiles.php include/global_arrays.php rrdcleaner.php
 #, php-format
 msgid "%d Month"
-msgstr "%d 月"
+msgstr "%d 个月"
 
 #: data_source_profiles.php include/global_arrays.php rrdcleaner.php
 #, php-format
 msgid "%d Months"
-msgstr "%d 月"
+msgstr "%d 个月"
 
 #: data_source_profiles.php include/global_arrays.php rrdcleaner.php
 #, php-format
@@ -3479,7 +3467,7 @@ msgstr "%d 天"
 #: data_source_profiles.php include/global_arrays.php
 #: include/global_settings.php
 msgid "1 Hour"
-msgstr "1小时"
+msgstr "1 小时"
 
 #: data_source_profiles.php include/global_arrays.php
 msgid "Data Source Profiles"
@@ -4973,7 +4961,7 @@ msgstr "更改设备设置"
 
 #: host.php pollers.php
 msgid "Clear Statistics"
-msgstr "清除统计"
+msgstr "清除统计信息"
 
 #: host.php
 msgid "Sync to Device Template"
@@ -5027,7 +5015,7 @@ msgstr "启用设备"
 
 #: host.php
 msgid "Click 'Continue' to disable the following Device(s)."
-msgstr "点击 '继续' 以禁用以下设备."
+msgstr "点击“继续”以禁用以下设备。"
 
 #: host.php
 msgid "Disable Device(s)"
@@ -5176,7 +5164,7 @@ msgstr "数据查询调试信息"
 
 #: host.php lib/functions.php tree.php user_admin.php user_group_admin.php
 msgid "Copy"
-msgstr "复制"
+msgstr "副本"
 
 #: host.php
 msgid "Hide"
@@ -6822,7 +6810,7 @@ msgstr "5,000个数据源项目"
 
 #: include/global_arrays.php
 msgid "10,000 Data Source Items"
-msgstr "15,000个数据源项目"
+msgstr "10,000 个数据源项目"
 
 #: include/global_arrays.php
 msgid "15,000 Data Source Items"
@@ -7066,7 +7054,7 @@ msgstr "不包含"
 
 #: include/global_arrays.php
 msgid "begins with"
-msgstr "开始于"
+msgstr "开头为"
 
 #: include/global_arrays.php
 msgid "does not begin with"
@@ -10879,7 +10867,7 @@ msgstr "邮箱"
 
 #: include/global_settings.php
 msgid "Field that will replace the Email taken from LDAP. (on windows: mail)"
-msgstr "将替换从LDAP获取的电子邮件的字段。（在windows上：邮件） "
+msgstr "将替换从LDAP获取的电子邮件的字段。（在windows上：邮件）"
 
 #: include/global_settings.php
 msgid "URL Linking"
@@ -13482,7 +13470,7 @@ msgstr "操作成功"
 
 #: lib/html.php pollers.php
 msgid "Connection Failed"
-msgstr "UNKNOWN STATE FIX ME"
+msgstr "连接失败"
 
 #: lib/html.php
 msgid "The response to the last action was unexpected."
@@ -13813,7 +13801,7 @@ msgstr "格式化文件以使用"
 
 #: lib/html_reports.php
 msgid "Choose the custom html wrapper and CSS file to use.  This file contains both html and CSS to wrap around your report.  If it contains more than simply CSS, you need to place a special <REPORT> tag inside of the file.  This format tag will be replaced by the report content.  These files are located in the 'formats' directory."
-msgstr "选择要使用的自定义html包装和CSS文件。此文件同时包含html和CSS，用于包装您的报告。如果它包含的不仅仅是CSS，则需要在文件中放置一个特殊的＜REPORT＞标记。此格式标记将被报告内容替换。这些文件位于“formats”目录中。"
+msgstr "择要使用的自定义html包装器和CSS文件. 该文件包含html和CSS.以包装您的报告.如果它包含的不仅仅是CSS.你需要在文件中放置一个特殊的<REPORT>标签.此格式标签将被报告内容替换. 这些文件位于'formats'目录."
 
 #: lib/html_reports.php
 msgid "Default Text Font Size"
@@ -14405,7 +14393,7 @@ msgstr "包文件"
 
 #: lib/import.php
 msgid "[preview] "
-msgstr "预览"
+msgstr "预览 "
 
 #: lib/import.php
 msgid "Cacti would make the following changes if the Template was imported:"
@@ -15911,7 +15899,7 @@ msgstr "最小心跳"
 
 #: lib/rrd.php
 msgid "Min"
-msgstr "最小"
+msgstr "分钟"
 
 #: lib/rrd.php
 msgid "Max"
@@ -16160,6 +16148,10 @@ msgstr ""
 #| msgid "Windows Related"
 msgid "Window Range:  All"
 msgstr "Windows 相关"
+
+#: lib/spikekill.php
+msgid "FATAL: Unable to generate a random temporary file name.  Check the system entropy source!"
+msgstr ""
 
 #: lib/spikekill.php
 msgid "FATAL: RRDtool Command Failed.  Please verify that the RRDtool path is valid in Settings->Paths!"
@@ -19360,7 +19352,7 @@ msgstr "配置设置"
 #: utilities.php
 #, php-format
 msgid "ERROR: Installed RRDtool version does not exceed configured version.<br>Please visit the %s and select the correct RRDtool Utility Version."
-msgstr "错误:已安装的RRDtool版本不超过已配置的版本。请访问%s并选择正确的RRDtool实用程序版本。"
+msgstr "错误:已安装的RRDtool版本不超过已配置的版本。<br>请访问%s并选择正确的RRDtool实用程序版本。"
 
 #: utilities.php
 #, php-format
@@ -19423,7 +19415,7 @@ msgstr "线程: "
 
 #: utilities.php
 msgid "Concurrent Processes"
-msgstr "并发进程"
+msgstr "并发进程数"
 
 #: utilities.php
 msgid "Max Threads"
