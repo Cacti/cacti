@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-25 10:18+0000\n"
+"PO-Revision-Date: 2026-11-26 05:54+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Spanish <https://translate.cacti.net/projects/cacti/core/es/>"
 "\n"
@@ -2511,7 +2511,7 @@ msgstr "Procesos simultáneos"
 
 #: automation_networks.php:1391
 msgid "Last Runtime"
-msgstr "Ultima ejecución"
+msgstr "Último tiempo de ejecución"
 
 #: automation_networks.php:1396
 msgid "Next Start"
@@ -2547,7 +2547,7 @@ msgstr "No se encontraron redes"
 #: support.php:335 support.php:579 support.php:616 utilities.php:372
 #: utilities.php:375 utilities.php:1412
 msgid "Refresh"
-msgstr "Actualizar"
+msgstr "Refrescar"
 
 #: automation_networks.php:1542 automation_networks.php:1543
 #: automation_networks.php:1544 automation_networks.php:1545
@@ -4901,7 +4901,7 @@ msgstr[1] "Los siguientes gráficos estan usando estos data sources."
 #: data_sources.php:551
 msgid "Leave the Graph Untouched"
 msgid_plural "Leave all Graphs untouched."
-msgstr[0] "Dejar el gráfico sin cambios."
+msgstr[0] "Dejar el gráfico sin cambios"
 msgstr[1] "Dejar todos los gráficos sin cambios."
 
 #: data_sources.php:555
@@ -4909,7 +4909,7 @@ msgid "Delete all Graph Items that reference this Data Source."
 msgid_plural "Delete all Graph Items that reference these Data Sources"
 msgstr[0] ""
 "Eliminar todos los elementos de gráfico que hacen referencia a esta fuente "
-"de datos"
+"de datos."
 msgstr[1] ""
 "Eliminar todos los elementos de gráfico que hacen referencia a estas fuentes "
 "de datos"
@@ -4917,7 +4917,8 @@ msgstr[1] ""
 #: data_sources.php:559
 msgid "Delete all Graphs that reference this Data Source."
 msgid_plural "Delete all Graphs that reference these Data Sources"
-msgstr[0] "Eliminar todos los gráficos que hacen referencia a esta fuente de datos"
+msgstr[0] ""
+"Eliminar todos los gráficos que hacen referencia a esta fuente de datos."
 msgstr[1] ""
 "Eliminar todos los gráficos que hacen referencia a estas fuentes de datos"
 
@@ -6653,7 +6654,7 @@ msgstr ""
 
 #: host.php:502
 msgid "Enable Device"
-msgstr "Habilitar dispositivo(s)"
+msgstr "Habilitar dispositivo"
 
 #: host.php:503
 msgid "Enable Devices"
@@ -11252,7 +11253,7 @@ msgstr "Rutas"
 
 #: include/global_settings.php:41 include/global_settings.php:219
 msgid "Logging"
-msgstr "Registro"
+msgstr "Registro de actividad"
 
 #: include/global_settings.php:42
 msgid "Device Defaults"
@@ -11623,6 +11624,8 @@ msgstr "Soporte de zona horaria del cliente"
 #: include/global_settings.php:457
 msgid "How should Cacti support Client Dates based upon the Client browsers timezone."
 msgstr ""
+"Define cómo debe admitir Cacti las fechas del cliente según la zona horaria "
+"del navegador del cliente."
 
 #: include/global_settings.php:466 include/global_settings.php:2936
 msgid "Date Display Format"
@@ -14861,14 +14864,14 @@ msgstr ""
 #: lib/api_automation.php:5309 lib/api_automation.php:5311
 #: lib/api_automation.php:5404 lib/api_automation.php:5406
 msgid "Imported"
-msgstr "Importar"
+msgstr "Importado"
 
 #: lib/api_automation.php:5273 lib/api_automation.php:5275
 #: lib/api_automation.php:5309 lib/api_automation.php:5311
 #: lib/api_automation.php:5404 lib/api_automation.php:5406
 #: package_import.php:1213 templates_import.php:289
 msgid "Updated"
-msgstr "Actualizar"
+msgstr "Actualizado"
 
 #: lib/api_automation.php:5279 lib/api_automation.php:5281
 #, php-format
@@ -16212,7 +16215,7 @@ msgstr "Ejecutar acción"
 
 #: lib/html.php:2126 managers.php:41 managers.php:229
 msgid "Logs"
-msgstr "Logs"
+msgstr "Registros"
 
 #: lib/html.php:2354
 #, fuzzy
@@ -17723,7 +17726,7 @@ msgstr "Comenzar"
 #: lib/installer.php:1792 lib/installer.php:2238 lib/installer.php:2249
 #: lib/installer.php:2906 lib/installer.php:2972
 msgid "Upgrade"
-msgstr "Actualizar"
+msgstr "Actualizar versión"
 
 #: lib/installer.php:1794 lib/installer.php:2911 lib/installer.php:2975
 msgid "Downgrade"
