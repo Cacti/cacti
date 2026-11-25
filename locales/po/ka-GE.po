@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-25 10:18+0000\n"
+"PO-Revision-Date: 2026-11-26 05:54+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Georgian <https://translate.cacti.net/projects/cacti/core/ka/>"
 "\n"
@@ -1731,7 +1731,7 @@ msgstr "თვეში ერთხელ"
 
 #: automation_networks.php:46
 msgid "Monthly on Day"
-msgstr ""
+msgstr "ყოველთვიურად კონკრეტულ დღეს"
 
 #: automation_networks.php:123
 msgid "Import Network Discovery Rule from Local File"
@@ -1751,7 +1751,7 @@ msgstr ""
 
 #: automation_networks.php:145 color.php:333
 msgid "Cacti has imported the following items:"
-msgstr ""
+msgstr "Cacti-მ შემოიტანა შემდეგი ელემენტები:"
 
 #: automation_networks.php:156 automation_networks.php:170
 #: automation_templates.php:234
@@ -2722,15 +2722,15 @@ msgstr "ელემენტის მიმდევრობა."
 #: automation_snmp.php:675
 #, php-format
 msgid "SNMP Option Set [edit: %s]"
-msgstr ""
+msgstr "SNMP პარამეტრების ნაკრები [რედაქტირება: %s]"
 
 #: automation_snmp.php:677
 msgid "SNMP Option Set [new]"
-msgstr ""
+msgstr "SNMP პარამეტრების ნაკრები [ახალი]"
 
 #: automation_snmp.php:689
 msgid "Fill in the name of this SNMP Option Set."
-msgstr ""
+msgstr "შეავსეთ ამ SNMP პარამეტრების ნაკრების სახელი."
 
 #: automation_snmp.php:716 cdef.php:582 lib/api_automation.php:1441
 #: lib/api_automation.php:1534 lib/api_automation.php:1624
@@ -2870,7 +2870,7 @@ msgstr "V3 ჩანაწერები"
 
 #: automation_snmp.php:1052
 msgid "No SNMP Option Sets Found"
-msgstr ""
+msgstr "SNMP პარამეტრების ნაკრებები ვერ მოიძებნა"
 
 #: automation_templates.php:187
 msgid "Import Device Rules from Local File"
@@ -3536,15 +3536,15 @@ msgstr ""
 
 #: color.php:366
 msgid "Allow Existing Rows to be Updated?"
-msgstr ""
+msgstr "დავრთოთ არსებული მწკრივების განახლების ნება?"
 
 #: color.php:371
 msgid "Required File Format Notes"
-msgstr ""
+msgstr "ფაილის სავალდებულო ფორმატის შენიშვნები"
 
 #: color.php:374
 msgid "The file must contain a header row with the following column headings."
-msgstr ""
+msgstr "ფაილი უნდა შეიცავდეს სათაურის მწკრივს შემდეგი სვეტების სათაურებით."
 
 #: color.php:376
 msgid "<strong>name</strong> - The Color Name"
@@ -3905,7 +3905,7 @@ msgstr "აღმოჩენილი არაა"
 
 #: data_debug.php:717 data_debug.php:723
 msgid "Not Checked Yet"
-msgstr "ჯერ შემოწმებული არაა"
+msgstr "ჯერ არ შემოწმებულა"
 
 #: data_debug.php:742
 msgid "Issues found!  Waiting on RRDfile update"
@@ -5778,7 +5778,7 @@ msgstr ""
 
 #: graph_view.php:1132 lib/html.php:3119
 msgid "Ok"
-msgstr "დიახ"
+msgstr "კარგი"
 
 #: graph_xport.php:122 graph_xport.php:161 include/global_form.php:1955
 #: include/global_form.php:2223 lib/html.php:2167 links.php:377
@@ -6416,7 +6416,7 @@ msgstr ""
 
 #: host.php:501
 msgid "Click 'Continue' to Enable the following Devices."
-msgstr ""
+msgstr "დააწკაპუნეთ 'გაგრძელება' შემდეგი მოწყობილობების გასააქტიურებლად."
 
 #: host.php:502
 msgid "Enable Device"
@@ -6432,7 +6432,7 @@ msgstr ""
 
 #: host.php:507
 msgid "Click 'Continue' to Disable the following Devices."
-msgstr ""
+msgstr "დააწკაპუნეთ 'გაგრძელება' შემდეგი მოწყობილობების გასათიშად."
 
 #: host.php:508 include/global_form.php:1308
 msgid "Disable Device"
@@ -6602,7 +6602,7 @@ msgstr ""
 #: host.php:897 lib/functions.php:4786 tree.php:1724 tree.php:1798
 #: tree.php:1906 user_admin.php:29 user_group_admin.php:31
 msgid "Copy"
-msgstr "კოპირება"
+msgstr "ასლი"
 
 #: host.php:898
 msgid "Hide"
@@ -6702,10 +6702,14 @@ msgstr "ჰოსტის სახელი"
 #: host.php:1763
 msgid "Either an IP address, or hostname.  If a hostname, it must be resolvable by either DNS, or from your hosts file."
 msgstr ""
+"IP მისამართი ან ჰოსტის სახელი. თუ ეს ჰოსტის სახელია, ის უნდა იხსნებოდეს DNS-"
+"ით ან თქვენი hosts ფაილიდან."
 
 #: host.php:1769
 msgid "The internal database ID for this Device.  Useful when performing automation or debugging."
 msgstr ""
+"ამ მოწყობილობის შიდა მონაცემთა ბაზის ID. სასარგებლოა ავტომატიზაციის ან "
+"გამართვისას."
 
 #: host.php:1775
 msgid "The number of threads to use to collect information for this Device.  Applies to spine only."
@@ -8545,19 +8549,19 @@ msgstr ""
 
 #: include/global_arrays.php:1704
 msgid "5,000 Data Source Items"
-msgstr ""
+msgstr "მონაცემთა წყაროს 5,000 ელემენტი"
 
 #: include/global_arrays.php:1705
 msgid "10,000 Data Source Items"
-msgstr ""
+msgstr "მონაცემთა წყაროს 10,000 ელემენტი"
 
 #: include/global_arrays.php:1706
 msgid "15,000 Data Source Items"
-msgstr ""
+msgstr "მონაცემთა წყაროს 15,000 ელემენტი"
 
 #: include/global_arrays.php:1707
 msgid "25,000 Data Source Items"
-msgstr ""
+msgstr "მონაცემთა წყაროს 25,000 ელემენტი"
 
 #: include/global_arrays.php:1708
 msgid "50,000 Data Source Items (Default)"
@@ -9379,7 +9383,7 @@ msgstr "SNMP-ის ვერსია"
 
 #: include/global_form.php:36
 msgid "Choose the SNMP version for this host."
-msgstr ""
+msgstr "აირჩიეთ SNMP ვერსია ამ ჰოსტისთვის."
 
 #: include/global_form.php:44
 msgid "SNMP Community String"
@@ -9387,7 +9391,7 @@ msgstr "SNMP-ის საზოგადოების სტრიქონ�
 
 #: include/global_form.php:45
 msgid "Fill in the SNMP read community for this device."
-msgstr ""
+msgstr "შეავსეთ SNMP წაკითხვის community ამ მოწყობილობისთვის."
 
 #: include/global_form.php:53
 msgid "SNMP Security Level"
@@ -9399,11 +9403,11 @@ msgstr ""
 
 #: include/global_form.php:63
 msgid "SNMP Auth Protocol (v3)"
-msgstr ""
+msgstr "SNMP ავთენტიფიკაციის პროტოკოლი (v3)"
 
 #: include/global_form.php:64
 msgid "Choose the SNMPv3 Authorization Protocol."
-msgstr ""
+msgstr "აირჩიეთ SNMPv3 ავტორიზაციის პროტოკოლი."
 
 #: include/global_form.php:72
 msgid "SNMP Username (v3)"
@@ -9411,7 +9415,7 @@ msgstr "SNMP-ის მომხმარებლის სახელი (v3)
 
 #: include/global_form.php:73
 msgid "SNMP v3 username for this device."
-msgstr ""
+msgstr "SNMP v3 მომხმარებლის სახელი ამ მოწყობილობისთვის."
 
 #: include/global_form.php:81
 msgid "SNMP Password (v3)"
@@ -9419,23 +9423,23 @@ msgstr "SNMP პაროლი (v3)"
 
 #: include/global_form.php:82
 msgid "SNMP v3 password for this device."
-msgstr ""
+msgstr "SNMP v3 პაროლი ამ მოწყობილობისთვის."
 
 #: include/global_form.php:90
 msgid "SNMP Privacy Protocol (v3)"
-msgstr ""
+msgstr "SNMP კონფიდენციალურობის პროტოკოლი (v3)"
 
 #: include/global_form.php:91
 msgid "Choose the SNMPv3 Privacy Protocol."
-msgstr ""
+msgstr "აირჩიეთ SNMPv3 კონფიდენციალურობის პროტოკოლი."
 
 #: include/global_form.php:99
 msgid "SNMP Privacy Passphrase (v3)"
-msgstr ""
+msgstr "SNMP კონფიდენციალურობის საიდუმლო ფრაზა (v3)"
 
 #: include/global_form.php:100
 msgid "Choose the SNMPv3 Privacy Passphrase."
-msgstr ""
+msgstr "აირჩიეთ SNMPv3 კონფიდენციალურობის საიდუმლო ფრაზა."
 
 #: include/global_form.php:108 include/global_settings.php:916
 msgid "SNMP Context (v3)"
@@ -9447,7 +9451,7 @@ msgstr ""
 
 #: include/global_form.php:117 include/global_settings.php:925
 msgid "SNMP Engine ID (v3)"
-msgstr ""
+msgstr "SNMP ძრავის ID (v3)"
 
 #: include/global_form.php:118
 msgid "Enter the SNMP v3 Engine Id to use for this device. Leave this field empty to use the SNMP Engine ID being defined per SNMPv3 Notification receiver."
@@ -9468,6 +9472,8 @@ msgstr "SNMP-ის მოლოდინის ვადა"
 #: include/global_form.php:136
 msgid "The maximum number of milliseconds Cacti will wait for an SNMP response (does not work with php-snmp support)."
 msgstr ""
+"მილიწამების მაქსიმალური რაოდენობა, რამდენ ხანსაც Cacti დაელოდება SNMP პასუხს "
+"(არ მუშაობს php-snmp მხარდაჭერით)."
 
 #: include/global_form.php:144 include/global_form.php:211
 msgid "SNMP Retries"
@@ -9538,6 +9544,8 @@ msgstr "%d გამეორება"
 #: include/global_form.php:212
 msgid "The maximum number of attempts to reach a device via an SNMP readstring prior to giving up."
 msgstr ""
+"მოწყობილობასთან SNMP წაკითხვის სტრიქონით დაკავშირების მცდელობების "
+"მაქსიმალური რაოდენობა შეწყვეტამდე."
 
 #: include/global_form.php:225
 msgid "A useful name for this Data Storage and Polling Profile."
@@ -9770,7 +9778,7 @@ msgstr ""
 
 #: include/global_form.php:643
 msgid "The minimum value of data that is allowed to be collected."
-msgstr ""
+msgstr "მონაცემების მინიმალური მნიშვნელობა, რომლის შეგროვებაც დაშვებულია."
 
 #: include/global_form.php:646
 msgid "Maximum Value (\"U\" for No Maximum)"
@@ -9778,7 +9786,7 @@ msgstr ""
 
 #: include/global_form.php:651
 msgid "The maximum value of data that is allowed to be collected."
-msgstr ""
+msgstr "მონაცემების მაქსიმალური მნიშვნელობა, რომლის შეგროვებაც დაშვებულია."
 
 #: include/global_form.php:654
 msgid "Data Source Type"
@@ -10331,7 +10339,7 @@ msgstr ""
 
 #: include/global_form.php:1309
 msgid "Check this box to disable all checks for this host."
-msgstr ""
+msgstr "მონიშნეთ ეს უჯრა ამ ჰოსტისთვის ყველა შემოწმების გასათიშად."
 
 #: include/global_form.php:1321
 msgid "Availability/Reachability Options"
@@ -10363,7 +10371,7 @@ msgstr "დამატებითი პარამეტრები"
 
 #: include/global_form.php:1385
 msgid "Created"
-msgstr "შეიქმნა"
+msgstr "შექმნილია"
 
 #: include/global_form.php:1386
 msgid "Date/time the device was added"
@@ -10565,7 +10573,7 @@ msgstr ""
 
 #: include/global_form.php:1814
 msgid "Import Template from Local File"
-msgstr ""
+msgstr "შაბლონის იმპორტი ლოკალური ფაილიდან"
 
 #: include/global_form.php:1815
 msgid "If the XML file containing template data is located on your local machine, select it here."
@@ -10995,7 +11003,7 @@ msgstr "snmpbulkwalk პროგრამის ბილიკი"
 
 #: include/global_settings.php:178
 msgid "The path to your snmpbulkwalk binary."
-msgstr ""
+msgstr "გზა თქვენი snmpbulkwalk ბინარული ფაილისკენ."
 
 #: include/global_settings.php:184
 msgid "snmpgetnext Binary Path"
@@ -13028,19 +13036,19 @@ msgstr "DNS-ის მორგება"
 
 #: include/global_settings.php:2234
 msgid "Primary DNS IP Address"
-msgstr ""
+msgstr "ძირითადი DNS IP მისამართი"
 
 #: include/global_settings.php:2235
 msgid "Enter the primary DNS IP Address to utilize for reverse lookups."
-msgstr ""
+msgstr "შეიყვანეთ ძირითადი DNS IP მისამართი უკუ ძიებისთვის გამოსაყენებლად."
 
 #: include/global_settings.php:2241
 msgid "Secondary DNS IP Address"
-msgstr ""
+msgstr "მეორადი DNS IP მისამართი"
 
 #: include/global_settings.php:2242
 msgid "Enter the secondary DNS IP Address to utilize for reverse lookups."
-msgstr ""
+msgstr "შეიყვანეთ მეორადი DNS IP მისამართი უკუ ძიებისთვის გამოსაყენებლად."
 
 #: include/global_settings.php:2248
 msgid "DNS Timeout"
@@ -13061,6 +13069,9 @@ msgstr "ინტერნეტ-პროქსის მისამართ�
 #: include/global_settings.php:2262
 msgid "For either core Cacti Services or Plugins that require internet access, enter the proxy server and port here in the following format IP:PORT.  For example 192.168.1.1:8080."
 msgstr ""
+"Cacti-ს ძირითადი სერვისებისთვის ან მოდულებისთვის, რომლებსაც ინტერნეტთან "
+"წვდომა სჭირდებათ, აქ შეიყვანეთ პროქსი სერვერი და პორტი ფორმატით IP:PORT. "
+"მაგალითად, 192.168.1.1:8080."
 
 #: include/global_settings.php:2269
 msgid "Internet Proxy User"
@@ -13068,7 +13079,7 @@ msgstr "ინტერნეტის პროქსის მომხმა�
 
 #: include/global_settings.php:2270
 msgid "If your Internet Proxy requires a username, enter it here."
-msgstr ""
+msgstr "თუ თქვენი ინტერნეტ პროქსი მომხმარებლის სახელს მოითხოვს, შეიყვანეთ აქ."
 
 #: include/global_settings.php:2277
 msgid "Internet Proxy Password"
@@ -13076,7 +13087,7 @@ msgstr "ინერნეტ-პროქსის პაროლი"
 
 #: include/global_settings.php:2278
 msgid "If your Internet Proxy requires a password, enter it here."
-msgstr ""
+msgstr "თუ თქვენი ინტერნეტ პროქსი პაროლს მოითხოვს, შეიყვანეთ აქ."
 
 #: include/global_settings.php:2288
 msgid "On-demand RRD Update Settings"
@@ -13869,7 +13880,7 @@ msgstr "მინიატურის სიმაღლე"
 
 #: include/global_settings.php:3068
 msgid "The height of Thumbnail graphs in pixels."
-msgstr ""
+msgstr "მინიატურული გრაფიკების სიმაღლე პიქსელებში."
 
 #: include/global_settings.php:3075
 msgid "Thumbnail Width"
@@ -14273,7 +14284,7 @@ msgstr ""
 
 #: lib/api_automation.php:5213 lib/api_automation.php:5216
 msgid "The file is too big."
-msgstr ""
+msgstr "ფაილი ძალიან დიდია."
 
 #: lib/api_automation.php:5219
 msgid "Incomplete file transfer."
@@ -14289,11 +14300,11 @@ msgstr "დროებითი საქაღალდე აკლია."
 
 #: lib/api_automation.php:5228
 msgid "Failed to write file to disk"
-msgstr ""
+msgstr "ფაილის დისკზე ჩაწერა ვერ მოხერხდა"
 
 #: lib/api_automation.php:5231
 msgid "File upload stopped by extension"
-msgstr ""
+msgstr "ფაილის ატვირთვა შეჩერდა გაფართოების მიერ"
 
 #: lib/api_automation.php:5242
 msgid "Invalid file extension."
@@ -14419,7 +14430,7 @@ msgstr "SNMP-ის ინფორმაცია"
 
 #: lib/api_device.php:1648
 msgid "SNMP not in use"
-msgstr ""
+msgstr "SNMP არ გამოიყენება"
 
 #: lib/api_device.php:1657 lib/api_device.php:1669 lib/api_device.php:1691
 msgid "SNMP error"
@@ -15922,7 +15933,7 @@ msgstr "შეცდომის პატაკი"
 
 #: lib/html.php:3113 lib/html_filter.php:72
 msgid "Enter a search term"
-msgstr ""
+msgstr "შეიყვანეთ საძიებო სიტყვა"
 
 #: lib/html.php:3114
 msgid "Enter a regular expression"
@@ -16295,11 +16306,16 @@ msgstr ""
 
 #: lib/html_reports.php:64
 msgid "Format File to Use"
-msgstr ""
+msgstr "გამოსაყენებელი ფორმატის ფაილი"
 
 #: lib/html_reports.php:67
 msgid "Choose the custom html wrapper and CSS file to use.  This file contains both html and CSS to wrap around your report.  If it contains more than simply CSS, you need to place a special <REPORT> tag inside of the file.  This format tag will be replaced by the report content.  These files are located in the 'formats' directory."
 msgstr ""
+"აირჩიეთ გამოსაყენებელი მორგებული html გარსი (wrapper) და CSS ფაილი. ეს ფაილი "
+"შეიცავს როგორც html-ს, ასევე CSS-ს თქვენი ანგარიშის გასაფორმებლად. თუ იგი "
+"მხოლოდ CSS-ზე მეტს შეიცავს, ფაილში უნდა მოათავსოთ სპეციალური <REPORT> ტეგი. "
+"ეს ფორმატის ტეგი ჩანაცვლდება ანგარიშის შიგთავსით. ეს ფაილები განთავსებულია "
+"'formats' დირექტორიაში."
 
 #: lib/html_reports.php:72
 msgid "Default Text Font Size"
@@ -16415,7 +16431,7 @@ msgstr "ელფოსტის მისამართ(ებ)-ზე"
 
 #: lib/html_reports.php:199
 msgid "Please separate multiple addresses by comma (,)"
-msgstr ""
+msgstr "გთხოვთ, გამოყოთ მრავალი მისამართი მძიმით (,)"
 
 #: lib/html_reports.php:204
 msgid "BCC Address(es)"
@@ -16423,7 +16439,7 @@ msgstr "BCC მისამართ(ებ)-ი"
 
 #: lib/html_reports.php:210
 msgid "Blind carbon copy. Please separate multiple addresses by comma (,)"
-msgstr ""
+msgstr "ფარული ასლი (BCC). გთხოვთ, გამოყოთ მრავალი მისამართი მძიმით (,)"
 
 #: lib/html_reports.php:215
 msgid "Image attach type"
@@ -20647,7 +20663,7 @@ msgstr ""
 
 #: pollers.php:106
 msgid "Collection Settings"
-msgstr "კოლექციი პარამეტრები"
+msgstr "შეგროვების პარამეტრები"
 
 #: pollers.php:110 support.php:600 support.php:752
 msgid "Processes"
