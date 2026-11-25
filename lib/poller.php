@@ -1906,6 +1906,9 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 		$data = db_fetch_assoc('SELECT * FROM user_auth_group_realm');
 		replicate_out_table($rcnn_id, $data, 'user_auth_group_realm', $remote_poller_id);
 
+		$data = db_fetch_assoc('SELECT * FROM user_auth_perms');
+		replicate_out_table($rcnn_id, $data, 'user_auth_perms', $remote_poller_id);
+
 		$data = db_fetch_assoc('SELECT * FROM user_auth_realm');
 		replicate_out_table($rcnn_id, $data, 'user_auth_realm', $remote_poller_id);
 
