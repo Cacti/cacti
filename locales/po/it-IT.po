@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2026-03-10 10:57-0400\n"
-"PO-Revision-Date: 2026-11-25 10:18+0000\n"
+"PO-Revision-Date: 2026-11-26 05:54+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Italian <https://translate.cacti.net/projects/cacti/core/it/>"
 "\n"
@@ -2324,7 +2324,7 @@ msgstr "Corsa"
 
 #: automation_networks.php:1164 pollers.php:52 utilities.php:1153
 msgid "Idle"
-msgstr "Idle"
+msgstr "Inattivo"
 
 #: automation_networks.php:1181 include/global_arrays.php:981
 #: include/global_arrays.php:1355 include/global_settings.php:3024
@@ -2529,7 +2529,7 @@ msgstr "Porta"
 #: automation_snmp.php:738 include/global_settings.php:737
 #: include/global_settings.php:999 support.php:768
 msgid "Timeout"
-msgstr "Timeout"
+msgstr "Tempo limite"
 
 #: automation_snmp.php:742 include/global_settings.php:1007
 msgid "Retries"
@@ -2537,7 +2537,7 @@ msgstr "Tentativi"
 
 #: automation_snmp.php:746
 msgid "Max OIDS"
-msgstr "Max OIDS"
+msgstr "OID max"
 
 #: automation_snmp.php:750
 msgid "Auth Username"
@@ -3954,7 +3954,7 @@ msgstr "Debug"
 #: data_debug.php:1114 lib/clog_webapi.php:704 lib/html_filter.php:288
 #: lib/html_filter.php:586 support.php:277 support.php:524 utilities.php:1074
 msgid "Refresh"
-msgstr "Aggiorna"
+msgstr "Ricarica"
 
 #: data_debug.php:1136 rrdcheck.php:232 user_log.php:304 user_log.php:344
 msgid "Attempts"
@@ -3974,7 +3974,7 @@ msgstr "Esegui un controllo di debug su tutte le origini dati"
 
 #: data_debug.php:1189
 msgid "All Devices"
-msgstr "Dispositivi"
+msgstr "Tutti i dispositivi"
 
 #: data_debug.php:1191
 msgid "No Devices"
@@ -4079,7 +4079,7 @@ msgstr "Domanda Script Query"
 
 #: data_input.php:539 include/global_arrays.php:528
 msgid "Script Server Query"
-msgstr "Server Script"
+msgstr "Query del server di script"
 
 #: data_input.php:548
 msgid "White List Verification Succeeded."
@@ -4891,15 +4891,15 @@ msgstr[1] "I seguenti grafici utilizzano queste fonti di dati."
 #: data_sources.php:647
 msgid "Leave the Graph Untouched"
 msgid_plural "Leave all Graphs untouched."
-msgstr[0] "Lasciare intatto il <strong>Graph</strong>."
-msgstr[1] "Lasciare tutti i <strong>Graphs</strong> intatti."
+msgstr[0] "Lasciare intatto il grafico"
+msgstr[1] "Lasciare intatti tutti i grafici."
 
 #: data_sources.php:651
 msgid "Delete all Graph Items that reference this Data Source."
 msgid_plural "Delete all Graph Items that reference these Data Sources"
 msgstr[0] ""
 "Elimina tutti gli elementi del grafico che fanno riferimento a questa "
-"origine dati"
+"origine dati."
 msgstr[1] ""
 "Elimina tutti gli elementi del grafico che fanno riferimento a queste "
 "origini dati"
@@ -4907,7 +4907,7 @@ msgstr[1] ""
 #: data_sources.php:655
 msgid "Delete all Graphs that reference this Data Source."
 msgid_plural "Delete all Graphs that reference these Data Sources"
-msgstr[0] "Elimina tutti i grafici che fanno riferimento a questa origine dati"
+msgstr[0] "Elimina tutti i grafici che fanno riferimento a questa origine dati."
 msgstr[1] "Elimina tutti i grafici che fanno riferimento a queste origini dati"
 
 #: data_sources.php:662
@@ -6219,7 +6219,7 @@ msgstr "Grafico vuoto"
 
 #: graphs.php:3044
 msgid "Non Templated"
-msgstr "Non modellato"
+msgstr "Senza modello"
 
 #: graphs.php:3146 lib/html.php:2479 lib/html.php:2524 lib/html.php:2606
 msgid "Source"
@@ -6480,7 +6480,7 @@ msgstr "Fare clic su 'Continua' per abilitare i seguenti dispositivi."
 
 #: host.php:503
 msgid "Enable Device"
-msgstr "Abilita Dispositivo(i)"
+msgstr "Abilita Dispositivo"
 
 #: host.php:504
 msgid "Enable Devices"
@@ -6795,7 +6795,7 @@ msgstr "Il metodo di Disponibilità/Raggiungibilità utilizzato per comunicare c
 
 #: host.php:1668
 msgid "In State"
-msgstr "Stato"
+msgstr "Nello stato"
 
 #: host.php:1671
 msgid "The amount of time that this Device has been in its current state."
@@ -8694,7 +8694,7 @@ msgstr "Turno di giorno"
 
 #: include/global_arrays.php:1593
 msgid "This Day"
-msgstr "Ultimo giorno"
+msgstr "Questo giorno"
 
 #: include/global_arrays.php:1594
 msgid "This Week"
@@ -13743,7 +13743,7 @@ msgstr "Inserire il timeout DNS in millisecondi.  Cacti utilizza un risolutore D
 
 #: include/global_settings.php:2453
 msgid "Internet Proxy Settings"
-msgstr "Impostazioni generali"
+msgstr "Impostazioni proxy Internet"
 
 #: include/global_settings.php:2458
 msgid "Internet Proxy Address"
@@ -16677,7 +16677,7 @@ msgstr "Eseguire l'azione"
 
 #: lib/html.php:2191 managers.php:41 managers.php:126
 msgid "Logs"
-msgstr "Logs"
+msgstr "Registri"
 
 #: lib/html.php:2475
 msgid "Enable Data Source Statistics to Sort"
@@ -18264,7 +18264,7 @@ msgstr "Inizio"
 #: lib/installer.php:1953 lib/installer.php:2399 lib/installer.php:2410
 #: lib/installer.php:3099 lib/installer.php:3165
 msgid "Upgrade"
-msgstr "Aggiorna"
+msgstr "Aggiorna versione"
 
 #: lib/installer.php:1955 lib/installer.php:3104 lib/installer.php:3169
 msgid "Downgrade"
@@ -23234,7 +23234,7 @@ msgstr "L'utente MariaDB/MySQL che sta eseguendo la query."
 
 #: support.php:427
 msgid "Run Time"
-msgstr "Durata"
+msgstr "Tempo di esecuzione"
 
 #: support.php:429
 msgid "The Runtime of the current query in seconds."
