@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-25 10:19+0000\n"
+"PO-Revision-Date: 2026-11-26 05:54+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Vietnamese <https://translate.cacti.net/projects/cacti/core/"
 "vi/>\n"
@@ -10808,7 +10808,7 @@ msgstr "Công cụ sửa đổi dấu gạch ngang cho phép kiểu đường đ
 
 #: include/global_form.php:1128
 msgid "Dash Offset (dash-offset=offset)"
-msgstr "Dash Offset (dash-offset = offset)"
+msgstr "Độ lệch nét đứt (dash-offset=offset)"
 
 #: include/global_form.php:1133 include/global_form.php:1141
 msgid "The dash-offset parameter specifies an offset into the pattern at which the stroke begins."
@@ -17382,11 +17382,11 @@ msgstr "Quay trở lại khoảng thời gian mặc định"
 
 #: lib/html_graph.php:436 lib/html_graph.php:439 lib/html_tree.php:1429
 msgid "Window"
-msgstr "Window"
+msgstr "Cửa sổ"
 
 #: lib/html_graph.php:448 lib/html_graph.php:451 support.php:1271
 msgid "Interval"
-msgstr "Interval"
+msgstr "Khoảng thời gian"
 
 #: lib/html_graph.php:460 lib/html_tree.php:1453
 msgid "Stop"
