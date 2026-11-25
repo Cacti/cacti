@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-25 10:19+0000\n"
+"PO-Revision-Date: 2026-11-26 05:54+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://translate.cacti.net/"
 "projects/cacti/core/zh_Hans/>\n"
@@ -3633,7 +3633,7 @@ msgstr "颜色如屏幕上所示。"
 
 #: color.php:682
 msgid "Colors in use cannot be Deleted.  In use is defined as being referenced either by a Graph or a Graph Template."
-msgstr "引用的颜色不能被删除. 被定义为在用的由图形或图形模板引用中。"
+msgstr "引用的颜色不能被删除. 被定义为在用的由图形或图形模板引用中."
 
 #: color.php:688
 msgid "The number of Graph using this Color."
@@ -3773,7 +3773,7 @@ msgstr "颜色模板"
 
 #: color_templates.php:919
 msgid "Color Templates that are in use cannot be Deleted. In use is defined as being referenced by an Aggregate Template."
-msgstr "正在被聚合模板引用的颜色模板不能被删除。"
+msgstr "正在被聚合模板引用的颜色模板不能被删除."
 
 #: color_templates.php:953
 msgid "No Color Templates Found"
@@ -3789,7 +3789,7 @@ msgstr "删除检查"
 
 #: data_debug.php:52
 msgid "Data Source debug started."
-msgstr "数据源调试。"
+msgstr "数据源调试."
 
 #: data_debug.php:55
 msgid "Data Source debug received an invalid Data Source ID."
@@ -4778,7 +4778,7 @@ msgstr "在数据存储为 '未知' 之前,以秒为单位的时间量没有良�
 
 #: data_source_profiles.php:1059
 msgid "The number of Data Sources using this Profile."
-msgstr "使用此配置文件的数据源的数量。"
+msgstr "使用此配置文件的数据源的数量."
 
 #: data_source_profiles.php:1065
 msgid "The number of Data Templates using this Profile."
@@ -5363,7 +5363,7 @@ msgstr "GPRINT 格式字符串。"
 
 #: gprint_presets.php:359
 msgid "GPRINTs that are in use cannot be Deleted.  In use is defined as being referenced by either a Graph or a Graph Template."
-msgstr "在用的GPRINT 不能被删除. 被定义为在用的由图形或图形模板所引用。"
+msgstr "在用的GPRINT 不能被删除. 被定义为在用的由图形或图形模板所引用."
 
 #: gprint_presets.php:365
 msgid "The number of Graphs using this GPRINT."
@@ -5438,7 +5438,7 @@ msgstr "缩略图"
 #: graph_realtime.php:440
 #, php-format
 msgid "%d seconds left."
-msgstr "还有%d秒。"
+msgstr "还有%d秒."
 
 #: graph_realtime.php:456
 msgid " seconds left."
@@ -5659,7 +5659,7 @@ msgstr "此图形模板的版本"
 
 #: graph_templates.php:1810
 msgid "Graph Templates that are in use cannot be Deleted.  In use is defined as being referenced by a Graph."
-msgstr "正在由Graph引用的图形模板不能被删除。"
+msgstr "正在由Graph引用的图形模板不能被删除."
 
 #: graph_templates.php:1813 include/global_arrays.php:2241
 #: lib/api_aggregate.php:1775
@@ -6156,7 +6156,7 @@ msgstr "编辑图形模板."
 #: graphs.php:2275
 #, php-format
 msgid "Edit Data Source: '%s'."
-msgstr "数据源: '%s'。"
+msgstr "数据源: '%s'."
 
 #: graphs.php:2284
 msgid "Unlock Graph."
@@ -6398,7 +6398,7 @@ msgstr "将设备放入报表"
 
 #: host.php:133
 msgid "Data Query Re-indexed."
-msgstr "数据查询索引。"
+msgstr "数据查询索引."
 
 #: host.php:142
 msgid "Device Data Query Re-indexed.  Verbose output displayed."
@@ -6418,7 +6418,7 @@ msgstr "刷新设备的轮询缓存。"
 
 #: host.php:179
 msgid "ERROR: Invalid Device ID."
-msgstr "ERROR: 设备。"
+msgstr "ERROR: 设备."
 
 #: host.php:217
 #, php-format
@@ -7063,7 +7063,7 @@ msgstr "保存失败。"
 
 #: include/global_arrays.php:156
 msgid "Save Failed due to field input errors (Check red fields)."
-msgstr "由于字段输入错误而保存失败 (请检查红色字段)。"
+msgstr "由于字段输入错误而保存失败 (请检查红色字段)."
 
 #: include/global_arrays.php:159
 msgid "Passwords do not match, please retype."
@@ -7286,7 +7286,7 @@ msgstr "不支持修改基于LDAP/AD 的密码。"
 
 #: include/global_arrays.php:318
 msgid "Password successfully changed."
-msgstr "密码已成功更改。"
+msgstr "密码已成功更改."
 
 #: include/global_arrays.php:321
 msgid "Unable to clear log, no write permissions"
@@ -7367,7 +7367,7 @@ msgstr "无法添加图形.当前用户不是所有者"
 
 #: include/global_arrays.php:378
 msgid "Unable to Add all Graphs.  See error message for details."
-msgstr "无法添加所有图形.详情请参考报错信息。"
+msgstr "无法添加所有图形.详情请参考报错信息."
 
 #: include/global_arrays.php:381
 msgid "You must select at least one Graph to add to a Report."
@@ -7441,7 +7441,7 @@ msgstr "索引重建可通过手动运行脚本或设备自动化进行。"
 
 #: include/global_arrays.php:542
 msgid "When the Devices SNMP uptime goes backward, a Re-Index will be performed."
-msgstr "设备SNMP Uptime 减少时,将重建索引。"
+msgstr "设备SNMP Uptime 减少时,将重建索引."
 
 #: include/global_arrays.php:543
 msgid "When the Data Query index count changes, a Re-Index will be performed."
@@ -9728,7 +9728,7 @@ msgstr "导入字符串"
 
 #: include/global_form.php:424
 msgid "The data that is sent to the script, which includes the complete path to the script and input sources in &lt;&gt; brackets."
-msgstr "发送到脚本的数据包括脚本和输入源的完整路径 &lt;&gt; 括号。"
+msgstr "发送到脚本的数据包括脚本和输入源的完整路径 &lt;&gt; 括号."
 
 #: include/global_form.php:434
 msgid "White List Check"
@@ -10281,7 +10281,7 @@ msgstr "在时间轴(x轴)上将数据偏移 '值' 字段中指定的数量。"
 #: include/global_form.php:1072
 msgid "[HRULE|VRULE]: The value of the graph item.<br/> [TICK]: The fraction for the tick line.<br/> [SHIFT]: The time offset in seconds."
 msgstr "[HRULE|VRULE]:图形项目的值.<br/> [TICK]:刻度线的分数.<br/>[SHIFT]"
-":以秒为单位的时间偏移量。"
+":以秒为单位的时间偏移量."
 
 #: include/global_form.php:1075
 msgid "GPRINT Type"
@@ -10334,7 +10334,7 @@ msgstr "如果选择了LINE,请在此指定线的宽度. 您必须包含一个�
 
 #: include/global_form.php:1120
 msgid "Dashes (dashes[=on_s[,off_s[,on_s,off_s]...]])"
-msgstr "虚线(破折号[=on_s[,off_s[,on_s,off_s]...]])"
+msgstr "虚线 (dashes[=on_s[,off_s[,on_s,off_s]...]])"
 
 #: include/global_form.php:1125
 msgid "The dashes modifier enables dashed line style."
@@ -10342,7 +10342,7 @@ msgstr "破折号修饰符启用虚线样式。"
 
 #: include/global_form.php:1128
 msgid "Dash Offset (dash-offset=offset)"
-msgstr "偏移(Dash-offset = offset)"
+msgstr "虚线偏移 (dash-offset=offset)"
 
 #: include/global_form.php:1133 include/global_form.php:1141
 msgid "The dash-offset parameter specifies an offset into the pattern at which the stroke begins."
@@ -10659,11 +10659,11 @@ msgstr "显示用户指向浏览器的页面。"
 
 #: include/global_form.php:1748
 msgid "Show the default console screen."
-msgstr "控制台默认显示。"
+msgstr "控制台默认显示."
 
 #: include/global_form.php:1752
 msgid "Show the default graph screen."
-msgstr "图形默认显示。"
+msgstr "图形默认显示."
 
 #: include/global_form.php:1758 user_log.php:281
 msgid "Authentication Realm"
@@ -10911,7 +10911,7 @@ msgstr "应该用于此规则项目的字段名称。"
 
 #: include/global_form.php:2279 include/global_form.php:2321
 msgid "Operator."
-msgstr "操作员。"
+msgstr "操作员."
 
 #: include/global_form.php:2286 include/global_form.php:2328
 #: include/global_form.php:2471
@@ -14286,7 +14286,7 @@ msgstr ""
 "此外,重要的是要注意,远程数据采集器需要使用Cacti 的Boost 服务<b>'按需更新'</"
 "b>功能,并且我们始终建议使用Spine. 当远程数据采集器<b>'离线'</"
 "b>时,远程数据采集器网站将包含更少的信息. 但是,它将缓存所有更新,直到主Cacti "
-"数据库和Web服务器可达. 然后它会将它的转储表输出转储回主Cacti 数据库进行更新。"
+"数据库和Web服务器可达. 然后它会将它的转储表输出转储回主Cacti 数据库进行更新."
 
 #: index.php:94
 msgid "<strong>NOTE:</strong> None of the Core Cacti Plugins, to date, have been re-designed to work with Remote Data Collectors.  Therefore, Plugins such as MacTrack, and HMIB, which require direct access to devices will not work with Remote Data Collectors at this time.  However, plugins such as Thold will work so long as the Remote Data Collector is in <b>'online'</b> mode."
@@ -15134,7 +15134,7 @@ msgstr "检测到索引更改! 当前索引: %s, 之前的索引: %s"
 #: lib/data_query.php:323
 #, php-format
 msgid "Transient Index Removal Detected! PreviousIndex: %s.  No action taken."
-msgstr "检测到索引删除! 之前的索引: %s。"
+msgstr "检测到索引删除! 之前的索引: %s."
 
 #: lib/data_query.php:326
 #, php-format
@@ -15190,7 +15190,7 @@ msgstr "插件钩子完成"
 
 #: lib/data_query.php:504
 msgid "Checking for Sort Field change.  No changes detected."
-msgstr "检查排序字段更改.未检测到任何更改。"
+msgstr "检查排序字段更改.未检测到任何更改."
 
 #: lib/data_query.php:509
 #, php-format
@@ -16635,7 +16635,7 @@ msgstr "图形列的数量。"
 
 #: lib/html_reports.php:112
 msgid "The Graph width in pixels."
-msgstr "以像素为单位的图形宽度。"
+msgstr "以像素为单位的图形宽度."
 
 #: lib/html_reports.php:120
 msgid "The Graph height in pixels."
@@ -17839,7 +17839,7 @@ msgstr "用户'%s '应该具有修改权限以启用读/写。"
 #: lib/installer.php:2597
 msgid "An example of how to set folder permissions is shown here, though you may need to adjust this depending on your operating system, user accounts and desired permissions."
 msgstr "此处显示了如何设置文件夹权限的示例,但您可能需要根据操作系统,用户帐户和所需权"
-"限进行调整。"
+"限进行调整."
 
 #: lib/installer.php:2598
 msgid "EXAMPLE:"
@@ -18274,7 +18274,7 @@ msgstr "开始使用"
 #: lib/installer.php:3359
 #, php-format
 msgid "Starting %s Process for v%s"
-msgstr "正在启动 v%2$s 的 %1$s 进程"
+msgstr "为v%s启动%s流程"
 
 #: lib/installer.php:3388
 #, php-format
@@ -18842,7 +18842,7 @@ msgstr ""
 #: lib/reports.php:144
 #, php-format
 msgid "Device '%s' successfully added to Report."
-msgstr "设备'%s'成功添加到Report。"
+msgstr "设备'%s'成功添加到Report."
 
 #: lib/reports.php:147
 msgid "Device not found! Unable to add to Report"
@@ -19010,7 +19010,7 @@ msgstr "循环存档"
 
 #: lib/rrd.php:3597
 msgid "Cur Row"
-msgstr "当前行"
+msgstr "Cur 行"
 
 #: lib/rrd.php:3598
 msgid "PDP per Row"
@@ -20057,7 +20057,7 @@ msgstr ""
 
 #: package_import.php:981
 msgid "Package XML File Damaged."
-msgstr "包文件XML损坏。"
+msgstr "包文件XML损坏."
 
 #: package_import.php:981
 msgid "The XML files appears to be invalid and does not contain a public key.  Please contact the package author to obtain a revised package."
@@ -21229,7 +21229,7 @@ msgstr "您已经使用了此数据库主机名“%s”。请输入一个不重�
 
 #: pollers.php:569
 msgid "Data Collector Statistics cleared."
-msgstr "数据收集统计信息清除。"
+msgstr "数据收集统计信息清除."
 
 #: pollers.php:603
 msgid "Click 'Continue' to Delete the following Data Collector."
@@ -23777,7 +23777,7 @@ msgstr ""
 
 #: utilities.php:120
 msgid "Data Source Statistics Purged."
-msgstr "数据来源统计清除。"
+msgstr "数据来源统计清除."
 
 #: utilities.php:363 utilities.php:366
 msgid "Display Order"
@@ -23924,7 +23924,7 @@ msgstr ""
 "如果选择此选项，将重新生成轮询器缓存。仅在数据库崩溃的情况下使用此选项，如果"
 "您在崩溃后遇到问题并且已经运行了数据库修复工具。或者，如果您在特定设备上遇到"
 "问题，只需重新保存该设备以重建其轮询器缓存。还有一个与此命令等效的命令行界面"
-"，建议用于大型系统。"
+"，建议用于大型系统."
 
 #: utilities.php:1249
 msgid "NOTE: On large systems, this command may take several minutes to hours to complete and therefore should not be run from the Cacti UI.  You can simply run 'php -q cli/rebuild_poller_cache.php --help' at the command line for more information."
@@ -23982,7 +23982,7 @@ msgstr "重建SNMPAgent 缓存"
 #: utilities.php:1285
 msgid "The SNMP cache will be cleared and re-generated if you select this option. Note that it takes another poller run to restore the SNMP cache completely."
 msgstr "如果您选择此选项,SNMP 缓存将被清除并重新生成. 请注意,它需要另一个poller "
-"才能完全恢复SNMP 缓存。"
+"才能完全恢复SNMP 缓存."
 
 #: utilities.php:1290
 msgid "This menu pick allows you to view the latest events SNMP Agent has handled in relation to the registered notification receivers."
@@ -24342,7 +24342,7 @@ msgstr "VDEF 的名称。"
 
 #: vdef.php:878
 msgid "VDEFs that are in use cannot be Deleted. In use is defined as being referenced by a Graph or a Graph Template."
-msgstr "正在由图形或图形模板引用的VDEF 不能被删除。"
+msgstr "正在由图形或图形模板引用的VDEF 不能被删除."
 
 #: vdef.php:884
 msgid "The number of Graphs using this VDEF."
