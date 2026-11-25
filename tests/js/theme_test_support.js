@@ -10,8 +10,10 @@ const vm = require('node:vm');
 
 const root = path.join(__dirname, '..', '..');
 
-// The loader only evaluates the theme scripts shipped in include/themes.
+// The loader only evaluates the theme scripts shipped in include/themes. They are read here,
+// from fixed paths, so that no caller-supplied value reaches the file name or the script.
 const THEMES = Object.freeze(['classic', 'dark', 'deepness', 'midwinter', 'modern', 'paper-plane', 'paw', 'sunrise']);
+const SOURCES = new Map(THEMES.map((name) => [name, fs.readFileSync(path.join(root, 'include', 'themes', name, 'main.js'), 'utf8')]));
 
 const GETTERS = new Set(['attr', 'data', 'prop', 'css']);
 const READERS = new Set(['val', 'text', 'html', 'width', 'height', 'scrollLeft', 'scrollTop', 'outerHeight', 'outerWidth']);
@@ -110,13 +112,12 @@ function placeholder(name) {
  * Assignments to undeclared names land in `globals`, so a test can see what leaked.
  */
 function loadTheme(theme, globals = {}) {
-	const known = THEMES.find((entry) => entry === theme);
+	const source = SOURCES.get(theme);
 
-	if (known === undefined) {
+	if (source === undefined) {
 		throw new Error('unknown theme: ' + theme);
 	}
 
-	const source = fs.readFileSync(path.join(root, 'include', 'themes', known, 'main.js'), 'utf8');
 	const context = vm.createContext(new Proxy(globals, {
 		has: () => true,
 		get(target, name) {
