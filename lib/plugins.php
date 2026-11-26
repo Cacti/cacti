@@ -59,6 +59,56 @@ function api_user_realm_auth($filename = '') {
 }
 
 /**
+ * Validates that a plugin hook callback belongs to an approved internal handler or
+ * is a user-defined function declared inside the validated plugin directory.
+ *
+ * @param string $plugin_name The plugin directory name or 'internal'.
+ * @param string $function_name The candidate PHP callback function name.
+ *
+ * @return bool True if the callback is permitted, false otherwise.
+ */
+function api_plugin_callback_is_allowed($plugin_name, $function_name) {
+	static $internal_callbacks = array(
+		'plugin_config_arrays'        => true,
+		'plugin_draw_navigation_text' => true,
+	);
+
+	if (!is_string($plugin_name) || !is_string($function_name) || $function_name === '') {
+		return false;
+	}
+
+	if ($plugin_name === 'internal') {
+		return isset($internal_callbacks[$function_name]);
+	}
+
+	if (!function_exists($function_name)) {
+		return false;
+	}
+
+	$plugin_dir = cacti_plugin_path($plugin_name);
+	if ($plugin_dir === false) {
+		return false;
+	}
+
+	try {
+		$rf = new ReflectionFunction($function_name);
+	} catch (ReflectionException $e) {
+		return false;
+	}
+
+	if ($rf->isInternal()) {
+		return false;
+	}
+
+	$decl_file = $rf->getFileName();
+	if (!is_string($decl_file) || $decl_file === '') {
+		return false;
+	}
+
+	return cacti_path_is_within($decl_file, $plugin_dir);
+}
+
+/**
  * This function executes a hook. Used as part of Cacti's lib functionality.
  *
  * @param string $name Name of hook to fire.
@@ -105,19 +155,22 @@ function api_plugin_hook($name) {
 				$debounce    = 'mpf_' . $plugin_name . '_' . $plugin_func;
 
 				if ($plugin_name !== 'internal') {
-					$full_path = cacti_plugin_path($plugin_name, $plugin_file);
+					$full_path = ($plugin_file !== '') ? cacti_plugin_path($plugin_name, $plugin_file) : false;
 
-					if ($full_path === false) {
+					if ($full_path === false || !is_file($full_path)) {
 						cacti_log("ERROR: Attempted inclusion of invalid plugin file $plugin_file from $plugin_name with the hook name $name", false, 'SECURITY');
 						continue;
 					}
 
-					if (file_exists($full_path)) {
-						include_once($full_path);
-					}
+					include_once($full_path);
 				}
 
 				if (function_exists($plugin_func)) {
+					if (!api_plugin_callback_is_allowed($plugin_name, $plugin_func)) {
+						cacti_log("ERROR: Blocked unauthorized plugin hook callback $plugin_func from $plugin_name for hook $name", false, 'SECURITY');
+						continue;
+					}
+
 					api_plugin_run_plugin_hook($name, $plugin_name, $plugin_func, $args);
 				} else if (debounce_run_notification($debounce)) {
 					cacti_log(sprintf('WARNING: Function "%s" does not exist in %s/%s for hook "%s"' . PHP_EOL, $plugin_func, $plugin_name, $plugin_file, $name), false, 'PLUGIN', POLLER_VERBOSITY_MEDIUM);
@@ -180,16 +233,24 @@ function api_plugin_hook_function($name, $parm = NULL) {
 				$p[] = $hdata['name'];
 
 				if ($hdata['name'] !== 'internal') {
-					$plugin_include = cacti_plugin_path($hdata['name'], $hdata['file']);
+					$plugin_include = ($hdata['file'] !== '') ? cacti_plugin_path($hdata['name'], $hdata['file']) : false;
 
-					if ($plugin_include !== false && file_exists($plugin_include)) {
-						include_once($plugin_include);
+					if ($plugin_include === false || !is_file($plugin_include)) {
+						cacti_log("ERROR: Attempted inclusion of invalid plugin file {$hdata['file']} from {$hdata['name']} with the hook name $name", false, 'SECURITY');
+						continue;
 					}
+
+					include_once($plugin_include);
 				}
 
 				$function = $hdata['function'];
 
 				if (function_exists($function)) {
+					if (!api_plugin_callback_is_allowed($hdata['name'], $function)) {
+						cacti_log("ERROR: Blocked unauthorized plugin hook callback $function from {$hdata['name']} for hook $name", false, 'SECURITY');
+						continue;
+					}
+
 					if (is_array($ret)) {
 						$is_array = true;
 					} else {
@@ -374,14 +435,12 @@ function api_plugin_hook_is_remote_collect($hook, $plugin, $required_capabilitie
  * @return mixed The result of the operation, or false on failure.
  */
 function api_plugin_get_dependencies($plugin) {
-	global $config;
-
-	$file = $config['base_path'] . '/plugins/' . $plugin . '/INFO';
+	$file = cacti_plugin_path($plugin, 'INFO');
 
 	$returndeps = array();
 
-	if (file_exists($file)) {
-		$info = parse_ini_file($file, true);
+	if ($file !== false && file_exists($file)) {
+		$info = parse_ini_file($file, true, INI_SCANNER_RAW);
 
 		if (isset($info['info']['requires']) && trim($info['info']['requires']) != '') {
 			$parts = explode(' ', trim($info['info']['requires']));
@@ -462,11 +521,11 @@ function api_plugin_remote_capabilities($plugin) {
 		return 'online_view:1 online_mgmt:1 offline_view:1 offline_mgmt:1 remote_collect:1';
 	}
 
-	$file = $config['base_path'] . '/plugins/' . $plugin . '/INFO';
+	$file = cacti_plugin_path($plugin, 'INFO');
 
 	if (!isset($info_data[$plugin])) {
-		if (file_exists($file)) {
-			$info = parse_ini_file($file, true);
+		if ($file !== false && file_exists($file)) {
+			$info = parse_ini_file($file, true, INI_SCANNER_RAW);
 
 			if (cacti_sizeof($info)) {
 				$info_data[$plugin] = $info['info'];
@@ -1370,10 +1429,22 @@ function api_plugin_valid_entrypoint($plugin, $function) {
  * @return bool True on success, false otherwise.
  */
 function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
+	global $user_auth_realm_filenames;
+
 	$files = explode(',', $file);
 
 	if (!api_plugin_valid_entrypoint($plugin, __FUNCTION__)) {
 		return false;
+	}
+
+	if ($plugin !== 'internal') {
+		foreach ($files as $tfile) {
+			$tfile = trim($tfile);
+			if ($tfile === '' || $tfile === 'plugins.php' || (isset($user_auth_realm_filenames[$tfile]) && (int) $user_auth_realm_filenames[$tfile] <= 101)) {
+				cacti_log(sprintf('ERROR: Plugin \'%s\' attempted to register reserved realm filename \'%s\'.', $plugin, $tfile), false, 'SECURITY');
+				return false;
+			}
+		}
 	}
 
 	$params = array($plugin);
@@ -1517,16 +1588,33 @@ function api_plugin_remove_realms($plugin) {
 function api_plugin_load_realms() {
 	global $user_auth_realms, $user_auth_realm_filenames;
 
-	$plugin_realms = db_fetch_assoc('SELECT *
-		FROM plugin_realms
-		ORDER BY plugin, display');
+	$plugin_realms = db_fetch_assoc('SELECT pr.*, pc.status AS plugin_status
+		FROM plugin_realms AS pr
+		LEFT JOIN plugin_config AS pc
+		ON pc.directory = pr.plugin
+		ORDER BY pr.plugin, pr.display');
 
 	if (cacti_sizeof($plugin_realms)) {
 		foreach ($plugin_realms as $plugin_realm) {
-			$plugin_files = explode(',', $plugin_realm['file']);
+			$is_internal = ($plugin_realm['plugin'] === 'internal');
+			$is_enabled  = $is_internal || (isset($plugin_realm['plugin_status']) && (int) $plugin_realm['plugin_status'] === 1);
 
-			foreach($plugin_files as $plugin_file) {
-				$user_auth_realm_filenames[$plugin_file] = $plugin_realm['id'] + 100;
+			if ($is_enabled) {
+				$plugin_files = explode(',', $plugin_realm['file']);
+
+				foreach($plugin_files as $plugin_file) {
+					$plugin_file = trim($plugin_file);
+					if ($plugin_file === '') {
+						continue;
+					}
+
+					if (!$is_internal && isset($user_auth_realm_filenames[$plugin_file])) {
+						cacti_log(sprintf('WARNING: Plugin \'%s\' realm filename \'%s\' collides with an existing realm and was ignored.', $plugin_realm['plugin'], $plugin_file), false, 'SECURITY');
+						continue;
+					}
+
+					$user_auth_realm_filenames[$plugin_file] = $plugin_realm['id'] + 100;
+				}
 			}
 
 			$user_auth_realms[$plugin_realm['id'] + 100] = $plugin_realm['display'];
@@ -1590,9 +1678,8 @@ function plugin_draw_navigation_text($nav) {
  * @return array An array of results.
  */
 function plugin_is_compatible($plugin) {
-	global $config;
-
-	$info = plugin_load_info_file($config['base_path'] . '/plugins/' . $plugin . '/INFO');
+	$info_file = cacti_plugin_path($plugin, 'INFO');
+	$info = ($info_file !== false) ? plugin_load_info_file($info_file) : false;
 
 	if ($info !== false) {
 		if (!isset($info['compat']) || cacti_version_compare(CACTI_VERSION, $info['compat'], '<')) {
@@ -1712,7 +1799,7 @@ function plugin_load_info_file($file) {
 	$info = false;
 	if (file_exists($file)) {
 		if (is_readable($file)) {
-			$info = parse_ini_file($file, true);
+			$info = parse_ini_file($file, true, INI_SCANNER_RAW);
 			if (cacti_sizeof($info) && array_key_exists('info', $info)) {
 				$info = plugin_load_info_defaults($file, $info['info']);
 			} else {
