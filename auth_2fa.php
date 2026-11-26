@@ -157,7 +157,7 @@ html_auth_header('login_2fa', __('2nd Factor Authentication'), __('2FA Verificat
 		<label for='login_token'><?php print __('Token'); ?></label>
 	</td>
 	<td>
-		<input type='textbox' class='ui-state-default ui-corner-all' id='login_token' name='token' placeholder='<?php print __('Token'); ?>'>
+		<input type='textbox' class='ui-state-default ui-corner-all' id='login_token' name='token' placeholder='<?php print __esc('Token'); ?>'>
 	</td>
 </tr>
 <tr>

@@ -2720,7 +2720,7 @@ function html_site_filter(mixed $site_id = -1, string $call_back = 'applyFilter'
 		<label for='site_id'><?php print __('Site'); ?></label>
 	</td>
 	<td>
-		<select id='site_id' onChange='<?php print $call_back; ?>' data-defaultLabel='<?php print __('Site'); ?>'>
+		<select id='site_id' onChange='<?php print $call_back; ?>' data-defaultLabel='<?php print __esc('Site'); ?>'>
 			<?php if (!$noany) {?><option value='-1'<?php if ($site_id == '-1') {?> selected<?php }?>><?php print __('Any'); ?></option><?php }?>
 			<?php if (!$nonone) {?><option value='0'<?php if ($site_id == '0') {?> selected<?php }?>><?php print __('None'); ?></option><?php }?>
 			<?php

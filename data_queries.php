@@ -802,12 +802,12 @@ function data_query_item_edit() : void {
 				</td>
 				<td class='center'>
 					<?php if ($show_down) {?>
-					<a class='remover ti ti-caret-down-filled moveArrow' title='<?php print __('Move Down'); ?>' href='#' data-url='<?php print html_escape_url('data_queries.php?action=item_movedown_gsv&snmp_query_graph_id=' . grv('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . grv('snmp_query_id') . '&field_name=' . $suggested_value['field_name']); ?>'></a>
+					<a class='remover ti ti-caret-down-filled moveArrow' title='<?php print __esc('Move Down'); ?>' href='#' data-url='<?php print html_escape_url('data_queries.php?action=item_movedown_gsv&snmp_query_graph_id=' . grv('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . grv('snmp_query_id') . '&field_name=' . $suggested_value['field_name']); ?>'></a>
 					<?php } else {?>
 					<span class='moveArrowNone'></span>
 					<?php } ?>
 					<?php if ($show_up) {?>
-					<a class='remover ti ti-caret-up-filled moveArrow' title='<?php print __('Move Up'); ?>' href='#' data-url='<?php print html_escape_url('data_queries.php?action=item_moveup_gsv&snmp_query_graph_id=' . grv('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . grv('snmp_query_id') . '&field_name=' . $suggested_value['field_name']); ?>'></a>
+					<a class='remover ti ti-caret-up-filled moveArrow' title='<?php print __esc('Move Up'); ?>' href='#' data-url='<?php print html_escape_url('data_queries.php?action=item_moveup_gsv&snmp_query_graph_id=' . grv('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . grv('snmp_query_id') . '&field_name=' . $suggested_value['field_name']); ?>'></a>
 					<?php } else {?>
 					<span class='moveArrowNone'></span>
 					<?php } ?>
@@ -846,7 +846,7 @@ function data_query_item_edit() : void {
 						<input type='text' class='ui-state-default ui-corner-all' id='svg_text' size='60'>
 					</td>
 					<td>
-						<button type='button' class='ui-button ui-corner-all ui-widget' id='svg_x' name='svg_x' value='add' title='<?php print __('Add Graph Title Suggested Name'); ?>'><?php print __esc('Add'); ?></button>
+						<button type='button' class='ui-button ui-corner-all ui-widget' id='svg_x' name='svg_x' value='add' title='<?php print __esc('Add Graph Title Suggested Name'); ?>'><?php print __esc('Add'); ?></button>
 					</td>
 				</tr>
 			</table>
@@ -910,12 +910,12 @@ function data_query_item_edit() : void {
 						</td>
 						<td class='center'>
 							<?php if ($show_down) {?>
-							<a class='remover ti ti-caret-down-filled moveArrow' title='<?php print __('Move Down'); ?>' href='#' data-url='<?php print html_escape_url('data_queries.php?action=item_movedown_dssv&snmp_query_graph_id=' . grv('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . grv('snmp_query_id') . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']); ?>'></a>
+							<a class='remover ti ti-caret-down-filled moveArrow' title='<?php print __esc('Move Down'); ?>' href='#' data-url='<?php print html_escape_url('data_queries.php?action=item_movedown_dssv&snmp_query_graph_id=' . grv('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . grv('snmp_query_id') . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']); ?>'></a>
 							<?php } else {?>
 							<span class='moveArrowNone'></span>
 							<?php } ?>
 							<?php if ($show_up) {?>
-							<a class='remover ti ti-caret-up-filled moveArrow' title='<?php print __('Move Up'); ?>' href='#' data-url='<?php print html_escape_url('data_queries.php?action=item_moveup_dssv&snmp_query_graph_id=' . grv('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . grv('snmp_query_id') . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']); ?>'></a>
+							<a class='remover ti ti-caret-up-filled moveArrow' title='<?php print __esc('Move Up'); ?>' href='#' data-url='<?php print html_escape_url('data_queries.php?action=item_moveup_dssv&snmp_query_graph_id=' . grv('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . grv('snmp_query_id') . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']); ?>'></a>
 							<?php } else {?>
 							<span class='moveArrowNone'></span>
 							<?php } ?>
@@ -924,7 +924,7 @@ function data_query_item_edit() : void {
 							<?php print htmle($suggested_value['text']); ?>
 						</td>
 						<td class='right'>
-							<a class='remover deleteMarker ti ti-x' title='<?php print __('Delete'); ?>' href='#' data-url='<?php print html_escape_url('data_queries.php?action=item_remove_dssv&snmp_query_graph_id=' . grv('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . grv('snmp_query_id') . '&data_template_id=' . $data_template['id']); ?>'></a>
+							<a class='remover deleteMarker ti ti-x' title='<?php print __esc('Delete'); ?>' href='#' data-url='<?php print html_escape_url('data_queries.php?action=item_remove_dssv&snmp_query_graph_id=' . grv('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . grv('snmp_query_id') . '&data_template_id=' . $data_template['id']); ?>'></a>
 						</td>
 						<?php
 
@@ -955,7 +955,7 @@ function data_query_item_edit() : void {
 								<input type='text' class='svds_text ui-state-default ui-corner-all' id='svds_<?php print (int) $data_template['id']; ?>_text' size='60'>
 							</td>
 							<td>
-								<button type='button' class='svds_x ui-button ui-corner-all ui-widget' id='svds_<?php print (int) $data_template['id']; ?>_x' value='add' title='<?php print __('Add Data Source Name Suggested Name'); ?>'><?php print __esc('Add'); ?></button>
+								<button type='button' class='svds_x ui-button ui-corner-all ui-widget' id='svds_<?php print (int) $data_template['id']; ?>_x' value='add' title='<?php print __esc('Add Data Source Name Suggested Name'); ?>'><?php print __esc('Add'); ?></button>
 							</td>
 						</tr>
 					</table>
@@ -1213,7 +1213,7 @@ function data_query_edit() : void {
 				if ($snmp_query_graph['graphs'] == 0) {
 					$url = htmle('data_queries.php?action=item_remove_confirm&id=' . $snmp_query_graph['id'] . '&snmp_query_id=' . $snmp_query['id']);
 
-					form_selectable_cell("<a class='delete deleteMarker ti ti-x' title='" . __('Delete') . "' href='" . $url . "'</a>", $i, '', 'right');
+					form_selectable_cell("<a class='delete deleteMarker ti ti-x' title='" . __esc('Delete') . "' href='" . $url . "'></a>", $i, '', 'right');
 				} else {
 					form_selectable_cell("<a class='deleteMarkerDisabled ti ti-x' title='" . __esc('Mapped Graph Templates with Graphs are read only') . "' href='#'></a>", $i, '', 'right');
 				}

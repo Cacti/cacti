@@ -464,7 +464,7 @@ function inject_realtime_form() : string {
 		<div id='realtime' class='filterRow' style='display:none;'>
 			<div class='filterColumn'>" . __('Window') . "</div>
 			<div class='filterColumn'>
-				<select name='graph_start' id='graph_start' onChange='realtimeGrapher()' data-defaultLabel='" . __('Window') . "'>";
+				<select name='graph_start' id='graph_start' onChange='realtimeGrapher()' data-defaultLabel='" . __esc('Window') . "'>";
 
 	foreach ($realtime_window as $interval => $text) {
 		$content .= sprintf('<option value="%d"%s>%s</option>', $interval, $interval == $_SESSION['sess_realtime_window'] ? ' selected="selected"' : '', $text);
@@ -474,7 +474,7 @@ function inject_realtime_form() : string {
 			</div>
 			<div class='filterColumn'>" . __('Interval') . "</div>
 			<div class='filterColumn'>
-				<select name='ds_step' id='ds_step' onChange='realtimeGrapher()' data-defaultLabel='" . __('Interval') . "'>";
+				<select name='ds_step' id='ds_step' onChange='realtimeGrapher()' data-defaultLabel='" . __esc('Interval') . "'>";
 
 	foreach ($realtime_refresh as $interval => $text) {
 		$content .= sprintf('<option value="%d"%s>%s</option>', $interval, $interval == $_SESSION['sess_realtime_dsstep'] ? ' selected="selected"' : '', $text);
