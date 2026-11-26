@@ -791,7 +791,7 @@ function data_edit() {
 		}).css('cursor', 'pointer');
 
 		if (whiteList) {
-			$('input[name="action"]').after($('<input id="updateme" class="ui-button ui-corner-all ui-widget" type="button" role="button">').val(<?php print json_encode(__('Update Whitelist'));?>).attr('data-id', '<?php print get_filter_request_var('id');?>'));
+			$('input[name="action"]').after($('<input id="updateme" class="ui-button ui-corner-all ui-widget" type="button" role="button">').val(<?php print json_encode(__('Update Whitelist'));?>).attr('data-id', <?php print (int) get_filter_request_var('id');?>));
 
 			$('#updateme').on('click', function() {
 				var data = {
