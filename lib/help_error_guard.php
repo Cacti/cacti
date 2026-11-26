@@ -37,9 +37,13 @@
  * @return string|null Validated script basename, or null when unrecognized
  */
 function help_resolve_error_page(string $raw_page, array $known_pages, string $base_path) : ?string {
+	if (str_contains($raw_page, "\0")) {
+		return null;
+	}
+
 	$raw_page = trim($raw_page);
 
-	if ($raw_page === '' || str_contains($raw_page, "\0")) {
+	if ($raw_page === '') {
 		return null;
 	}
 

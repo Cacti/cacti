@@ -191,7 +191,7 @@ fs_write	./lib/import.php		$f   = fopen($filename, 'r');
 fs_write	./lib/installer.php				$file          = fopen($cacheFile, 'r');
 fs_write	./lib/package.php		$f = fopen("compress.zlib://$tmpdir/" . $archive_name . '.xml.gz','wb');
 fs_write	./lib/package.php		file_put_contents($xmlfile, $template);
-fs_write	./lib/package_key_writer.php			if (file_put_contents($temporary, $pem) === false || !@chmod($temporary, 0600)) {
+fs_write	./lib/package_key_writer.php			if (@file_put_contents($temporary, $pem) === false || !@chmod($temporary, 0600) || !@rename($temporary, $destination_path)) {
 fs_write	./lib/plugins.php						file_put_contents($restore_path . '/' . $basefile, $output);
 fs_write	./lib/plugins.php				$fh = fopen($file, 'w');
 fs_write	./lib/plugins.php				file_put_contents($tmpfile, $file_data);

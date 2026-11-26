@@ -123,17 +123,9 @@ function package_key_write_private(mixed $private_key, string $destination_path)
 	$temporary      = false;
 
 	try {
-		$temporary = @tempnam($directory, '.package.key.');
+		$temporary = $directory . '/.package.key.' . bin2hex(random_bytes(8));
 
-		if ($temporary === false || !@chmod($temporary, 0600)) {
-			return false;
-		}
-
-		if (file_put_contents($temporary, $pem) === false || !@chmod($temporary, 0600)) {
-			return false;
-		}
-
-		if (!@rename($temporary, $destination_path)) {
+		if (@file_put_contents($temporary, $pem) === false || !@chmod($temporary, 0600) || !@rename($temporary, $destination_path)) {
 			return false;
 		}
 

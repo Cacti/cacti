@@ -39,15 +39,9 @@ function float_rrd_create_private_temp_dir(?string $base_dir = null) : string|fa
 	$previous_umask = umask(0077);
 
 	try {
-		$dir = @tempnam($root, 'cacti_float_');
+		$dir = rtrim($root, '/\\') . '/cacti_float_' . bin2hex(random_bytes(8));
 
-		if ($dir === false || !@unlink($dir) || !@mkdir($dir, 0700)) {
-			return false;
-		}
-
-		if (!@chmod($dir, 0700)) {
-			@rmdir($dir);
-
+		if (!@mkdir($dir, 0700) || !@chmod($dir, 0700)) {
 			return false;
 		}
 
