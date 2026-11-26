@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: Cacti Russian Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-25 22:34+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Russian <https://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\nLanguage: ru-RU\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: Cacti Russian Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-26 05:54+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Russian <https://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\nLanguage: ru-RU\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -549,10 +549,8 @@ msgid "No Aggregate Graphs Found"
 msgstr "Агрегированные графики не найдены"
 
 #: aggregate_templates.php
-#, fuzzy
-#| msgid "No Aggregate Templates Found"
 msgid "Aggregate Template not found."
-msgstr "Не найдено Агрегированных Шаблонов"
+msgstr "Агрегированный шаблон не найден."
 
 #: aggregate_templates.php
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -1032,7 +1030,7 @@ msgstr "Экспорт в файл"
 
 #: automation_devices.php data_debug.php lib/clog_webapi.php managers.php
 msgid "Purge"
-msgstr "Очистить"
+msgstr "Вычистить"
 
 #: automation_devices.php
 msgid "Purge Discovered Devices"
@@ -1274,7 +1272,7 @@ msgstr "Ежемесячно"
 
 #: automation_networks.php
 msgid "Monthly on Day"
-msgstr "Ежемесячно в день недели"
+msgstr "Ежемесячно в день месяца"
 
 #: automation_networks.php
 msgid "Network not found."
@@ -2558,10 +2556,8 @@ msgid "Delete Color Item"
 msgstr "Удалить Цветовой элемент"
 
 #: color_templates.php
-#, fuzzy
-#| msgid "No Color Templates Found"
 msgid "Color Template not found."
-msgstr "Цветовые шаблоны не найдены"
+msgstr "Цветовой шаблон не найден."
 
 #: color_templates.php
 #, php-format
@@ -2595,10 +2591,8 @@ msgid "No Color Templates Found"
 msgstr "Цветовые шаблоны не найдены"
 
 #: color_templates_items.php
-#, fuzzy
-#| msgid "Color Template Items"
 msgid "Color Template or Item not found."
-msgstr "Элементы цветового шаблона"
+msgstr "Цветовой шаблон или элемент не найден."
 
 #: color_templates_items.php
 msgid "Click 'Continue' to delete the following Color Template Color."
@@ -3473,7 +3467,7 @@ msgstr "%d Месяц"
 #: data_source_profiles.php include/global_arrays.php rrdcleaner.php
 #, php-format
 msgid "%d Months"
-msgstr "%d мес."
+msgstr "%d месяцев"
 
 #: data_source_profiles.php include/global_arrays.php rrdcleaner.php
 #, php-format
@@ -3484,7 +3478,7 @@ msgstr "%d Неделя"
 #: include/global_settings.php rrdcleaner.php
 #, php-format
 msgid "%d Weeks"
-msgstr "%d нед."
+msgstr "%d недель"
 
 #: data_source_profiles.php include/global_arrays.php
 #, php-format
@@ -3795,10 +3789,9 @@ msgid "Data Source Debug"
 msgstr "Отладка источника данных"
 
 #: data_sources.php
-#, fuzzy, php-format
-#| msgid "RRDtool Tune Info"
+#, php-format
 msgid "RRDtool Tune Info [ %s ]"
-msgstr "Информация о настройке RRDtool Tune Info"
+msgstr "Информация о настройке RRDtool [ %s ]"
 
 #: data_sources.php
 #, fuzzy
@@ -4303,10 +4296,8 @@ msgid "No Inputs"
 msgstr "Нет входов"
 
 #: graph_templates.php
-#, fuzzy
-#| msgid "No Graph Templates Found"
 msgid "Graph Template not found."
-msgstr "Отсутствие найденных шаблонов графиков"
+msgstr "Шаблон графика не найден."
 
 #: graph_templates.php
 #, php-format
@@ -4791,7 +4782,7 @@ msgstr "Выбранный шаблон графика"
 #: graphs.php
 #, php-format
 msgid "Choose a Graph Template to apply to this Graph. Please note that you may only change Graph Templates to a 100%% compatible Graph Template, which means that it includes identical Data Sources."
-msgstr "Выберите шаблон графика для применения к этому графику. Обратите внимание, что вы можете изменить шаблоны графиков только на 100%% совместимый шаблон графиков, что означает, что он включает в себя идентичные источники данных."
+msgstr "Выберите шаблон графика, который будет применяться к данному графику. Обратите внимание, что вы можете изменить шаблон графика только на 100%% совместимый шаблон, то есть включающий идентичные источники данных."
 
 #: graphs.php
 msgid "Choose the Device that this Graph belongs to."
@@ -4980,7 +4971,7 @@ msgstr "Установить по умолчанию"
 #: help.php
 #, php-format
 msgid "WARNING: Cacti Page:%s for User:%s Generated a Fatal Error %d!"
-msgstr "ПРЕДУПРЕЖДЕНИЕ: Страница кактусов:%s для пользователя:%s Сгенерирована неустранимая ошибка %d!"
+msgstr "ПРЕДУПРЕЖДЕНИЕ: Страница Cacti: %1$s для пользователя: %2$s вызвала фатальную ошибку %3$d!"
 
 #: help.php
 #, php-format
@@ -5244,7 +5235,7 @@ msgstr "Неудача"
 
 #: host.php lib/functions.php
 msgid "Success"
-msgstr "Готово"
+msgstr "Успешно"
 
 #: host.php
 msgid "Reload Query"
@@ -7793,7 +7784,7 @@ msgstr "%d Повторений"
 
 #: include/global_form.php
 msgid "SNMP Retries"
-msgstr "SNMP Retries"
+msgstr "Повторы SNMP"
 
 #: include/global_form.php
 msgid "The maximum number of attempts to reach a device via an SNMP readstring prior to giving up."
@@ -8450,7 +8441,7 @@ msgstr "Если была выбрана опция LINE, укажите шир�
 
 #: include/global_form.php
 msgid "Dashes (dashes[=on_s[,off_s[,on_s,off_s]...]])"
-msgstr "Тире (тире [=on_s[,off_s[,on_s,off_s]...]]))))"
+msgstr "Тире (dashes[=on_s[,off_s[,on_s,off_s]...]])"
 
 #: include/global_form.php
 msgid "The dashes modifier enables dashed line style."
@@ -8458,7 +8449,7 @@ msgstr "Модификатор пунктирной линии позволяе�
 
 #: include/global_form.php
 msgid "Dash Offset (dash-offset=offset)"
-msgstr "Смещение тире (смещение тире = смещение тире)"
+msgstr "Смещение штриха (dash-offset=offset)"
 
 #: include/global_form.php
 msgid "The dash-offset parameter specifies an offset into the pattern at which the stroke begins."
@@ -8561,10 +8552,8 @@ msgid "The method Cacti will use to determine if a host is available for polling
 msgstr "Метод Cacti будет использоваться для определения, доступен ли хост для опроса.  <br><i>NOTE: Рекомендуется, как минимум, всегда выбирать SNMP.</i>"
 
 #: include/global_form.php
-#, fuzzy
-#| msgid "The type of ping packet to sent.  <br><i>NOTE: ICMP on Linux/UNIX requires root privileges.</i>"
 msgid "The type of ping packet to sent.  <br><i>NOTE: ICMP on Linux/UNIX requires root privileges.</i>  <br><i>NOTE: TCP Ping Closed - Even if the tcp ping is not successful, the device can be considered UP.</i>"
-msgstr "Тип посылаемого ping-пакета.  <br><i>NOTE: ICMP в Linux/UNIX требует привилегий root.</i>."
+msgstr "Тип отправляемого ping-пакета. <br><i>ПРИМЕЧАНИЕ: ICMP в Linux/UNIX требует привилегий root.</i> <br><i>ПРИМЕЧАНИЕ: TCP Ping Closed — даже если TCP-пинг не успешен, устройство может считаться доступным (UP).</i>"
 
 #: include/global_form.php
 msgid "Additional Options"
@@ -10704,7 +10693,7 @@ msgstr "1 Изменение"
 #: include/global_settings.php
 #, php-format
 msgid "%d Changes"
-msgstr "Изменения: %d"
+msgstr "%d изменений"
 
 #: include/global_settings.php
 msgid "Account Locking"
@@ -11199,7 +11188,7 @@ msgstr "Максимальная длина аргументов"
 
 #: include/global_settings.php
 msgid "When boost sends update commands to RRDtool, it must not exceed the operating systems Maximum Argument Length.  This varies by operating system and kernel level.  For example: Windows 2000 <= 2048, FreeBSD <= 65535, Linux 2.6.22-- <= 131072, Linux 2.6.23++ unlimited"
-msgstr "Когда boost посылает команды обновления в RRDtool, он не должен превышать максимальную длину аргументов операционной системы.  Это зависит от операционной системы и уровня ядра.  Например Windows 2000 <= 2048, FreeBSD <= 65535, Linux 2.6.22-- <= 131072, Linux 2.6.23+++ неограниченное число"
+msgstr "Когда boost отправляет команды обновления в RRDtool, они не должны превышать максимальную длину аргументов операционной системы. Это зависит от операционной системы и версии ядра. Например: Windows 2000 <= 2048, FreeBSD <= 65535, Linux 2.6.22-- <= 131072, Linux 2.6.23++ без ограничений"
 
 #: include/global_settings.php
 msgid "Memory Limit for Boost and Poller"
@@ -12573,7 +12562,7 @@ msgstr "Удаление индекса Обнаружено! Предыдущи
 #: lib/data_query.php
 #, php-format
 msgid "Verification of %s Local Data ID's Complete"
-msgstr "Проверка %s локальных идентификаторов данных завершена"
+msgstr "Проверка %s идентификаторов локальных данных завершена"
 
 #: lib/data_query.php
 #, php-format
@@ -12956,7 +12945,7 @@ msgstr "Не удалось изменить длину поля пароля, �
 #: lib/dsdebug.php
 #, php-format
 msgid "Data Source ID %s does not exist"
-msgstr "Источник данных %s не существует"
+msgstr "Источник данных с ID %s не существует"
 
 #: lib/dsdebug.php
 msgid "Debug not completed after 5 pollings"
@@ -14525,7 +14514,7 @@ msgstr "Параметр Неожиданный путь"
 #: lib/installer.php
 #, php-format
 msgid "Failed to apply specified profile %s != %s"
-msgstr "Не удалось применить указанный профиль %s != %s"
+msgstr "Не удалось применить указанный профиль %1$s != %2$s"
 
 #: lib/installer.php
 #, php-format
@@ -14634,7 +14623,7 @@ msgstr "Начало"
 
 #: lib/installer.php
 msgid "Upgrade"
-msgstr "Обновить"
+msgstr "Обновить версию"
 
 #: lib/installer.php
 msgid "Downgrade"
@@ -15299,7 +15288,7 @@ msgstr "Нерестовый фоновый процесс:%s%s"
 
 #: lib/installer.php
 msgid "Complete"
-msgstr "Готово"
+msgstr "Завершено"
 
 #: lib/installer.php
 #, php-format
@@ -15373,7 +15362,7 @@ msgstr "Ошибка импорта пакета #%s '%s' в профиле '%s'
 #: lib/installer.php
 #, php-format
 msgid "Mapping Automation Template for Device Template '%s'"
-msgstr "Шаблон автоматизации сопоставления для шаблона устройства %s"
+msgstr "Сопоставление шаблона автоматизации для шаблона устройства '%s'"
 
 #: lib/installer.php
 msgid "No templates were selected for import"
@@ -15386,7 +15375,7 @@ msgstr "Обновление удаленного файла конфигура�
 #: lib/installer.php
 #, php-format
 msgid "Setting default data source profile to %s (%s)"
-msgstr "Установка профиля источника данных по умолчанию %s (%s)"
+msgstr "Установка профиля источника данных по умолчанию в %1$s (%2$s)"
 
 #: lib/installer.php
 #, php-format
@@ -15424,7 +15413,7 @@ msgstr "Успешно обновленный набор параметров а
 #: lib/installer.php
 #, php-format
 msgid "Resequencing Automation Option Set %s"
-msgstr "Набор опций автоматизации повторного секвенирования %s"
+msgstr "Перенумерация набора параметров автоматизации %s"
 
 #: lib/installer.php
 #, php-format
@@ -15523,7 +15512,7 @@ msgstr "Во время установки произошло исключени
 #: lib/installer.php
 #, php-format
 msgid "Installation was started at %s, completed at %s"
-msgstr "Установка была начата в %s, завершена в %s"
+msgstr "Установка начата в %1$s, завершена в %2$s"
 
 #: lib/installer.php
 msgid "Both"
@@ -15587,17 +15576,17 @@ msgstr "Имя пользователя не определено"
 #: lib/ldap.php
 #, php-format
 msgid "Protocol Error, Unable to set version (%s) on Server (%s)"
-msgstr "Ошибка протокола, невозможно установить версию (%s) на сервере (%s)"
+msgstr "Ошибка протокола: не удалось установить версию (%1$s) на сервере (%2$s)"
 
 #: lib/ldap.php
 #, php-format
 msgid "Protocol Error, Unable to set referrals option (%s) on Server (%s)"
-msgstr "Ошибка протокола, невозможно установить параметр рефералов (%s) на сервере (%s)"
+msgstr "Ошибка протокола: не удалось установить параметр перенаправления (%1$s) на сервере (%2$s)"
 
 #: lib/ldap.php
 #, php-format
 msgid "Protocol Error, unable to start TLS communications (%s) on Server (%s)"
-msgstr "Ошибка протокола, не удается запустить связь TLS (%s) на сервере (%s)"
+msgstr "Ошибка протокола: не удалось запустить обмен данными TLS (%1$s) на сервере (%2$s)"
 
 #: lib/ldap.php
 #, php-format
@@ -15607,7 +15596,7 @@ msgstr "Ошибка протокола, Общий сбой (%s)"
 #: lib/ldap.php
 #, php-format
 msgid "Protocol Error, Unable to bind, LDAP result: (%s) on Server (%s)"
-msgstr "Ошибка протокола, невозможно привязать, результат LDAP: (%s) на сервере (%s)"
+msgstr "Ошибка протокола: не удалось выполнить привязку, результат LDAP: (%1$s) на сервере (%2$s)"
 
 #: lib/ldap.php
 #, php-format
@@ -15617,12 +15606,12 @@ msgstr "Невозможно подключиться к серверу (%s)"
 #: lib/ldap.php
 #, php-format
 msgid "Connection Timeout to Server (%s)"
-msgstr "Время ожидания подключения к серверу (%s)"
+msgstr "Тайм-аут подключения к серверу (%s)"
 
 #: lib/ldap.php
 #, php-format
 msgid "Insufficient Access to Server (%s)"
-msgstr "Недостаточный доступ к серверу (%s)"
+msgstr "Недостаточно прав доступа к серверу (%s)"
 
 #: lib/ldap.php
 #, php-format
@@ -15657,7 +15646,7 @@ msgstr "Введен неверный пароль. Авторизация не 
 #: lib/ldap.php
 #, php-format
 msgid "Unexpected error %s (Ldap Error: %s) on Server (%s)"
-msgstr "Неожиданная ошибка %s (ошибка Ldap: %s) на сервере (%s)"
+msgstr "Непредвиденная ошибка %1$s (ошибка LDAP: %2$s) на сервере (%3$s)"
 
 #: lib/ping.php
 msgid "ICMP Ping timed out"
@@ -15875,7 +15864,7 @@ msgstr ""
 #: lib/rrd.php
 #, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
-msgstr "Требуемый размер шага файла RRD '%s', но наблюдаемый шаг '%s'"
+msgstr "Требуемый размер шага файла RRD — '%1$s', но обнаруженный шаг — '%2$s'"
 
 #: lib/rrd.php
 #, php-format
@@ -16136,10 +16125,9 @@ msgid "Method:        %s"
 msgstr ""
 
 #: lib/spikekill.php
-#, fuzzy, php-format
-#| msgid "RRDfiles"
+#, php-format
 msgid "RRDfile:       %s"
-msgstr "RRDfiles"
+msgstr "Файл RRD: %s"
 
 #: lib/spikekill.php
 #, fuzzy, php-format
@@ -16153,20 +16141,18 @@ msgid "Num Outliers:  %s"
 msgstr ""
 
 #: lib/spikekill.php
-#, fuzzy, php-format
-#| msgid "Max Kills Per RRA"
+#, php-format
 msgid "Max Kills:     %s"
-msgstr "Макс. убийств за RRA"
+msgstr "Максимум удалений: %s"
 
 #: lib/spikekill.php
 msgid "Max Kills:     Unlimited"
 msgstr ""
 
 #: lib/spikekill.php
-#, fuzzy, php-format
-#| msgid "Standard Deviations"
+#, php-format
 msgid "Standard Devs: %s"
-msgstr "Стандартные отклонения"
+msgstr "Стандартные отклонения: %s"
 
 #: lib/spikekill.php
 msgid "Variance %%%:    %s %%%"
@@ -16508,10 +16494,8 @@ msgid "Number of I/O threads used for read operations in InnoDB."
 msgstr ""
 
 #: lib/utility.php
-#, fuzzy
-#| msgid "default"
 msgid "1-64; default 4."
-msgstr "по умолчанию"
+msgstr "1-64; по умолчанию 4."
 
 #: lib/utility.php
 msgid "Number of I/O threads used for write operations in InnoDB."
@@ -16642,7 +16626,7 @@ msgstr "Благодаря возможностям удаленного опр�
 #: lib/utility.php
 #, php-format
 msgid "If using the Cacti Performance Booster and choosing a memory storage engine, you have to be careful to flush your Performance Booster buffer before the system runs out of memory table space.  This is done two ways, first reducing the size of your output column to just the right size.  This column is in the tables poller_output, and poller_output_boost.  The second thing you can do is allocate more memory to memory tables.  We have arbitrarily chosen a recommended value of 10%% of system memory, but if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation or choose a different storage engine.  You may see the expected consumption of the Performance Booster tables under Console -> System Utilities -> View Boost Status."
-msgstr ""
+msgstr "При использовании Cacti Performance Booster и выборе механизма хранения в памяти необходимо своевременно сбрасывать буфер Performance Booster до того, как в системе закончится место для таблиц в памяти. Это делается двумя способами: во-первых, уменьшением размера выходного столбца до нужного значения. Этот столбец находится в таблицах poller_output и poller_output_boost. Во-вторых, вы можете выделить больше памяти для таблиц в памяти. Мы выбрали рекомендуемое значение в 10%% системной памяти, но если вы используете SSD-накопители или систему меньшего размера, вы можете проигнорировать эту рекомендацию или выбрать другой механизм хранения. Ожидаемое потребление памяти таблицами Performance Booster можно посмотреть в разделе Console -> System Utilities -> View Boost Status."
 
 #: lib/utility.php
 msgid "When executing subqueries, having a larger temporary table size, keep those temporary tables in memory."
@@ -17134,10 +17118,8 @@ msgid "The Package %s Import Failed"
 msgstr "Сбой импорта пакета %s"
 
 #: package_import.php
-#, fuzzy
-#| msgid "Enter a valid file path"
 msgid "Error: Invalid file path."
-msgstr "Введите правильный путь к файлу"
+msgstr "Ошибка: недопустимый путь к файлу."
 
 #: package_import.php
 msgid "Error in Package"
@@ -17512,10 +17494,9 @@ msgid "NOTE: A second Cacti data collector has been added.  Therefore, enabling 
 msgstr "ПРИМЕЧАНИЕ. Добавлен второй сборщик данных Cacti. Therfore, включающий повышение автоматически!"
 
 #: poller_automation.php
-#, fuzzy, php-format
-#| msgid "WARNING: Main Cacti database offline or in recovery"
+#, php-format
 msgid "WARNING: Main Cacti database %s offline or in recovery"
-msgstr "ВНИМАНИЕ: основная база данных Cacti в автономном режиме или в процессе восстановления"
+msgstr "ВНИМАНИЕ: основная база данных Cacti %s в автономном режиме или в процессе восстановления"
 
 #: poller_automation.php
 msgid "Cacti Primary Admin"
@@ -18027,7 +18008,7 @@ msgstr "ПРИМЕЧАНИЕ. Настройки пути на этой вкла
 #: settings.php
 #, php-format
 msgid "Cacti Settings (%s)%s"
-msgstr "Настройки кактусов (%s)%s"
+msgstr "Настройки Cacti (%1$s)%2$s"
 
 #: settings.php
 msgid "Changing Permission Model Warning"
@@ -18107,7 +18088,7 @@ msgstr "Введите город или населенный пункт"
 
 #: sites.php
 msgid "State"
-msgstr "Область"
+msgstr "Состояние"
 
 #: sites.php
 msgid "The state for the Site."
@@ -18246,10 +18227,8 @@ msgstr[1] "Дублировать"
 msgstr[2] "Дублировать"
 
 #: sites.php
-#, fuzzy
-#| msgid "File not found"
 msgid "Site not found."
-msgstr "Файл не найден"
+msgstr "Сайт не найден."
 
 #: sites.php tree.php
 msgid "Site Name"
@@ -18286,7 +18265,7 @@ msgstr "Нет найденных сайтов"
 #: spikekill.php
 #, php-format
 msgid "FATAL: Spike Kill method '%s' is Invalid"
-msgstr "ФАТАЛЬНО: Spike метод завершения '%s'\" недействителен"
+msgstr "ФАТАЛЬНО: Метод Spike Kill '%s' недопустим"
 
 #: spikekill.php
 msgid "FATAL: Spike Kill Not Allowed"
@@ -19629,10 +19608,8 @@ msgid "PHP SNMP"
 msgstr "PHP SNMP"
 
 #: utilities.php
-#, fuzzy
-#| msgid "Installed"
 msgid "Installed."
-msgstr "Установленно"
+msgstr "Установлено."
 
 #: utilities.php
 msgid "You've set memory limit to 'unlimited'."
@@ -20097,7 +20074,7 @@ msgstr "%d секунд"
 #: utilities.php
 #, php-format
 msgid "%0.2f percent of update frequency)"
-msgstr "%0.2f процентов от частоты обновления)"
+msgstr "%0.2f процента от частоты обновления)"
 
 #: utilities.php
 msgid "RRD Updates:"
