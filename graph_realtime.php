@@ -376,7 +376,7 @@ $selectedTheme = get_selected_theme();
 
 ?>
 <!DOCTYPE html>
-<html lang='<?php print CACTI_LOCALE;?>'>
+<html lang='<?php print CACTI_LOCALE;?>' dir='<?php print get_locale_direction();?>'>
 <head>
 	<?php html_common_header(__('Cacti Real-time Graphing'));?>
     <?php include($config['base_path'] . '/include/global_session.php'); ?>

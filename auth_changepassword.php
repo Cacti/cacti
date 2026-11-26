@@ -331,7 +331,7 @@ if (isset_request_var('ref')) {
 
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html lang='<?php print CACTI_LOCALE;?>'>
+<html lang='<?php print CACTI_LOCALE;?>' dir='<?php print get_locale_direction();?>'>
 <head>
 	<?php html_common_header(api_plugin_hook_function('change_password_title', __('Change Password')));?>
 	<?php print get_md5_include_css('include/css/auth.css');?>
