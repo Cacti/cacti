@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-25 22:34+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Arabic (Saudi Arabia) <https://translate.cacti.net/projects/cacti/core-v1-2-x/ar_SA/>\nLanguage: ar-SA\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-26 05:53+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Arabic (Saudi Arabia) <https://translate.cacti.net/projects/cacti/core-v1-2-x/ar_SA/>\nLanguage: ar-SA\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -552,10 +552,8 @@ msgid "No Aggregate Graphs Found"
 msgstr "لا توجد رسوم بيانية مجمعة"
 
 #: aggregate_templates.php
-#, fuzzy
-#| msgid "No Aggregate Templates Found"
 msgid "Aggregate Template not found."
-msgstr "لا توجد قوالب مجمعة"
+msgstr "لم يتم العثور على القالب المجمع."
 
 #: aggregate_templates.php
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -896,7 +894,7 @@ msgstr "حذف الجهاز (الأجهزة)"
 #: automation_devices.php host.php lib/api_automation.php lib/html_utility.php
 #: pollers.php
 msgid "Down"
-msgstr "معطل"
+msgstr "متوقف"
 
 #: automation_devices.php host.php lib/api_automation.php lib/html_utility.php
 msgid "Up"
@@ -1675,7 +1673,7 @@ msgstr "قيمة المهلة لاستخدام المضيف ICMP و poding UDP. 
 
 #: automation_networks.php include/global_form.php include/global_settings.php
 msgid "Ping Retry Count"
-msgstr "بينغ إعادة المحاولة الكونت"
+msgstr "عدد مرات إعادة محاولة Ping"
 
 #: automation_networks.php include/global_form.php
 msgid "After an initial failure, the number of ping retries Cacti will attempt before failing."
@@ -1775,7 +1773,7 @@ msgstr "بدأت في الماضي"
 
 #: automation_networks.php pollers.php utilities.php
 msgid "Running"
-msgstr "مفتوح"
+msgstr "قيد التشغيل"
 
 #: automation_networks.php pollers.php utilities.php
 msgid "Idle"
@@ -1793,7 +1791,7 @@ msgstr "لم يتم العثور على شبكات"
 #: automation_networks.php data_debug.php lib/clog_webapi.php
 #: lib/html_graph.php lib/html_tree.php pollers.php utilities.php
 msgid "Refresh"
-msgstr "تحديث"
+msgstr "إنعاش"
 
 #: automation_networks.php data_sources.php include/global_arrays.php
 #: include/global_settings.php pollers.php
@@ -1889,7 +1887,7 @@ msgstr "أتمتة SNMP خيارات"
 #: automation_snmp.php cdef.php lib/api_automation.php lib/html_reports.php
 #: vdef.php
 msgid "Item"
-msgstr "اعلان"
+msgstr "عنصر"
 
 #: automation_snmp.php include/auth.php include/global_settings.php
 #: package_import.php permission_denied.php plugins.php
@@ -2597,10 +2595,8 @@ msgid "Delete Color Item"
 msgstr "حذف عنصر اللون"
 
 #: color_templates.php
-#, fuzzy
-#| msgid "No Color Templates Found"
 msgid "Color Template not found."
-msgstr "لا توجد قوالب اللون"
+msgstr "لم يتم العثور على قالب الألوان."
 
 #: color_templates.php
 #, php-format
@@ -2634,10 +2630,8 @@ msgid "No Color Templates Found"
 msgstr "لا توجد قوالب اللون"
 
 #: color_templates_items.php
-#, fuzzy
-#| msgid "Color Template Items"
 msgid "Color Template or Item not found."
-msgstr "عناصر قالب اللون"
+msgstr "لم يتم العثور على قالب الألوان أو العنصر."
 
 #: color_templates_items.php
 msgid "Click 'Continue' to delete the following Color Template Color."
@@ -3088,7 +3082,7 @@ msgstr "استعلام البرنامج النصي"
 
 #: data_input.php include/global_arrays.php
 msgid "Script Server Query"
-msgstr "خادم سيناريو"
+msgstr "استعلام خادم النصوص البرمجية"
 
 #: data_input.php
 msgid "White List Verification Succeeded."
@@ -3427,7 +3421,7 @@ msgstr[5] "حذف ملفات تعريف مصدر البيانات"
 msgid "Click 'Continue' to duplicate the following Data Source Profile. You can optionally change the title format for the new Data Source Profile"
 msgid_plural "Click 'Continue' to duplicate following Data Source Profiles. You can optionally change the title format for the new Data Source Profiles."
 msgstr[0] "انقر فوق 'متابعة' لتكرار ملفات تعريف مصدر البيانات التالية. يمكنك اختياريًا تغيير تنسيق العنوان لملفات تعريف مصدر البيانات الجديدة."
-msgstr[1] "انقر فوق 'متابعة' لتكرار ملف تعريف مصدر البيانات التالي. يمكنك اختياريًا تغيير تنسيق العنوان لملف تعريف مصدر البيانات الجديد."
+msgstr[1] "انقر فوق 'متابعة' لتكرار ملف تعريف مصدر البيانات التالي. يمكنك اختياريًا تغيير تنسيق العنوان لملف تعريف مصدر البيانات الجديد"
 msgstr[2] "انقر فوق 'متابعة' لتكرار ملفَّي تعريف مصدر البيانات التاليين. يمكنك اختياريًا تغيير تنسيق العنوان لملفَّي تعريف مصدر البيانات الجديدين."
 msgstr[3] "انقر فوق 'متابعة' لتكرار ملفات تعريف مصدر البيانات التالية. يمكنك اختياريًا تغيير تنسيق العنوان لملفات تعريف مصدر البيانات الجديدة."
 msgstr[4] "انقر فوق 'متابعة' لتكرار ملفات تعريف مصدر البيانات التالية. يمكنك اختياريًا تغيير تنسيق العنوان لملفات تعريف مصدر البيانات الجديدة."
@@ -3702,12 +3696,12 @@ msgstr[5] "حذف مصادر البيانات"
 #: data_sources.php
 msgid "Choose a new Device for this Data Source and click 'Continue'."
 msgid_plural "Choose a new Device for these Data Sources and click 'Continue'"
-msgstr[0] "اختر جهازًا جديدًا لمصادر البيانات هذه وانقر على 'متابعة'."
+msgstr[0] "اختر جهازًا جديدًا لمصادر البيانات هذه وانقر على 'متابعة'"
 msgstr[1] "اختر جهازًا جديدًا لمصدر البيانات هذا وانقر على 'متابعة'."
-msgstr[2] "اختر جهازًا جديدًا لمصدرَي البيانات هذين وانقر على 'متابعة'."
-msgstr[3] "اختر جهازًا جديدًا لمصادر البيانات هذه وانقر على 'متابعة'."
-msgstr[4] "اختر جهازًا جديدًا لمصادر البيانات هذه وانقر على 'متابعة'."
-msgstr[5] "اختر جهازًا جديدًا لمصادر البيانات هذه وانقر على 'متابعة'."
+msgstr[2] "اختر جهازًا جديدًا لمصدرَي البيانات هذين وانقر على 'متابعة'"
+msgstr[3] "اختر جهازًا جديدًا لمصادر البيانات هذه وانقر على 'متابعة'"
+msgstr[4] "اختر جهازًا جديدًا لمصادر البيانات هذه وانقر على 'متابعة'"
+msgstr[5] "اختر جهازًا جديدًا لمصادر البيانات هذه وانقر على 'متابعة'"
 
 #: data_sources.php
 msgid "New Device:"
@@ -4419,10 +4413,8 @@ msgid "No Inputs"
 msgstr "لا المدخلات"
 
 #: graph_templates.php
-#, fuzzy
-#| msgid "No Graph Templates Found"
 msgid "Graph Template not found."
-msgstr "لا توجد قوالب الرسم البياني"
+msgstr "لم يتم العثور على قالب الرسم البياني."
 
 #: graph_templates.php
 #, php-format
@@ -5175,7 +5167,7 @@ msgstr "انقر على 'متابعة' لتمكين الجهاز (الأجهزة
 
 #: host.php
 msgid "Enable Device(s)"
-msgstr "تمكين الأجهزة (الأجهزة)"
+msgstr "تمكين الجهاز (الأجهزة)"
 
 #: host.php
 msgid "Click 'Continue' to disable the following Device(s)."
@@ -5469,7 +5461,7 @@ msgstr "حالة مراقبة الجهاز بناءً على نتائج اختب
 
 #: host.php
 msgid "In State"
-msgstr "الحالة"
+msgstr "في الحالة"
 
 #: host.php
 msgid "The amount of time that this Device has been in its current state."
@@ -6057,7 +6049,7 @@ msgstr "مصدر بيانات البند البياني الحالي"
 
 #: include/global_arrays.php
 msgid "Script/Command"
-msgstr "النصي / القيادة"
+msgstr "نص برمجي/أمر"
 
 #: include/global_arrays.php utilities.php
 msgid "Script Server"
@@ -6250,7 +6242,7 @@ msgstr "ICMP بينغ"
 
 #: include/global_arrays.php
 msgid "TCP Ping"
-msgstr "برنامج التعاون الفني بينغ"
+msgstr "بينغ TCP"
 
 #: include/global_arrays.php
 msgid "TCP Ping Closed"
@@ -6878,7 +6870,7 @@ msgstr "وردية نهارية"
 
 #: include/global_arrays.php
 msgid "This Day"
-msgstr "كل يوم"
+msgstr "هذا اليوم"
 
 #: include/global_arrays.php
 msgid "This Week"
@@ -7947,7 +7939,7 @@ msgstr "مستوى التجميع"
 
 #: include/global_form.php
 msgid "The number of samples required prior to filling a row in the RRA specification.  The first RRA should always have a value of 1."
-msgstr "عدد العينات المطلوبة قبل ملء صف في مواصفات RRA. ينبغي أن يكون لوادى RRA دائمًا قيمة 1."
+msgstr "عدد العينات المطلوبة قبل ملء صف في مواصفات RRA. ينبغي أن تكون لأول RRA قيمة 1 دائمًا."
 
 #: include/global_form.php
 msgid "How many generations data is kept in the RRA."
@@ -8548,7 +8540,7 @@ msgstr "يعمل مُعد الشرط على تمكين نمط الخط المت�
 
 #: include/global_form.php
 msgid "Dash Offset (dash-offset=offset)"
-msgstr "Dash Offset (اندفاعة - إزاحة = تخالف)"
+msgstr "إزاحة الشرطة (dash-offset=offset)"
 
 #: include/global_form.php
 msgid "The dash-offset parameter specifies an offset into the pattern at which the stroke begins."
@@ -11730,7 +11722,7 @@ msgstr "اعرض عنوان الرسم البياني في الصفحة حتى �
 
 #: include/global_settings.php
 msgid "Hide Disabled"
-msgstr "إخفاء المعاقين"
+msgstr "إخفاء العناصر المعطلة"
 
 #: include/global_settings.php
 msgid "Hides Disabled Devices and Graphs when viewing outside of Console tab."
@@ -14322,7 +14314,7 @@ msgstr "التقارير"
 
 #: lib/html_reports.php tree.php
 msgid "Owner"
-msgstr "المشارك"
+msgstr "المالك"
 
 #: lib/html_reports.php
 msgid "Frequency"
@@ -16583,10 +16575,8 @@ msgid "Number of I/O threads used for read operations in InnoDB."
 msgstr ""
 
 #: lib/utility.php
-#, fuzzy
-#| msgid "default"
 msgid "1-64; default 4."
-msgstr "افتراضي"
+msgstr "1-64؛ الافتراضي 4."
 
 #: lib/utility.php
 msgid "Number of I/O threads used for write operations in InnoDB."
@@ -17304,7 +17294,7 @@ msgstr "التغييرات/الفروقات"
 
 #: package_import.php templates_import.php
 msgid "Updated"
-msgstr "تحديث"
+msgstr "تم التحديث"
 
 #: package_import.php templates_import.php
 msgid "Orphans"
@@ -17367,10 +17357,8 @@ msgid "Are you sure you want to Force Uninstall the plugin"
 msgstr "هل أنت متأكد من أنك تريد إلغاء التثبيت؟"
 
 #: plugins.php
-#, fuzzy
-#| msgid "Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click 'Uninstall' below.  Otherwise click 'Cancel'"
 msgid "This permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone.  If you really want to Force Uninstall the Plugin, click 'Force Uninstall' below.  Otherwise click 'Cancel'."
-msgstr "سيؤدي إلغاء تثبيت هذا المكون الإضافي إلى إزالة جميع بيانات المكون الإضافي والإعدادات. إذا كنت تريد حقًا إلغاء تثبيت المكون الإضافي ، فانقر فوق &quot;إلغاء التثبيت&quot; أدناه. وإلا فانقر فوق &quot;إلغاء&quot;"
+msgstr "يؤدي هذا إلى إزالة جميع إدخالاته بشكل دائم من جداول المكونات الإضافية في Cacti (التكوين والخطافات والأذونات وأي جداول أو أعمدة أنشأها). لا يمكن التراجع عن هذا الإجراء. إذا كنت تريد حقًا فرض إلغاء تثبيت المكون الإضافي، فانقر فوق 'فرض إلغاء التثبيت' أدناه. وإلا فانقر فوق 'إلغاء'."
 
 #: plugins.php
 #, fuzzy
@@ -19581,11 +19569,11 @@ msgstr "قاعدة البيانات"
 
 #: utilities.php
 msgid "Database Settings"
-msgstr "إعدادات تخزين البيانات"
+msgstr "إعدادات قاعدة البيانات"
 
 #: utilities.php
 msgid "Database Status"
-msgstr "قاعدة البيانات"
+msgstr "حالة قاعدة البيانات"
 
 #: utilities.php
 msgid "PHP Info"
@@ -19788,10 +19776,8 @@ msgid "PHP SNMP"
 msgstr "PHP SNMP"
 
 #: utilities.php
-#, fuzzy
-#| msgid "Installed"
 msgid "Installed."
-msgstr "المثبتة"
+msgstr "مثبت."
 
 #: utilities.php
 msgid "You've set memory limit to 'unlimited'."
@@ -19860,7 +19846,7 @@ msgstr "النجاح - الرمز المميز"
 
 #: utilities.php
 msgid "Success - Password Change"
-msgstr "النجاح - Pswd"
+msgstr "نجاح - تغيير كلمة المرور"
 
 #: utilities.php vdef.php
 msgctxt "Button: use filter settings"
