@@ -5,11 +5,12 @@
 # and flag htmle()-escaped output as false positives. These rules model:
 #   sources     - grv(), gnrv(), get_request_var(), get_nfilter_request_var()
 #                 (raw request input)
-#                 stored text: db_fetch_cell*(), text columns of fetched rows,
+#                 stored text: db_fetch_cell*(), get_username(), text columns of fetched rows,
 #                 SNMP responses, plugin hook returns, tail_file() log lines
 #   sanitizers  - db_qstr[_rlike](), sanitize_sql_column(), (int) cast,
 #                 gfrv()/get_filter_request_var(), cacti_escapeshellarg(),
-#                 html_escape()/htmle()/__esc*()
+#                 html_escape()/htmle()/html_escape_attr()/__esc*(), and
+#                 html_escape_url() behind a literal page path
 #   sinks       - non-prepared db_fetch_*/db_execute, the get_allowed_* WHERE
 #                 builders, shell_exec/exec/popen/proc_open/rrdtool_execute,
 #                 print/echo, and the contents of form_selectable_cell(), which
@@ -144,10 +145,34 @@ rules:
       - pattern: html_escape(...)
       - pattern: htmle(...)
       - pattern: htmlspecialchars(...)
+      - pattern: __esc(...)
+      - pattern: __esc_n(...)
+      - pattern: __esc_x(...)
+      - pattern: html_escape_attr(...)
+      - pattern: htmlerv(...)
+      - pattern: html_escape_request_var(...)
+      - pattern: __esc_xn(...)
+      # html_escape_url() only escapes for the attribute, so a value that
+      # supplies the whole URL can still carry a javascript: scheme. It
+      # confines the value only behind a literal page path.
+      - patterns:
+          - pattern: html_escape_url($URL)
+          - metavariable-regex:
+              metavariable: $URL
+              regex: ^(CACTI_PATH_URL\s*\.\s*)?['"][A-Za-z0-9_./-]+\.php
       - pattern: json_encode(...)
       # filter_value() escapes values, link targets, and titles before adding
       # optional highlighting markup.
       - pattern: filter_value(...)
+      # A request variable bound as a query parameter, or confined in the WHERE
+      # clause, does not make the fetched data request text. Whether its
+      # columns are safe to print is cacti-stored-value-echoed-unescaped's call.
+      - pattern: db_fetch_cell(...)
+      - pattern: db_fetch_cell_prepared(...)
+      - pattern: db_fetch_assoc(...)
+      - pattern: db_fetch_assoc_prepared(...)
+      - pattern: db_fetch_row(...)
+      - pattern: db_fetch_row_prepared(...)
       # These helpers return context-escaped markup and have dedicated unit tests.
       - pattern: html_hidden_input(...)
       - pattern: html_nav_bar(...)
@@ -186,6 +211,8 @@ rules:
       - pattern-either:
           - pattern: db_fetch_cell(...)
           - pattern: db_fetch_cell_prepared(...)
+          # returns the stored user_auth.username
+          - pattern: get_username(...)
           # Rows are matched by column name rather than by db_fetch_*() call so
           # that numeric columns (id, host_id, status) do not drown the signal.
           - patterns:
@@ -210,6 +237,18 @@ rules:
       - pattern: __esc(...)
       - pattern: __esc_n(...)
       - pattern: __esc_x(...)
+      - pattern: html_escape_attr(...)
+      - pattern: htmlerv(...)
+      - pattern: html_escape_request_var(...)
+      - pattern: __esc_xn(...)
+      # html_escape_url() only escapes for the attribute, so a value that
+      # supplies the whole URL can still carry a javascript: scheme. It
+      # confines the value only behind a literal page path.
+      - patterns:
+          - pattern: html_escape_url($URL)
+          - metavariable-regex:
+              metavariable: $URL
+              regex: ^(CACTI_PATH_URL\s*\.\s*)?['"][A-Za-z0-9_./-]+\.php
       - pattern: json_encode(...)
       - pattern: filter_value(...)
       - pattern: html_hidden_input(...)
@@ -262,6 +301,8 @@ rules:
           - pattern: get_nfilter_request_var(...)
           - pattern: db_fetch_cell(...)
           - pattern: db_fetch_cell_prepared(...)
+          # returns the stored user_auth.username
+          - pattern: get_username(...)
           - patterns:
               - pattern: $ROW[$KEY]
               - metavariable-regex:
@@ -280,6 +321,18 @@ rules:
       - pattern: __esc(...)
       - pattern: __esc_n(...)
       - pattern: __esc_x(...)
+      - pattern: html_escape_attr(...)
+      - pattern: htmlerv(...)
+      - pattern: html_escape_request_var(...)
+      - pattern: __esc_xn(...)
+      # html_escape_url() only escapes for the attribute, so a value that
+      # supplies the whole URL can still carry a javascript: scheme. It
+      # confines the value only behind a literal page path.
+      - patterns:
+          - pattern: html_escape_url($URL)
+          - metavariable-regex:
+              metavariable: $URL
+              regex: ^(CACTI_PATH_URL\s*\.\s*)?['"][A-Za-z0-9_./-]+\.php
       - pattern: filter_value(...)
       - pattern: clean_up_name(...)
       - pattern: number_format_i18n(...)

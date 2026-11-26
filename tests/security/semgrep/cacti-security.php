@@ -81,6 +81,26 @@ print html_nav_bar('graphs.php', 10, grv('page'), 30, 300);
 // ok: cacti-request-var-echoed-unescaped
 print "<div id='" . clean_up_name(gnrv('tab')) . "'>";
 
+// ok: cacti-request-var-echoed-unescaped
+print __esc('Device: %s', gnrv('name'));
+
+// ok: cacti-request-var-echoed-unescaped
+print "<input value='" . html_escape_attr(gnrv('name')) . "'>";
+
+// A request variable bound as a query parameter does not make the fetched row
+// request text; the stored-value rules decide whether its columns are safe.
+$item = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', [grv('id')]);
+// ok: cacti-request-var-echoed-unescaped
+print "<span id='reload" . $item['id'] . "'>";
+
+// html_escape_url() only escapes for the attribute, so it confines a request
+// variable when a literal page path fixes the scheme and host.
+// ok: cacti-request-var-echoed-unescaped
+print "<a href='" . html_escape_url('graphs.php?action=edit&id=' . gnrv('id')) . "'>";
+
+// ruleid: cacti-request-var-echoed-unescaped
+print "<a href='" . html_escape_url(gnrv('return_to')) . "'>";
+
 // ---- cacti-stored-value-echoed-unescaped ----
 
 $host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', [$id]);
@@ -124,6 +144,19 @@ foreach ($lines as $line) {
 // ok: cacti-stored-value-echoed-unescaped
 print '<td>' . number_format_i18n($host['value']) . '</td>';
 
+// ok: cacti-stored-value-echoed-unescaped
+print "<img alt='" . html_escape_attr($host['description']) . "'>";
+
+// ok: cacti-stored-value-echoed-unescaped
+print __esc_xn('context', '%s device', '%s devices', 2, $host['description']);
+
+// get_username() returns the stored user_auth.username.
+// ruleid: cacti-stored-value-echoed-unescaped
+print __('Locked by %s.', get_username($tree['modified_by']));
+
+// ok: cacti-stored-value-echoed-unescaped
+print __esc('Locked by %s.', get_username($tree['modified_by']));
+
 // ---- cacti-unescaped-form-selectable-cell ----
 
 foreach ($graphs as $graph) {
@@ -141,6 +174,15 @@ foreach ($graphs as $graph) {
 
 	// ok: cacti-unescaped-form-selectable-cell
 	form_selectable_cell($graph['id'], $graph['id']);
+
+	// ok: cacti-unescaped-form-selectable-cell
+	form_selectable_cell('<a href="' . html_escape_url('graphs.php?id=' . $graph['id']) . '">' . htmle($graph['title_cache']) . '</a>', $graph['id']);
+
+	// ok: cacti-unescaped-form-selectable-cell
+	form_selectable_cell(__esc('Graph %s', $graph['title_cache']), $graph['id']);
+
+	// ruleid: cacti-unescaped-form-selectable-cell
+	form_selectable_cell('<a href="' . html_escape_url($graph['title_cache']) . '">x</a>', $graph['id']);
 }
 
 // ruleid: cacti-unescaped-form-selectable-cell

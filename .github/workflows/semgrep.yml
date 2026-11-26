@@ -117,6 +117,7 @@ jobs:
             --config tests/security/semgrep/cacti-security.yml \
             --exclude '*.min.js' \
             --timeout 0 --timeout-threshold 0 --max-target-bytes 0 \
+            --jobs 1 \
             --metrics off --sarif --output semgrep.sarif \
             "${targets[@]}"
 
