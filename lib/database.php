@@ -2372,7 +2372,8 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCols) {
 	$return_code = db_execute($sql, true, $db_conn);
 
 	if (!$return_code) {
-		cacti_log("ERROR: SQL Save Failed for Table '$table'.  SQL:'" . clean_up_lines($sql) . "'", false, 'DBCALL');
+		$col_names = implode(', ', array_keys($array_items));
+		cacti_log("ERROR: SQL Save Failed for Table '$table'.  Columns: '$col_names'", false, 'DBCALL');
 	}
 
 	return db_fetch_insert_id($db_conn);
@@ -2408,7 +2409,8 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, 
 
 	$cols = db_get_table_column_types($table_name, $db_conn);
 
-	cacti_log("DEVEL: SQL Save on table '$table_name': '" . serialize($array_items) . "'", false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
+	$safe_log_items = function_exists('cacti_redact_sensitive') ? cacti_redact_sensitive($array_items) : $array_items;
+	cacti_log("DEVEL: SQL Save on table '$table_name': '" . serialize($safe_log_items) . "'", false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 
 	foreach ($array_items as $key => $value) {
 		if (!isset($cols[$key])) {

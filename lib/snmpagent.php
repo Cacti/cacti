@@ -649,8 +649,9 @@ function snmpagent_get_pluginslist(){
 		while (($file = readdir($dh)) !== false) {
 			if ((is_dir("$path$file")) && !in_array($file, $plugins_integrated) &&
 				(file_exists("$path$file/setup.php")) && (!array_key_exists($file, $pluginslist))) {
-				if (file_exists("$path$file/INFO")) {
-					$cinfo = plugin_load_info_file("$path$file/INFO");
+				$info_file = cacti_plugin_path($file, 'INFO');
+				if ($info_file !== false && file_exists($info_file)) {
+					$cinfo = plugin_load_info_file($info_file);
 					$pluginslist[$file] = $cinfo;
 				}
 			}
@@ -954,13 +955,13 @@ function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMP
 	}
 
 	/* generate a list of SNMP notification receivers listening for this notification */
-	$notification_managers = db_fetch_assoc_prepared('SELECT snmpagent_managers.*
+	$notification_managers = db_fetch_assoc_prepared("SELECT snmpagent_managers.*
 		FROM snmpagent_managers_notifications
 		INNER JOIN snmpagent_managers
 		ON (snmpagent_managers.id = snmpagent_managers_notifications.manager_id)
-		WHERE snmpagent_managers.disabled = 0
+		WHERE (snmpagent_managers.disabled = '' OR snmpagent_managers.disabled IS NULL)
 		AND snmpagent_managers_notifications.notification = ?
-		AND snmpagent_managers_notifications.mib = ?',
+		AND snmpagent_managers_notifications.mib = ?",
 		array($notification, $mib));
 
 	if (cacti_sizeof($notification_managers) == 0) {
@@ -1003,13 +1004,14 @@ function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMP
 		/* order the managers by message type to send out all notifications immediately. Informs
 		   will take more processing time.
 		*/
-		$notification_managers = db_fetch_assoc_prepared('SELECT sm.*
+		$notification_managers = db_fetch_assoc_prepared("SELECT sm.*
 			FROM snmpagent_managers_notifications AS smn
 			INNER JOIN snmpagent_managers AS sm
 			ON sm.id = smn.manager_id
-			WHERE smn.notification = ?
+			WHERE (sm.disabled = '' OR sm.disabled IS NULL)
+			AND smn.notification = ?
 			AND smn.mib = ?
-			ORDER BY sm.snmp_message_type', array($notification, $mib));
+			ORDER BY sm.snmp_message_type", array($notification, $mib));
 
 		if (cacti_sizeof($notification_managers)) {
 			include_once($config['library_path'] . '/poller.php');
@@ -1070,6 +1072,7 @@ function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMP
 					$args = array_merge(array(
 						'-v', '1',
 						'-c', $notification_manager['snmp_community'],
+						'--',
 						$notification_manager['hostname'] . ':' . $notification_manager['snmp_port'],
 						$enterprise_oid,
 						'', '6', $specific_trap_number, ''
@@ -1082,6 +1085,7 @@ function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMP
 					}
 
 					$args = array_merge($args, array(
+						'--',
 						$notification_manager['hostname'] . ':' . $notification_manager['snmp_port'],
 						'', $enterprise_oid
 					), $snmp_notification_varbinds);
@@ -1126,6 +1130,7 @@ function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMP
 					}
 
 					$args = array_merge($args, array(
+						'--',
 						$notification_manager['hostname'] . ':' . $notification_manager['snmp_port'],
 						'', $enterprise_oid
 					), $snmp_notification_varbinds);

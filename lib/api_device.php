@@ -1003,6 +1003,10 @@ function api_device_save($id, $device_template_id, $description, $hostname, $snm
 
 	$save['description']          = form_input_validate($description, 'description', '', false, 3);
 	$save['hostname']             = form_input_validate(trim($hostname), 'hostname', '', false, 3);
+	if ($save['hostname'] !== '' && ($save['hostname'][0] === '-' || preg_match('/[\x00-\x1f\x7f\s]/', $save['hostname']))) {
+		raise_message(3);
+		$_SESSION['sess_error_fields']['hostname'] = 'hostname';
+	}
 	$save['notes']                = form_input_validate($notes, 'notes', '', true, 3);
 	$save['location']             = form_input_validate($location, 'location', '', true, 3);
 

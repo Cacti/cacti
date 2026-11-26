@@ -91,7 +91,20 @@ if ($mibcache_changed !== null || file_exists($path_mibcache) === false) {
 
 	/* Note: If SNMPAgent plugin has been disabled the cache will be truncated automatically */
 	if (cacti_sizeof($cache)) {
-		file_put_contents($path_mibcache, '<?php $cache = ' . var_export($cache, true) . ';', LOCK_EX);
+		$encoded = json_encode($cache);
+		if ($encoded !== false) {
+			$tmp_cache = tempnam(dirname($path_mibcache), 'mibcache_');
+			if ($tmp_cache !== false) {
+				if (file_put_contents($tmp_cache, $encoded, LOCK_EX) !== false) {
+					@chmod($tmp_cache, 0600);
+					if (!rename($tmp_cache, $path_mibcache)) {
+						@unlink($tmp_cache);
+					}
+				} else {
+					@unlink($tmp_cache);
+				}
+			}
+		}
 	}
 
 	/* destroy lock file */

@@ -1124,15 +1124,19 @@ class Installer implements JsonSerializable {
 					}
 
 					if ($should_set && $name == 'path_php_binary') {
-						$input = mt_rand(2,64);
-						$output = shell_exec(
-							cacti_escapeshellcmd($path) . ' -q ' .
-							cacti_escapeshellarg($config['base_path'] .  '/install/cli_test.php') .
-							' ' . $input);
-
-						if ($output != $input * $input) {
-							$this->addError(Installer::STEP_BINARY_LOCATIONS, 'Paths', $name, __('PHP did not return expected result'));
+						if (!is_executable($path) || preg_match('/^php[0-9.]*(?:-cgi|-fpm)?(?:\.exe)?$/i', basename($path)) !== 1) {
+							$this->addError(Installer::STEP_BINARY_LOCATIONS, 'Paths', $name, __('PHP binary path is not an executable PHP binary'));
 							$should_set = false;
+						} else {
+							$input = mt_rand(2,64);
+							$cli_output = array();
+							cacti_exec($path, array('-q', $config['base_path'] . '/install/cli_test.php', (string) $input), $cli_output);
+							$output = trim(implode("\n", $cli_output));
+
+							if ($output != $input * $input) {
+								$this->addError(Installer::STEP_BINARY_LOCATIONS, 'Paths', $name, __('PHP did not return expected result'));
+								$should_set = false;
+							}
 						}
 					}
 
@@ -1337,14 +1341,18 @@ class Installer implements JsonSerializable {
 			$param_array = explode(",", $param_range);
 
 			if (cacti_sizeof($param_array)) {
+				$valid_range = true;
 				foreach ($param_array as $param_network) {
 					$ip_details = automation_get_network_info($param_network);
 					if ($ip_details === false) {
+						$valid_range = false;
 						$this->addError(Installer::STEP_PROFILE_AND_AUTOMATION, 'Automation', 'Range', __('Failed to apply \'%s\' as Automation Range', $param_network));
 					}
 				}
-				$this->automationRange = $param_range;
-				set_install_config_option('install_automation_range', $param_range);
+				if ($valid_range) {
+					$this->automationRange = $param_range;
+					set_install_config_option('install_automation_range', $param_range);
+				}
 			}
 		} else {
 			$param_range = '';
@@ -2137,7 +2145,7 @@ class Installer implements JsonSerializable {
 		$output  = Installer::sectionTitleError();
 		$output .= Installer::sectionNormal(__('You are attempting to install Cacti %s onto a 0.6.x database. Unfortunately, this can not be performed.', CACTI_VERSION));
 		$output .= Installer::sectionNormal(__('To be able continue, you <b>MUST</b> create a new database, import "cacti.sql" into it:', CACTI_VERSION));
-		$output .= Installer::sectionCode(sprintf("mysql -u %s -p [new_database] < cacti.sql", $database_username, $database_default));
+		$output .= Installer::sectionCode(sprintf("mysql -u %s -p [new_database] < cacti.sql", html_escape((string) $database_username), html_escape((string) $database_default)));
 		$output .= Installer::sectionNormal(__('You <b>MUST</b> then update "include/config.php" to point to the new database.'));
 		$output .= Installer::sectionNormal(__('NOTE: Your existing data will not be modified, nor will it or any history be available to the new install'));
 		return $output;
@@ -2501,9 +2509,9 @@ class Installer implements JsonSerializable {
 				}
 
 				form_alternate_row('php_' . $recommend['name'],true);
-				form_selectable_cell($recommend['name'], '');
-				form_selectable_cell($recommend['current'], '');
-				form_selectable_cell('>= ' . $recommend['value'], '');
+				form_selectable_cell(html_escape((string) $recommend['name']), '');
+				form_selectable_cell(html_escape((string) $recommend['current']), '');
+				form_selectable_cell('>= ' . html_escape((string) $recommend['value']), '');
 				form_selectable_cell("<font color='$status_font'>$status_text</font>", '');
 				form_selectable_cell($recommend['description'], '');
 				form_end_row();
@@ -3319,7 +3327,7 @@ class Installer implements JsonSerializable {
 
 				if ($show_warning) {
 					$output .= Installer::sectionWarning(__('One or more tables are too large to convert during the installation.  You should use the cli/convert_tables.php script to perform the conversion, then refresh this page. For example: '));
-					$output .= Installer::sectionCode(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/cli/convert_tables.php -u -i');
+					$output .= Installer::sectionCode(html_escape((string) read_config_option('path_php_binary')) . ' -q ' . html_escape((string) $config['base_path']) . '/cli/convert_tables.php -u -i');
 				}
 
 				$output .= Installer::sectionNormal(__('The following tables should be converted to UTF8 and InnoDB with a Dynamic row format.  Please select the tables that you wish to convert during the installation process.'));
@@ -4014,15 +4022,27 @@ class Installer implements JsonSerializable {
 			$this->setProgress(Installer::PROGRESS_DEVICE_TEMPLATE);
 			log_install_always('', __('Device Template for First Cacti Device is %s', $host_template_id));
 
-			$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
-				cacti_escapeshellarg($config['base_path'] . '/cli/add_device.php') .
-				' --description=' . cacti_escapeshellarg($description) .
-				' --ip=' . cacti_escapeshellarg($ip) .
-				' --template=' . $host_template_id .
-				' --notes=' . cacti_escapeshellarg('Initial Cacti Device') .
-				' --poller=1 --site=0 --avail=' . cacti_escapeshellarg($avail) .
-				' --version=' . $version .
-				' --community=' . cacti_escapeshellarg($community));
+			$php_binary = (string) read_config_option('path_php_binary');
+			$results    = '';
+			if (!empty($php_binary) && is_executable($php_binary) && preg_match('/^php[0-9.]*(?:-cgi|-fpm)?(?:\.exe)?$/i', basename($php_binary)) === 1) {
+				$cli_out = array();
+				cacti_exec($php_binary, array(
+					'-q',
+					$config['base_path'] . '/cli/add_device.php',
+					'--description=' . $description,
+					'--ip=' . $ip,
+					'--template=' . (int) $host_template_id,
+					'--notes=Initial Cacti Device',
+					'--poller=1',
+					'--site=0',
+					'--avail=' . $avail,
+					'--version=' . $version,
+					'--community=' . $community
+				), $cli_out);
+				$results = implode("\n", $cli_out);
+			} else {
+				log_install_always('', __('ERROR: Invalid or non-executable PHP binary path configured; skipping default device creation.'));
+			}
 
 			$host_id = db_fetch_cell_prepared('SELECT id
 				FROM host
@@ -4046,12 +4066,18 @@ class Installer implements JsonSerializable {
 
 					$this->setProgress(Installer::PROGRESS_DEVICE_TREE);
 					log_install_always('', __('Adding Device to Default Tree'));
-					shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
-						cacti_escapeshellarg($config['base_path'] . '/cli/add_tree.php') .
-						' --type=node' .
-						' --node-type=host' .
-						' --tree-id=1' .
-						' --host-id=' . $host_id);
+					$php_binary = (string) read_config_option('path_php_binary');
+					if (!empty($php_binary) && is_executable($php_binary) && preg_match('/^php[0-9.]*(?:-cgi|-fpm)?(?:\.exe)?$/i', basename($php_binary)) === 1) {
+						$tree_out = array();
+						cacti_exec($php_binary, array(
+							'-q',
+							$config['base_path'] . '/cli/add_tree.php',
+							'--type=node',
+							'--node-type=host',
+							'--tree-id=1',
+							'--host-id=' . (int) $host_id
+						), $tree_out);
+					}
 				} else {
 					log_install_always('', __('No templated graphs for Default Device were found'));
 				}
@@ -4107,10 +4133,20 @@ class Installer implements JsonSerializable {
 				$name = $table['value'];
 				if (!empty($name)) {
 					log_install_always('', __('Converting Table #%s \'%s\'', $i, $name), true);
-					$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
-						cacti_escapeshellarg($config['base_path'] . '/cli/convert_tables.php') .
-						' --table=' . cacti_escapeshellarg($name) .
-						' --utf8 --innodb --dynamic');
+					$php_binary = (string) read_config_option('path_php_binary');
+					$results    = '';
+					if (!empty($php_binary) && is_executable($php_binary) && preg_match('/^php[0-9.]*(?:-cgi|-fpm)?(?:\.exe)?$/i', basename($php_binary)) === 1) {
+						$convert_out = array();
+						cacti_exec($php_binary, array(
+							'-q',
+							$config['base_path'] . '/cli/convert_tables.php',
+							'--table=' . $name,
+							'--utf8',
+							'--innodb',
+							'--dynamic'
+						), $convert_out);
+						$results = implode("\n", $convert_out);
+					}
 
 					set_install_config_option('install_updated', microtime(true));
 					log_install_debug('convert', sprintf('Convert table #%s \'%s\' results: %s', $i, $name, $results), true);

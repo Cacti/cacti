@@ -406,7 +406,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $auth_user = '', 
 		$binary = read_config_option('path_snmpget');
 		$args   = array_merge(array('-OfntevU' . ($value_output_format == SNMP_STRING_OUTPUT_HEX ? 'x' : '')),
 			$snmp_auth, array('-v', $version, '-t', (string) $timeout_s, '-r', (string) $retries,
-			snmp_format_target_arg($hostname, $port), $oid));
+			'--', snmp_format_target_arg($hostname, $port), $oid));
 
 		cacti_snmp_debug_command($binary, $args);
 		cacti_exec($binary, $args, $snmp_value, $hostname, cacti_snmp_command_timeout($timeout_s, $retries));
@@ -522,7 +522,7 @@ function cacti_snmp_get_raw($hostname, $community, $oid, $version, $auth_user = 
 		$binary = read_config_option('path_snmpget');
 		$args   = array_merge(array('-Ofntev' . ($value_output_format == SNMP_STRING_OUTPUT_HEX ? 'x' : '')),
 			$snmp_auth, array('-v', $version, '-t', (string) $timeout_s, '-r', (string) $retries,
-			snmp_format_target_arg($hostname, $port), $oid));
+			'--', snmp_format_target_arg($hostname, $port), $oid));
 
 		cacti_snmp_debug_command($binary, $args);
 		cacti_exec($binary, $args, $snmp_value, $hostname, cacti_snmp_command_timeout($timeout_s, $retries));
@@ -633,7 +633,7 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $auth_user = 
 		$binary = read_config_option('path_snmpgetnext');
 		$args   = array_merge(array('-OfntevU' . ($value_output_format == SNMP_STRING_OUTPUT_HEX ? 'x' : '')),
 			$snmp_auth, array('-v', $version, '-t', (string) $timeout_s, '-r', (string) $retries,
-			snmp_format_target_arg($hostname, $port), $oid));
+			'--', snmp_format_target_arg($hostname, $port), $oid));
 
 		cacti_snmp_debug_command($binary, $args);
 		cacti_exec($binary, $args, $snmp_value, $hostname, cacti_snmp_command_timeout($timeout_s, $retries));
@@ -1511,6 +1511,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 				$args[] = $oidCheck;
 			}
 
+			$args[] = '--';
 			$args[] = snmp_format_target_arg($hostname, $port);
 			$args[] = $oid;
 			cacti_snmp_debug_command($binary, $args);
@@ -1524,6 +1525,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 				$args[] = $oidCheck;
 			}
 
+			$args[] = '--';
 			$args[] = snmp_format_target_arg($hostname, $port);
 			$args[] = $oid;
 			cacti_snmp_debug_command($binary, $args);
