@@ -18,7 +18,23 @@ rules teach the scanner Cacti's sources, sanitizers and sinks.
 Modelled: sources `grv`, `gnrv`, `get_request_var`, `get_nfilter_request_var`; sanitizers
 `db_qstr[_rlike]`, `sanitize_sql_column`, `(int)`/`intval`,
 `gfrv`/`get_filter_request_var`, `cacti_escapeshellarg`, `html_escape`/`htmle`,
-`json_encode`; sinks as above.
+`html_escape_attr`, `__esc*`, `json_encode`; sinks as above.
+
+Each escaper is modelled for the output context it protects. `html_escape()`,
+`htmle()`, `html_escape_attr()` and the `__esc*()` wrappers make text safe in
+HTML and in a quoted attribute that is not a URL. `html_escape_url()` only
+escapes for the attribute, so a value that supplies the whole URL can still
+carry a `javascript:` scheme; it counts as a sanitizer only when the URL starts
+with a literal page path such as `'graphs.php?id=' . $id`. The rules do not
+see which attribute a value lands in, so a whole URL passed through `htmle()`
+into an `href` is still accepted. A helper that returns stored
+text, such as `get_username()`, is modelled as a source so that its callers are
+checked too.
+
+The request-variable rule does not treat the result of a `db_fetch_*()` call as
+request text: a request variable bound as a query parameter does not put
+request input in the fetched row. The stored-value rules decide whether those
+columns are safe to print.
 
 The stored-text rules match fetched rows by column name rather than tainting
 every `db_fetch_assoc()`/`db_fetch_row()` result, because a request variable in
