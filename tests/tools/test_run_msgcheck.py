@@ -160,6 +160,99 @@ class RunnerBehaviorTest(unittest.TestCase):
         self.assertEqual(err.getvalue(), 'warn\n')
 
 
+class BaseFilteringTest(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temp = tempfile.TemporaryDirectory(prefix='cacti-run-msgcheck-base-')
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name)
+
+    def test_filters_unchanged_fuzzy_and_translated_entries_preserving_line_count(self) -> None:
+        base = (
+            DE_HEADER
+            + '\n'
+            + '#, fuzzy, php-format\n'
+            + 'msgid "Old fuzzy %s."\n'
+            + 'msgstr ""\n'
+            + '"Alt unscharf %s"\n'
+            + '\n'
+            + 'msgid "Unchanged."\n'
+            + 'msgstr "Unveraendert"\n'
+            + '\n'
+            + 'msgid "Updated."\n'
+            + 'msgstr "Alt"\n'
+            + '\n'
+            + '#~ msgid "Obsolete"\n'
+            + '#~ msgstr "Veraltet"\n'
+        )
+        head = base.replace('msgstr "Alt"\n', 'msgstr "Neu."\n')
+
+        filtered = RUN_MSGCHECK.filter_po_to_changed_entries(head, base)
+
+        self.assertEqual(len(filtered.splitlines()), len(head.splitlines()))
+        self.assertIn('#, php-format\nmsgid "Old fuzzy %s."\nmsgstr ""\n""\n', filtered)
+        self.assertIn('msgid "Unchanged."\nmsgstr ""\n', filtered)
+        self.assertIn('msgid "Updated."\nmsgstr "Neu."\n', filtered)
+        self.assertIn('#~ msgstr "Veraltet"\n', filtered)
+
+    def test_base_option_reads_git_commit_and_strips_base_flag_from_msgcheck_args(self) -> None:
+        import subprocess
+
+        repo = self.root / 'repo'
+        repo.mkdir()
+        subprocess.run(['git', 'init', '-q'], cwd=repo, check=True)
+        subprocess.run(['git', 'config', 'user.email', 'test@example.com'], cwd=repo, check=True)
+        subprocess.run(['git', 'config', 'user.name', 'Test'], cwd=repo, check=True)
+        po_file = repo / 'hi-IN.po'
+        po_file.write_text(
+            HI_HEADER
+            + '\n#, fuzzy\nmsgid "Old."\nmsgstr "पुराना"\n'
+            + '\nmsgid "Changed."\nmsgstr "पहले"\n',
+            encoding='utf-8',
+        )
+        subprocess.run(['git', 'add', 'hi-IN.po'], cwd=repo, check=True)
+        subprocess.run(['git', 'commit', '-q', '--no-gpg-sign', '-m', 'base'], cwd=repo, check=True)
+        base_sha = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo, text=True).strip()
+
+        po_file.write_text(
+            HI_HEADER
+            + '\n#, fuzzy\nmsgid "Old."\nmsgstr "पुराना"\n'
+            + '\nmsgid "Changed."\nmsgstr "बाद में।"\n',
+            encoding='utf-8',
+        )
+
+        fake = self.root / 'fake-msgcheck'
+        fake.write_text(
+            f'#!{sys.executable}\n'
+            'import pathlib, sys\n'
+            'args = sys.argv[1:]\n'
+            'assert "--base" not in args\n'
+            'staged = pathlib.Path(args[-1]).read_text(encoding="utf-8")\n'
+            'assert "fuzzy" not in staged\n'
+            'assert \'msgstr "बाद में."\' in staged\n'
+            'print("CLEAN")\n',
+            encoding='utf-8',
+        )
+        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+
+        orig_cwd = os.getcwd()
+        os.chdir(repo)
+        self.addCleanup(os.chdir, orig_cwd)
+
+        rc, stdout, stderr = RUN_MSGCHECK.run_msgcheck(
+            [f'--base={base_sha}', '--error-on-fuzzy', '--no-lines', 'hi-IN.po'],
+            msgcheck_cmd=str(fake),
+        )
+        self.assertEqual(rc, 0, stderr)
+        self.assertEqual(stdout, 'CLEAN\n')
+
+        # Missing base ref falls back cleanly to checking the full file
+        rc2, stdout2, _ = RUN_MSGCHECK.run_msgcheck(
+            ['--base', '0000000000000000000000000000000000000000', '--no-lines', 'hi-IN.po'],
+            msgcheck_cmd=str(fake),
+        )
+        self.assertNotEqual(rc2, 0)
+
+
 @unittest.skipUnless(shutil.which('msgcheck'), 'msgcheck required')
 class RealMsgcheckIntegrationTest(unittest.TestCase):
     def setUp(self) -> None:
