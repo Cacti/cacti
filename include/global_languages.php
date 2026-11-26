@@ -1222,7 +1222,7 @@ function number_format_i18n(mixed $number, mixed $decimals = null, mixed $baseu 
 	}
 
 	$origlocales = explode(';', (string) setlocale(LC_ALL, '0'));
-	setlocale(LC_ALL, $cacti_locale);
+	setlocale(LC_ALL, strlen((string) $cacti_locale) < 255 ? (string) $cacti_locale : 'C');
 	$locale = localeconv();
 
 	$number = number_format((float) $number, $fmt_decimals, $locale['decimal_point'], $locale['thousands_sep']) . $suffix;

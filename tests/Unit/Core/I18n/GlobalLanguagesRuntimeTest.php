@@ -91,6 +91,30 @@ test('number_format_i18n() normalizes ICU locale keys, applies baseu scaling, an
 		$cacti_country = 'us';
 
 		expect(number_format_i18n(1234.56, 2, 0))->toBe('1,234.56');
+
+		$origAll = (string) setlocale(LC_ALL, '0');
+		setlocale(LC_ALL, 'C');
+
+		try {
+			$cacti_locale  = str_repeat('a', 300);
+			$cacti_country = '';
+
+			expect(number_format_i18n(1234.56, 2, 0))->toBe('1234.56');
+			expect(setlocale(LC_NUMERIC, '0'))->toBe('C');
+		} finally {
+			foreach (explode(';', $origAll) as $entry) {
+				if (str_contains($entry, '=')) {
+					[$cat, $val] = explode('=', $entry, 2);
+
+					if (defined($cat)) {
+						setlocale(constant($cat), $val);
+					}
+				} else {
+					setlocale(LC_ALL, $entry);
+				}
+			}
+		}
+
 		expect(setlocale(LC_NUMERIC, '0'))->toBe($beforeNum);
 	} finally {
 		$cacti_locale  = $origLocale;
