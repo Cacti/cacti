@@ -71,7 +71,7 @@ dataset('translated_script_strings', [
 test('HTML root templates emit the active locale text direction', function (string $file) use ($root) {
 	$source = file_get_contents($root . '/' . $file);
 
-	expect($source)->toContain('get_locale_direction()');
+	expect($source)->toContain('get_html_document_attributes()');
 })->with([
 	'include/top_header.php',
 	'include/top_graph_header.php',
