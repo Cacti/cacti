@@ -866,7 +866,7 @@ function network_edit() {
 	$(function() {
 		$('#day_of_week').multiselect({
 			selectedList: 7,
-			noneSelectedText: '<?php print __('Select the days(s) of the week');?>',
+			noneSelectedText: <?php print json_encode(__('Select the days(s) of the week'));?>,
 			header: false,
 			height: 54,
 			groupColumns: true,
@@ -876,7 +876,7 @@ function network_edit() {
 
 		$('#month').multiselect({
 			selectedList: 7,
-			noneSelectedText: '<?php print __('Select the month(s) of the year');?>',
+			noneSelectedText: <?php print json_encode(__('Select the month(s) of the year'));?>,
 			header: false,
 			height: 82,
 			groupColumns: true,
@@ -886,7 +886,7 @@ function network_edit() {
 
 		$('#day_of_month').multiselect({
 			selectedList: 15,
-			noneSelectedText: '<?php print __('Select the day(s) of the month');?>',
+			noneSelectedText: <?php print json_encode(__('Select the day(s) of the month'));?>,
 			header: false,
 			height: 162,
 			groupColumns: true,
@@ -896,7 +896,7 @@ function network_edit() {
 
 		$('#monthly_week').multiselect({
 			selectedList: 4,
-			noneSelectedText: '<?php print __('Select the week(s) of the month');?>',
+			noneSelectedText: <?php print json_encode(__('Select the week(s) of the month'));?>,
 			header: false,
 			height: 28,
 			groupColumns: true,
@@ -906,7 +906,7 @@ function network_edit() {
 
 		$('#monthly_day').multiselect({
 			selectedList: 7,
-			noneSelectedText: '<?php print __('Select the day(s) of the week');?>',
+			noneSelectedText: <?php print json_encode(__('Select the day(s) of the week'));?>,
 			header: false,
 			height: 54,
 			groupColumns: true,
@@ -1003,8 +1003,8 @@ function network_edit() {
 			$('#row_monthly_day').hide();
 			$('#row_recur_every').find('td:first').each(function() {
 				var html = $(this).html();
-				html = html.replace('<?php print __('every X Weeks');?>', '<?php print __('every X Days');?>');
-				html = html.replace('<?php print __('every X.');?>', '<?php print __('every X Days.');?>');
+				html = html.replace(<?php print json_encode(__('every X Weeks'));?>, <?php print json_encode(__('every X Days'));?>);
+				html = html.replace(<?php print json_encode(__('every X.'));?>, <?php print json_encode(__('every X Days.'));?>);
 				$(this).html(html);
 			});
 
@@ -1020,8 +1020,8 @@ function network_edit() {
 			$('#row_monthly_day').hide();
 			$('#row_recur_every').find('td:first').each(function() {
 				var html = $(this).html();
-				html = html.replace('<?php print __('every X Days');?>', '<?php print __('every X Weeks');?>');
-				html = html.replace('<?php print __('every X.');?>', '<?php print __('every X Weeks.');?>');
+				html = html.replace(<?php print json_encode(__('every X Days'));?>, <?php print json_encode(__('every X Weeks'));?>);
+				html = html.replace(<?php print json_encode(__('every X.'));?>, <?php print json_encode(__('every X Weeks.'));?>);
 				$(this).html(html);
 			});
 

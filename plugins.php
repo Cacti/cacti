@@ -548,7 +548,7 @@ function update_show_current () {
 			$('body').append(
 				"<div id='pluginForceRemove' style='display:none'>" +
 				"<p><?php print __esc('Are you sure you want to Force Uninstall the plugin'); ?> <span class='pluginName'></span>?</p>" +
-				"<p><?php print __esc('This permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone.  If you really want to Force Uninstall the Plugin, click \'Force Uninstall\' below.  Otherwise click \'Cancel\'.'); ?></p>" +
+				"<p>" + <?php print json_encode(__esc('This permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone.  If you really want to Force Uninstall the Plugin, click \'Force Uninstall\' below.  Otherwise click \'Cancel\'.')); ?> + "</p>" +
 				"</div>"
 			);
 
@@ -801,14 +801,14 @@ function update_show_current () {
 
 			var btnUninstall = {
 				'Cancel': {
-					text: '<?php print __('Cancel');?>',
+					text: <?php print json_encode(__('Cancel'));?>,
 					id: 'btnCancel',
 					click: function() {
 						$(this).dialog('close');
 					}
 				},
 				'Uninstall': {
-					text: '<?php print __('Uninstall');?>',
+					text: <?php print json_encode(__('Uninstall'));?>,
 					id: 'btnUninstall',
 					click: function() {
 						$('#uninstalldialog').dialog('close');
@@ -817,10 +817,10 @@ function update_show_current () {
 				}
 			};
 
-			$('body').remove('#uninstalldialog').append("<div id='uninstalldialog'><h4><?php print $uninstall_msg;?></h4></div>");
+			$('body').remove('#uninstalldialog').append("<div id='uninstalldialog'><h4>" + <?php print json_encode(html_escape($uninstall_msg));?> + "</h4></div>");
 
 			$('#uninstalldialog').dialog({
-				title: '<?php print $uninstall_title;?>',
+				title: <?php print json_encode($uninstall_title);?>,
 				minHeight: 80,
 				minWidth: 500,
 				buttons: btnUninstall

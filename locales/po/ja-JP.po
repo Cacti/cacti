@@ -152,7 +152,8 @@ msgstr "選択した集約グラフは、複数のグラフテンプレートの
 
 #: aggregate_graphs.php
 msgid "In order to migrate the Aggregate Graphs below to a Template based Aggregate, they must only be using one Graph Template.  Please press 'Return' and then select only Aggregate Graph that utilize the same Graph Template."
-msgstr "以下の集計グラフをテンプレートベースの集計に移行するには、1つのグラフテンプレートのみを使用している必要があります。 &#39;Return&#39;を押してから、同じグラフテンプレートを利用するAggregate Graphのみを選択してください。"
+msgstr "以下の集計グラフをテンプレートベースの集計に移行するには、1つのグラフテンプレートのみを使用している必要があります。 'Return'を押してから、同じグラフテンプレートを利用するAggregate Graphのみを選択してください。"
+
 
 #: aggregate_graphs.php auth_changepassword.php auth_profile.php
 #: automation_networks.php automation_snmp.php graphs.php host.php
@@ -1063,7 +1064,8 @@ msgstr ""
 
 #: automation_graph_rules.php
 msgid "Press 'Continue' to delete the following Graph Rules."
-msgstr "次のグラフルールを削除するには &#39;続行&#39;を押してください。"
+msgstr "次のグラフルールを削除するには '続行'を押してください。"
+
 
 #: automation_graph_rules.php
 msgid "Click 'Continue' to duplicate the following Rule(s). You can optionally change the title format for the new Graph Rules."
@@ -2131,7 +2133,8 @@ msgstr "警告:"
 
 #: automation_tree_rules.php
 msgid "You are changing the leaf type to \"Device\" which does not support Graph-based object matching/creation."
-msgstr "グラフベースのオブジェクトのマッチング/作成をサポートしていないリーフタイプを &quot;Device&quot;に変更しています。"
+msgstr "グラフベースのオブジェクトのマッチング/作成をサポートしていないリーフタイプを \"Device\"に変更しています。"
+
 
 #: automation_tree_rules.php
 msgid "By changing the leaf type, all invalid rules will be automatically removed and will not be recoverable."
@@ -4393,7 +4396,8 @@ msgstr "グラフテンプレート名"
 
 #: graph_view.php graphs.php
 msgid "The Title of this Graph.  Generally programmatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual."
-msgstr "このグラフのタイトル。通常は、グラフテンプレート定義または推奨命名規則からプログラム的に生成されます。タイトルの最大長は、設定 - &gt;ビジュアルで制御します。"
+msgstr "このグラフのタイトル。通常は、グラフテンプレート定義または推奨命名規則からプログラム的に生成されます。タイトルの最大長は、設定 - >ビジュアルで制御します。"
+
 
 #: graph_view.php
 msgid "The device for this Graph."
@@ -4640,7 +4644,8 @@ msgstr "ご確認下さい"
 
 #: graphs.php
 msgid "Select the Aggregate Template to use and press 'Continue' to create your Aggregate Graph.  Otherwise press 'Cancel' to return."
-msgstr "使用する集約テンプレートを選択し、[続行]をクリックして集約グラフを作成します。さもなければ戻るために &#39;Cancel&#39;を押してください。"
+msgstr "使用する集約テンプレートを選択し、[続行]をクリックして集約グラフを作成します。さもなければ戻るために 'Cancel'を押してください。"
+
 
 #: graphs.php
 msgid "There are presently no Aggregate Templates defined for this Graph Template.  Please either first create an Aggregate Template for the selected Graphs Graph Template and try again, or simply crease an un-templated Aggregate Graph."
@@ -5263,7 +5268,8 @@ msgstr "このデバイスから生成されたデータソースの総数。"
 
 #: host.php
 msgid "The monitoring status of the Device based upon ping results.  If this Device is a special type Device, by using the hostname \"localhost\", or due to the setting to not perform an Availability Check, it will always remain Up.  When using cmd.php data collector, a Device with no Graphs, is not pinged by the data collector and will remain in an \"Unknown\" state."
-msgstr "pingの結果に基づくデバイスの監視ステータス。このデバイスが特殊なタイプのデバイスである場合、ホスト名 &quot;localhost&quot;を使用するか、可用性チェックを実行しない設定のために、常にUpのままになります。 cmd.phpデータコレクタを使用する場合、グラフのないデバイスはデータコレクタによって固定されず、「不明」状態のままになります。"
+msgstr "pingの結果に基づくデバイスの監視ステータス。このデバイスが特殊なタイプのデバイスである場合、ホスト名 \"localhost\"を使用するか、可用性チェックを実行しない設定のために、常にUpのままになります。 cmd.phpデータコレクタを使用する場合、グラフのないデバイスはデータコレクタによって固定されず、「不明」状態のままになります。"
+
 
 #: host.php
 msgid "In State"
@@ -5943,11 +5949,13 @@ msgstr "中央"
 
 #: include/global_arrays.php
 msgid "Top -> Down"
-msgstr "上 - &gt;下"
+msgstr "上 - >下"
+
 
 #: include/global_arrays.php
 msgid "Bottom -> Up"
-msgstr "下 - &gt;上へ"
+msgstr "下 - >上へ"
+
 
 #: include/global_arrays.php tree.php
 msgid "Numeric"
@@ -7876,7 +7884,8 @@ msgstr "このデータテンプレートに名前を与えてください。"
 
 #: include/global_form.php
 msgid "Choose a name for this data source.  It can include replacement variables such as |host_description| or |query_fieldName|.  For a complete list of supported replacement tags, please see the Cacti documentation."
-msgstr "このデータソースの名前を選択してください。 | host_description |などの置換変数を含めることができます。または| query_fieldName |。サポートされている代替タグの一覧については、Cactiのマニュアルを参照してください。"
+msgstr "このデータソースの名前を選択してください。 |host_description|などの置換変数を含めることができます。または|query_fieldName|。サポートされている代替タグの一覧については、Cactiのマニュアルを参照してください。"
+
 
 #: include/global_form.php
 msgid "Data Source Path"
@@ -7972,7 +7981,8 @@ msgstr "タイトル（ - タイトル）"
 
 #: include/global_form.php
 msgid "The name that is printed on the graph.  It can include replacement variables such as |host_description| or |query_fieldName|.  For a complete list of supported replacement tags, please see the Cacti documentation."
-msgstr "グラフに印刷されている名前。 | host_description |などの置換変数を含めることができます。または| query_fieldName |。サポートされている代替タグの一覧については、Cactiのマニュアルを参照してください。"
+msgstr "グラフに印刷されている名前。 |host_description|などの置換変数を含めることができます。または|query_fieldName|。サポートされている代替タグの一覧については、Cactiのマニュアルを参照してください。"
+
 
 #: include/global_form.php
 msgid "Vertical Label (--vertical-label)"
@@ -8177,7 +8187,8 @@ msgstr "右軸フォーマッタ（--right-axis-formatter &lt;フォーマット
 
 #: include/global_form.php
 msgid "When you setup the right axis labeling, apply a rule to the data format.  Supported formats include \"numeric\" where data is treated as numeric, \"timestamp\" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is \"%Y-%m-%d %H:%M:%S\").  See also --units-length and --right-axis-format.  Finally \"duration\" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT."
-msgstr "右軸のラベルを設定するときは、データフォーマットにルールを適用してください。サポートされている形式には、データが数値として扱われる「数値」、値がUNIXタイムスタンプ（1970年1月からの秒数）として解釈されるstrftime形式（デフォルトは「％Y-％m-％d％H」）が含まれます。 ：％ミズ&quot;）。 --units-lengthおよび--right-axis-formatも参照してください。最後に、値がミリ秒単位の期間として解釈される「期間」。フォーマットはvalstrfduration修飾PRINT / GPRINTの規則に従います。"
+msgstr "右軸のラベルを設定するときは、データフォーマットにルールを適用してください。サポートされている形式には、データが数値として扱われる「数値」、値がUNIXタイムスタンプ（1970年1月からの秒数）として解釈されるstrftime形式（デフォルトは「%Y-%m-%d%H」）が含まれます。 ：％ミズ\"）。 --units-lengthおよび--right-axis-formatも参照してください。最後に、値がミリ秒単位の期間として解釈される「期間」。フォーマットはvalstrfduration修飾PRINT / GPRINTの規則に従います。"
+
 
 #: include/global_form.php
 msgid "Left Axis Formatter (--left-axis-formatter &lt;formatname&gt;)"
@@ -8185,7 +8196,8 @@ msgstr "左軸フォーマッタ（--left-axis-formatter &lt;フォーマット�
 
 #: include/global_form.php
 msgid "When you setup the left axis labeling, apply a rule to the data format.  Supported formats include \"numeric\" where data is treated as numeric, \"timestamp\" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is \"%Y-%m-%d %H:%M:%S\").  See also --units-length.  Finally \"duration\" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT."
-msgstr "左軸のラベルを設定するときは、データフォーマットに規則を適用します。サポートされている形式には、データが数値として扱われる「数値」、値がUNIXタイムスタンプ（1970年1月からの秒数）として解釈されるstrftime形式（デフォルトは「％Y-％m-％d％H」）が含まれます。 ：％ミズ&quot;）。 --units-lengthも参照してください。最後に、値がミリ秒単位の期間として解釈される「期間」。フォーマットはvalstrfduration修飾PRINT / GPRINTの規則に従います。"
+msgstr "左軸のラベルを設定するときは、データフォーマットに規則を適用します。サポートされている形式には、データが数値として扱われる「数値」、値がUNIXタイムスタンプ（1970年1月からの秒数）として解釈されるstrftime形式（デフォルトは「%Y-%m-%d%H」）が含まれます。 ：％ミズ\"）。 --units-lengthも参照してください。最後に、値がミリ秒単位の期間として解釈される「期間」。フォーマットはvalstrfduration修飾PRINT / GPRINTの規則に従います。"
+
 
 #: include/global_form.php
 msgid "Legend Options"
@@ -8293,7 +8305,8 @@ msgstr "シフトデータ"
 
 #: include/global_form.php
 msgid "Offset your data on the time axis (x-axis) by the amount specified in the 'value' field."
-msgstr "&#39;value&#39;フィールドで指定した量だけ時間軸（x軸）上のデータをオフセットしてください。"
+msgstr "'value'フィールドで指定した量だけ時間軸（x軸）上のデータをオフセットしてください。"
+
 
 #: include/global_form.php
 msgid "[HRULE|VRULE]: The value of the graph item.<br/> [TICK]: The fraction for the tick line.<br/> [SHIFT]: The time offset in seconds."
@@ -8305,7 +8318,8 @@ msgstr "GPRINTタイプ"
 
 #: include/global_form.php
 msgid "If this graph item is a GPRINT, you can optionally choose another format here. You can define additional types under \"GPRINT Presets\"."
-msgstr "このグラフ項目がGPRINTの場合は、ここで別のフォーマットを選択できます。あなたは &quot;GPRINTプリセット&quot;の下で追加のタイプを定義することができます。"
+msgstr "このグラフ項目がGPRINTの場合は、ここで別のフォーマットを選択できます。あなたは \"GPRINTプリセット\"の下で追加のタイプを定義することができます。"
+
 
 #: include/global_form.php
 msgid "Text Alignment (TEXTALIGN)"
@@ -9351,7 +9365,8 @@ msgstr "グラフ許可方法"
 
 #: include/global_settings.php
 msgid "There are four methods for determining a User's Graph Permissions.  The first is 'Permissive'.  Under the 'Permissive' setting, a User only needs access to either the Graph, Device or Graph Template to gain access to the Graphs that apply to them.  Under 'Restrictive', the User must have access to the Graph, the Device, and the Graph Template to gain access to the Graph.  These first two methods have scalability problems for very large installs.  So, two additional options are available.  They are 'Device Based', which means if you have access to the Device, you get access to it's Graphs.  And lastly 'Graph Template Based', which means if you have access to the 'Graph Template' you get access to all Device Graphs of that Template."
-msgstr "ユーザーのグラフの権限を決定する方法は2つあります。 1つは「許容」です。 &#39;Permissive&#39;設定の下では、ユーザはそれらに適用されるグラフへのアクセスを得るためにグラフ、デバイスまたはグラフテンプレートへのアクセスのみを必要とします。 「制限的」の下では、ユーザーは、グラフにアクセスするためにグラフ、デバイス、およびグラフテンプレートにアクセスできる必要があります。"
+msgstr "ユーザーのグラフの権限を決定する方法は2つあります。 1つは「許容」です。 'Permissive'設定の下では、ユーザはそれらに適用されるグラフへのアクセスを得るためにグラフ、デバイスまたはグラフテンプレートへのアクセスのみを必要とします。 「制限的」の下では、ユーザーは、グラフにアクセスするためにグラフ、デバイス、およびグラフテンプレートにアクセスできる必要があります。"
+
 
 #: include/global_settings.php
 msgid "Permissive"
@@ -10005,7 +10020,8 @@ msgstr "カスタム日付形式"
 
 #: include/global_settings.php
 msgid "To be used when formatting |date_time| on a graph"
-msgstr "| date_time |をフォーマットするときに使用しますグラフ上"
+msgstr "|date_time|をフォーマットするときに使用しますグラフ上"
+
 
 #: include/global_settings.php
 msgid "Disable RRDtool Watermark"
@@ -10296,7 +10312,8 @@ msgstr "無効なデータロギング"
 
 #: include/global_settings.php
 msgid "How would you like the Data Collector output errors logged?  Options include: 'Detailed' which details every error, 'Summary' which provides the number of output errors per Device, and 'None', which does not provide error counts."
-msgstr "Spineの出力エラーをどのように記録しますか。オプションは以下のとおりです。 &#39;Detailed&#39;これはcmd.phpロギングに似ています。デバイスごとの出力エラー数を提供する &#39;Summary&#39;。エラーカウントは表示されません。"
+msgstr "Spineの出力エラーをどのように記録しますか。オプションは以下のとおりです。 'Detailed'これはcmd.phpロギングに似ています。デバイスごとの出力エラー数を提供する 'Summary'。エラーカウントは表示されません。"
+
 
 #: include/global_settings.php utilities.php
 msgid "Summary"
@@ -10483,7 +10500,8 @@ msgstr "ゲストユーザー"
 
 #: include/global_settings.php
 msgid "The name of the guest user for viewing graphs; is 'No User' by default."
-msgstr "グラフを表示するためのゲストユーザの名前。デフォルトは &#39;No User&#39;です。"
+msgstr "グラフを表示するためのゲストユーザの名前。デフォルトは 'No User'です。"
+
 
 #: include/global_settings.php user_domains.php
 msgid "User Template"
@@ -10491,7 +10509,8 @@ msgstr "ユーザーテンプレート"
 
 #: include/global_settings.php
 msgid "The name of the user that Cacti will use as a template for new Web Basic and LDAP users; is 'guest' by default.  This user account will be disabled from logging in upon being selected."
-msgstr "Cactiが新しいWeb BasicおよびLDAPユーザーのテンプレートとして使用するユーザーの名前。デフォルトでは &#39;guest&#39;です。このユーザーアカウントは選択されるとログインできなくなります。"
+msgstr "Cactiが新しいWeb BasicおよびLDAPユーザーのテンプレートとして使用するユーザーの名前。デフォルトでは 'guest'です。このユーザーアカウントは選択されるとログインできなくなります。"
+
 
 #: include/global_settings.php
 msgid "Basic Authentication Settings"
@@ -11083,7 +11102,8 @@ msgstr "最大引数長"
 
 #: include/global_settings.php
 msgid "When boost sends update commands to RRDtool, it must not exceed the operating systems Maximum Argument Length.  This varies by operating system and kernel level.  For example: Windows 2000 <= 2048, FreeBSD <= 65535, Linux 2.6.22-- <= 131072, Linux 2.6.23++ unlimited"
-msgstr "boostがRRDtoolに更新コマンドを送るとき、それはオペレーティングシステムの最大引数長を超えてはならない。これはオペレーティングシステムとカーネルレベルによって異なります。例：Windows 2000 &lt;= 2048、FreeBSD &lt;= 65535、Linux 2.6.22-- &lt;= 131072、Linux 2.6.23 ++無制限"
+msgstr "boostがRRDtoolに更新コマンドを送るとき、それはオペレーティングシステムの最大引数長を超えてはならない。これはオペレーティングシステムとカーネルレベルによって異なります。例：Windows 2000 <= 2048、FreeBSD <= 65535、Linux 2.6.22-- <= 131072、Linux 2.6.23 ++無制限"
+
 
 #: include/global_settings.php
 msgid "Memory Limit for Boost and Poller"
@@ -11371,7 +11391,8 @@ msgstr "交換方法"
 
 #: include/global_settings.php
 msgid "There are three replacement methods.  The first method replaces the spike with the average of the data source in question.  The second method replaces the spike with a 'NaN'.  The last replaces the spike with the last known good value found."
-msgstr "交換方法は3つあります。最初の方法では、スパイクを問題のデータソースの平均に置き換えます。 2番目の方法は、スパイクを &#39;NaN&#39;に置き換えます。最後はスパイクを最後に見つかった既知の良好な値で置き換えます。"
+msgstr "交換方法は3つあります。最初の方法では、スパイクを問題のデータソースの平均に置き換えます。 2番目の方法は、スパイクを 'NaN'に置き換えます。最後はスパイクを最後に見つかった既知の良好な値で置き換えます。"
+
 
 #: include/global_settings.php lib/html.php
 msgid "Average"
@@ -11379,7 +11400,8 @@ msgstr "平均"
 
 #: include/global_settings.php lib/html.php
 msgid "NaN's"
-msgstr "NaN&#39;s"
+msgstr "NaN's"
+
 
 #: include/global_settings.php lib/html.php
 msgid "Last Known Good"
@@ -11467,7 +11489,8 @@ msgstr "基準時間"
 
 #: include/global_settings.php
 msgid "The Base Time for Spike removal to occur.  For example, if you use '12:00am' and you choose once per day, the batch removal would begin at approximately midnight every day."
-msgstr "スパイク除去が発生する基準時間。たとえば、 &#39;12：00am&#39;を使用していて1日に1回選択した場合、バッチの削除は毎日およそ午前0時に開始されます。"
+msgstr "スパイク除去が発生する基準時間。たとえば、 '12：00am'を使用していて1日に1回選択した場合、バッチの削除は毎日およそ午前0時に開始されます。"
+
 
 #: include/global_settings.php
 msgid "Graph Templates to Spike Kill"
@@ -12565,11 +12588,13 @@ msgstr "インデックスの数が見つかりました: %s"
 
 #: lib/data_query.php
 msgid "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' not supported"
-msgstr "XMLファイルに&lt;arg_num_indexes&gt;がありません、 &#39;Index Count Changed&#39;はサポートされていません"
+msgstr "XMLファイルに&lt;arg_num_indexes&gt;がありません、 'Index Count Changed'はサポートされていません"
+
 
 #: lib/data_query.php
 msgid "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting arg_index entries"
-msgstr "XMLファイルに&lt;arg_num_indexes&gt;がありません、 &#39;Index Count Changed&#39;はarg_indexエントリーをカウントすることによってエミュレート"
+msgstr "XMLファイルに&lt;arg_num_indexes&gt;がありません、 'Index Count Changed'はarg_indexエントリーをカウントすることによってエミュレート"
+
 
 #: lib/data_query.php
 msgid "ERROR: Data Query returned no indexes."
@@ -12582,7 +12607,8 @@ msgstr "インデックス'%s'のリストのスクリプトを実行してい�
 
 #: lib/data_query.php
 msgid "Click to show Data Query output for 'index'"
-msgstr "クリックして &#39;index&#39;のデータクエリ出力を表示する"
+msgstr "クリックして 'index'のデータクエリ出力を表示する"
+
 
 #: lib/data_query.php
 #, php-format
@@ -12653,7 +12679,8 @@ msgstr "インデックス数@'%s'のSNMP GETを実行していますインデ�
 
 #: lib/data_query.php
 msgid "&lt;oid_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting oid_index entries"
-msgstr "XMLファイルに&lt;oid_num_indexes&gt;がありません、 &#39;Index Count Changed&#39;はoid_indexエントリをカウントすることによってエミュレートされました"
+msgstr "XMLファイルに&lt;oid_num_indexes&gt;がありません、 'Index Count Changed'はoid_indexエントリをカウントすることによってエミュレートされました"
+
 
 #: lib/data_query.php
 #, php-format
@@ -13735,7 +13762,8 @@ msgstr "使用するフォーマットファイル"
 
 #: lib/html_reports.php
 msgid "Choose the custom html wrapper and CSS file to use.  This file contains both html and CSS to wrap around your report.  If it contains more than simply CSS, you need to place a special <REPORT> tag inside of the file.  This format tag will be replaced by the report content.  These files are located in the 'formats' directory."
-msgstr "使用するカスタムHTMLラッパーとCSSファイルを選択します。このファイルには、レポートをまとめるためのHTMLとCSSの両方が含まれています。それが単なるCSS以上のものを含んでいるなら、特別なものを置く必要があります<REPORT>ファイル内のタグ。このフォーマットタグはレポートの内容に置き換えられます。これらのファイルは &#39;format&#39;ディレクトリにあります。"
+msgstr "使用するカスタムHTMLラッパーとCSSファイルを選択します。このファイルには、レポートをまとめるためのHTMLとCSSの両方が含まれています。それが単なるCSS以上のものを含んでいるなら、特別なものを置く必要があります<REPORT>ファイル内のタグ。このフォーマットタグはレポートの内容に置き換えられます。これらのファイルは 'format'ディレクトリにあります。"
+
 
 #: lib/html_reports.php
 msgid "Default Text Font Size"
@@ -13807,7 +13835,8 @@ msgstr "上記の特定のMailtimeに対するレポート頻度を定義しま�
 
 #: lib/html_reports.php
 msgid "e.g. 'Week(s)' represents a weekly Reporting Interval."
-msgstr "例えば、 &#39;Week（s）&#39;は毎週の報告間隔を表します。"
+msgstr "例えば、 'Week（s）'は毎週の報告間隔を表します。"
+
 
 #: lib/html_reports.php
 msgid "Interval Frequency"
@@ -13819,7 +13848,8 @@ msgstr "上記のレポート間隔のタイムスパンに基づいて、その
 
 #: lib/html_reports.php
 msgid "e.g. If the Report Interval is 'Month(s)', then '2' indicates Every '2 Month(s) from the next Mailtime.' Lastly, if using the Month(s) Report Intervals, the 'Day of Week' and the 'Day of Month' are both calculated based upon the Mailtime you specify above."
-msgstr "たとえば、レポート間隔が「月」の場合、「2」は「次のメールタイムから2ヶ月ごと」を示します。最後に、月のレポート間隔を使用している場合、 &#39;Day of Week&#39;と &#39;Day of Month&#39;はどちらも上記で指定したMailtimeに基づいて計算されます。"
+msgstr "たとえば、レポート間隔が「月」の場合、「2」は「次のメールタイムから2ヶ月ごと」を示します。最後に、月のレポート間隔を使用している場合、 'Day of Week'と 'Day of Month'はどちらも上記で指定したMailtimeに基づいて計算されます。"
+
 
 #: lib/html_reports.php
 msgid "Email Sender/Receiver Details"
@@ -14476,11 +14506,13 @@ msgstr "Cacti %sを0.6.xデータベースにインストールしようとし�
 
 #: lib/installer.php
 msgid "To be able continue, you <b>MUST</b> create a new database, import \"cacti.sql\" into it:"
-msgstr "続行するには、新しいデータベースを作成する<b>必要があり</b>ます。その中に &quot;cacti.sql&quot;をインポートしてください。:"
+msgstr "続行するには、新しいデータベースを作成する<b>必要があり</b>ます。その中に \"cacti.sql\"をインポートしてください。:"
+
 
 #: lib/installer.php
 msgid "You <b>MUST</b> then update \"include/config.php\" to point to the new database."
-msgstr "新しいデータベースを指すように &quot;include / config.php&quot;を更新し<b>なければなりません</b> 。"
+msgstr "新しいデータベースを指すように \"include / config.php\"を更新し<b>なければなりません</b> 。"
+
 
 #: lib/installer.php
 msgid "NOTE: Your existing data will not be modified, nor will it or any history be available to the new install"
@@ -14488,7 +14520,8 @@ msgstr "注：既存のデータは変更されません。また、新しいイ
 
 #: lib/installer.php
 msgid "You have created a new database, but have not yet imported the 'cacti.sql' file. At the command line, execute the following to continue:"
-msgstr "新しいデータベースを作成しましたが、 &#39;cacti.sql&#39;ファイルをまだインポートしていません。コマンドラインで次のコマンドを実行して続行します。:"
+msgstr "新しいデータベースを作成しましたが、 'cacti.sql'ファイルをまだインポートしていません。コマンドラインで次のコマンドを実行して続行します。:"
+
 
 #: lib/installer.php
 msgid "This error may also be generated if the cacti database user does not have correct permissions on the Cacti database. Please ensure that the Cacti database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX on the Cacti database."
@@ -14695,7 +14728,8 @@ msgstr "MySQL TimeZoneデータベースにデータが入力されていませ�
 
 #: lib/installer.php
 msgid "Your Cacti database login account does not have access to the MySQL TimeZone database.  Please provide the Cacti database account \"select\" access to the \"time_zone_name\" table in the \"mysql\" database, and populate MySQL's TimeZone information before proceeding."
-msgstr "Cactiデータベースのログインアカウントは、MySQL TimeZoneデータベースにアクセスできません。 &quot;mysql&quot;データベースの &quot;time_zone_name&quot;テーブルへのCactiデータベースアカウントの &quot;select&quot;アクセスを提供し、先に進む前にMySQLのTimeZone情報を入力してください。"
+msgstr "Cactiデータベースのログインアカウントは、MySQL TimeZoneデータベースにアクセスできません。 \"mysql\"データベースの \"time_zone_name\"テーブルへのCactiデータベースアカウントの \"select\"アクセスを提供し、先に進む前にMySQLのTimeZone情報を入力してください。"
+
 
 #: lib/installer.php
 msgid "Your Cacti database account has access to the MySQL TimeZone database and that database is populated with global TimeZone information."
@@ -14769,7 +14803,8 @@ msgstr "リモートポーラーは、プライマリサイトにすぐにアク
 
 #: lib/installer.php
 msgid "The following information has been determined from Cacti's configuration file. If it is not correct, please edit \"include/config.php\" before continuing."
-msgstr "次の情報はCactiの設定ファイルから決定されました。正しくない場合は、続行する前に &quot;include / config.php&quot;を編集してください。"
+msgstr "次の情報はCactiの設定ファイルから決定されました。正しくない場合は、続行する前に \"include / config.php\"を編集してください。"
+
 
 #: lib/installer.php
 msgid "Local Database Connection Information"
@@ -14862,7 +14897,8 @@ msgstr "ディレクトリ許可チェック"
 
 #: lib/installer.php
 msgid "Please ensure the directory permissions below are correct before proceeding.  During the install, these directories need to be owned by the Web Server user.  These permission changes are required to allow the Installer to install Device Template packages which include XML and script files that will be placed in these directories.  If you choose not to install the packages, there is an 'install_package.php' cli script that can be used from the command line after the install is complete."
-msgstr "先に進む前に、以下のディレクトリのアクセス権が正しいことを確認してください。インストール中、これらのディレクトリはWeb Serverユーザーが所有する必要があります。これらの権限の変更は、これらのディレクトリに配置されるXMLおよびスクリプトファイルを含むデバイステンプレートパッケージをインストーラがインストールすることを許可するために必要です。パッケージをインストールしないことを選択した場合、インストール完了後にコマンドラインから使用できる &#39;install_package.php&#39; cliスクリプトがあります。"
+msgstr "先に進む前に、以下のディレクトリのアクセス権が正しいことを確認してください。インストール中、これらのディレクトリはWeb Serverユーザーが所有する必要があります。これらの権限の変更は、これらのディレクトリに配置されるXMLおよびスクリプトファイルを含むデバイステンプレートパッケージをインストーラがインストールすることを許可するために必要です。パッケージをインストールしないことを選択した場合、インストール完了後にコマンドラインから使用できる 'install_package.php' cliスクリプトがあります。"
+
 
 #: lib/installer.php
 msgid "After the install is complete, you can make some of these directories read only to increase security."
@@ -15073,7 +15109,8 @@ msgstr "サーバーの照合順序が完全にUTF8に準拠していないよ�
 
 #: lib/installer.php
 msgid "Under the [mysqld] section, locate the entries named 'character-set-server' and 'collation-server' and set them as follows:"
-msgstr "[mysqld]セクションの下で、 &#39;character-set-server&#39;および &#39;collation-server&#39;という名前のエントリを見つけて、次のように設定します。:"
+msgstr "[mysqld]セクションの下で、 'character-set-server'および 'collation-server'という名前のエントリを見つけて、次のように設定します。:"
+
 
 #: lib/installer.php
 msgid "Database Collation"
@@ -16526,7 +16563,8 @@ msgstr "リモートポーリング機能を使用すると、大量のデータ
 #: lib/utility.php
 #, php-format
 msgid "If using the Cacti Performance Booster and choosing a memory storage engine, you have to be careful to flush your Performance Booster buffer before the system runs out of memory table space.  This is done two ways, first reducing the size of your output column to just the right size.  This column is in the tables poller_output, and poller_output_boost.  The second thing you can do is allocate more memory to memory tables.  We have arbitrarily chosen a recommended value of 10%% of system memory, but if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation or choose a different storage engine.  You may see the expected consumption of the Performance Booster tables under Console -> System Utilities -> View Boost Status."
-msgstr "Cacti Performance Boosterを使用していてメモリストレージエンジンを選択している場合は、システムがメモリテーブルスペースを使い果たす前にPerformance Boosterバッファをフラッシュするように注意する必要があります。これは2つの方法で行われます。最初に、出力列のサイズを正しいサイズに縮小します。この列は、テーブルpoller_output、およびpoller_output_boostにあります。 2番目にできることは、メモリテーブルにより多くのメモリを割り当てることです。システムメモリの10 %%という推奨値を任意に選択しましたが、SSDディスクドライブを使用している場合、またはより小さなシステムを使用している場合は、この推奨を無視するか別のストレージエンジンを選択してください。パフォーマンスブースターテーブルの予想消費量は、[コンソール]  - &gt; [システムユーティリティ]  - &gt; [ブーストステータスの表示]で確認できます。"
+msgstr "Cacti Performance Boosterを使用していてメモリストレージエンジンを選択している場合は、システムがメモリテーブルスペースを使い果たす前にPerformance Boosterバッファをフラッシュするように注意する必要があります。これは2つの方法で行われます。最初に、出力列のサイズを正しいサイズに縮小します。この列は、テーブルpoller_output、およびpoller_output_boostにあります。 2番目にできることは、メモリテーブルにより多くのメモリを割り当てることです。システムメモリの10 %%という推奨値を任意に選択しましたが、SSDディスクドライブを使用している場合、またはより小さなシステムを使用している場合は、この推奨を無視するか別のストレージエンジンを選択してください。パフォーマンスブースターテーブルの予想消費量は、[コンソール]  - > [システムユーティリティ]  - > [ブーストステータスの表示]で確認できます。"
+
 
 #: lib/utility.php
 msgid "When executing subqueries, having a larger temporary table size, keep those temporary tables in memory."
@@ -16805,7 +16843,8 @@ msgstr "下記のWeb URL"
 
 #: links.php
 msgid "The file that contains the content for this page. This file needs to be in the Cacti 'include/content/' directory."
-msgstr "このページのコンテンツを含むファイル。このファイルはCactiの &#39;include / content /&#39;ディレクトリにある必要があります。"
+msgstr "このページのコンテンツを含むファイル。このファイルはCactiの 'include / content /'ディレクトリにある必要があります。"
+
 
 #: links.php
 msgid "Web URL Location"
@@ -18965,7 +19004,8 @@ msgstr "CactiがLDAPサーバーに対して認証を試行するモード。<bl
 
 #: user_domains.php
 msgid "Search base for searching the LDAP directory, such as <i>\"dc=win2kdomain,dc=local\"</i> or <i>\"ou=people,dc=domain,dc=local\"</i>."
-msgstr "<i>&quot;dc = win2kdomain、dc = local&quot;</i>や<i>&quot;ou = people、dc = domain、dc = local&quot;</i>など、LDAPディレクトリを検索するための検索ベース。"
+msgstr "<i>\"dc = win2kdomain、dc = local\"</i>や<i>\"ou = people、dc = domain、dc = local\"</i>など、LDAPディレクトリを検索するための検索ベース。"
+
 
 #: user_domains.php
 msgid "Search filter to use to locate the user in the LDAP directory, such as for windows: <i>\"(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))\"</i> or for OpenLDAP: <i>\"(&(objectClass=account)(uid=&lt;username&gt))\"</i>.  \"&lt;username&gt\" is replaced with the username that was supplied at the login prompt."

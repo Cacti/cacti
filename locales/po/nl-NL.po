@@ -4172,7 +4172,8 @@ msgstr "%d seconden over."
 
 #: graph_realtime.php
 msgid " seconds left."
-msgstr " %d seconden over."
+msgstr " seconden over."
+
 
 #: graph_templates.php
 msgid "Change Settings"
@@ -7911,7 +7912,8 @@ msgstr "De naam van dit data template."
 
 #: include/global_form.php
 msgid "Choose a name for this data source.  It can include replacement variables such as |host_description| or |query_fieldName|.  For a complete list of supported replacement tags, please see the Cacti documentation."
-msgstr "Kies een naam voor deze data bron. Het kan variabelen bevatten zoals |host_description| of | query_fieldName|. Voor een complete lijst van ondersteunde variabelen, bekijk alstublieft de Cacti documentatie."
+msgstr "Kies een naam voor deze data bron. Het kan variabelen bevatten zoals |host_description| of |query_fieldName|. Voor een complete lijst van ondersteunde variabelen, bekijk alstublieft de Cacti documentatie."
+
 
 #: include/global_form.php
 msgid "Data Source Path"
@@ -8007,7 +8009,8 @@ msgstr "Titel (--title)"
 
 #: include/global_form.php
 msgid "The name that is printed on the graph.  It can include replacement variables such as |host_description| or |query_fieldName|.  For a complete list of supported replacement tags, please see the Cacti documentation."
-msgstr "De naam die wordt getoond in de grafiek. Het kan variabelen bevatten zoals |host_description| of | query_fieldName|. Voor een complete lijst van ondersteunde variabelen, bekijk alstublieft de Cacti documentatie."
+msgstr "De naam die wordt getoond in de grafiek. Het kan variabelen bevatten zoals |host_description| of |query_fieldName|. Voor een complete lijst van ondersteunde variabelen, bekijk alstublieft de Cacti documentatie."
+
 
 #: include/global_form.php
 msgid "Vertical Label (--vertical-label)"
@@ -9780,7 +9783,8 @@ msgstr "Ping type"
 
 #: include/global_settings.php
 msgid "Default Ping type for all new Devices.</i>"
-msgstr "De standaard ping methode voor alle nieuwe apparaten.</li>"
+msgstr "De standaard ping methode voor alle nieuwe apparaten.</i>"
+
 
 #: include/global_settings.php
 msgid "Default Ping Port for all new Devices.  With TCP, Cacti will attempt to Syn the port.  With UDP, Cacti requires either a successful connection, or a 'port not reachable' error to determine if the Device is up or not."

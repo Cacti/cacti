@@ -84,7 +84,7 @@ $catalogue = $path2catalogue;
 $path2timepicker  = '';
 $path2calendar    = '';
 $path2ms          = '';
-$path2msfiler     = '';
+$path2msfilter    = '';
 $path2colorpicker = '';
 
 if ($cacti_locale != '') {
@@ -644,10 +644,11 @@ function load_fallback_procedure(){
  *
  * @param string|null $text The text string to be translated. If null, an empty string is used.
  * @param string $domain The domain to use for translation. Defaults to 'cacti'.
+ * @param bool $unescape Whether to unescape %% to % before returning.
  *
  * @return string The translated text, or the original text if translation is not available.
  */
-function __gettext($text, $domain = 'cacti') {
+function __gettext($text, $domain = 'cacti', $unescape = true) {
 	global $i18n;
 
 	// Assume translation fails or is not defined
@@ -670,7 +671,7 @@ function __gettext($text, $domain = 'cacti') {
 		i18n_text_debug("__gettext($domain):\n	Original: $text\n	Translated: $translated", FILE_APPEND);
 	}
 
-	return __uf($translated);
+	return $unescape ? __uf($translated) : $translated;
 }
 
 /**
@@ -732,15 +733,16 @@ function __() {
 	/* only the last argument is allowed to initiate
 	   the use of a different textdomain */
 
-	/* get gettext string */
+	/* get gettext string without unescaping %% before sprintf() */
 	if (isset($i18n[(string) $args[$num - 1]]) && $args[$num - 1] != 'cacti') {
-		$args[0] = __gettext($args[0], $args[$num - 1]);
+		$args[0] = __gettext($args[0], $args[$num - 1], false);
 	} else {
-		$args[0] = __gettext($args[0]);
+		$args[0] = __gettext($args[0], 'cacti', false);
 	}
 
-	$regex_num = '%([-]{0,1}[0-9]+([.][0-9]+){0,1}){0,1}';
-	$regex_str = '%([-]{0,1}[0-9]+){0,1}';
+	$regex_pos = '(?:[0-9]+\$)?';
+	$regex_num = '%' . $regex_pos . '([-+]{0,1}[0-9]*([.][0-9]+){0,1}){0,1}';
+	$regex_str = '%' . $regex_pos . '([-]{0,1}[0-9]*([.][0-9]+){0,1}){0,1}';
 
 	$array_str = [
 		'b', // Binary
@@ -767,19 +769,18 @@ function __() {
 	}
 
 	$valid_args = array(
-		'%%', // Escaped percentage (literal)
-		'%c', // Single Character
+		'%' . $regex_pos . 'c', // Single Character
 		$regex_num . '[' . implode('', $array_num) . ']',
 		$regex_str . '[' . implode('', $array_str) . ']',
 	);
 
 	$valid_regexp = '/(' . implode(')|(', $valid_args) . ')/';
 
-	if (preg_match($valid_regexp, $args[0])) {
+	if (preg_match($valid_regexp, str_replace('%%', '', $args[0]))) {
 		/* process return string against input arguments */
-		return __uf(call_user_func_array('sprintf', $args));
+		return call_user_func_array('sprintf', $args);
 	} else {
-		return $args[0];
+		return __uf($args[0]);
 	}
 }
 
@@ -835,18 +836,31 @@ function __x() {
 
 		if ($num == 1) {
 			/* pure text string without placeholders and a change of the default textdomain */
-			$msgstr = __gettext($args[0]);
+			$msgstr = __gettext($args[0], 'cacti', false);
 		} else {
-			/* get gettext string */
-			$msgstr = isset($i18n[ (string) $args[$num-1]]) && $args[$num-1] != 'cacti' ?
-			__gettext($args[0], $args[$num-1]) : __gettext($args[0]);
+			/* get gettext string without unescaping %% before sprintf() */
+			$msgstr = isset($i18n[(string) $args[$num-1]]) && $args[$num-1] != 'cacti' ?
+			__gettext($args[0], $args[$num-1], false) : __gettext($args[0], 'cacti', false);
 		}
 
 		/* use the raw message id if language catalogue does not contain a context specific message string */
-		$args[0] = ( $msgstr == $xmsgid ) ? $msgid : $msgstr;
+		$args[0] = ($msgstr == $xmsgid) ? $msgid : $msgstr;
 
-		/* process return string against input arguments */
-		return __uf(call_user_func_array('sprintf', $args));
+		if ($num == 1) {
+			return __uf($args[0]);
+		}
+
+		$regex_pos    = '(?:[0-9]+\$)?';
+		$regex_num    = '%' . $regex_pos . '([-+]{0,1}[0-9]*([.][0-9]+){0,1}){0,1}';
+		$regex_str    = '%' . $regex_pos . '([-]{0,1}[0-9]*([.][0-9]+){0,1}){0,1}';
+		$valid_regexp = '/(%' . $regex_pos . 'c)|(' . $regex_num . '[deEfFgGhH])|(' . $regex_str . '[bosuxX])/';
+
+		if (preg_match($valid_regexp, str_replace('%%', '', $args[0]))) {
+			/* process return string against input arguments */
+			return call_user_func_array('sprintf', $args);
+		} else {
+			return __uf($args[0]);
+		}
 	}
 }
 
@@ -1072,27 +1086,53 @@ function number_format_i18n($number, $decimals = null, $baseu = 1024) {
 		return '0';
 	}
 
-	$country = strtoupper($cacti_country);
+	$country = strtoupper((string) $cacti_country);
+	$suffix  = '';
+
+	if ($decimals == -1 || $decimals == null) {
+		$fmt_decimals = 0;
+	} else {
+		$fmt_decimals = (int) $decimals;
+
+		if ($baseu > 0) {
+			if ($number >= pow($baseu, 4)) {
+				$number /= pow($baseu, 4);
+				$suffix = __(' T');
+			} elseif ($number >= pow($baseu, 3)) {
+				$number /= pow($baseu, 3);
+				$suffix = __(' G');
+			} elseif ($number >= pow($baseu, 2)) {
+				$number /= pow($baseu, 2);
+				$suffix = __(' M');
+			} elseif ($number >= $baseu) {
+				$number /= $baseu;
+				$suffix = __(' K');
+			}
+		}
+	}
 
 	if (function_exists('numfmt_create')) {
-		$fmt_key = $cacti_locale . '_'. $country;
-		$fmt = numfmt_create($fmt_key, NumberFormatter::DECIMAL);
+		$locale_key = (string) ($cacti_locale ?? '');
 
-		if ($decimals == null) {
-			$decimals = 0;
+		if ($locale_key !== '' && strpos($locale_key, '-') === false && strpos($locale_key, '_') === false && $country !== '') {
+			$fmt_key = $locale_key . '_' . $country;
+		} else {
+			$fmt_key = str_replace('-', '_', $locale_key);
 		}
 
+		$fmt = numfmt_create($fmt_key, NumberFormatter::DECIMAL);
+
 		if ($fmt !== false && $fmt !== null) {
-			numfmt_set_attribute($fmt, NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
+			numfmt_set_attribute($fmt, NumberFormatter::MAX_FRACTION_DIGITS, $fmt_decimals);
 
 			if ($number !== null) {
-				return numfmt_format($fmt, $number);
+				return numfmt_format($fmt, (float) $number) . $suffix;
 			}
 		}
 		cacti_log('DEBUG: Number format \'' . $fmt_key .'\' was unavailable, using older methods',false,'i18n',POLLER_VERBOSITY_HIGH);
 	}
 
-	$origlocales = explode(';', setlocale(LC_ALL, 0));
+	$origlocales = explode(';', (string) setlocale(LC_ALL, '0'));
 	setlocale(LC_ALL, $cacti_locale);
 	$locale = localeconv();
 
@@ -1105,26 +1145,16 @@ function number_format_i18n($number, $decimals = null, $baseu = 1024) {
 	}
 
 	if ($number == null) {
-		$number = 0;
-	} elseif ($decimals == -1 || $decimals == null) {
-		$number = number_format($number, 0, $locale['decimal_point'], $locale['thousands_sep']);
-	} elseif ($number>=pow($baseu, 4)) {
-		$number = number_format($number/pow($baseu, 4), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' T');
-	} elseif ($number>=pow($baseu, 3)) {
-		$number = number_format($number/pow($baseu, 3), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' G');
-	} elseif ($number>=pow($baseu, 2)) {
-		$number = number_format($number/pow($baseu, 2), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' M');
-	} elseif ($number>=$baseu) {
-		$number = number_format($number/$baseu, $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' K');
+		$number = '0';
 	} else {
-		$number = number_format($number, $decimals, $locale['decimal_point'], $locale['thousands_sep']);
+		$number = number_format((float) $number, $fmt_decimals, $locale['decimal_point'], $locale['thousands_sep']) . $suffix;
 	}
 
 	foreach ($origlocales as $locale_setting) {
 		if (strpos($locale_setting, '=') !== false) {
 			[$category, $locale] = explode('=', $locale_setting);
-  		} else {
-			$category = LC_ALL;
+		} else {
+			$category = 'LC_ALL';
 			$locale   = $locale_setting;
 		}
 
@@ -1188,7 +1218,28 @@ function i18n_debug($text, $mode = FILE_APPEND, $eol = PHP_EOL) {
 function i18n_text_debug($text, $mode = FILE_APPEND, $eol = PHP_EOL) {
 	global $config;
 
-	if (!empty($config['i18n_text_log']) && is_writeable($config['i18n_log'])) {
+	if (!empty($config['i18n_text_log']) && is_writeable($config['i18n_text_log'])) {
 		file_put_contents($config['i18n_text_log'], $text . $eol, $mode);
 	}
+}
+
+/**
+ * Returns the HTML text direction ('ltr' or 'rtl') for the given or active locale.
+ *
+ * @param string|null $locale Optional locale code (defaults to CACTI_LOCALE).
+ *
+ * @return string 'rtl' for right-to-left locales, 'ltr' otherwise.
+ */
+function get_locale_direction($locale = null) {
+	if ($locale === null || $locale === '') {
+		$locale = defined('CACTI_LOCALE') ? CACTI_LOCALE : 'en-US';
+	}
+
+	$locales = get_list_of_locales();
+
+	if (isset($locales[$locale]['direction']) && $locales[$locale]['direction'] === 'rtl') {
+		return 'rtl';
+	}
+
+	return 'ltr';
 }

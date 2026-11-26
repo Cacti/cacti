@@ -1294,8 +1294,8 @@ function device_javascript() {
 
 		if ($('#snmp_version').val() == '0') {
 			methods = [
-				{ value: '0', text: '<?php print __('None');?>' },
-				{ value: '3', text: '<?php print __('Ping');?>' }
+				{ value: '0', text: <?php print json_encode(__('None'));?> },
+				{ value: '3', text: <?php print json_encode(__('Ping'));?> }
 			];
 
 			if ($('#availability_method').val() != '3' && $('#availability_method').val() != '0') {
@@ -1305,13 +1305,13 @@ function device_javascript() {
 			$('#availability_method').replaceOptions(methods, $('#availability_method').val());
 		} else {
 			methods = [
-				{ value: '0', text: '<?php print __('None');?>' },
-				{ value: '1', text: '<?php print __('Ping and SNMP Uptime');?>' },
-				{ value: '2', text: '<?php print __('SNMP Uptime');?>' },
-				{ value: '3', text: '<?php print __('Ping');?>' },
-				{ value: '4', text: '<?php print __('Ping or SNMP Uptime');?>' },
-				{ value: '5', text: '<?php print __('SNMP Desc');?>' },
-				{ value: '6', text: '<?php print __('SNMP GetNext');?>' }
+				{ value: '0', text: <?php print json_encode(__('None'));?> },
+				{ value: '1', text: <?php print json_encode(__('Ping and SNMP Uptime'));?> },
+				{ value: '2', text: <?php print json_encode(__('SNMP Uptime'));?> },
+				{ value: '3', text: <?php print json_encode(__('Ping'));?> },
+				{ value: '4', text: <?php print json_encode(__('Ping or SNMP Uptime'));?> },
+				{ value: '5', text: <?php print json_encode(__('SNMP Desc'));?> },
+				{ value: '6', text: <?php print json_encode(__('SNMP GetNext'));?> }
 			];
 
 			$('#availability_method').replaceOptions(methods, $('#availability_method').val());
@@ -1384,7 +1384,7 @@ function device_javascript() {
 					applySkin();
 
 					$('#cdialog').dialog({
-						title: '<?php print __('Delete Item from Device');?>',
+						title: <?php print json_encode(__('Delete Item from Device'));?>,
 						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
 						minHeight: 80,
 						minWidth: 500

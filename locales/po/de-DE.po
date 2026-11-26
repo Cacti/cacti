@@ -4186,7 +4186,8 @@ msgstr "%d Sekunden übrig."
 
 #: graph_realtime.php
 msgid " seconds left."
-msgstr " %d Sekunden übrig."
+msgstr " Sekunden übrig."
+
 
 #: graph_templates.php
 msgid "Change Settings"
@@ -6191,7 +6192,8 @@ msgstr "Täglich"
 
 #: include/global_arrays.php
 msgid "1 Thread"
-msgstr "%d Thread"
+msgstr "1 Thread"
+
 
 #: include/global_arrays.php
 msgid "Builtin Authentication"
@@ -8190,7 +8192,8 @@ msgstr "Kein Gridfit (--no-gridfit)"
 
 #: include/global_form.php
 msgid "In order to avoid anti-aliasing blurring effects RRDtool snaps points to device resolution pixels, this results in a crisper appearance. If this is not to your liking, you can use this switch to turn this behavior off.<br><strong>Note: </strong>Gridfitting is turned off for PDF, EPS, SVG output by default."
-msgstr "Um Verwacklungsunschärfe zu vermeiden, fängt RRDtool Punkte an Pixel mit Geräteauflösung, was zu einem klareren Erscheinungsbild führt. Wenn dies nicht nach Ihrem Geschmack ist, können Sie mit diesem Schalter dieses Verhalten deaktivieren. <br><stark>Hinweis: </stark>Rasterfitting ist für PDF-, EPS- und SVG-Ausgaben standardmäßig deaktiviert."
+msgstr "Um Verwacklungsunschärfe zu vermeiden, fängt RRDtool Punkte an Pixel mit Geräteauflösung, was zu einem klareren Erscheinungsbild führt. Wenn dies nicht nach Ihrem Geschmack ist, können Sie mit diesem Schalter dieses Verhalten deaktivieren. <br><strong>Hinweis: </strong>Rasterfitting ist für PDF-, EPS- und SVG-Ausgaben standardmäßig deaktiviert."
+
 
 #: include/global_form.php
 msgid "Alternative Y Grid (--alt-y-grid)"
@@ -13037,7 +13040,8 @@ msgstr "%s verbinden"
 
 #: lib/functions.php
 msgid "Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting."
-msgstr "Mailer-Fehler: Nein <b>TO</b>Adresse gesetzt!<br>Wenn Sie den Link <i>Test Mail</i> verwenden, setzen Sie bitte die Einstellung <b>Alarmmail</b>."
+msgstr "Mailer-Fehler: Nein TOAdresse gesetzt!<br>Wenn Sie den Link <i>Test Mail</i> verwenden, setzen Sie bitte die Einstellung <b>Alarmmail</b>."
+
 
 #: lib/functions.php
 #, php-format
@@ -13072,7 +13076,8 @@ msgstr "Methode"
 
 #: lib/functions.php
 msgid "Checking Configuration...<br>"
-msgstr "Konfiguration prüfen....<br><br>"
+msgstr "Konfiguration prüfen...<br>"
+
 
 #: lib/functions.php
 msgid "PHP's Mailer Class"

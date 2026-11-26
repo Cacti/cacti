@@ -1196,7 +1196,7 @@ case 'list':
 
 	function addReport() {
 		$('#addGraphs').dialog({
-			title: '<?php print __('Add Selected Graphs to Report');?>',
+			title: <?php print json_encode(__('Add Selected Graphs to Report'));?>,
 			minHeight: 80,
 			minWidth: 400,
 			modal: true,
@@ -1204,13 +1204,13 @@ case 'list':
 			draggable: false,
 			buttons: [
 				{
-					text: '<?php print __('Cancel');?>',
+					text: <?php print json_encode(__('Cancel'));?>,
 					click: function() {
 						$(this).dialog('close');
 					}
 				},
 				{
-					text: '<?php print __('Ok');?>',
+					text: <?php print json_encode(__('Ok'));?>,
 					click: function() {
 						graphList = $('#graph_list').val();
 						$('input[id^=chk_]').each(function(data) {

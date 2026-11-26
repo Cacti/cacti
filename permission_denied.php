@@ -41,7 +41,7 @@ if (api_plugin_hook_function('custom_denied', OPER_MODE_NATIVE) === OPER_MODE_RE
 raise_ajax_permission_denied();
 
 print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>\n";
-print "<html>\n";
+print "<html lang='" . CACTI_LOCALE . "' dir='" . get_locale_direction() . "'>\n";
 print "<head>\n";
 html_common_header(__('Permission Denied'));
 print "</head>\n";

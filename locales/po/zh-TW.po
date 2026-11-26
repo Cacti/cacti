@@ -189,7 +189,8 @@ msgstr "目前沒有為選定的舊聚合定義聚合模板。"
 #: aggregate_graphs.php
 #, php-format
 msgid "In order to migrate the Aggregate Graphs below to a Template based Aggregate, first create an Aggregate Template for the Graph Template '%s'."
-msgstr "為了將下面的聚合圖遷移到基於模板的聚合，首先為圖形模板&#39;%s&#39;創建聚合模板。"
+msgstr "為了將下面的聚合圖遷移到基於模板的聚合，首先為圖形模板'%s'創建聚合模板。"
+
 
 #: aggregate_graphs.php
 msgid "Please press 'Return' to continue."
@@ -1199,12 +1200,14 @@ msgstr "取消發現"
 #: automation_networks.php
 #, php-format
 msgid "Can Not Restart Discovery for Discovery in Progress for Network '%s'"
-msgstr "無法為網絡&#39;%s&#39;正在進行的發現重新啟動發現"
+msgstr "無法為網絡'%s'正在進行的發現重新啟動發現"
+
 
 #: automation_networks.php
 #, php-format
 msgid "Can Not Perform Discovery for Disabled Network '%s'"
-msgstr "無法為禁用的網絡&#39;%s&#39;執行發現"
+msgstr "無法為禁用的網絡'%s'執行發現"
+
 
 #: automation_networks.php
 #, php-format
@@ -1224,7 +1227,8 @@ msgstr "錯誤：您必須指定月份，月份周和星期幾。禁用網絡%s�
 #: automation_networks.php
 #, php-format
 msgid "ERROR: Network '%s' is Invalid."
-msgstr "錯誤：網絡&#39;%s&#39;無效。"
+msgstr "錯誤：網絡'%s'無效。"
+
 
 #: automation_networks.php
 msgid "Click 'Continue' to delete the following Network(s)."
@@ -5944,7 +5948,8 @@ msgstr "上 -> 下"
 
 #: include/global_arrays.php
 msgid "Bottom -> Up"
-msgstr "底部 - &gt;向上"
+msgstr "底部 - >向上"
+
 
 #: include/global_arrays.php tree.php
 msgid "Numeric"
@@ -7870,7 +7875,8 @@ msgstr "為此數據模板指定的名稱。"
 
 #: include/global_form.php
 msgid "Choose a name for this data source.  It can include replacement variables such as |host_description| or |query_fieldName|.  For a complete list of supported replacement tags, please see the Cacti documentation."
-msgstr "選擇此數據源的名稱。它可以包含替換變量，例如| host_description |或| query_fieldName |。有關支持的替換標籤的完整列表，請參閱Cacti文檔。"
+msgstr "選擇此數據源的名稱。它可以包含替換變量，例如|host_description|或|query_fieldName|。有關支持的替換標籤的完整列表，請參閱Cacti文檔。"
+
 
 #: include/global_form.php
 msgid "Data Source Path"
@@ -7966,7 +7972,8 @@ msgstr "標題 (--title)"
 
 #: include/global_form.php
 msgid "The name that is printed on the graph.  It can include replacement variables such as |host_description| or |query_fieldName|.  For a complete list of supported replacement tags, please see the Cacti documentation."
-msgstr "圖表上打印的名稱。它可以包含替換變量，例如| host_description |或| query_fieldName |。有關支持的替換標籤的完整列表，請參閱Cacti文檔。"
+msgstr "圖表上打印的名稱。它可以包含替換變量，例如|host_description|或|query_fieldName|。有關支持的替換標籤的完整列表，請參閱Cacti文檔。"
+
 
 #: include/global_form.php
 msgid "Vertical Label (--vertical-label)"
@@ -10481,7 +10488,8 @@ msgstr "使用者範本"
 
 #: include/global_settings.php
 msgid "The name of the user that Cacti will use as a template for new Web Basic and LDAP users; is 'guest' by default.  This user account will be disabled from logging in upon being selected."
-msgstr "Cacti將用作新Web Basic和LDAP用戶模板的用戶名;默認為&#39;來賓&#39;。被選中時，將禁止此用戶帳戶登錄。"
+msgstr "Cacti將用作新Web Basic和LDAP用戶模板的用戶名;默認為'來賓'。被選中時，將禁止此用戶帳戶登錄。"
+
 
 #: include/global_settings.php
 msgid "Basic Authentication Settings"
@@ -10774,7 +10782,8 @@ msgstr "搜索過濾器"
 
 #: include/global_settings.php
 msgid "Search filter to use to locate the user in the LDAP directory, such as for windows: <i>'(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))'</i> or for OpenLDAP: <i>'(&(objectClass=account)(uid=&lt;username&gt))'</i>.  '&lt;username&gt' is replaced with the username that was supplied at the login prompt. "
-msgstr "搜索過濾器用於在LDAP目錄中定位用戶，例如對於windows： <i>&#39;（＆（objectclass = user）（objectcategory = user）（userPrincipalName = &lt;username&gt; *））&#39;</i>或OpenLDAP： <i>&#39;（＆（objectClass） = account）（uid = &lt;username&gt;））&#39;</i> 。 &#39;&lt;username&gt;&#39;將替換為登錄提示符下提供的用戶名。 "
+msgstr "搜索過濾器用於在LDAP目錄中定位用戶，例如對於windows： <i>'（＆（objectclass = user）（objectcategory = user）（userPrincipalName = &lt;username&gt; *））'</i>或OpenLDAP： <i>'（＆（objectClass） = account）（uid = &lt;username&gt;））'</i> 。 '&lt;username&gt;'將替換為登錄提示符下提供的用戶名。 "
+
 
 #: include/global_settings.php user_domains.php
 msgid "Search Distinguished Name (DN)"
@@ -11074,7 +11083,8 @@ msgstr "最大參數長度"
 
 #: include/global_settings.php
 msgid "When boost sends update commands to RRDtool, it must not exceed the operating systems Maximum Argument Length.  This varies by operating system and kernel level.  For example: Windows 2000 <= 2048, FreeBSD <= 65535, Linux 2.6.22-- <= 131072, Linux 2.6.23++ unlimited"
-msgstr "當boost向RRDtool發送更新命令時，它不得超過操作系統Maximum Argument Length。這取決於操作系統和內核級別。例如：Windows 2000 &lt;= 2048，FreeBSD &lt;= 65535，Linux 2.6.22-- &lt;= 131072，Linux 2.6.23 ++無限制"
+msgstr "當boost向RRDtool發送更新命令時，它不得超過操作系統Maximum Argument Length。這取決於操作系統和內核級別。例如：Windows 2000 <= 2048，FreeBSD <= 65535，Linux 2.6.22-- <= 131072，Linux 2.6.23 ++無限制"
+
 
 #: include/global_settings.php
 msgid "Memory Limit for Boost and Poller"
@@ -11362,7 +11372,8 @@ msgstr "更換方法"
 
 #: include/global_settings.php
 msgid "There are three replacement methods.  The first method replaces the spike with the average of the data source in question.  The second method replaces the spike with a 'NaN'.  The last replaces the spike with the last known good value found."
-msgstr "有三種替代方法。第一種方法用所討論的數據源的平均值替換峰值。第二種方法用&#39;NaN&#39;替換尖峰。最後一個用最後已知的良好值替換尖峰。"
+msgstr "有三種替代方法。第一種方法用所討論的數據源的平均值替換峰值。第二種方法用'NaN'替換尖峰。最後一個用最後已知的良好值替換尖峰。"
+
 
 #: include/global_settings.php lib/html.php
 msgid "Average"
@@ -11458,7 +11469,8 @@ msgstr "基準時間"
 
 #: include/global_settings.php
 msgid "The Base Time for Spike removal to occur.  For example, if you use '12:00am' and you choose once per day, the batch removal would begin at approximately midnight every day."
-msgstr "發生尖峰移除的基準時間。例如，如果您使用&#39;12：00am&#39;並且您每天選擇一次，則批量刪除將在每天大約午夜開始。"
+msgstr "發生尖峰移除的基準時間。例如，如果您使用'12：00am'並且您每天選擇一次，則批量刪除將在每天大約午夜開始。"
+
 
 #: include/global_settings.php
 msgid "Graph Templates to Spike Kill"
@@ -12514,12 +12526,14 @@ msgstr "新的排序字段已驗證。排序字段將更新。"
 #: lib/data_query.php
 #, php-format
 msgid "Could not find data query XML file at '%s'"
-msgstr "無法在&#39;%s&#39;找到數據查詢XML文件"
+msgstr "無法在'%s'找到數據查詢XML文件"
+
 
 #: lib/data_query.php
 #, php-format
 msgid "Found data query XML file at '%s'"
-msgstr "在&#39;%s&#39;找到數據查詢XML文件"
+msgstr "在'%s'找到數據查詢XML文件"
+
 
 #: lib/data_query.php
 msgid "Error parsing XML file into an array."
@@ -12585,7 +12599,8 @@ msgstr "找到索引：%s"
 #: lib/data_query.php
 #, php-format
 msgid "Click to show Data Query output for field '%s'"
-msgstr "單擊以顯示字段&#39;%s&#39;的數據查詢輸出"
+msgstr "單擊以顯示字段'%s'的數據查詢輸出"
+
 
 #: lib/data_query.php
 #, php-format
@@ -12595,7 +12610,8 @@ msgstr "排序欄位未傳回欄位名稱 %s 的資料，略過"
 #: lib/data_query.php
 #, php-format
 msgid "Executing script query '%s'"
-msgstr "執行腳本查詢&#39;%s&#39"
+msgstr "執行腳本查詢'%s&#39"
+
 
 #: lib/data_query.php
 #, php-format
@@ -12685,7 +12701,8 @@ msgstr "篩選後的索引位於 OID：'%1$s' 值：'%2$s'"
 #: lib/data_query.php
 #, php-format
 msgid "Fixing wrong 'method' field for '%s' since 'rewrite_index' or 'oid_suffix' is defined"
-msgstr "修復&#39;%s&#39;錯誤的&#39;方法&#39;字段，因為&#39;rewrite_index&#39;或&#39;oid_suffix&#39;已定義"
+msgstr "修復'%s'錯誤的'方法'字段，因為'rewrite_index'或'oid_suffix'已定義"
+
 
 #: lib/data_query.php
 #, php-format
@@ -14476,7 +14493,8 @@ msgstr "注意：您的現有數據不會被修改，新安裝也不會修改它
 
 #: lib/installer.php
 msgid "You have created a new database, but have not yet imported the 'cacti.sql' file. At the command line, execute the following to continue:"
-msgstr "您已創建新數據庫，但尚未導入&#39;cacti.sql&#39;文件。在命令行中，執行以下命令以繼續:"
+msgstr "您已創建新數據庫，但尚未導入'cacti.sql'文件。在命令行中，執行以下命令以繼續:"
+
 
 #: lib/installer.php
 msgid "This error may also be generated if the cacti database user does not have correct permissions on the Cacti database. Please ensure that the Cacti database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX on the Cacti database."
@@ -14539,7 +14557,8 @@ msgstr "確保您已閱讀並遵循安裝Cacti所需的步驟，然後再繼續�
 #: lib/installer.php
 #, php-format
 msgid "This process will guide you through the steps for upgrading from version '%s'. "
-msgstr "此過程將指導您完成從版本&#39;%s&#39;升級的步驟。 "
+msgstr "此過程將指導您完成從版本'%s'升級的步驟。 "
+
 
 #: lib/installer.php
 #, php-format
@@ -14893,7 +14912,8 @@ msgstr "如果您的服務器上啟用了SELinux，您可以永久禁用它，�
 #: lib/installer.php
 #, php-format
 msgid "The user '%s' should have MODIFY permission to enable read/write."
-msgstr "用戶&#39;%s&#39;應具有MODIFY權限以啟用讀/寫。"
+msgstr "用戶'%s'應具有MODIFY權限以啟用讀/寫。"
+
 
 #: lib/installer.php
 msgid "An example of how to set folder permissions is shown here, though you may need to adjust this depending on your operating system, user accounts and desired permissions."
@@ -15057,7 +15077,8 @@ msgstr "您的服務器排序規則似乎不完全符合UTF8標準。 "
 
 #: lib/installer.php
 msgid "Under the [mysqld] section, locate the entries named 'character-set-server' and 'collation-server' and set them as follows:"
-msgstr "在[mysqld]部分下，找到名為&#39;character-set-server&#39;和&#39;collation-server&#39;的條目，並按如下所示進行設置:"
+msgstr "在[mysqld]部分下，找到名為'character-set-server'和'collation-server'的條目，並按如下所示進行設置:"
+
 
 #: lib/installer.php
 msgid "Database Collation"
@@ -15631,7 +15652,8 @@ msgstr "外掛"
 #: lib/plugins.php
 #, php-format
 msgid "Requires: Cacti >= %s"
-msgstr "需要：Cacti&gt; =%s"
+msgstr "需要：Cacti> =%s"
+
 
 #: lib/plugins.php
 msgid "Legacy Plugin"
@@ -15701,12 +15723,14 @@ msgstr "已建立報表圖表項目 '<i>%s</i>'"
 #: lib/reports.php
 #, php-format
 msgid "Failed Adding Report Graph Item '<i>%s</i>' Already Exists"
-msgstr "添加報表圖項&#39; <i>%s</i> &#39;失敗已經存在"
+msgstr "添加報表圖項' <i>%s</i> '失敗已經存在"
+
 
 #: lib/reports.php
 #, php-format
 msgid "Skipped Report Graph Item '<i>%s</i>' Already Exists"
-msgstr "已跳過的報告圖表項&#39; <i>%s</i> &#39;已存在"
+msgstr "已跳過的報告圖表項' <i>%s</i> '已存在"
+
 
 #: lib/rrd.php
 #, php-format
@@ -15786,12 +15810,14 @@ msgstr "Cacti RRA ID '%1$s' 的列數不正確。目前的列數為 '%2$s'，但
 #: lib/rrd.php
 #, php-format
 msgid "The RRA '%s' missing in the existing Cacti RRDfile"
-msgstr "RRD文件中缺少RRA&#39;%s&#39"
+msgstr "RRD文件中缺少RRA'%s&#39"
+
 
 #: lib/rrd.php
 #, php-format
 msgid "RRA '%s' missing in Cacti definition"
-msgstr "Cacti定義中缺少RRA&#39;%s&#39"
+msgstr "Cacti定義中缺少RRA'%s&#39"
+
 
 #: lib/rrd.php
 msgid "RRD File Information"
@@ -16489,7 +16515,8 @@ msgstr "使用遠程輪詢功能，大量數據將從主服務器同步到遠程
 #: lib/utility.php
 #, php-format
 msgid "If using the Cacti Performance Booster and choosing a memory storage engine, you have to be careful to flush your Performance Booster buffer before the system runs out of memory table space.  This is done two ways, first reducing the size of your output column to just the right size.  This column is in the tables poller_output, and poller_output_boost.  The second thing you can do is allocate more memory to memory tables.  We have arbitrarily chosen a recommended value of 10%% of system memory, but if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation or choose a different storage engine.  You may see the expected consumption of the Performance Booster tables under Console -> System Utilities -> View Boost Status."
-msgstr "如果使用Cacti Performance Booster並選擇內存存儲引擎，則必須小心在系統內存表空間耗盡之前刷新Performance Booster緩衝區。這有兩種方法，首先將輸出列的大小減小到恰當的大小。此列位於表poller_output和poller_output_boost中。您可以做的第二件事是為內存表分配更多內存。我們已經任意選擇了10 %%系統內存的推薦值，但如果您使用的是SSD磁盤驅動器，或者係統較小，則可以忽略此建議或選擇其他存儲引擎。您可能會在Console  - &gt; System Utilities  - &gt; View Boost Status下看到Performance Booster表的預期消耗。"
+msgstr "如果使用Cacti Performance Booster並選擇內存存儲引擎，則必須小心在系統內存表空間耗盡之前刷新Performance Booster緩衝區。這有兩種方法，首先將輸出列的大小減小到恰當的大小。此列位於表poller_output和poller_output_boost中。您可以做的第二件事是為內存表分配更多內存。我們已經任意選擇了10 %%系統內存的推薦值，但如果您使用的是SSD磁盤驅動器，或者係統較小，則可以忽略此建議或選擇其他存儲引擎。您可能會在Console  - > System Utilities  - > View Boost Status下看到Performance Booster表的預期消耗。"
+
 
 #: lib/utility.php
 msgid "When executing subqueries, having a larger temporary table size, keep those temporary tables in memory."
@@ -17258,7 +17285,8 @@ msgstr "啟用外掛程式"
 #: plugins.php
 #, php-format
 msgid "Plugin directory '%s' is missing setup.php"
-msgstr "插件目錄&#39;%s&#39;缺少setup.php"
+msgstr "插件目錄'%s'缺少setup.php"
+
 
 #: plugins.php
 #, php-format
@@ -18086,7 +18114,8 @@ msgstr "找不到網站"
 #: spikekill.php
 #, php-format
 msgid "FATAL: Spike Kill method '%s' is Invalid"
-msgstr "致命：Spike Kill方法&#39;%s&#39;無效"
+msgstr "致命：Spike Kill方法'%s'無效"
+
 
 #: spikekill.php
 msgid "FATAL: Spike Kill Not Allowed"

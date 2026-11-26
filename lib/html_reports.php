@@ -1437,17 +1437,17 @@ function reports_item_edit() {
 		}
 
 		if (data.host_id) {
-			$('#host_id_input').val('<?php print __('None');?>');
+			$('#host_id_input').val(<?php print json_encode(__('None'));?>);
 			$('#host_id').val(0);
 		}
 
 		if (data.graph_template_id) {
-			$('#graph_template_id_input').val('<?php print __('None');?>');
+			$('#graph_template_id_input').val(<?php print json_encode(__('None'));?>);
 			$('#graph_template_id').val(0);
 		}
 
 		if (data.local_graph_id) {
-			$('#local_graph_id_input').val('<?php print __('None');?>');
+			$('#local_graph_id_input').val(<?php print json_encode(__('None'));?>);
 			$('#local_graph_id').val(0);
 		}
 	}

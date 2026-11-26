@@ -29,7 +29,7 @@ $using_guest_account = false;
 
 if (!isset_request_var('headercontent')) { ?>
 <!DOCTYPE html>
-<html lang='<?php print CACTI_LOCALE;?>'>
+<html lang='<?php print CACTI_LOCALE;?>' dir='<?php print get_locale_direction();?>'>
 <head>
 	<?php html_common_header($page_title);?>
 </head>

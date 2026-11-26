@@ -322,7 +322,7 @@ if ($auth_method != 0) {
 				$title_body = '<p>' . __('There is an Installation or Upgrade in progress.') . '</p><p>' . __('Only Cacti Administrators with Install/Upgrade privilege may login at this time') . '</p>';
 			}
 			print "<!DOCTYPE html>\n";
-			print "<html>\n";
+			print "<html lang='" . CACTI_LOCALE . "' dir='" . get_locale_direction() . "'>\n";
 			print "<head>\n";
 			html_common_header($title_header);
 			print "</head>\n";

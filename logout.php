@@ -66,7 +66,7 @@ if (get_request_var('action') == 'timeout' || get_request_var('action') == 'disa
 	}
 
 	print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>";
-	print "<html>";
+	print "<html lang='" . CACTI_LOCALE . "' dir='" . get_locale_direction() . "'>";
 	print "<head>";
 	html_common_header(__('Logout of Cacti'));
 	print "</head>";

@@ -97,7 +97,8 @@ msgstr "המרה לגרף רגיל"
 
 #: aggregate_graphs.php graphs.php
 msgid "Place Graphs on Report"
-msgstr "מקום גרפים על הדו&quot;ח"
+msgstr "מקום גרפים על הדו\"ח"
+
 
 #: aggregate_graphs.php
 msgid "Migrate Aggregate to use a Template"
@@ -122,7 +123,8 @@ msgstr "מקום על עץ ( %s)"
 
 #: aggregate_graphs.php
 msgid "Click 'Continue' to delete the following Aggregate Graph(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי למחוק את הגרפים המצטברים הבאים."
+msgstr "לחץ על 'המשך' כדי למחוק את הגרפים המצטברים הבאים."
+
 
 #: aggregate_graphs.php aggregate_templates.php automation_devices.php
 #: automation_graph_rules.php automation_networks.php automation_snmp.php
@@ -159,7 +161,8 @@ msgstr "הגרפים המצטברים שנבחרו מייצגים אלמנטים
 
 #: aggregate_graphs.php
 msgid "In order to migrate the Aggregate Graphs below to a Template based Aggregate, they must only be using one Graph Template.  Please press 'Return' and then select only Aggregate Graph that utilize the same Graph Template."
-msgstr "כדי להעביר את הגרפים המצטברים להלן לצבירה מבוססת תבנית, עליהם להשתמש רק בתבנית גרפית אחת. לחץ על &#39;Return&#39; ולאחר מכן בחר רק תרשים מצטבר המשתמש באותה תבנית גרף."
+msgstr "כדי להעביר את הגרפים המצטברים להלן לצבירה מבוססת תבנית, עליהם להשתמש רק בתבנית גרפית אחת. לחץ על 'Return' ולאחר מכן בחר רק תרשים מצטבר המשתמש באותה תבנית גרף."
+
 
 #: aggregate_graphs.php auth_changepassword.php auth_profile.php
 #: automation_networks.php automation_snmp.php graphs.php host.php
@@ -178,7 +181,8 @@ msgstr "כדי להעביר את הגרפים המצטברים שלהלן לשי
 
 #: aggregate_graphs.php
 msgid "Click 'Continue' and the following Aggregate Graph(s) will be migrated to use the Aggregate Template that you choose below."
-msgstr "לחץ על &#39;המשך&#39; והגרפים המצטברים הבאים יועברו לשימוש בתבנית המצטברת שתבחר למטה."
+msgstr "לחץ על 'המשך' והגרפים המצטברים הבאים יועברו לשימוש בתבנית המצטברת שתבחר למטה."
+
 
 #: aggregate_graphs.php
 msgid "Aggregate Template:"
@@ -191,15 +195,18 @@ msgstr "בשלב זה לא הוגדרו תבניות מצטברות עבור צ�
 #: aggregate_graphs.php
 #, php-format
 msgid "In order to migrate the Aggregate Graphs below to a Template based Aggregate, first create an Aggregate Template for the Graph Template '%s'."
-msgstr "כדי להעביר את הגרפים המצטברים למטה לצבירה מבוססת תבנית, צור תחילה תבנית מצטברת עבור &#39;תבנית גרף&#39; %s."
+msgstr "כדי להעביר את הגרפים המצטברים למטה לצבירה מבוססת תבנית, צור תחילה תבנית מצטברת עבור 'תבנית גרף' %s."
+
 
 #: aggregate_graphs.php
 msgid "Please press 'Return' to continue."
-msgstr "לחץ על &#39;Return&#39; כדי להמשיך."
+msgstr "לחץ על 'Return' כדי להמשיך."
+
 
 #: aggregate_graphs.php
 msgid "Click 'Continue' to combine the following Aggregate Graph(s) into a single Aggregate Graph."
-msgstr "לחץ על &#39;המשך&#39; כדי לשלב את הגרפים המצטברים הבאים בגרף מצטבר יחיד."
+msgstr "לחץ על 'המשך' כדי לשלב את הגרפים המצטברים הבאים בגרף מצטבר יחיד."
+
 
 #: aggregate_graphs.php
 msgid "Aggregate Name:"
@@ -211,7 +218,8 @@ msgstr "צבירה חדשה"
 
 #: aggregate_graphs.php graphs.php host.php
 msgid "Click 'Continue' to add the selected Graphs to the Report below."
-msgstr "לחץ על &#39;המשך&#39; כדי להוסיף את הגרפים שנבחרו לדוח שלהלן."
+msgstr "לחץ על 'המשך' כדי להוסיף את הגרפים שנבחרו לדוח שלהלן."
+
 
 #: aggregate_graphs.php graph_view.php graphs.php host.php lib/html_reports.php
 msgid "Report Name"
@@ -243,7 +251,8 @@ msgstr "המרה לגרף רגיל / לגרפים רגילים"
 
 #: aggregate_graphs.php
 msgid "Click 'Continue' to associate the following Graph(s) with the Aggregate Graph."
-msgstr "לחץ על &#39;המשך&#39; כדי לקשר את הגרפים הבאים לגרף המצטבר."
+msgstr "לחץ על 'המשך' כדי לקשר את הגרפים הבאים לגרף המצטבר."
+
 
 #: aggregate_graphs.php
 msgid "Associate Graph(s)"
@@ -251,7 +260,8 @@ msgstr "גרף שותף (ים)"
 
 #: aggregate_graphs.php
 msgid "Click 'Continue' to disassociate the following Graph(s) from the Aggregate."
-msgstr "לחץ על &#39;המשך&#39; כדי לנתק את הגרפים הבאים מהצבירה."
+msgstr "לחץ על 'המשך' כדי לנתק את הגרפים הבאים מהצבירה."
+
 
 #: aggregate_graphs.php
 msgid "Dis-Associate Graph(s)"
@@ -259,7 +269,8 @@ msgstr "בטל שיוך גרף(ים)"
 
 #: aggregate_graphs.php
 msgid "Click 'Continue' to place the following Aggregate Graph(s) under the Tree Branch."
-msgstr "לחץ על &#39;המשך&#39; כדי להציב את הגרפים המצטברים הבאים מתחת לעץ העץ."
+msgstr "לחץ על 'המשך' כדי להציב את הגרפים המצטברים הבאים מתחת לעץ העץ."
+
 
 #: aggregate_graphs.php host.php
 msgid "Destination Branch:"
@@ -557,7 +568,8 @@ msgstr "לא נמצאה תבנית מצטברת."
 
 #: aggregate_templates.php
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי למחוק את התבניות הבאות של גרף מצטבר."
+msgstr "לחץ על 'המשך' כדי למחוק את התבניות הבאות של גרף מצטבר."
+
 
 #: aggregate_templates.php
 msgid "Delete Color Template(s)"
@@ -834,7 +846,8 @@ msgstr "כתובת אימייל"
 
 #: auth_profile.php
 msgid "An Email Address you be reached at."
-msgstr "כתובת דוא&quot;ל שאליה הגעת."
+msgstr "כתובת דוא\"ל שאליה הגעת."
+
 
 #: auth_profile.php
 msgid "Clear User Settings"
@@ -921,7 +934,8 @@ msgstr "התקנים הוסרו ממסד הנתונים של Cacti Automation"
 
 #: automation_devices.php
 msgid "Click 'Continue' to add the following Discovered device(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי להוסיף את המכשירים הבאים שהתגלו."
+msgstr "לחץ על 'המשך' כדי להוסיף את המכשירים הבאים שהתגלו."
+
 
 #: automation_devices.php pollers.php
 msgid "Pollers"
@@ -1072,11 +1086,13 @@ msgstr ""
 
 #: automation_graph_rules.php
 msgid "Press 'Continue' to delete the following Graph Rules."
-msgstr "לחץ על &#39;המשך&#39; כדי למחוק את כללי התרשים הבאים."
+msgstr "לחץ על 'המשך' כדי למחוק את כללי התרשים הבאים."
+
 
 #: automation_graph_rules.php
 msgid "Click 'Continue' to duplicate the following Rule(s). You can optionally change the title format for the new Graph Rules."
-msgstr "לחץ על &#39;המשך&#39; כדי לשכפל את הכללים הבאים. ניתן לשנות את פורמט הכותרת עבור כללי התרשים החדשים."
+msgstr "לחץ על 'המשך' כדי לשכפל את הכללים הבאים. ניתן לשנות את פורמט הכותרת עבור כללי התרשים החדשים."
+
 
 #: automation_graph_rules.php automation_tree_rules.php graphs.php
 msgid "Title Format"
@@ -1088,7 +1104,8 @@ msgstr "שם החוק"
 
 #: automation_graph_rules.php automation_tree_rules.php
 msgid "Click 'Continue' to enable the following Rule(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי להפעיל את הכללים הבאים."
+msgstr "לחץ על 'המשך' כדי להפעיל את הכללים הבאים."
+
 
 #: automation_graph_rules.php automation_tree_rules.php
 msgid "Make sure, that those rules have successfully been tested!"
@@ -1096,7 +1113,8 @@ msgstr "ודא, כי כללים אלה בהצלחה נבדקו!"
 
 #: automation_graph_rules.php automation_tree_rules.php
 msgid "Click 'Continue' to disable the following Rule(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי להשבית את הכללים הבאים."
+msgstr "לחץ על 'המשך' כדי להשבית את הכללים הבאים."
+
 
 #: automation_graph_rules.php automation_tree_rules.php
 msgid "Apply requested action"
@@ -1201,12 +1219,14 @@ msgstr "ביטול גילוי"
 #: automation_networks.php
 #, php-format
 msgid "Can Not Restart Discovery for Discovery in Progress for Network '%s'"
-msgstr "לא ניתן להפעיל מחדש גילוי עבור גילוי בתהליך של &#39; %s&#39"
+msgstr "לא ניתן להפעיל מחדש גילוי עבור גילוי בתהליך של ' %s&#39"
+
 
 #: automation_networks.php
 #, php-format
 msgid "Can Not Perform Discovery for Disabled Network '%s'"
-msgstr "לא ניתן לבצע גילוי עבור רשת מושבתת &#39; %s&#39"
+msgstr "לא ניתן לבצע גילוי עבור רשת מושבתת ' %s&#39"
+
 
 #: automation_networks.php
 #, php-format
@@ -1230,19 +1250,23 @@ msgstr "שגיאה: הרשת '%s' אינה חוקית."
 
 #: automation_networks.php
 msgid "Click 'Continue' to delete the following Network(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי למחוק את הרשתות הבאות."
+msgstr "לחץ על 'המשך' כדי למחוק את הרשתות הבאות."
+
 
 #: automation_networks.php
 msgid "Click 'Continue' to enable the following Network(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי להפעיל את הרשתות הבאות."
+msgstr "לחץ על 'המשך' כדי להפעיל את הרשתות הבאות."
+
 
 #: automation_networks.php
 msgid "Click 'Continue' to disable the following Network(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי להשבית את הרשתות הבאות."
+msgstr "לחץ על 'המשך' כדי להשבית את הרשתות הבאות."
+
 
 #: automation_networks.php
 msgid "Click 'Continue' to discover the following Network(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי לגלות את הרשתות הבאות."
+msgstr "לחץ על 'המשך' כדי לגלות את הרשתות הבאות."
+
 
 #: automation_networks.php
 msgid "Run discover in debug mode"
@@ -1250,7 +1274,8 @@ msgstr "הפעל גלה במצב Debug"
 
 #: automation_networks.php
 msgid "Click 'Continue' to cancel on going Network Discovery(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי לבטל את האפשרות &#39;גילוי רשת&#39; (s)."
+msgstr "לחץ על 'המשך' כדי לבטל את האפשרות 'גילוי רשת' (s)."
+
 
 #: automation_networks.php data_input.php include/global_arrays.php
 msgid "SNMP Get"
@@ -1336,7 +1361,8 @@ msgstr "הזן טווחי רשת חוקיים מופרדים באמצעות פס
 
 #: automation_networks.php
 msgid "Total IP Addresses"
-msgstr "סה&quot;כ כתובות IP"
+msgstr "סה\"כ כתובות IP"
+
 
 #: automation_networks.php
 msgid "Total addressable IP Addresses in this Network Range."
@@ -1391,7 +1417,8 @@ msgstr "לאחר הגבלת ההפעלה שנבחרה, תהליך הגילוי �
 #: automation_networks.php pollers.php
 #, php-format
 msgid "%d Minute"
-msgstr "‫%d דקה"
+msgstr "%d דקה"
+
 
 #: automation_networks.php data_sources.php include/global_arrays.php
 #: include/global_settings.php pollers.php
@@ -1402,7 +1429,8 @@ msgstr "דקות %d"
 #: automation_networks.php include/global_arrays.php
 #, php-format
 msgid "%d Hour"
-msgstr "‫%d שעה"
+msgstr "%d שעה"
+
 
 #: automation_networks.php data_source_profiles.php include/global_arrays.php
 #: include/global_settings.php
@@ -1472,15 +1500,18 @@ msgstr "הודעה משמה"
 
 #: automation_networks.php
 msgid "The Email account name to be used as the senders name for the Notification Email.  If left blank, Cacti will use the default Automation Notification Name if specified, otherwise, it will use the Cacti system default Email name"
-msgstr "שם חשבון הדואר האלקטרוני שישמש לשם השולחים עבור הודעת האימייל. אם נותר ריק, Cacti ישתמש ברירת המחדל אוטומציה Notification שם אם צוין, אחרת, זה ישתמש ברירת המחדל של מערכת Cacti שם דוא&quot;ל"
+msgstr "שם חשבון הדואר האלקטרוני שישמש לשם השולחים עבור הודעת האימייל. אם נותר ריק, Cacti ישתמש ברירת המחדל אוטומציה Notification שם אם צוין, אחרת, זה ישתמש ברירת המחדל של מערכת Cacti שם דוא\"ל"
+
 
 #: automation_networks.php
 msgid "Notification From Email Address"
-msgstr "הודעה מכתובת דוא&quot;ל"
+msgstr "הודעה מכתובת דוא\"ל"
+
 
 #: automation_networks.php
 msgid "The Email Address to be used as the senders Email for the Notification Email.  If left blank, Cacti will use the default Automation Notification Email Address if specified, otherwise, it will use the Cacti system default Email Address"
-msgstr "כתובת הדואר האלקטרוני שתשמש לשליחת דוא&quot;ל עבור הודעת האימייל. אם נותר ריק, Cacti ישתמש ברירת המחדל אוטומציה הודעת דוא&quot;ל כתובת אם צוין, אחרת, זה ישתמש ברירת המחדל של מערכת Cacti כתובת דוא&quot;ל"
+msgstr "כתובת הדואר האלקטרוני שתשמש לשליחת דוא\"ל עבור הודעת האימייל. אם נותר ריק, Cacti ישתמש ברירת המחדל אוטומציה הודעת דוא\"ל כתובת אם צוין, אחרת, זה ישתמש ברירת המחדל של מערכת Cacti כתובת דוא\"ל"
+
 
 #: automation_networks.php
 msgid "Discovery Timing"
@@ -1736,7 +1767,8 @@ msgstr "לוח זמנים"
 
 #: automation_networks.php
 msgid "Total IPs"
-msgstr "סה&quot;כ כתובות IP"
+msgstr "סה\"כ כתובות IP"
+
 
 #: automation_networks.php
 msgid "The Current Status of this Networks Discovery"
@@ -1804,11 +1836,13 @@ msgstr "נקה מסונן"
 
 #: automation_snmp.php
 msgid "Click 'Continue' to delete the following SNMP Option(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי למחוק את האפשרויות הבאות של SNMP."
+msgstr "לחץ על 'המשך' כדי למחוק את האפשרויות הבאות של SNMP."
+
 
 #: automation_snmp.php
 msgid "Click 'Continue' to duplicate the following SNMP Options. You can optionally change the title format for the new SNMP Options."
-msgstr "לחץ על &#39;המשך&#39; כדי לשכפל את האפשרויות הבאות של SNMP. ניתן לשנות את פורמט הכותרת עבור אפשרויות SNMP החדשות."
+msgstr "לחץ על 'המשך' כדי לשכפל את האפשרויות הבאות של SNMP. ניתן לשנות את פורמט הכותרת עבור אפשרויות SNMP החדשות."
+
 
 #: automation_snmp.php
 msgid "Name Format"
@@ -1828,7 +1862,8 @@ msgstr "פריט אוטומציה אינו קיים. לא ניתן לשכפל."
 
 #: automation_snmp.php
 msgid "Click 'Continue' to delete the following SNMP Option Item."
-msgstr "לחץ על &#39;המשך&#39; כדי למחוק את פריט האפשרויות הבא של SNMP."
+msgstr "לחץ על 'המשך' כדי למחוק את פריט האפשרויות הבא של SNMP."
+
 
 #: automation_snmp.php
 msgid "SNMP Option:"
@@ -2004,7 +2039,8 @@ msgstr "לא נמצאו ערכות SNMP אופציות"
 
 #: automation_templates.php
 msgid "Click 'Continue' to delete the following Automation Template(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי למחוק את תבנית התבניות האוטומטיות."
+msgstr "לחץ על 'המשך' כדי למחוק את תבנית התבניות האוטומטיות."
+
 
 #: automation_templates.php
 msgid "Delete Automation Template(s)"
@@ -2095,11 +2131,13 @@ msgstr "צוין שם שדה לא חוקי עבור פריט כלל עץ."
 
 #: automation_tree_rules.php
 msgid "Click 'Continue' to delete the following Rule(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי למחוק את הכללים הבאים."
+msgstr "לחץ על 'המשך' כדי למחוק את הכללים הבאים."
+
 
 #: automation_tree_rules.php
 msgid "Click 'Continue' to duplicate the following Rule(s). You can optionally change the title format for the new Rules."
-msgstr "לחץ על &#39;המשך&#39; כדי לשכפל את הכללים הבאים. ניתן לשנות את פורמט הכותרת עבור הכללים החדשים."
+msgstr "לחץ על 'המשך' כדי לשכפל את הכללים הבאים. ניתן לשנות את פורמט הכותרת עבור הכללים החדשים."
+
 
 #: automation_tree_rules.php
 msgid "Created Trees"
@@ -2141,7 +2179,8 @@ msgstr "אזהרה:"
 
 #: automation_tree_rules.php
 msgid "You are changing the leaf type to \"Device\" which does not support Graph-based object matching/creation."
-msgstr "אתה משנה את סוג העלה ל &quot;התקן&quot; אשר אינו תומך התאמת אובייקט מבוסס אובייקט / יצירה."
+msgstr "אתה משנה את סוג העלה ל \"התקן\" אשר אינו תומך התאמת אובייקט מבוסס אובייקט / יצירה."
+
 
 #: automation_tree_rules.php
 msgid "By changing the leaf type, all invalid rules will be automatically removed and will not be recoverable."
@@ -2173,7 +2212,8 @@ msgstr "באמצעות קיבוץ"
 
 #: automation_tree_rules.php
 msgid "ROOT"
-msgstr "‫Root"
+msgstr "Root"
+
 
 #: automation_tree_rules.php
 msgid "No Tree Rules Found"
@@ -2245,7 +2285,8 @@ msgstr[3] "שכפל הגדרות CDEF"
 
 #: cdef.php
 msgid "Click 'Continue' to delete the following CDEF Item."
-msgstr "לחץ על &#39;המשך&#39; כדי למחוק את פריט ה- CDEF הבא."
+msgstr "לחץ על 'המשך' כדי למחוק את פריט ה- CDEF הבא."
+
 
 #: cdef.php
 #, php-format
@@ -2612,7 +2653,8 @@ msgstr "תבנית הצבע או הפריט לא נמצאו."
 
 #: color_templates_items.php
 msgid "Click 'Continue' to delete the following Color Template Color."
-msgstr "לחץ על &#39;המשך&#39; כדי למחוק את צבע תבנית הצבע הבא."
+msgstr "לחץ על 'המשך' כדי למחוק את צבע תבנית הצבע הבא."
+
 
 #: color_templates_items.php
 msgid "Color Name:"
@@ -2769,7 +2811,8 @@ msgstr "ללא ניפוי שגיאות"
 
 #: data_debug.php
 msgid "No Checks"
-msgstr "אין צ&#39;קים"
+msgstr "אין צ'קים"
+
 
 #: data_debug.php lib/api_automation.php lib/graphs.php templates_import.php
 msgid "Not Found"
@@ -2982,7 +3025,8 @@ msgstr[3] "לחץ על 'המשך' כדי למחוק את שיטות קלט הנ�
 
 #: data_input.php
 msgid "Click 'Continue' to duplicate the following Data Input Method(s). You can optionally change the title format for the new Data Input Method(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי לשכפל את שיטות קלט הנתונים הבאות. אתה יכול לשנות את פורמט הכותרת עבור שיטת קלט נתונים חדשה (ים)."
+msgstr "לחץ על 'המשך' כדי לשכפל את שיטות קלט הנתונים הבאות. אתה יכול לשנות את פורמט הכותרת עבור שיטת קלט נתונים חדשה (ים)."
+
 
 #: data_input.php
 msgid "Input Name:"
@@ -2998,7 +3042,8 @@ msgstr[3] "מחק שיטות קלט נתונים"
 
 #: data_input.php
 msgid "Click 'Continue' to delete the following Data Input Field."
-msgstr "לחץ על &#39;המשך&#39; כדי למחוק את שדה קלט הנתונים הבא."
+msgstr "לחץ על 'המשך' כדי למחוק את שדה קלט הנתונים הבא."
+
 
 #: data_input.php
 #, php-format
@@ -3200,7 +3245,8 @@ msgstr[3] "שכפל שאילתות נתונים"
 
 #: data_queries.php
 msgid "Click 'Continue' to delete the following Data Query Graph Association."
-msgstr "לחץ על &#39;המשך&#39; כדי למחוק את האיגוד הבא של גרף שאילתות הנתונים."
+msgstr "לחץ על 'המשך' כדי למחוק את האיגוד הבא של גרף שאילתות הנתונים."
+
 
 #: data_queries.php
 #, php-format
@@ -3400,7 +3446,8 @@ msgstr "לא ניתן לשכפל את פרופיל מקור הנתונים. בד
 
 #: data_source_profiles.php
 msgid "Click 'Continue' to delete the following Data Source Profile RRA."
-msgstr "לחץ על &#39;המשך&#39; כדי למחוק את פרופיל Data Source RRA הבא."
+msgstr "לחץ על 'המשך' כדי למחוק את פרופיל Data Source RRA הבא."
+
 
 #: data_source_profiles.php
 #, php-format
@@ -3435,7 +3482,8 @@ msgstr "פרופיל מקור נתונים [חדש]"
 
 #: data_source_profiles.php
 msgid "Data Source Profile RRAs (press save to update timespans)"
-msgstr "פרופיל מקור נתונים RRA (לחץ על &#39;שמור&#39; כדי לעדכן את זמני הזמן)"
+msgstr "פרופיל מקור נתונים RRA (לחץ על 'שמור' כדי לעדכן את זמני הזמן)"
+
 
 #: data_source_profiles.php
 msgid "Data Source Profile RRAs (Read Only)"
@@ -3934,7 +3982,8 @@ msgstr "שדה \"%s\" חסר שדה פלט"
 
 #: data_templates.php
 msgid "Click 'Continue' to delete the following Data Template(s).  Any data sources attached to these templates will become individual Data Source(s) and all Templating benefits will be removed."
-msgstr "לחץ על &#39;המשך&#39; כדי למחוק את תבניות הנתונים הבאות. כל מקורות הנתונים המצורפים לתבניות אלה יהפכו למקור נתונים בודד וכל היתרונות של התבניות יוסרו."
+msgstr "לחץ על 'המשך' כדי למחוק את תבניות הנתונים הבאות. כל מקורות הנתונים המצורפים לתבניות אלה יהפכו למקור נתונים בודד וכל היתרונות של התבניות יוסרו."
+
 
 #: data_templates.php
 msgid "Delete Data Template(s)"
@@ -3942,7 +3991,8 @@ msgstr "מחק תבניות נתונים"
 
 #: data_templates.php
 msgid "Click 'Continue' to duplicate the following Data Template(s). You can optionally change the title format for the new Data Template(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי לשכפל את תבניות הנתונים הבאות. ניתן לשנות את תבנית הכותרת עבור תבנית הנתונים החדשה."
+msgstr "לחץ על 'המשך' כדי לשכפל את תבניות הנתונים הבאות. ניתן לשנות את תבנית הכותרת עבור תבנית הנתונים החדשה."
+
 
 #: data_templates.php
 msgid "template_title"
@@ -3954,7 +4004,8 @@ msgstr "תבנית נתונים כפולה (s)"
 
 #: data_templates.php
 msgid "Click 'Continue' to change the default Data Source Profile for the following Data Template(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי לשנות את פרופיל ברירת המחדל של Data Source עבור תבניות הנתונים הבאות."
+msgstr "לחץ על 'המשך' כדי לשנות את פרופיל ברירת המחדל של Data Source עבור תבניות הנתונים הבאות."
+
 
 #: data_templates.php
 msgid "New Data Source Profile"
@@ -4072,7 +4123,8 @@ msgstr "לא נמצאו תבניות נתונים"
 
 #: gprint_presets.php
 msgid "Click 'Continue' to delete the following GPRINT Preset(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי למחוק את ההגדרות המקובלות של GPRINT (s)."
+msgstr "לחץ על 'המשך' כדי למחוק את ההגדרות המקובלות של GPRINT (s)."
+
 
 #: gprint_presets.php
 msgid "Delete GPRINT Preset(s)"
@@ -4276,7 +4328,8 @@ msgstr "סנכרון של תבנית גרף '%s' לא הביא ללא תיקונ
 
 #: graph_templates.php
 msgid "Click 'Continue' to delete the following Graph Template(s).  Any Graph(s) associated with the Template(s) will become individual Graph(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי למחוק את תבניות התבנית הבאות. כל גרף (ים) המשויך לתבניות (תבניות) יהפוך לגרף (גרפים) בודדים."
+msgstr "לחץ על 'המשך' כדי למחוק את תבניות התבנית הבאות. כל גרף (ים) המשויך לתבניות (תבניות) יהפוך לגרף (גרפים) בודדים."
+
 
 #: graph_templates.php
 msgid "Delete Graph Template(s)"
@@ -4284,7 +4337,8 @@ msgstr "מחק תבניות גרף"
 
 #: graph_templates.php
 msgid "Click 'Continue' to duplicate the following Graph Template(s). You can optionally change the title format for the new Graph Template(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי לשכפל את תבניות התבנית הבאות. ניתן לשנות את תבנית הכותרת עבור תבנית הגרפים החדשה."
+msgstr "לחץ על 'המשך' כדי לשכפל את תבניות התבנית הבאות. ניתן לשנות את תבנית הכותרת עבור תבנית הגרפים החדשה."
+
 
 #: graph_templates.php
 msgid "Duplicate Graph Template(s)"
@@ -4292,7 +4346,8 @@ msgstr "תבנית גרף כפולה (ים)"
 
 #: graph_templates.php
 msgid "Click 'Continue' to resize the following Graph Template(s) and Graph(s) to the Height and Width below.  The defaults below are maintained in Settings."
-msgstr "לחץ על &#39;המשך&#39; כדי לשנות את הגודל של תבניות הגרפים והתרשים (ים) הבאים לגובה ולרוחב למטה. ברירות המחדל להלן נשמרות ב&#39;הגדרות &#39;."
+msgstr "לחץ על 'המשך' כדי לשנות את הגודל של תבניות הגרפים והתרשים (ים) הבאים לגובה ולרוחב למטה. ברירות המחדל להלן נשמרות ב'הגדרות '."
+
 
 #: graph_templates.php lib/html_reports.php
 msgid "Graph Height"
@@ -4312,7 +4367,8 @@ msgstr "שינוי גודל של תבניות גרף נבחרות"
 
 #: graph_templates.php
 msgid "Click 'Continue' to perform a Full Synchronization between your Graphs and the chosen Graph Templates(s). If you simply have a situation where the Graph Items don't match the Graph Template, try the Quick Sync Graphs option first as it will take much less time.  This function is important if you have Graphs that exist with multiple versions of a Graph Template and wish to make them all common in appearance."
-msgstr "לחץ על &#39;המשך&#39; כדי לסנכרן את הגרפים שלך עם תבניות התבנית הבאות. פונקציה זו חשובה אם יש לך גרפים קיימים עם גרסאות מרובות של תבנית גרף רוצה להפוך את כולם משותפים במראה."
+msgstr "לחץ על 'המשך' כדי לסנכרן את הגרפים שלך עם תבניות התבנית הבאות. פונקציה זו חשובה אם יש לך גרפים קיימים עם גרסאות מרובות של תבנית גרף רוצה להפוך את כולם משותפים במראה."
+
 
 #: graph_templates.php
 msgid "Synchronize Graphs to Graph Template(s)"
@@ -4320,7 +4376,8 @@ msgstr "סנכרון גרפים לתבניות גרף (ים)"
 
 #: graph_templates.php
 msgid "Click 'Continue' to perform a Quick Synchronization of your Graphs for the following Graph Template(s). Use this option if your Graphs have Graph Items that do not match your Graph Template.  If this option does not work, use the Full Sync Graphs option, which will take more time to complete."
-msgstr "לחץ על &#39;המשך&#39; כדי לסנכרן את הגרפים שלך עם תבניות התבנית הבאות. פונקציה זו חשובה אם יש לך גרפים קיימים עם גרסאות מרובות של תבנית גרף רוצה להפוך את כולם משותפים במראה."
+msgstr "לחץ על 'המשך' כדי לסנכרן את הגרפים שלך עם תבניות התבנית הבאות. פונקציה זו חשובה אם יש לך גרפים קיימים עם גרסאות מרובות של תבנית גרף רוצה להפוך את כולם משותפים במראה."
+
 
 #: graph_templates.php
 #, php-format
@@ -4509,7 +4566,8 @@ msgstr "שם תרשים"
 
 #: graph_view.php graphs.php
 msgid "The Title of this Graph.  Generally programmatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual."
-msgstr "כותרת גרף זה. בדרך כלל נוצר באופן שיטתי מהגדרת תבנית התרשים או הכללים למתן שמות לנתינה. האורך המרבי של הכותרת נשלט תחת הגדרות -&gt; Visual."
+msgstr "כותרת גרף זה. בדרך כלל נוצר באופן שיטתי מהגדרת תבנית התרשים או הכללים למתן שמות לנתינה. האורך המרבי של הכותרת נשלט תחת הגדרות -> Visual."
+
 
 #: graph_view.php
 msgid "The device for this Graph."
@@ -4569,7 +4627,8 @@ msgstr "צעד"
 
 #: graph_xport.php
 msgid "Total Rows"
-msgstr "סה&quot;כ שורות"
+msgstr "סה\"כ שורות"
+
 
 #: graph_xport.php
 msgid "Expected Rows"
@@ -4672,7 +4731,8 @@ msgstr "לא ניתן להחיל את עדכון הגרף המצטבר."
 
 #: graphs.php
 msgid "Click 'Continue' to delete the following Graph(s).  Note that if you choose to Delete Data Sources, only those Data Sources not in use elsewhere will also be Deleted."
-msgstr "לחץ על &#39;המשך&#39; כדי למחוק את הגרפים הבאים. שים לב שאם תבחר למחוק מקורות נתונים, רק אותם מקורות נתונים שאינם בשימוש במקום אחר יימחקו."
+msgstr "לחץ על 'המשך' כדי למחוק את הגרפים הבאים. שים לב שאם תבחר למחוק מקורות נתונים, רק אותם מקורות נתונים שאינם בשימוש במקום אחר יימחקו."
+
 
 #: graphs.php
 msgid "The following Data Source(s) are in use by these Graph(s)."
@@ -4688,7 +4748,8 @@ msgstr "השאר את מקור הנתונים (ים) ללא שינוי."
 
 #: graphs.php
 msgid "Choose a Graph Template and click 'Continue' to change the Graph Template for the following Graph(s). Please note, that only compatible Graph Templates will be displayed.  Compatible is identified by those having identical Data Sources."
-msgstr "בחר תבנית גרף ולחץ על &#39;המשך&#39; כדי לשנות את תבנית התרשים עבור הגרפים הבאים. שים לב, רק תבניות גרפיות תואמות יוצגו. תואם מזוהה על ידי בעלי מקורות נתונים זהים."
+msgstr "בחר תבנית גרף ולחץ על 'המשך' כדי לשנות את תבנית התרשים עבור הגרפים הבאים. שים לב, רק תבניות גרפיות תואמות יוצגו. תואם מזוהה על ידי בעלי מקורות נתונים זהים."
+
 
 #: graphs.php graphs_new.php
 msgid "New Graph Template"
@@ -4696,7 +4757,8 @@ msgstr "תבנית גרפים חדשה"
 
 #: graphs.php
 msgid "Click 'Continue' to duplicate the following Graph(s). You can optionally change the title format for the new Graph(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי לשכפל את הגרפים הבאים. ניתן לשנות את פורמט הכותרת עבור הגרפים החדשים."
+msgstr "לחץ על 'המשך' כדי לשכפל את הגרפים הבאים. ניתן לשנות את פורמט הכותרת עבור הגרפים החדשים."
+
 
 #: graphs.php
 msgid "<graph_title> (1)"
@@ -4708,7 +4770,8 @@ msgstr "גרפים כפולים (ים)"
 
 #: graphs.php
 msgid "Click 'Continue' to convert the following Graph(s) into Graph Template(s).  You can optionally change the title format for the new Graph Template(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי להמיר את הגרפים הבאים לתבניות גרף. ניתן לשנות את תבנית הכותרת עבור תבנית הגרפים החדשה."
+msgstr "לחץ על 'המשך' כדי להמיר את הגרפים הבאים לתבניות גרף. ניתן לשנות את תבנית הכותרת עבור תבנית הגרפים החדשה."
+
 
 #: graphs.php
 msgid "<graph_title> Template"
@@ -4716,7 +4779,8 @@ msgstr "<graph_title> תבנית"
 
 #: graphs.php
 msgid "Click 'Continue' to place the following Graph(s) under the Tree Branch selected below."
-msgstr "לחץ על &#39;המשך&#39; כדי להציב את הגרפים הבאים מתחת לעץ העץ שנבחר למטה."
+msgstr "לחץ על 'המשך' כדי להציב את הגרפים הבאים מתחת לעץ העץ שנבחר למטה."
+
 
 #: graphs.php
 msgid "Destination Branch"
@@ -4724,7 +4788,8 @@ msgstr "סניף יעד"
 
 #: graphs.php
 msgid "Choose a new Device for these Graph(s) and click 'Continue'."
-msgstr "בחר מכשיר חדש עבור גרפים אלה ולחץ על &#39;המשך&#39;."
+msgstr "בחר מכשיר חדש עבור גרפים אלה ולחץ על 'המשך'."
+
 
 #: graphs.php include/global_arrays.php
 msgid "New Device"
@@ -4736,7 +4801,8 @@ msgstr "שינוי גרף משויך"
 
 #: graphs.php
 msgid "Click 'Continue' to re-apply suggested naming to the following Graph(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי להחיל מחדש את השמות המוצעים על הגרפים הבאים."
+msgstr "לחץ על 'המשך' כדי להחיל מחדש את השמות המוצעים על הגרפים הבאים."
+
 
 #: graphs.php
 msgid "Reapply Suggested Naming to Graph(s)"
@@ -4744,7 +4810,8 @@ msgstr "החל מחדש את השמות המוצעים לגרפים (ים)"
 
 #: graphs.php
 msgid "Click 'Continue' to create an Aggregate Graph from the selected Graph(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי ליצור גרף מצטבר מהגרפים שנבחרו."
+msgstr "לחץ על 'המשך' כדי ליצור גרף מצטבר מהגרפים שנבחרו."
+
 
 #: graphs.php
 msgid "The following Data Sources are in use by these Graphs:"
@@ -4756,7 +4823,8 @@ msgstr "אנא אשר"
 
 #: graphs.php
 msgid "Select the Aggregate Template to use and press 'Continue' to create your Aggregate Graph.  Otherwise press 'Cancel' to return."
-msgstr "בחר את התבנית המצטברת שבה ברצונך להשתמש ולחץ על &#39;המשך&#39; כדי ליצור את התרשים המצטבר. אחרת, לחץ על &#39;ביטול&#39; כדי לחזור."
+msgstr "בחר את התבנית המצטברת שבה ברצונך להשתמש ולחץ על 'המשך' כדי ליצור את התרשים המצטבר. אחרת, לחץ על 'ביטול' כדי לחזור."
+
 
 #: graphs.php
 msgid "There are presently no Aggregate Templates defined for this Graph Template.  Please either first create an Aggregate Template for the selected Graphs Graph Template and try again, or simply crease an un-templated Aggregate Graph."
@@ -4764,11 +4832,13 @@ msgstr "כיום אין תבניות מצטברות המוגדרות עבור ת
 
 #: graphs.php
 msgid "Press 'Return' to return and select different Graphs."
-msgstr "לחץ על &#39;Return&#39; כדי לחזור ולבחור גרפים שונים."
+msgstr "לחץ על 'Return' כדי לחזור ולבחור גרפים שונים."
+
 
 #: graphs.php
 msgid "Click 'Continue' to apply Automation Rules to the following Graphs."
-msgstr "לחץ על &#39;המשך&#39; כדי להחיל כללי אוטומציה על התרשימים הבאים."
+msgstr "לחץ על 'המשך' כדי להחיל כללי אוטומציה על התרשימים הבאים."
+
 
 #: graphs.php
 msgid "Graph Items [new]"
@@ -5102,7 +5172,8 @@ msgstr "השבת מכשירים (מכשירים)"
 
 #: host.php
 msgid "Click 'Continue' to change the Device options below for multiple Device(s).  Please check the box next to the fields you want to update, and then fill in the new value."
-msgstr "לחץ על &#39;המשך&#39; כדי לשנות את אפשרויות המכשיר למטה עבור מכשירים מרובים. סמן את התיבה שלצד השדות שברצונך לעדכן ולאחר מכן מלא את הערך החדש."
+msgstr "לחץ על 'המשך' כדי לשנות את אפשרויות המכשיר למטה עבור מכשירים מרובים. סמן את התיבה שלצד השדות שברצונך לעדכן ולאחר מכן מלא את הערך החדש."
+
 
 #: host.php
 msgid "Update this Field"
@@ -5114,7 +5185,8 @@ msgstr "שינוי אפשרויות SNMP של התקנים"
 
 #: host.php
 msgid "Click 'Continue' to clear the counters for the following Device(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי לנקות את המונים עבור ההתקנים הבאים."
+msgstr "לחץ על 'המשך' כדי לנקות את המונים עבור ההתקנים הבאים."
+
 
 #: host.php
 msgid "Clear Statistics on Device(s)"
@@ -5122,7 +5194,8 @@ msgstr "נקה נתונים סטטיסטיים במכשיר"
 
 #: host.php
 msgid "Click 'Continue' to Synchronize the following Device(s) to their Device Template."
-msgstr "לחץ על &#39;המשך&#39; כדי לסנכרן את ההתקנים הבאים לתבנית ההתקן שלהם."
+msgstr "לחץ על 'המשך' כדי לסנכרן את ההתקנים הבאים לתבנית ההתקן שלהם."
+
 
 #: host.php
 msgid "Synchronize Device(s)"
@@ -5142,7 +5215,8 @@ msgstr "מחק את כל הגרף(ים) ומקור(ות) הנתונים המשו
 
 #: host.php
 msgid "Click 'Continue' to place the following Device(s) under the branch selected below."
-msgstr "לחץ על &#39;המשך&#39; כדי למקם את המכשירים הבאים מתחת לסניף שנבחר למטה."
+msgstr "לחץ על 'המשך' כדי למקם את המכשירים הבאים מתחת לסניף שנבחר למטה."
+
 
 #: host.php
 msgid "Place Device(s) on Tree"
@@ -5150,7 +5224,8 @@ msgstr "מקום התקנים על עץ"
 
 #: host.php
 msgid "Click 'Continue' to apply Automation Rules to the following Devices(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי להחיל כללי אוטומציה על המכשירים הבאים."
+msgstr "לחץ על 'המשך' כדי להחיל כללי אוטומציה על המכשירים הבאים."
+
 
 #: host.php
 msgid "Run Automation on Device(s)"
@@ -5379,7 +5454,8 @@ msgstr "המספר הכולל של מקורות נתונים שנוצרו ממכ
 
 #: host.php
 msgid "The monitoring status of the Device based upon ping results.  If this Device is a special type Device, by using the hostname \"localhost\", or due to the setting to not perform an Availability Check, it will always remain Up.  When using cmd.php data collector, a Device with no Graphs, is not pinged by the data collector and will remain in an \"Unknown\" state."
-msgstr "מצב הניטור של ההתקן מבוסס על תוצאות פינג. אם התקן זה הוא סוג מיוחד התקן, באמצעות שם המארח &quot;localhost&quot;, או בשל ההגדרה כדי לא לבצע בדיקת זמינות, זה תמיד יישאר. בעת שימוש באספן הנתונים cmd.php, התקן ללא גרפים, לא pinged על ידי אספן הנתונים יישאר במצב &quot;לא ידוע&quot;."
+msgstr "מצב הניטור של ההתקן מבוסס על תוצאות פינג. אם התקן זה הוא סוג מיוחד התקן, באמצעות שם המארח \"localhost\", או בשל ההגדרה כדי לא לבצע בדיקת זמינות, זה תמיד יישאר. בעת שימוש באספן הנתונים cmd.php, התקן ללא גרפים, לא pinged על ידי אספן הנתונים יישאר במצב \"לא ידוע\"."
+
 
 #: host.php
 msgid "In State"
@@ -5431,7 +5507,8 @@ msgstr "סנכרון התקנים"
 
 #: host_templates.php
 msgid "Click 'Continue' to delete the following Device Template(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי למחוק את תבניות המכשיר הבאות."
+msgstr "לחץ על 'המשך' כדי למחוק את תבניות המכשיר הבאות."
+
 
 #: host_templates.php
 msgid "Delete Device Template(s)"
@@ -5439,7 +5516,8 @@ msgstr "מחק תבניות מכשיר"
 
 #: host_templates.php
 msgid "Click 'Continue' to duplicate the following Device Template(s).  Optionally change the title for the new Device Template(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי לשכפל את תבניות המכשיר הבאות. לחלופין, שנה את הכותרת עבור התבניות החדשות של המכשיר."
+msgstr "לחץ על 'המשך' כדי לשכפל את תבניות המכשיר הבאות. לחלופין, שנה את הכותרת עבור התבניות החדשות של המכשיר."
+
 
 #: host_templates.php
 msgid "Duplicate Device Template(s)"
@@ -5447,7 +5525,8 @@ msgstr "תבנית כפולה של מכשירים"
 
 #: host_templates.php
 msgid "Click 'Continue' to Synchronize Devices associated with the selected Device Template(s).  Note that this action may take some time depending on the number of Devices mapped to the Device Template."
-msgstr "לחץ על &#39;המשך&#39; כדי לסנכרן מכשירים המשויכים לתבניות המכשיר שנבחרו. שים לב שפעולה זו עשויה להימשך זמן מה, בהתאם למספר המכשירים הממופים לתבנית המכשיר."
+msgstr "לחץ על 'המשך' כדי לסנכרן מכשירים המשויכים לתבניות המכשיר שנבחרו. שים לב שפעולה זו עשויה להימשך זמן מה, בהתאם למספר המכשירים הממופים לתבנית המכשיר."
+
 
 #: host_templates.php
 msgid "Sync Devices to Device Template(s)"
@@ -5455,7 +5534,8 @@ msgstr "סנכרן מכשירים לתבניות המכשיר"
 
 #: host_templates.php
 msgid "Click 'Continue' to delete the following Graph Template will be disassociated from the Device Template."
-msgstr "לחץ על &#39;המשך&#39; כדי למחוק את תבנית התרשים הבאה, תנותק מתבנית המכשיר."
+msgstr "לחץ על 'המשך' כדי למחוק את תבנית התרשים הבאה, תנותק מתבנית המכשיר."
+
 
 #: host_templates.php
 #, php-format
@@ -5464,7 +5544,8 @@ msgstr "שם תבנית גרף: %s"
 
 #: host_templates.php
 msgid "Click 'Continue' to delete the following Data Queries will be disassociated from the Device Template."
-msgstr "לחץ על &#39;המשך&#39; כדי למחוק את שאילתות הנתונים הבאות, ינותק מתבנית המכשיר."
+msgstr "לחץ על 'המשך' כדי למחוק את שאילתות הנתונים הבאות, ינותק מתבנית המכשיר."
+
 
 #: host_templates.php
 #, php-format
@@ -5654,7 +5735,8 @@ msgstr "הספרייה המודגשת אינה קיימת. הזן ספריה ח�
 
 #: include/global_arrays.php
 msgid "The Cacti log file must have the extension '.log'"
-msgstr "קובץ היומן של Cacti חייב להיות בעל הסיומת &#39;log&#39"
+msgstr "קובץ היומן של Cacti חייב להיות בעל הסיומת 'log&#39"
+
 
 #: include/global_arrays.php
 msgid "Data Input for method does not appear to be whitelisted."
@@ -5896,7 +5978,8 @@ msgstr "בעת שמירת מאגר נתונים מרוחק, המארח של מס
 
 #: include/global_arrays.php
 msgid "Your Remote Database Hostname must be something other than 'localhost' for each Remote Data Collector."
-msgstr "מסד הנתונים המרוחק המארח שלך חייב להיות משהו אחר מאשר &#39;localhost&#39; עבור כל אספן נתונים מרוחקים."
+msgstr "מסד הנתונים המרוחק המארח שלך חייב להיות משהו אחר מאשר 'localhost' עבור כל אספן נתונים מרוחקים."
+
 
 #: include/global_arrays.php
 msgid "Path variables on this page were only saved locally."
@@ -5908,7 +5991,8 @@ msgstr "דוח שמור"
 
 #: include/global_arrays.php
 msgid "Report Save Failed"
-msgstr "הדוח &#39;שמירה נכשל&#39"
+msgstr "הדוח 'שמירה נכשל&#39"
+
 
 #: include/global_arrays.php
 msgid "Report Item Saved"
@@ -6060,11 +6144,13 @@ msgstr "מרכז"
 
 #: include/global_arrays.php
 msgid "Top -> Down"
-msgstr "למעלה -&gt; למטה"
+msgstr "למעלה -> למטה"
+
 
 #: include/global_arrays.php
 msgid "Bottom -> Up"
-msgstr "למטה -&gt; למעלה"
+msgstr "למטה -> למעלה"
+
 
 #: include/global_arrays.php tree.php
 msgid "Numeric"
@@ -6417,7 +6503,8 @@ msgstr "מסוף"
 
 #: include/global_arrays.php
 msgid "Console Page"
-msgstr "הדף של הדף &#39;מסוף&#39"
+msgstr "הדף של הדף 'מסוף&#39"
+
 
 #: include/global_arrays.php lib/html_form_template.php
 msgid "New Graphs"
@@ -7095,7 +7182,8 @@ msgstr "הדפס את כל הפריטים המקראיים"
 
 #: include/global_arrays.php
 msgid "Print Totaling Legend Items Only"
-msgstr "הדפסה סה&quot;כ פריטים מקרא בלבד"
+msgstr "הדפסה סה\"כ פריטים מקרא בלבד"
+
 
 #: include/global_arrays.php
 msgid "Total Similar Data Sources"
@@ -7447,7 +7535,8 @@ msgstr "נכשל"
 
 #: include/global_arrays.php
 msgid "[Warning]"
-msgstr "<strong>אזהרה:</strong>"
+msgstr "[אזהרה]"
+
 
 #: include/global_arrays.php
 msgid "[Restart]"
@@ -7936,7 +8025,8 @@ msgstr "בדיקת רשימה לבנה"
 
 #: include/global_form.php
 msgid "The result of the Whitespace verification check for the specific Input Method.  If the Input String changes, and the Whitelist file is not update, Graphs will not be allowed to be created."
-msgstr "התוצאה של בדיקת האימות הלבן של שיטת הקלט הספציפית. אם מחרוזת הקלט משתנה, והקובץ &#39;רשימת ההיתרים&#39; אינו מתעדכן, הגרפים לא יורשו להיווצר."
+msgstr "התוצאה של בדיקת האימות הלבן של שיטת הקלט הספציפית. אם מחרוזת הקלט משתנה, והקובץ 'רשימת ההיתרים' אינו מתעדכן, הגרפים לא יורשו להיווצר."
+
 
 #: include/global_form.php
 #, php-format
@@ -8040,7 +8130,8 @@ msgstr "הערך המזערי של נתונים שמותר לאסוף."
 
 #: include/global_form.php
 msgid "Maximum Value (\"U\" for No Maximum)"
-msgstr "ערך מקסימלי (&quot;U&quot; ללא מקסימום)"
+msgstr "ערך מקסימלי (\"U\" ללא מקסימום)"
+
 
 #: include/global_form.php
 msgid "The maximum value of data that is allowed to be collected."
@@ -8056,7 +8147,8 @@ msgstr "כיצד הנתונים מיוצגים ב- RRA."
 
 #: include/global_form.php
 msgid "The maximum amount of time that can pass before data is entered as 'unknown'. (Usually 2x300=600)"
-msgstr "משך הזמן המרבי שיכול לעבור לפני שהנתונים מוזנים כ- &#39;לא ידוע&#39;. (בדרך כלל 2x300 = 600)"
+msgstr "משך הזמן המרבי שיכול לעבור לפני שהנתונים מוזנים כ- 'לא ידוע'. (בדרך כלל 2x300 = 600)"
+
 
 #: include/global_form.php lib/html_utility.php
 msgid "Not Selected"
@@ -8088,7 +8180,7 @@ msgstr "כותרת (- כותרת)"
 
 #: include/global_form.php
 msgid "The name that is printed on the graph.  It can include replacement variables such as |host_description| or |query_fieldName|.  For a complete list of supported replacement tags, please see the Cacti documentation."
-msgstr "השם המודפס על התרשים. הוא יכול לכלול משתנים חלופיים כגון | host_description או | שאילתה | לקבלת רשימה מלאה של תגי החלפה נתמכים, עיין בתיעוד של Cacti."
+msgstr "השם המודפס על התרשים. הוא יכול לכלול משתנים חלופיים כגון |host_description| או |query_fieldName| לקבלת רשימה מלאה של תגי החלפה נתמכים, עיין בתיעוד של Cacti."
 
 #: include/global_form.php
 msgid "Vertical Label (--vertical-label)"
@@ -8232,7 +8324,8 @@ msgstr "ערך יחידת הערך (יחידות - מעריך)"
 
 #: include/global_form.php
 msgid "What unit Cacti should use on the Y-axis. Use 3 to display everything in \"k\" or -6 to display everything in \"u\" (micro)."
-msgstr "מה Cacti יחידה צריך להשתמש על ציר Y. השתמש ב 3 כדי להציג את הכל ב &quot;k&quot; או -6 כדי להציג את הכל ב &quot;u&quot; (מיקרו)."
+msgstr "מה Cacti יחידה צריך להשתמש על ציר Y. השתמש ב 3 כדי להציג את הכל ב \"k\" או -6 כדי להציג את הכל ב \"u\" (מיקרו)."
+
 
 #: include/global_form.php
 msgid "Unit Length (--units-length &lt;length&gt;)"
@@ -8409,7 +8502,8 @@ msgstr "Shift Data"
 
 #: include/global_form.php
 msgid "Offset your data on the time axis (x-axis) by the amount specified in the 'value' field."
-msgstr "לקזז את הנתונים שלך על ציר הזמן (ציר x) לפי הסכום שצוין בשדה &#39;ערך&#39;."
+msgstr "לקזז את הנתונים שלך על ציר הזמן (ציר x) לפי הסכום שצוין בשדה 'ערך'."
+
 
 #: include/global_form.php
 msgid "[HRULE|VRULE]: The value of the graph item.<br/> [TICK]: The fraction for the tick line.<br/> [SHIFT]: The time offset in seconds."
@@ -8421,7 +8515,8 @@ msgstr "סוג GPRINT"
 
 #: include/global_form.php
 msgid "If this graph item is a GPRINT, you can optionally choose another format here. You can define additional types under \"GPRINT Presets\"."
-msgstr "אם פריט גרף זה הוא GPRINT, תוכל לבחור בפורמט אחר כאן. ניתן להגדיר סוגים נוספים תחת &quot;GPRINT Presets&quot;."
+msgstr "אם פריט גרף זה הוא GPRINT, תוכל לבחור בפורמט אחר כאן. ניתן להגדיר סוגים נוספים תחת \"GPRINT Presets\"."
+
 
 #: include/global_form.php
 msgid "Text Alignment (TEXTALIGN)"
@@ -8469,7 +8564,8 @@ msgstr "קיזוז מקף (dash-offset=offset)"
 
 #: include/global_form.php
 msgid "The dash-offset parameter specifies an offset into the pattern at which the stroke begins."
-msgstr "הפרמטר &#39;מקף-היסט&#39; מציין מקזז לדפוס שבו מתחיל הקו."
+msgstr "הפרמטר 'מקף-היסט' מציין מקזז לדפוס שבו מתחיל הקו."
+
 
 #: include/global_form.php
 msgid "The name given to this graph template."
@@ -8521,7 +8617,8 @@ msgstr "שם מארח או כתובת IP מתאימים לחלוטין עבור 
 
 #: include/global_form.php
 msgid "The physical location of the Device.  This free form text can be a room, rack location, etc."
-msgstr "המיקום הפיזי של ההתקן. טקסט חופשי זה יכול להיות מקום, מיקום מתלה וכו &#39;."
+msgstr "המיקום הפיזי של ההתקן. טקסט חופשי זה יכול להיות מקום, מיקום מתלה וכו '."
+
 
 #: include/global_form.php
 msgid "Poller Association"
@@ -8651,7 +8748,8 @@ msgstr "האם יש לפרסם עץ זה כדי לאפשר למשתמשים לג
 
 #: include/global_form.php
 msgid "An Email Address where the User can be reached."
-msgstr "כתובת דוא&quot;ל שאליה ניתן להגיע למשתמש."
+msgstr "כתובת דוא\"ל שאליה ניתן להגיע למשתמש."
+
 
 #: include/global_form.php
 msgid "Enter the password for this user twice. Remember that passwords are case sensitive!"
@@ -8823,7 +8921,8 @@ msgstr "סוג הודעת SNMP"
 
 #: include/global_form.php
 msgid "SNMP traps are always unacknowledged. To send out acknowledged SNMP notifications, formally called \"INFORMS\", SNMPv2 or above will be required."
-msgstr "מלכודות SNMP אינן מוכרות תמיד. כדי לשלוח הודעות SNMP הודה, רשמית בשם &quot;INFORMS&quot;, SNMPv2 או מעל יידרש."
+msgstr "מלכודות SNMP אינן מוכרות תמיד. כדי לשלוח הודעות SNMP הודה, רשמית בשם \"INFORMS\", SNMPv2 או מעל יידרש."
+
 
 #: include/global_form.php
 msgid "The new Title of the aggregated Graph."
@@ -8855,7 +8954,8 @@ msgstr "סך הכל"
 
 #: include/global_form.php
 msgid "Please check those Items that shall be totaled in the \"Total\" column, when selecting any totaling option here."
-msgstr "בדוק את הפריטים שיוצגו בעמודה &quot;סך הכל&quot;, בעת בחירת אפשרות סיכומים כאן."
+msgstr "בדוק את הפריטים שיוצגו בעמודה \"סך הכל\", בעת בחירת אפשרות סיכומים כאן."
+
 
 #: include/global_form.php
 msgid "Total Type"
@@ -9023,7 +9123,8 @@ msgstr "להפיץ שינויים"
 
 #: include/global_form.php
 msgid "Propagate all options on this form (except for 'Title') to all child 'Header' items."
-msgstr "הפץ את כל האפשרויות בטופס זה (למעט &#39;כותרת&#39;) לכל הפריטים &#39;כותרת&#39; של הילד."
+msgstr "הפץ את כל האפשרויות בטופס זה (למעט 'כותרת') לכל הפריטים 'כותרת' של הילד."
+
 
 #: include/global_form.php
 msgid "The String Pattern (Regular Expression) to match against.<br>Enclosing '/' must <strong>NOT</strong> be provided!"
@@ -9195,7 +9296,8 @@ msgstr "נתיב תקלה של רשם נתיב רישום"
 
 #: include/global_settings.php
 msgid "If you are having issues with Cacti's Data Collectors, set this file path and the Data Collectors standard error will be redirected to this file"
-msgstr "אם אתה נתקל בבעיות עם Cacti&#39;s Data Collectors, הגדר נתיב קובץ זה והשגיאה הסטנדרטית של Data Collectors תנותב לקובץ זה"
+msgstr "אם אתה נתקל בבעיות עם Cacti's Data Collectors, הגדר נתיב קובץ זה והשגיאה הסטנדרטית של Data Collectors תנותב לקובץ זה"
+
 
 #: include/global_settings.php
 msgid "Rotate the Cacti Log"
@@ -9239,7 +9341,8 @@ msgstr "נתיב קובץ התצורה של Spine"
 
 #: include/global_settings.php
 msgid "The path to Spine configuration file.  By default, in the cwd of Spine, or /etc if not specified."
-msgstr "השביל לקובץ תצורה של עמוד השדרה. כברירת מחדל, ב cwd של עמוד השדרה, או / וכו &#39;אם לא צוין."
+msgstr "השביל לקובץ תצורה של עמוד השדרה. כברירת מחדל, ב cwd של עמוד השדרה, או / וכו 'אם לא צוין."
+
 
 #: include/global_settings.php
 msgid "RRDfile Auto Clean"
@@ -9375,7 +9478,8 @@ msgstr "תמיכת שפה"
 
 #: include/global_settings.php
 msgid "Choose 'enabled' to allow the localization of Cacti. The strict mode requires that the requested language will also be supported by all plugins being installed at your system. If that's not the fact everything will be displayed in English."
-msgstr "בחר &#39;מופעלת&#39; כדי לאפשר את לוקליזציה של Cacti. מצב קפדני דורש שהשפה המבוקשת תתמוך גם בכל יישומי הפלאגין המותקנים במערכת שלך. אם זה לא את העובדה שהכל יוצג באנגלית."
+msgstr "בחר 'מופעלת' כדי לאפשר את לוקליזציה של Cacti. מצב קפדני דורש שהשפה המבוקשת תתמוך גם בכל יישומי הפלאגין המותקנים במערכת שלך. אם זה לא את העובדה שהכל יוצג באנגלית."
+
 
 #: include/global_settings.php
 msgid "Language"
@@ -9467,7 +9571,8 @@ msgstr "שיטת הרשאה גרף"
 
 #: include/global_settings.php
 msgid "There are four methods for determining a User's Graph Permissions.  The first is 'Permissive'.  Under the 'Permissive' setting, a User only needs access to either the Graph, Device or Graph Template to gain access to the Graphs that apply to them.  Under 'Restrictive', the User must have access to the Graph, the Device, and the Graph Template to gain access to the Graph.  These first two methods have scalability problems for very large installs.  So, two additional options are available.  They are 'Device Based', which means if you have access to the Device, you get access to it's Graphs.  And lastly 'Graph Template Based', which means if you have access to the 'Graph Template' you get access to all Device Graphs of that Template."
-msgstr "קיימות שתי שיטות לקביעת הרשאות גרף של משתמש. הראשון הוא &quot;מתירני&quot;. תחת ההגדרה &#39;מתירני&#39;, משתמש צריך רק גישה לתבנית &#39;גרף&#39;, &#39;מכשיר&#39; או &#39;גרף&#39; כדי לקבל גישה לתרשימים החלים עליהם. תחת &#39;הגבלה&#39;, המשתמש חייב להיות בעל גישה לגרף, למכשיר ולתבנית הגרף כדי לקבל גישה לתרשים."
+msgstr "קיימות שתי שיטות לקביעת הרשאות גרף של משתמש. הראשון הוא \"מתירני\". תחת ההגדרה 'מתירני', משתמש צריך רק גישה לתבנית 'גרף', 'מכשיר' או 'גרף' כדי לקבל גישה לתרשימים החלים עליהם. תחת 'הגבלה', המשתמש חייב להיות בעל גישה לגרף, למכשיר ולתבנית הגרף כדי לקבל גישה לתרשים."
+
 
 #: include/global_settings.php
 msgid "Permissive"
@@ -9641,11 +9746,13 @@ msgstr "כאשר מושבת, Cacti אוטומציה לא פעיל ליצור כ�
 
 #: include/global_settings.php
 msgid "Automation Notification To Email"
-msgstr "הודעת אוטומציה לדוא&quot;ל"
+msgstr "הודעת אוטומציה לדוא\"ל"
+
 
 #: include/global_settings.php
 msgid "The Email Address to send Automation Notification Emails to if not specified at the Automation Network level.  If either this field, or the Automation Network value are left blank, Cacti will use the Primary Cacti Admins Email account."
-msgstr "כתובת הדואר האלקטרוני לשליחה של הודעות אימייל לאוטומציה אם לא צוין ברמת &#39;אוטומציה&#39;. אם שדה זה או הערך &#39;רשת אוטומציה&#39; יישארו ריקים, Cacti ישתמש בחשבון מנהלי הדואר הראשי של Cacti."
+msgstr "כתובת הדואר האלקטרוני לשליחה של הודעות אימייל לאוטומציה אם לא צוין ברמת 'אוטומציה'. אם שדה זה או הערך 'רשת אוטומציה' יישארו ריקים, Cacti ישתמש בחשבון מנהלי הדואר הראשי של Cacti."
+
 
 #: include/global_settings.php
 msgid "Automation Notification From Name"
@@ -9653,7 +9760,8 @@ msgstr "הודעת אוטומציה מתוך השם"
 
 #: include/global_settings.php
 msgid "The Email Name to use for Automation Notification Emails to if not specified at the Automation Network level.  If either this field, or the Automation Network value are left blank, Cacti will use the system default From Name."
-msgstr "שם האימייל שישמש להודעות דוא&quot;ל של התראות אוטומטיות אם לא צוין ברמת רשת האוטומטי. אם שדה זה או הערך Network Automation נותרים ריקים, Cacti ישתמש בברירת המחדל של המערכת משם."
+msgstr "שם האימייל שישמש להודעות דוא\"ל של התראות אוטומטיות אם לא צוין ברמת רשת האוטומטי. אם שדה זה או הערך Network Automation נותרים ריקים, Cacti ישתמש בברירת המחדל של המערכת משם."
+
 
 #: include/global_settings.php
 msgid "Automation Notification From Email"
@@ -9661,7 +9769,8 @@ msgstr "הודעת אוטומציה מאת דואר אלקטרוני"
 
 #: include/global_settings.php
 msgid "The Email Address to use for Automation Notification Emails to if not specified at the Automation Network level.  If either this field, or the Automation Network value are left blank, Cacti will use the system default From Email Address."
-msgstr "כתובת הדואר האלקטרוני לשימוש בהודעות דוא&quot;ל של התראות אוטומטיות אם לא צוין ברמת רשת האוטומטי. אם שדה זה או הערך &#39;רשת אוטומציה&#39; נותרים ריקים, Cacti ישתמש בברירת המחדל של המערכת מכתובת דואר אלקטרוני."
+msgstr "כתובת הדואר האלקטרוני לשימוש בהודעות דוא\"ל של התראות אוטומטיות אם לא צוין ברמת רשת האוטומטי. אם שדה זה או הערך 'רשת אוטומציה' נותרים ריקים, Cacti ישתמש בברירת המחדל של המערכת מכתובת דואר אלקטרוני."
+
 
 #: include/global_settings.php
 msgid "Graph Template Defaults"
@@ -9867,7 +9976,8 @@ msgstr "סוג ה-Ping המוגדר כברירת מחדל עבור כל ההתק
 
 #: include/global_settings.php
 msgid "Default Ping Port for all new Devices.  With TCP, Cacti will attempt to Syn the port.  With UDP, Cacti requires either a successful connection, or a 'port not reachable' error to determine if the Device is up or not."
-msgstr "ברירת מחדל Ping Port עבור כל ההתקנים החדשים. עם TCP, Cacti ינסה לסנכרן את היציאה. עם UDP, Cacti דורש חיבור מוצלח, או &quot;יציאה לא נגיש&quot; שגיאה כדי לקבוע אם המכשיר הוא מעלה או לא."
+msgstr "ברירת מחדל Ping Port עבור כל ההתקנים החדשים. עם TCP, Cacti ינסה לסנכרן את היציאה. עם UDP, Cacti דורש חיבור מוצלח, או \"יציאה לא נגיש\" שגיאה כדי לקבוע אם המכשיר הוא מעלה או לא."
+
 
 #: include/global_settings.php
 msgid "Default Ping Timeout value in milli-seconds for all new Devices.  The timeout values to use for Device SNMP, ICMP, UDP and TCP pinging.  ICMP Pings will be rounded up to the nearest second.  TCP and UDP connection timeouts on Windows are controlled by the operating system, and are therefore not recommended on Windows."
@@ -10053,7 +10163,8 @@ msgstr "מספר השורות המרבי לכל דף"
 
 #: include/global_settings.php
 msgid "User defined number of lines for the CLOG to tail when selecting 'All lines'."
-msgstr "המשתמש הגדיר מספר שורות עבור CLOG כדי הזנב בעת בחירת &quot;כל השורות&quot;."
+msgstr "המשתמש הגדיר מספר שורות עבור CLOG כדי הזנב בעת בחירת \"כל השורות\"."
+
 
 #: include/global_settings.php
 msgid "Log Tail Refresh"
@@ -10073,7 +10184,8 @@ msgstr "אי הכללה של Regex"
 
 #: include/global_settings.php
 msgid "Any strings that match this regex will be excluded from the user display.  <strong>For example, if you want to exclude all log lines that include the words 'Admin' or 'Login' you would type '(Admin || Login)'</strong>"
-msgstr "כל מחרוזות התואמות את הביטוי הרגולרי הזה לא ייכללו בתצוגת המשתמש. <strong>לדוגמה, אם ברצונך לא לכלול את כל שורות היומן הכוללות את המילים &#39;מנהל&#39; או &#39;התחברות&#39;, עליך להקליד &#39;(Admin || Login)&#39;</strong>"
+msgstr "כל מחרוזות התואמות את הביטוי הרגולרי הזה לא ייכללו בתצוגת המשתמש. <strong>לדוגמה, אם ברצונך לא לכלול את כל שורות היומן הכוללות את המילים 'מנהל' או 'התחברות', עליך להקליד '(Admin || Login)'</strong>"
+
 
 #: include/global_settings.php
 msgid "Real-time Graphs"
@@ -10125,7 +10237,7 @@ msgstr "פורמט תאריך מותאם אישית"
 
 #: include/global_settings.php
 msgid "To be used when formatting |date_time| on a graph"
-msgstr "לשימוש בעת עיצוב | תאריך_שעה | על גרף"
+msgstr "לשימוש בעת עיצוב |date_time| על גרף"
 
 #: include/global_settings.php
 msgid "Disable RRDtool Watermark"
@@ -10334,7 +10446,8 @@ msgstr "זמן קצוב לסוכן"
 
 #: include/global_settings.php
 msgid "The amount of time, in seconds, that the Central Cacti web server will wait for a response from the Remote Data Collector to obtain various Device information before abandoning the request.  On Devices that are associated with Data Collectors other than the Central Cacti Data Collector, the Remote Agent must be used to gather Device information."
-msgstr "משך הזמן, בשניות, ששרת האינטרנט המרכזי של Cacti יחכה לתגובה ממאגר הנתונים המרוחק כדי לקבל מידע מכשיר אחר לפני שתנטוש את הבקשה. במכשירים המשויכים ל- Data Collectors, פרט למאגר הנתונים המרכזי של Cacti, יש להשתמש ב&#39;נציג המרוחק &#39;כדי לאסוף מידע על ההתקן."
+msgstr "משך הזמן, בשניות, ששרת האינטרנט המרכזי של Cacti יחכה לתגובה ממאגר הנתונים המרוחק כדי לקבל מידע מכשיר אחר לפני שתנטוש את הבקשה. במכשירים המשויכים ל- Data Collectors, פרט למאגר הנתונים המרכזי של Cacti, יש להשתמש ב'נציג המרוחק 'כדי לאסוף מידע על ההתקן."
+
 
 #: include/global_settings.php
 msgid "Refresh Poller Table Per Cycle"
@@ -10577,7 +10690,8 @@ msgstr "תמיכה בעוגיות אימות"
 
 #: include/global_settings.php
 msgid "If a user authenticates and selects 'Keep me signed in', an authentication cookie will be created on the user's computer allowing that user to stay logged in.  The authentication cookie expires after 90 days of non-use."
-msgstr "אם משתמש מאמת ובוחר באפשרות &#39;שמור אותי מחובר&#39;, קובץ Cookie של אימות ייווצר במחשב המשתמש ומאפשר למשתמש להישאר מחובר. קובץ ה- cookie של האימות פג לאחר 90 יום של אי-שימוש."
+msgstr "אם משתמש מאמת ובוחר באפשרות 'שמור אותי מחובר', קובץ Cookie של אימות ייווצר במחשב המשתמש ומאפשר למשתמש להישאר מחובר. קובץ ה- cookie של האימות פג לאחר 90 יום של אי-שימוש."
+
 
 #: include/global_settings.php
 msgid "Special Users"
@@ -10589,7 +10703,8 @@ msgstr "מנהל ראשי"
 
 #: include/global_settings.php
 msgid "The name of the primary administrative account that will automatically receive Emails when the Cacti system experiences issues.  To receive these Emails, ensure that your mail settings are correct, and the administrative account has an Email address that is set."
-msgstr "השם של חשבון הניהול הראשי שיקבל הודעות אימייל באופן אוטומטי כאשר מערכת Cacti תחווה בעיות. כדי לקבל הודעות דוא&quot;ל אלה, ודא שהגדרות הדואר שלך נכונות, ולחשבון הניהול יש כתובת דוא&quot;ל שהוגדרה."
+msgstr "השם של חשבון הניהול הראשי שיקבל הודעות אימייל באופן אוטומטי כאשר מערכת Cacti תחווה בעיות. כדי לקבל הודעות דוא\"ל אלה, ודא שהגדרות הדואר שלך נכונות, ולחשבון הניהול יש כתובת דוא\"ל שהוגדרה."
+
 
 #: include/global_settings.php user_domains.php
 msgid "No User"
@@ -10601,7 +10716,8 @@ msgstr "משתמש אורח"
 
 #: include/global_settings.php
 msgid "The name of the guest user for viewing graphs; is 'No User' by default."
-msgstr "השם של המשתמש האורח לצפייה בתרשימים; הוא &#39;ללא משתמש&#39; כברירת מחדל."
+msgstr "השם של המשתמש האורח לצפייה בתרשימים; הוא 'ללא משתמש' כברירת מחדל."
+
 
 #: include/global_settings.php user_domains.php
 msgid "User Template"
@@ -10609,7 +10725,8 @@ msgstr "תבנית משתמש"
 
 #: include/global_settings.php
 msgid "The name of the user that Cacti will use as a template for new Web Basic and LDAP users; is 'guest' by default.  This user account will be disabled from logging in upon being selected."
-msgstr "שם המשתמש ש- Cacti ישמש כתבנית עבור משתמשי Web Basic ו- LDAP חדשים; הוא &#39;אורח&#39; כברירת מחדל. חשבון משתמש זה יושבת מפני כניסה עם בחירתו."
+msgstr "שם המשתמש ש- Cacti ישמש כתבנית עבור משתמשי Web Basic ו- LDAP חדשים; הוא 'אורח' כברירת מחדל. חשבון משתמש זה יושבת מפני כניסה עם בחירתו."
+
 
 #: include/global_settings.php
 msgid "Basic Authentication Settings"
@@ -10895,7 +11012,8 @@ msgstr "בסיס חיפוש"
 
 #: include/global_settings.php
 msgid "Search base for searching the LDAP directory, such as <i>'dc=win2kdomain,dc=local'</i> or <i>'ou=people,dc=domain,dc=local'</i>."
-msgstr "חפש בסיס לחיפוש בספריית LDAP, כגון <i>&#39;dc = win2kdomain, dc = local&#39;</i> או <i>&#39;ou = people, dc = domain, dc = local&#39;</i> ."
+msgstr "חפש בסיס לחיפוש בספריית LDAP, כגון <i>'dc = win2kdomain, dc = local'</i> או <i>'ou = people, dc = domain, dc = local'</i> ."
+
 
 #: include/global_settings.php user_domains.php
 msgid "Search Filter"
@@ -10959,11 +11077,13 @@ msgstr "הודע למנהל הראשי של בעיות"
 
 #: include/global_settings.php
 msgid "In cases where the Cacti server is experiencing problems, should the Primary Administrator be notified by Email?  The Primary Administrator's Cacti user account is specified under the Authentication tab on Cacti's settings page. It defaults to the 'admin' account."
-msgstr "במקרים שבהם השרת של Cacti נתקל בבעיות, האם מנהל המערכת הראשי יקבל הודעה בדוא&quot;ל? חשבון המשתמש של מנהל המערכת הראשי של מנהל המערכת צוין תחת הכרטיסייה אימות בדף ההגדרות של Cacti. זה ברירת המחדל לחשבון &#39;מנהל&#39;."
+msgstr "במקרים שבהם השרת של Cacti נתקל בבעיות, האם מנהל המערכת הראשי יקבל הודעה בדוא\"ל? חשבון המשתמש של מנהל המערכת הראשי של מנהל המערכת צוין תחת הכרטיסייה אימות בדף ההגדרות של Cacti. זה ברירת המחדל לחשבון 'מנהל'."
+
 
 #: include/global_settings.php
 msgid "Test Email"
-msgstr "בדיקת דוא&quot;ל"
+msgstr "בדיקת דוא\"ל"
+
 
 #: include/global_settings.php
 msgid "This is a Email account used for sending a test message to ensure everything is working properly."
@@ -10983,7 +11103,8 @@ msgstr "Ping שרת דואר"
 
 #: include/global_settings.php
 msgid "Ping the Mail Server before sending test Email?"
-msgstr "Ping את שרת הדואר לפני שליחת הודעת דוא&quot;ל?"
+msgstr "Ping את שרת הדואר לפני שליחת הודעת דוא\"ל?"
+
 
 #: include/global_settings.php lib/html_reports.php
 msgid "From Email Address"
@@ -11007,7 +11128,8 @@ msgstr "עטיפת מילה"
 
 #: include/global_settings.php
 msgid "This is how many characters will be allowed before a line in the Email is automatically word wrapped. (0 = Disabled)"
-msgstr "זה כמה תווים יהיה מותר לפני שורה בדוא&quot;ל הוא באופן אוטומטי מילה עטוף. (0 מושבת)"
+msgstr "זה כמה תווים יהיה מותר לפני שורה בדוא\"ל הוא באופן אוטומטי מילה עטוף. (0 מושבת)"
+
 
 #: include/global_settings.php
 msgid "Sendmail Options"
@@ -11063,11 +11185,13 @@ msgstr "אבטחה של SMTP"
 
 #: include/global_settings.php
 msgid "The encryption method to use for the Email."
-msgstr "שיטת ההצפנה לשימוש בדוא&quot;ל."
+msgstr "שיטת ההצפנה לשימוש בדוא\"ל."
+
 
 #: include/global_settings.php
 msgid "SSL"
-msgstr "‫SSL"
+msgstr "SSL"
+
 
 #: include/global_settings.php
 msgid "TLS"
@@ -11203,7 +11327,8 @@ msgstr "אורך ארגומנט מרבי"
 
 #: include/global_settings.php
 msgid "When boost sends update commands to RRDtool, it must not exceed the operating systems Maximum Argument Length.  This varies by operating system and kernel level.  For example: Windows 2000 <= 2048, FreeBSD <= 65535, Linux 2.6.22-- <= 131072, Linux 2.6.23++ unlimited"
-msgstr "כאשר דחיפה שולח פקודות עדכון RRDtool, זה לא יעלה על מערכות ההפעלה אורך ארגומנט מקסימלי. זה משתנה לפי מערכת ההפעלה ואת רמת הקרנל. לדוגמה: Windows 2000 &lt;= 2048, FreeBSD &lt;= 65535, Linux 2.6.22-- &lt;= 131072, Linux 2.6.23 ++ ללא הגבלה"
+msgstr "כאשר דחיפה שולח פקודות עדכון RRDtool, זה לא יעלה על מערכות ההפעלה אורך ארגומנט מקסימלי. זה משתנה לפי מערכת ההפעלה ואת רמת הקרנל. לדוגמה: Windows 2000 <= 2048, FreeBSD <= 65535, Linux 2.6.22-- <= 131072, Linux 2.6.23 ++ ללא הגבלה"
+
 
 #: include/global_settings.php
 msgid "Memory Limit for Boost and Poller"
@@ -11475,7 +11600,8 @@ msgstr "שיטת הסרה"
 
 #: include/global_settings.php
 msgid "There are two removal methods.  The first, Standard Deviation, will remove any sample that is X number of standard deviations away from the average of samples.  The second method, Variance, will remove any sample that is X% more than the Variance average.  The Variance method takes into account a certain number of 'outliers'.  Those are exceptional samples, like the spike, that need to be excluded from the Variance Average calculation."
-msgstr "ישנן שתי שיטות הסרה. הראשון, סטיית תקן, תסיר כל מדגם כי הוא מספר X של סטיות תקן במרחק הממוצע של דגימות. השיטה השנייה, Variance, תסיר כל מדגם שהוא X% יותר מממוצע הווריאנס. שיטת הווריאנס לוקחת בחשבון מספר מסוים של &quot;חריגים&quot;. אלה דוגמאות חריגות, כמו ספייק, כי צריך להיות מחוץ לחישוב ממוצע varariance."
+msgstr "ישנן שתי שיטות הסרה. הראשון, סטיית תקן, תסיר כל מדגם כי הוא מספר X של סטיות תקן במרחק הממוצע של דגימות. השיטה השנייה, Variance, תסיר כל מדגם שהוא X% יותר מממוצע הווריאנס. שיטת הווריאנס לוקחת בחשבון מספר מסוים של \"חריגים\". אלה דוגמאות חריגות, כמו ספייק, כי צריך להיות מחוץ לחישוב ממוצע varariance."
+
 
 #: include/global_settings.php
 msgid "Standard Deviation"
@@ -11491,7 +11617,8 @@ msgstr "שיטת החלפה"
 
 #: include/global_settings.php
 msgid "There are three replacement methods.  The first method replaces the spike with the average of the data source in question.  The second method replaces the spike with a 'NaN'.  The last replaces the spike with the last known good value found."
-msgstr "ישנן שלוש שיטות חלופיות. השיטה הראשונה מחליפה את ספייק עם הממוצע של מקור הנתונים המדובר. השיטה השנייה מחליפה את ספייק עם &quot;NaN&quot;. האחרון מחליף את ספייק עם הערך הטוב האחרון הידוע נמצא."
+msgstr "ישנן שלוש שיטות חלופיות. השיטה הראשונה מחליפה את ספייק עם הממוצע של מקור הנתונים המדובר. השיטה השנייה מחליפה את ספייק עם \"NaN\". האחרון מחליף את ספייק עם הערך הטוב האחרון הידוע נמצא."
+
 
 #: include/global_settings.php lib/html.php
 msgid "Average"
@@ -11587,7 +11714,8 @@ msgstr "זמן הבסיס"
 
 #: include/global_settings.php
 msgid "The Base Time for Spike removal to occur.  For example, if you use '12:00am' and you choose once per day, the batch removal would begin at approximately midnight every day."
-msgstr "זמן הבסיס עבור הסרת ספייק להתרחש. לדוגמה, אם אתה משתמש ב &#39;12: 00:00&#39; ואתה בוחר פעם ביום, הסרת האצווה תתחיל בחצות בערך כל יום."
+msgstr "זמן הבסיס עבור הסרת ספייק להתרחש. לדוגמה, אם אתה משתמש ב '12: 00:00' ואתה בוחר פעם ביום, הסרת האצווה תתחיל בחצות בערך כל יום."
+
 
 #: include/global_settings.php
 msgid "Graph Templates to Spike Kill"
@@ -11615,7 +11743,8 @@ msgstr "מצב תצוגת ברירת מחדל"
 
 #: include/global_settings.php
 msgid "Which Graph mode you want displayed by default when you first visit the Graphs page?"
-msgstr "באיזה מצב גרף ברצונך להציג כברירת מחדל בעת ביקור ראשון בדף &#39;גרפים&#39;?"
+msgstr "באיזה מצב גרף ברצונך להציג כברירת מחדל בעת ביקור ראשון בדף 'גרפים'?"
+
 
 #: include/global_settings.php
 msgid "TimeZone Support"
@@ -11655,7 +11784,8 @@ msgstr "הסתר מושבת"
 
 #: include/global_settings.php
 msgid "Hides Disabled Devices and Graphs when viewing outside of Console tab."
-msgstr "מסתיר מכשירים מושבתים וגרפים בעת הצגה מחוץ לכרטיסייה &#39;מסוף&#39;."
+msgstr "מסתיר מכשירים מושבתים וגרפים בעת הצגה מחוץ לכרטיסייה 'מסוף'."
+
 
 #: include/global_settings.php
 msgid "Show Device Aggregates"
@@ -11723,7 +11853,8 @@ msgstr "אפשר לגרף להאריך את העתיד"
 
 #: include/global_settings.php
 msgid "When displaying Graphs, allow Graph Dates to extend 'to future'"
-msgstr "בעת הצגת גרפים, אפשר לתאריכי גרפים להאריך את האפשרות &#39;לעתיד&#39"
+msgstr "בעת הצגת גרפים, אפשר לתאריכי גרפים להאריך את האפשרות 'לעתיד&#39"
+
 
 #: include/global_settings.php
 msgid "First Day of the Week"
@@ -11944,7 +12075,8 @@ msgstr "<strong>הערה:</strong> אתה מחובר לאוסף נתונים מ�
 
 #: index.php
 msgid "<strong>NOTE:</strong> None of the Core Cacti Plugins, to date, have been re-designed to work with Remote Data Collectors.  Therefore, Plugins such as MacTrack, and HMIB, which require direct access to devices will not work with Remote Data Collectors at this time.  However, plugins such as Thold will work so long as the Remote Data Collector is in <b>'online'</b> mode."
-msgstr "<strong>הערה:</strong> אף אחד מהתוספים Core Cacti, עד כה, תוכנן מחדש לעבוד עם Remote Data Collectors. לכן, יישומי פלאגין כגון MacTrack ו- HMIB, הדורשים גישה ישירה למכשירים, לא יפעלו בשלב זה עם Remote Data Collectors. עם זאת, יישומי פלאגין כגון Thold יפעלו כל עוד אספן הנתונים המרוחק נמצא במצב <b>&#39;מקוון&#39;</b> ."
+msgstr "<strong>הערה:</strong> אף אחד מהתוספים Core Cacti, עד כה, תוכנן מחדש לעבוד עם Remote Data Collectors. לכן, יישומי פלאגין כגון MacTrack ו- HMIB, הדורשים גישה ישירה למכשירים, לא יפעלו בשלב זה עם Remote Data Collectors. עם זאת, יישומי פלאגין כגון Thold יפעלו כל עוד אספן הנתונים המרוחק נמצא במצב <b>'מקוון'</b> ."
+
 
 #: install/functions.php
 #, php-format
@@ -12016,7 +12148,8 @@ msgstr "הגרפים שנבחרו עבור הגרף המצטבר מייצגים 
 
 #: lib/api_aggregate.php
 msgid "Press 'Return' to return and select different Graphs"
-msgstr "לחץ על &#39;Return&#39; כדי לחזור ולבחור גרפים שונים"
+msgstr "לחץ על 'Return' כדי לחזור ולבחור גרפים שונים"
+
 
 #: lib/api_aggregate.php
 msgid "The Graphs chosen for the Aggregate Graph do not use Graph Templates.  Aggregate does not support creating Aggregate Graphs from non-templated graphs."
@@ -12407,7 +12540,8 @@ msgstr "%s - WEBUI הערה: Cacti יומן מנקה ממשק ניהול האי�
 
 #: lib/clog_webapi.php
 msgid "Click 'Continue' to purge the Log File.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog."
-msgstr "לחץ על &#39;המשך&#39; כדי לנקות את קובץ היומן. <br><br><br> הערה: אם יוגדר רישום הן ל- Cacti והן ל- Syslog, פרטי היומן יישארו ב- Syslog."
+msgstr "לחץ על 'המשך' כדי לנקות את קובץ היומן. <br><br><br> הערה: אם יוגדר רישום הן ל- Cacti והן ל- Syslog, פרטי היומן יישארו ב- Syslog."
+
 
 #: lib/clog_webapi.php utilities.php
 msgid "Purge Log"
@@ -12641,12 +12775,14 @@ msgstr "שדה מיון חדש תוקן. שדה המיון יעודכן."
 #: lib/data_query.php
 #, php-format
 msgid "Could not find data query XML file at '%s'"
-msgstr "לא ניתן למצוא קובץ XML לשאילתת נתונים ב- &#39; %s&#39"
+msgstr "לא ניתן למצוא קובץ XML לשאילתת נתונים ב- ' %s&#39"
+
 
 #: lib/data_query.php
 #, php-format
 msgid "Found data query XML file at '%s'"
-msgstr "נמצא קובץ שאילתת נתוני XML ב- &#39; %s&#39"
+msgstr "נמצא קובץ שאילתת נתוני XML ב- ' %s&#39"
+
 
 #: lib/data_query.php
 msgid "Error parsing XML file into an array."
@@ -12676,7 +12812,8 @@ msgstr "&lt;arg_num_indexes&gt; קיים בקובץ ה-XML אך לא הוחזר�
 #: lib/data_query.php
 #, php-format
 msgid "Executing script for num of indexes '%s'"
-msgstr "ביצוע סקריפט עבור num של אינדקסים &#39; %s&#39"
+msgstr "ביצוע סקריפט עבור num של אינדקסים ' %s&#39"
+
 
 #: lib/data_query.php
 #, php-format
@@ -12685,11 +12822,13 @@ msgstr "נמצאו מספר אינדקסים: %s"
 
 #: lib/data_query.php
 msgid "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' not supported"
-msgstr "&lt;arg_num_indexes&gt; חסר בקובץ XML, &#39;ספירת אינדקס שונתה&#39; אינה נתמכת"
+msgstr "&lt;arg_num_indexes&gt; חסר בקובץ XML, 'ספירת אינדקס שונתה' אינה נתמכת"
+
 
 #: lib/data_query.php
 msgid "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting arg_index entries"
-msgstr "&lt;arg_num_indexes&gt; חסר בקובץ XML, &#39;ספירת האינדקס שונתה&#39; חיקתה על ידי ספירת ערכי arg_index"
+msgstr "&lt;arg_num_indexes&gt; חסר בקובץ XML, 'ספירת האינדקס שונתה' חיקתה על ידי ספירת ערכי arg_index"
+
 
 #: lib/data_query.php
 msgid "ERROR: Data Query returned no indexes."
@@ -12702,7 +12841,8 @@ msgstr "ביצוע סקריפט עבור רשימת האינדקסים '%s', ס�
 
 #: lib/data_query.php
 msgid "Click to show Data Query output for 'index'"
-msgstr "לחץ כדי להציג פלט שאילתת נתונים עבור &#39;index&#39"
+msgstr "לחץ כדי להציג פלט שאילתת נתונים עבור 'index&#39"
+
 
 #: lib/data_query.php
 #, php-format
@@ -12712,7 +12852,8 @@ msgstr "אינדקס נמצא: %s"
 #: lib/data_query.php
 #, php-format
 msgid "Click to show Data Query output for field '%s'"
-msgstr "לחץ כדי להציג פלט שאילתת נתונים עבור השדה &#39; %s&#39"
+msgstr "לחץ כדי להציג פלט שאילתת נתונים עבור השדה ' %s&#39"
+
 
 #: lib/data_query.php
 #, php-format
@@ -12722,7 +12863,8 @@ msgstr "שדה המיון לא החזיר נתונים עבור שם השדה %s
 #: lib/data_query.php
 #, php-format
 msgid "Executing script query '%s'"
-msgstr "מבצעת שאילתת Script &#39; %s&#39"
+msgstr "מבצעת שאילתת Script ' %s&#39"
+
 
 #: lib/data_query.php
 #, php-format
@@ -12773,7 +12915,8 @@ msgstr "ביצוע SNMP get עבור מספר האינדקסים @ '%s' ספיר
 
 #: lib/data_query.php
 msgid "&lt;oid_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting oid_index entries"
-msgstr "&lt;oid_num_indexes&gt; חסר בקובץ XML, &#39;ספירת האינדקס שונתה&#39; חיקתה על ידי ספירת רשומות oid_index"
+msgstr "&lt;oid_num_indexes&gt; חסר בקובץ XML, 'ספירת האינדקס שונתה' חיקתה על ידי ספירת רשומות oid_index"
+
 
 #: lib/data_query.php
 #, php-format
@@ -12817,12 +12960,14 @@ msgstr "תיקון שדה 'method' שגוי עבור '%s' מאחר ש-'rewrite_i
 #: lib/data_query.php
 #, php-format
 msgid "Inserting index data for field '%s' [value='%s']"
-msgstr "הוספת נתוני אינדקס לשדה &#39; %s&#39; [value = &#39; %s&#39;]"
+msgstr "הוספת נתוני אינדקס לשדה ' %s' [value = ' %s']"
+
 
 #: lib/data_query.php
 #, php-format
 msgid "Located input field '%s' [get]"
-msgstr "שדה קלט ממוקם &#39; %s&#39; [get]"
+msgstr "שדה קלט ממוקם ' %s' [get]"
+
 
 #: lib/data_query.php
 #, php-format
@@ -12832,17 +12977,20 @@ msgstr "נמצא כלל שכתוב OID: 's/%1$s/%2$s/'"
 #: lib/data_query.php
 #, php-format
 msgid "oid_rewrite at OID: '%s' new OID: '%s'"
-msgstr "oid_rewrite ב- OID: &#39; %1$s&#39; חדש OID: &#39; %2$s&#39"
+msgstr "oid_rewrite ב- OID: ' %1$s' חדש OID: ' %2$s&#39"
+
 
 #: lib/data_query.php
 #, php-format
 msgid "Executing SNMP get for data @ '%s' [value='%s']"
-msgstr "ביצוע SNMP עבור נתונים @ &#39; %s&#39; [ערך = &#39; %s&#39;]"
+msgstr "ביצוע SNMP עבור נתונים @ ' %s' [ערך = ' %s']"
+
 
 #: lib/data_query.php
 #, php-format
 msgid "Field '%s' %s"
-msgstr "שדה &#39; %s&#39; %s"
+msgstr "שדה ' %s' %s"
+
 
 #: lib/data_query.php
 #, php-format
@@ -12857,37 +13005,44 @@ msgstr "שדה המיון לא החזיר נתונים עבור OID[%s], מדל�
 #: lib/data_query.php
 #, php-format
 msgid "Found result for data @ '%s' [value='%s']"
-msgstr "נמצאה תוצאה של נתונים @ &#39; %s&#39; [value = &#39; %s&#39;]"
+msgstr "נמצאה תוצאה של נתונים @ ' %s' [value = ' %s']"
+
 
 #: lib/data_query.php
 #, php-format
 msgid "Setting result for data @ '%s' [key='%s', value='%s']"
-msgstr "הגדרת תוצאה עבור נתונים @ &#39; %s&#39; [key = &#39; %s&#39;, value = &#39; %s&#39;]"
+msgstr "הגדרת תוצאה עבור נתונים @ ' %s' [key = ' %s', value = ' %s']"
+
 
 #: lib/data_query.php
 #, php-format
 msgid "Skipped result for data @ '%s' [key='%s', value='%s']"
-msgstr "התוצאה דילגה עבור נתונים @ &#39; %s&#39; [key = &#39; %s&#39;, value = &#39; %s&#39;]"
+msgstr "התוצאה דילגה עבור נתונים @ ' %s' [key = ' %s', value = ' %s']"
+
 
 #: lib/data_query.php
 #, php-format
 msgid "Got SNMP get result for data @ '%s' [value='%s'] (index: %s)"
-msgstr "קיבלת תוצאה של SNMP עבור נתונים @ &#39; %s&#39; [value = &#39; %s&#39;] (index: %s)"
+msgstr "קיבלת תוצאה של SNMP עבור נתונים @ ' %s' [value = ' %s'] (index: %s)"
+
 
 #: lib/data_query.php
 #, php-format
 msgid "Executing SNMP get for data @ '%s' [value='$value']"
-msgstr "ביצוע SNMP עבור נתונים @ &#39; %s&#39; [value = &#39;$ value&#39;]"
+msgstr "ביצוע SNMP עבור נתונים @ ' %s' [value = '$ value']"
+
 
 #: lib/data_query.php
 #, php-format
 msgid "Located input field '%s' [walk]"
-msgstr "שדה קלט נמצא &#39; %s&#39; [walk]"
+msgstr "שדה קלט נמצא ' %s' [walk]"
+
 
 #: lib/data_query.php
 #, php-format
 msgid "Executing SNMP walk for data @ '%s'"
-msgstr "ביצוע הליכה ב- SNMP עבור נתונים @ &#39; %s&#39"
+msgstr "ביצוע הליכה ב- SNMP עבור נתונים @ ' %s&#39"
+
 
 #: lib/data_query.php
 #, php-format
@@ -12897,7 +13052,8 @@ msgstr "אין אינדקס[%s] ב - VALUE_INDEX_PARSE, מדלג."
 #: lib/data_query.php
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from %s]"
-msgstr "נמצא פריט [ %s = &#39; %s&#39;] אינדקס: %s [מ- %s]"
+msgstr "נמצא פריט [ %s = ' %s'] אינדקס: %s [מ- %s]"
+
 
 #: lib/data_query.php
 #, php-format
@@ -12907,12 +13063,14 @@ msgstr "נמצאה מחרוזת OCTET STRING '%1$s', ערך מפוענח: '%2$s'
 #: lib/data_query.php
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid parse]"
-msgstr "נמצא פריט [ %s = &#39; %s&#39;] index: %s [מתוך regexp oid לנתח]"
+msgstr "נמצא פריט [ %s = ' %s'] index: %s [מתוך regexp oid לנתח]"
+
 
 #: lib/data_query.php
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid value parse]"
-msgstr "נמצא פריט [ %s = &#39; %s&#39;] index: %s [מתוך rexxp oid value parse]"
+msgstr "נמצא פריט [ %s = ' %s'] index: %s [מתוך rexxp oid value parse]"
+
 
 #: lib/data_query.php
 #, php-format
@@ -13079,7 +13237,8 @@ msgstr "קשר %s"
 
 #: lib/functions.php
 msgid "Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting."
-msgstr "שגיאת מיילר: לא כתובת <b>TO</b> מוגדר! <br> אם אתה משתמש בקישור <i>Test Mail (דואר בדיקה)</i> , הגדר את הגדרת <b>הדואר האלקטרוני של ההתראה</b> ."
+msgstr "שגיאת מיילר: לא כתובת TO מוגדר! <br> אם אתה משתמש בקישור <i>Test Mail (דואר בדיקה)</i> , הגדר את הגדרת <b>הדואר האלקטרוני של ההתראה</b> ."
+
 
 #: lib/functions.php
 #, php-format
@@ -13106,7 +13265,8 @@ msgstr "זוהי הודעת בדיקה שנוצרה על ידי Cacti. הודע�
 
 #: lib/functions.php
 msgid "Your email settings are currently set as follows"
-msgstr "הגדרות הדוא&quot;ל שלך מוגדרות באופן הבא"
+msgstr "הגדרות הדוא\"ל שלך מוגדרות באופן הבא"
+
 
 #: lib/functions.php
 msgid "Method"
@@ -13851,7 +14011,8 @@ msgstr "פורמט קובץ לשימוש"
 
 #: lib/html_reports.php
 msgid "Choose the custom html wrapper and CSS file to use.  This file contains both html and CSS to wrap around your report.  If it contains more than simply CSS, you need to place a special <REPORT> tag inside of the file.  This format tag will be replaced by the report content.  These files are located in the 'formats' directory."
-msgstr "בחר את עטיפת ה- HTML המותאמת אישית ואת קובץ ה- CSS לשימוש. קובץ זה מכיל הן HTML והן CSS לעטוף את הדוח שלך. אם הוא מכיל יותר מ CSS פשוט, אתה צריך מקום מיוחד <REPORT> בתוך הקובץ. תג פורמט זה יוחלף בתוכן הדוח. קבצים אלה נמצאים בספריה &#39;פורמטים&#39;."
+msgstr "בחר את עטיפת ה- HTML המותאמת אישית ואת קובץ ה- CSS לשימוש. קובץ זה מכיל הן HTML והן CSS לעטוף את הדוח שלך. אם הוא מכיל יותר מ CSS פשוט, אתה צריך מקום מיוחד <REPORT> בתוך הקובץ. תג פורמט זה יוחלף בתוכן הדוח. קבצים אלה נמצאים בספריה 'פורמטים'."
+
 
 #: lib/html_reports.php
 msgid "Default Text Font Size"
@@ -13919,11 +14080,13 @@ msgstr "דווח על מרווח"
 
 #: lib/html_reports.php
 msgid "Defines a Report Frequency relative to the given Mailtime above."
-msgstr "מגדיר תדר דוח ביחס ל&#39;דואר אלקטרוני &#39;לעיל."
+msgstr "מגדיר תדר דוח ביחס ל'דואר אלקטרוני 'לעיל."
+
 
 #: lib/html_reports.php
 msgid "e.g. 'Week(s)' represents a weekly Reporting Interval."
-msgstr "לדוגמה, &#39;Week (s)&#39; מייצג מרווח דיווח שבועי."
+msgstr "לדוגמה, 'Week (s)' מייצג מרווח דיווח שבועי."
+
 
 #: lib/html_reports.php
 msgid "Interval Frequency"
@@ -13935,11 +14098,13 @@ msgstr "מבוסס על Timespan של המרווח דוח לעיל, מגדיר �
 
 #: lib/html_reports.php
 msgid "e.g. If the Report Interval is 'Month(s)', then '2' indicates Every '2 Month(s) from the next Mailtime.' Lastly, if using the Month(s) Report Intervals, the 'Day of Week' and the 'Day of Month' are both calculated based upon the Mailtime you specify above."
-msgstr "לדוגמה, אם &#39;מרווח הדיווח&#39; הוא &#39;חודש (ים)&#39;, &#39;2&#39; מציין כל &#39;2 חודשים (שניות) מתיבת הדואר הבאה&#39;. לבסוף, אם נעשה שימוש במרווחים של חודש (חודשים), &#39;יום השבוע&#39; ו&#39;יום בחודש &#39;חושבים שניהם בהתבסס על Mailtime שציינת למעלה."
+msgstr "לדוגמה, אם 'מרווח הדיווח' הוא 'חודש (ים)', '2' מציין כל '2 חודשים (שניות) מתיבת הדואר הבאה'. לבסוף, אם נעשה שימוש במרווחים של חודש (חודשים), 'יום השבוע' ו'יום בחודש 'חושבים שניהם בהתבסס על Mailtime שציינת למעלה."
+
 
 #: lib/html_reports.php
 msgid "Email Sender/Receiver Details"
-msgstr "דוא&quot;ל שולח / פרטי המקלט"
+msgstr "דוא\"ל שולח / פרטי המקלט"
+
 
 #: lib/html_reports.php
 msgid "Subject"
@@ -13951,7 +14116,8 @@ msgstr "דוח Cacti"
 
 #: lib/html_reports.php
 msgid "This value will be used as the default Email subject.  The report name will be used if left blank."
-msgstr "ערך זה ישמש כנושא ברירת המחדל לדוא&quot;ל. שם הדוח ישמש אם נותר ריק."
+msgstr "ערך זה ישמש כנושא ברירת המחדל לדוא\"ל. שם הדוח ישמש אם נותר ריק."
+
 
 #: lib/html_reports.php
 msgid "This Name will be used as the default E-mail Sender"
@@ -13963,7 +14129,8 @@ msgstr "כתובת זו תשמש כתובת הדואר האלקטרוני של �
 
 #: lib/html_reports.php
 msgid "To Email Address(es)"
-msgstr "לכתובת דוא&quot;ל"
+msgstr "לכתובת דוא\"ל"
+
 
 #: lib/html_reports.php
 msgid "Please separate multiple addresses by comma (,)"
@@ -13991,19 +14158,23 @@ msgstr "תאריך / שעה עבר באותו זמן מחר"
 
 #: lib/html_reports.php
 msgid "Click 'Continue' to delete the following Report(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי למחוק את הדוחות הבאים."
+msgstr "לחץ על 'המשך' כדי למחוק את הדוחות הבאים."
+
 
 #: lib/html_reports.php
 msgid "Click 'Continue' to take ownership of the following Report(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי לקבל בעלות על הדוחות הבאים."
+msgstr "לחץ על 'המשך' כדי לקבל בעלות על הדוחות הבאים."
+
 
 #: lib/html_reports.php
 msgid "Click 'Continue' to duplicate the following Report(s).  You may optionally change the title for the new Reports"
-msgstr "לחץ על &#39;המשך&#39; כדי לשכפל את הדוחות הבאים. תוכל לשנות את הכותרת עבור הדוחות החדשים"
+msgstr "לחץ על 'המשך' כדי לשכפל את הדוחות הבאים. תוכל לשנות את הכותרת עבור הדוחות החדשים"
+
 
 #: lib/html_reports.php
 msgid "Click 'Continue' to enable the following Report(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי להפעיל את הדוחות הבאים."
+msgstr "לחץ על 'המשך' כדי להפעיל את הדוחות הבאים."
+
 
 #: lib/html_reports.php
 msgid "Please be certain that those Report(s) have successfully been tested first!"
@@ -14011,31 +14182,37 @@ msgstr "אנא וודאו כי דוח (ים) אלה נבדקו בהצלחה תח
 
 #: lib/html_reports.php
 msgid "Click 'Continue' to disable the following Reports."
-msgstr "לחץ על &#39;המשך&#39; כדי להשבית את הדוחות הבאים."
+msgstr "לחץ על 'המשך' כדי להשבית את הדוחות הבאים."
+
 
 #: lib/html_reports.php
 msgid "Click 'Continue' to send the following Report(s) now."
-msgstr "לחץ על &#39;המשך&#39; כדי לשלוח את הדוחות הבאים."
+msgstr "לחץ על 'המשך' כדי לשלוח את הדוחות הבאים."
+
 
 #: lib/html_reports.php
 #, php-format
 msgid "Unable to send Report '%s'.  Please set destination e-mail addresses"
-msgstr "לא ניתן לשלוח את הדוח &#39; %s&#39;. הגדר כתובות דואר אלקטרוני יעד"
+msgstr "לא ניתן לשלוח את הדוח ' %s'. הגדר כתובות דואר אלקטרוני יעד"
+
 
 #: lib/html_reports.php
 #, php-format
 msgid "Unable to send Report '%s'.  Please set an e-mail subject"
-msgstr "לא ניתן לשלוח את הדוח &#39; %s&#39;. נא להגדיר נושא דואר אלקטרוני"
+msgstr "לא ניתן לשלוח את הדוח ' %s'. נא להגדיר נושא דואר אלקטרוני"
+
 
 #: lib/html_reports.php
 #, php-format
 msgid "Unable to send Report '%s'.  Please set an e-mail From Name"
-msgstr "לא ניתן לשלוח את הדוח &#39; %s&#39;. הגדר שם דואר אלקטרוני משם"
+msgstr "לא ניתן לשלוח את הדוח ' %s'. הגדר שם דואר אלקטרוני משם"
+
 
 #: lib/html_reports.php
 #, php-format
 msgid "Unable to send Report '%s'.  Please set an e-mail from address"
-msgstr "לא ניתן לשלוח את הדוח &#39; %s&#39;. נא להגדיר כתובת דואר אלקטרוני לכתובת"
+msgstr "לא ניתן לשלוח את הדוח ' %s'. נא להגדיר כתובת דואר אלקטרוני לכתובת"
+
 
 #: lib/html_reports.php
 msgid "Item Type to be added."
@@ -14095,7 +14272,8 @@ msgstr "התרשים לשימוש עבור דוח זה."
 
 #: lib/html_reports.php
 msgid "The Graph End time will be set to the scheduled report send time.  So, if you wish the end time on the various Graphs to be midnight, ensure you send the report at midnight.  The Graph Start time will be the End Time minus the Graph Timespan."
-msgstr "שעת סיום הגרף תוגדר לזמן השליחה של הדוח המתוזמן. אז, אם אתה רוצה את שעת הסיום על גרפים שונים להיות חצות, ודא שאתה שולח את הדו&quot;ח בחצות. שעת ההתחלה של הגרף תהיה שעת הסיום ללא גרף Timespan."
+msgstr "שעת סיום הגרף תוגדר לזמן השליחה של הדוח המתוזמן. אז, אם אתה רוצה את שעת הסיום על גרפים שונים להיות חצות, ודא שאתה שולח את הדו\"ח בחצות. שעת ההתחלה של הגרף תהיה שעת הסיום ללא גרף Timespan."
+
 
 #: lib/html_reports.php
 msgid "Alignment"
@@ -14326,7 +14504,8 @@ msgstr "נבחר"
 #: lib/html_utility.php
 #, php-format
 msgid "The regular expression \"%s\" is not valid. Error is %s"
-msgstr "מונח החיפוש &quot; %s&quot; אינו חוקי. השגיאה היא %s"
+msgstr "מונח החיפוש \" %s\" אינו חוקי. השגיאה היא %s"
+
 
 #: lib/html_utility.php
 msgid "Cacti regular expressions are limited to 50 characters only for security reasons."
@@ -14592,11 +14771,13 @@ msgstr "אתה מנסה להתקין Cacti %s על מסד נתונים 0.6.x. ל
 
 #: lib/installer.php
 msgid "To be able continue, you <b>MUST</b> create a new database, import \"cacti.sql\" into it:"
-msgstr "כדי להיות מסוגל להמשיך, אתה <b>חייב</b> ליצור מסד נתונים חדש, יבוא &quot;cacti.sql&quot; לתוכו:"
+msgstr "כדי להיות מסוגל להמשיך, אתה <b>חייב</b> ליצור מסד נתונים חדש, יבוא \"cacti.sql\" לתוכו:"
+
 
 #: lib/installer.php
 msgid "You <b>MUST</b> then update \"include/config.php\" to point to the new database."
-msgstr "לאחר מכן <b>עליך</b> לעדכן את &quot;include / config.php&quot; כדי להצביע על מסד הנתונים החדש."
+msgstr "לאחר מכן <b>עליך</b> לעדכן את \"include / config.php\" כדי להצביע על מסד הנתונים החדש."
+
 
 #: lib/installer.php
 msgid "NOTE: Your existing data will not be modified, nor will it or any history be available to the new install"
@@ -14604,7 +14785,8 @@ msgstr "הערה: הנתונים הקיימים שלך לא ישתנו, וגם �
 
 #: lib/installer.php
 msgid "You have created a new database, but have not yet imported the 'cacti.sql' file. At the command line, execute the following to continue:"
-msgstr "יצרת מסד נתונים חדש, אך עדיין לא ייבאת את הקובץ &#39;cacti.sql&#39;. בשורת הפקודה, בצע את הפעולות הבאות כדי להמשיך:"
+msgstr "יצרת מסד נתונים חדש, אך עדיין לא ייבאת את הקובץ 'cacti.sql'. בשורת הפקודה, בצע את הפעולות הבאות כדי להמשיך:"
+
 
 #: lib/installer.php
 msgid "This error may also be generated if the cacti database user does not have correct permissions on the Cacti database. Please ensure that the Cacti database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX on the Cacti database."
@@ -14616,7 +14798,8 @@ msgstr "עליך <b>חובה</b> גם לייבא את מידע אזור הזמן
 
 #: lib/installer.php
 msgid "On Linux/UNIX, run the following as 'root' in a shell:"
-msgstr "על לינוקס / UNIX, להפעיל את הבא בתור &quot;שורש&quot; בתוך קליפה:"
+msgstr "על לינוקס / UNIX, להפעיל את הבא בתור \"שורש\" בתוך קליפה:"
+
 
 #: lib/installer.php
 msgid "On Windows, you must follow the instructions here <a target='_blank' href='https://dev.mysql.com/downloads/timezones.html'>Time zone description table</a>.  Once that is complete, you can issue the following command to grant the Cacti user access to the tables:"
@@ -14667,7 +14850,8 @@ msgstr "ודא שיש לך לקרוא בעקבות הצעדים הנדרשים �
 #: lib/installer.php
 #, php-format
 msgid "This process will guide you through the steps for upgrading from version '%s'. "
-msgstr "תהליך זה ידריך אותך בשלבים לשדרוג מגירסה &#39; %s&#39;. "
+msgstr "תהליך זה ידריך אותך בשלבים לשדרוג מגירסה ' %s'. "
+
 
 #: lib/installer.php
 #, php-format
@@ -14811,7 +14995,8 @@ msgstr "מסד הנתונים MySQL TimeZone אינו מאוכלס. נא לאכ�
 
 #: lib/installer.php
 msgid "Your Cacti database login account does not have access to the MySQL TimeZone database.  Please provide the Cacti database account \"select\" access to the \"time_zone_name\" table in the \"mysql\" database, and populate MySQL's TimeZone information before proceeding."
-msgstr "לחשבון ההתחברות שלך ב- Cacti אין גישה למסד הנתונים MySQL TimeZone. נא לספק את הנתונים &quot;Cacti&quot; חשבון מסד הנתונים &quot;בחר&quot; את הטבלה &quot;time_zone_name&quot; במסד הנתונים &quot;MySQL&quot;, ולאכלס מידע TimeZone של MySQL לפני שתמשיך."
+msgstr "לחשבון ההתחברות שלך ב- Cacti אין גישה למסד הנתונים MySQL TimeZone. נא לספק את הנתונים \"Cacti\" חשבון מסד הנתונים \"בחר\" את הטבלה \"time_zone_name\" במסד הנתונים \"MySQL\", ולאכלס מידע TimeZone של MySQL לפני שתמשיך."
+
 
 #: lib/installer.php
 msgid "Your Cacti database account has access to the MySQL TimeZone database and that database is populated with global TimeZone information."
@@ -14885,7 +15070,8 @@ msgstr "Remote Pollers משמשים לגישה לרשתות שאינן נגיש�
 
 #: lib/installer.php
 msgid "The following information has been determined from Cacti's configuration file. If it is not correct, please edit \"include/config.php\" before continuing."
-msgstr "המידע הבא נקבע מתוך קובץ התצורה של Cacti. אם זה לא נכון, אנא ערוך &quot;include / config.php&quot; לפני שתמשיך."
+msgstr "המידע הבא נקבע מתוך קובץ התצורה של Cacti. אם זה לא נכון, אנא ערוך \"include / config.php\" לפני שתמשיך."
+
 
 #: lib/installer.php
 msgid "Local Database Connection Information"
@@ -14934,7 +15120,8 @@ msgstr "תצורה של פולר"
 
 #: lib/installer.php
 msgid "Your Remote Cacti Poller information has not been included in your config.php file.  Please review the config.php.dist, and set the variables: <i>$rdatabase_default, $rdatabase_username</i>, etc.  These variables must be set and point back to your Primary Cacti database server.  Correct this and try again."
-msgstr "מידע ה- Cacti Remote Poller המרוחק שלך לא נכלל בקובץ config.php שלך. בדוק את config.php.dist וקבע את המשתנים: <i>$ rdatabase_default, $ rdatabase_username</i> וכו &#39;. יש להגדיר משתנים אלה ולהצביע חזרה לשרת מסד הנתונים הראשי של Cacti. תקן את זה ונסה שוב."
+msgstr "מידע ה- Cacti Remote Poller המרוחק שלך לא נכלל בקובץ config.php שלך. בדוק את config.php.dist וקבע את המשתנים: <i>$ rdatabase_default, $ rdatabase_username</i> וכו '. יש להגדיר משתנים אלה ולהצביע חזרה לשרת מסד הנתונים הראשי של Cacti. תקן את זה ונסה שוב."
+
 
 #: lib/installer.php
 msgid "Remote Poller Variables"
@@ -14950,7 +15137,8 @@ msgstr "תוכנית ההתקנה מקצה באופן אוטומטי $ poller_id
 
 #: lib/installer.php
 msgid "Once the variables are all set in the config.php file, you must also grant the $rdatabase_username access to the main Cacti database server.  Follow the same procedure you would with any other Cacti install.  You may then press the 'Test Connection' button.  If the test is successful you will be able to proceed and complete the install."
-msgstr "לאחר המשתנים כל להגדיר בקובץ config.php, עליך גם להעניק את הגישה $ rdatabase_username לשרת הנתונים הראשי Cacti. בצע את ההליך אותו היית עושה עם כל התקנה אחרת Cacti. לאחר מכן תוכל ללחוץ על הלחצן &#39;בדיקת חיבור&#39;. אם הבדיקה תצליח תוכל להמשיך ולהשלים את ההתקנה."
+msgstr "לאחר המשתנים כל להגדיר בקובץ config.php, עליך גם להעניק את הגישה $ rdatabase_username לשרת הנתונים הראשי Cacti. בצע את ההליך אותו היית עושה עם כל התקנה אחרת Cacti. לאחר מכן תוכל ללחוץ על הלחצן 'בדיקת חיבור'. אם הבדיקה תצליח תוכל להמשיך ולהשלים את ההתקנה."
+
 
 #: lib/installer.php
 msgid "Additional Steps After Installation"
@@ -14958,7 +15146,8 @@ msgstr "צעדים נוספים לאחר ההתקנה"
 
 #: lib/installer.php
 msgid "It is essential that the Central Cacti server can communicate via MySQL to each remote Cacti database server.  Once the install is complete, you must edit the Remote Data Collector and ensure the settings are correct.  You can verify using the 'Test Connection' when editing the Remote Data Collector."
-msgstr "זה חיוני כי שרת Cacti המרכזי יכול לתקשר באמצעות MySQL לכל שרת מסד נתונים מרוחק Cacti. לאחר השלמת ההתקנה, עליך לערוך את אספן הנתונים המרוחקים ולהבטיח שההגדרות נכונות. ניתן לאמת באמצעות &#39;חיבור חיבור&#39; בעת עריכת אוסף הנתונים המרוחק."
+msgstr "זה חיוני כי שרת Cacti המרכזי יכול לתקשר באמצעות MySQL לכל שרת מסד נתונים מרוחק Cacti. לאחר השלמת ההתקנה, עליך לערוך את אספן הנתונים המרוחקים ולהבטיח שההגדרות נכונות. ניתן לאמת באמצעות 'חיבור חיבור' בעת עריכת אוסף הנתונים המרוחק."
+
 
 #: lib/installer.php
 msgid "Critical Binary Locations and Versions"
@@ -15023,7 +15212,8 @@ msgstr "אם SELinux מופעל בשרת שלך, באפשרותך לבטל זא�
 #: lib/installer.php
 #, php-format
 msgid "The user '%s' should have MODIFY permission to enable read/write."
-msgstr "המשתמש &#39; %s&#39; צריך להיות בעל הרשאת MODIFY כדי לאפשר קריאה / כתיבה."
+msgstr "המשתמש ' %s' צריך להיות בעל הרשאת MODIFY כדי לאפשר קריאה / כתיבה."
+
 
 #: lib/installer.php
 msgid "An example of how to set folder permissions is shown here, though you may need to adjust this depending on your operating system, user accounts and desired permissions."
@@ -15105,7 +15295,8 @@ msgstr "ברירת מחדל רשת אוטומציה"
 
 #: lib/installer.php
 msgid "Cacti can automatically scan the network once installation has completed. This will utilise the network range below to work out the range of IPs that can be scanned.  A predefined set of options are defined for scanning which include using both 'public' and 'private' communities."
-msgstr "Cacti יכול לסרוק את הרשת באופן אוטומטי לאחר השלמת ההתקנה. זה ישתמש בטווח הרשת להלן כדי להבין את טווח כתובות ה- IP שניתן לסרוק. קבוצה מוגדרת מראש של אפשרויות מוגדרות לסריקה הכוללות שימוש בקהילות &quot;ציבוריות&quot; ו&quot;פרטיות &quot;."
+msgstr "Cacti יכול לסרוק את הרשת באופן אוטומטי לאחר השלמת ההתקנה. זה ישתמש בטווח הרשת להלן כדי להבין את טווח כתובות ה- IP שניתן לסרוק. קבוצה מוגדרת מראש של אפשרויות מוגדרות לסריקה הכוללות שימוש בקהילות \"ציבוריות\" ו\"פרטיות \"."
+
 
 #: lib/installer.php
 msgid "If your devices require a different set of options to be used first, you may define them below and they will be utilized before the defaults"
@@ -15161,7 +15352,8 @@ msgstr "לא מומלץ לעדכן תבניות שכבר ביצעת שינויי
 
 #: lib/installer.php
 msgid "Please select the Device Templates that you wish to use after the Install.  If you Operating System is Windows, you need to ensure that you select the 'Windows Device' Template.  If your Operating System is Linux/UNIX, make sure you select the 'Local Linux Machine' Device Template."
-msgstr "בחר את תבניות ההתקן שבהן ברצונך להשתמש לאחר ההתקנה. אם מערכת ההפעלה היא Windows, עליך לוודא שאתה בוחר את &#39;תבנית התקן Windows&#39;. אם מערכת ההפעלה שלך היא Linux / UNIX, הקפד לבחור את &#39;מכונת לינוקס מקומי&#39; תבנית המכשיר."
+msgstr "בחר את תבניות ההתקן שבהן ברצונך להשתמש לאחר ההתקנה. אם מערכת ההפעלה היא Windows, עליך לוודא שאתה בוחר את 'תבנית התקן Windows'. אם מערכת ההפעלה שלך היא Linux / UNIX, הקפד לבחור את 'מכונת לינוקס מקומי' תבנית המכשיר."
+
 
 #: lib/installer.php package_import.php plugins.php
 msgid "Author"
@@ -15173,7 +15365,8 @@ msgstr "דף הבית"
 
 #: lib/installer.php
 msgid "Device Templates allow you to monitor and graph a vast assortment of data within Cacti.  After you select the desired Device Templates, press 'Next' and the installation will complete.  Please be patient on this step, as the importation of the Device Templates can take a few minutes."
-msgstr "תבניות המכשיר מאפשרות לך לעקוב אחר מגוון עצום של נתונים בתוך Cacti. לאחר שתבחר את תבניות ההתקן הרצויות, לחץ על &#39;סיום&#39; וההתקנה תושלם. המתן בסבלנות בשלב זה, מכיוון שיבוא תבניות המכשיר עשוי להימשך מספר דקות."
+msgstr "תבניות המכשיר מאפשרות לך לעקוב אחר מגוון עצום של נתונים בתוך Cacti. לאחר שתבחר את תבניות ההתקן הרצויות, לחץ על 'סיום' וההתקנה תושלם. המתן בסבלנות בשלב זה, מכיוון שיבוא תבניות המכשיר עשוי להימשך מספר דקות."
+
 
 #: lib/installer.php
 msgid "Server Collation"
@@ -15189,7 +15382,8 @@ msgstr "איסוף השרתים שלך אינו נראה תואם לחלוטין
 
 #: lib/installer.php
 msgid "Under the [mysqld] section, locate the entries named 'character-set-server' and 'collation-server' and set them as follows:"
-msgstr "תחת הקטע [mysqld], אתר את הערכים הנקראים &#39;character-set-server&#39; ו- &#39;collation-server&#39; והגדר אותם כך:"
+msgstr "תחת הקטע [mysqld], אתר את הערכים הנקראים 'character-set-server' ו- 'collation-server' והגדר אותם כך:"
+
 
 #: lib/installer.php
 msgid "Database Collation"
@@ -15205,7 +15399,8 @@ msgstr "אוסף ברירת המחדל של מסד הנתונים אינו נר�
 
 #: lib/installer.php
 msgid "Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched.   Please ensure your database is changed to 'utf8mb4_unicode_ci' by running the following: "
-msgstr "כל טבלאות שנוצרו על ידי plugins עשויות להיות קשורות בין טבלאות Core Cacti Core אם איסוף אינו תואם. ודא שמסד הנתונים שלך משתנה ל- &#39;utf8mb4_unicode_ci&#39; על-ידי הפעלת הפעולות הבאות: "
+msgstr "כל טבלאות שנוצרו על ידי plugins עשויות להיות קשורות בין טבלאות Core Cacti Core אם איסוף אינו תואם. ודא שמסד הנתונים שלך משתנה ל- 'utf8mb4_unicode_ci' על-ידי הפעלת הפעולות הבאות: "
+
 
 #: lib/installer.php
 msgid "Table Setup"
@@ -15766,7 +15961,8 @@ msgstr "תוספים"
 #: lib/plugins.php
 #, php-format
 msgid "Requires: Cacti >= %s"
-msgstr "דורש: Cacti&gt; = %s"
+msgstr "דורש: Cacti> = %s"
+
 
 #: lib/plugins.php
 msgid "Legacy Plugin"
@@ -15836,12 +16032,14 @@ msgstr "נוצר פריט גרף דוח '<i>%s</i>'"
 #: lib/reports.php
 #, php-format
 msgid "Failed Adding Report Graph Item '<i>%s</i>' Already Exists"
-msgstr "נכשל הוספת פריט גרף דוח &#39; <i> %s</i> &#39; כבר קיים"
+msgstr "נכשל הוספת פריט גרף דוח ' <i> %s</i> ' כבר קיים"
+
 
 #: lib/reports.php
 #, php-format
 msgid "Skipped Report Graph Item '<i>%s</i>' Already Exists"
-msgstr "דלג על דוח גרף פריט &#39; <i> %s</i> &#39; כבר קיים"
+msgstr "דלג על דוח גרף פריט ' <i> %s</i> ' כבר קיים"
+
 
 #: lib/rrd.php
 #, php-format
@@ -15881,27 +16079,32 @@ msgstr "גודל הצעד הנדרש עבור RRDfile הוא '%1$s' אך הצע�
 #: lib/rrd.php
 #, php-format
 msgid "Type for Data Source '%s' should be '%s'"
-msgstr "סוג עבור מקור הנתונים &#39; %1$s&#39; צריך להיות &#39; %2$s&#39"
+msgstr "סוג עבור מקור הנתונים ' %1$s' צריך להיות ' %2$s&#39"
+
 
 #: lib/rrd.php
 #, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
-msgstr "פעימת הלב עבור מקור הנתונים &#39; %1$s&#39; צריכה להיות &#39; %2$s&#39"
+msgstr "פעימת הלב עבור מקור הנתונים ' %1$s' צריכה להיות ' %2$s&#39"
+
 
 #: lib/rrd.php
 #, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
-msgstr "המינימום של RRD עבור מקור הנתונים &#39; %1$s&#39; צריך להיות &#39; %2$s&#39"
+msgstr "המינימום של RRD עבור מקור הנתונים ' %1$s' צריך להיות ' %2$s&#39"
+
 
 #: lib/rrd.php
 #, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
-msgstr "ל- Cacti RRA &#39; %1$s&#39; יש אותו CF / שלבים ( %2$s, %3$s) כ- &#39; %4$s&#39"
+msgstr "ל- Cacti RRA ' %1$s' יש אותו CF / שלבים ( %2$s, %3$s) כ- ' %4$s&#39"
+
 
 #: lib/rrd.php
 #, php-format
 msgid "File RRA '%s' has same CF/steps (%s, %s) as '%s'"
-msgstr "קובץ ה- RRA &#39; %1$s&#39; כולל אותו CF / שלבים ( %2$s, %3$s) כ- &#39; %4$s&#39"
+msgstr "קובץ ה- RRA ' %1$s' כולל אותו CF / שלבים ( %2$s, %3$s) כ- ' %4$s&#39"
+
 
 #: lib/rrd.php
 #, php-format
@@ -15926,7 +16129,8 @@ msgstr "ה-RRA '%s' חסר בקובץ ה-RRDfile הקיים של Cacti"
 #: lib/rrd.php
 #, php-format
 msgid "RRA '%s' missing in Cacti definition"
-msgstr "RRA &#39; %s&#39; חסר בהגדרת Cacti"
+msgstr "RRA ' %s' חסר בהגדרת Cacti"
+
 
 #: lib/rrd.php
 msgid "RRD File Information"
@@ -16042,7 +16246,8 @@ msgstr "תיקיית RRA"
 
 #: lib/rrd.php
 msgid "Root"
-msgstr "‫Root"
+msgstr "Root"
+
 
 #: lib/rrd.php
 msgid "Unknown RRDtool Error"
@@ -16640,7 +16845,8 @@ msgstr "עם יכולות הסריקה מרחוק, כמויות גדולות ש�
 #: lib/utility.php
 #, php-format
 msgid "If using the Cacti Performance Booster and choosing a memory storage engine, you have to be careful to flush your Performance Booster buffer before the system runs out of memory table space.  This is done two ways, first reducing the size of your output column to just the right size.  This column is in the tables poller_output, and poller_output_boost.  The second thing you can do is allocate more memory to memory tables.  We have arbitrarily chosen a recommended value of 10%% of system memory, but if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation or choose a different storage engine.  You may see the expected consumption of the Performance Booster tables under Console -> System Utilities -> View Boost Status."
-msgstr "אם אתה משתמש Cacti Booster ביצועים ובחירת זיכרון אחסון מנוע, אתה צריך להיות זהיר כדי לשטוף את חיץ Booster ביצועים לפני המערכת אוזל שטח שולחן הזיכרון. זה נעשה בשתי דרכים, הראשון הפחתת גודל עמודת הפלט שלך בדיוק את הגודל הנכון. עמודה זו נמצאת בטבלאות poller_output ו- poller_output_boost. הדבר השני שאתה יכול לעשות הוא להקצות זיכרון נוסף לטבלאות זיכרון. בחרנו באופן שרירותי ערך מומלץ של 10 %% מזיכרון המערכת, אך אם אתה משתמש בכונני דיסק SSD, או אם יש לך מערכת קטנה יותר, תוכל להתעלם מהמלצה זו או לבחור מנוע אחסון אחר. ייתכן שתראה את הצריכה הצפויה של טבלאות הביצועים Booster תחת Console -&gt; System Utilities -&gt; View Boost Status."
+msgstr "אם אתה משתמש Cacti Booster ביצועים ובחירת זיכרון אחסון מנוע, אתה צריך להיות זהיר כדי לשטוף את חיץ Booster ביצועים לפני המערכת אוזל שטח שולחן הזיכרון. זה נעשה בשתי דרכים, הראשון הפחתת גודל עמודת הפלט שלך בדיוק את הגודל הנכון. עמודה זו נמצאת בטבלאות poller_output ו- poller_output_boost. הדבר השני שאתה יכול לעשות הוא להקצות זיכרון נוסף לטבלאות זיכרון. בחרנו באופן שרירותי ערך מומלץ של 10 %% מזיכרון המערכת, אך אם אתה משתמש בכונני דיסק SSD, או אם יש לך מערכת קטנה יותר, תוכל להתעלם מהמלצה זו או לבחור מנוע אחסון אחר. ייתכן שתראה את הצריכה הצפויה של טבלאות הביצועים Booster תחת Console -> System Utilities -> View Boost Status."
+
 
 #: lib/utility.php
 msgid "When executing subqueries, having a larger temporary table size, keep those temporary tables in memory."
@@ -16799,7 +17005,8 @@ msgstr ""
 
 #: links.php
 msgid "Click 'Continue' to Enable the following Page(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי להפעיל את הדפים הבאים."
+msgstr "לחץ על 'המשך' כדי להפעיל את הדפים הבאים."
+
 
 #: links.php
 msgid "Enable Page(s)"
@@ -16807,7 +17014,8 @@ msgstr "אפשר דפים"
 
 #: links.php
 msgid "Click 'Continue' to Disable the following Page(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי להשבית את הדפים הבאים."
+msgstr "לחץ על 'המשך' כדי להשבית את הדפים הבאים."
+
 
 #: links.php
 msgid "Disable Page(s)"
@@ -16815,7 +17023,8 @@ msgstr "השבת את הדפים"
 
 #: links.php
 msgid "Click 'Continue' to Delete the following Page(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי למחוק את הדפים הבאים."
+msgstr "לחץ על 'המשך' כדי למחוק את הדפים הבאים."
+
 
 #: links.php
 msgid "Delete Page(s)"
@@ -16875,7 +17084,8 @@ msgstr "תחתון של מסוף הדף"
 
 #: links.php
 msgid "Top of Console Page"
-msgstr "הדף של הדף &#39;מסוף&#39"
+msgstr "הדף של הדף 'מסוף&#39"
+
 
 #: links.php
 msgid "Where should this page appear?"
@@ -16915,7 +17125,8 @@ msgstr "כתובת אתר אינטרנט להלן"
 
 #: links.php
 msgid "The file that contains the content for this page. This file needs to be in the Cacti 'include/content/' directory."
-msgstr "הקובץ שמכיל את התוכן עבור דף זה. קובץ זה צריך להיות בספריית Cacti &#39;כוללים / תוכן /&#39;."
+msgstr "הקובץ שמכיל את התוכן עבור דף זה. קובץ זה צריך להיות בספריית Cacti 'כוללים / תוכן /'."
+
 
 #: links.php
 msgid "Web URL Location"
@@ -17088,11 +17299,13 @@ msgstr "%s מקלטי התראות"
 
 #: managers.php
 msgid "Click 'Continue' to forward the following Notification Objects to this Notification Receiver."
-msgstr "לחץ על &#39;המשך&#39; כדי להעביר את אובייקטי ההודעות הבאים למקלט ההודעות הזה."
+msgstr "לחץ על 'המשך' כדי להעביר את אובייקטי ההודעות הבאים למקלט ההודעות הזה."
+
 
 #: managers.php
 msgid "Click 'Continue' to disable forwarding the following Notification Objects to this Notification Receiver."
-msgstr "לחץ על &#39;המשך&#39; כדי להשבית את העברת אובייקטי ההודעות הבאים למקלט ההודעות הזה."
+msgstr "לחץ על 'המשך' כדי להשבית את העברת אובייקטי ההודעות הבאים למקלט ההודעות הזה."
+
 
 #: managers.php
 msgid "Disable Notification Objects"
@@ -17315,7 +17528,8 @@ msgstr "בעיות תצורה"
 
 #: plugins.php
 msgid "Actions available include 'Install', 'Activate', 'Disable', 'Enable', 'Uninstall'."
-msgstr "הפעולות הזמינות כוללות &#39;Install&#39;, &#39;Activate&#39;, &#39;Disable&#39;, &#39;Enable&#39;, &#39;Uninstall&#39;."
+msgstr "הפעולות הזמינות כוללות 'Install', 'Activate', 'Disable', 'Enable', 'Uninstall'."
+
 
 #: plugins.php
 msgid "Plugin Name"
@@ -17371,7 +17585,8 @@ msgstr "לא נמצאו תוספים"
 
 #: plugins.php
 msgid "Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click 'Uninstall' below.  Otherwise click 'Cancel'"
-msgstr "הסרת תוסף זה תסיר את כל נתוני הפלאגין וההגדרות. אם אתה באמת רוצה להסיר את תוסף, לחץ על &#39;הסר&#39; להלן. אחרת, לחץ על &#39;ביטול&#39;"
+msgstr "הסרת תוסף זה תסיר את כל נתוני הפלאגין וההגדרות. אם אתה באמת רוצה להסיר את תוסף, לחץ על 'הסר' להלן. אחרת, לחץ על 'ביטול'"
+
 
 #: plugins.php
 msgid "Are you sure you want to Uninstall?"
@@ -17419,7 +17634,8 @@ msgstr "הפעל פלאגין"
 #: plugins.php
 #, php-format
 msgid "Plugin directory '%s' is missing setup.php"
-msgstr "ספריית הפלאגין &#39; %s&#39; חסרה את setup.php"
+msgstr "ספריית הפלאגין ' %s' חסרה את setup.php"
+
 
 #: plugins.php
 #, fuzzy, php-format
@@ -17442,7 +17658,8 @@ msgstr "ספריות תוסף לא יכול לכלול רווחים"
 #: plugins.php
 #, php-format
 msgid "Plugin directory is not correct.  Should be '%s' but is '%s'"
-msgstr "ספריית Plugin אינה נכונה. צריך להיות &#39; %1$s&#39; אך הוא &#39; %2$s&#39"
+msgstr "ספריית Plugin אינה נכונה. צריך להיות ' %1$s' אך הוא ' %2$s&#39"
+
 
 #: plugins.php
 msgid "Plugin is lacking an INFO file"
@@ -17517,7 +17734,8 @@ msgstr "Cacti מנהל ראשי"
 
 #: poller_automation.php
 msgid "Cacti Automation Report requires an html based Email client"
-msgstr "דוח אוטומציה Cacti דורש לקוח דוא&quot;ל מבוסס HTML"
+msgstr "דוח אוטומציה Cacti דורש לקוח דוא\"ל מבוסס HTML"
+
 
 #: poller_boost.php
 msgid "WARNING: Detected Poller Boost Overrun, Possible Boost Poller Crash"
@@ -17989,7 +18207,8 @@ msgstr "אין קבצי RRD שאינם בשימוש"
 
 #: rrdcleaner.php
 msgid "Total Size [MB]:"
-msgstr "סה&quot;כ גודל [MB]:"
+msgstr "סה\"כ גודל [MB]:"
+
 
 #: rrdcleaner.php
 msgid "Last Scan:"
@@ -18046,11 +18265,13 @@ msgstr "מרווח פולר חייב להיות פחות מרווח Cron"
 
 #: settings.php
 msgid "Send a Test Email"
-msgstr "שלח הודעת דוא&quot;ל לבדיקה"
+msgstr "שלח הודעת דוא\"ל לבדיקה"
+
 
 #: settings.php
 msgid "Test Email Results"
-msgstr "בדיקת תוצאות דוא&quot;ל"
+msgstr "בדיקת תוצאות דוא\"ל"
+
 
 #: sites.php
 msgid "Site Information"
@@ -18704,7 +18925,8 @@ msgstr "אינך רשאי להשבית את חשבון ההתחברות הנוכ
 
 #: user_admin.php
 msgid "Click 'Continue' to delete the selected User(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי למחוק את המשתמשים שנבחרו."
+msgstr "לחץ על 'המשך' כדי למחוק את המשתמשים שנבחרו."
+
 
 #: user_admin.php
 msgid "Delete User(s)"
@@ -18712,7 +18934,8 @@ msgstr "מחק משתמשים"
 
 #: user_admin.php
 msgid "Click 'Continue' to copy the selected User to a new User below."
-msgstr "לחץ על &#39;המשך&#39; כדי להעתיק את המשתמש שנבחר למשתמש חדש למטה."
+msgstr "לחץ על 'המשך' כדי להעתיק את המשתמש שנבחר למשתמש חדש למטה."
+
 
 #: user_admin.php
 msgid "Template Username:"
@@ -18736,7 +18959,8 @@ msgstr "העתק משתמש"
 
 #: user_admin.php
 msgid "Click 'Continue' to enable the selected User(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי להפעיל את המשתמשים שנבחרו."
+msgstr "לחץ על 'המשך' כדי להפעיל את המשתמשים שנבחרו."
+
 
 #: user_admin.php
 msgid "Enable User(s)"
@@ -18744,7 +18968,8 @@ msgstr "הפעלת משתמשים (ים)"
 
 #: user_admin.php
 msgid "Click 'Continue' to disable the selected User(s)."
-msgstr "לחץ על &#39;המשך&#39; כדי להשבית את המשתמשים שנבחרו."
+msgstr "לחץ על 'המשך' כדי להשבית את המשתמשים שנבחרו."
+
 
 #: user_admin.php
 msgid "Disable User(s)"
@@ -18752,7 +18977,8 @@ msgstr "השבת משתמשים (משתמשים)"
 
 #: user_admin.php
 msgid "Click 'Continue' to overwrite the User(s) settings with the selected template User settings and permissions.  The original users Full Name, Password, Realm and Enable status will be retained, all other fields will be overwritten from Template User."
-msgstr "לחץ על &#39;המשך&#39; כדי להחליף את הגדרות המשתמש עם התבנית שנבחרה הגדרות משתמש והרשאות. המשתמשים המקוריים שם מלא, סיסמה, תחום ולהפעיל מצב יישמרו, כל השדות האחרים יחלפו על ידי משתמש תבנית."
+msgstr "לחץ על 'המשך' כדי להחליף את הגדרות המשתמש עם התבנית שנבחרה הגדרות משתמש והרשאות. המשתמשים המקוריים שם מלא, סיסמה, תחום ולהפעיל מצב יישמרו, כל השדות האחרים יחלפו על ידי משתמש תבנית."
+
 
 #: user_admin.php
 msgid "Template User:"
@@ -18772,11 +18998,13 @@ msgstr "דחה"
 
 #: user_admin.php user_group_admin.php
 msgid "<b>Note:</b> System Graph Policy is 'Permissive' meaning the User must have access to at least one of Graph, Device, or Graph Template to gain access to the Graph"
-msgstr "<b>הערה:</b> מדיניות התרשים של המערכת היא &quot;מתירנית&quot; כלומר, על המשתמש להיות בעל גישה לפחות לאחד מהתבניות של גרף, מכשיר או גרף כדי לקבל גישה לגרף"
+msgstr "<b>הערה:</b> מדיניות התרשים של המערכת היא \"מתירנית\" כלומר, על המשתמש להיות בעל גישה לפחות לאחד מהתבניות של גרף, מכשיר או גרף כדי לקבל גישה לגרף"
+
 
 #: user_admin.php user_group_admin.php
 msgid "<b>Note:</b> System Graph Policy is 'Restrictive' meaning the User must have access to either the Graph or the Device and Graph Template to gain access to the Graph"
-msgstr "<b>הערה:</b> מדיניות התרשים של המערכת היא &quot;מוגבלת&quot;, כלומר למשתמש יש גישה לגרף או לתבנית גרף ולגרף כדי לקבל גישה לגרף"
+msgstr "<b>הערה:</b> מדיניות התרשים של המערכת היא \"מוגבלת\", כלומר למשתמש יש גישה לגרף או לתבנית גרף ולגרף כדי לקבל גישה לגרף"
+
 
 #: user_admin.php user_group_admin.php
 msgid "<b>Note:</b> System Graph Policy is 'Device' meaning the User must have access to the Graph or Device to gain access to the Graph"
@@ -18880,7 +19108,8 @@ msgstr "מדיניות תבנית גרף ברירת מחדל עבור משתמש
 
 #: user_admin.php user_group_admin.php
 msgid "Total Graphs"
-msgstr "סה&quot;כ גרפים"
+msgstr "סה\"כ גרפים"
+
 
 #: user_admin.php user_group_admin.php
 msgid "No Matching Graph Templates Found"
@@ -19089,7 +19318,8 @@ msgstr[3] "השבת דומייני משתמשים"
 
 #: user_domains.php
 msgid "Click 'Continue' to enable the following User Domain."
-msgstr "לחץ על &#39;המשך&#39; כדי להפעיל את דומיין המשתמש הבא."
+msgstr "לחץ על 'המשך' כדי להפעיל את דומיין המשתמש הבא."
+
 
 #: user_domains.php
 msgid "Enabled User Domain"
@@ -19101,7 +19331,8 @@ msgstr[3] "הפעל דומייני משתמשים"
 
 #: user_domains.php
 msgid "Click 'Continue' to make the following the following User Domain the default one."
-msgstr "לחץ על &#39;המשך&#39; כדי להפוך את דומיין המשתמש הבא לבעל ברירת המחדל."
+msgstr "לחץ על 'המשך' כדי להפוך את דומיין המשתמש הבא לבעל ברירת המחדל."
+
 
 #: user_domains.php
 msgid "Make Selected Domain Default"
@@ -19160,7 +19391,8 @@ msgstr "מצב אשר Cacti ינסה לאמת מול שרת LDAP. <blockquote st
 
 #: user_domains.php
 msgid "Search base for searching the LDAP directory, such as <i>\"dc=win2kdomain,dc=local\"</i> or <i>\"ou=people,dc=domain,dc=local\"</i>."
-msgstr "חפש בסיס לחיפוש במדריך LDAP, כגון <i>&quot;dc = win2kdomain, dc = local&quot;</i> או <i>&quot;ou = people, dc = domain, dc = local&quot;</i> ."
+msgstr "חפש בסיס לחיפוש במדריך LDAP, כגון <i>\"dc = win2kdomain, dc = local\"</i> או <i>\"ou = people, dc = domain, dc = local\"</i> ."
+
 
 #: user_domains.php
 msgid "Search filter to use to locate the user in the LDAP directory, such as for windows: <i>\"(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))\"</i> or for OpenLDAP: <i>\"(&(objectClass=account)(uid=&lt;username&gt))\"</i>.  \"&lt;username&gt\" is replaced with the username that was supplied at the login prompt."
@@ -19642,7 +19874,8 @@ msgstr "מותקן."
 
 #: utilities.php
 msgid "You've set memory limit to 'unlimited'."
-msgstr "הגדרת את גבול הזיכרון ל&#39;בלתי מוגבל &#39;."
+msgstr "הגדרת את גבול הזיכרון ל'בלתי מוגבל '."
+
 
 #: utilities.php
 #, php-format
@@ -20017,7 +20250,8 @@ msgstr "פריטים מטמון פולר:"
 
 #: utilities.php
 msgid "Total Data Sources:"
-msgstr "סה&quot;כ מקורות נתונים:"
+msgstr "סה\"כ מקורות נתונים:"
+
 
 #: utilities.php
 msgid "Remaining Data Sources:"
@@ -20037,7 +20271,8 @@ msgstr "משוער בתהליך:"
 
 #: utilities.php
 msgid "Total Boost Records:"
-msgstr "סה&quot;כ רשומות Boost:"
+msgstr "סה\"כ רשומות Boost:"
+
 
 #: utilities.php
 msgid "Boost Storage Statistics"
@@ -20266,7 +20501,8 @@ msgstr ""
 
 #: vdef.php
 msgid "Click 'Continue' to delete the following VDEF's."
-msgstr "לחץ על &#39;המשך&#39; כדי למחוק את הקבצים הבאים של VDEF."
+msgstr "לחץ על 'המשך' כדי למחוק את הקבצים הבאים של VDEF."
+
 
 #: vdef.php
 #, php-format
