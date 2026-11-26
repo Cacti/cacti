@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.2.23\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-25 10:19+0000\n"
+"PO-Revision-Date: 2026-11-26 05:54+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Ukrainian <https://translate.cacti.net/projects/cacti/core/uk/"
 ">\n"
@@ -343,9 +343,10 @@ msgstr ""
 "Натисніть «Продовжити», щоб розмістити такий агрегований графік на дереві %s."
 
 #: aggregate_graphs.php:971
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Duplicate following Aggregate Graphs on Tree %s."
-msgstr "Клацніть «Продовжити», щоб розмістити наступні агрегатні графіки під гілкою дерева."
+msgstr ""
+"Клацніть «Продовжити», щоб дублювати наступні агрегатні графіки в дереві %s."
 
 #: aggregate_graphs.php:972
 #, fuzzy
@@ -821,7 +822,7 @@ msgstr "Зведені шаблони"
 #: lib/installer.php:2758 user_admin.php:2894 user_group_admin.php:2479
 #: user_group_admin.php:2482
 msgid "Templates"
-msgstr "Шаблон"
+msgstr "Шаблони"
 
 #: aggregate_templates.php:628 cdef.php:776 color.php:543
 #: color_templates.php:860 gprint_presets.php:266 graph_templates.php:1639
@@ -3072,9 +3073,9 @@ msgstr ""
 "буде від’єднано від правила пристрою."
 
 #: automation_templates.php:791
-#, fuzzy, php-format
+#, php-format
 msgid "Tree Rule Name: '%s'"
-msgstr "Елементи правила дерева"
+msgstr "Назва правила дерева: '%s'"
 
 #: automation_templates.php:798
 msgid "Remove Tree Rule"
@@ -3625,9 +3626,9 @@ msgid "Full"
 msgstr "Повний"
 
 #: changelog.php:99
-#, fuzzy, php-format
+#, php-format
 msgid "Change Log [%s]"
-msgstr "Журнал змін"
+msgstr "Журнал змін [%s]"
 
 #: changelog.php:160 support.php:1018
 #, php-format
@@ -3639,14 +3640,12 @@ msgid "Unnamed Color"
 msgstr "Колір без назви"
 
 #: color.php:182
-#, fuzzy
 msgid "Click 'Continue' to Delete the following Color."
-msgstr "Натисніть «Продовжити», щоб видалити наступний колір"
+msgstr "Натисніть «Продовжити», щоб видалити наступний колір."
 
 #: color.php:183
-#, fuzzy
 msgid "Click 'Continue' to Delete following Colors."
-msgstr "Натисніть «Продовжити», щоб видалити наступний колір"
+msgstr "Натисніть «Продовжити», щоб видалити наступні кольори."
 
 #: color.php:184
 #, fuzzy
@@ -3787,14 +3786,12 @@ msgid "No Items"
 msgstr "Немає предметів"
 
 #: color_templates.php:319
-#, fuzzy
 msgid "Click 'Continue' to Delete the following Color Template."
-msgstr "Натисніть «Продовжити», щоб видалити наступний колірний шаблон"
+msgstr "Натисніть «Продовжити», щоб видалити наступний колірний шаблон."
 
 #: color_templates.php:320
-#, fuzzy
 msgid "Click 'Continue' to Delete following Color Templates."
-msgstr "Натисніть «Продовжити», щоб видалити наступний колірний шаблон"
+msgstr "Натисніть «Продовжити», щоб видалити наступні колірні шаблони."
 
 #: color_templates.php:321
 #, fuzzy
@@ -4258,14 +4255,12 @@ msgid "Debugging"
 msgstr "Налагодження"
 
 #: data_input.php:248
-#, fuzzy
 msgid "Click 'Continue' to Delete the following Data Input Method."
-msgstr "Натисніть «Продовжити», щоб видалити наступний метод введення даних"
+msgstr "Натисніть «Продовжити», щоб видалити наступний метод введення даних."
 
 #: data_input.php:249
-#, fuzzy
 msgid "Click 'Continue' to Delete following Data Input Methods."
-msgstr "Натисніть «Продовжити», щоб видалити наступний метод введення даних"
+msgstr "Натисніть «Продовжити», щоб видалити наступні методи введення даних."
 
 #: data_input.php:250
 #, fuzzy
@@ -4662,14 +4657,12 @@ msgid "Changing the Heartbeat from this page, does not change the Heartbeat for 
 msgstr "Зміна Heartbeat на цій сторінці не змінює Heartbeat для ваших існуючих джерел даних. Скористайтеся функцією «налаштування» RRDtool, щоб внести ці зміни в існуючі серцеві сигнали RRDfiles, або запустіть утиліту CLI update_heartbeat.php, щоб виправити.<br>"
 
 #: data_source_profiles.php:300
-#, fuzzy
 msgid "Click 'Continue' to Delete the following Data Source Profile."
-msgstr "Натисніть «Продовжити», щоб видалити наступний профіль джерела даних"
+msgstr "Натисніть «Продовжити», щоб видалити наступний профіль джерела даних."
 
 #: data_source_profiles.php:301
-#, fuzzy
 msgid "Click 'Continue' to Delete following Data Source Profiles."
-msgstr "Натисніть «Продовжити», щоб видалити наступний профіль джерела даних"
+msgstr "Натисніть «Продовжити», щоб видалити наступні профілі джерела даних."
 
 #: data_source_profiles.php:302
 #, fuzzy
@@ -4949,9 +4942,8 @@ msgid "Reapply Suggested Names"
 msgstr "Повторно застосувати запропоновані імена"
 
 #: data_sources.php:538
-#, fuzzy
 msgid "Click 'Continue' to Delete the following Data Source."
-msgstr "Натисніть «Продовжити», щоб видалити наступне джерело даних"
+msgstr "Натисніть «Продовжити», щоб видалити наступне джерело даних."
 
 #: data_sources.php:539
 msgid "Click 'Continue' to Delete following Data Sources."
@@ -5570,9 +5562,9 @@ msgid "GRAPH DOES NOT EXIST"
 msgstr "ГРАФІК НЕ ІСНУЄ"
 
 #: graph.php:115 graph.php:409
-#, fuzzy, php-format
+#, php-format
 msgid "Graph Utility View for Graph: %s"
-msgstr "Утилітарний Перегляд Графіку"
+msgstr "Службовий перегляд для графіка: %s"
 
 #: graph.php:160 lib/html.php:585
 msgid "Graph Details, Zooming and Debugging Utilities"
@@ -5841,14 +5833,12 @@ msgid "The name of this Graph Template."
 msgstr "Назва цього шаблону графіка."
 
 #: graph_templates.php:1799
-#, fuzzy
 msgid "The Class of this Graph Template"
-msgstr "Назва цього шаблону графіка."
+msgstr "Клас цього шаблону графіка"
 
 #: graph_templates.php:1805
-#, fuzzy
 msgid "The Version of this Graph Template"
-msgstr "Назва цього шаблону графіка."
+msgstr "Версія цього шаблону графіка"
 
 #: graph_templates.php:1810
 msgid "Graph Templates that are in use cannot be Deleted.  In use is defined as being referenced by a Graph."
@@ -6119,9 +6109,8 @@ msgid "Choose the Data Source to associate with this Graph Item."
 msgstr "Оберіть Джерело Даних для асоціювання з Елементом Графіку."
 
 #: graphs.php:1724
-#, fuzzy
 msgid "There were not Aggregate Templates found for the selected Graphs"
-msgstr "Наразі немає шаблонів агрегатів, визначених для вибраних застарілих агрегатів."
+msgstr "Для вибраних графіків не знайдено шаблонів агрегатів"
 
 #: graphs.php:1758
 msgid "Click 'Continue' to Delete the following Graph."
@@ -6343,9 +6332,10 @@ msgid "Click 'Continue' to Place the following Graph on Tree %s."
 msgstr "Натисніть «Продовжити», щоб розмістити такий графік на дереві %s."
 
 #: graphs.php:1913
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Duplicate following Graphs on Tree %s."
-msgstr "Натисніть «Продовжити», щоб створити копію наступного сайту."
+msgstr ""
+"Натисніть «Продовжити», щоб створити копію наступних графіків у дереві %s."
 
 #: graphs.php:1914
 #, fuzzy
@@ -6591,9 +6581,11 @@ msgid "Set Default"
 msgstr "Встановити за замовчуванням"
 
 #: help.php:44
-#, fuzzy, php-format
+#, php-format
 msgid "WARNING: Cacti Page:%s for User:%s Generated a Fatal Error %d!"
-msgstr "ПОПЕРЕДЖЕННЯ. Сторінка Cacti: %s створила фатальну помилку %d!"
+msgstr ""
+"ПОПЕРЕДЖЕННЯ: Сторінка Cacti:%1$s для користувача:%2$s спричинила фатальну "
+"помилку %3$d!"
 
 #: help.php:74
 #, php-format
@@ -10650,9 +10642,10 @@ msgid "Give this host a meaningful description."
 msgstr "Дайте цьому хосту змістовний опис."
 
 #: include/global_form.php:1257
-#, fuzzy
 msgid "Fully qualified hostname or IP address for this device. IPv6 address insert into brackets (example: [2001:abcd:1234::1])"
-msgstr "Повне ім’я хоста або IP-адреса цього пристрою."
+msgstr ""
+"Повне доменне ім'я хоста або IP-адреса цього пристрою. Адресу IPv6 введіть у "
+"квадратних дужках (приклад: [2001:abcd:1234::1])"
 
 #: include/global_form.php:1265
 msgid "The physical location of the Device.  This free form text can be a room, rack location, etc."
@@ -14505,9 +14498,8 @@ msgid "There was some error in MySQL/MariaDB.  Can not continue."
 msgstr "Виникла помилка в MySQL/MariaDB. Неможливо продовжити."
 
 #: lib/api_aggregate.php:1674
-#, fuzzy
 msgid "You must pass at least a single Graph to this function"
-msgstr "Ви повинні вибрати принаймні один графік, щоб додати його до звіту."
+msgstr "Ви повинні передати цій функції принаймні один графік"
 
 #: lib/api_aggregate.php:1779
 msgid "Graph Item"
@@ -14687,9 +14679,8 @@ msgid "Incomplete file transfer."
 msgstr "Неповна передача файлу."
 
 #: lib/api_automation.php:5222 lib/api_automation.php:5250
-#, fuzzy
 msgid "No file uploaded."
-msgstr "Файл не вибрано"
+msgstr "Файл не завантажено."
 
 #: lib/api_automation.php:5225
 msgid "Temporary folder missing."
@@ -14740,9 +14731,9 @@ msgid "Update"
 msgstr "Оновити"
 
 #: lib/api_automation.php:5309 lib/api_automation.php:5311
-#, fuzzy, php-format
+#, php-format
 msgid "Automation Network SNMP Option %s!"
-msgstr "Автоматизація параметрів SNMP"
+msgstr "Параметр SNMP мережі автоматизації %s!"
 
 #: lib/api_automation.php:5315 lib/api_automation.php:5317
 #, php-format
@@ -15301,9 +15292,11 @@ msgid "Index Association with Local Data complete"
 msgstr "Зв’язок індексу з локальними даними завершено"
 
 #: lib/data_query.php:392
-#, fuzzy, php-format
+#, php-format
 msgid "Update Re-Index Cache complete. There were %s index changes, and %s orphaned indexes."
-msgstr "Оновлення кешу повторного індексування завершено. Там були"
+msgstr ""
+"Оновлення кешу повторного індексування завершено. Змін індексів: %1$s, "
+"осиротілих індексів: %2$s."
 
 #: lib/data_query.php:396
 msgid "Update Poller Cache for Query complete"
@@ -18475,9 +18468,8 @@ msgid "WARNING: Default Device Failed to be Added error to follow."
 msgstr "ПОПЕРЕДЖЕННЯ: Не вдалося додати пристрій за замовчуванням."
 
 #: lib/installer.php:3675
-#, fuzzy
 msgid "Default Device Added to Cacti."
-msgstr "Пристрій %s додано до Cacti"
+msgstr "Пристрій за замовчуванням додано до Cacti."
 
 #: lib/installer.php:3680
 #, php-format
@@ -19013,9 +19005,9 @@ msgid "RRDtool Command Crashed"
 msgstr "Команда RRDtool:"
 
 #: lib/rrd.php:3299
-#, fuzzy, php-format
+#, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
-msgstr "Необхідний розмір кроку RRD – \"%s\""
+msgstr "Необхідний розмір кроку файлу RRD — '%1$s', але зафіксовано крок '%2$s'"
 
 #: lib/rrd.php:3359
 #, php-format
@@ -19207,9 +19199,9 @@ msgid "ERROR: Whitelist Validation Failed. Check Data Input Method"
 msgstr "ПОМИЛКА: Помилка перевірки білого списку. Перевірте метод введення даних"
 
 #: lib/template.php:2267
-#, fuzzy, php-format
+#, php-format
 msgid "Graph Not created for %s due to bad data"
-msgstr "Графік Не створено для"
+msgstr "Графік не створено для %s через некоректні дані"
 
 #: lib/template.php:2296
 #, php-format
@@ -19296,9 +19288,19 @@ msgid "If your tables have very large indexes, you must operate with the Barracu
 msgstr "Якщо ваші таблиці мають дуже великі індекси, ви повинні працювати з Barracuda innodb_file_format і innodb_large_prefix, що дорівнює 1. Невиконання цього може призвести до того, що плагіни не зможуть правильно створювати таблиці."
 
 #: lib/utility.php:1254
-#, fuzzy, php-format
+#, php-format
 msgid "InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size.  If you database is very large or remote, you can consider increasing this size.  If remote, it can by as high as 80% of the systems memory.  However, cautions must be taken to reduce the swappiness of the system, or to remove swap to keep the system from swapping."
-msgstr "InnoDB буде зберігати якомога більше таблиць та індексів у системній пам’яті. Таким чином, ви повинні зробити innodb_buffer_pool достатньо великим, щоб утримувати якомога більше таблиць та індексів у пам’яті. Перевірка розміру каталогу /var/lib/mysql/cacti допоможе визначити це значення. Ми рекомендуємо 25%% загальної пам’яті вашої системи, але ваші вимоги залежатимуть від розміру вашої системи."
+msgstr ""
+"InnoDB зберігатиме в системній пам’яті якомога більше таблиць та індексів. "
+"Тому варто задати розмір innodb_buffer_pool достатньо великим, щоб "
+"утримувати в пам’яті якомога більше таблиць та індексів. Перевірка розміру "
+"каталогу /var/lib/mysql/cacti допоможе визначити це значення. Ми "
+"рекомендуємо 25%% від загального обсягу пам’яті вашої системи, але ваші "
+"потреби залежатимуть від розміру системи. Якщо ваша база даних дуже велика "
+"або віддалена, ви можете розглянути можливість збільшення цього розміру. "
+"Якщо база віддалена, він може становити до 80% пам’яті системи. Проте слід "
+"вжити заходів для зменшення інтенсивності підкачування (swappiness) системи "
+"або вимкнення swap, щоб запобігти використанню файлу підкачування."
 
 #: lib/utility.php:1260
 #, fuzzy
@@ -19626,9 +19628,8 @@ msgid "an Account Suspension"
 msgstr "Параметри облікового запису"
 
 #: logout.php:57
-#, fuzzy
 msgid "a change in state of the Remote Data Collector"
-msgstr "Статус цього збирача даних."
+msgstr "зміна стану віддаленого збирача даних"
 
 #: logout.php:60
 msgid "Automatic Logout"
@@ -19639,9 +19640,9 @@ msgid "Logout of Cacti"
 msgstr "Вийти з Cacti"
 
 #: logout.php:60
-#, fuzzy, php-format
+#, php-format
 msgid "You have been logged out of Cacti due to %s."
-msgstr "Ви вийшли з Cacti через тайм-аут сеансу."
+msgstr "Ви вийшли з Cacti через %s."
 
 #: logout.php:61
 #, php-format
@@ -19649,9 +19650,8 @@ msgid "Please close your browser or %sLogin Again%s"
 msgstr "Закрийте браузер або %sувійдіть знову%s"
 
 #: logout.php:62
-#, fuzzy
 msgid "Cookies have been cleared"
-msgstr "Усі ваші сеанси входу видалено."
+msgstr "Файли cookie очищено"
 
 #: managers.php:40 managers.php:228 managers.php:592
 msgid "Notifications"
@@ -19737,14 +19737,12 @@ msgid "No SNMP Notification Log Entries"
 msgstr "Немає записів у журналі сповіщень SNMP"
 
 #: managers.php:1027
-#, fuzzy
 msgid "Click 'Continue' to Delete the following Notification Receiver."
-msgstr "Натисніть «Продовжити», щоб видалити наступного отримувача сповіщень"
+msgstr "Натисніть «Продовжити», щоб видалити наступного отримувача сповіщень."
 
 #: managers.php:1028
-#, fuzzy
 msgid "Click 'Continue' to Delete following Notification Receivers."
-msgstr "Натисніть «Продовжити», щоб видалити наступного отримувача сповіщень"
+msgstr "Натисніть «Продовжити», щоб видалити наступних отримувачів сповіщень."
 
 #: managers.php:1029
 msgid "Delete Notification Receiver"
@@ -19755,14 +19753,12 @@ msgid "Delete Notification Receivers"
 msgstr "Видалити отримувачів сповіщень"
 
 #: managers.php:1033
-#, fuzzy
 msgid "Click 'Continue' to Disable the following Notification Receiver."
-msgstr "Натисніть «Продовжити», щоб вимкнути вказаний нижче приймач сповіщень"
+msgstr "Натисніть «Продовжити», щоб вимкнути вказаний нижче приймач сповіщень."
 
 #: managers.php:1034
-#, fuzzy
 msgid "Click 'Continue' to Disable following Notification Receivers."
-msgstr "Натисніть «Продовжити», щоб вимкнути вказаний нижче приймач сповіщень"
+msgstr "Натисніть «Продовжити», щоб вимкнути вказані нижче приймачі сповіщень."
 
 #: managers.php:1035
 #, fuzzy
@@ -19775,14 +19771,12 @@ msgid "Disable Notification Receivers"
 msgstr "Вимкнути приймач сповіщень SNMP"
 
 #: managers.php:1039
-#, fuzzy
 msgid "Click 'Continue' to Enable the following Notification Receiver."
-msgstr "Натисніть «Продовжити», щоб увімкнути наступний приймач сповіщень"
+msgstr "Натисніть «Продовжити», щоб увімкнути наступний приймач сповіщень."
 
 #: managers.php:1040
-#, fuzzy
 msgid "Click 'Continue' to Enable following Notification Receivers."
-msgstr "Натисніть «Продовжити», щоб увімкнути наступний приймач сповіщень"
+msgstr "Натисніть «Продовжити», щоб увімкнути наступні приймачі сповіщень."
 
 #: managers.php:1041
 msgid "Enable Notification Receiver"
@@ -19859,19 +19853,19 @@ msgid "What would you like to Package?"
 msgstr "Що б ви хотіли експортувати?"
 
 #: package.php:667
-#, fuzzy, php-format
+#, php-format
 msgid "%s Device Package"
-msgstr "Ім'я пристрою"
+msgstr "Пакет пристрою %s"
 
 #: package.php:670
-#, fuzzy, php-format
+#, php-format
 msgid "%s Graph Template Package"
-msgstr "Назва шаблону графіка"
+msgstr "Пакет шаблону графіка %s"
 
 #: package.php:673
-#, fuzzy, php-format
+#, php-format
 msgid "%s Data Query Package"
-msgstr "Назва запиту даних"
+msgstr "Пакет запиту даних %s"
 
 #: package.php:700 templates_export.php:168
 #, php-format
@@ -19883,9 +19877,9 @@ msgid "Available Templates"
 msgstr "Доступні шаблони"
 
 #: package.php:709
-#, fuzzy, php-format
+#, php-format
 msgid "%s to Export"
-msgstr "Експорт"
+msgstr "%s для експорту"
 
 #: package.php:710
 msgid "Choose the exact items to export in the Package."
@@ -19904,9 +19898,8 @@ msgid "Package Information"
 msgstr "Інформація про пакет"
 
 #: package.php:728
-#, fuzzy
 msgid "The Package Description."
-msgstr "Опис Пристрою"
+msgstr "Опис пакета."
 
 #: package.php:736
 msgid "The license type for this package."
@@ -20015,9 +20008,9 @@ msgid "The Package %s Import Failed"
 msgstr "Помилка імпорту пакета %s"
 
 #: package_import.php:298
-#, fuzzy, php-format
+#, php-format
 msgid "Package %s"
-msgstr "Пакет"
+msgstr "Пакет %s"
 
 #: package_import.php:305
 msgid "Click 'Continue' to Import the following Package."
@@ -20150,9 +20143,10 @@ msgid "Package XML File Damaged."
 msgstr "Файл XML пакета пошкоджено."
 
 #: package_import.php:981
-#, fuzzy
 msgid "The XML files appears to be invalid and does not contain a public key.  Please contact the package author to obtain a revised package."
-msgstr "Файли XML виявляються недійсними. Будь ласка, зверніться до автора пакета"
+msgstr ""
+"Схоже, XML-файли є недійсними та не містять відкритого ключа. Будь ласка, "
+"зверніться до автора пакета, щоб отримати оновлений пакет."
 
 #: package_import.php:984
 msgid "Check the package repository file for files that should exist and find the one that is missing"
@@ -20621,18 +20615,22 @@ msgid "Plugin '%s' Check Configuration function returned a null response which i
 msgstr "Функція перевірки конфігурації плагіна '%s' повернула недійсну відповідь null. Зверніться до розробника плагіна для отримання оновлення."
 
 #: plugins.php:580
-#, fuzzy
 msgid "Uninstalling this Plugin and may remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click 'Uninstall' below.  Otherwise click 'Cancel'."
-msgstr "Видалення цього плагіна призведе до видалення всіх даних і налаштувань плагіна. Якщо ви справді хочете видалити плагін, натисніть «Видалити» нижче. В іншому випадку натисніть «Скасувати»"
+msgstr ""
+"Видалення цього плагіна може призвести до видалення всіх даних і налаштувань "
+"плагіна. Якщо ви справді хочете видалити плагін, натисніть «Видалити» нижче. "
+"Інакше натисніть «Скасувати»."
 
 #: plugins.php:581
 msgid "Are you sure you want to Uninstall?"
 msgstr "Ви впевнені, що хочете видалити?"
 
 #: plugins.php:583
-#, fuzzy
 msgid "Removing Plugin Data and Settings for will remove all Plugin Data and Settings.  If you really want to Remove Data and Settings for this Plugin, click 'Remove Data' below.  Otherwise click 'Cancel'."
-msgstr "Видалення цього плагіна призведе до видалення всіх даних і налаштувань плагіна. Якщо ви справді хочете видалити плагін, натисніть «Видалити» нижче. В іншому випадку натисніть «Скасувати»"
+msgstr ""
+"Видалення даних і налаштувань плагіна видалить усі дані та налаштування "
+"плагіна. Якщо ви справді хочете видалити дані та налаштування цього плагіна, "
+"натисніть «Видалити дані» нижче. Інакше натисніть «Скасувати»."
 
 #: plugins.php:584
 #, fuzzy
@@ -20651,9 +20649,11 @@ msgid "Are you sure you want to Restore this Archive?"
 msgstr "Ви впевнені, що бажаєте відновити цей архів?"
 
 #: plugins.php:589
-#, fuzzy
 msgid "Deleting this Plugin Archive is not reversible without a table restore.  If you really want to Delete the Plugin Archive, click 'Delete' below.  Otherwise click 'Cancel'."
-msgstr "Видалення цього плагіна призведе до видалення всіх даних і налаштувань плагіна. Якщо ви справді хочете видалити плагін, натисніть «Видалити» нижче. В іншому випадку натисніть «Скасувати»"
+msgstr ""
+"Видалення цього архіву плагіна є незворотним без відновлення таблиць. Якщо "
+"ви справді хочете видалити архів плагіна, натисніть «Видалити» нижче. Інакше "
+"натисніть «Скасувати»."
 
 #: plugins.php:590
 msgid "Are you sure you want to Delete this Archive?"
@@ -21161,9 +21161,11 @@ msgid "NOTE: A second Cacti data collector has been added.  Therefore, enabling 
 msgstr "ПРИМІТКА: додано другий збирач даних Cacti. Тому автоматичне включення посилення!"
 
 #: poller_automation.php:54
-#, fuzzy, php-format
+#, php-format
 msgid "WARNING: Main Cacti database %s offline or in recovery"
-msgstr "ПОПЕРЕДЖЕННЯ: Основна база даних Cacti вимкнена або відновлюється"
+msgstr ""
+"ПОПЕРЕДЖЕННЯ: Основна база даних Cacti %s вимкнена або перебуває в режимі "
+"відновлення"
 
 #: poller_automation.php:1037 poller_automation.php:1091
 msgid "Cacti Primary Admin"
@@ -23073,14 +23075,12 @@ msgid "Click 'Continue' to Overwrite the Users settings with the selected Templa
 msgstr "Натисніть «Продовжити», щоб замінити налаштування користувача(ів) вибраним шаблоном Параметри користувача та дозволи. Буде збережено вихідне повне ім’я користувача, пароль, область і статус «Увімкнути», а всі інші поля буде перезаписано в шаблоні користувача."
 
 #: user_admin.php:410
-#, fuzzy
 msgid "Replace User Settings for User"
-msgstr "Скидання налаштувань користувача(ів)."
+msgstr "Замінити налаштування користувача для користувача"
 
 #: user_admin.php:411
-#, fuzzy
 msgid "Replace User Settings for Users"
-msgstr "Скидання налаштувань користувача(ів)."
+msgstr "Замінити налаштування користувача для користувачів"
 
 #: user_admin.php:415
 msgid "Template User"
@@ -23761,9 +23761,8 @@ msgid "What to do when a User from this User Group logs in."
 msgstr "Що робити, коли входить користувач із цієї групи користувачів."
 
 #: user_group_admin.php:455
-#, fuzzy
 msgid "Click 'Continue' to Delete the following User Group."
-msgstr "Натисніть «Продовжити», щоб видалити наступну групу користувачів"
+msgstr "Натисніть «Продовжити», щоб видалити наступну групу користувачів."
 
 #: user_group_admin.php:456
 msgid "Click 'Continue' to Delete following User Groups."
@@ -24123,9 +24122,14 @@ msgid "Rebuild Poller Cache"
 msgstr "Перебудуйте кеш Poller"
 
 #: utilities.php:1247
-#, fuzzy
 msgid "The Poller Cache will be re-generated if you select this option. Use this option only in the event of a database crash if you are experiencing issues after the crash and have already run the database repair tools.  Alternatively, if you are having problems with a specific Device, simply re-save that Device to rebuild its Poller Cache.  There is also a command line interface equivalent to this command that is recommended for large systems."
-msgstr "Кеш Poller буде створено повторно, якщо вибрати цей параметр. Використовуйте цей параметр лише у разі збою бази даних, якщо у вас виникли проблеми після збою та ви вже запустили інструменти відновлення бази даних. Крім того, якщо у вас виникли проблеми з певним пристроєм, просто повторно збережіть цей пристрій, щоб відновити його кеш Poller. Існує також інтерфейс командного рядка, еквівалентний цій команді, рекомендований для великих систем. <i class=\"deviceDown\">ПРИМІТКА. У великих системах виконання цієї команди може тривати від кількох хвилин до годин, тому її не слід запускати з інтерфейсу Cacti. Ви можете просто запустити 'php -q cli/rebuild_poller_cache.php --help' у командному рядку для отримання додаткової інформації.</i>"
+msgstr ""
+"Кеш Poller буде створено повторно, якщо вибрати цей параметр. Використовуйте "
+"цей параметр лише у разі збою бази даних, якщо у вас виникли проблеми після "
+"збою та ви вже запустили інструменти відновлення бази даних. Крім того, якщо "
+"у вас виникли проблеми з певним пристроєм, просто повторно збережіть цей "
+"пристрій, щоб відновити його кеш Poller. Існує також інтерфейс командного "
+"рядка, еквівалентний цій команді, рекомендований для великих систем."
 
 #: utilities.php:1249
 msgid "NOTE: On large systems, this command may take several minutes to hours to complete and therefore should not be run from the Cacti UI.  You can simply run 'php -q cli/rebuild_poller_cache.php --help' at the command line for more information."
