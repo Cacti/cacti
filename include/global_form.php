@@ -619,7 +619,7 @@ $struct_data_source = [
 		'friendly_name' => __('Data Source Profile'),
 		'method'        => 'drop_sql',
 		'description'   => __('Select the Data Source Profile.  The Data Source Profile controls polling interval, the data aggregation, and retention policy for the resulting Data Sources.'),
-		'sql'           => 'SELECT "0" AS id, "' . __('External') . '" AS name UNION SELECT id, name FROM data_source_profiles ORDER BY name',
+		'sql'           => 'SELECT "0" AS id, ' . db_qstr(__('External')) . ' AS name UNION SELECT id, name FROM data_source_profiles ORDER BY name',
 		'default'       => $def_profile,
 		'flags'         => ''
 	],

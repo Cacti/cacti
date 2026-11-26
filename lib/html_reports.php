@@ -1255,7 +1255,7 @@ function reports_item_edit() : void {
 			'description'   => __('Select a Site to filter for Devices and Graphs.'),
 			'value'         => '|arg1:site_id|',
 			'on_change'     => 'changeSite()',
-			'sql'           => 'SELECT -1 AS id, "' . __('Any') . '" AS name UNION SELECT 0 AS id, "' . __('None') . '" AS name UNION (SELECT id, name FROM sites ORDER BY name)'
+			'sql'           => 'SELECT -1 AS id, ' . db_qstr(__('Any')) . ' AS name UNION SELECT 0 AS id, ' . db_qstr(__('None')) . ' AS name UNION (SELECT id, name FROM sites ORDER BY name)'
 		],
 		'host_template_id' => [
 			'friendly_name' => __('Device Template'),
@@ -1265,7 +1265,7 @@ function reports_item_edit() : void {
 			'description'   => __('Select a Device Template to use to filter for Devices or Graphs.'),
 			'value'         => '|arg1:host_template_id|',
 			'on_change'     => 'changeDeviceTemplate()',
-			'sql'           => "SELECT -1 AS id, '" . __('Any') . "' AS name UNION SELECT 0 AS id, '" . __('None') . "' AS name UNION (
+			'sql'           => 'SELECT -1 AS id, ' . db_qstr(__('Any')) . ' AS name UNION SELECT 0 AS id, ' . db_qstr(__('None')) . " AS name UNION (
 				SELECT DISTINCT ht.id, ht.name
 				FROM host_template AS ht
 				INNER JOIN host AS h

@@ -1527,14 +1527,14 @@ function show_tech_summary() : void {
 
 	$processes = db_fetch_cell('SELECT
 		GROUP_CONCAT(
-			CONCAT("' . __('Name: ') . '", name, ", ' . __('Procs: ') . '", processes) SEPARATOR "<br>"
+			CONCAT(' . db_qstr(__('Name: ')) . ', name, ' . db_qstr(', ' . __('Procs: ')) . ', processes) SEPARATOR "<br>"
 		) AS poller
 		FROM poller
 		WHERE disabled=""');
 
 	$threads = db_fetch_cell('SELECT
 		GROUP_CONCAT(
-			CONCAT("' . __('Name: ') . '", name, ", ' . __('Threads: ') . '", threads) SEPARATOR "<br>"
+			CONCAT(' . db_qstr(__('Name: ')) . ', name, ' . db_qstr(', ' . __('Threads: ')) . ', threads) SEPARATOR "<br>"
 		) AS poller
 		FROM poller
 		WHERE disabled=""');

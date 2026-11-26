@@ -2925,7 +2925,7 @@ function get_allowed_branches(string $sql_where = '', string $sql_order = 'name'
 		$sql_where = 'WHERE gt.enabled="on" AND (' . $sql_where1 . ')';
 	}
 
-	$sql = "(SELECT gti.id, CONCAT('" . __('Branch:') . " ', gti.title) AS name
+	$sql = '(SELECT gti.id, CONCAT(' . db_qstr(__('Branch:') . ' ') . ", gti.title) AS name
 		FROM graph_tree AS gt
 		INNER JOIN graph_tree_items AS gti
 		ON gti.graph_tree_id = gt.id
@@ -2934,7 +2934,7 @@ function get_allowed_branches(string $sql_where = '', string $sql_order = 'name'
 		$sql_join
 		$sql_where
 		) UNION (
-		SELECT gti.id, CONCAT('" . __('Device:') . " ', h.description) AS name
+		SELECT gti.id, CONCAT(" . db_qstr(__('Device:') . ' ') . ", h.description) AS name
 		FROM graph_tree AS gt
 		INNER JOIN graph_tree_items AS gti
 		ON gti.graph_tree_id = gt.id
