@@ -230,7 +230,7 @@ function grow_dhtml_trees() : void {
 
 	function checkTreeForLogout() {
 		html = $('#jstree').html();
-		found = html.indexOf('<?php print __('Login to Cacti'); ?>');
+		found = html.indexOf(<?php print json_encode(__('Login to Cacti')); ?>);
 		if (found >= 0) {
 			document.location = 'logout.php';
 		}

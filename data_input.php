@@ -721,7 +721,7 @@ function data_input_edit() : void {
 					applySkin();
 
 					$('#cdialog').dialog({
-						title: '<?php print __('Delete Data Input Field'); ?>',
+						title: <?php print json_encode(__('Delete Data Input Field')); ?>,
 						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
 						modal: false,
 						minHeight: 80,

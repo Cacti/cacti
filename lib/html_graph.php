@@ -1608,7 +1608,7 @@ function html_graph_list_view() : void {
 
 			loadUrl({url:strURL})
 
-			$('#breadcrumbs').empty().html('<li><a href="' + urlPath + 'graph_view.php?action=preview"><?php print __('Preview Mode'); ?></a></li>');
+			$('#breadcrumbs').empty().html('<li><a href="' + urlPath + 'graph_view.php?action=preview">' + <?php print json_encode(__esc('Preview Mode')); ?> + '</a></li>');
 			$('#listview').removeClass('selected');
 			$('#preview').addClass('selected');
 		}
@@ -1647,7 +1647,7 @@ function html_graph_list_view() : void {
 
 		function addReport() {
 			$('#addGraphs').dialog({
-				title: '<?php print __('Add Selected Graphs to Report'); ?>',
+				title: <?php print json_encode(__('Add Selected Graphs to Report')); ?>,
 				minHeight: 80,
 				minWidth: 400,
 				modal: false,
@@ -1655,13 +1655,13 @@ function html_graph_list_view() : void {
 				draggable: false,
 				buttons: [
 					{
-						text: '<?php print __('Cancel'); ?>',
+						text: <?php print json_encode(__('Cancel')); ?>,
 						click: function() {
 							$(this).dialog('close');
 						}
 					},
 					{
-						text: '<?php print __('Ok'); ?>',
+						text: <?php print json_encode(__('Ok')); ?>,
 						click: function() {
 							graphList = $('#graph_list').val();
 							$('input[id^=chk_]').each(function(data) {

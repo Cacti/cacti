@@ -177,7 +177,7 @@ function api_scheduler_javascript() : void {
 	$(function() {
 		$('#day_of_week').multiselect({
 			selectedList: 7,
-			noneSelectedText: '<?php print __('Select the days(s) of the week'); ?>',
+			noneSelectedText: <?php print json_encode(__('Select the days(s) of the week')); ?>,
 			header: false,
 			height: 54,
 			groupColumns: true,
@@ -197,7 +197,7 @@ function api_scheduler_javascript() : void {
 
 		$('#day_of_month').multiselect({
 			selectedList: 15,
-			noneSelectedText: '<?php print __('Select the day(s) of the month'); ?>',
+			noneSelectedText: <?php print json_encode(__('Select the day(s) of the month')); ?>,
 			header: false,
 			height: 162,
 			groupColumns: true,
@@ -207,7 +207,7 @@ function api_scheduler_javascript() : void {
 
 		$('#monthly_week').multiselect({
 			selectedList: 4,
-			noneSelectedText: '<?php print __('Select the week(s) of the month'); ?>',
+			noneSelectedText: <?php print json_encode(__('Select the week(s) of the month')); ?>,
 			header: false,
 			height: 28,
 			groupColumns: true,
@@ -217,7 +217,7 @@ function api_scheduler_javascript() : void {
 
 		$('#monthly_day').multiselect({
 			selectedList: 7,
-			noneSelectedText: '<?php print __('Select the day(s) of the week'); ?>',
+			noneSelectedText: <?php print json_encode(__('Select the day(s) of the week')); ?>,
 			header: false,
 			height: 54,
 			groupColumns: true,
@@ -258,14 +258,14 @@ function api_scheduler_javascript() : void {
 				var html = $(this).html();
 
 				if (html.indexOf('X Weeks') >= 0) {
-					html = html.replace('<?php print __('every X Weeks'); ?>', '<?php print __('every X Days'); ?>');
-					html = html.replace('<?php print __('Rerun Every X Weeks'); ?>', '<?php print __('Rerun Every X Days'); ?>');
+					html = html.replace(<?php print json_encode(__('every X Weeks')); ?>, <?php print json_encode(__('every X Days')); ?>);
+					html = html.replace(<?php print json_encode(__('Rerun Every X Weeks')); ?>, <?php print json_encode(__('Rerun Every X Days')); ?>);
 				} else if (html.indexOf('X Hours') >= 0) {
-					html = html.replace('<?php print __('Rerun Every X Hours'); ?>', '<?php print __('Rerun Every X Days'); ?>');
-					html = html.replace('<?php print __('every X Hours'); ?>', '<?php print __('every X Days'); ?>');
+					html = html.replace(<?php print json_encode(__('Rerun Every X Hours')); ?>, <?php print json_encode(__('Rerun Every X Days')); ?>);
+					html = html.replace(<?php print json_encode(__('every X Hours')); ?>, <?php print json_encode(__('every X Days')); ?>);
 				} else if (html.indexOf('X Days') < 0) {
-					html = html.replace('<?php print __('Rerun Every'); ?>', '<?php print __('Rerun Every X Days'); ?>');
-					html = html.replace('<?php print __('every X'); ?>', '<?php print __('every X Days'); ?>');
+					html = html.replace(<?php print json_encode(__('Rerun Every')); ?>, <?php print json_encode(__('Rerun Every X Days')); ?>);
+					html = html.replace(<?php print json_encode(__('every X')); ?>, <?php print json_encode(__('every X Days')); ?>);
 				}
 
 				$(this).html(html);
@@ -275,14 +275,14 @@ function api_scheduler_javascript() : void {
 				var html = $(this).html();
 
 				if (html.indexOf('X Weeks') >= 0) {
-					html = html.replace('<?php print __('every X Weeks'); ?>', '<?php print __('every X Hours'); ?>');
-					html = html.replace('<?php print __('Rerun Every X Weeks'); ?>', '<?php print __('Rerun Every X Hours'); ?>');
+					html = html.replace(<?php print json_encode(__('every X Weeks')); ?>, <?php print json_encode(__('every X Hours')); ?>);
+					html = html.replace(<?php print json_encode(__('Rerun Every X Weeks')); ?>, <?php print json_encode(__('Rerun Every X Hours')); ?>);
 				} else if (html.indexOf('X Days') >= 0) {
-					html = html.replace('<?php print __('Rerun Every X Days'); ?>', '<?php print __('Rerun Every X Hours'); ?>');
-					html = html.replace('<?php print __('every X Days'); ?>', '<?php print __('every X Hours'); ?>');
+					html = html.replace(<?php print json_encode(__('Rerun Every X Days')); ?>, <?php print json_encode(__('Rerun Every X Hours')); ?>);
+					html = html.replace(<?php print json_encode(__('every X Days')); ?>, <?php print json_encode(__('every X Hours')); ?>);
 				} else if (html.indexOf('X Hours') < 0) {
-					html = html.replace('<?php print __('Rerun Every'); ?>', '<?php print __('Rerun Every X Hours'); ?>');
-					html = html.replace('<?php print __('every X'); ?>', '<?php print __('every X Hours'); ?>');
+					html = html.replace(<?php print json_encode(__('Rerun Every')); ?>, <?php print json_encode(__('Rerun Every X Hours')); ?>);
+					html = html.replace(<?php print json_encode(__('every X')); ?>, <?php print json_encode(__('every X Hours')); ?>);
 				}
 
 				$(this).html(html);
@@ -292,14 +292,14 @@ function api_scheduler_javascript() : void {
 				var html = $(this).html();
 
 				if (html.indexOf('X Days') >= 0) {
-					html = html.replace('<?php print __('every X Days'); ?>', '<?php print __('every X Weeks'); ?>');
-					html = html.replace('<?php print __('Rerun Every X Days'); ?>', '<?php print __('Rerun Every X Weeks'); ?>');
+					html = html.replace(<?php print json_encode(__('every X Days')); ?>, <?php print json_encode(__('every X Weeks')); ?>);
+					html = html.replace(<?php print json_encode(__('Rerun Every X Days')); ?>, <?php print json_encode(__('Rerun Every X Weeks')); ?>);
 				} else if (html.indexOf('X Hours') >= 0) {
-					html = html.replace('<?php print __('Rerun Every X Hours'); ?>', '<?php print __('Rerun Every X Weeks'); ?>');
-					html = html.replace('<?php print __('every X Hours'); ?>', '<?php print __('every X Weeks'); ?>');
+					html = html.replace(<?php print json_encode(__('Rerun Every X Hours')); ?>, <?php print json_encode(__('Rerun Every X Weeks')); ?>);
+					html = html.replace(<?php print json_encode(__('every X Hours')); ?>, <?php print json_encode(__('every X Weeks')); ?>);
 				} else if (html.indexOf('X Weeks') < 0) {
-					html = html.replace('<?php print __('Rerun Every'); ?>', '<?php print __('Rerun Every X Weeks'); ?>');
-					html = html.replace('<?php print __('every X'); ?>', '<?php print __('every X Weeks'); ?>');
+					html = html.replace(<?php print json_encode(__('Rerun Every')); ?>, <?php print json_encode(__('Rerun Every X Weeks')); ?>);
+					html = html.replace(<?php print json_encode(__('every X')); ?>, <?php print json_encode(__('every X Weeks')); ?>);
 				}
 
 				$(this).html(html);

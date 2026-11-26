@@ -690,7 +690,7 @@ function vdef_edit() : void {
 					});
 
 					$('#cdialog').dialog({
-						title: '<?php print __esc('Delete VDEF Item'); ?>',
+						title: <?php print json_encode(__('Delete VDEF Item')); ?>,
 						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
 						minHeight: 80,
 						minWidth: 500

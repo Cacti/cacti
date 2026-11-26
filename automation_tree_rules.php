@@ -859,7 +859,7 @@ function automation_tree_rules_edit() : void {
 		$('#show_device_sql').click(function(event) {
 			event.stopPropagation();
 			$('#sql_device_query').dialog({
-				'title': '<?php print __('SQL Debug Output'); ?>',
+				'title': <?php print json_encode(__('SQL Debug Output')); ?>,
 				'autoOpen': true,
 				'width': 700
 			});
@@ -868,7 +868,7 @@ function automation_tree_rules_edit() : void {
 		$('#show_sql').click(function(event) {
 			event.stopPropagation();
 			$('#sql_query').dialog({
-				'title': '<?php print __('SQL Debug Output'); ?>',
+				'title': <?php print json_encode(__('SQL Debug Output')); ?>,
 				'autoOpen': true,
 				'width': 700
 			});
