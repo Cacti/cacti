@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-26 05:54+0000\n"
+"PO-Revision-Date: 2026-11-26 19:34+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Swedish <https://translate.cacti.net/projects/cacti/core/sv/>"
 "\n"
@@ -6536,19 +6536,19 @@ msgstr "Välj alla rader"
 #: graphs_new.php:678
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id of '%s'"
-msgstr "Fel vid tolkning av XML-resursfilen för datafrågan ”%1$s” med ID ”%2$s”"
+msgstr "Fel vid tolkning av XML-resursfilen för datafrågan ”%s” med ID ”%s”"
 
 #: graphs_new.php:695
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'.  Field Name '%s' missing a 'direction' attribute"
 msgstr ""
-"Fel vid tolkning av XML-resursfilen för datafrågan ”%1$s” med ID ”%2$s”. "
-"Fältet ”%3$s” saknar attributet ”direction”"
+"Fel vid tolkning av XML-resursfilen för datafrågan ”%s” med ID ”%s”. Fältet "
+"”%s” saknar attributet ”direction”"
 
 #: graphs_new.php:699
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'"
-msgstr "Fel vid tolkning av XML-resursfilen för datafrågan ”%1$s” med ID ”%2$s”"
+msgstr "Fel vid tolkning av XML-resursfilen för datafrågan ”%s” med ID ”%s”"
 
 #: graphs_new.php:740
 #, php-format
@@ -16617,8 +16617,8 @@ msgstr "Version %s %s"
 #, php-format
 msgid "WARNING: Key Cacti Include File \"%s\" missing.  Please locate and replace this file as we checked in \"%s\""
 msgstr ""
-"VARNING: Den viktiga Cacti-inkluderingsfilen ”%1$s” saknas. Leta reda på och "
-"återställ filen. Följande sökvägar kontrollerades: ”%2$s”"
+"VARNING: Den viktiga Cacti-inkluderingsfilen ”%s” saknas. Leta reda på och "
+"återställ filen. Följande sökvägar kontrollerades: ”%s”"
 
 #: lib/functions.php:8996
 msgid "System Device"
@@ -19409,7 +19409,7 @@ msgstr "Installationen avbröts eftersom licensavtalet inte godkändes"
 #: lib/installer.php:3920
 #, php-format
 msgid "Background was already started at %s, this attempt at %s was skipped"
-msgstr "Bakgrundsprocessen startades redan %1$s. Försöket %2$s hoppades över"
+msgstr "Bakgrundsprocessen startades redan %s. Försöket %s hoppades över"
 
 #: lib/installer.php:3946
 #, php-format
@@ -20315,9 +20315,9 @@ msgstr ""
 #, php-format
 msgid "As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential"
 msgstr ""
-"Från och med %1$s %2$s kan du styra hur ofta %3$s skriver transaktioner till "
-"disk. Standardvärdet är 1 sekund, men i system med hög I/O-belastning kan "
-"ett högre värde göra diskskrivningarna mer sekventiella"
+"Från och med %s %s kan du styra hur ofta %s skriver transaktioner till disk. "
+"Standardvärdet är 1 sekund, men i system med hög I/O-belastning kan ett "
+"högre värde göra diskskrivningarna mer sekventiella"
 
 #: lib/utility.php:1303
 msgid "With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics.  Depending on your MariaDB/MySQL versions, this value can go as high as 64.  But try to keep the number less than your total SMT threads on the database server."
