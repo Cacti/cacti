@@ -1,0 +1,2 @@
+run_probe ConfiguredCommands.php configured-commands
+run_probe ConfiguredCommands.php deprecated-rebuild deprecated

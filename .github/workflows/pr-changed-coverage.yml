@@ -18,6 +18,8 @@ on:
       - 'tests/e2e/tests/**'
       - 'tests/tools/report_changed_coverage.py'
       - 'tests/tools/run_pr_change_tests.sh'
+      - 'tests/tools/pr_change_tests.d/**'
+      - 'tests/tools/probe_groups.sh'
       - '.github/workflows/pr-changed-coverage.yml'
   workflow_dispatch:
     inputs:

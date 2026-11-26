@@ -10,6 +10,8 @@ on:
       - 'tests/tools/check_changed_php_coverage.py'
       - 'tests/tools/test_check_changed_php_coverage.py'
       - 'tests/tools/run_request_coverage.sh'
+      - 'tests/tools/request_coverage.d/**'
+      - 'tests/tools/probe_groups.sh'
       - 'tests/tools/test_request_coverage_dispatch.py'
       - '.github/workflows/pr-php-coverage.yml'
 
