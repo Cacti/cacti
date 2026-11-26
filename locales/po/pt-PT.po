@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-25 10:18+0000\n"
+"PO-Revision-Date: 2026-11-26 05:54+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Portuguese (Portugal) <https://translate.cacti.net/projects/"
 "cacti/core/pt_PT/>\n"
@@ -2902,7 +2902,7 @@ msgstr "Porta"
 #: automation_snmp.php:720 include/global_settings.php:681
 #: include/global_settings.php:941 support.php:788
 msgid "Timeout"
-msgstr "Timeout"
+msgstr "Tempo limite"
 
 #: automation_snmp.php:721 include/global_settings.php:949
 msgid "Retries"
@@ -5059,20 +5059,20 @@ msgstr[1] "Os gráficos a seguir estão usando essas fontes de dados."
 #: data_sources.php:551
 msgid "Leave the Graph Untouched"
 msgid_plural "Leave all Graphs untouched."
-msgstr[0] "Deixar o gráfico intacto."
+msgstr[0] "Deixar o gráfico intacto"
 msgstr[1] "Deixar todos os gráficos intactos."
 
 #: data_sources.php:555
 msgid "Delete all Graph Items that reference this Data Source."
 msgid_plural "Delete all Graph Items that reference these Data Sources"
-msgstr[0] "Eliminar todos os itens do gráfico que referenciam esta fonte de dados"
+msgstr[0] "Eliminar todos os itens do gráfico que referenciam esta fonte de dados."
 msgstr[1] ""
 "Eliminar todos os itens do gráfico que referenciam estas fontes de dados"
 
 #: data_sources.php:559
 msgid "Delete all Graphs that reference this Data Source."
 msgid_plural "Delete all Graphs that reference these Data Sources"
-msgstr[0] "Eliminar todos os gráficos que referenciam esta fonte de dados"
+msgstr[0] "Eliminar todos os gráficos que referenciam esta fonte de dados."
 msgstr[1] "Eliminar todos os gráficos que referenciam estas fontes de dados"
 
 #: data_sources.php:566
@@ -8525,7 +8525,7 @@ msgstr "Dispositivos descobertos"
 #: include/global_arrays.php:1369 lib/html_filter.php:189
 #: lib/html_graph.php:371 lib/html_graph.php:374 lib/html_tree.php:1364
 msgid "Presets"
-msgstr "Presets"
+msgstr "Predefinições"
 
 #: include/global_arrays.php:1109
 msgid "Data Profiles"
@@ -9249,7 +9249,7 @@ msgstr "Texto"
 
 #: include/global_arrays.php:1829 include/global_form.php:2398
 msgid "Tree"
-msgstr "Tree"
+msgstr "Árvore"
 
 #: include/global_arrays.php:1832
 msgid "Horizontal Rule"
@@ -12967,7 +12967,7 @@ msgstr "Atualização da cauda do log"
 
 #: include/global_settings.php:1177
 msgid "How often do you want the Cacti log display to update."
-msgstr "Quantas vezes você quer que a exibição do log Cacti seja atualizada?."
+msgstr "Define a frequência de atualização da visualização do registo do Cacti."
 
 #: include/global_settings.php:1183
 msgid "Log Viewer Settings"
@@ -17629,7 +17629,7 @@ msgstr "Definir intervalo de turnos"
 
 #: lib/html_graph.php:422 lib/html_tree.php:1415
 msgid "Shift Time Forward"
-msgstr "Shift Time Forward"
+msgstr "Avançar Tempo"
 
 #: lib/html_graph.php:427 lib/html_tree.php:1420
 #, fuzzy
@@ -20983,8 +20983,7 @@ msgstr "Atualização automática de página"
 
 #: links.php:585
 msgid "How often do you wish this page to be refreshed automatically."
-msgstr ""
-"Quantas vezes você deseja que esta página seja atualizada automaticamente?."
+msgstr "Define com que frequência esta página é atualizada automaticamente."
 
 #: links.php:593
 #, php-format
@@ -25373,7 +25372,7 @@ msgstr "Endereço de IP"
 
 #: user_log.php:302
 msgid "(User Removed)"
-msgstr "(Usuário Removido)"
+msgstr "(Utilizador Removido)"
 
 #: user_log.php:383
 msgid "Click 'Continue' to purge the User Log.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog."
