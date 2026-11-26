@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-25 10:19+0000\n"
+"PO-Revision-Date: 2026-11-26 05:54+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Turkish <https://translate.cacti.net/projects/cacti/core/tr/>"
 "\n"
@@ -1509,7 +1509,7 @@ msgstr "Bir dosyaya ver"
 #: automation_devices.php:613 data_debug.php:1080 lib/clog_webapi.php:220
 #: lib/clog_webapi.php:566 managers.php:772
 msgid "Purge"
-msgstr "Temizle"
+msgstr "Tamamen Temizle"
 
 #: automation_devices.php:613
 #, fuzzy
@@ -1530,7 +1530,7 @@ msgstr "Keşfedilen Cihazları Temizle"
 #: utilities.php:1710 utilities.php:1721 utilities.php:1744 utilities.php:1790
 #: utilities.php:2034
 msgid "N/A"
-msgstr "Yok"
+msgstr "Geçerli Değil"
 
 #: automation_graph_rules.php:30 automation_networks.php:34
 #: automation_snmp.php:31 automation_tree_rules.php:30 cdef.php:30
@@ -4815,7 +4815,7 @@ msgstr "Veri Saklama"
 #: data_source_profiles.php:642 include/global_settings.php:1207
 #: lib/html_reports.php:1170
 msgid "Graph Timespan"
-msgstr "Graph Timespan"
+msgstr "Grafik Zaman Aralığı"
 
 #: data_source_profiles.php:643
 msgid "Steps"
@@ -6823,7 +6823,7 @@ msgstr "Aşağıdaki Cihazları etkinleştirmek için &#39;Devam Et&#39;i tıkla
 
 #: host.php:502
 msgid "Enable Device"
-msgstr "Aygıtları Etkinleştir"
+msgstr "Aygıtı Etkinleştir"
 
 #: host.php:503
 msgid "Enable Devices"
@@ -8436,7 +8436,7 @@ msgstr "Yeni grafikler"
 #: include/global_arrays.php:1081 include/global_arrays.php:1151
 #: include/global_arrays.php:1170
 msgid "Management"
-msgstr "Kullanıcı Yonetimi"
+msgstr "Yönetim"
 
 #: include/global_arrays.php:1083 sites.php:521 sites.php:536 sites.php:539
 #: sites.php:622 tree.php:848 tree.php:2270
@@ -10906,7 +10906,7 @@ msgstr ""
 
 #: include/global_form.php:1120
 msgid "Dashes (dashes[=on_s[,off_s[,on_s,off_s]...]])"
-msgstr "Kısa çizgiler (kısa çizgiler [= on_s [, off_s [, on_s, off_s] ...]])"
+msgstr "Kesik Çizgiler (dashes[=on_s[,off_s[,on_s,off_s]...]])"
 
 #: include/global_form.php:1125
 msgid "The dashes modifier enables dashed line style."
@@ -10914,7 +10914,7 @@ msgstr "Kısa çizgi değiştiricisi kesikli çizgi stili sağlar."
 
 #: include/global_form.php:1128
 msgid "Dash Offset (dash-offset=offset)"
-msgstr "Çizgi Ofseti (çizgi ofset = ofset)"
+msgstr "Çizgi Ofseti (dash-offset=offset)"
 
 #: include/global_form.php:1133 include/global_form.php:1141
 msgid "The dash-offset parameter specifies an offset into the pattern at which the stroke begins."
@@ -11881,7 +11881,7 @@ msgstr "Günlük Hedefi"
 
 #: include/global_settings.php:310
 msgid "How will Cacti handle event logging."
-msgstr "Cacti olay günlüğünü nasıl idare edecek?."
+msgstr "Cacti'nin olay günlüğünü nasıl yöneteceğini belirler."
 
 #: include/global_settings.php:316
 msgid "Generic Log Level"
@@ -12067,6 +12067,8 @@ msgstr "İstemci Saat Dilimi Desteği"
 #: include/global_settings.php:457
 msgid "How should Cacti support Client Dates based upon the Client browsers timezone."
 msgstr ""
+"Cacti'nin istemci tarayıcısının saat dilimine bağlı olarak istemci "
+"tarihlerini nasıl destekleyeceğini belirler."
 
 #: include/global_settings.php:466 include/global_settings.php:2936
 msgid "Date Display Format"
@@ -12532,9 +12534,9 @@ msgstr "Varsayılan Arayüz Hızı"
 #: include/global_settings.php:837
 msgid "If Cacti can not determine the interface speed due to either ifSpeed or ifHighSpeed not being set or being zero, what maximum value do you wish on the resulting RRDfiles."
 msgstr ""
-"Eğer Cacti, ifSpeed veya ifHighSpeed'in ayarlanmaması veya sıfır olması "
-"nedeniyle arayüz hızını belirleyemiyorsa, elde edilen RRD dosyalarında "
-"maksimum değerin ne olmasını istersiniz?."
+"Cacti, ifSpeed veya ifHighSpeed ayarlanmadığından ya da sıfır olduğundan "
+"arayüz hızını belirleyemediğinde elde edilen RRD dosyalarında kullanılacak "
+"maksimum değer."
 
 #: include/global_settings.php:841
 msgid "100 Mbps Ethernet"
@@ -12886,7 +12888,7 @@ msgstr "Günlük Kuyruk Yenile"
 
 #: include/global_settings.php:1177
 msgid "How often do you want the Cacti log display to update."
-msgstr "Cacti günlüğü ekranının ne sıklıkla güncellenmesini istiyorsunuz?."
+msgstr "Cacti günlük ekranının ne sıklıkla güncelleneceğini belirler."
 
 #: include/global_settings.php:1183
 msgid "Log Viewer Settings"
@@ -15046,7 +15048,7 @@ msgstr ""
 
 #: include/global_settings.php:3067
 msgid "Thumbnail Height"
-msgstr "Küçük resim"
+msgstr "Küçük Resim Yüksekliği"
 
 #: include/global_settings.php:3068
 msgid "The height of Thumbnail graphs in pixels."
@@ -15204,7 +15206,7 @@ msgstr "Çevrimiçi"
 
 #: index.php:82
 msgid "Recovery"
-msgstr "Recovery"
+msgstr "Kurtarma"
 
 #: index.php:82
 msgid "Remote Data Collector Status:"
@@ -15948,7 +15950,7 @@ msgstr "Günlük [Toplam Satır: %1$d %2$s - Filtresiz]"
 #: utilities.php:1042 utilities.php:1045 utilities.php:1141 utilities.php:2008
 #: utilities.php:2225 utilities.php:2228
 msgid "Entries"
-msgstr "Kayıtlar"
+msgstr "Girdiler"
 
 #: lib/clog_webapi.php:514 lib/clog_webapi.php:517 package_import.php:330
 #: utilities.php:296 utilities.php:299
@@ -16912,7 +16914,7 @@ msgstr "Eylemi Yürüt"
 
 #: lib/html.php:2126 managers.php:41 managers.php:229
 msgid "Logs"
-msgstr "Kayıtlar"
+msgstr "Günlükler"
 
 #: lib/html.php:2354
 #, fuzzy
@@ -20842,8 +20844,7 @@ msgstr "Otomatik Sayfa Yenileme"
 
 #: links.php:585
 msgid "How often do you wish this page to be refreshed automatically."
-msgstr ""
-"Bu sayfanın ne kadar sıklıkla otomatik olarak yenilenmesini istersiniz?."
+msgstr "Bu sayfanın ne sıklıkla otomatik olarak yenileneceğini belirler."
 
 #: links.php:593
 #, php-format
@@ -23390,7 +23391,7 @@ msgstr ""
 
 #: support.php:403
 msgid "Run Time"
-msgstr "Çalışma Süresi"
+msgstr "Çalıştırma Süresi"
 
 #: support.php:405
 msgid "The Runtime of the current query in seconds."
