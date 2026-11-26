@@ -44,8 +44,8 @@ function __(string $text, mixed ...$args) : string {
 	return $args === [] ? $text : vsprintf($text, $args);
 }
 
-function db_fetch_assoc(string $sql) : array {
-	return [
+function db_fetch_assoc(string $sql) : array|false {
+	return $GLOBALS['poller_rows'] ?? [
 		['name' => COLLECTOR, 'processes' => 2, 'threads' => 4],
 		['name' => 'Remote', 'processes' => 1, 'threads' => 1],
 	];
@@ -86,15 +86,25 @@ function run_block(string $file, string $pattern, array $locals = []) : string {
 }
 
 // Technical Info prints each Data Collector name as text
-$summary = run_block(
-	$root . '/support.php',
-	'/^\t(\$pollers = db_fetch_assoc\(\'SELECT name, processes, threads.*?implode\(\'<br>\', \$threads\) \. \'<\/td>\';\n\tform_end_row\(\);)/ms'
-);
-$name = htmlspecialchars(COLLECTOR, ENT_QUOTES | ENT_HTML5);
+$summary_block = '/^\t(\$pollers = db_fetch_assoc\(\'SELECT name, processes, threads.*?implode\(\'<br>\', \$threads\) \. \'<\/td>\';\n\tform_end_row\(\);)/ms';
+$summary       = run_block($root . '/support.php', $summary_block);
+$name          = htmlspecialchars(COLLECTOR, ENT_QUOTES | ENT_HTML5);
 
 check(str_contains($summary, 'Name: ' . $name . ', Procs: 2<br>Name: Remote, Procs: 1'), 'Concurrent Processes does not print the Data Collector names as text');
 check(str_contains($summary, 'Name: ' . $name . ', Threads: 4<br>Name: Remote, Threads: 1'), 'Max Threads does not print the Data Collector names as text');
 check(!str_contains($summary, COLLECTOR), 'A Data Collector name reached Technical Info unescaped');
+
+$GLOBALS['poller_rows'] = false;
+set_error_handler(static function (int $severity, string $message) : never {
+	throw new RuntimeException($message);
+});
+
+try {
+	$summary = run_block($root . '/support.php', $summary_block);
+	check(substr_count($summary, '<td></td>') === 2, 'Failed poller queries should leave both summary values empty');
+} finally {
+	restore_error_handler();
+}
 
 // checkpass answers 'ok' only for a password that passes every rule
 $checkpass = '/case \'checkpass\':\n(.*?^\t+\}$)/ms';

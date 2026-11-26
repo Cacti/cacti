@@ -1534,9 +1534,11 @@ function show_tech_summary() : void {
 	$threads   = [];
 
 	// Data Collector names are stored text, so print them as text
-	foreach ($pollers as $poller) {
-		$processes[] = __('Name: ') . html_escape($poller['name']) . ', ' . __('Procs: ') . html_escape($poller['processes']);
-		$threads[]   = __('Name: ') . html_escape($poller['name']) . ', ' . __('Threads: ') . html_escape($poller['threads']);
+	if (is_array($pollers)) {
+		foreach ($pollers as $poller) {
+			$processes[] = __('Name: ') . html_escape($poller['name']) . ', ' . __('Procs: ') . html_escape($poller['processes']);
+			$threads[]   = __('Name: ') . html_escape($poller['name']) . ', ' . __('Threads: ') . html_escape($poller['threads']);
+		}
 	}
 
 	form_alternate_row();
