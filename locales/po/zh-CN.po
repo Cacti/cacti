@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: Cacti Chinese Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-25 22:34+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Chinese (Simplified Han script) <https://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\nLanguage: zh-CN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: Cacti Chinese Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-26 05:54+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Chinese (Simplified Han script) <https://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\nLanguage: zh-CN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -552,10 +552,8 @@ msgid "No Aggregate Graphs Found"
 msgstr "未找到聚合图形"
 
 #: aggregate_templates.php
-#, fuzzy
-#| msgid "No Aggregate Templates Found"
 msgid "Aggregate Template not found."
-msgstr "未找到聚合模板"
+msgstr "未找到聚合模板。"
 
 #: aggregate_templates.php
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -2461,7 +2459,7 @@ msgstr "颜色如屏幕上所示。"
 
 #: color.php
 msgid "Colors in use cannot be Deleted.  In use is defined as being referenced either by a Graph or a Graph Template."
-msgstr "引用的颜色不能被删除. 被定义为在用的由图形或图形模板引用中。"
+msgstr "引用的颜色不能被删除. 被定义为在用的由图形或图形模板引用中."
 
 #: color.php
 msgid "The number of Graph using this Color."
@@ -2537,10 +2535,8 @@ msgid "Delete Color Item"
 msgstr "删除颜色项目"
 
 #: color_templates.php
-#, fuzzy
-#| msgid "No Color Templates Found"
 msgid "Color Template not found."
-msgstr "未找到颜色模板"
+msgstr "未找到颜色模板。"
 
 #: color_templates.php
 #, php-format
@@ -2567,7 +2563,7 @@ msgstr "颜色模板"
 
 #: color_templates.php
 msgid "Color Templates that are in use cannot be Deleted. In use is defined as being referenced by an Aggregate Template."
-msgstr "正在被聚合模板引用的颜色模板不能被删除。"
+msgstr "正在被聚合模板引用的颜色模板不能被删除."
 
 #: color_templates.php
 msgid "No Color Templates Found"
@@ -2613,7 +2609,7 @@ msgstr "删除检查"
 
 #: data_debug.php
 msgid "Data Source debug started."
-msgstr "数据源调试。"
+msgstr "数据源调试."
 
 #: data_debug.php
 msgid "Data Source debug received an invalid Data Source ID."
@@ -3505,7 +3501,7 @@ msgstr "在数据存储为 '未知' 之前,以秒为单位的时间量没有良�
 
 #: data_source_profiles.php
 msgid "The number of Data Sources using this Profile."
-msgstr "使用此配置文件的数据源的数量。"
+msgstr "使用此配置文件的数据源的数量."
 
 #: data_source_profiles.php
 msgid "The number of Data Templates using this Profile."
@@ -4013,7 +4009,7 @@ msgstr "GPRINT 格式字符串。"
 
 #: gprint_presets.php
 msgid "GPRINTs that are in use cannot be Deleted.  In use is defined as being referenced by either a Graph or a Graph Template."
-msgstr "在用的GPRINT 不能被删除. 被定义为在用的由图形或图形模板所引用。"
+msgstr "在用的GPRINT 不能被删除. 被定义为在用的由图形或图形模板所引用."
 
 #: gprint_presets.php
 msgid "The number of Graphs using this GPRINT."
@@ -4143,7 +4139,7 @@ msgstr "缩略图"
 #: graph_realtime.php
 #, php-format
 msgid "%d seconds left."
-msgstr "还有%d秒。"
+msgstr "还有%d秒."
 
 #: graph_realtime.php
 msgid " seconds left."
@@ -4233,10 +4229,8 @@ msgid "No Inputs"
 msgstr "无法导入"
 
 #: graph_templates.php
-#, fuzzy
-#| msgid "No Graph Templates Found"
 msgid "Graph Template not found."
-msgstr "未找到图形模板"
+msgstr "未找到图形模板。"
 
 #: graph_templates.php
 #, php-format
@@ -4266,7 +4260,7 @@ msgstr "这个图形模板的名称。"
 
 #: graph_templates.php
 msgid "Graph Templates that are in use cannot be Deleted.  In use is defined as being referenced by a Graph."
-msgstr "正在由Graph引用的图形模板不能被删除。"
+msgstr "正在由Graph引用的图形模板不能被删除."
 
 #: graph_templates.php
 msgid "The number of Graphs using this Graph Template."
@@ -4702,7 +4696,7 @@ msgstr "编辑图形模板."
 #: graphs.php
 #, php-format
 msgid "Edit Data Source: '%s'."
-msgstr "数据源: '%s'。"
+msgstr "数据源: '%s'."
 
 #: graphs.php
 msgid "Unlock Graph."
@@ -4951,7 +4945,7 @@ msgstr "将设备放入报表"
 
 #: host.php
 msgid "Data Query Re-indexed."
-msgstr "数据查询索引。"
+msgstr "数据查询索引."
 
 #: host.php
 msgid "Device Data Query Re-indexed.  Verbose output displayed."
@@ -4971,7 +4965,7 @@ msgstr "刷新设备的轮询缓存。"
 
 #: host.php
 msgid "ERROR: Invalid Device ID."
-msgstr "ERROR: 设备。"
+msgstr "ERROR: 设备."
 
 #: host.php
 #, php-format
@@ -5528,7 +5522,7 @@ msgstr "保存失败。"
 
 #: include/global_arrays.php
 msgid "Save Failed due to field input errors (Check red fields)."
-msgstr "由于字段输入错误而保存失败 (请检查红色字段)。"
+msgstr "由于字段输入错误而保存失败 (请检查红色字段)."
 
 #: include/global_arrays.php
 msgid "Passwords do not match, please retype."
@@ -5746,7 +5740,7 @@ msgstr "不支持修改基于LDAP/AD 的密码。"
 
 #: include/global_arrays.php
 msgid "Password successfully changed."
-msgstr "密码已成功更改。"
+msgstr "密码已成功更改."
 
 #: include/global_arrays.php
 msgid "Unable to clear log, no write permissions"
@@ -5826,7 +5820,7 @@ msgstr "无法添加图形.当前用户不是所有者"
 
 #: include/global_arrays.php
 msgid "Unable to Add all Graphs.  See error message for details."
-msgstr "无法添加所有图形.详情请参考报错信息。"
+msgstr "无法添加所有图形.详情请参考报错信息."
 
 #: include/global_arrays.php
 msgid "You must select at least one Graph to add to a Report."
@@ -5890,7 +5884,7 @@ msgstr "索引重建可通过手动运行脚本或设备自动化进行。"
 
 #: include/global_arrays.php
 msgid "When the Devices SNMP uptime goes backward, a Re-Index will be performed."
-msgstr "设备SNMP Uptime 减少时,将重建索引。"
+msgstr "设备SNMP Uptime 减少时,将重建索引."
 
 #: include/global_arrays.php
 msgid "When the Data Query index count changes, a Re-Index will be performed."
@@ -7824,7 +7818,7 @@ msgstr "导入字符串"
 
 #: include/global_form.php
 msgid "The data that is sent to the script, which includes the complete path to the script and input sources in &lt;&gt; brackets."
-msgstr "发送到脚本的数据包括脚本和输入源的完整路径 &lt;&gt; 括号。"
+msgstr "发送到脚本的数据包括脚本和输入源的完整路径 &lt;&gt; 括号."
 
 #: include/global_form.php
 msgid "White List Check"
@@ -8309,7 +8303,7 @@ msgstr "在时间轴(x轴)上将数据偏移 '值' 字段中指定的数量。"
 
 #: include/global_form.php
 msgid "[HRULE|VRULE]: The value of the graph item.<br/> [TICK]: The fraction for the tick line.<br/> [SHIFT]: The time offset in seconds."
-msgstr "[HRULE|VRULE]:图形项目的值.<br/> [TICK]:刻度线的分数.<br/>[SHIFT]:以秒为单位的时间偏移量。"
+msgstr "[HRULE|VRULE]:图形项目的值.<br/> [TICK]:刻度线的分数.<br/>[SHIFT]:以秒为单位的时间偏移量."
 
 #: include/global_form.php
 msgid "GPRINT Type"
@@ -8353,7 +8347,7 @@ msgstr "如果选择了LINE,请在此指定线的宽度. 您必须包含一个�
 
 #: include/global_form.php
 msgid "Dashes (dashes[=on_s[,off_s[,on_s,off_s]...]])"
-msgstr "虚线(破折号[=on_s[,off_s[,on_s,off_s]...]])"
+msgstr "虚线 (dashes[=on_s[,off_s[,on_s,off_s]...]])"
 
 #: include/global_form.php
 msgid "The dashes modifier enables dashed line style."
@@ -8361,7 +8355,7 @@ msgstr "破折号修饰符启用虚线样式。"
 
 #: include/global_form.php
 msgid "Dash Offset (dash-offset=offset)"
-msgstr "偏移(Dash-offset = offset)"
+msgstr "虚线偏移 (dash-offset=offset)"
 
 #: include/global_form.php
 msgid "The dash-offset parameter specifies an offset into the pattern at which the stroke begins."
@@ -8613,11 +8607,11 @@ msgstr "显示用户指向浏览器的页面。"
 
 #: include/global_form.php
 msgid "Show the default console screen."
-msgstr "控制台默认显示。"
+msgstr "控制台默认显示."
 
 #: include/global_form.php
 msgid "Show the default graph screen."
-msgstr "图形默认显示。"
+msgstr "图形默认显示."
 
 #: include/global_form.php utilities.php
 msgid "Authentication Realm"
@@ -8841,7 +8835,7 @@ msgstr "应该用于此规则项目的字段名称。"
 
 #: include/global_form.php
 msgid "Operator."
-msgstr "操作员。"
+msgstr "操作员."
 
 #: include/global_form.php
 msgid "Matching Pattern"
@@ -11831,7 +11825,7 @@ msgstr "离线记录数量:"
 
 #: index.php
 msgid "<strong>NOTE:</strong> You are logged into a Remote Data Collector.  When <b>'online'</b>, you will be able to view and control much of the Main Cacti Web Site just as if you were logged into it.  Also, it's important to note that Remote Data Collectors are required to use the Cacti's Performance Boosting Services <b>'On Demand Updating'</b> feature, and we always recommend using Spine.  When the Remote Data Collector is <b>'offline'</b>, the Remote Data Collectors Web Site will contain much less information.  However, it will cache all updates until the Main Cacti Database and Web Server are reachable.  Then it will dump it's Boost table output back to the Main Cacti Database for updating."
-msgstr "<strong>注意:</strong>您已登录到远程数据采集器. 当<b>'在线'</b>时,您将能够查看和控制大部分主要的Cacti 网站,就像您登录该网站一样. 此外,重要的是要注意,远程数据采集器需要使用Cacti 的Boost 服务<b>'按需更新'</b>功能,并且我们始终建议使用Spine. 当远程数据采集器<b>'离线'</b>时,远程数据采集器网站将包含更少的信息. 但是,它将缓存所有更新,直到主Cacti 数据库和Web服务器可达. 然后它会将它的转储表输出转储回主Cacti 数据库进行更新。"
+msgstr "<strong>注意:</strong>您已登录到远程数据采集器. 当<b>'在线'</b>时,您将能够查看和控制大部分主要的Cacti 网站,就像您登录该网站一样. 此外,重要的是要注意,远程数据采集器需要使用Cacti 的Boost 服务<b>'按需更新'</b>功能,并且我们始终建议使用Spine. 当远程数据采集器<b>'离线'</b>时,远程数据采集器网站将包含更少的信息. 但是,它将缓存所有更新,直到主Cacti 数据库和Web服务器可达. 然后它会将它的转储表输出转储回主Cacti 数据库进行更新."
 
 #: index.php
 msgid "<strong>NOTE:</strong> None of the Core Cacti Plugins, to date, have been re-designed to work with Remote Data Collectors.  Therefore, Plugins such as MacTrack, and HMIB, which require direct access to devices will not work with Remote Data Collectors at this time.  However, plugins such as Thold will work so long as the Remote Data Collector is in <b>'online'</b> mode."
@@ -12458,7 +12452,7 @@ msgstr "检测到索引更改! 当前索引: %s, 之前的索引: %s"
 #: lib/data_query.php
 #, php-format
 msgid "Transient Index Removal Detected! PreviousIndex: %s.  No action taken."
-msgstr "检测到索引删除! 之前的索引: %s。"
+msgstr "检测到索引删除! 之前的索引: %s."
 
 #: lib/data_query.php
 #, php-format
@@ -12514,7 +12508,7 @@ msgstr "插件钩子完成"
 
 #: lib/data_query.php
 msgid "Checking for Sort Field change.  No changes detected."
-msgstr "检查排序字段更改.未检测到任何更改。"
+msgstr "检查排序字段更改.未检测到任何更改."
 
 #: lib/data_query.php
 #, php-format
@@ -13782,7 +13776,7 @@ msgstr "图形列的数量。"
 
 #: lib/html_reports.php
 msgid "The Graph width in pixels."
-msgstr "以像素为单位的图形宽度。"
+msgstr "以像素为单位的图形宽度."
 
 #: lib/html_reports.php
 msgid "The Graph height in pixels."
@@ -14918,7 +14912,7 @@ msgstr "用户'%s '应该具有修改权限以启用读/写。"
 
 #: lib/installer.php
 msgid "An example of how to set folder permissions is shown here, though you may need to adjust this depending on your operating system, user accounts and desired permissions."
-msgstr "此处显示了如何设置文件夹权限的示例,但您可能需要根据操作系统,用户帐户和所需权限进行调整。"
+msgstr "此处显示了如何设置文件夹权限的示例,但您可能需要根据操作系统,用户帐户和所需权限进行调整."
 
 #: lib/installer.php
 msgid "EXAMPLE:"
@@ -15217,7 +15211,7 @@ msgstr "开始使用"
 #: lib/installer.php
 #, php-format
 msgid "Starting %s Process for v%s"
-msgstr "正在启动 v%2$s 的 %1$s 进程"
+msgstr "为v%s启动%s流程"
 
 #: lib/installer.php
 #, php-format
@@ -15665,7 +15659,7 @@ msgstr "没有说明"
 #: lib/reports.php
 #, php-format
 msgid "Device '%s' successfully added to Report."
-msgstr "设备'%s'成功添加到Report。"
+msgstr "设备'%s'成功添加到Report."
 
 #: lib/reports.php
 msgid "Device not found! Unable to add to Report"
@@ -15849,7 +15843,7 @@ msgstr "循环存档"
 
 #: lib/rrd.php
 msgid "Cur Row"
-msgstr "当前行"
+msgstr "Cur 行"
 
 #: lib/rrd.php
 msgid "PDP per Row"
@@ -16124,10 +16118,8 @@ msgid "FATAL: Unable to write XML file '%s'"
 msgstr ""
 
 #: lib/spikekill.php
-#, fuzzy
-#| msgid "No Sites Found"
 msgid "NOTE: No Spikes Found."
-msgstr "未找到站点"
+msgstr "注意：未找到峰值。"
 
 #: lib/spikekill.php
 #, php-format
@@ -16397,10 +16389,8 @@ msgid "Number of I/O threads used for read operations in InnoDB."
 msgstr ""
 
 #: lib/utility.php
-#, fuzzy
-#| msgid "default"
 msgid "1-64; default 4."
-msgstr "默认"
+msgstr "1-64；默认为 4。"
 
 #: lib/utility.php
 msgid "Number of I/O threads used for write operations in InnoDB."
@@ -17019,10 +17009,8 @@ msgid "The Package %s Import Failed"
 msgstr "包%s导入失败"
 
 #: package_import.php
-#, fuzzy
-#| msgid "Enter a valid file path"
 msgid "Error: Invalid file path."
-msgstr "输入有效的文件路径"
+msgstr "错误：文件路径无效。"
 
 #: package_import.php
 msgid "Error in Package"
@@ -17047,7 +17035,7 @@ msgstr "软件包下载或验证失败"
 
 #: package_import.php
 msgid "Package XML File Damaged."
-msgstr "包文件XML损坏。"
+msgstr "包文件XML损坏."
 
 #: package_import.php
 msgid "The XML files appears to be invalid.  Please contact the package author"
@@ -17170,10 +17158,8 @@ msgid "Are you sure you want to Force Uninstall the plugin"
 msgstr "您确定要卸载吗?"
 
 #: plugins.php
-#, fuzzy
-#| msgid "Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click 'Uninstall' below.  Otherwise click 'Cancel'"
 msgid "This permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone.  If you really want to Force Uninstall the Plugin, click 'Force Uninstall' below.  Otherwise click 'Cancel'."
-msgstr "卸载此插件将删除所有插件数据和设置.如果您确实要卸载插件,请单击下面的 '卸载'.否则点击'取消'"
+msgstr "这将从 Cacti 插件表（配置、钩子、权限以及它创建的任何表或列）中永久删除其所有条目。此操作无法撤销。如果您确实要强制卸载该插件，请点击下方的“强制卸载”。否则请点击“取消”。"
 
 #: plugins.php
 #, fuzzy
@@ -17574,7 +17560,7 @@ msgstr "您已经使用了此数据库主机名“%s”。请输入一个不重�
 
 #: pollers.php
 msgid "Data Collector Statistics cleared."
-msgstr "数据收集统计信息清除。"
+msgstr "数据收集统计信息清除."
 
 #: pollers.php
 msgid "Click 'Continue' to delete the following Data Collector.  Note, all devices will be disassociated from this Data Collector and mapped back to the Main Cacti Data Collector."
@@ -19208,7 +19194,7 @@ msgstr "清除"
 
 #: utilities.php
 msgid "Data Source Statistics Purged."
-msgstr "数据来源统计清除。"
+msgstr "数据来源统计清除."
 
 #: utilities.php
 msgid "Database"
@@ -19423,10 +19409,8 @@ msgid "PHP SNMP"
 msgstr "PHP SNMP"
 
 #: utilities.php
-#, fuzzy
-#| msgid "Installed"
 msgid "Installed."
-msgstr "已安装"
+msgstr "已安装。"
 
 #: utilities.php
 msgid "You've set memory limit to 'unlimited'."
@@ -19648,7 +19632,7 @@ msgstr "重建poller 缓存"
 
 #: utilities.php
 msgid "The Poller Cache will be re-generated if you select this option. Use this option only in the event of a database crash if you are experiencing issues after the crash and have already run the database repair tools.  Alternatively, if you are having problems with a specific Device, simply re-save that Device to rebuild its Poller Cache.  There is also a command line interface equivalent to this command that is recommended for large systems."
-msgstr "如果选择此选项，将重新生成轮询器缓存。仅在数据库崩溃的情况下使用此选项，如果您在崩溃后遇到问题并且已经运行了数据库修复工具。或者，如果您在特定设备上遇到问题，只需重新保存该设备以重建其轮询器缓存。还有一个与此命令等效的命令行界面，建议用于大型系统。"
+msgstr "如果选择此选项，将重新生成轮询器缓存。仅在数据库崩溃的情况下使用此选项，如果您在崩溃后遇到问题并且已经运行了数据库修复工具。或者，如果您在特定设备上遇到问题，只需重新保存该设备以重建其轮询器缓存。还有一个与此命令等效的命令行界面，建议用于大型系统."
 
 #: utilities.php
 msgid "NOTE: On large systems, this command may take several minutes to hours to complete and therefore should not be run from the Cacti UI.  You can simply run 'php -q cli/rebuild_poller_cache.php --help' at the command line for more information."
@@ -19716,7 +19700,7 @@ msgstr "重建SNMPAgent 缓存"
 
 #: utilities.php
 msgid "The SNMP cache will be cleared and re-generated if you select this option. Note that it takes another poller run to restore the SNMP cache completely."
-msgstr "如果您选择此选项,SNMP 缓存将被清除并重新生成. 请注意,它需要另一个poller 才能完全恢复SNMP 缓存。"
+msgstr "如果您选择此选项,SNMP 缓存将被清除并重新生成. 请注意,它需要另一个poller 才能完全恢复SNMP 缓存."
 
 #: utilities.php
 msgid "This menu pick allows you to view the latest events SNMP Agent has handled in relation to the registered notification receivers."
@@ -20104,7 +20088,7 @@ msgstr "VDEF 全名"
 
 #: vdef.php
 msgid "VDEFs that are in use cannot be Deleted. In use is defined as being referenced by a Graph or a Graph Template."
-msgstr "正在由图形或图形模板引用的VDEF 不能被删除。"
+msgstr "正在由图形或图形模板引用的VDEF 不能被删除."
 
 #: vdef.php
 msgid "The number of Graphs using this VDEF."
