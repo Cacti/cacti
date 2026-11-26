@@ -1,0 +1,85 @@
+# +-------------------------------------------------------------------------+
+# | Copyright (C) 2004-2026 The Cacti Group                                 |
+# |                                                                         |
+# | This program is free software; you can redistribute it and/or           |
+# | modify it under the terms of the GNU General Public License             |
+# | as published by the Free Software Foundation; either version 2          |
+# | of the License, or (at your option) any later version.                  |
+# +-------------------------------------------------------------------------+
+
+name: POT Source-String Lint
+
+on:
+  pull_request:
+    paths:
+      - 'locales/po/cacti.pot'
+      - 'tests/tools/audit_pot.py'
+      - 'tests/tools/test_audit_pot.py'
+      - '.github/workflows/pot-lint.yml'
+      - '.github/workflows/reusable-i18n-validation.yml'
+  push:
+    branches:
+      - develop
+    paths:
+      - 'locales/po/cacti.pot'
+      - 'tests/tools/audit_pot.py'
+      - 'tests/tools/test_audit_pot.py'
+      - '.github/workflows/pot-lint.yml'
+      - '.github/workflows/reusable-i18n-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  lint-pot:
+    name: Lint POT Source Strings
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          set -euo pipefail
+          python3 -m pip install --only-binary=:all: polib==1.2.0
+
+      - name: Run POT linter unit tests
+        run: python3 -m unittest tests/tools/test_audit_pot.py
+
+      - name: Resolve base commit
+        id: base
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PUSH_BEFORE: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            BASE="$PR_BASE_SHA"
+          else
+            BASE="$PUSH_BEFORE"
+          fi
+          if [ -n "$BASE" ] && git cat-file -e "${BASE}^{commit}" 2>/dev/null; then
+            echo "sha=$BASE" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Audit changed entries in locales/po/cacti.pot
+        env:
+          BASE: ${{ steps.base.outputs.sha }}
+        run: |
+          set -euo pipefail
+          if [ -n "$BASE" ]; then
+            python3 tests/tools/audit_pot.py --base "$BASE" locales/po/cacti.pot
+          else
+            python3 tests/tools/audit_pot.py locales/po/cacti.pot
+          fi
