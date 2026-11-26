@@ -10280,7 +10280,8 @@ msgstr "Επιλογές άξονα"
 
 #: include/global_form.php:899
 msgid "Right Axis (--right-axis &lt;scale:shift&gt;)"
-msgstr "Δεξιός άξονας (--δεξιός άξονας <scale:shift>)"
+msgstr "Δεξιός άξονας (--δεξιός άξονας &lt;scale:shift&gt;)"
+
 
 #: include/global_form.php:904
 msgid "A second axis will be drawn to the right of the graph. It is tied to the left axis via the scale and shift parameters."
@@ -10296,7 +10297,8 @@ msgstr "Η ετικέτα για τον δεξιό άξονα."
 
 #: include/global_form.php:915
 msgid "Right Axis Format (--right-axis-format &lt;format&gt;)"
-msgstr "Μορφή δεξιού άξονα (--right-axis-format <format>)"
+msgstr "Μορφή δεξιού άξονα (--right-axis-format &lt;format&gt;)"
+
 
 #: include/global_form.php:920 include/global_form.php:936
 #, php-format
@@ -10308,7 +10310,8 @@ msgstr ""
 
 #: include/global_form.php:923
 msgid "Right Axis Formatter (--right-axis-formatter &lt;formatname&gt;)"
-msgstr "Μορφοποιητής δεξιού άξονα (--right-axis-formatter <formatname>)"
+msgstr "Μορφοποιητής δεξιού άξονα (--right-axis-formatter &lt;formatname&gt;)"
+
 
 #: include/global_form.php:928
 msgid "When you setup the right axis labeling, apply a rule to the data format.  Supported formats include \"numeric\" where data is treated as numeric, \"timestamp\" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is \"%Y-%m-%d %H:%M:%S\").  See also --units-length and --right-axis-format.  Finally \"duration\" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT."
@@ -10316,11 +10319,13 @@ msgstr ""
 
 #: include/global_form.php:931
 msgid "Left Axis Format (--left-axis-format &lt;format&gt;)"
-msgstr "Μορφή αριστερού άξονα (--left-axis-format <format>)"
+msgstr "Μορφή αριστερού άξονα (--left-axis-format &lt;format&gt;)"
+
 
 #: include/global_form.php:939
 msgid "Left Axis Formatter (--left-axis-formatter &lt;formatname&gt;)"
-msgstr "Μορφοποιητής αριστερού άξονα (--left-axis-formatter <formatname>)"
+msgstr "Μορφοποιητής αριστερού άξονα (--left-axis-formatter &lt;formatname&gt;)"
+
 
 #: include/global_form.php:944
 msgid "When you setup the left axis labeling, apply a rule to the data format.  Supported formats include \"numeric\" where data is treated as numeric, \"timestamp\" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is \"%Y-%m-%d %H:%M:%S\").  See also --units-length.  Finally \"duration\" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT."
@@ -10356,7 +10361,8 @@ msgstr "Αναγκάστε τη δημιουργία θρύλων HRULE και V
 
 #: include/global_form.php:970
 msgid "Tab Width (--tabwidth &lt;pixels&gt;)"
-msgstr "Πλάτος καρτέλας (--tabwidth <pixels>)"
+msgstr "Πλάτος καρτέλας (--tabwidth &lt;pixels&gt;)"
+
 
 #: include/global_form.php:975
 msgid "By default the tab-width is 40 pixels, use this option to change it."
@@ -10364,7 +10370,8 @@ msgstr "Από προεπιλογή, το πλάτος καρτέλας είνα
 
 #: include/global_form.php:978
 msgid "Legend Position (--legend-position=&lt;position&gt;)"
-msgstr "Θέση υπομνήματος (--legend-position=<position>)"
+msgstr "Θέση υπομνήματος (--legend-position=&lt;position&gt;)"
+
 
 #: include/global_form.php:982
 msgid "Place the legend at the given side of the graph."
@@ -10372,7 +10379,8 @@ msgstr "Τοποθετήστε το υπόμνημα στη δοσμένη πλ�
 
 #: include/global_form.php:985
 msgid "Legend Direction (--legend-direction=&lt;direction&gt;)"
-msgstr "Κατεύθυνση υπομνήματος (--legend-direction=<direction>)"
+msgstr "Κατεύθυνση υπομνήματος (--legend-direction=&lt;direction&gt;)"
+
 
 #: include/global_form.php:989
 msgid "Place the legend items in the given vertical order."
@@ -11348,7 +11356,8 @@ msgstr "Διαδρομή αρχείου καταγραφής Cacti"
 
 #: include/global_settings.php:245
 msgid "The path to your Cacti log file (if blank, defaults to &lt;path_cacti&gt;/log/cacti.log)"
-msgstr "Η διαδρομή προς το αρχείο καταγραφής Cacti (εάν είναι κενή, η προεπιλογή είναι <path_cacti>/log/cacti.log)"
+msgstr "Η διαδρομή προς το αρχείο καταγραφής Cacti (εάν είναι κενή, η προεπιλογή είναι &lt;path_cacti&gt;/log/cacti.log)"
+
 
 #: include/global_settings.php:254
 msgid "Poller Standard Error Log Path"
@@ -12520,7 +12529,7 @@ msgstr "Προσαρμοσμένη Μορφή Ημερομηνίας"
 
 #: include/global_settings.php:1407
 msgid "To be used when formatting |date_time| on a graph"
-msgstr "Χρησιμοποιείται κατά τη μορφοποίηση |DATE_TIME| σε γράφημα"
+msgstr "Χρησιμοποιείται κατά τη μορφοποίηση |date_time| σε γράφημα"
 
 #: include/global_settings.php:1414
 msgid "Disable RRDtool Watermark"
@@ -15847,7 +15856,8 @@ msgstr "Βρέθηκε αριθμός ευρετηρίων: %s"
 
 #: lib/data_query.php:804
 msgid "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' not supported"
-msgstr "<arg_num_indexes> λείπει από το αρχείο XML, ο 'Αριθμός ευρετηρίων άλλαξε' δεν υποστηρίζεται"
+msgstr "&lt;arg_num_indexes&gt; λείπει από το αρχείο XML, ο 'Αριθμός ευρετηρίων άλλαξε' δεν υποστηρίζεται"
+
 
 #: lib/data_query.php:806
 msgid "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting arg_index entries"
@@ -18140,9 +18150,8 @@ msgstr "Βεβαιωθείτε ότι έχετε διαβάσει και ακο�
 #: lib/installer.php:2072
 #, php-format
 msgid "This process will guide you through the steps for upgrading from version '%s'. "
-msgstr ""
-"Αυτή η διαδικασία θα σας καθοδηγήσει στα βήματα αναβάθμισης από την έκδοση "
-"&#39; %s&#39;. "
+msgstr "Αυτή η διαδικασία θα σας καθοδηγήσει στα βήματα αναβάθμισης από την έκδοση ' %s'. "
+
 
 #: lib/installer.php:2073
 #, php-format
@@ -18759,11 +18768,8 @@ msgstr ""
 
 #: lib/installer.php:3017
 msgid "Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched.   Please ensure your database is changed to 'utf8mb4_unicode_ci' by running the following: "
-msgstr ""
-"Οι πίνακες που δημιουργούνται από τα πρόσθετα ενδέχεται να έχουν ζητήματα "
-"που συνδέονται με τους πίνακες Cacti Core, εάν η αντιστοίχιση δεν συμφωνεί. "
-"Βεβαιωθείτε ότι η βάση δεδομένων σας έχει αλλάξει σε "
-"&#39;utf8mb4_unicode_ci&#39; εκτελώντας τα εξής: "
+msgstr "Οι πίνακες που δημιουργούνται από τα πρόσθετα ενδέχεται να έχουν ζητήματα που συνδέονται με τους πίνακες Cacti Core, εάν η αντιστοίχιση δεν συμφωνεί. Βεβαιωθείτε ότι η βάση δεδομένων σας έχει αλλάξει σε 'utf8mb4_unicode_ci' εκτελώντας τα εξής: "
+
 
 #: lib/installer.php:3024
 msgid "Table Setup"
@@ -20285,7 +20291,7 @@ msgid "If your tables have very large indexes, you must operate with the Barracu
 msgstr "Εάν οι πίνακες σας έχουν πολύ μεγάλα ευρετήρια, πρέπει να λειτουργήσετε με τη μορφή barracuda innodb_file_και το innodb_large_prefix που ισούται με 1.  Εάν δεν το κάνετε αυτό, ενδέχεται να προκύψουν πρόσθετα που δεν μπορούν να δημιουργήσουν σωστά πίνακες."
 
 #: lib/utility.php:1227
-#, php-format
+#, no-php-format
 msgid "InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size.  If you database is very large or remote, you can consider increasing this size.  If remote, it can by as high as 80% of the systems memory.  However, cautions must be taken to reduce the swappiness of the system, or to remove swap to keep the system from swapping."
 msgstr ""
 
@@ -20999,7 +21005,8 @@ msgstr ""
 #: package_import.php:774
 #, php-format
 msgid "<b>Author:</b> &lt;%s&gt; %s.<br>"
-msgstr "<b>Συντάκτης:</b> <%s> %s.<br>"
+msgstr "<b>Συντάκτης:</b> &lt;%s&gt; %s.<br>"
+
 
 #: package_import.php:778
 #, php-format
@@ -23431,7 +23438,7 @@ msgid "Max Total Memory Possible"
 msgstr "Μέγιστη χωρητικότητα μνήμης"
 
 #: support.php:1598
-#, php-format
+#, no-php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr ""
 "Μειώστε τη μνήμη της MySQL/MariaDB σε λιγότερο από 80% της μνήμης του "

@@ -8024,7 +8024,8 @@ msgstr "Кожен день"
 
 #: include/global_arrays.php:899
 msgid "1 Thread"
-msgstr "1 нитка"
+msgstr "1 Потік"
+
 
 #: include/global_arrays.php:943
 #, fuzzy
@@ -14366,7 +14367,8 @@ msgstr "Системне налаштування"
 
 #: include/global_settings.php:3225
 msgid "1 Week"
-msgstr "1 тиждень"
+msgstr "1 Тиждень"
+
 
 #: include/global_settings.php:3238
 msgid "Auto Log Out Time"
@@ -19289,7 +19291,7 @@ msgid "If your tables have very large indexes, you must operate with the Barracu
 msgstr "Якщо ваші таблиці мають дуже великі індекси, ви повинні працювати з Barracuda innodb_file_format і innodb_large_prefix, що дорівнює 1. Невиконання цього може призвести до того, що плагіни не зможуть правильно створювати таблиці."
 
 #: lib/utility.php:1254
-#, php-format
+#, no-php-format
 msgid "InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size.  If you database is very large or remote, you can consider increasing this size.  If remote, it can by as high as 80% of the systems memory.  However, cautions must be taken to reduce the swappiness of the system, or to remove swap to keep the system from swapping."
 msgstr ""
 "InnoDB зберігатиме в системній пам’яті якомога більше таблиць та індексів. "
@@ -23614,7 +23616,8 @@ msgstr "Фільтр пошуку"
 
 #: user_domains.php:439
 msgid "Search filter to use to locate the user in the LDAP directory, such as for windows: <i>\"(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))\"</i> or for OpenLDAP: <i>\"(&(objectClass=account)(uid=&lt;username&gt))\"</i>.  \"&lt;username&gt\" is replaced with the username that was supplied at the login prompt."
-msgstr "Фільтр пошуку для пошуку користувача в каталозі LDAP, наприклад для windows: <i>&quot;(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))&quot;</i> або для OpenLDAP: <i>&quot;(&amp;(objectClass =account)(uid=&lt;ім&#39;я користувача&gt;))&quot;</i> . &quot;&lt;ім&#39;я користувача&gt;&quot; замінюється на ім&#39;я користувача, яке було надано під час запиту входу."
+msgstr "Фільтр пошуку для пошуку користувача в каталозі LDAP, наприклад для windows: <i>\"(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))\"</i> або для OpenLDAP: <i>\"(&amp;(objectClass =account)(uid=&lt;ім'я користувача&gt;))\"</i> . \"&lt;ім'я користувача&gt;\" замінюється на ім'я користувача, яке було надано під час запиту входу."
+
 
 #: user_domains.php:445
 msgid "Search Distinguished Name (DN)"

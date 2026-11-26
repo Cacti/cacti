@@ -196,13 +196,13 @@ msgstr "ليس لديك حاليا أي تقارير محددة."
 
 #: aggregate_graphs.php:886
 msgid "Click 'Continue' to Delete the following Aggregate Graph."
-msgstr ""
-"انقر فوق &quot;متابعة&quot; لحذف الرسم البياني (الرسوم) التجميعية التالية."
+msgstr "انقر فوق \"متابعة\" لحذف الرسم البياني (الرسوم) التجميعية التالية."
+
 
 #: aggregate_graphs.php:887
 msgid "Click 'Continue' to Delete following Aggregate Graphs."
-msgstr ""
-"انقر فوق &quot;متابعة&quot; لحذف الرسم البياني (الرسوم) التجميعية التالية."
+msgstr "انقر فوق \"متابعة\" لحذف الرسم البياني (الرسوم) التجميعية التالية."
+
 
 #: aggregate_graphs.php:888
 msgid "Delete Aggregate Graph"
@@ -237,9 +237,8 @@ msgstr "قالب التجميع"
 
 #: aggregate_graphs.php:906
 msgid "Click 'Continue' to Combine the following Aggregates into an Aggregate Graph."
-msgstr ""
-"انقر فوق &quot;متابعة&quot; لدمج الرسم البياني الإجمالي (الرسوم) التجميعية "
-"في Graph Aggregate واحد."
+msgstr "انقر فوق \"متابعة\" لدمج الرسم البياني الإجمالي (الرسوم) التجميعية في Graph Aggregate واحد."
+
 
 #: aggregate_graphs.php:907
 msgid "Combine Aggregate Graphs"
@@ -304,15 +303,13 @@ msgstr "تحويل الرسوم البيانية التجميعية"
 
 #: aggregate_graphs.php:951
 msgid "Click 'Continue' to Associate the following Graph with the Aggregate Graph."
-msgstr ""
-"انقر فوق &quot;متابعة&quot; لربط الرسم البياني (الرسوم) التالي بالرسم "
-"البياني الكلي."
+msgstr "انقر فوق \"متابعة\" لربط الرسم البياني (الرسوم) التالي بالرسم البياني الكلي."
+
 
 #: aggregate_graphs.php:952
 msgid "Click 'Continue' to Associate the following Graphs with the Aggregate Graph."
-msgstr ""
-"انقر فوق &quot;متابعة&quot; لربط الرسم البياني (الرسوم) التالي بالرسم "
-"البياني الكلي."
+msgstr "انقر فوق \"متابعة\" لربط الرسم البياني (الرسوم) التالي بالرسم البياني الكلي."
+
 
 #: aggregate_graphs.php:953
 msgid "Associate Graph with Aggregate"
@@ -324,13 +321,13 @@ msgstr "ربط الرسوم البيانية بالتجميع"
 
 #: aggregate_graphs.php:957
 msgid "Click 'Continue' to Disassociate the following Graph from the Aggregate Graph."
-msgstr ""
-"انقر فوق &quot;متابعة&quot; لفصل الرسم البياني التالي (الرسوم) من التجميع."
+msgstr "انقر فوق \"متابعة\" لفصل الرسم البياني التالي (الرسوم) من التجميع."
+
 
 #: aggregate_graphs.php:958
 msgid "Click 'Continue' to Disassociate the following Graphs from the Aggregate Graph."
-msgstr ""
-"انقر فوق &quot;متابعة&quot; لفصل الرسم البياني التالي (الرسوم) من التجميع."
+msgstr "انقر فوق \"متابعة\" لفصل الرسم البياني التالي (الرسوم) من التجميع."
+
 
 #: aggregate_graphs.php:959
 msgid "Disassociate Graph with Aggregate"
@@ -785,13 +782,13 @@ msgstr "لا توجد رسوم بيانية مجمعة"
 
 #: aggregate_templates.php:333
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template."
-msgstr ""
-"انقر فوق &quot;متابعة&quot; لحذف قالب (نماذج) الرسم البياني الكلي التالي."
+msgstr "انقر فوق \"متابعة\" لحذف قالب (نماذج) الرسم البياني الكلي التالي."
+
 
 #: aggregate_templates.php:334
 msgid "Click 'Continue' to Delete following Aggregate Graph Templates."
-msgstr ""
-"انقر فوق &quot;متابعة&quot; لحذف قالب (نماذج) الرسم البياني الكلي التالي."
+msgstr "انقر فوق \"متابعة\" لحذف قالب (نماذج) الرسم البياني الكلي التالي."
+
 
 #: aggregate_templates.php:335
 msgid "Delete Aggregate Graph Template"
@@ -1295,11 +1292,13 @@ msgstr "تمت إزالة الأجهزة من قاعدة بيانات Cacti Auto
 
 #: automation_devices.php:226
 msgid "Click 'Continue' to Add the following Discovered Device to Cacti."
-msgstr "انقر فوق &quot;متابعة&quot; لإضافة الأجهزة (الأجهزة) المكتشفة التالية."
+msgstr "انقر فوق \"متابعة\" لإضافة الأجهزة (الأجهزة) المكتشفة التالية."
+
 
 #: automation_devices.php:227
 msgid "Click 'Continue' to Add the following Discovered Devices to Cacti."
-msgstr "انقر فوق &quot;متابعة&quot; لإضافة الأجهزة (الأجهزة) المكتشفة التالية."
+msgstr "انقر فوق \"متابعة\" لإضافة الأجهزة (الأجهزة) المكتشفة التالية."
+
 
 #: automation_devices.php:228
 msgid "Add Discovered Device"
@@ -1584,11 +1583,13 @@ msgstr "خطأ:"
 
 #: automation_graph_rules.php:435
 msgid "Click 'Continue' to Delete the following Graph Rule."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف القاعدة (القواعد) التالية."
+msgstr "انقر فوق \"متابعة\" لحذف القاعدة (القواعد) التالية."
+
 
 #: automation_graph_rules.php:436
 msgid "Click 'Continue' to Delete following Graph Rules."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف القاعدة (القواعد) التالية."
+msgstr "انقر فوق \"متابعة\" لحذف القاعدة (القواعد) التالية."
+
 
 #: automation_graph_rules.php:437
 msgid "Delete Graph Rule"
@@ -1600,11 +1601,13 @@ msgstr "حذف قواعد الرسوم البيانية"
 
 #: automation_graph_rules.php:441
 msgid "Click 'Continue' to Enable the following Graph Rule."
-msgstr "انقر فوق &quot;متابعة&quot; لتمكين القاعدة (القواعد) التالية."
+msgstr "انقر فوق \"متابعة\" لتمكين القاعدة (القواعد) التالية."
+
 
 #: automation_graph_rules.php:442
 msgid "Click 'Continue' to Enable following Graph Rules."
-msgstr "انقر فوق &quot;متابعة&quot; لتمكين القاعدة (القواعد) التالية."
+msgstr "انقر فوق \"متابعة\" لتمكين القاعدة (القواعد) التالية."
+
 
 #: automation_graph_rules.php:443
 msgid "Enable Graph Rule"
@@ -1616,11 +1619,13 @@ msgstr "تمكين قواعد الرسم البياني"
 
 #: automation_graph_rules.php:447
 msgid "Click 'Continue' to Disable the following Graph Rule."
-msgstr "انقر فوق &quot;متابعة&quot; لتعطيل القاعدة (القواعد) التالية."
+msgstr "انقر فوق \"متابعة\" لتعطيل القاعدة (القواعد) التالية."
+
 
 #: automation_graph_rules.php:448
 msgid "Click 'Continue' to Disable following Graph Rules."
-msgstr "انقر فوق &quot;متابعة&quot; لتعطيل القاعدة (القواعد) التالية."
+msgstr "انقر فوق \"متابعة\" لتعطيل القاعدة (القواعد) التالية."
+
 
 #: automation_graph_rules.php:449
 msgid "Disable Graph Rule"
@@ -1842,11 +1847,13 @@ msgstr "قم بتحديث هذا الحقل"
 
 #: automation_networks.php:659
 msgid "Click 'Continue' to Delete the following Network."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف الشبكة (الشبكات) التالية."
+msgstr "انقر فوق \"متابعة\" لحذف الشبكة (الشبكات) التالية."
+
 
 #: automation_networks.php:660
 msgid "Click 'Continue' to Delete the following Networks."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف الشبكة (الشبكات) التالية."
+msgstr "انقر فوق \"متابعة\" لحذف الشبكة (الشبكات) التالية."
+
 
 #: automation_networks.php:661
 msgid "Delete Network"
@@ -1858,11 +1865,13 @@ msgstr "حذف الشبكات"
 
 #: automation_networks.php:665
 msgid "Click 'Continue' to Disable the following Network."
-msgstr "انقر فوق &quot;متابعة&quot; لتعطيل الشبكة (الشبكات) التالية."
+msgstr "انقر فوق \"متابعة\" لتعطيل الشبكة (الشبكات) التالية."
+
 
 #: automation_networks.php:666
 msgid "Click 'Continue' to Disable the following Networks."
-msgstr "انقر فوق &quot;متابعة&quot; لتعطيل الشبكة (الشبكات) التالية."
+msgstr "انقر فوق \"متابعة\" لتعطيل الشبكة (الشبكات) التالية."
+
 
 #: automation_networks.php:667
 msgid "Disable Network"
@@ -1874,11 +1883,13 @@ msgstr "تعطيل الشبكات"
 
 #: automation_networks.php:671
 msgid "Click 'Continue' to Enable the following Network."
-msgstr "انقر فوق &quot;متابعة&quot; لتمكين الشبكة (الشبكات) التالية."
+msgstr "انقر فوق \"متابعة\" لتمكين الشبكة (الشبكات) التالية."
+
 
 #: automation_networks.php:672
 msgid "Click 'Continue' to Enable the following Networks."
-msgstr "انقر فوق &quot;متابعة&quot; لتمكين الشبكة (الشبكات) التالية."
+msgstr "انقر فوق \"متابعة\" لتمكين الشبكة (الشبكات) التالية."
+
 
 #: automation_networks.php:673
 msgid "Enable Network"
@@ -1890,11 +1901,13 @@ msgstr "تمكين الشبكات"
 
 #: automation_networks.php:677
 msgid "Click 'Continue' to Discover the following Network."
-msgstr "انقر فوق &quot;متابعة&quot; لاكتشاف الشبكة (الشبكات) التالية."
+msgstr "انقر فوق \"متابعة\" لاكتشاف الشبكة (الشبكات) التالية."
+
 
 #: automation_networks.php:678
 msgid "Click 'Continue' to Discover the following Networks."
-msgstr "انقر فوق &quot;متابعة&quot; لاكتشاف الشبكة (الشبكات) التالية."
+msgstr "انقر فوق \"متابعة\" لاكتشاف الشبكة (الشبكات) التالية."
+
 
 #: automation_networks.php:679
 msgid "Discover Network"
@@ -1914,7 +1927,8 @@ msgstr "تمكين تسجيل تصحيح الأخطاء"
 
 #: automation_networks.php:695
 msgid "Click 'Continue' to cancel on going Network Discovery(s)."
-msgstr "انقر فوق &quot;متابعة&quot; للإلغاء أثناء اكتشاف الشبكة (الشبكات)."
+msgstr "انقر فوق \"متابعة\" للإلغاء أثناء اكتشاف الشبكة (الشبكات)."
+
 
 #: automation_networks.php:696
 msgid "Cancel Network Discovery"
@@ -2097,7 +2111,8 @@ msgstr "تشغيل الحد"
 
 #: automation_networks.php:825
 msgid "After the selected Run Limit, the discovery process will be terminated."
-msgstr "بعد &quot;حد التشغيل&quot; المحدد ، سيتم إنهاء عملية الاكتشاف."
+msgstr "بعد \"حد التشغيل\" المحدد ، سيتم إنهاء عملية الاكتشاف."
+
 
 #: automation_networks.php:828 automation_networks.php:1546 pollers.php:975
 #, php-format
@@ -2647,11 +2662,13 @@ msgstr "استيراد خيارات SNMP"
 
 #: automation_snmp.php:409
 msgid "Click 'Continue' to Delete the following SNMP Option."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف خيارات (خيارات) SNMP التالية."
+msgstr "انقر فوق \"متابعة\" لحذف خيارات (خيارات) SNMP التالية."
+
 
 #: automation_snmp.php:410
 msgid "Click 'Continue' to Delete following SNMP Options."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف خيارات (خيارات) SNMP التالية."
+msgstr "انقر فوق \"متابعة\" لحذف خيارات (خيارات) SNMP التالية."
+
 
 #: automation_snmp.php:411
 msgid "Delete SNMP Option"
@@ -2707,7 +2724,8 @@ msgstr "عنصر الأتمتة غير موجود. لا يمكن التكرار.
 
 #: automation_snmp.php:535
 msgid "Click 'Continue' to delete the following SNMP Option Item."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف عنصر Option SNMP التالي."
+msgstr "انقر فوق \"متابعة\" لحذف عنصر Option SNMP التالي."
+
 
 #: automation_snmp.php:536
 msgid "SNMP Option:"
@@ -3258,11 +3276,13 @@ msgstr "حذف قواعد الشجرة"
 
 #: automation_tree_rules.php:439
 msgid "Click 'Continue' to Enable the following Tree Rule."
-msgstr "انقر فوق &quot;متابعة&quot; لتمكين القاعدة (القواعد) التالية."
+msgstr "انقر فوق \"متابعة\" لتمكين القاعدة (القواعد) التالية."
+
 
 #: automation_tree_rules.php:440
 msgid "Click 'Continue' to Enable following Tree Rules."
-msgstr "انقر فوق &quot;متابعة&quot; لتمكين القاعدة (القواعد) التالية."
+msgstr "انقر فوق \"متابعة\" لتمكين القاعدة (القواعد) التالية."
+
 
 #: automation_tree_rules.php:441
 msgid "Enable Tree Rule"
@@ -3274,11 +3294,13 @@ msgstr "تمكين قواعد الشجرة"
 
 #: automation_tree_rules.php:445
 msgid "Click 'Continue' to Disable the following Tree Rule."
-msgstr "انقر فوق &quot;متابعة&quot; لتعطيل القاعدة (القواعد) التالية."
+msgstr "انقر فوق \"متابعة\" لتعطيل القاعدة (القواعد) التالية."
+
 
 #: automation_tree_rules.php:446
 msgid "Click 'Continue' to Disable following Tree Rules."
-msgstr "انقر فوق &quot;متابعة&quot; لتعطيل القاعدة (القواعد) التالية."
+msgstr "انقر فوق \"متابعة\" لتعطيل القاعدة (القواعد) التالية."
+
 
 #: automation_tree_rules.php:447
 msgid "Disable Tree Rule"
@@ -3356,7 +3378,8 @@ msgstr "تحذير:"
 
 #: automation_tree_rules.php:843
 msgid "You are changing the leaf type to \"Device\" which does not support Graph-based object matching/creation."
-msgstr "أنت تقوم بتغيير نوع الأوراق إلى &quot;الجهاز&quot; الذي لا يدعم مطابقة / إنشاء كائن يستند إلى Graph."
+msgstr "أنت تقوم بتغيير نوع الأوراق إلى \"الجهاز\" الذي لا يدعم مطابقة / إنشاء كائن يستند إلى Graph."
+
 
 #: automation_tree_rules.php:844
 msgid "By changing the leaf type, all invalid rules will be automatically removed and will not be recoverable."
@@ -3418,11 +3441,13 @@ msgstr "ملاحظة: Cacti Daemon PID ["
 
 #: cdef.php:262
 msgid "Click 'Continue' to Delete the following CDEF."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف عنصر CDEF التالي."
+msgstr "انقر فوق \"متابعة\" لحذف عنصر CDEF التالي."
+
 
 #: cdef.php:263
 msgid "Click 'Continue' to Delete following CDEFs."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف عنصر CDEF التالي."
+msgstr "انقر فوق \"متابعة\" لحذف عنصر CDEF التالي."
+
 
 #: cdef.php:264
 msgid "Delete CDEF"
@@ -3450,7 +3475,8 @@ msgstr "تكرار CDEF"
 
 #: cdef.php:309
 msgid "Click 'Continue' to delete the following CDEF Item."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف عنصر CDEF التالي."
+msgstr "انقر فوق \"متابعة\" لحذف عنصر CDEF التالي."
+
 
 #: cdef.php:310
 #, php-format
@@ -3710,11 +3736,13 @@ msgstr "لا عناصر"
 
 #: color_templates.php:319
 msgid "Click 'Continue' to Delete the following Color Template."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف لون قالب اللون التالي."
+msgstr "انقر فوق \"متابعة\" لحذف لون قالب اللون التالي."
+
 
 #: color_templates.php:320
 msgid "Click 'Continue' to Delete following Color Templates."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف لون قالب اللون التالي."
+msgstr "انقر فوق \"متابعة\" لحذف لون قالب اللون التالي."
+
 
 #: color_templates.php:321
 msgid "Delete Color Template"
@@ -3758,7 +3786,8 @@ msgstr "مزامنة قوالب الألوان"
 
 #: color_templates.php:488
 msgid "Click 'Continue' to delete the following Color Template Color."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف لون قالب اللون التالي."
+msgstr "انقر فوق \"متابعة\" لحذف لون قالب اللون التالي."
+
 
 #: color_templates.php:489
 msgid "Color Name:"
@@ -4171,13 +4200,13 @@ msgstr "تصحيح الأخطاء"
 
 #: data_input.php:248
 msgid "Click 'Continue' to Delete the following Data Input Method."
-msgstr ""
-"انقر فوق &quot;متابعة&quot; لحذف &quot;طريقة إدخال البيانات&quot; التالية."
+msgstr "انقر فوق \"متابعة\" لحذف \"طريقة إدخال البيانات\" التالية."
+
 
 #: data_input.php:249
 msgid "Click 'Continue' to Delete following Data Input Methods."
-msgstr ""
-"انقر فوق &quot;متابعة&quot; لحذف &quot;طريقة إدخال البيانات&quot; التالية."
+msgstr "انقر فوق \"متابعة\" لحذف \"طريقة إدخال البيانات\" التالية."
+
 
 #: data_input.php:250
 msgid "Delete Data Input Method"
@@ -4209,7 +4238,8 @@ msgstr "اسم الإدخال"
 
 #: data_input.php:292
 msgid "Click 'Continue' to delete the following Data Input Field."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف حقل إدخال البيانات التالي."
+msgstr "انقر فوق \"متابعة\" لحذف حقل إدخال البيانات التالي."
+
 
 #: data_input.php:293
 #, php-format
@@ -4404,7 +4434,8 @@ msgstr "تكرار استعلامات البيانات"
 
 #: data_queries.php:544
 msgid "Click 'Continue' to delete the following Data Query Graph Association."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف رابطة رسومات الاستعلام عن البيانات التالية."
+msgstr "انقر فوق \"متابعة\" لحذف رابطة رسومات الاستعلام عن البيانات التالية."
+
 
 #: data_queries.php:545
 #, php-format
@@ -4543,7 +4574,8 @@ msgstr "المعرف الداخلي لهذا القالب الرسم البيا�
 
 #: data_queries.php:1408
 msgid "Data Queries that are in use cannot be Deleted. In use is defined as being referenced by either a Graph or a Graph Template."
-msgstr "لا يمكن حذف &quot;استعلامات البيانات&quot; قيد الاستخدام. يتم تعريف الاستخدام على أنه يتم الرجوع إليه إما من خلال الرسم البياني أو قالب الرسم البياني."
+msgstr "لا يمكن حذف \"استعلامات البيانات\" قيد الاستخدام. يتم تعريف الاستخدام على أنه يتم الرجوع إليه إما من خلال الرسم البياني أو قالب الرسم البياني."
+
 
 #: data_queries.php:1414
 msgid "The number of Graphs using this Data Query."
@@ -4567,11 +4599,13 @@ msgstr ""
 
 #: data_source_profiles.php:300
 msgid "Click 'Continue' to Delete the following Data Source Profile."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف ملف تعريف مصدر البيانات التالي RRA."
+msgstr "انقر فوق \"متابعة\" لحذف ملف تعريف مصدر البيانات التالي RRA."
+
 
 #: data_source_profiles.php:301
 msgid "Click 'Continue' to Delete following Data Source Profiles."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف ملف تعريف مصدر البيانات التالي RRA."
+msgstr "انقر فوق \"متابعة\" لحذف ملف تعريف مصدر البيانات التالي RRA."
+
 
 #: data_source_profiles.php:302
 msgid "Delete Data Source Profile"
@@ -4603,7 +4637,8 @@ msgstr "تعذر تكرار ملف تعريف مصدر البيانات. راج�
 
 #: data_source_profiles.php:402
 msgid "Click 'Continue' to delete the following Data Source Profile RRA."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف ملف تعريف مصدر البيانات التالي RRA."
+msgstr "انقر فوق \"متابعة\" لحذف ملف تعريف مصدر البيانات التالي RRA."
+
 
 #: data_source_profiles.php:403
 #, php-format
@@ -4638,7 +4673,8 @@ msgstr "ملف مصدر البيانات [جديد]"
 
 #: data_source_profiles.php:634
 msgid "Data Source Profile RRAs (press save to update timespans)"
-msgstr "ملف تعريف مصدر بيانات RRA (اضغط على &quot;حفظ&quot; لتحديث الأوقات)"
+msgstr "ملف تعريف مصدر بيانات RRA (اضغط على \"حفظ\" لتحديث الأوقات)"
+
 
 #: data_source_profiles.php:636
 msgid "Data Source Profile RRAs (Read Only)"
@@ -4914,11 +4950,13 @@ msgstr[5] "حذف جميع الرسوم البيانية التي تشير إل�
 
 #: data_sources.php:566
 msgid "Click 'Continue' to Disable the following Data Source."
-msgstr "انقر فوق &quot;متابعة&quot; لتعطيل مصدر البيانات التالي."
+msgstr "انقر فوق \"متابعة\" لتعطيل مصدر البيانات التالي."
+
 
 #: data_sources.php:567
 msgid "Click 'Continue' to Disable following Data Sources."
-msgstr "انقر فوق &quot;متابعة&quot; لتعطيل مصدر البيانات التالي."
+msgstr "انقر فوق \"متابعة\" لتعطيل مصدر البيانات التالي."
+
 
 #: data_sources.php:568
 msgid "Disable Data Source"
@@ -4930,11 +4968,13 @@ msgstr "تعطيل مصدر البيانات"
 
 #: data_sources.php:572
 msgid "Click 'Continue' to Enable the following Data Source."
-msgstr "انقر فوق &quot;متابعة&quot; لتمكين مصدر البيانات التالي."
+msgstr "انقر فوق \"متابعة\" لتمكين مصدر البيانات التالي."
+
 
 #: data_sources.php:573
 msgid "Click 'Continue' to Enable following Data Sources."
-msgstr "انقر فوق &quot;متابعة&quot; لتمكين مصدر البيانات التالي."
+msgstr "انقر فوق \"متابعة\" لتمكين مصدر البيانات التالي."
+
 
 #: data_sources.php:574
 msgid "Enable Data Source"
@@ -4966,15 +5006,13 @@ msgstr "جهاز جديد"
 
 #: data_sources.php:592
 msgid "Click 'Continue' to Reapply Suggested Names the following Data Source."
-msgstr ""
-"انقر فوق &quot;متابعة&quot; لإعادة تطبيق الاسم المقترح على مصدر البيانات "
-"التالي."
+msgstr "انقر فوق \"متابعة\" لإعادة تطبيق الاسم المقترح على مصدر البيانات التالي."
+
 
 #: data_sources.php:593
 msgid "Click 'Continue' to Reapply Suggested Names for the following Data Sources."
-msgstr ""
-"انقر فوق &quot;متابعة&quot; لإعادة تطبيق الاسم المقترح على مصدر البيانات "
-"التالي."
+msgstr "انقر فوق \"متابعة\" لإعادة تطبيق الاسم المقترح على مصدر البيانات التالي."
+
 
 #: data_sources.php:594
 msgid "Reapply Suggested Names for Data Source"
@@ -5389,11 +5427,13 @@ msgstr "لا توجد قوالب بيانات"
 
 #: gprint_presets.php:142
 msgid "Click 'Continue' to Delete the following GPRINT Preset."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف الإعداد المسبق لـ (إعدادات) GPRINT."
+msgstr "انقر فوق \"متابعة\" لحذف الإعداد المسبق لـ (إعدادات) GPRINT."
+
 
 #: gprint_presets.php:143
 msgid "Click 'Continue' to Delete following GPRINT Presets."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف الإعداد المسبق لـ (إعدادات) GPRINT."
+msgstr "انقر فوق \"متابعة\" لحذف الإعداد المسبق لـ (إعدادات) GPRINT."
+
 
 #: gprint_presets.php:144
 msgid "Delete GPRINT Preset"
@@ -5642,19 +5682,13 @@ msgstr "تنسيق الصورة"
 
 #: graph_templates.php:1273
 msgid "Click 'Continue' to perform a Full Synchronization between your Graphs and the chosen Graph Template. If you simply have a situation where the Graph Items don't match the Graph Template, try the Quick Sync Graphs option first as it will take much less time.  This function is important if you have Graphs that exist with multiple versions of a Graph Template and wish to make them all common in appearance."
-msgstr ""
-"انقر فوق &quot;متابعة&quot; لمزامنة الرسومات البيانية الخاصة بك مع القالب "
-"(النماذج) البياني التالي. تعد هذه الوظيفة مهمة إذا كانت لديك رسوم بيانية "
-"موجودة مع إصدارات متعددة من قالب الرسم البياني وترغب في جعلها شائعة في "
-"المظهر."
+msgstr "انقر فوق \"متابعة\" لمزامنة الرسومات البيانية الخاصة بك مع القالب (النماذج) البياني التالي. تعد هذه الوظيفة مهمة إذا كانت لديك رسوم بيانية موجودة مع إصدارات متعددة من قالب الرسم البياني وترغب في جعلها شائعة في المظهر."
+
 
 #: graph_templates.php:1274
 msgid "Click 'Continue' to perform a Full Synchronization between your Graphs and the chosen Graph Templates. If you simply have a situation where the Graph Items don't match the Graph Template, try the Quick Sync Graphs option first as it will take much less time.  This function is important if you have Graphs that exist with multiple versions of a Graph Template and wish to make them all common in appearance."
-msgstr ""
-"انقر فوق &quot;متابعة&quot; لمزامنة الرسومات البيانية الخاصة بك مع القالب "
-"(النماذج) البياني التالي. تعد هذه الوظيفة مهمة إذا كانت لديك رسوم بيانية "
-"موجودة مع إصدارات متعددة من قالب الرسم البياني وترغب في جعلها شائعة في "
-"المظهر."
+msgstr "انقر فوق \"متابعة\" لمزامنة الرسومات البيانية الخاصة بك مع القالب (النماذج) البياني التالي. تعد هذه الوظيفة مهمة إذا كانت لديك رسوم بيانية موجودة مع إصدارات متعددة من قالب الرسم البياني وترغب في جعلها شائعة في المظهر."
+
 
 #: graph_templates.php:1275 graph_templates.php:1281
 msgid "Synchronize Graphs to Graph Template"
@@ -5843,10 +5877,8 @@ msgstr "اسم الرسم البياني"
 
 #: graph_view.php:868 graph_view.php:906 graphs.php:3060
 msgid "The Title of this Graph.  Generally programmatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual."
-msgstr ""
-"عنوان هذا الرسم البياني. يتم إنشاؤها بشكل عام من خلال تعريف قالب الرسم "
-"البياني أو قواعد التسمية المقترحة. يتم التحكم في الحد الأقصى لطول العنوان "
-"ضمن إعدادات-&gt; Visual."
+msgstr "عنوان هذا الرسم البياني. يتم إنشاؤها بشكل عام من خلال تعريف قالب الرسم البياني أو قواعد التسمية المقترحة. يتم التحكم في الحد الأقصى لطول العنوان ضمن إعدادات-> Visual."
+
 
 #: graph_view.php:871 sites.php:426 sites.php:632 tree.php:885
 msgid "Site Name"
@@ -6078,19 +6110,13 @@ msgstr[5] "اترك مصدر البيانات (s) دون تغيير."
 
 #: graphs.php:1784
 msgid "Choose a Graph Template and click 'Continue' to Change the Graph Template for the following Graph.  Note that only compatible Graph Templates will be displayed.  Compatible is identified by those having identical Data Sources."
-msgstr ""
-"اختر قالبًا رسمًا ، ثم انقر فوق &quot;متابعة&quot; لتغيير قالب الرسم البياني "
-"للرسم البياني التالي (الرسوم) التالية. يرجى ملاحظة أنه سيتم عرض قوالب "
-"الرسومات المتوافقة فقط. يتم تحديد التوافق من قبل أولئك الذين لديهم مصادر "
-"بيانات متطابقة."
+msgstr "اختر قالبًا رسمًا ، ثم انقر فوق \"متابعة\" لتغيير قالب الرسم البياني للرسم البياني التالي (الرسوم) التالية. يرجى ملاحظة أنه سيتم عرض قوالب الرسومات المتوافقة فقط. يتم تحديد التوافق من قبل أولئك الذين لديهم مصادر بيانات متطابقة."
+
 
 #: graphs.php:1785
 msgid "Choose a Graph Template and click 'Continue' to Change the Graph Template for the following Graphs.  Note that only compatible Graph Templates will be displayed.  Compatible is identified by those having identical Data Sources."
-msgstr ""
-"اختر قالبًا رسمًا ، ثم انقر فوق &quot;متابعة&quot; لتغيير قالب الرسم البياني "
-"للرسم البياني التالي (الرسوم) التالية. يرجى ملاحظة أنه سيتم عرض قوالب "
-"الرسومات المتوافقة فقط. يتم تحديد التوافق من قبل أولئك الذين لديهم مصادر "
-"بيانات متطابقة."
+msgstr "اختر قالبًا رسمًا ، ثم انقر فوق \"متابعة\" لتغيير قالب الرسم البياني للرسم البياني التالي (الرسوم) التالية. يرجى ملاحظة أنه سيتم عرض قوالب الرسومات المتوافقة فقط. يتم تحديد التوافق من قبل أولئك الذين لديهم مصادر بيانات متطابقة."
+
 
 #: graphs.php:1790 graphs_new.php:531
 msgid "New Graph Template"
@@ -6147,15 +6173,13 @@ msgstr "تغيير Graph (s) جهاز مرتبط"
 
 #: graphs.php:1841
 msgid "Click 'Continue' to Reapply Suggested Names the following Graph."
-msgstr ""
-"انقر فوق &quot;متابعة&quot; لإعادة تطبيق التسمية المقترحة على Graph (s) "
-"التالي."
+msgstr "انقر فوق \"متابعة\" لإعادة تطبيق التسمية المقترحة على Graph (s) التالي."
+
 
 #: graphs.php:1842
 msgid "Click 'Continue' to Reapply Suggested Names for the following Graphs."
-msgstr ""
-"انقر فوق &quot;متابعة&quot; لإعادة تطبيق التسمية المقترحة على Graph (s) "
-"التالي."
+msgstr "انقر فوق \"متابعة\" لإعادة تطبيق التسمية المقترحة على Graph (s) التالي."
+
 
 #: graphs.php:1843
 msgid "Reapply Suggested Names for Graph"
@@ -6167,12 +6191,13 @@ msgstr "إعادة تطبيق التسمية المقترحة إلى Graph (s)"
 
 #: graphs.php:1847
 msgid "Click 'Continue' to apply Automation Rules to the following Graph."
-msgstr ""
-"انقر فوق &quot;متابعة&quot; لتطبيق قواعد التنفيذ على الرسوم البيانية التالية."
+msgstr "انقر فوق \"متابعة\" لتطبيق قواعد التنفيذ على الرسوم البيانية التالية."
+
 
 #: graphs.php:1848
 msgid "Click 'Continue' to apply Automation Rules to the following Graphs."
-msgstr "انقر فوق &quot;متابعة&quot; لتطبيق قواعد التنفيذ على الرسوم البيانية التالية."
+msgstr "انقر فوق \"متابعة\" لتطبيق قواعد التنفيذ على الرسوم البيانية التالية."
+
 
 #: graphs.php:1849
 msgid "Apply Automation Rules to Graph"
@@ -6184,15 +6209,13 @@ msgstr "تطبيق قواعد الأتمتة على الرسوم البياني�
 
 #: graphs.php:1853
 msgid "Click 'Continue' to Create an Aggregate Graph from the selected Graph."
-msgstr ""
-"انقر فوق &quot;متابعة&quot; لإنشاء Aggregate Graph من القائمة (الرسوم) "
-"المحددة."
+msgstr "انقر فوق \"متابعة\" لإنشاء Aggregate Graph من القائمة (الرسوم) المحددة."
+
 
 #: graphs.php:1854
 msgid "Click 'Continue' to Create an Aggregate Graph from the selected Graphs."
-msgstr ""
-"انقر فوق &quot;متابعة&quot; لإنشاء Aggregate Graph من القائمة (الرسوم) "
-"المحددة."
+msgstr "انقر فوق \"متابعة\" لإنشاء Aggregate Graph من القائمة (الرسوم) المحددة."
+
 
 #: graphs.php:1860
 msgid "The following Data Source is in use by this Graph."
@@ -6580,11 +6603,13 @@ msgstr "تعذر إضافة بعض الأجهزة إلى التقرير '%s'"
 
 #: host.php:479
 msgid "Click 'Continue' to Delete the following Device."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف الجهاز (الأجهزة) التالي."
+msgstr "انقر فوق \"متابعة\" لحذف الجهاز (الأجهزة) التالي."
+
 
 #: host.php:480
 msgid "Click 'Continue' to Delete the following Devices."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف الجهاز (الأجهزة) التالي."
+msgstr "انقر فوق \"متابعة\" لحذف الجهاز (الأجهزة) التالي."
+
 
 #: host.php:482
 msgid "Delete Devices"
@@ -6600,11 +6625,13 @@ msgstr "قم بحذف كل Graph (s) المقترنة ومصدر (مصادر) ا
 
 #: host.php:500
 msgid "Click 'Continue' to Enable the following Device."
-msgstr "انقر فوق &quot;متابعة&quot; لتمكين الأجهزة (الأجهزة) التالية."
+msgstr "انقر فوق \"متابعة\" لتمكين الأجهزة (الأجهزة) التالية."
+
 
 #: host.php:501
 msgid "Click 'Continue' to Enable the following Devices."
-msgstr "انقر فوق &quot;متابعة&quot; لتمكين الأجهزة (الأجهزة) التالية."
+msgstr "انقر فوق \"متابعة\" لتمكين الأجهزة (الأجهزة) التالية."
+
 
 #: host.php:502
 msgid "Enable Device"
@@ -6616,11 +6643,13 @@ msgstr "تمكين الأجهزة (الأجهزة)"
 
 #: host.php:506
 msgid "Click 'Continue' to Disable the following Device."
-msgstr "انقر فوق &quot;متابعة&quot; لتعطيل الأجهزة (الأجهزة) التالية."
+msgstr "انقر فوق \"متابعة\" لتعطيل الأجهزة (الأجهزة) التالية."
+
 
 #: host.php:507
 msgid "Click 'Continue' to Disable the following Devices."
-msgstr "انقر فوق &quot;متابعة&quot; لتعطيل الأجهزة (الأجهزة) التالية."
+msgstr "انقر فوق \"متابعة\" لتعطيل الأجهزة (الأجهزة) التالية."
+
 
 #: host.php:508 include/global_form.php:1308
 msgid "Disable Device"
@@ -6660,15 +6689,13 @@ msgstr "مسح الإحصائيات على الجهاز (الأجهزة)"
 
 #: host.php:525
 msgid "Click 'Continue' to Synchronize Device to its Device Template."
-msgstr ""
-"انقر فوق &quot;متابعة&quot; لمزامنة الأجهزة (الأجهزة) التالية مع &quot;قالب "
-"الأجهزة&quot; الخاص بهم."
+msgstr "انقر فوق \"متابعة\" لمزامنة الأجهزة (الأجهزة) التالية مع \"قالب الأجهزة\" الخاص بهم."
+
 
 #: host.php:526
 msgid "Click 'Continue' to Synchronize Devices to their Device Templates."
-msgstr ""
-"انقر فوق &quot;متابعة&quot; لمزامنة الأجهزة (الأجهزة) التالية مع &quot;قالب "
-"الأجهزة&quot; الخاص بهم."
+msgstr "انقر فوق \"متابعة\" لمزامنة الأجهزة (الأجهزة) التالية مع \"قالب الأجهزة\" الخاص بهم."
+
 
 #: host.php:527
 msgid "Synchronize Device Template"
@@ -6988,11 +7015,13 @@ msgstr "أجهزة المزامنة"
 
 #: host_templates.php:232
 msgid "Click 'Continue' to Delete the following Device Template."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف قالب (نماذج) الأجهزة التالي."
+msgstr "انقر فوق \"متابعة\" لحذف قالب (نماذج) الأجهزة التالي."
+
 
 #: host_templates.php:233
 msgid "Click 'Continue' to Delete following Device Templates."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف قالب (نماذج) الأجهزة التالي."
+msgstr "انقر فوق \"متابعة\" لحذف قالب (نماذج) الأجهزة التالي."
+
 
 #: host_templates.php:234
 msgid "Delete Device Template"
@@ -7036,7 +7065,8 @@ msgstr "المزامنة إلى قالب الجهاز"
 
 #: host_templates.php:282
 msgid "Click 'Continue' to delete the following Graph Template will be disassociated from the Device Template."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف قالب الرسم البياني التالي سيتم فصله من &quot;قالب الجهاز&quot;."
+msgstr "انقر فوق \"متابعة\" لحذف قالب الرسم البياني التالي سيتم فصله من \"قالب الجهاز\"."
+
 
 #: host_templates.php:283
 #, php-format
@@ -7049,7 +7079,8 @@ msgstr "إزالة قالب الرسم البياني"
 
 #: host_templates.php:349
 msgid "Click 'Continue' to delete the following Data Queries will be disassociated from the Device Template."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف طلبات البحث التالية سيتم فصلها من &quot;قالب الجهاز&quot;."
+msgstr "انقر فوق \"متابعة\" لحذف طلبات البحث التالية سيتم فصلها من \"قالب الجهاز\"."
+
 
 #: host_templates.php:350
 #, php-format
@@ -7243,7 +7274,8 @@ msgstr "الدليل المميز غير موجود. الرجاء إدخال د�
 
 #: include/global_arrays.php:174
 msgid "The Cacti log file must have the extension '.log'"
-msgstr "يجب أن يكون ملف السجل Cacti الملحق &quot;.log&quot"
+msgstr "يجب أن يكون ملف السجل Cacti الملحق \".log&quot"
+
 
 #: include/global_arrays.php:177
 msgid "Data Input for method does not appear to be whitelisted."
@@ -7441,7 +7473,8 @@ msgstr "تغيير كلمة المرور المستندة إلى LDAP / AD غي�
 
 #: include/global_arrays.php:318
 msgid "Password successfully changed."
-msgstr "تم تغيير كلمة المرور بنجاح‪.‬."
+msgstr "تم تغيير كلمة المرور بنجاح."
+
 
 #: include/global_arrays.php:321
 msgid "Unable to clear log, no write permissions"
@@ -7489,7 +7522,8 @@ msgstr "عند حفظ مجمّع بيانات عن بعد ، يجب أن يكو�
 
 #: include/global_arrays.php:354
 msgid "Your Remote Database Hostname must be something other than 'localhost' for each Remote Data Collector."
-msgstr "يجب أن يكون &quot;اسم مضيف قاعدة البيانات عن بُعد&quot; الخاص بك شيئًا آخر غير &quot;localhost&quot; لكل أداة تجميع بيانات عن بُعد."
+msgstr "يجب أن يكون \"اسم مضيف قاعدة البيانات عن بُعد\" الخاص بك شيئًا آخر غير \"localhost\" لكل أداة تجميع بيانات عن بُعد."
+
 
 #: include/global_arrays.php:357
 msgid "Path variables on this page were only saved locally."
@@ -7662,11 +7696,13 @@ msgstr "وسط"
 
 #: include/global_arrays.php:600
 msgid "Top -> Down"
-msgstr "أعلى -&gt; أسفل"
+msgstr "أعلى -> أسفل"
+
 
 #: include/global_arrays.php:601
 msgid "Bottom -> Up"
-msgstr "أسفل -&gt; لأعلى"
+msgstr "أسفل -> لأعلى"
+
 
 #: include/global_arrays.php:605 tree.php:1686
 msgid "Numeric"
@@ -9940,7 +9976,8 @@ msgstr "الاسم المعطى لقالب البيانات هذا."
 
 #: include/global_form.php:580
 msgid "Choose a name for this data source.  It can include replacement variables such as |host_description| or |query_fieldName|.  For a complete list of supported replacement tags, please see the Cacti documentation."
-msgstr "اختر اسمًا لمصدر البيانات هذا. يمكن أن تتضمن متغيرات الاستبدال مثل | host_description | أو | query_fieldName |. للحصول على قائمة كاملة بعلامات الاستبدال المعتمدة ، يرجى الاطلاع على وثائق Cacti."
+msgstr "اختر اسمًا لمصدر البيانات هذا. يمكن أن تتضمن متغيرات الاستبدال مثل |host_description| أو |query_fieldName|. للحصول على قائمة كاملة بعلامات الاستبدال المعتمدة ، يرجى الاطلاع على وثائق Cacti."
+
 
 #: include/global_form.php:584
 msgid "Data Source Path"
@@ -9981,7 +10018,8 @@ msgstr "اختر اسمًا فريدًا لتمثيل هذه القطعة من �
 
 #: include/global_form.php:638
 msgid "Minimum Value (\"U\" for No Minimum)"
-msgstr "الحد الأدنى للقيمة (&quot;U&quot; لـ لا يوجد حد أدنى)"
+msgstr "الحد الأدنى للقيمة (\"U\" لـ لا يوجد حد أدنى)"
+
 
 #: include/global_form.php:643
 msgid "The minimum value of data that is allowed to be collected."
@@ -9989,7 +10027,8 @@ msgstr "القيمة الدنيا للبيانات المسموح بجمعها."
 
 #: include/global_form.php:646
 msgid "Maximum Value (\"U\" for No Maximum)"
-msgstr "القيمة القصوى (&quot;U&quot; لللا حد أقصى)"
+msgstr "القيمة القصوى (\"U\" لللا حد أقصى)"
+
 
 #: include/global_form.php:651
 msgid "The maximum value of data that is allowed to be collected."
@@ -10005,7 +10044,8 @@ msgstr "كيف يتم تمثيل البيانات في RRA."
 
 #: include/global_form.php:666
 msgid "The maximum amount of time that can pass before data is entered as 'unknown'. (Usually 2x300=600)"
-msgstr "الحد الأقصى لمقدار الوقت الذي يمكن أن يمر قبل إدخال البيانات على أنه &quot;غير معروف&quot;. (عادة 2x300 = 600)"
+msgstr "الحد الأقصى لمقدار الوقت الذي يمكن أن يمر قبل إدخال البيانات على أنه \"غير معروف\". (عادة 2x300 = 600)"
+
 
 #: include/global_form.php:672 lib/html_utility.php:335
 msgid "Not Selected"
@@ -10037,7 +10077,8 @@ msgstr "العنوان (- العنوان)"
 
 #: include/global_form.php:717
 msgid "The name that is printed on the graph.  It can include replacement variables such as |host_description| or |query_fieldName|.  For a complete list of supported replacement tags, please see the Cacti documentation."
-msgstr "الاسم الذي تتم طباعته على الرسم البياني. يمكن أن تتضمن متغيرات الاستبدال مثل | host_description | أو | query_fieldName |. للحصول على قائمة كاملة بعلامات الاستبدال المعتمدة ، يرجى الاطلاع على وثائق Cacti."
+msgstr "الاسم الذي تتم طباعته على الرسم البياني. يمكن أن تتضمن متغيرات الاستبدال مثل |host_description| أو |query_fieldName|. للحصول على قائمة كاملة بعلامات الاستبدال المعتمدة ، يرجى الاطلاع على وثائق Cacti."
+
 
 #: include/global_form.php:721
 msgid "Vertical Label (--vertical-label)"
@@ -10181,7 +10222,8 @@ msgstr "قيمة الأس الوحدة (--units-exp)"
 
 #: include/global_form.php:854
 msgid "What unit Cacti should use on the Y-axis. Use 3 to display everything in \"k\" or -6 to display everything in \"u\" (micro)."
-msgstr "ما وحدة Cacti يجب أن تستخدم على المحور ص. استخدم 3 لعرض كل شيء في &quot;k&quot; أو -6 لعرض كل شيء في &quot;u&quot; (micro)."
+msgstr "ما وحدة Cacti يجب أن تستخدم على المحور ص. استخدم 3 لعرض كل شيء في \"k\" أو -6 لعرض كل شيء في \"u\" (micro)."
+
 
 #: include/global_form.php:858
 msgid "Unit Length (--units-length &lt;length&gt;)"
@@ -10406,7 +10448,8 @@ msgstr "تحول البيانات"
 
 #: include/global_form.php:1064
 msgid "Offset your data on the time axis (x-axis) by the amount specified in the 'value' field."
-msgstr "قم بإزاحة البيانات الخاصة بك على محور الوقت (x-axis) بالمبلغ المحدد في حقل &quot;القيمة&quot;."
+msgstr "قم بإزاحة البيانات الخاصة بك على محور الوقت (x-axis) بالمبلغ المحدد في حقل \"القيمة\"."
+
 
 #: include/global_form.php:1072
 msgid "[HRULE|VRULE]: The value of the graph item.<br/> [TICK]: The fraction for the tick line.<br/> [SHIFT]: The time offset in seconds."
@@ -10418,7 +10461,8 @@ msgstr "نوع GPRINT"
 
 #: include/global_form.php:1079
 msgid "If this graph item is a GPRINT, you can optionally choose another format here. You can define additional types under \"GPRINT Presets\"."
-msgstr "إذا كان عنصر الرسم البياني هذا هو GPRINT ، فيمكنك اختيار تنسيق آخر اختياريًا هنا. يمكنك تحديد أنواع إضافية ضمن &quot;GPRINT Presets&quot;."
+msgstr "إذا كان عنصر الرسم البياني هذا هو GPRINT ، فيمكنك اختيار تنسيق آخر اختياريًا هنا. يمكنك تحديد أنواع إضافية ضمن \"GPRINT Presets\"."
+
 
 #: include/global_form.php:1082
 msgid "Text Alignment (TEXTALIGN)"
@@ -10894,7 +10938,8 @@ msgstr "SNMP نوع الرسالة"
 
 #: include/global_form.php:1923
 msgid "SNMP traps are always unacknowledged. To send out acknowledged SNMP notifications, formally called \"INFORMS\", SNMPv2 or above will be required."
-msgstr "تكون اعتراضات SNMP دائمًا غير معترف بها. لإرسال إشعارات SNMP المعترف بها ، والتي تسمى رسميًا بـ &quot;INFORMS&quot; ، سوف تكون SNMPv2 أو أعلى مطلوبة."
+msgstr "تكون اعتراضات SNMP دائمًا غير معترف بها. لإرسال إشعارات SNMP المعترف بها ، والتي تسمى رسميًا بـ \"INFORMS\" ، سوف تكون SNMPv2 أو أعلى مطلوبة."
+
 
 #: include/global_form.php:1956
 msgid "The new Title of the aggregated Graph."
@@ -10932,7 +10977,8 @@ msgstr "بلغ مجموعها"
 #: include/global_form.php:1987 include/global_form.php:2073
 #: include/global_form.php:2178
 msgid "Please check those Items that shall be totaled in the \"Total\" column, when selecting any totaling option here."
-msgstr "يرجى التحقق من العناصر التي يجب أن يتم تجميعها في عمود &quot;الإجمالي&quot; ، عند تحديد أي خيار إجمالي هنا."
+msgstr "يرجى التحقق من العناصر التي يجب أن يتم تجميعها في عمود \"الإجمالي\" ، عند تحديد أي خيار إجمالي هنا."
+
 
 #: include/global_form.php:1994 include/global_form.php:2081
 #: include/global_form.php:2186
@@ -11109,7 +11155,8 @@ msgstr "نشر التغييرات"
 
 #: include/global_form.php:2464
 msgid "Propagate all options on this form (except for 'Title') to all child 'Header' items."
-msgstr "نشر جميع الخيارات في هذا النموذج (باستثناء &quot;العنوان&quot;) لكافة عناصر &quot;الرأس&quot; الخاصة بالطفل."
+msgstr "نشر جميع الخيارات في هذا النموذج (باستثناء \"العنوان\") لكافة عناصر \"الرأس\" الخاصة بالطفل."
+
 
 #: include/global_form.php:2472
 msgid "The String Pattern (Regular Expression) to match against.<br>Enclosing '/' must <strong>NOT</strong> be provided!"
@@ -11504,7 +11551,8 @@ msgstr "الاكتشاف التلقائي للغة"
 
 #: include/global_settings.php:440
 msgid "Allow to automatically determine the 'default' language of the user and provide it at login time if that language is supported by Cacti. If disabled, the default language will be in force until the user elects another language."
-msgstr "السماح بتحديد اللغة &quot;الافتراضية&quot; للمستخدم تلقائيًا وتوفيرها في وقت تسجيل الدخول إذا كانت هذه اللغة مدعومة من Cacti. إذا تم تعطيله ، فستكون اللغة الافتراضية سارية المفعول حتى ينتخب المستخدم لغة أخرى."
+msgstr "السماح بتحديد اللغة \"الافتراضية\" للمستخدم تلقائيًا وتوفيرها في وقت تسجيل الدخول إذا كانت هذه اللغة مدعومة من Cacti. إذا تم تعطيله ، فستكون اللغة الافتراضية سارية المفعول حتى ينتخب المستخدم لغة أخرى."
+
 
 #: include/global_settings.php:449
 msgid "Preferred Language Processor"
@@ -11792,7 +11840,8 @@ msgstr ""
 
 #: include/global_settings.php:682 include/global_settings.php:1443
 msgid "The amount of time, in seconds, that the Central Cacti web server will wait for a response from the Remote Data Collector to obtain various Device information before abandoning the request.  On Devices that are associated with Data Collectors other than the Central Cacti Data Collector, the Remote Agent must be used to gather Device information."
-msgstr "مقدار الوقت بالثواني ، الذي ينتظر خادم الويب Cacti المركزي استجابة من جامع البيانات البعيد للحصول على معلومات الجهاز المختلفة قبل التخلي عن الطلب. على الأجهزة المرتبطة بـ &quot;مجمعات البيانات&quot; بخلاف &quot;مجمّع بيانات Cacti Central&quot; ، يجب استخدام &quot;عامل البعيد&quot; لجمع معلومات الجهاز."
+msgstr "مقدار الوقت بالثواني ، الذي ينتظر خادم الويب Cacti المركزي استجابة من جامع البيانات البعيد للحصول على معلومات الجهاز المختلفة قبل التخلي عن الطلب. على الأجهزة المرتبطة بـ \"مجمعات البيانات\" بخلاف \"مجمّع بيانات Cacti Central\" ، يجب استخدام \"عامل البعيد\" لجمع معلومات الجهاز."
+
 
 #: include/global_settings.php:698
 msgid "Logging Level"
@@ -11824,7 +11873,8 @@ msgstr "تمكين إنشاء عنصر شجرة تلقائي"
 
 #: include/global_settings.php:719
 msgid "When disabled, Cacti Automation will not actively create any Tree Item.  This is useful when adjusting Device or Graph settings so as to avoid creating new Tree Entries each time you save an object.  Invoking Rules manually will still be possible."
-msgstr "عند التعطيل ، لن تقوم Cacti Automation بإنشاء أي عنصر شجرة بشكل نشط. يفيد ذلك عند ضبط إعدادات الجهاز أو الرسم البياني لتجنب إنشاء &quot;إدخالات Tree&quot; جديدة في كل مرة تقوم بحفظ كائن فيها. سيستمر استدعاء القواعد يدويًا."
+msgstr "عند التعطيل ، لن تقوم Cacti Automation بإنشاء أي عنصر شجرة بشكل نشط. يفيد ذلك عند ضبط إعدادات الجهاز أو الرسم البياني لتجنب إنشاء \"إدخالات Tree\" جديدة في كل مرة تقوم بحفظ كائن فيها. سيستمر استدعاء القواعد يدويًا."
+
 
 #: include/global_settings.php:723
 msgid "Automation Notification To Email"
@@ -11832,7 +11882,8 @@ msgstr "إعلام الأتمتة إلى البريد الإلكتروني"
 
 #: include/global_settings.php:724
 msgid "The Email Address to send Automation Notification Emails to if not specified at the Automation Network level.  If either this field, or the Automation Network value are left blank, Cacti will use the Primary Cacti Admins Email account."
-msgstr "عنوان البريد الإلكتروني لإرسال إعلام الأتمتة إلى إذا لم يتم تحديده على مستوى &quot;شبكة الأتمتة&quot;. إذا تم ترك هذا الحقل أو قيمة &quot;شبكة الأتمتة&quot; فارغة ، فستستخدم Cacti حساب البريد الإلكتروني Cacti Admins الأساسي."
+msgstr "عنوان البريد الإلكتروني لإرسال إعلام الأتمتة إلى إذا لم يتم تحديده على مستوى \"شبكة الأتمتة\". إذا تم ترك هذا الحقل أو قيمة \"شبكة الأتمتة\" فارغة ، فستستخدم Cacti حساب البريد الإلكتروني Cacti Admins الأساسي."
+
 
 #: include/global_settings.php:730
 msgid "Automation Notification From Name"
@@ -11840,7 +11891,8 @@ msgstr "إعلام الأتمتة من الاسم"
 
 #: include/global_settings.php:731
 msgid "The Email Name to use for Automation Notification Emails to if not specified at the Automation Network level.  If either this field, or the Automation Network value are left blank, Cacti will use the system default From Name."
-msgstr "اسم البريد الإلكتروني لاستخدامه في رسائل البريد الإلكتروني الخاصة بالإشعارات التلقائية إذا لم يتم تحديده على مستوى &quot;شبكة الأتمتة&quot;. إذا تم ترك هذا الحقل أو قيمة &quot;شبكة الأتمتة&quot; فارغة ، فستستخدم Cacti النظام الافتراضي من &quot;الاسم&quot;."
+msgstr "اسم البريد الإلكتروني لاستخدامه في رسائل البريد الإلكتروني الخاصة بالإشعارات التلقائية إذا لم يتم تحديده على مستوى \"شبكة الأتمتة\". إذا تم ترك هذا الحقل أو قيمة \"شبكة الأتمتة\" فارغة ، فستستخدم Cacti النظام الافتراضي من \"الاسم\"."
+
 
 #: include/global_settings.php:738
 msgid "Automation Notification From Email"
@@ -11848,7 +11900,8 @@ msgstr "إعلام الأتمتة من البريد الإلكتروني"
 
 #: include/global_settings.php:739
 msgid "The Email Address to use for Automation Notification Emails to if not specified at the Automation Network level.  If either this field, or the Automation Network value are left blank, Cacti will use the system default From Email Address."
-msgstr "عنوان البريد الإلكتروني لاستخدامه في رسائل البريد الإلكتروني الخاصة بالإشعارات التلقائية إذا لم يتم تحديده على مستوى &quot;شبكة الأتمتة&quot;. إذا تم ترك هذا الحقل أو قيمة &quot;شبكة الأتمتة&quot; فارغة ، فستستخدم Cacti النظام الافتراضي من عنوان البريد الإلكتروني."
+msgstr "عنوان البريد الإلكتروني لاستخدامه في رسائل البريد الإلكتروني الخاصة بالإشعارات التلقائية إذا لم يتم تحديده على مستوى \"شبكة الأتمتة\". إذا تم ترك هذا الحقل أو قيمة \"شبكة الأتمتة\" فارغة ، فستستخدم Cacti النظام الافتراضي من عنوان البريد الإلكتروني."
+
 
 #: include/global_settings.php:745
 msgid "Graph Template Defaults"
@@ -12070,7 +12123,8 @@ msgstr "نوع Ping الافتراضي لجميع الأجهزة الجديدة.
 
 #: include/global_settings.php:992
 msgid "Default Ping Port for all new Devices.  With TCP, Cacti will attempt to Syn the port.  With UDP, Cacti requires either a successful connection, or a 'port not reachable' error to determine if the Device is up or not."
-msgstr "منفذ Ping الافتراضي لكافة الأجهزة الجديدة. مع TCP ، سيحاول Cacti مزامنة المنفذ. باستخدام UDP ، يتطلب Cacti إما اتصال ناجح ، أو خطأ &quot;المنفذ غير قابل للوصول&quot; لتحديد ما إذا كان الجهاز في وضع صاعد أم لا."
+msgstr "منفذ Ping الافتراضي لكافة الأجهزة الجديدة. مع TCP ، سيحاول Cacti مزامنة المنفذ. باستخدام UDP ، يتطلب Cacti إما اتصال ناجح ، أو خطأ \"المنفذ غير قابل للوصول\" لتحديد ما إذا كان الجهاز في وضع صاعد أم لا."
+
 
 #: include/global_settings.php:1000
 msgid "Default Ping Timeout value in milli-seconds for all new Devices.  The timeout values to use for Device SNMP, ICMP, UDP and TCP pinging.  ICMP Pings will be rounded up to the nearest second.  TCP and UDP connection timeouts on Windows are controlled by the operating system, and are therefore not recommended on Windows."
@@ -12241,7 +12295,8 @@ msgstr "الحد الأقصى لعدد الصفوف في كل صفحة"
 
 #: include/global_settings.php:1169
 msgid "User defined number of lines for the CLOG to tail when selecting 'All lines'."
-msgstr "يحدد عدد محدد من خطوط CLOG الذيل عند اختيار &quot;جميع الخطوط&quot;."
+msgstr "يحدد عدد محدد من خطوط CLOG الذيل عند اختيار \"جميع الخطوط\"."
+
 
 #: include/global_settings.php:1176
 msgid "Log Tail Refresh"
@@ -12261,7 +12316,8 @@ msgstr "استبعاد Regex"
 
 #: include/global_settings.php:1189
 msgid "Any strings that match this regex will be excluded from the user display.  <strong>For example, if you want to exclude all log lines that include the words 'Admin' or 'Login' you would type '(Admin || Login)'</strong>"
-msgstr "سيتم استبعاد أي سلاسل تطابق هذا التعبير المعتاد من شاشة المستخدم. <strong>على سبيل المثال ، إذا كنت تريد استبعاد جميع أسطر السجل التي تتضمن الكلمات &quot;المسؤول&quot; أو &quot;تسجيل الدخول&quot; ، فاكتب &quot;(Admin || Login)&quot;</strong>"
+msgstr "سيتم استبعاد أي سلاسل تطابق هذا التعبير المعتاد من شاشة المستخدم. <strong>على سبيل المثال ، إذا كنت تريد استبعاد جميع أسطر السجل التي تتضمن الكلمات \"المسؤول\" أو \"تسجيل الدخول\" ، فاكتب \"(Admin || Login)\"</strong>"
+
 
 #: include/global_settings.php:1196
 msgid "Real-time Graphs"
@@ -12313,7 +12369,8 @@ msgstr "تنسيق التاريخ المخصص"
 
 #: include/global_settings.php:1243
 msgid "To be used when formatting |date_time| on a graph"
-msgstr "لاستخدامها عند تنسيق | date_time | على الرسم البياني"
+msgstr "لاستخدامها عند تنسيق |date_time| على الرسم البياني"
+
 
 #: include/global_settings.php:1250
 msgid "Disable RRDtool Watermark"
@@ -12834,7 +12891,8 @@ msgstr "عمليات جمع البيانات الافتراضية"
 
 #: include/global_settings.php:1728
 msgid "The default number of concurrent processes to execute per Data Collector.  NOTE: Starting from Cacti 1.2, this setting is maintained in the Data Collector.  Moving forward, this value is only a preset for the Data Collector.  Using a higher number when using cmd.php will improve performance.  Performance improvements in Spine are best resolved with the threads parameter.  When using Spine, we recommend a lower number and leveraging threads instead.  When using cmd.php, use no more than 2x the number of CPU cores."
-msgstr "العدد الافتراضي للعمليات المتزامنة للتنفيذ لكل أداة تجميع بيانات. ملاحظة: بدءاً من Cacti 1.2 ، يتم الاحتفاظ هذا الإعداد في &quot;مجمّع البيانات&quot;. وبالانتقال إلى الأمام ، تكون هذه القيمة هي إعداد مسبق فقط لمجمع البيانات. استخدام رقم أعلى عند استخدام cmd.php سيحسن الأداء. يتم تحسين أفضل تحسينات الأداء في Spine مع معلمة مؤشرات الترابط. عند استخدام Spine ، نوصي باستخدام عدد أقل من مؤشرات الترابط ورفعها بدلاً من ذلك. عند استخدام cmd.php ، لا تستخدم أكثر من 2x عدد مراكز CPU."
+msgstr "العدد الافتراضي للعمليات المتزامنة للتنفيذ لكل أداة تجميع بيانات. ملاحظة: بدءاً من Cacti 1.2 ، يتم الاحتفاظ هذا الإعداد في \"مجمّع البيانات\". وبالانتقال إلى الأمام ، تكون هذه القيمة هي إعداد مسبق فقط لمجمع البيانات. استخدام رقم أعلى عند استخدام cmd.php سيحسن الأداء. يتم تحسين أفضل تحسينات الأداء في Spine مع معلمة مؤشرات الترابط. عند استخدام Spine ، نوصي باستخدام عدد أقل من مؤشرات الترابط ورفعها بدلاً من ذلك. عند استخدام cmd.php ، لا تستخدم أكثر من 2x عدد مراكز CPU."
+
 
 #: include/global_settings.php:1735
 msgid "Spine Specific Execution Parameters"
@@ -12909,7 +12967,8 @@ msgstr "زائر"
 
 #: include/global_settings.php:1793
 msgid "The name of the guest user for viewing graphs; is 'No User' by default."
-msgstr "اسم المستخدم الضيف لعرض الرسوم البيانية ؛ هو &quot;لا يوجد مستخدم&quot; بشكل افتراضي."
+msgstr "اسم المستخدم الضيف لعرض الرسوم البيانية ؛ هو \"لا يوجد مستخدم\" بشكل افتراضي."
+
 
 #: include/global_settings.php:1800 user_domains.php:306
 msgid "User Template"
@@ -12917,7 +12976,8 @@ msgstr "قالب المستخدم"
 
 #: include/global_settings.php:1801
 msgid "The name of the user that Cacti will use as a template for new Web Basic and LDAP users; is 'guest' by default.  This user account will be disabled from logging in upon being selected."
-msgstr "اسم المستخدم الذي سيستخدمه Cacti كقالب لمستخدمي Web Basic و LDAP الجدد ؛ هو &quot;ضيف&quot; بشكل افتراضي. سيتم تعطيل حساب المستخدم هذا من تسجيل الدخول عند تحديده."
+msgstr "اسم المستخدم الذي سيستخدمه Cacti كقالب لمستخدمي Web Basic و LDAP الجدد ؛ هو \"ضيف\" بشكل افتراضي. سيتم تعطيل حساب المستخدم هذا من تسجيل الدخول عند تحديده."
+
 
 #: include/global_settings.php:1808
 msgid "Account Locking"
@@ -13182,7 +13242,8 @@ msgstr "إعلام المسؤول الأساسي عن المشكلات"
 
 #: include/global_settings.php:2084
 msgid "In cases where the Cacti server is experiencing problems, should the Primary Administrator be notified by Email?  The Primary Administrator's Cacti user account is specified under the Authentication tab on Cacti's settings page. It defaults to the 'admin' account."
-msgstr "في الحالات التي يواجه فيها خادم Cacti مشكلات ، هل يجب إخطار المسؤول الأساسي عن طريق البريد الإلكتروني؟ يتم تحديد حساب المستخدم Cacti الخاص بالمسؤول الأساسي تحت علامة التبويب مصادقة على صفحة إعدادات Cacti. يتم تعيينه افتراضيًا على حساب &quot;المسؤول&quot;."
+msgstr "في الحالات التي يواجه فيها خادم Cacti مشكلات ، هل يجب إخطار المسؤول الأساسي عن طريق البريد الإلكتروني؟ يتم تحديد حساب المستخدم Cacti الخاص بالمسؤول الأساسي تحت علامة التبويب مصادقة على صفحة إعدادات Cacti. يتم تعيينه افتراضيًا على حساب \"المسؤول\"."
+
 
 #: include/global_settings.php:2089
 msgid "Test Email"
@@ -13460,7 +13521,8 @@ msgstr "الحد الأقصى لطول الوسيطة"
 
 #: include/global_settings.php:2356
 msgid "When boost sends update commands to RRDtool, it must not exceed the operating systems Maximum Argument Length.  This varies by operating system and kernel level.  For example: Windows 2000 <= 2048, FreeBSD <= 65535, Linux 2.6.22-- <= 131072, Linux 2.6.23++ unlimited"
-msgstr "عندما يرسل boosts أوامر التحديث إلى RRDtool ، يجب ألا يتجاوز طول نظام الحد الأقصى لطول الوسيطة. هذا يختلف حسب نظام التشغيل ومستوى النواة. على سبيل المثال: Windows 2000 &lt;= 2048 ، FreeBSD &lt;= 65535 ، Linux 2.6.22-- &lt;= 131072 ، Linux 2.6.23 ++ غير محدود"
+msgstr "عندما يرسل boosts أوامر التحديث إلى RRDtool ، يجب ألا يتجاوز طول نظام الحد الأقصى لطول الوسيطة. هذا يختلف حسب نظام التشغيل ومستوى النواة. على سبيل المثال: Windows 2000 <= 2048 ، FreeBSD <= 65535 ، Linux 2.6.22-- <= 131072 ، Linux 2.6.23 ++ غير محدود"
+
 
 #: include/global_settings.php:2363
 msgid "Memory Limit for Boost and Poller"
@@ -13786,7 +13848,8 @@ msgstr "طريقة الإزالة"
 
 #: include/global_settings.php:2692
 msgid "There are two removal methods.  The first, Standard Deviation, will remove any sample that is X number of standard deviations away from the average of samples.  The second method, Variance, will remove any sample that is X% more than the Variance average.  The Variance method takes into account a certain number of 'outliers'.  Those are exceptional samples, like the spike, that need to be excluded from the Variance Average calculation."
-msgstr "هناك طريقتان للإزالة. الأول ، الانحراف المعياري ، سيزيل أي عينة تمثل X عدد من الانحرافات المعيارية بعيداً عن متوسط العينات. الطريقة الثانية ، تباين ، ستزيل أي عينة X٪ أكثر من متوسط التباين. تأخذ طريقة التباين في الاعتبار عدد معين من &quot;القيم المتطرفة&quot;. هذه عينات استثنائية ، مثل السنبلة ، التي يجب استبعادها من حساب &quot;تباين الدرجة&quot;."
+msgstr "هناك طريقتان للإزالة. الأول ، الانحراف المعياري ، سيزيل أي عينة تمثل X عدد من الانحرافات المعيارية بعيداً عن متوسط العينات. الطريقة الثانية ، تباين ، ستزيل أي عينة X٪ أكثر من متوسط التباين. تأخذ طريقة التباين في الاعتبار عدد معين من \"القيم المتطرفة\". هذه عينات استثنائية ، مثل السنبلة ، التي يجب استبعادها من حساب \"تباين الدرجة\"."
+
 
 #: include/global_settings.php:2696
 msgid "Standard Deviation"
@@ -13802,7 +13865,8 @@ msgstr "طريقة الاستبدال"
 
 #: include/global_settings.php:2702
 msgid "There are three replacement methods.  The first method replaces the spike with the average of the data source in question.  The second method replaces the spike with a 'NaN'.  The last replaces the spike with the last known good value found."
-msgstr "هناك ثلاث طرق بديلة. تحل الطريقة الأولى محل السنبلة بمتوسط مصدر البيانات المعني. الطريقة الثانية تحل محل السنبلة بـ &quot;NaN&quot;. يستبدل الأخير السنبلة بآخر قيمة جيدة معروفة تم العثور عليها."
+msgstr "هناك ثلاث طرق بديلة. تحل الطريقة الأولى محل السنبلة بمتوسط مصدر البيانات المعني. الطريقة الثانية تحل محل السنبلة بـ \"NaN\". يستبدل الأخير السنبلة بآخر قيمة جيدة معروفة تم العثور عليها."
+
 
 #: include/global_settings.php:2706 lib/html.php:2431 lib/html.php:2441
 #: lib/html.php:2449 lib/html.php:2766
@@ -14133,8 +14197,8 @@ msgstr "اسمح بامتداد Graph إلى Future"
 
 #: include/global_settings.php:2994
 msgid "When displaying Graphs, allow Graph Dates to extend 'to future'"
-msgstr ""
-"عند عرض الرسوم البيانية ، اسمح بتمديد Graph Dates &quot;إلى المستقبل&quot"
+msgstr "عند عرض الرسوم البيانية ، اسمح بتمديد Graph Dates \"إلى المستقبل&quot"
+
 
 #: include/global_settings.php:2999
 msgid "First Day of the Week"
@@ -14359,11 +14423,13 @@ msgstr "عدد السجلات غير المتصلة:"
 
 #: index.php:89
 msgid "<strong>NOTE:</strong> You are logged into a Remote Data Collector.  When <b>'online'</b>, you will be able to view and control much of the Main Cacti Web Site just as if you were logged into it.  Also, it's important to note that Remote Data Collectors are required to use the Cacti's Performance Boosting Services <b>'On Demand Updating'</b> feature, and we always recommend using Spine.  When the Remote Data Collector is <b>'offline'</b>, the Remote Data Collectors Web Site will contain much less information.  However, it will cache all updates until the Main Cacti Database and Web Server are reachable.  Then it will dump it's Boost table output back to the Main Cacti Database for updating."
-msgstr "<strong>ملاحظة:</strong> لقد قمت بتسجيل الدخول إلى &quot;مجمّع بيانات عن بعد&quot;. عندما تكون <b>&quot;عبر الإنترنت&quot;</b> ، ستتمكن من عرض جزء كبير من موقع Cacti على الويب والتحكم فيه كما لو كنت قد قمت بتسجيل الدخول إليه. أيضا ، من المهم أن نلاحظ أن جامعي البيانات عن بعد مطالبون باستخدام ميزة <b>&quot;تحسين الطلب عند تحديث&quot;</b> Cacti Performance Boosting Services ، ونوصي دائمًا باستخدام Spine. عندما يكون &quot;جامع البيانات البعيد <b>&quot; &#39;غير متصل&#39;</b> ، سيحتوي موقع &quot;تجميع بيانات البعيد&quot; على الويب على معلومات أقل بكثير. ومع ذلك ، فإنه سيتم تخزين كافة التحديثات حتى يمكن الوصول إلى قاعدة البيانات الرئيسية Cacti و Web Server. ثم فإنه سيتم التخلص من إخراج جدول Boost مرة أخرى إلى قاعدة البيانات الرئيسية Cacti للتحديث."
+msgstr "<strong>ملاحظة:</strong> لقد قمت بتسجيل الدخول إلى \"مجمّع بيانات عن بعد\". عندما تكون <b>\"عبر الإنترنت\"</b> ، ستتمكن من عرض جزء كبير من موقع Cacti على الويب والتحكم فيه كما لو كنت قد قمت بتسجيل الدخول إليه. أيضا ، من المهم أن نلاحظ أن جامعي البيانات عن بعد مطالبون باستخدام ميزة <b>\"تحسين الطلب عند تحديث\"</b> Cacti Performance Boosting Services ، ونوصي دائمًا باستخدام Spine. عندما يكون \"جامع البيانات البعيد <b>\" 'غير متصل'</b> ، سيحتوي موقع \"تجميع بيانات البعيد\" على الويب على معلومات أقل بكثير. ومع ذلك ، فإنه سيتم تخزين كافة التحديثات حتى يمكن الوصول إلى قاعدة البيانات الرئيسية Cacti و Web Server. ثم فإنه سيتم التخلص من إخراج جدول Boost مرة أخرى إلى قاعدة البيانات الرئيسية Cacti للتحديث."
+
 
 #: index.php:94
 msgid "<strong>NOTE:</strong> None of the Core Cacti Plugins, to date, have been re-designed to work with Remote Data Collectors.  Therefore, Plugins such as MacTrack, and HMIB, which require direct access to devices will not work with Remote Data Collectors at this time.  However, plugins such as Thold will work so long as the Remote Data Collector is in <b>'online'</b> mode."
-msgstr "<strong>ملاحظة:</strong> لم تتم إعادة تصميم أي من مكونات Core Cacti الإضافية حتى الآن للعمل مع جامعي البيانات عن بُعد. لذلك ، لن تعمل المكونات الإضافية مثل MacTrack و HMIB ، والتي تتطلب الوصول المباشر إلى الأجهزة مع جامع البيانات البعيد في هذا الوقت. ومع ذلك ، ستعمل المكونات الإضافية مثل Thold طالما أن أداة تجميع البيانات عن بعد في وضع <b>&quot;عبر الإنترنت&quot;</b> ."
+msgstr "<strong>ملاحظة:</strong> لم تتم إعادة تصميم أي من مكونات Core Cacti الإضافية حتى الآن للعمل مع جامعي البيانات عن بُعد. لذلك ، لن تعمل المكونات الإضافية مثل MacTrack و HMIB ، والتي تتطلب الوصول المباشر إلى الأجهزة مع جامع البيانات البعيد في هذا الوقت. ومع ذلك ، ستعمل المكونات الإضافية مثل Thold طالما أن أداة تجميع البيانات عن بعد في وضع <b>\"عبر الإنترنت\"</b> ."
+
 
 #: install/functions.php:961
 #, php-format
@@ -15020,7 +15086,8 @@ msgstr "%s - ملاحظة واجهة الويب: تم مسح سجل Cacti من �
 
 #: lib/clog_webapi.php:224
 msgid "Click 'Continue' to purge the Log File.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog."
-msgstr "انقر فوق &quot;متابعة&quot; لتنظيف ملف السجل. <br><br><br> ملاحظة: إذا تم تعيين التسجيل على Cacti و Syslog ، فستظل معلومات السجل في Syslog."
+msgstr "انقر فوق \"متابعة\" لتنظيف ملف السجل. <br><br><br> ملاحظة: إذا تم تعيين التسجيل على Cacti و Syslog ، فستظل معلومات السجل في Syslog."
+
 
 #: lib/clog_webapi.php:230 user_log.php:389 utilities.php:342
 msgid "Purge Log"
@@ -15183,7 +15250,8 @@ msgstr "نوع غير معروف = '%s'."
 
 #: lib/data_query.php:172
 msgid "WARNING: Sort Field Association has Changed.  Re-mapping issues may occur!"
-msgstr "تحذير: تم تغيير &quot;اقتران مجال&quot; الفرز. قد تحدث مشكلات إعادة التخطيط!"
+msgstr "تحذير: تم تغيير \"اقتران مجال\" الفرز. قد تحدث مشكلات إعادة التخطيط!"
+
 
 #: lib/data_query.php:184
 msgid "Update Data Query Sort Cache complete"
@@ -15328,11 +15396,13 @@ msgstr "تم العثور على عدد الفهارس: %s"
 
 #: lib/data_query.php:697
 msgid "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' not supported"
-msgstr "&lt;arg_num_indexes&gt; مفقودة في ملف XML ، &quot;عدد الفهرس غيرت&quot; غير مدعوم"
+msgstr "&lt;arg_num_indexes&gt; مفقودة في ملف XML ، \"عدد الفهرس غيرت\" غير مدعوم"
+
 
 #: lib/data_query.php:699
 msgid "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting arg_index entries"
-msgstr "&lt;arg_num_indexes&gt; في عداد المفقودين في ملف XML ، &#39;عدد الفهرس تم تغييره&#39; تمت محاكاته بواسطة عد إدخالات arg_index"
+msgstr "&lt;arg_num_indexes&gt; في عداد المفقودين في ملف XML ، 'عدد الفهرس تم تغييره' تمت محاكاته بواسطة عد إدخالات arg_index"
+
 
 #: lib/data_query.php:710
 msgid "ERROR: Data Query returned no indexes."
@@ -15345,7 +15415,8 @@ msgstr "جارٍ تنفيذ البرنامج النصي لقائمة الفها�
 
 #: lib/data_query.php:717
 msgid "Click to show Data Query output for 'index'"
-msgstr "انقر لعرض إخراج بيانات الاستعلام لـ &quot;الفهرس&quot"
+msgstr "انقر لعرض إخراج بيانات الاستعلام لـ \"الفهرس&quot"
+
 
 #: lib/data_query.php:720
 #, php-format
@@ -15416,7 +15487,8 @@ msgstr "جارٍ تنفيذ SNMP get لعدد الفهارس @ '%s' عدد ال�
 
 #: lib/data_query.php:937
 msgid "&lt;oid_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting oid_index entries"
-msgstr "&lt;oid_num_indexes&gt; مفقودة في ملف XML ، &#39;عدد الفهرس المتغير&#39; الذي تمت محاكاته بواسطة إدخالات oid_index"
+msgstr "&lt;oid_num_indexes&gt; مفقودة في ملف XML ، 'عدد الفهرس المتغير' الذي تمت محاكاته بواسطة إدخالات oid_index"
+
 
 #: lib/data_query.php:940
 #, php-format
@@ -15646,7 +15718,8 @@ msgstr "لم يتم تحديث ملف RRD بعد الاقتراع"
 
 #: lib/dsdebug.php:303
 msgid "Data Source returned Bad Results for "
-msgstr "مصدر البيانات إرجاع &quot;نتائج سيئة&quot; لـ "
+msgstr "مصدر البيانات إرجاع \"نتائج سيئة\" لـ "
+
 
 #: lib/dsdebug.php:308
 msgid "Data Source was not polled"
@@ -15756,7 +15829,8 @@ msgstr "الرابط %s"
 
 #: lib/functions.php:5465
 msgid "Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting."
-msgstr "ميلر خطأ: لا <b>لمعالجة</b> وضع !! <br> إذا كنت تستخدم رابط <i>اختبار البريد</i> ، فيرجى ضبط إعداد <b>البريد الإلكتروني التنبيه</b> ."
+msgstr "ميلر خطأ: لا لمعالجة وضع !! <br> إذا كنت تستخدم رابط <i>اختبار البريد</i> ، فيرجى ضبط إعداد <b>البريد الإلكتروني التنبيه</b> ."
+
 
 #: lib/functions.php:5812
 #, fuzzy, php-format
@@ -16521,7 +16595,8 @@ msgstr "تم اكتشاف التغييرات غير المحفوظة"
 
 #: lib/html_form.php:1936
 msgid "You have unsaved changes on this form.  If you press &#39;Continue&#39; these changes will be discarded.  Press &#39;Cancel&#39; to continue editing the form."
-msgstr "لديك تغييرات غير محفوظة في هذا النموذج. إذا ضغطت على &quot;متابعة&quot; ، فسيتم تجاهل هذه التغييرات. اضغط على &quot;إلغاء&quot; لمتابعة تحرير النموذج."
+msgstr "لديك تغييرات غير محفوظة في هذا النموذج. إذا ضغطت على \"متابعة\" ، فسيتم تجاهل هذه التغييرات. اضغط على \"إلغاء\" لمتابعة تحرير النموذج."
+
 
 #: lib/html_form_template.php:166
 msgid "Attempted SQL Injection"
@@ -16672,7 +16747,8 @@ msgstr "تنسيق ملف للاستخدام"
 
 #: lib/html_reports.php:67
 msgid "Choose the custom html wrapper and CSS file to use.  This file contains both html and CSS to wrap around your report.  If it contains more than simply CSS, you need to place a special <REPORT> tag inside of the file.  This format tag will be replaced by the report content.  These files are located in the 'formats' directory."
-msgstr "اختر ملف html المخصص وملف CSS لاستخدامه. يحتوي هذا الملف على كل من html و CSS للتفاف حول تقريرك. إذا كان يحتوي على أكثر من مجرد CSS ، فستحتاج إلى وضع خاص <REPORT> علامة داخل الملف. سيتم استبدال علامة التنسيق هذه بمحتوى التقرير. توجد هذه الملفات في دليل &quot;التنسيقات&quot;."
+msgstr "اختر ملف html المخصص وملف CSS لاستخدامه. يحتوي هذا الملف على كل من html و CSS للتفاف حول تقريرك. إذا كان يحتوي على أكثر من مجرد CSS ، فستحتاج إلى وضع خاص <REPORT> علامة داخل الملف. سيتم استبدال علامة التنسيق هذه بمحتوى التقرير. توجد هذه الملفات في دليل \"التنسيقات\"."
+
 
 #: lib/html_reports.php:72
 msgid "Default Text Font Size"
@@ -16744,7 +16820,8 @@ msgstr "يحدد تقرير التردد بالنسبة إلى وقت البري
 
 #: lib/html_reports.php:147
 msgid "e.g. 'Week(s)' represents a weekly Reporting Interval."
-msgstr "على سبيل المثال ، يمثل &quot;أسبوع (أسابيع)&quot; فترة إبلاغ أسبوعية."
+msgstr "على سبيل المثال ، يمثل \"أسبوع (أسابيع)\" فترة إبلاغ أسبوعية."
+
 
 #: lib/html_reports.php:154
 msgid "Interval Frequency"
@@ -16756,7 +16833,8 @@ msgstr "استنادًا إلى Timespan للفاصل الزمني للتقري�
 
 #: lib/html_reports.php:156
 msgid "e.g. If the Report Interval is 'Month(s)', then '2' indicates Every '2 Month(s) from the next Mailtime.' Lastly, if using the Month(s) Report Intervals, the 'Day of Week' and the 'Day of Month' are both calculated based upon the Mailtime you specify above."
-msgstr "على سبيل المثال ، إذا كانت &quot;الفاصل الزمني للتقارير&quot; هي &quot;Month (s)&quot; ، فإن &quot;2&quot; تشير إلى &quot;كل شهرين (شهرين) من البريد التالي&quot;. وأخيرًا ، في حالة استخدام فترات تقرير &quot;شهر&quot; ، يتم حساب &quot;يوم الأسبوع&quot; و &quot;يوم الشهر&quot; استنادًا إلى &quot;البريد&quot; الذي تحدده أعلاه."
+msgstr "على سبيل المثال ، إذا كانت \"الفاصل الزمني للتقارير\" هي \"Month (s)\" ، فإن \"2\" تشير إلى \"كل شهرين (شهرين) من البريد التالي\". وأخيرًا ، في حالة استخدام فترات تقرير \"شهر\" ، يتم حساب \"يوم الأسبوع\" و \"يوم الشهر\" استنادًا إلى \"البريد\" الذي تحدده أعلاه."
+
 
 #: lib/html_reports.php:164
 msgid "Email Sender/Receiver Details"
@@ -16812,11 +16890,13 @@ msgstr "تم نقل التاريخ / الوقت إلى الوقت نفسه غد�
 
 #: lib/html_reports.php:533
 msgid "Click 'Continue' to Delete the following Report."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف التقرير (التقارير) التالي."
+msgstr "انقر فوق \"متابعة\" لحذف التقرير (التقارير) التالي."
+
 
 #: lib/html_reports.php:534
 msgid "Click 'Continue' to Delete the following Reports."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف التقرير (التقارير) التالي."
+msgstr "انقر فوق \"متابعة\" لحذف التقرير (التقارير) التالي."
+
 
 #: lib/html_reports.php:535
 msgid "Delete Report"
@@ -16828,11 +16908,13 @@ msgstr "حذف التقارير"
 
 #: lib/html_reports.php:539
 msgid "Click 'Continue' to take ownership of the following Report."
-msgstr "انقر فوق &quot;متابعة&quot; لتولي ملكية التقرير (التقارير) التالي."
+msgstr "انقر فوق \"متابعة\" لتولي ملكية التقرير (التقارير) التالي."
+
 
 #: lib/html_reports.php:540
 msgid "Click 'Continue' to take ownership of the following Reports."
-msgstr "انقر فوق &quot;متابعة&quot; لتولي ملكية التقرير (التقارير) التالي."
+msgstr "انقر فوق \"متابعة\" لتولي ملكية التقرير (التقارير) التالي."
+
 
 #: lib/html_reports.php:541
 msgid "Take Report Ownership"
@@ -16864,11 +16946,13 @@ msgstr "تنسيق الاسم:"
 
 #: lib/html_reports.php:559
 msgid "Click 'Continue' to Enable the following Report."
-msgstr "انقر فوق &quot;متابعة&quot; لتمكين التقرير التالي (التقارير)."
+msgstr "انقر فوق \"متابعة\" لتمكين التقرير التالي (التقارير)."
+
 
 #: lib/html_reports.php:560
 msgid "Click 'Continue' to Enable the following Reports."
-msgstr "انقر فوق &quot;متابعة&quot; لتمكين التقرير التالي (التقارير)."
+msgstr "انقر فوق \"متابعة\" لتمكين التقرير التالي (التقارير)."
+
 
 #: lib/html_reports.php:562
 msgid "Enable Reports"
@@ -16876,11 +16960,13 @@ msgstr "تمكين التقرير"
 
 #: lib/html_reports.php:565
 msgid "Click 'Continue' to Disable the following Report."
-msgstr "انقر فوق &quot;متابعة&quot; لتعطيل التقارير التالية."
+msgstr "انقر فوق \"متابعة\" لتعطيل التقارير التالية."
+
 
 #: lib/html_reports.php:566
 msgid "Click 'Continue' to Disable the following Reports."
-msgstr "انقر فوق &quot;متابعة&quot; لتعطيل التقارير التالية."
+msgstr "انقر فوق \"متابعة\" لتعطيل التقارير التالية."
+
 
 #: lib/html_reports.php:567
 msgid "Disable Report"
@@ -16892,11 +16978,13 @@ msgstr "تعطيل التقارير"
 
 #: lib/html_reports.php:571
 msgid "Click 'Continue' to Send the following Report now."
-msgstr "انقر فوق &quot;متابعة&quot; لإرسال التقرير التالي (التقارير) الآن."
+msgstr "انقر فوق \"متابعة\" لإرسال التقرير التالي (التقارير) الآن."
+
 
 #: lib/html_reports.php:572
 msgid "Click 'Continue' to Send the following Reports now."
-msgstr "انقر فوق &quot;متابعة&quot; لإرسال التقرير التالي (التقارير) الآن."
+msgstr "انقر فوق \"متابعة\" لإرسال التقرير التالي (التقارير) الآن."
+
 
 #: lib/html_reports.php:573
 msgid "Send Report Now"
@@ -17448,11 +17536,13 @@ msgstr ""
 
 #: lib/installer.php:1733
 msgid "To be able continue, you <b>MUST</b> create a new database, import \"cacti.sql\" into it:"
-msgstr "لتكون قادرًا على المتابعة ، <b>يجب</b> عليك إنشاء قاعدة بيانات جديدة ، استيراد &quot;cacti.sql&quot; إلى ذلك:"
+msgstr "لتكون قادرًا على المتابعة ، <b>يجب</b> عليك إنشاء قاعدة بيانات جديدة ، استيراد \"cacti.sql\" إلى ذلك:"
+
 
 #: lib/installer.php:1735
 msgid "You <b>MUST</b> then update \"include/config.php\" to point to the new database."
-msgstr "<b>يجب</b> عليك تحديث &quot;include / config.php&quot; للإشارة إلى قاعدة البيانات الجديدة."
+msgstr "<b>يجب</b> عليك تحديث \"include / config.php\" للإشارة إلى قاعدة البيانات الجديدة."
+
 
 #: lib/installer.php:1736
 msgid "NOTE: Your existing data will not be modified, nor will it or any history be available to the new install"
@@ -17460,7 +17550,8 @@ msgstr "ملاحظة: لن يتم تعديل بياناتك الحالية ، و
 
 #: lib/installer.php:1744
 msgid "You have created a new database, but have not yet imported the 'cacti.sql' file. At the command line, execute the following to continue:"
-msgstr "لقد قمت بإنشاء قاعدة بيانات جديدة ، ولكنك لم تقم بعد باستيراد الملف &#39;cacti.sql&#39;. في سطر الأوامر ، قم بتنفيذ التالي للمتابعة:"
+msgstr "لقد قمت بإنشاء قاعدة بيانات جديدة ، ولكنك لم تقم بعد باستيراد الملف 'cacti.sql'. في سطر الأوامر ، قم بتنفيذ التالي للمتابعة:"
+
 
 #: lib/installer.php:1746
 msgid "This error may also be generated if the cacti database user does not have correct permissions on the Cacti database. Please ensure that the Cacti database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX on the Cacti database."
@@ -17665,7 +17756,8 @@ msgstr "لا يتم ملء قاعدة بيانات MySQL TimeZone الخاصة �
 
 #: lib/installer.php:2190
 msgid "Your Cacti database login account does not have access to the MySQL TimeZone database.  Please provide the Cacti database account \"select\" access to the \"time_zone_name\" table in the \"mysql\" database, and populate MySQL's TimeZone information before proceeding."
-msgstr "ليس لدى حساب تسجيل الدخول إلى قاعدة بيانات Cacti حق الوصول إلى قاعدة بيانات MySQL TimeZone. يرجى تقديم حساب قاعدة البيانات Cacti &quot;select&quot; الوصول إلى جدول &quot;time_zone_name&quot; في قاعدة البيانات &quot;mysql&quot; ، وملء معلومات MySQL&#39;s TimeZone قبل المتابعة."
+msgstr "ليس لدى حساب تسجيل الدخول إلى قاعدة بيانات Cacti حق الوصول إلى قاعدة بيانات MySQL TimeZone. يرجى تقديم حساب قاعدة البيانات Cacti \"select\" الوصول إلى جدول \"time_zone_name\" في قاعدة البيانات \"mysql\" ، وملء معلومات MySQL's TimeZone قبل المتابعة."
+
 
 #: lib/installer.php:2195
 msgid "Your Cacti database account has access to the MySQL TimeZone database and that database is populated with global TimeZone information."
@@ -17739,7 +17831,8 @@ msgstr "يتم استخدام Pollers البعيد للوصول إلى الشب�
 
 #: lib/installer.php:2321
 msgid "The following information has been determined from Cacti's configuration file. If it is not correct, please edit \"include/config.php\" before continuing."
-msgstr "تم تحديد المعلومات التالية من ملف تكوين Cacti. إذا لم يكن صحيحًا ، فيرجى تعديل &quot;include / config.php&quot; قبل المتابعة."
+msgstr "تم تحديد المعلومات التالية من ملف تكوين Cacti. إذا لم يكن صحيحًا ، فيرجى تعديل \"include / config.php\" قبل المتابعة."
+
 
 #: lib/installer.php:2325
 msgid "Local Database Connection Information"
@@ -17808,7 +17901,8 @@ msgstr "يقوم برنامج Installer تلقائيًا بتعيين $ poller_i
 
 #: lib/installer.php:2375
 msgid "Once the variables are all set in the config.php file, you must also grant the $rdatabase_username access to the main Cacti database server.  Follow the same procedure you would with any other Cacti install.  You may then press the 'Test Connection' button.  If the test is successful you will be able to proceed and complete the install."
-msgstr "بمجرد أن يتم تعيين جميع المتغيرات في ملف config.php ، يجب أيضًا منح حق الوصول إلى $ rdatabase_username إلى خادم قاعدة البيانات الرئيسية Cacti. اتبع نفس الإجراء الذي تريده مع أي تثبيت Cacti آخر. يمكنك بعد ذلك الضغط على زر &quot;اختبار الاتصال&quot;. إذا نجح الاختبار ، فستتمكن من متابعة التثبيت وإكماله."
+msgstr "بمجرد أن يتم تعيين جميع المتغيرات في ملف config.php ، يجب أيضًا منح حق الوصول إلى $ rdatabase_username إلى خادم قاعدة البيانات الرئيسية Cacti. اتبع نفس الإجراء الذي تريده مع أي تثبيت Cacti آخر. يمكنك بعد ذلك الضغط على زر \"اختبار الاتصال\". إذا نجح الاختبار ، فستتمكن من متابعة التثبيت وإكماله."
+
 
 #: lib/installer.php:2379
 msgid "Additional Steps After Installation"
@@ -17816,7 +17910,8 @@ msgstr "خطوات إضافية بعد التثبيت"
 
 #: lib/installer.php:2381
 msgid "It is essential that the Central Cacti server can communicate via MySQL to each remote Cacti database server.  Once the install is complete, you must edit the Remote Data Collector and ensure the settings are correct.  You can verify using the 'Test Connection' when editing the Remote Data Collector."
-msgstr "من الضروري أن يتصل خادم Cacti المركزي عبر MySQL بكل خادم قاعدة بيانات Cacti عن بعد. بمجرد اكتمال التثبيت ، يجب عليك تحرير جامع البيانات البعيد والتأكد من صحة الإعدادات. يمكنك التحقق من استخدام &quot;Test Test&quot; (اختبار الاتصال) عند تحرير جامع البيانات البعيد."
+msgstr "من الضروري أن يتصل خادم Cacti المركزي عبر MySQL بكل خادم قاعدة بيانات Cacti عن بعد. بمجرد اكتمال التثبيت ، يجب عليك تحرير جامع البيانات البعيد والتأكد من صحة الإعدادات. يمكنك التحقق من استخدام \"Test Test\" (اختبار الاتصال) عند تحرير جامع البيانات البعيد."
+
 
 #: lib/installer.php:2395
 msgid "Critical Binary Locations and Versions"
@@ -17836,7 +17931,8 @@ msgstr "فحوصات أذونات المجلدات"
 
 #: lib/installer.php:2483
 msgid "Please ensure the directory permissions below are correct before proceeding.  During the install, these directories need to be owned by the Web Server user.  These permission changes are required to allow the Installer to install Device Template packages which include XML and script files that will be placed in these directories.  If you choose not to install the packages, there is an 'install_package.php' cli script that can be used from the command line after the install is complete."
-msgstr "الرجاء التأكد من صحة أذونات الدليل أدناه قبل المتابعة. أثناء التثبيت ، يجب أن تكون هذه الدلائل مملوكة لمستخدم خادم الويب. مطلوب هذه التغييرات إذن للسماح المثبت لتثبيت حزم &quot;قالب الجهاز&quot; التي تتضمن XML وملفات البرامج النصية التي سيتم وضعها في هذه الدلائل. إذا اخترت عدم تثبيت الحزم ، فهناك برنامج نصي &quot;install_package.php&quot; يمكن استخدامه من سطر الأوامر بعد اكتمال التثبيت."
+msgstr "الرجاء التأكد من صحة أذونات الدليل أدناه قبل المتابعة. أثناء التثبيت ، يجب أن تكون هذه الدلائل مملوكة لمستخدم خادم الويب. مطلوب هذه التغييرات إذن للسماح المثبت لتثبيت حزم \"قالب الجهاز\" التي تتضمن XML وملفات البرامج النصية التي سيتم وضعها في هذه الدلائل. إذا اخترت عدم تثبيت الحزم ، فهناك برنامج نصي \"install_package.php\" يمكن استخدامه من سطر الأوامر بعد اكتمال التثبيت."
+
 
 #: lib/installer.php:2486
 msgid "After the install is complete, you can make some of these directories read only to increase security."
@@ -17944,7 +18040,8 @@ msgstr "سيعيد خيار البرنامج النصي هذا تمكين أي �
 
 #: lib/installer.php:2628
 msgid "It is strongly suggested that you update your config.php to enable this feature by uncommenting the <b>$input_whitelist</b> variable and then running the three CLI script options above after the web based install has completed."
-msgstr "يُقترح بشدة أن تقوم بتحديث config.php الخاص بك لتمكين هذه الميزة عن طريق إلغاء <b>التعليق على</b> المتغير <b>$ input_whitelist</b> ثم تشغيل خيارات البرنامج النصي CLI الثلاثة أعلاه بعد اكتمال التثبيت المستند إلى الويب."
+msgstr "يُقترح بشدة أن تقوم بتحديث config.php الخاص بك لتمكين هذه الميزة عن طريق إلغاء التعليق على المتغير <b>$input_whitelist</b> ثم تشغيل خيارات البرنامج النصي CLI الثلاثة أعلاه بعد اكتمال التثبيت المستند إلى الويب."
+
 
 #: lib/installer.php:2630
 msgid "Check the Checkbox below to acknowledge that you have read and understand this security concern"
@@ -17972,7 +18069,8 @@ msgstr "افتراضي شبكة الأتمتة"
 
 #: lib/installer.php:2682
 msgid "Cacti can automatically scan the network once installation has completed. This will utilise the network range below to work out the range of IPs that can be scanned.  A predefined set of options are defined for scanning which include using both 'public' and 'private' communities."
-msgstr "Cacti يمكنه فحص الشبكة تلقائيًا بمجرد اكتمال التثبيت. سيستخدم هذا نطاق الشبكة أدناه لتحديد نطاق عناوين IP التي يمكن مسحها ضوئيًا. يتم تعريف مجموعة محددة مسبقًا من الخيارات للمسح والتي تشمل استخدام كل من &quot;العامة&quot; و &quot;الخاصة&quot;."
+msgstr "Cacti يمكنه فحص الشبكة تلقائيًا بمجرد اكتمال التثبيت. سيستخدم هذا نطاق الشبكة أدناه لتحديد نطاق عناوين IP التي يمكن مسحها ضوئيًا. يتم تعريف مجموعة محددة مسبقًا من الخيارات للمسح والتي تشمل استخدام كل من \"العامة\" و \"الخاصة\"."
+
 
 #: lib/installer.php:2683
 msgid "If your devices require a different set of options to be used first, you may define them below and they will be utilized before the defaults"
@@ -18028,7 +18126,8 @@ msgstr "لا يُنصح بتحديث القوالب التي قمت بالفعل
 
 #: lib/installer.php:2753
 msgid "Please select the Device Templates that you wish to use after the Install.  If you Operating System is Windows, you need to ensure that you select the 'Windows Device' Template.  If your Operating System is Linux/UNIX, make sure you select the 'Local Linux Machine' Device Template."
-msgstr "يرجى تحديد قوالب الأجهزة التي ترغب في استخدامها بعد التثبيت. إذا كان نظام التشغيل هو Windows ، فأنت بحاجة إلى التأكد من تحديد قالب &quot;جهاز Windows&quot;. إذا كان نظام التشغيل هو Linux / UNIX ، فتأكد من تحديد &quot;Device Local Machine Machine&quot;."
+msgstr "يرجى تحديد قوالب الأجهزة التي ترغب في استخدامها بعد التثبيت. إذا كان نظام التشغيل هو Windows ، فأنت بحاجة إلى التأكد من تحديد قالب \"جهاز Windows\". إذا كان نظام التشغيل هو Linux / UNIX ، فتأكد من تحديد \"Device Local Machine Machine\"."
+
 
 #: lib/installer.php:2759 package.php:793 package_import.php:1040
 msgid "Homepage"
@@ -18036,7 +18135,8 @@ msgstr "الصفحة الرئيسية"
 
 #: lib/installer.php:2786
 msgid "Device Templates allow you to monitor and graph a vast assortment of data within Cacti.  After you select the desired Device Templates, press 'Next' and the installation will complete.  Please be patient on this step, as the importation of the Device Templates can take a few minutes."
-msgstr "تسمح لك &quot;القوالب الأجهزة&quot; بمراقبة مجموعة كبيرة من البيانات في Cacti ورسم بياني لها. بعد تحديد &quot;قوالب الأجهزة&quot; المطلوبة ، اضغط على &quot;إنهاء&quot; وستكتمل عملية التثبيت. الرجاء التحلي بالصبر في هذه الخطوة ، نظرًا لأن استيراد &quot;نماذج الأجهزة&quot; قد يستغرق بضع دقائق."
+msgstr "تسمح لك \"القوالب الأجهزة\" بمراقبة مجموعة كبيرة من البيانات في Cacti ورسم بياني لها. بعد تحديد \"قوالب الأجهزة\" المطلوبة ، اضغط على \"إنهاء\" وستكتمل عملية التثبيت. الرجاء التحلي بالصبر في هذه الخطوة ، نظرًا لأن استيراد \"نماذج الأجهزة\" قد يستغرق بضع دقائق."
+
 
 #: lib/installer.php:2795
 msgid "Server Collation"
@@ -18052,7 +18152,8 @@ msgstr "لا يظهر ترتيب الخادم الخاص بك متوافقًا �
 
 #: lib/installer.php:2807
 msgid "Under the [mysqld] section, locate the entries named 'character-set-server' and 'collation-server' and set them as follows:"
-msgstr "ضمن المقطع [mysqld] ، حدد موقع الإدخالات المسماة &quot;character ‑ set ‑ server&quot; و &quot;collation ‑ server&quot; وقم بتعيينها كالتالي:"
+msgstr "ضمن المقطع [mysqld] ، حدد موقع الإدخالات المسماة \"character ‑ set ‑ server\" و \"collation ‑ server\" وقم بتعيينها كالتالي:"
+
 
 #: lib/installer.php:2814
 msgid "Database Collation"
@@ -18070,10 +18171,8 @@ msgstr ""
 
 #: lib/installer.php:2824
 msgid "Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched.   Please ensure your database is changed to 'utf8mb4_unicode_ci' by running the following: "
-msgstr ""
-"قد تحتوي أي جداول تم إنشاؤها بواسطة المكونات الإضافية على مشكلات مرتبطة "
-"بجداول Cacti Core في حالة عدم مطابقة الترتيب. الرجاء التأكد من تغيير قاعدة "
-"البيانات الخاصة بك إلى &quot;utf8mb4_unicode_ci&quot; عن طريق تشغيل ما يلي: "
+msgstr "قد تحتوي أي جداول تم إنشاؤها بواسطة المكونات الإضافية على مشكلات مرتبطة بجداول Cacti Core في حالة عدم مطابقة الترتيب. الرجاء التأكد من تغيير قاعدة البيانات الخاصة بك إلى \"utf8mb4_unicode_ci\" عن طريق تشغيل ما يلي: "
+
 
 #: lib/installer.php:2831
 msgid "Table Setup"
@@ -19225,7 +19324,8 @@ msgstr "مع إمكانات الاستقصاء عن بعد ، ستتم مزام�
 #: lib/utility.php:1212
 #, php-format
 msgid "If using the Cacti Performance Booster and choosing a memory storage engine, you have to be careful to flush your Performance Booster buffer before the system runs out of memory table space.  This is done two ways, first reducing the size of your output column to just the right size.  This column is in the tables poller_output, and poller_output_boost.  The second thing you can do is allocate more memory to memory tables.  We have arbitrarily chosen a recommended value of 10%% of system memory, but if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation or choose a different storage engine.  You may see the expected consumption of the Performance Booster tables under Console -> System Utilities -> View Boost Status."
-msgstr "في حالة استخدام Cacti Performance Booster واختيار محرك تخزين ذاكرة ، يجب أن تكون حذراً لتدفق المخزن المؤقت Performance Booster قبل نفاد مساحة ذاكرة النظام. يتم ذلك بطريقتين ، أولاً تقليل حجم عمود الإخراج الخاص بك إلى الحجم الصحيح فقط. هذا العمود موجود في الجداول poller_output ، و poller_output_boost. الشيء الثاني الذي يمكنك القيام به هو تخصيص المزيد من الذاكرة إلى جداول الذاكرة. لقد اخترنا بشكل عشوائي القيمة الموصى بها بنسبة 10 ٪٪ من ذاكرة النظام ، ولكن إذا كنت تستخدم محركات أقراص SSD أو لديك نظام أصغر ، فيمكنك تجاهل هذه التوصية أو اختيار محرك تخزين مختلف. قد ترى الاستهلاك المتوقع لجداول Booster Performance ضمن Console -&gt; System Utilities -&gt; View Boost Status."
+msgstr "في حالة استخدام Cacti Performance Booster واختيار محرك تخزين ذاكرة ، يجب أن تكون حذراً لتدفق المخزن المؤقت Performance Booster قبل نفاد مساحة ذاكرة النظام. يتم ذلك بطريقتين ، أولاً تقليل حجم عمود الإخراج الخاص بك إلى الحجم الصحيح فقط. هذا العمود موجود في الجداول poller_output ، و poller_output_boost. الشيء الثاني الذي يمكنك القيام به هو تخصيص المزيد من الذاكرة إلى جداول الذاكرة. لقد اخترنا بشكل عشوائي القيمة الموصى بها بنسبة 10 ٪٪ من ذاكرة النظام ، ولكن إذا كنت تستخدم محركات أقراص SSD أو لديك نظام أصغر ، فيمكنك تجاهل هذه التوصية أو اختيار محرك تخزين مختلف. قد ترى الاستهلاك المتوقع لجداول Booster Performance ضمن Console -> System Utilities -> View Boost Status."
+
 
 #: lib/utility.php:1218
 msgid "When executing subqueries, having a larger temporary table size, keep those temporary tables in memory."
@@ -19257,7 +19357,7 @@ msgid "If your tables have very large indexes, you must operate with the Barracu
 msgstr "إذا كانت جداولك تحتوي على فهارس كبيرة جدًا ، فيجب أن تعمل باستخدام Barracuda innodb_file_format و innodb_large_prefix يساوي 1. قد يؤدي عدم القيام بذلك إلى مكونات إضافية لا يمكنها إنشاء الجداول بشكل صحيح."
 
 #: lib/utility.php:1254
-#, php-format
+#, no-php-format
 msgid "InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size.  If you database is very large or remote, you can consider increasing this size.  If remote, it can by as high as 80% of the systems memory.  However, cautions must be taken to reduce the swappiness of the system, or to remove swap to keep the system from swapping."
 msgstr ""
 "يحتفظ InnoDB بأكبر قدر ممكن من الجداول والفهارس في ذاكرة النظام. لذلك، يجب "
@@ -19566,7 +19666,8 @@ msgstr "عنوان الويب أدناه"
 
 #: links.php:562
 msgid "The file that contains the content for this page. This file needs to be in the Cacti 'include/content/' directory."
-msgstr "الملف الذي يحتوي على محتوى لهذه الصفحة. يجب أن يكون هذا الملف في دليل Cacti &#39;include / content /&#39;."
+msgstr "الملف الذي يحتوي على محتوى لهذه الصفحة. يجب أن يكون هذا الملف في دليل Cacti 'include / content /'."
+
 
 #: links.php:566
 msgid "Web URL Location"
@@ -19716,11 +19817,13 @@ msgstr "لا توجد إدخالات سجل إعلام SNMP"
 
 #: managers.php:1027
 msgid "Click 'Continue' to Delete the following Notification Receiver."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف جهاز استقبال الإشعارات التالي."
+msgstr "انقر فوق \"متابعة\" لحذف جهاز استقبال الإشعارات التالي."
+
 
 #: managers.php:1028
 msgid "Click 'Continue' to Delete following Notification Receivers."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف جهاز استقبال الإشعارات التالي."
+msgstr "انقر فوق \"متابعة\" لحذف جهاز استقبال الإشعارات التالي."
+
 
 #: managers.php:1029
 msgid "Delete Notification Receiver"
@@ -19732,11 +19835,13 @@ msgstr "حذف مستلمي الإشعارات"
 
 #: managers.php:1033
 msgid "Click 'Continue' to Disable the following Notification Receiver."
-msgstr "انقر فوق &quot;متابعة&quot; لتعطيل جهاز استقبال الإشعارات التالي."
+msgstr "انقر فوق \"متابعة\" لتعطيل جهاز استقبال الإشعارات التالي."
+
 
 #: managers.php:1034
 msgid "Click 'Continue' to Disable following Notification Receivers."
-msgstr "انقر فوق &quot;متابعة&quot; لتعطيل جهاز استقبال الإشعارات التالي."
+msgstr "انقر فوق \"متابعة\" لتعطيل جهاز استقبال الإشعارات التالي."
+
 
 #: managers.php:1035
 msgid "Disable Notification Receiver"
@@ -19748,11 +19853,13 @@ msgstr "تعطيل مستلمي الإشعارات"
 
 #: managers.php:1039
 msgid "Click 'Continue' to Enable the following Notification Receiver."
-msgstr "انقر فوق &quot;متابعة&quot; لتمكين مستقبل الإعلام."
+msgstr "انقر فوق \"متابعة\" لتمكين مستقبل الإعلام."
+
 
 #: managers.php:1040
 msgid "Click 'Continue' to Enable following Notification Receivers."
-msgstr "انقر فوق &quot;متابعة&quot; لتمكين مستقبل الإعلام."
+msgstr "انقر فوق \"متابعة\" لتمكين مستقبل الإعلام."
+
 
 #: managers.php:1041
 msgid "Enable Notification Receiver"
@@ -19764,15 +19871,13 @@ msgstr "تمكين مستلمي الإشعارات"
 
 #: managers.php:1080
 msgid "Click 'Continue' to Disable Forwarding the following Notification Object the following Notification Receiver."
-msgstr ""
-"انقر فوق &quot;متابعة&quot; لتعطيل إعادة توجيه كائنات الإعلام التالية إلى "
-"جهاز استقبال الإشعارات هذا."
+msgstr "انقر فوق \"متابعة\" لتعطيل إعادة توجيه كائنات الإعلام التالية إلى جهاز استقبال الإشعارات هذا."
+
 
 #: managers.php:1081
 msgid "Click 'Continue' to Disable Forwarding the following Notification Objects to the following Notification Receiver."
-msgstr ""
-"انقر فوق &quot;متابعة&quot; لتعطيل إعادة توجيه كائنات الإعلام التالية إلى "
-"جهاز استقبال الإشعارات هذا."
+msgstr "انقر فوق \"متابعة\" لتعطيل إعادة توجيه كائنات الإعلام التالية إلى جهاز استقبال الإشعارات هذا."
+
 
 #: managers.php:1082
 msgid "Disable Forwarding Object"
@@ -20583,10 +20688,8 @@ msgstr ""
 
 #: plugins.php:580
 msgid "Uninstalling this Plugin and may remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click 'Uninstall' below.  Otherwise click 'Cancel'."
-msgstr ""
-"سيؤدي إلغاء تثبيت هذا المكون الإضافي إلى إزالة جميع بيانات المكون الإضافي "
-"والإعدادات. إذا كنت تريد حقًا إلغاء تثبيت المكون الإضافي ، فانقر فوق &quot;"
-"إلغاء التثبيت&quot; أدناه. وإلا فانقر فوق &quot;إلغاء&quot."
+msgstr "سيؤدي إلغاء تثبيت هذا المكون الإضافي إلى إزالة جميع بيانات المكون الإضافي والإعدادات. إذا كنت تريد حقًا إلغاء تثبيت المكون الإضافي ، فانقر فوق \"إلغاء التثبيت\" أدناه. وإلا فانقر فوق \"إلغاء&quot."
+
 
 #: plugins.php:581
 msgid "Are you sure you want to Uninstall?"
@@ -20771,7 +20874,8 @@ msgstr "تاريخ آخر تثبيت أو ترقية لهذا المكون ال�
 
 #: plugins.php:1135 plugins.php:1212
 msgid "Actions available include 'Install', 'Activate', 'Disable', 'Enable', 'Uninstall'."
-msgstr "تتضمن الإجراءات المتاحة &quot;تثبيت&quot; ، &quot;تنشيط&quot; ، &quot;تعطيل&quot; ، &quot;تمكين&quot; ، &quot;إلغاء تثبيت&quot;."
+msgstr "تتضمن الإجراءات المتاحة \"تثبيت\" ، \"تنشيط\" ، \"تعطيل\" ، \"تمكين\" ، \"إلغاء تثبيت\"."
+
 
 #: plugins.php:1153
 msgid "The status of this Plugin."
@@ -21346,11 +21450,13 @@ msgstr "حذف مجمع البيانات"
 
 #: pollers.php:609
 msgid "Click 'Continue' to Disable the following Data Collector."
-msgstr "انقر فوق &quot;متابعة&quot; لتعطيل أداة تجميع البيانات التالية."
+msgstr "انقر فوق \"متابعة\" لتعطيل أداة تجميع البيانات التالية."
+
 
 #: pollers.php:610
 msgid "Click 'Continue' to Disable the following Data Collectors."
-msgstr "انقر فوق &quot;متابعة&quot; لتعطيل أداة تجميع البيانات التالية."
+msgstr "انقر فوق \"متابعة\" لتعطيل أداة تجميع البيانات التالية."
+
 
 #: pollers.php:611
 msgid "Disable Data Collector"
@@ -21362,11 +21468,13 @@ msgstr "تعطيل جامع البيانات"
 
 #: pollers.php:615
 msgid "Click 'Continue' to Enable the following Data Collector."
-msgstr "انقر فوق &quot;متابعة&quot; لتمكين جامع البيانات التالي."
+msgstr "انقر فوق \"متابعة\" لتمكين جامع البيانات التالي."
+
 
 #: pollers.php:616
 msgid "Click 'Continue' to Enable the following Data Collectors."
-msgstr "انقر فوق &quot;متابعة&quot; لتمكين جامع البيانات التالي."
+msgstr "انقر فوق \"متابعة\" لتمكين جامع البيانات التالي."
+
 
 #: pollers.php:617
 msgid "Enable Data Collector"
@@ -21378,13 +21486,13 @@ msgstr "تمكين جامع البيانات"
 
 #: pollers.php:621
 msgid "Click 'Continue' to Synchronize the Remote Data Collector for Offline Operation."
-msgstr ""
-"انقر فوق &quot;متابعة&quot; لمزامنة مجمع البيانات عن بعد للعملية دون اتصال."
+msgstr "انقر فوق \"متابعة\" لمزامنة مجمع البيانات عن بعد للعملية دون اتصال."
+
 
 #: pollers.php:622
 msgid "Click 'Continue' to Synchronize the Remote Data Collectors for Offline Operation."
-msgstr ""
-"انقر فوق &quot;متابعة&quot; لمزامنة مجمع البيانات عن بعد للعملية دون اتصال."
+msgstr "انقر فوق \"متابعة\" لمزامنة مجمع البيانات عن بعد للعملية دون اتصال."
+
 
 #: pollers.php:623 pollers.php:629
 msgid "Resync Data Collector"
@@ -22443,7 +22551,7 @@ msgid "Max Total Memory Possible"
 msgstr "أقصى إجمالي ذاكرة ممكن"
 
 #: support.php:1594
-#, php-format
+#, no-php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr ""
 "قلل ذاكرة MySQL/MariaDB إلى أقل من 80% من ذاكرة النظام. احتفظ بذاكرة تخزين "
@@ -22500,7 +22608,8 @@ msgstr "المثبتة. <span class=\"deviceDown\">ملاحظة: إذا كنت �
 
 #: support.php:1735
 msgid "You've set memory limit to 'unlimited'."
-msgstr "لقد قمت بتعيين حد الذاكرة إلى &quot;غير محدود&quot;."
+msgstr "لقد قمت بتعيين حد الذاكرة إلى \"غير محدود\"."
+
 
 #: support.php:1738
 #, php-format
@@ -22659,11 +22768,13 @@ msgstr "عَدَدِيٌّ"
 
 #: tree.php:722
 msgid "Click 'Continue' to Delete the following Tree."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف شجرة التالية."
+msgstr "انقر فوق \"متابعة\" لحذف شجرة التالية."
+
 
 #: tree.php:723
 msgid "Click 'Continue' to Delete following Trees."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف شجرة التالية."
+msgstr "انقر فوق \"متابعة\" لحذف شجرة التالية."
+
 
 #: tree.php:724
 msgid "Delete Tree"
@@ -22675,11 +22786,13 @@ msgstr "حذف شجرة"
 
 #: tree.php:728
 msgid "Click 'Continue' to Publish the following Tree."
-msgstr "انقر فوق &quot;متابعة&quot; لنشر شجرة التالية."
+msgstr "انقر فوق \"متابعة\" لنشر شجرة التالية."
+
 
 #: tree.php:729
 msgid "Click 'Continue' to Publish following Trees."
-msgstr "انقر فوق &quot;متابعة&quot; لنشر شجرة التالية."
+msgstr "انقر فوق \"متابعة\" لنشر شجرة التالية."
+
 
 #: tree.php:730
 msgid "Publish Tree"
@@ -22691,11 +22804,13 @@ msgstr "نشر شجرة"
 
 #: tree.php:734
 msgid "Click 'Continue' to Un-Publish the following Tree."
-msgstr "انقر فوق &quot;متابعة&quot; لإلغاء نشر شجرة التالية."
+msgstr "انقر فوق \"متابعة\" لإلغاء نشر شجرة التالية."
+
 
 #: tree.php:735
 msgid "Click 'Continue' to Un-Publish following Trees."
-msgstr "انقر فوق &quot;متابعة&quot; لإلغاء نشر شجرة التالية."
+msgstr "انقر فوق \"متابعة\" لإلغاء نشر شجرة التالية."
+
 
 #: tree.php:736
 msgid "Un-Publish Tree"
@@ -22991,11 +23106,13 @@ msgstr "رفض"
 
 #: user_admin.php:763 user_group_admin.php:728
 msgid "<b>Note:</b> System Graph Policy is 'Permissive' meaning the User must have access to at least one of Graph, Device, or Graph Template to gain access to the Graph"
-msgstr "<b>ملاحظة:</b> سياسة الرسم البياني للنظام هي &#39;Permissive&#39; بمعنى أنه يجب أن يمتلك المستخدم حق الوصول إلى واحد على الأقل من الرسم البياني أو الجهاز أو قالب الرسم البياني للوصول إلى الرسم البياني"
+msgstr "<b>ملاحظة:</b> سياسة الرسم البياني للنظام هي 'Permissive' بمعنى أنه يجب أن يمتلك المستخدم حق الوصول إلى واحد على الأقل من الرسم البياني أو الجهاز أو قالب الرسم البياني للوصول إلى الرسم البياني"
+
 
 #: user_admin.php:765 user_group_admin.php:730
 msgid "<b>Note:</b> System Graph Policy is 'Restrictive' meaning the User must have access to either the Graph or the Device and Graph Template to gain access to the Graph"
-msgstr "<b>ملاحظة:</b> سياسة الرسم البياني للنظام هي &quot;مقيدة&quot; بمعنى أنه يجب أن يمتلك المستخدم حق الوصول إما إلى الرسم البياني أو إلى قالب الجهاز والجرافيك للوصول إلى الرسم البياني"
+msgstr "<b>ملاحظة:</b> سياسة الرسم البياني للنظام هي \"مقيدة\" بمعنى أنه يجب أن يمتلك المستخدم حق الوصول إما إلى الرسم البياني أو إلى قالب الجهاز والجرافيك للوصول إلى الرسم البياني"
+
 
 #: user_admin.php:767 user_group_admin.php:732
 msgid "<b>Note:</b> System Graph Policy is 'Device' meaning the User must have access to the Graph or Device to gain access to the Graph"
@@ -23360,7 +23477,8 @@ msgstr "تم تمكين نطاق المستخدم"
 
 #: user_domains.php:246
 msgid "Click 'Continue' to make the following the following User Domain the default one."
-msgstr "انقر فوق &quot;متابعة&quot; لجعل ما يلي مجال المستخدم التالي."
+msgstr "انقر فوق \"متابعة\" لجعل ما يلي مجال المستخدم التالي."
+
 
 #: user_domains.php:247
 msgid "Make Selected Domain Default"
@@ -23505,7 +23623,8 @@ msgstr "قاعدة البحث"
 
 #: user_domains.php:432
 msgid "Search base for searching the LDAP directory, such as <i>\"dc=win2kdomain,dc=local\"</i> or <i>\"ou=people,dc=domain,dc=local\"</i>."
-msgstr "قاعدة البحث للبحث في دليل LDAP ، مثل <i>&quot;dc = win2kdomain ، dc = local&quot;</i> أو <i>&quot;ou = people ، dc = domain ، dc = local&quot;</i> ."
+msgstr "قاعدة البحث للبحث في دليل LDAP ، مثل <i>\"dc = win2kdomain ، dc = local\"</i> أو <i>\"ou = people ، dc = domain ، dc = local\"</i> ."
+
 
 #: user_domains.php:438
 msgid "Search Filter"
@@ -23513,7 +23632,8 @@ msgstr "تصفية البحث"
 
 #: user_domains.php:439
 msgid "Search filter to use to locate the user in the LDAP directory, such as for windows: <i>\"(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))\"</i> or for OpenLDAP: <i>\"(&(objectClass=account)(uid=&lt;username&gt))\"</i>.  \"&lt;username&gt\" is replaced with the username that was supplied at the login prompt."
-msgstr "استخدم فلتر البحث لتحديد موقع المستخدم في دليل LDAP ، مثل النوافذ: <i>&quot;(&amp; (objectclass = user) (objectcategory = user) (userPrincipalName = &lt;username&gt; *))&quot;</i> أو لـ OpenLDAP: <i>&quot;(&amp; (objectClass = حساب) (uid = &lt;username&gt;)) &quot;</i> . يتم استبدال &quot;&lt;username&gt;&quot; باسم المستخدم الذي تم توفيره في موجه تسجيل الدخول."
+msgstr "استخدم فلتر البحث لتحديد موقع المستخدم في دليل LDAP ، مثل النوافذ: <i>\"(&amp; (objectclass = user) (objectcategory = user) (userPrincipalName = &lt;username&gt; *))\"</i> أو لـ OpenLDAP: <i>\"(&amp; (objectClass = حساب) (uid = &lt;username&gt;)) \"</i> . يتم استبدال \"&lt;username&gt;\" باسم المستخدم الذي تم توفيره في موجه تسجيل الدخول."
+
 
 #: user_domains.php:445
 msgid "Search Distinguished Name (DN)"
@@ -23661,7 +23781,8 @@ msgstr "ما يجب فعله عند قيام مستخدم من مجموعة ال
 
 #: user_group_admin.php:455
 msgid "Click 'Continue' to Delete the following User Group."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف مجموعة المستخدم التالية."
+msgstr "انقر فوق \"متابعة\" لحذف مجموعة المستخدم التالية."
+
 
 #: user_group_admin.php:456
 msgid "Click 'Continue' to Delete following User Groups."
@@ -23701,11 +23822,13 @@ msgstr "مجموعة جديدة"
 
 #: user_group_admin.php:475
 msgid "Click 'Continue' to Enable the following User Group."
-msgstr "انقر فوق &quot;متابعة&quot; لتمكين مجموعة المستخدمين التالية."
+msgstr "انقر فوق \"متابعة\" لتمكين مجموعة المستخدمين التالية."
+
 
 #: user_group_admin.php:476
 msgid "Click 'Continue' to Enable following User Groups."
-msgstr "انقر فوق &quot;متابعة&quot; لتمكين مجموعة المستخدمين التالية."
+msgstr "انقر فوق \"متابعة\" لتمكين مجموعة المستخدمين التالية."
+
 
 #: user_group_admin.php:477
 msgid "Enable User Group"
@@ -23717,11 +23840,13 @@ msgstr "تمكين مجموعة المستخدم"
 
 #: user_group_admin.php:481
 msgid "Click 'Continue' to Disable the following User Group."
-msgstr "انقر فوق &quot;متابعة&quot; لتعطيل مجموعة المستخدم التالية."
+msgstr "انقر فوق \"متابعة\" لتعطيل مجموعة المستخدم التالية."
+
 
 #: user_group_admin.php:482
 msgid "Click 'Continue' to Disable following User Groups."
-msgstr "انقر فوق &quot;متابعة&quot; لتعطيل مجموعة المستخدم التالية."
+msgstr "انقر فوق \"متابعة\" لتعطيل مجموعة المستخدم التالية."
+
 
 #: user_group_admin.php:483
 msgid "Disable User Group"
@@ -24032,7 +24157,8 @@ msgstr "إعادة بناء ذاكرة التخزين المؤقت للمورد"
 
 #: utilities.php:1256
 msgid "When operating multiple Data Collectors in Cacti, Cacti will attempt to maintain state for key files on all Data Collectors.  This includes all core, non-install related website and plugin files.  When you force a Resource Cache rebuild, Cacti will clear the local Resource Cache, and then rebuild it at the next scheduled poller start.  This will trigger all Remote Data Collectors to recheck their website and plugin files for consistency."
-msgstr "عند تشغيل عدة جامعي بيانات في Cacti ، سيحاول Cacti الحفاظ على حالة الملفات الرئيسية في جميع جامعي البيانات. يتضمن ذلك جميع ملفات الويب والمكونات الإضافية الأساسية غير المتعلقة بالتثبيت. عند فرض إعادة إنشاء &quot;التخزين المؤقت للمورد&quot; ، سيقوم Cacti بمسح ذاكرة التخزين المؤقت المحلية ، ثم إعادة إنشائها في بداية برنامج التلقي المجدول التالي. سيؤدي هذا إلى تشغيل جميع جامعي البيانات عن بُعد لإعادة فحص موقع الويب وملفات المكوّن الإضافي للتأكد من اتساقها."
+msgstr "عند تشغيل عدة جامعي بيانات في Cacti ، سيحاول Cacti الحفاظ على حالة الملفات الرئيسية في جميع جامعي البيانات. يتضمن ذلك جميع ملفات الويب والمكونات الإضافية الأساسية غير المتعلقة بالتثبيت. عند فرض إعادة إنشاء \"التخزين المؤقت للمورد\" ، سيقوم Cacti بمسح ذاكرة التخزين المؤقت المحلية ، ثم إعادة إنشائها في بداية برنامج التلقي المجدول التالي. سيؤدي هذا إلى تشغيل جميع جامعي البيانات عن بُعد لإعادة فحص موقع الويب وملفات المكوّن الإضافي للتأكد من اتساقها."
+
 
 #: utilities.php:1260
 msgid "Boost Utilities"
@@ -24337,11 +24463,13 @@ msgstr "مستوى الخطورة: %s"
 
 #: vdef.php:256
 msgid "Click 'Continue' to Delete the following VDEF."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف VDEF التالي."
+msgstr "انقر فوق \"متابعة\" لحذف VDEF التالي."
+
 
 #: vdef.php:257
 msgid "Click 'Continue' to Delete following VDEFs."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف VDEF التالي."
+msgstr "انقر فوق \"متابعة\" لحذف VDEF التالي."
+
 
 #: vdef.php:258
 msgid "Delete VDEF"
@@ -24369,7 +24497,8 @@ msgstr "تكرار VDEF"
 
 #: vdef.php:303
 msgid "Click 'Continue' to delete the following VDEF's."
-msgstr "انقر فوق &quot;متابعة&quot; لحذف VDEF التالي."
+msgstr "انقر فوق \"متابعة\" لحذف VDEF التالي."
+
 
 #: vdef.php:304
 #, php-format

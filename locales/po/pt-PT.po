@@ -9375,7 +9375,8 @@ msgstr "não contêm"
 
 #: include/global_arrays.php:1887
 msgid "begins with"
-msgstr "A hora de verão começa em: %s."
+msgstr "começa por"
+
 
 #: include/global_arrays.php:1888
 msgid "does not begin with"
@@ -15515,7 +15516,8 @@ msgstr "Mostrar consulta SQL de dispositivos correspondentes"
 
 #: lib/api_automation.php:1444 lib/api_automation.php:1537
 msgid "Field"
-msgstr "Campo "
+msgstr "Campo"
+
 
 #: lib/api_automation.php:1446 lib/api_automation.php:1539
 msgid "Pattern"
@@ -20593,7 +20595,7 @@ msgstr ""
 "adequadamente."
 
 #: lib/utility.php:1254
-#, php-format
+#, no-php-format
 msgid "InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size.  If you database is very large or remote, you can consider increasing this size.  If remote, it can by as high as 80% of the systems memory.  However, cautions must be taken to reduce the swappiness of the system, or to remove swap to keep the system from swapping."
 msgstr ""
 "O InnoDB manterá o maior número possível de tabelas e índices na memória do "
@@ -23879,7 +23881,7 @@ msgid "Max Total Memory Possible"
 msgstr "Memória total máxima possível"
 
 #: support.php:1594
-#, php-format
+#, no-php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr ""
 

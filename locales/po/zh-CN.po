@@ -9792,9 +9792,8 @@ msgstr "数据模板的名称。"
 
 #: include/global_form.php:580
 msgid "Choose a name for this data source.  It can include replacement variables such as |host_description| or |query_fieldName|.  For a complete list of supported replacement tags, please see the Cacti documentation."
-msgstr ""
-"为此数据源选择一个名称. 它可以包含替换变量,如| host_description | 或| "
-"query_fieldName |. 有关支持的替换标签的完整列表,请参阅Cacti文档。"
+msgstr "为此数据源选择一个名称. 它可以包含替换变量,如|host_description| 或|query_fieldName|. 有关支持的替换标签的完整列表,请参阅Cacti文档。"
+
 
 #: include/global_form.php:584
 msgid "Data Source Path"
@@ -9892,9 +9891,8 @@ msgstr "标题 (--title)"
 
 #: include/global_form.php:717
 msgid "The name that is printed on the graph.  It can include replacement variables such as |host_description| or |query_fieldName|.  For a complete list of supported replacement tags, please see the Cacti documentation."
-msgstr ""
-"图形上打印的名称. 它可以包含替换变量,如| host_description | 或| "
-"query_fieldName |. 有关支持的替换标签的完整列表,请参阅Cacti文档。"
+msgstr "图形上打印的名称. 它可以包含替换变量,如|host_description| 或|query_fieldName|. 有关支持的替换标签的完整列表,请参阅Cacti文档。"
+
 
 #: include/global_form.php:721
 msgid "Vertical Label (--vertical-label)"
@@ -9962,7 +9960,8 @@ msgstr "自动缩放选项"
 
 #: include/global_form.php:781
 msgid "Use <br> --alt-autoscale to scale to the absolute minimum and maximum <br> --alt-autoscale-max to scale to the maximum value, using a given lower limit <br> --alt-autoscale-min to scale to the minimum value, using a given upper limit <br> --alt-autoscale (with limits) to scale using both lower and upper limits (RRDtool default) <br>"
-msgstr "使用<br> --alt-autoscale缩放到绝对最小值和最大值<br> --alt-autoscale-max使用给定的下限值缩放到最大值<br> --alt-autoscale-min to 缩放至最小值,使用给定上限<br> <br> - 自动缩放(带有限制)使用下限和上限进行缩放(RRDtool默认值)<br>"
+msgstr "使用<br> --alt-autoscale缩放到绝对最小值和最大值<br> --alt-autoscale-max使用给定的下限值缩放到最大值<br> --alt-autoscale-min to 缩放至最小值,使用给定上限<br> - 自动缩放(带有限制)使用下限和上限进行缩放(RRDtool默认值)<br>"
+
 
 #: include/global_form.php:785
 msgid "Use --alt-autoscale (ignoring given limits)"
@@ -19213,7 +19212,7 @@ msgstr ""
 "于1的操作。否则可能会导致插件无法正确创建表。"
 
 #: lib/utility.php:1254
-#, php-format
+#, no-php-format
 msgid "InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size.  If you database is very large or remote, you can consider increasing this size.  If remote, it can by as high as 80% of the systems memory.  However, cautions must be taken to reduce the swappiness of the system, or to remove swap to keep the system from swapping."
 msgstr ""
 "InnoDB 将在系统内存中保留尽可能多的表和索引。因此，您应该将 "
@@ -22341,7 +22340,7 @@ msgid "Max Total Memory Possible"
 msgstr "最大可用总内存"
 
 #: support.php:1594
-#, php-format
+#, no-php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr ""
 "请将 MySQL/MariaDB 内存减少到系统内存的 80% 以下。如果数据库与 RRDfile "

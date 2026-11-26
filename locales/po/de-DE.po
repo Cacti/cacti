@@ -5462,7 +5462,8 @@ msgstr "%d Sekunden übrig."
 
 #: graph_realtime.php:456
 msgid " seconds left."
-msgstr " %d Sekunden übrig."
+msgstr " Sekunden übrig."
+
 
 #: graph_templates.php:39
 msgid "Change Settings"
@@ -7777,7 +7778,8 @@ msgstr "Täglich"
 
 #: include/global_arrays.php:899
 msgid "1 Thread"
-msgstr "1 Faden"
+msgstr "1 Thread"
+
 
 #: include/global_arrays.php:943
 msgid "Cacti Builtin Authentication"
@@ -10055,7 +10057,8 @@ msgstr "Welche Einheit soll Cacti auf der Y-Achse verwenden? Verwenden Sie 3, um
 
 #: include/global_form.php:858
 msgid "Unit Length (--units-length &lt;length&gt;)"
-msgstr "Einheitenlänge (--units-length <Länge>)"
+msgstr "Einheitenlänge (--units-length &lt;Länge&gt;)"
+
 
 #: include/global_form.php:863
 msgid "How many digits should RRDtool assume the y-axis labels to be? You may have to use this option to make enough space once you start fiddling with the y-axis labeling."
@@ -10089,7 +10092,8 @@ msgstr "Achsenoptionen"
 
 #: include/global_form.php:883
 msgid "Right Axis (--right-axis &lt;scale:shift&gt;)"
-msgstr "Rechte Achse (--right-axis <scale:shift>)"
+msgstr "Rechte Achse (--right-axis &lt;scale:shift&gt;)"
+
 
 #: include/global_form.php:888
 msgid "A second axis will be drawn to the right of the graph. It is tied to the left axis via the scale and shift parameters."
@@ -10097,7 +10101,8 @@ msgstr "Rechts neben dem Diagramm wird eine zweite Achse gezeichnet. Diese ist �
 
 #: include/global_form.php:891
 msgid "Right Axis Label (--right-axis-label &lt;string&gt;)"
-msgstr "Beschriftung der rechten Achse (--right-axis-label <string>)"
+msgstr "Beschriftung der rechten Achse (--right-axis-label &lt;string&gt;)"
+
 
 #: include/global_form.php:896
 msgid "The label for the right axis."
@@ -10105,7 +10110,8 @@ msgstr "Die Beschriftung für die rechte Achse."
 
 #: include/global_form.php:899
 msgid "Right Axis Format (--right-axis-format &lt;format&gt;)"
-msgstr "Format der rechten Achse (--right-axis-format <Format>)"
+msgstr "Format der rechten Achse (--right-axis-format &lt;Format&gt;)"
+
 
 #: include/global_form.php:904 include/global_form.php:920
 #, php-format
@@ -10114,7 +10120,8 @@ msgstr "Standardmäßig wird das Format der Achsenbeschriftungen automatisch bes
 
 #: include/global_form.php:907
 msgid "Right Axis Formatter (--right-axis-formatter &lt;formatname&gt;)"
-msgstr "Formatierer für die rechte Achse (--right-axis-formatter <Formatname>)"
+msgstr "Formatierer für die rechte Achse (--right-axis-formatter &lt;Formatname&gt;)"
+
 
 #: include/global_form.php:912
 msgid "When you setup the right axis labeling, apply a rule to the data format.  Supported formats include \"numeric\" where data is treated as numeric, \"timestamp\" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is \"%Y-%m-%d %H:%M:%S\").  See also --units-length and --right-axis-format.  Finally \"duration\" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT."
@@ -10122,7 +10129,8 @@ msgstr "Beim Einrichten der Beschriftung der rechten Achse wenden Sie eine Regel
 
 #: include/global_form.php:915
 msgid "Left Axis Format (--left-axis-format &lt;format&gt;)"
-msgstr "Format der linken Achse (--left-axis-format <Format>)"
+msgstr "Format der linken Achse (--left-axis-format &lt;Format&gt;)"
+
 
 #: include/global_form.php:923
 msgid "Left Axis Formatter (--left-axis-formatter &lt;formatname&gt;)"
@@ -10162,7 +10170,8 @@ msgstr "Erzwingen Sie die Generierung von HRULE- und VRULE-Legenden."
 
 #: include/global_form.php:954
 msgid "Tab Width (--tabwidth &lt;pixels&gt;)"
-msgstr "Tabulatorbreite (--tabwidth <Pixel>)"
+msgstr "Tabulatorbreite (--tabwidth &lt;Pixel&gt;)"
+
 
 #: include/global_form.php:959
 msgid "By default the tab-width is 40 pixels, use this option to change it."
@@ -10170,7 +10179,8 @@ msgstr "Standardmäßig beträgt die Tabulatorbreite 40 Pixel. Verwenden Sie die
 
 #: include/global_form.php:962
 msgid "Legend Position (--legend-position=&lt;position&gt;)"
-msgstr "Legendenposition (--legend-position=<position>)"
+msgstr "Legendenposition (--legend-position=&lt;position&gt;)"
+
 
 #: include/global_form.php:966
 msgid "Place the legend at the given side of the graph."
@@ -10178,7 +10188,8 @@ msgstr "Platzieren Sie die Legende auf der angegebenen Seite des Diagramms."
 
 #: include/global_form.php:969
 msgid "Legend Direction (--legend-direction=&lt;direction&gt;)"
-msgstr "Legendenrichtung (--legend-direction=<Richtung>)"
+msgstr "Legendenrichtung (--legend-direction=&lt;Richtung&gt;)"
+
 
 #: include/global_form.php:973
 msgid "Place the legend items in the given vertical order."
@@ -15663,7 +15674,8 @@ msgstr "Mailer-Fehler: Keine Empfängeradresse festgelegt!!<br> Wenn Sie den <i>
 #: lib/functions.php:5812
 #, php-format
 msgid "Authentication failed: %s"
-msgstr "Authentifizierung fehlgeschlagen:% s"
+msgstr "Authentifizierung fehlgeschlagen: %s"
+
 
 #: lib/functions.php:5816
 #, php-format
@@ -15689,7 +15701,8 @@ msgstr "Ihre e-Mail-Einstellungen sind derzeit wie folgt festgelegt"
 
 #: lib/functions.php:5839
 msgid "Checking Configuration...<br>"
-msgstr "Konfiguration wird geprüft...<br>"
+msgstr "Konfiguration prüfen...<br>"
+
 
 #: lib/functions.php:5849
 msgid "PHP's Mailer Class"
@@ -19181,7 +19194,7 @@ msgid "If your tables have very large indexes, you must operate with the Barracu
 msgstr "Wenn Ihre Tabellen sehr große Indizes haben, müssen Sie mit dem Barracuda-Dateiformat innodb_file_format und dem innodb_large_prefix gleich 1 arbeiten. Andernfalls kann es sein, dass Plugins Tabellen nicht richtig erstellen können."
 
 #: lib/utility.php:1254
-#, php-format
+#, no-php-format
 msgid "InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size.  If you database is very large or remote, you can consider increasing this size.  If remote, it can by as high as 80% of the systems memory.  However, cautions must be taken to reduce the swappiness of the system, or to remove swap to keep the system from swapping."
 msgstr "InnoDB speichert so viele Tabellen und Indizes wie möglich im Systemspeicher. Daher sollten Sie den innodb_buffer_pool groß genug machen, um möglichst viele Tabellen und Indizes im Speicher unterzubringen. Die Größe des Verzeichnisses /var/lib/mysql/cacti hilft bei der Bestimmung dieses Werts. Wir empfehlen 25%% des Gesamtspeichers Ihres Systems, Ihr Bedarf hängt jedoch von der Größe Ihres Systems ab. Wenn Ihre Datenbank sehr groß oder remote ist, können Sie diese Größe erhöhen. Bei Remote-Datenbanken kann sie bis zu 80% o des Systemspeichers betragen. Sie müssen jedoch darauf achten, die Auslagerungshäufigkeit des Systems zu reduzieren oder Swap zu entfernen, um das Auslagern des Systems zu verhindern."
 
@@ -20949,7 +20962,8 @@ msgstr "WARNUNG: Die durchschnittliche Laufzeit des 24-Stunden-Pollers[%d] betr�
 #: poller.php:1269
 #, php-format
 msgid "WARNING: In last hour Poller[%d] run time %d times reached more than %d &#37; of time limit"
-msgstr "WARNUNG: In der letzten Stunde hat die Laufzeit von Poller[%d] %d Mal mehr als %d %% des Zeitlimits erreicht"
+msgstr "WARNUNG: In der letzten Stunde hat die Laufzeit von Poller[%d] %d Mal mehr als %d %%des Zeitlimits erreicht"
+
 
 #: poller.php:1291
 msgid "Cacti System Notification"
@@ -23341,7 +23355,8 @@ msgstr "Suche-Filter"
 
 #: user_domains.php:439
 msgid "Search filter to use to locate the user in the LDAP directory, such as for windows: <i>\"(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))\"</i> or for OpenLDAP: <i>\"(&(objectClass=account)(uid=&lt;username&gt))\"</i>.  \"&lt;username&gt\" is replaced with the username that was supplied at the login prompt."
-msgstr "Suchfilter zum Auffinden des Benutzers im LDAP-Verzeichnis, z. B. für Windows: <i>&quot;(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))&quot;</i> oder für OpenLDAP: <i>&quot;(&amp;(objectClass=account)(uid=&lt;username&gt;))&quot;</i> . &quot;&lt;username&gt;&quot; wird durch den Benutzernamen ersetzt, der bei der Anmeldeaufforderung angegeben wurde."
+msgstr "Suchfilter zum Auffinden des Benutzers im LDAP-Verzeichnis, z. B. für Windows: <i>\"(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))\"</i> oder für OpenLDAP: <i>\"(&amp;(objectClass=account)(uid=&lt;username&gt;))\"</i> . \"&lt;username&gt;\" wird durch den Benutzernamen ersetzt, der bei der Anmeldeaufforderung angegeben wurde."
+
 
 #: user_domains.php:445
 msgid "Search Distinguished Name (DN)"

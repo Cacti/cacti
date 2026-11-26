@@ -25,11 +25,8 @@ msgstr "Cacti hakkında"
 
 #: about.php:44
 msgid "Cacti is designed to be a complete graphing solution based on the RRDtool Time Series Database (TSDB) and Graphing solution. Its goal is to make the Network Administrator's job easier by taking care of all the important details necessary to create meaningful Graphs."
-msgstr ""
-"Cacti, RRDtool&#39;un çerçevesine dayalı eksiksiz bir grafik çözümü olacak "
-"şekilde tasarlanmıştır. Amacı, anlamlı grafikler oluşturmak için gerekli tüm "
-"gerekli ayrıntılara dikkat ederek bir ağ yöneticisinin işini "
-"kolaylaştırmaktır."
+msgstr "Cacti, RRDtool'un çerçevesine dayalı eksiksiz bir grafik çözümü olacak şekilde tasarlanmıştır. Amacı, anlamlı grafikler oluşturmak için gerekli tüm gerekli ayrıntılara dikkat ederek bir ağ yöneticisinin işini kolaylaştırmaktır."
+
 
 #: about.php:46
 #, php-format
@@ -79,10 +76,8 @@ msgstr "Cacti kullanıcıları"
 
 #: about.php:92
 msgid "Especially anyone who has taken the time to create an issue report, or otherwise help fix a Cacti related problems. Also to anyone who has contributed to supporting Cacti."
-msgstr ""
-"Özellikle, bir sorun raporu oluşturmak için zaman harcayan ya da Cacti ile "
-"ilgili bir sorunu çözmede yardımcı olan herkes. Ayrıca Cacti&#39;yi "
-"desteklemeye katkıda bulunan herkese."
+msgstr "Özellikle, bir sorun raporu oluşturmak için zaman harcayan ya da Cacti ile ilgili bir sorunu çözmede yardımcı olan herkes. Ayrıca Cacti'yi desteklemeye katkıda bulunan herkese."
+
 
 #: about.php:97
 msgid "License"
@@ -201,15 +196,13 @@ msgstr "Şu anda tanımlanmış raporunuz yok."
 
 #: aggregate_graphs.php:886
 msgid "Click 'Continue' to Delete the following Aggregate Graph."
-msgstr ""
-"Aşağıdaki Toplam Grafiği / Grafikleri silmek için &#39;Devam Et&#39;i "
-"tıklayın."
+msgstr "Aşağıdaki Toplam Grafiği / Grafikleri silmek için 'Devam Et'i tıklayın."
+
 
 #: aggregate_graphs.php:887
 msgid "Click 'Continue' to Delete following Aggregate Graphs."
-msgstr ""
-"Aşağıdaki Toplam Grafiği / Grafikleri silmek için &#39;Devam Et&#39;i "
-"tıklayın."
+msgstr "Aşağıdaki Toplam Grafiği / Grafikleri silmek için 'Devam Et'i tıklayın."
+
 
 #: aggregate_graphs.php:888
 msgid "Delete Aggregate Graph"
@@ -245,9 +238,8 @@ msgstr "Toplu Şablon"
 
 #: aggregate_graphs.php:906
 msgid "Click 'Continue' to Combine the following Aggregates into an Aggregate Graph."
-msgstr ""
-"Aşağıdaki Toplam Grafiği / Grafikleri tek bir Toplam Grafiğe eklemek için "
-"&#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Toplam Grafiği / Grafikleri tek bir Toplam Grafiğe eklemek için 'Devam Et'i tıklayın."
+
 
 #: aggregate_graphs.php:907
 msgid "Combine Aggregate Graphs"
@@ -337,13 +329,13 @@ msgstr "Grafikleri Toplu Grafik ile İlişkilendir"
 
 #: aggregate_graphs.php:957
 msgid "Click 'Continue' to Disassociate the following Graph from the Aggregate Graph."
-msgstr ""
-"Aşağıdaki Grafik (ler) i Toplamdan ayırmak için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Grafik (ler) i Toplamdan ayırmak için 'Devam Et'i tıklayın."
+
 
 #: aggregate_graphs.php:958
 msgid "Click 'Continue' to Disassociate the following Graphs from the Aggregate Graph."
-msgstr ""
-"Aşağıdaki Grafik (ler) i Toplamdan ayırmak için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Grafik (ler) i Toplamdan ayırmak için 'Devam Et'i tıklayın."
+
 
 #: aggregate_graphs.php:959
 msgid "Disassociate Graph with Aggregate"
@@ -802,15 +794,13 @@ msgstr "Toplam Grafik Bulunamadı"
 
 #: aggregate_templates.php:333
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template."
-msgstr ""
-"Aşağıdaki Toplam Grafik Şablonlarını silmek için &#39;Devam Et&#39;i "
-"tıklayın."
+msgstr "Aşağıdaki Toplam Grafik Şablonlarını silmek için 'Devam Et'i tıklayın."
+
 
 #: aggregate_templates.php:334
 msgid "Click 'Continue' to Delete following Aggregate Graph Templates."
-msgstr ""
-"Aşağıdaki Toplam Grafik Şablonlarını silmek için &#39;Devam Et&#39;i "
-"tıklayın."
+msgstr "Aşağıdaki Toplam Grafik Şablonlarını silmek için 'Devam Et'i tıklayın."
+
 
 #: aggregate_templates.php:335
 msgid "Delete Aggregate Graph Template"
@@ -1037,7 +1027,8 @@ msgstr "Cacti'nin hiçbir alanına erişiminiz yok. Yöneticinizle iletişime ge
 
 #: auth_login.php:291 lib/html_tree.php:237
 msgid "Login to Cacti"
-msgstr "Cacti&#39;ye giriş yapın"
+msgstr "Cacti'ye giriş yapın"
+
 
 #: auth_login.php:292
 msgid "User Login"
@@ -1325,13 +1316,13 @@ msgstr "Cacti Automation veritabanından kaldırılan cihazlar"
 
 #: automation_devices.php:226
 msgid "Click 'Continue' to Add the following Discovered Device to Cacti."
-msgstr ""
-"Aşağıdaki Keşfedilen cihazları eklemek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Keşfedilen cihazları eklemek için 'Devam Et'i tıklayın."
+
 
 #: automation_devices.php:227
 msgid "Click 'Continue' to Add the following Discovered Devices to Cacti."
-msgstr ""
-"Aşağıdaki Keşfedilen cihazları eklemek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Keşfedilen cihazları eklemek için 'Devam Et'i tıklayın."
+
 
 #: automation_devices.php:228
 msgid "Add Discovered Device"
@@ -1621,11 +1612,13 @@ msgstr "HATA:"
 
 #: automation_graph_rules.php:435
 msgid "Click 'Continue' to Delete the following Graph Rule."
-msgstr "Aşağıdaki Kuralları silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Kuralları silmek için 'Devam Et'i tıklayın."
+
 
 #: automation_graph_rules.php:436
 msgid "Click 'Continue' to Delete following Graph Rules."
-msgstr "Aşağıdaki Kuralları silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Kuralları silmek için 'Devam Et'i tıklayın."
+
 
 #: automation_graph_rules.php:437
 msgid "Delete Graph Rule"
@@ -1637,15 +1630,13 @@ msgstr "Grafik Kurallarını Sil"
 
 #: automation_graph_rules.php:441
 msgid "Click 'Continue' to Enable the following Graph Rule."
-msgstr ""
-"Aşağıdaki Kuralı / Kuralları etkinleştirmek için &#39;Devam Et&#39;i "
-"tıklayın."
+msgstr "Aşağıdaki Kuralı / Kuralları etkinleştirmek için 'Devam Et'i tıklayın."
+
 
 #: automation_graph_rules.php:442
 msgid "Click 'Continue' to Enable following Graph Rules."
-msgstr ""
-"Aşağıdaki Kuralı / Kuralları etkinleştirmek için &#39;Devam Et&#39;i "
-"tıklayın."
+msgstr "Aşağıdaki Kuralı / Kuralları etkinleştirmek için 'Devam Et'i tıklayın."
+
 
 #: automation_graph_rules.php:443
 msgid "Enable Graph Rule"
@@ -1657,15 +1648,13 @@ msgstr "Grafik Kurallarını Etkinleştir"
 
 #: automation_graph_rules.php:447
 msgid "Click 'Continue' to Disable the following Graph Rule."
-msgstr ""
-"Aşağıdaki Kural (lar) ı devre dışı bırakmak için &#39;Devam Et&#39;i "
-"tıklayın."
+msgstr "Aşağıdaki Kural (lar) ı devre dışı bırakmak için 'Devam Et'i tıklayın."
+
 
 #: automation_graph_rules.php:448
 msgid "Click 'Continue' to Disable following Graph Rules."
-msgstr ""
-"Aşağıdaki Kural (lar) ı devre dışı bırakmak için &#39;Devam Et&#39;i "
-"tıklayın."
+msgstr "Aşağıdaki Kural (lar) ı devre dışı bırakmak için 'Devam Et'i tıklayın."
+
 
 #: automation_graph_rules.php:449
 msgid "Disable Graph Rule"
@@ -1893,11 +1882,13 @@ msgstr "Bu alanı güncelle"
 
 #: automation_networks.php:659
 msgid "Click 'Continue' to Delete the following Network."
-msgstr "Aşağıdaki Ağları silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Ağları silmek için 'Devam Et'i tıklayın."
+
 
 #: automation_networks.php:660
 msgid "Click 'Continue' to Delete the following Networks."
-msgstr "Aşağıdaki Ağları silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Ağları silmek için 'Devam Et'i tıklayın."
+
 
 #: automation_networks.php:661
 msgid "Delete Network"
@@ -1909,11 +1900,13 @@ msgstr "Ağları Sil"
 
 #: automation_networks.php:665
 msgid "Click 'Continue' to Disable the following Network."
-msgstr "Aşağıdaki Ağları devre dışı bırakmak için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Ağları devre dışı bırakmak için 'Devam Et'i tıklayın."
+
 
 #: automation_networks.php:666
 msgid "Click 'Continue' to Disable the following Networks."
-msgstr "Aşağıdaki Ağları devre dışı bırakmak için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Ağları devre dışı bırakmak için 'Devam Et'i tıklayın."
+
 
 #: automation_networks.php:667
 msgid "Disable Network"
@@ -1925,11 +1918,13 @@ msgstr "Ağları Devre Dışı Bırak"
 
 #: automation_networks.php:671
 msgid "Click 'Continue' to Enable the following Network."
-msgstr "Aşağıdaki Ağları etkinleştirmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Ağları etkinleştirmek için 'Devam Et'i tıklayın."
+
 
 #: automation_networks.php:672
 msgid "Click 'Continue' to Enable the following Networks."
-msgstr "Aşağıdaki Ağları etkinleştirmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Ağları etkinleştirmek için 'Devam Et'i tıklayın."
+
 
 #: automation_networks.php:673
 msgid "Enable Network"
@@ -1941,11 +1936,13 @@ msgstr "Ağları Etkinleştir"
 
 #: automation_networks.php:677
 msgid "Click 'Continue' to Discover the following Network."
-msgstr "Aşağıdaki Ağları keşfetmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Ağları keşfetmek için 'Devam Et'i tıklayın."
+
 
 #: automation_networks.php:678
 msgid "Click 'Continue' to Discover the following Networks."
-msgstr "Aşağıdaki Ağları keşfetmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Ağları keşfetmek için 'Devam Et'i tıklayın."
+
 
 #: automation_networks.php:679
 msgid "Discover Network"
@@ -2067,9 +2064,8 @@ msgstr "Veri Toplayıcı"
 
 #: automation_networks.php:753 include/global_form.php:1275
 msgid "Choose the Cacti Data Collector/Poller to be used to gather data from this Device."
-msgstr ""
-"Bu Cihazdan veri toplamak için kullanılacak Cacti Veri Toplayıcı / "
-"Yoklayıcı&#39;yı seçin."
+msgstr "Bu Cihazdan veri toplamak için kullanılacak Cacti Veri Toplayıcı / Yoklayıcı'yı seçin."
+
 
 #: automation_networks.php:760
 msgid "Associated Site"
@@ -2123,7 +2119,8 @@ msgstr ""
 
 #: automation_networks.php:799
 msgid "Enter IPs or FQDNs of DNS Servers"
-msgstr "DNS Sunucularının IP&#39;lerini veya FQDN&#39;lerini girin"
+msgstr "DNS Sunucularının IP'lerini veya FQDN'lerini girin"
+
 
 #: automation_networks.php:803
 msgid "Discovery Threads"
@@ -2235,7 +2232,8 @@ msgstr "Bu Ağ Aralığını etkinleştirin."
 
 #: automation_networks.php:848
 msgid "Enable NetBIOS"
-msgstr "NetBIOS&#39;u Etkinleştir"
+msgstr "NetBIOS'u Etkinleştir"
+
 
 #: automation_networks.php:849
 msgid "Use NetBIOS to attempt to resolve the hostname of up hosts."
@@ -2249,13 +2247,13 @@ msgstr "Cacti'ye Otomatik Olarak Ekle"
 
 #: automation_networks.php:856
 msgid "For any newly discovered Devices that are reachable using SNMP and who match a Device Rule, add them to Cacti."
-msgstr ""
-"Yeni keşfedilen ve SNMP kullanılarak erişilebilen ve bir Aygıt Kuralı ile "
-"eşleşen Aygıtlar için, Cacti&#39;ye ekleyin."
+msgstr "Yeni keşfedilen ve SNMP kullanılarak erişilebilen ve bir Aygıt Kuralı ile eşleşen Aygıtlar için, Cacti'ye ekleyin."
+
 
 #: automation_networks.php:861
 msgid "Allow same sysName on different hosts"
-msgstr "Farklı ana bilgisayarlarda aynı sysName&#39;e izin ver"
+msgstr "Farklı ana bilgisayarlarda aynı sysName'e izin ver"
+
 
 #: automation_networks.php:862
 msgid "When discovering devices, allow duplicate sysnames to be added on different hosts"
@@ -2269,9 +2267,8 @@ msgstr "Veri Sorgularını Yeniden Çalıştır"
 
 #: automation_networks.php:868
 msgid "If a device previously added to Cacti is found, rerun its data queries."
-msgstr ""
-"Cacti&#39;ye daha önce eklenmiş bir cihaz bulunursa, veri sorgularını "
-"yeniden çalıştırın."
+msgstr "Cacti'ye daha önce eklenmiş bir cihaz bulunursa, veri sorgularını yeniden çalıştırın."
+
 
 #: automation_networks.php:873
 #, fuzzy
@@ -2516,10 +2513,8 @@ msgstr "Ping Zaman Aşımı Değeri"
 
 #: automation_networks.php:1051 include/global_form.php:1362
 msgid "The timeout value to use for host ICMP and UDP pinging.  This host SNMP timeout value applies for SNMP pings."
-msgstr ""
-"Ana bilgisayar ICMP ve UDP ping işlemi için kullanılacak zamanaşımı değeri. "
-"Bu ana bilgisayar SNMP zaman aşımı değeri, SNMP ping&#39;leri için "
-"geçerlidir."
+msgstr "Ana bilgisayar ICMP ve UDP ping işlemi için kullanılacak zamanaşımı değeri. Bu ana bilgisayar SNMP zaman aşımı değeri, SNMP ping'leri için geçerlidir."
+
 
 #: automation_networks.php:1059 include/global_form.php:1370
 #: include/global_settings.php:1007
@@ -2733,11 +2728,13 @@ msgstr "SNMP Seçeneklerini İçe Aktar"
 
 #: automation_snmp.php:409
 msgid "Click 'Continue' to Delete the following SNMP Option."
-msgstr "Aşağıdaki SNMP Seçeneklerini silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki SNMP Seçeneklerini silmek için 'Devam Et'i tıklayın."
+
 
 #: automation_snmp.php:410
 msgid "Click 'Continue' to Delete following SNMP Options."
-msgstr "Aşağıdaki SNMP Seçeneklerini silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki SNMP Seçeneklerini silmek için 'Devam Et'i tıklayın."
+
 
 #: automation_snmp.php:411
 msgid "Delete SNMP Option"
@@ -2793,8 +2790,8 @@ msgstr "Otomasyon Öğesi mevcut değil. Kopyalanamaz."
 
 #: automation_snmp.php:535
 msgid "Click 'Continue' to delete the following SNMP Option Item."
-msgstr ""
-"Aşağıdaki SNMP Seçenek Öğesini silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki SNMP Seçenek Öğesini silmek için 'Devam Et'i tıklayın."
+
 
 #: automation_snmp.php:536
 msgid "SNMP Option:"
@@ -3348,15 +3345,13 @@ msgstr "Ağaç Kurallarını Sil"
 
 #: automation_tree_rules.php:439
 msgid "Click 'Continue' to Enable the following Tree Rule."
-msgstr ""
-"Aşağıdaki Kuralı / Kuralları etkinleştirmek için &#39;Devam Et&#39;i "
-"tıklayın."
+msgstr "Aşağıdaki Kuralı / Kuralları etkinleştirmek için 'Devam Et'i tıklayın."
+
 
 #: automation_tree_rules.php:440
 msgid "Click 'Continue' to Enable following Tree Rules."
-msgstr ""
-"Aşağıdaki Kuralı / Kuralları etkinleştirmek için &#39;Devam Et&#39;i "
-"tıklayın."
+msgstr "Aşağıdaki Kuralı / Kuralları etkinleştirmek için 'Devam Et'i tıklayın."
+
 
 #: automation_tree_rules.php:441
 msgid "Enable Tree Rule"
@@ -3368,15 +3363,13 @@ msgstr "Kuralı Etkinleştir"
 
 #: automation_tree_rules.php:445
 msgid "Click 'Continue' to Disable the following Tree Rule."
-msgstr ""
-"Aşağıdaki Kural (lar) ı devre dışı bırakmak için &#39;Devam Et&#39;i "
-"tıklayın."
+msgstr "Aşağıdaki Kural (lar) ı devre dışı bırakmak için 'Devam Et'i tıklayın."
+
 
 #: automation_tree_rules.php:446
 msgid "Click 'Continue' to Disable following Tree Rules."
-msgstr ""
-"Aşağıdaki Kural (lar) ı devre dışı bırakmak için &#39;Devam Et&#39;i "
-"tıklayın."
+msgstr "Aşağıdaki Kural (lar) ı devre dışı bırakmak için 'Devam Et'i tıklayın."
+
 
 #: automation_tree_rules.php:447
 msgid "Disable Tree Rule"
@@ -3455,9 +3448,8 @@ msgstr "UYARI:"
 
 #: automation_tree_rules.php:843
 msgid "You are changing the leaf type to \"Device\" which does not support Graph-based object matching/creation."
-msgstr ""
-"Yaprak tipini, Grafik tabanlı nesne eşleştirme / yaratmayı desteklemeyen "
-"&quot;Aygıt&quot; olarak değiştiriyorsunuz."
+msgstr "Yaprak tipini, Grafik tabanlı nesne eşleştirme / yaratmayı desteklemeyen \"Aygıt\" olarak değiştiriyorsunuz."
+
 
 #: automation_tree_rules.php:844
 msgid "By changing the leaf type, all invalid rules will be automatically removed and will not be recoverable."
@@ -3525,19 +3517,23 @@ msgstr "Uyarı: Cacti Daemon PID["
 
 #: cdef.php:262
 msgid "Click 'Continue' to Delete the following CDEF."
-msgstr "Aşağıdaki CDEF&#39;yi silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki CDEF'yi silmek için 'Devam Et'i tıklayın."
+
 
 #: cdef.php:263
 msgid "Click 'Continue' to Delete following CDEFs."
-msgstr "Aşağıdaki CDEF&#39;yi silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki CDEF'yi silmek için 'Devam Et'i tıklayın."
+
 
 #: cdef.php:264
 msgid "Delete CDEF"
-msgstr "CDEF&#39;i sil"
+msgstr "CDEF'i sil"
+
 
 #: cdef.php:265
 msgid "Delete CDEFs"
-msgstr "CDEF&#39;i sil"
+msgstr "CDEF'i sil"
+
 
 #: cdef.php:268
 msgid "Click 'Continue' to Duplicate the following CDEF."
@@ -3557,7 +3553,8 @@ msgstr "Yinelenen CDEF"
 
 #: cdef.php:309
 msgid "Click 'Continue' to delete the following CDEF Item."
-msgstr "Aşağıdaki CDEF Öğesini silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki CDEF Öğesini silmek için 'Devam Et'i tıklayın."
+
 
 #: cdef.php:310
 #, php-format
@@ -3626,17 +3623,18 @@ msgstr "CDEF Adı"
 
 #: cdef.php:866 data_source_profiles.php:1026
 msgid "The name of this CDEF."
-msgstr "Bu CDEF&#39;in adı."
+msgstr "Bu CDEF'in adı."
+
 
 #: cdef.php:871
 msgid "CDEFs that are in use cannot be Deleted.  In use is defined as being referenced by a Graph or a Graph Template."
-msgstr ""
-"Kullanımda olan CDEF&#39;ler Silinemez. Kullanımda, bir Grafik veya Grafik "
-"Şablonu tarafından referans olarak tanımlanır."
+msgstr "Kullanımda olan CDEF'ler Silinemez. Kullanımda, bir Grafik veya Grafik Şablonu tarafından referans olarak tanımlanır."
+
 
 #: cdef.php:877
 msgid "The number of Graphs using this CDEF."
-msgstr "Bu CDEF&#39;i kullanan Grafiklerin sayısı."
+msgstr "Bu CDEF'i kullanan Grafiklerin sayısı."
+
 
 #: cdef.php:880 color.php:691 data_input.php:879 data_queries.php:1417
 #: data_source_profiles.php:1062 gprint_presets.php:368 vdef.php:887
@@ -3645,7 +3643,8 @@ msgstr "Şablonları kullanma"
 
 #: cdef.php:883
 msgid "The number of Graphs Templates using this CDEF."
-msgstr "Bu CDEF&#39;i kullanan Grafik Şablonları sayısı."
+msgstr "Bu CDEF'i kullanan Grafik Şablonları sayısı."
+
 
 #: cdef.php:908
 msgid "No CDEFs"
@@ -3675,11 +3674,13 @@ msgstr "Adsız Renk"
 
 #: color.php:182
 msgid "Click 'Continue' to Delete the following Color."
-msgstr "Aşağıdaki Rengi silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Rengi silmek için 'Devam Et'i tıklayın."
+
 
 #: color.php:183
 msgid "Click 'Continue' to Delete following Colors."
-msgstr "Aşağıdaki Rengi silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Rengi silmek için 'Devam Et'i tıklayın."
+
 
 #: color.php:184
 msgid "Delete Color"
@@ -3826,11 +3827,13 @@ msgstr "Öğe yok"
 
 #: color_templates.php:319
 msgid "Click 'Continue' to Delete the following Color Template."
-msgstr "Aşağıdaki Renk Şablonunu silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Renk Şablonunu silmek için 'Devam Et'i tıklayın."
+
 
 #: color_templates.php:320
 msgid "Click 'Continue' to Delete following Color Templates."
-msgstr "Aşağıdaki Renk Şablonunu silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Renk Şablonunu silmek için 'Devam Et'i tıklayın."
+
 
 #: color_templates.php:321
 msgid "Delete Color Template"
@@ -3878,8 +3881,8 @@ msgstr "Renk Şablonlarını Eşitle"
 
 #: color_templates.php:488
 msgid "Click 'Continue' to delete the following Color Template Color."
-msgstr ""
-"Aşağıdaki Renk Şablonu Rengini silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Renk Şablonu Rengini silmek için 'Devam Et'i tıklayın."
+
 
 #: color_templates.php:489
 msgid "Color Name:"
@@ -4031,9 +4034,8 @@ msgstr "Yazılabilir"
 
 #: data_debug.php:483
 msgid "Determines if the Data Collector or the Web Site have Write access."
-msgstr ""
-"Veri Toplayıcı&#39;nın veya Web Sitesinin Yazma erişiminin olup olmadığını "
-"belirler."
+msgstr "Veri Toplayıcı'nın veya Web Sitesinin Yazma erişiminin olup olmadığını belirler."
+
 
 #: data_debug.php:486 templates_import.php:233
 msgid "Exists"
@@ -4306,13 +4308,13 @@ msgstr "Hata Ayıklama"
 
 #: data_input.php:248
 msgid "Click 'Continue' to Delete the following Data Input Method."
-msgstr ""
-"Aşağıdaki Veri Girişi Yöntemini silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Veri Girişi Yöntemini silmek için 'Devam Et'i tıklayın."
+
 
 #: data_input.php:249
 msgid "Click 'Continue' to Delete following Data Input Methods."
-msgstr ""
-"Aşağıdaki Veri Girişi Yöntemini silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Veri Girişi Yöntemini silmek için 'Devam Et'i tıklayın."
+
 
 #: data_input.php:250
 msgid "Delete Data Input Method"
@@ -4344,7 +4346,8 @@ msgstr "Giriş Adı"
 
 #: data_input.php:292
 msgid "Click 'Continue' to delete the following Data Input Field."
-msgstr "Aşağıdaki Veri Girişi Alanını silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Veri Girişi Alanını silmek için 'Devam Et'i tıklayın."
+
 
 #: data_input.php:293
 #, php-format
@@ -4416,9 +4419,8 @@ msgstr ""
 
 #: data_input.php:537
 msgid "Input String does not exist in White List.  Run CLI script input_whitelist.php to correct."
-msgstr ""
-"Giriş Dizesi Beyaz Liste&#39;de mevcut değil. Düzeltmek için CLI betiğini "
-"input_whitelist.php çalıştırın."
+msgstr "Giriş Dizesi Beyaz Liste'de mevcut değil. Düzeltmek için CLI betiğini input_whitelist.php çalıştırın."
+
 
 #: data_input.php:558
 msgid "Input Fields"
@@ -4446,7 +4448,8 @@ msgstr "Çıkış alanları"
 
 #: data_input.php:630
 msgid "Update RRA"
-msgstr "RRA&#39;yı Güncelle"
+msgstr "RRA'yı Güncelle"
+
 
 #: data_input.php:657
 msgid "Output Fields can not be removed when Data Sources are present"
@@ -4475,7 +4478,8 @@ msgstr "Veri Girişi Adı"
 
 #: data_input.php:860
 msgid "The name of this Data Input Method."
-msgstr "Bu Veri Giriş Yöntemi&#39;nin adı."
+msgstr "Bu Veri Giriş Yöntemi'nin adı."
+
 
 #: data_input.php:865
 msgid "The internal database ID for this Data Input Method.  Useful when performing automation or debugging."
@@ -4495,11 +4499,13 @@ msgstr "Veri Kaynakları Kullanımı"
 
 #: data_input.php:876
 msgid "The number of Data Sources that use this Data Input Method."
-msgstr "Bu Veri Girişi Yöntemi&#39;ni kullanan Veri Kaynağı sayısı."
+msgstr "Bu Veri Girişi Yöntemi'ni kullanan Veri Kaynağı sayısı."
+
 
 #: data_input.php:882
 msgid "The number of Data Templates that use this Data Input Method."
-msgstr "Bu Veri Girişi Yöntemi&#39;ni kullanan Veri Şablonlarının sayısı."
+msgstr "Bu Veri Girişi Yöntemi'ni kullanan Veri Şablonlarının sayısı."
+
 
 #: data_input.php:885 data_queries.php:1423 include/global_arrays.php:1495
 #: include/global_form.php:593 include/global_form.php:1526
@@ -4516,11 +4522,13 @@ msgstr "Veri Giriş Yöntemi Bulunamadı"
 
 #: data_queries.php:388
 msgid "Click 'Continue' to Delete the following Data Query."
-msgstr "Aşağıdaki Veri Sorgusunu silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Veri Sorgusunu silmek için 'Devam Et'i tıklayın."
+
 
 #: data_queries.php:389
 msgid "Click 'Continue' to Delete following Data Queries."
-msgstr "Aşağıdaki Veri Sorgusunu silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Veri Sorgusunu silmek için 'Devam Et'i tıklayın."
+
 
 #: data_queries.php:390
 msgid "Delete Data Query"
@@ -4548,9 +4556,8 @@ msgstr "Veri Sorgularını Çoğalt"
 
 #: data_queries.php:544
 msgid "Click 'Continue' to delete the following Data Query Graph Association."
-msgstr ""
-"Aşağıdaki Veri Sorgusu Grafiği Birliği&#39;ni silmek için &#39;Devam Et&#39;"
-"i tıklayın."
+msgstr "Aşağıdaki Veri Sorgusu Grafiği Birliği'ni silmek için 'Devam Et'i tıklayın."
+
 
 #: data_queries.php:545
 #, php-format
@@ -4722,13 +4729,13 @@ msgstr ""
 
 #: data_source_profiles.php:300
 msgid "Click 'Continue' to Delete the following Data Source Profile."
-msgstr ""
-"Aşağıdaki Veri Kaynağı Profilini silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Veri Kaynağı Profilini silmek için 'Devam Et'i tıklayın."
+
 
 #: data_source_profiles.php:301
 msgid "Click 'Continue' to Delete following Data Source Profiles."
-msgstr ""
-"Aşağıdaki Veri Kaynağı Profilini silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Veri Kaynağı Profilini silmek için 'Devam Et'i tıklayın."
+
 
 #: data_source_profiles.php:302
 msgid "Delete Data Source Profile"
@@ -4762,9 +4769,8 @@ msgstr ""
 
 #: data_source_profiles.php:402
 msgid "Click 'Continue' to delete the following Data Source Profile RRA."
-msgstr ""
-"Aşağıdaki Veri Kaynağı Profili RRA&#39;sını silmek için &#39;Devam Et&#39;i "
-"tıklayın."
+msgstr "Aşağıdaki Veri Kaynağı Profili RRA'sını silmek için 'Devam Et'i tıklayın."
+
 
 #: data_source_profiles.php:403
 #, php-format
@@ -4799,13 +4805,13 @@ msgstr "Veri Kaynağı Profili [yeni]"
 
 #: data_source_profiles.php:634
 msgid "Data Source Profile RRAs (press save to update timespans)"
-msgstr ""
-"Veri Kaynağı Profili RRA&#39;ları (zaman aralıklarını güncellemek için "
-"kaydet düğmesine basın)"
+msgstr "Veri Kaynağı Profili RRA'ları (zaman aralıklarını güncellemek için kaydet düğmesine basın)"
+
 
 #: data_source_profiles.php:636
 msgid "Data Source Profile RRAs (Read Only)"
-msgstr "Veri Kaynağı Profil RRA&#39;ları (Salt Okunur)"
+msgstr "Veri Kaynağı Profil RRA'ları (Salt Okunur)"
+
 
 #: data_source_profiles.php:641 include/global_form.php:323
 msgid "Data Retention"
@@ -5016,7 +5022,8 @@ msgstr "Önerilen İsimleri Yeniden Uygula"
 
 #: data_sources.php:538
 msgid "Click 'Continue' to Delete the following Data Source."
-msgstr "Aşağıdaki Veri Kaynağını silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Veri Kaynağını silmek için 'Devam Et'i tıklayın."
+
 
 #: data_sources.php:539
 msgid "Click 'Continue' to Delete following Data Sources."
@@ -5062,15 +5069,13 @@ msgstr[1] "Bu Veri Kaynaklarına başvuran tüm Grafikleri sil"
 
 #: data_sources.php:566
 msgid "Click 'Continue' to Disable the following Data Source."
-msgstr ""
-"Aşağıdaki Veri Kaynağını devre dışı bırakmak için &#39;Devam Et&#39;i "
-"tıklayın."
+msgstr "Aşağıdaki Veri Kaynağını devre dışı bırakmak için 'Devam Et'i tıklayın."
+
 
 #: data_sources.php:567
 msgid "Click 'Continue' to Disable following Data Sources."
-msgstr ""
-"Aşağıdaki Veri Kaynağını devre dışı bırakmak için &#39;Devam Et&#39;i "
-"tıklayın."
+msgstr "Aşağıdaki Veri Kaynağını devre dışı bırakmak için 'Devam Et'i tıklayın."
+
 
 #: data_sources.php:568
 msgid "Disable Data Source"
@@ -5082,13 +5087,13 @@ msgstr "Veri Kaynağını Devre Dışı Bırak"
 
 #: data_sources.php:572
 msgid "Click 'Continue' to Enable the following Data Source."
-msgstr ""
-"Aşağıdaki Veri Kaynağını etkinleştirmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Veri Kaynağını etkinleştirmek için 'Devam Et'i tıklayın."
+
 
 #: data_sources.php:573
 msgid "Click 'Continue' to Enable following Data Sources."
-msgstr ""
-"Aşağıdaki Veri Kaynağını etkinleştirmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Veri Kaynağını etkinleştirmek için 'Devam Et'i tıklayın."
+
 
 #: data_sources.php:574
 msgid "Enable Data Source"
@@ -5122,15 +5127,13 @@ msgstr "Yeni cihaz"
 
 #: data_sources.php:592
 msgid "Click 'Continue' to Reapply Suggested Names the following Data Source."
-msgstr ""
-"Önerilen adı aşağıdaki Veri Kaynağına yeniden uygulamak için &#39;Devam "
-"Et&#39;i tıklayın."
+msgstr "Önerilen adı aşağıdaki Veri Kaynağına yeniden uygulamak için 'Devam Et'i tıklayın."
+
 
 #: data_sources.php:593
 msgid "Click 'Continue' to Reapply Suggested Names for the following Data Sources."
-msgstr ""
-"Önerilen adı aşağıdaki Veri Kaynağına yeniden uygulamak için &#39;Devam "
-"Et&#39;i tıklayın."
+msgstr "Önerilen adı aşağıdaki Veri Kaynağına yeniden uygulamak için 'Devam Et'i tıklayın."
+
 
 #: data_sources.php:594
 msgid "Reapply Suggested Names for Data Source"
@@ -5552,8 +5555,8 @@ msgstr "Girdi Yöntemi"
 
 #: data_templates.php:1282
 msgid "The method that is used to place Data into the Data Source RRDfile."
-msgstr ""
-"Verileri Veri Kaynağı RRDdosyası&#39;na yerleştirmek için kullanılan yöntem."
+msgstr "Verileri Veri Kaynağı RRDdosyası'na yerleştirmek için kullanılan yöntem."
+
 
 #: data_templates.php:1285
 msgid "Profile Name"
@@ -5629,17 +5632,18 @@ msgstr "GPRINT biçiminde dize."
 
 #: gprint_presets.php:359
 msgid "GPRINTs that are in use cannot be Deleted.  In use is defined as being referenced by either a Graph or a Graph Template."
-msgstr ""
-"Kullanılan GPRINT&#39;ler Silinemez. Kullanımda, bir Grafik veya Grafik "
-"Şablonu tarafından referans olarak tanımlanır."
+msgstr "Kullanılan GPRINT'ler Silinemez. Kullanımda, bir Grafik veya Grafik Şablonu tarafından referans olarak tanımlanır."
+
 
 #: gprint_presets.php:365
 msgid "The number of Graphs using this GPRINT."
-msgstr "Bu GPRINT&#39;i kullanan Grafik sayısı."
+msgstr "Bu GPRINT'i kullanan Grafik sayısı."
+
 
 #: gprint_presets.php:371
 msgid "The number of Graphs Templates using this GPRINT."
-msgstr "Bu GPRINT&#39;i kullanan Grafik Şablonları sayısı."
+msgstr "Bu GPRINT'i kullanan Grafik Şablonları sayısı."
+
 
 #: gprint_presets.php:407
 msgid "No GPRINT Presets"
@@ -6055,10 +6059,8 @@ msgstr "Grafik Adı"
 
 #: graph_view.php:868 graph_view.php:906 graphs.php:3060
 msgid "The Title of this Graph.  Generally programmatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual."
-msgstr ""
-"Bu Grafiğin Başlığı. Genel olarak programlı olarak Grafik Şablonu tanımından "
-"veya Önerilen Adlandırma kurallarından oluşturulur. Başlığın maksimum "
-"uzunluğu Ayarlar-&gt; Görsel altında kontrol edilir."
+msgstr "Bu Grafiğin Başlığı. Genel olarak programlı olarak Grafik Şablonu tanımından veya Önerilen Adlandırma kurallarından oluşturulur. Başlığın maksimum uzunluğu Ayarlar-> Görsel altında kontrol edilir."
+
 
 #: graph_view.php:871 sites.php:426 sites.php:632 tree.php:885
 msgid "Site Name"
@@ -6274,19 +6276,13 @@ msgstr[1] "Veri Kaynaklarına dokunmadan bırakın."
 
 #: graphs.php:1784
 msgid "Choose a Graph Template and click 'Continue' to Change the Graph Template for the following Graph.  Note that only compatible Graph Templates will be displayed.  Compatible is identified by those having identical Data Sources."
-msgstr ""
-"Bir Grafik Şablonu seçin ve aşağıdaki Grafik (ler) için Grafik Şablonunu "
-"değiştirmek için &#39;Devam Et&#39;i tıklayın. Lütfen yalnızca uyumlu Grafik "
-"Şablonlarının görüntüleneceğini unutmayın. Uyumlu, aynı Veri Kaynaklarına "
-"sahip olanlar tarafından belirlenir."
+msgstr "Bir Grafik Şablonu seçin ve aşağıdaki Grafik (ler) için Grafik Şablonunu değiştirmek için 'Devam Et'i tıklayın. Lütfen yalnızca uyumlu Grafik Şablonlarının görüntüleneceğini unutmayın. Uyumlu, aynı Veri Kaynaklarına sahip olanlar tarafından belirlenir."
+
 
 #: graphs.php:1785
 msgid "Choose a Graph Template and click 'Continue' to Change the Graph Template for the following Graphs.  Note that only compatible Graph Templates will be displayed.  Compatible is identified by those having identical Data Sources."
-msgstr ""
-"Bir Grafik Şablonu seçin ve aşağıdaki Grafik (ler) için Grafik Şablonunu "
-"değiştirmek için &#39;Devam Et&#39;i tıklayın. Lütfen yalnızca uyumlu Grafik "
-"Şablonlarının görüntüleneceğini unutmayın. Uyumlu, aynı Veri Kaynaklarına "
-"sahip olanlar tarafından belirlenir."
+msgstr "Bir Grafik Şablonu seçin ve aşağıdaki Grafik (ler) için Grafik Şablonunu değiştirmek için 'Devam Et'i tıklayın. Lütfen yalnızca uyumlu Grafik Şablonlarının görüntüleneceğini unutmayın. Uyumlu, aynı Veri Kaynaklarına sahip olanlar tarafından belirlenir."
+
 
 #: graphs.php:1790 graphs_new.php:531
 msgid "New Graph Template"
@@ -6347,15 +6343,13 @@ msgstr "Grafik (ler) İlgili Aygıtı Değiştir"
 
 #: graphs.php:1841
 msgid "Click 'Continue' to Reapply Suggested Names the following Graph."
-msgstr ""
-"Önerilen isimlendirmeyi aşağıdaki Grafik (ler) e tekrar uygulamak için &#39;"
-"Devam Et&#39;i tıklayın."
+msgstr "Önerilen isimlendirmeyi aşağıdaki Grafik (ler) e tekrar uygulamak için 'Devam Et'i tıklayın."
+
 
 #: graphs.php:1842
 msgid "Click 'Continue' to Reapply Suggested Names for the following Graphs."
-msgstr ""
-"Önerilen isimlendirmeyi aşağıdaki Grafik (ler) e tekrar uygulamak için &#39;"
-"Devam Et&#39;i tıklayın."
+msgstr "Önerilen isimlendirmeyi aşağıdaki Grafik (ler) e tekrar uygulamak için 'Devam Et'i tıklayın."
+
 
 #: graphs.php:1843
 msgid "Reapply Suggested Names for Graph"
@@ -6367,15 +6361,13 @@ msgstr "Grafiğe Önerilen Adlandırmayı Yeniden Uygula"
 
 #: graphs.php:1847
 msgid "Click 'Continue' to apply Automation Rules to the following Graph."
-msgstr ""
-"Otomasyon Kurallarını aşağıdaki Grafiklere uygulamak için &#39;Devam Et&#39;"
-"i tıklayın."
+msgstr "Otomasyon Kurallarını aşağıdaki Grafiklere uygulamak için 'Devam Et'i tıklayın."
+
 
 #: graphs.php:1848
 msgid "Click 'Continue' to apply Automation Rules to the following Graphs."
-msgstr ""
-"Otomasyon Kurallarını aşağıdaki Grafiklere uygulamak için &#39;Devam Et&#39;"
-"i tıklayın."
+msgstr "Otomasyon Kurallarını aşağıdaki Grafiklere uygulamak için 'Devam Et'i tıklayın."
+
 
 #: graphs.php:1849
 msgid "Apply Automation Rules to Graph"
@@ -6387,13 +6379,13 @@ msgstr "Otomasyon Kurallarını Uygula"
 
 #: graphs.php:1853
 msgid "Click 'Continue' to Create an Aggregate Graph from the selected Graph."
-msgstr ""
-"Seçilen Grafiklerden bir Grafik Oluşturmak için &#39;Devam Et&#39;i tıklayın."
+msgstr "Seçilen Grafiklerden bir Grafik Oluşturmak için 'Devam Et'i tıklayın."
+
 
 #: graphs.php:1854
 msgid "Click 'Continue' to Create an Aggregate Graph from the selected Graphs."
-msgstr ""
-"Seçilen Grafiklerden bir Grafik Oluşturmak için &#39;Devam Et&#39;i tıklayın."
+msgstr "Seçilen Grafiklerden bir Grafik Oluşturmak için 'Devam Et'i tıklayın."
+
 
 #: graphs.php:1860
 msgid "The following Data Source is in use by this Graph."
@@ -6790,11 +6782,13 @@ msgstr "'%s' Raporuna bazı Cihazlar eklenemedi"
 
 #: host.php:479
 msgid "Click 'Continue' to Delete the following Device."
-msgstr "Aşağıdaki Cihazları silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Cihazları silmek için 'Devam Et'i tıklayın."
+
 
 #: host.php:480
 msgid "Click 'Continue' to Delete the following Devices."
-msgstr "Aşağıdaki Cihazları silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Cihazları silmek için 'Devam Et'i tıklayın."
+
 
 #: host.php:482
 msgid "Delete Devices"
@@ -6811,11 +6805,13 @@ msgstr "Tüm ilişkili Grafikleri ve Veri Kaynaklarını silin."
 
 #: host.php:500
 msgid "Click 'Continue' to Enable the following Device."
-msgstr "Aşağıdaki Cihazları etkinleştirmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Cihazları etkinleştirmek için 'Devam Et'i tıklayın."
+
 
 #: host.php:501
 msgid "Click 'Continue' to Enable the following Devices."
-msgstr "Aşağıdaki Cihazları etkinleştirmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Cihazları etkinleştirmek için 'Devam Et'i tıklayın."
+
 
 #: host.php:502
 msgid "Enable Device"
@@ -6827,13 +6823,13 @@ msgstr "Aygıtları Etkinleştir"
 
 #: host.php:506
 msgid "Click 'Continue' to Disable the following Device."
-msgstr ""
-"Aşağıdaki cihazları devre dışı bırakmak için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki cihazları devre dışı bırakmak için 'Devam Et'i tıklayın."
+
 
 #: host.php:507
 msgid "Click 'Continue' to Disable the following Devices."
-msgstr ""
-"Aşağıdaki cihazları devre dışı bırakmak için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki cihazları devre dışı bırakmak için 'Devam Et'i tıklayın."
+
 
 #: host.php:508 include/global_form.php:1308
 msgid "Disable Device"
@@ -6875,15 +6871,13 @@ msgstr "Cihazlardaki İstatistikleri Temizle"
 
 #: host.php:525
 msgid "Click 'Continue' to Synchronize Device to its Device Template."
-msgstr ""
-"Aşağıdaki Cihazları Cihaz Şablonlarıyla Eşitlemek için &#39;Devam Et&#39;i "
-"tıklayın."
+msgstr "Aşağıdaki Cihazları Cihaz Şablonlarıyla Eşitlemek için 'Devam Et'i tıklayın."
+
 
 #: host.php:526
 msgid "Click 'Continue' to Synchronize Devices to their Device Templates."
-msgstr ""
-"Aşağıdaki Cihazları Cihaz Şablonlarıyla Eşitlemek için &#39;Devam Et&#39;i "
-"tıklayın."
+msgstr "Aşağıdaki Cihazları Cihaz Şablonlarıyla Eşitlemek için 'Devam Et'i tıklayın."
+
 
 #: host.php:527
 msgid "Synchronize Device Template"
@@ -6945,7 +6939,8 @@ msgstr "Aygıt Hata Ayıklamasını Etkinleştir"
 
 #: host.php:729
 msgid "Repopulate Poller Cache"
-msgstr "Poller Cache&#39;i Yeniden Oluştur"
+msgstr "Poller Cache'i Yeniden Oluştur"
+
 
 #: host.php:730 include/global_arrays.php:2631 include/global_arrays.php:2643
 #: utilities.php:1236
@@ -7141,12 +7136,8 @@ msgstr "Bu Cihazdan üretilen toplam Veri Kaynağı sayısı."
 
 #: host.php:1793
 msgid "The monitoring status of the Device based upon ping results.  If this Device is a special type Device, by using the hostname \"localhost\", or due to the setting to not perform an Availability Check, it will always remain Up.  When using cmd.php data collector, a Device with no Graphs, is not pinged by the data collector and will remain in an \"Unknown\" state."
-msgstr ""
-"Ping sonuçlarına göre Cihazın izleme durumu. Bu Aygıt özel bir Aygıt ise, "
-"&quot;localhost&quot; ana bilgisayar adını kullanarak veya bir Uygunluk "
-"Denetimi yapmama ayarı nedeniyle, her zaman Yukarı kalır. Cmd.php veri "
-"toplayıcısı kullanılırken, Grafiksiz bir Aygıt veri toplayıcı tarafından "
-"pinge edilmez ve &quot;Bilinmeyen&quot; durumda kalır."
+msgstr "Ping sonuçlarına göre Cihazın izleme durumu. Bu Aygıt özel bir Aygıt ise, \"localhost\" ana bilgisayar adını kullanarak veya bir Uygunluk Denetimi yapmama ayarı nedeniyle, her zaman Yukarı kalır. Cmd.php veri toplayıcısı kullanılırken, Grafiksiz bir Aygıt veri toplayıcı tarafından pinge edilmez ve \"Bilinmeyen\" durumda kalır."
+
 
 #: host.php:1799
 msgid "The site associated to this Device"
@@ -7218,11 +7209,13 @@ msgstr "Cihazları Eşitle"
 
 #: host_templates.php:232
 msgid "Click 'Continue' to Delete the following Device Template."
-msgstr "Aşağıdaki Cihaz Şablonlarını silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Cihaz Şablonlarını silmek için 'Devam Et'i tıklayın."
+
 
 #: host_templates.php:233
 msgid "Click 'Continue' to Delete following Device Templates."
-msgstr "Aşağıdaki Cihaz Şablonlarını silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Cihaz Şablonlarını silmek için 'Devam Et'i tıklayın."
+
 
 #: host_templates.php:234
 msgid "Delete Device Template"
@@ -7270,9 +7263,8 @@ msgstr "Aygıt Şablonuyla Senkronize Et"
 
 #: host_templates.php:282
 msgid "Click 'Continue' to delete the following Graph Template will be disassociated from the Device Template."
-msgstr ""
-"Aşağıdaki Grafik Şablonunu silmek için &#39;Devam Et&#39;i tıklayın, Aygıt "
-"Şablonundan ayrıştırılacak."
+msgstr "Aşağıdaki Grafik Şablonunu silmek için 'Devam Et'i tıklayın, Aygıt Şablonundan ayrıştırılacak."
+
 
 #: host_templates.php:283
 #, php-format
@@ -7285,9 +7277,8 @@ msgstr "Grafik Şablonunu Kaldır"
 
 #: host_templates.php:349
 msgid "Click 'Continue' to delete the following Data Queries will be disassociated from the Device Template."
-msgstr ""
-"Aşağıdaki Veri Sorgularını silmek için &#39;Devam Et&#39;i tıklayın, Cihaz "
-"Şablonundan ayrılacaksınız."
+msgstr "Aşağıdaki Veri Sorgularını silmek için 'Devam Et'i tıklayın, Cihaz Şablonundan ayrılacaksınız."
+
 
 #: host_templates.php:350
 #, php-format
@@ -7494,7 +7485,8 @@ msgstr "Vurgulanan dizin mevcut değil. Lütfen geçerli bir dizin girin."
 
 #: include/global_arrays.php:174
 msgid "The Cacti log file must have the extension '.log'"
-msgstr "Cacti günlük dosyası &#39;.log&#39; uzantısına sahip olmalı"
+msgstr "Cacti günlük dosyası '.log' uzantısına sahip olmalı"
+
 
 #: include/global_arrays.php:177
 msgid "Data Input for method does not appear to be whitelisted."
@@ -7556,9 +7548,8 @@ msgstr ""
 
 #: include/global_arrays.php:216
 msgid "Data Template includes deleted Data Source Profile.  Please resave the Data Template with an existing Data Source Profile."
-msgstr ""
-"Veri Şablonu, silinen Veri Kaynağı Profili&#39;ni içerir. Lütfen Veri "
-"Şablonunu mevcut bir Veri Kaynağı Profili ile yeniden kaydedin."
+msgstr "Veri Şablonu, silinen Veri Kaynağı Profili'ni içerir. Lütfen Veri Şablonunu mevcut bir Veri Kaynağı Profili ile yeniden kaydedin."
+
 
 #: include/global_arrays.php:219
 msgid "Graph Template includes deleted GPrint Prefix.  Please run database repair script to identify and/or correct."
@@ -7568,15 +7559,13 @@ msgstr ""
 
 #: include/global_arrays.php:222
 msgid "Graph Template includes deleted CDEFs.  Please run database repair script to identify and/or correct."
-msgstr ""
-"Grafik Şablonu silinmiş CDEF&#39;leri içerir. Lütfen tanımlamak ve / veya "
-"düzeltmek için veritabanı onarım komut dosyasını çalıştırın."
+msgstr "Grafik Şablonu silinmiş CDEF'leri içerir. Lütfen tanımlamak ve / veya düzeltmek için veritabanı onarım komut dosyasını çalıştırın."
+
 
 #: include/global_arrays.php:225
 msgid "Graph Template includes deleted Data Input Method.  Please run database repair script to identify."
-msgstr ""
-"Grafik Şablonu silinmiş Veri Giriş Yöntemi&#39;ni içerir. Lütfen tanımlamak "
-"için veritabanı onarım komut dosyasını çalıştırın."
+msgstr "Grafik Şablonu silinmiş Veri Giriş Yöntemi'ni içerir. Lütfen tanımlamak için veritabanı onarım komut dosyasını çalıştırın."
+
 
 #: include/global_arrays.php:228
 msgid "Data Template not found during Export.  Please run database repair script to identify."
@@ -7776,15 +7765,13 @@ msgstr "Eşitleme Merkezi Cacti Veritabanı sunucusunu içermez."
 
 #: include/global_arrays.php:351
 msgid "When saving a Remote Data Collector, the Database Hostname must be unique from all others."
-msgstr ""
-"Uzak Veri Toplayıcı&#39;yı kaydederken, Veritabanı Ana Bilgisayar adı "
-"diğerlerinden benzersiz olmalıdır."
+msgstr "Uzak Veri Toplayıcı'yı kaydederken, Veritabanı Ana Bilgisayar adı diğerlerinden benzersiz olmalıdır."
+
 
 #: include/global_arrays.php:354
 msgid "Your Remote Database Hostname must be something other than 'localhost' for each Remote Data Collector."
-msgstr ""
-"Uzak Veritabanı Ana Bilgisayar Adınız, her Uzak Veri Toplayıcı için "
-"&#39;localhost&#39; dışında bir şey olmalıdır."
+msgstr "Uzak Veritabanı Ana Bilgisayar Adınız, her Uzak Veri Toplayıcı için 'localhost' dışında bir şey olmalıdır."
+
 
 #: include/global_arrays.php:357
 msgid "Path variables on this page were only saved locally."
@@ -7967,11 +7954,13 @@ msgstr "Merkez"
 
 #: include/global_arrays.php:600
 msgid "Top -> Down"
-msgstr "Yukarı -&gt; Aşağı"
+msgstr "Yukarı -> Aşağı"
+
 
 #: include/global_arrays.php:601
 msgid "Bottom -> Up"
-msgstr "Alt -&gt; Yukarı"
+msgstr "Alt -> Yukarı"
+
 
 #: include/global_arrays.php:605 tree.php:1686
 msgid "Numeric"
@@ -10119,7 +10108,8 @@ msgstr "Birleştirme İşlevleri"
 
 #: include/global_form.php:259 include/global_form.php:291
 msgid "How data is to be entered in RRAs."
-msgstr "RRA&#39;larda verinin nasıl girileceği."
+msgstr "RRA'larda verinin nasıl girileceği."
+
 
 #: include/global_form.php:266
 msgid "Is this the default storage profile?"
@@ -10131,9 +10121,8 @@ msgstr "RRDdosya Boyutu (Bayt cinsinden)"
 
 #: include/global_form.php:273
 msgid "Based upon the number of Rows in all RRAs and the number of Consolidation Functions selected, the size of this entire in the RRDfile."
-msgstr ""
-"Tüm RRA&#39;lardaki Satır sayısına ve seçilen Konsolidasyon İşlevlerinin "
-"sayısına, RRD dosyasındaki tümünün büyüklüğüne göre."
+msgstr "Tüm RRA'lardaki Satır sayısına ve seçilen Konsolidasyon İşlevlerinin sayısına, RRD dosyasındaki tümünün büyüklüğüne göre."
+
 
 #: include/global_form.php:295
 msgid "New Profile RRA"
@@ -10151,7 +10140,8 @@ msgstr ""
 
 #: include/global_form.php:308
 msgid "How many generations data is kept in the RRA."
-msgstr "RRA&#39;da kaç nesil veri tutulur."
+msgstr "RRA'da kaç nesil veri tutulur."
+
 
 #: include/global_form.php:316 include/global_settings.php:2979
 msgid "Default Timespan"
@@ -10159,15 +10149,13 @@ msgstr "Varsayılan Zaman Aralığı"
 
 #: include/global_form.php:317
 msgid "When viewing a Graph based upon the RRA in question, the default Timespan to show for that Graph."
-msgstr ""
-"Söz konusu RRA&#39;ya göre bir Grafik görüntülerken, söz konusu Grafik için "
-"gösterilecek varsayılan Zaman Aralığı."
+msgstr "Söz konusu RRA'ya göre bir Grafik görüntülerken, söz konusu Grafik için gösterilecek varsayılan Zaman Aralığı."
+
 
 #: include/global_form.php:324
 msgid "Based upon the Aggregation Level, the Rows, and the Polling Interval the amount of data that will be retained in the RRA"
-msgstr ""
-"Toplama Düzeyi, Satırlar ve Yoklama Aralığı&#39;na bağlı olarak, RRA&#39;da "
-"tutulacak veri miktarı"
+msgstr "Toplama Düzeyi, Satırlar ve Yoklama Aralığı'na bağlı olarak, RRA'da tutulacak veri miktarı"
+
 
 #: include/global_form.php:329
 msgid "RRA Size (in Bytes)"
@@ -10175,9 +10163,8 @@ msgstr "RRA Boyutu (Bayt cinsinden)"
 
 #: include/global_form.php:330
 msgid "Based upon the number of Rows and the number of Consolidation Functions selected, the size of this RRA in the RRDfile."
-msgstr ""
-"Satır sayısına ve seçilen Konsolidasyon Fonksiyonu sayısına bağlı olarak, bu "
-"RRA&#39;nın RRD dosyasındaki boyutu."
+msgstr "Satır sayısına ve seçilen Konsolidasyon Fonksiyonu sayısına bağlı olarak, bu RRA'nın RRD dosyasındaki boyutu."
+
 
 #: include/global_form.php:348
 msgid "A useful name for this CDEF."
@@ -10328,7 +10315,8 @@ msgstr "Veri Kaynağı Aktif"
 
 #: include/global_form.php:622
 msgid "Whether Cacti should gather data for this data source or not."
-msgstr "Cacti&#39;nin bu veri kaynağı için veri toplayıp toplamaması gerektiği."
+msgstr "Cacti'nin bu veri kaynağı için veri toplayıp toplamaması gerektiği."
+
 
 #: include/global_form.php:630
 msgid "Internal Data Source Name"
@@ -10342,7 +10330,8 @@ msgstr ""
 
 #: include/global_form.php:638
 msgid "Minimum Value (\"U\" for No Minimum)"
-msgstr "Minimum Değer (Minimum Yok &quot;U&quot;)"
+msgstr "Minimum Değer (Minimum Yok \"U\")"
+
 
 #: include/global_form.php:643
 msgid "The minimum value of data that is allowed to be collected."
@@ -10350,7 +10339,8 @@ msgstr "Toplanmasına izin verilen asgari veri değeri."
 
 #: include/global_form.php:646
 msgid "Maximum Value (\"U\" for No Maximum)"
-msgstr "Maksimum Değer (Maksimum Yok için &quot;U&quot;)"
+msgstr "Maksimum Değer (Maksimum Yok için \"U\")"
+
 
 #: include/global_form.php:651
 msgid "The maximum value of data that is allowed to be collected."
@@ -10362,13 +10352,13 @@ msgstr "Veri Kaynağı Türü"
 
 #: include/global_form.php:658
 msgid "How data is represented in the RRA."
-msgstr "Verilerin RRA&#39;da nasıl temsil edildiği."
+msgstr "Verilerin RRA'da nasıl temsil edildiği."
+
 
 #: include/global_form.php:666
 msgid "The maximum amount of time that can pass before data is entered as 'unknown'. (Usually 2x300=600)"
-msgstr ""
-"Verilerden önce geçebilecek azami süre &#39;bilinmeyen&#39; olarak girilir. ("
-"Genellikle 2x300 = 600)"
+msgstr "Verilerden önce geçebilecek azami süre 'bilinmeyen' olarak girilir. (Genellikle 2x300 = 600)"
+
 
 #: include/global_form.php:672 lib/html_utility.php:335
 msgid "Not Selected"
@@ -10423,9 +10413,8 @@ msgstr "Görüntü Biçimi (--imgformat)"
 
 #: include/global_form.php:733
 msgid "The type of graph that is generated; PNG, GIF or SVG.  The selection of graph image type is very RRDtool dependent."
-msgstr ""
-"Üretilen grafiğin türü; PNG, GIF veya SVG. Grafik görüntü tipinin seçimi çok "
-"RRDtool&#39;a bağlıdır."
+msgstr "Üretilen grafiğin türü; PNG, GIF veya SVG. Grafik görüntü tipinin seçimi çok RRDtool'a bağlıdır."
+
 
 #: include/global_form.php:736
 msgid "Height (--height)"
@@ -10461,9 +10450,8 @@ msgstr "Eğim Modu (--slope-mode)"
 
 #: include/global_form.php:763
 msgid "Using Slope Mode evens out the shape of the graphs at the expense of some on screen resolution."
-msgstr ""
-"Eğim Modu&#39;nu kullanmak, bazı ekran çözünürlüğü pahasına grafiklerin "
-"şeklini dengeler."
+msgstr "Eğim Modu'nu kullanmak, bazı ekran çözünürlüğü pahasına grafiklerin şeklini dengeler."
+
 
 #: include/global_form.php:766
 msgid "Scaling Options"
@@ -10578,10 +10566,8 @@ msgstr "Birim Üs Değeri (--units-exponent)"
 
 #: include/global_form.php:854
 msgid "What unit Cacti should use on the Y-axis. Use 3 to display everything in \"k\" or -6 to display everything in \"u\" (micro)."
-msgstr ""
-"Cacti&#39;nin Y ekseninde hangi birimi kullanması gerektiği. Her şeyi "
-"&quot;u&quot; (mikro) ile görüntülemek için 3&#39;ü &quot;k&quot; veya "
-"-6&#39;da görüntülemek için kullanın."
+msgstr "Cacti'nin Y ekseninde hangi birimi kullanması gerektiği. Her şeyi \"u\" (mikro) ile görüntülemek için 3'ü \"k\" veya -6'da görüntülemek için kullanın."
+
 
 #: include/global_form.php:858
 msgid "Unit Length (--units-length &lt;length&gt;)"
@@ -10832,9 +10818,8 @@ msgstr "Veriyi Kaydır"
 
 #: include/global_form.php:1064
 msgid "Offset your data on the time axis (x-axis) by the amount specified in the 'value' field."
-msgstr ""
-"Verilerinizi zaman ekseninde (x ekseni) &#39;değer&#39; alanında belirtilen "
-"miktarla dengeleyin."
+msgstr "Verilerinizi zaman ekseninde (x ekseni) 'değer' alanında belirtilen miktarla dengeleyin."
+
 
 #: include/global_form.php:1072
 msgid "[HRULE|VRULE]: The value of the graph item.<br/> [TICK]: The fraction for the tick line.<br/> [SHIFT]: The time offset in seconds."
@@ -10848,10 +10833,8 @@ msgstr "GPRINT Türü"
 
 #: include/global_form.php:1079
 msgid "If this graph item is a GPRINT, you can optionally choose another format here. You can define additional types under \"GPRINT Presets\"."
-msgstr ""
-"Bu grafik öğesi bir GPRINT ise, isteğe bağlı olarak burada başka bir format "
-"seçebilirsiniz. &quot;GPRINT Presets&quot; altında ilave tipler "
-"tanımlayabilirsiniz."
+msgstr "Bu grafik öğesi bir GPRINT ise, isteğe bağlı olarak burada başka bir format seçebilirsiniz. \"GPRINT Presets\" altında ilave tipler tanımlayabilirsiniz."
+
 
 #: include/global_form.php:1082
 msgid "Text Alignment (TEXTALIGN)"
@@ -11036,10 +11019,8 @@ msgstr "Düşmüş Cihaz Algılama"
 
 #: include/global_form.php:1326
 msgid "The method Cacti will use to determine if a host is available for polling.  <br><i>NOTE: It is recommended that, at a minimum, SNMP always be selected.</i>"
-msgstr ""
-"Cacti yöntemi, bir sunucunun yoklama için uygun olup olmadığını belirlemek "
-"için kullanacaktır. <br> <i>NOT: En azından SNMP&#39;nin daima seçilmesi "
-"önerilir.</i>"
+msgstr "Cacti yöntemi, bir sunucunun yoklama için uygun olup olmadığını belirlemek için kullanacaktır. <br> <i>NOT: En azından SNMP'nin daima seçilmesi önerilir.</i>"
+
 
 #: include/global_form.php:1334 include/global_settings.php:969
 msgid "Downed Device SNMP Recovery Options Set"
@@ -11378,10 +11359,8 @@ msgstr "SNMP Mesaj Tipi"
 
 #: include/global_form.php:1923
 msgid "SNMP traps are always unacknowledged. To send out acknowledged SNMP notifications, formally called \"INFORMS\", SNMPv2 or above will be required."
-msgstr ""
-"SNMP tuzakları her zaman onaylanmadı. Resmen &quot;INFORMS&quot;, SNMPv2 "
-"veya üzeri olarak adlandırılan SNMP bildirimlerini göndermek için gerekli "
-"olacaktır."
+msgstr "SNMP tuzakları her zaman onaylanmadı. Resmen \"INFORMS\", SNMPv2 veya üzeri olarak adlandırılan SNMP bildirimlerini göndermek için gerekli olacaktır."
+
 
 #: include/global_form.php:1956
 msgid "The new Title of the aggregated Graph."
@@ -11412,12 +11391,8 @@ msgstr ""
 #: include/global_form.php:1979 include/global_form.php:2065
 #: include/global_form.php:2170
 msgid "Use this Option to create e.g. STACKed graphs.<br>AREA/STACK: 1st graph keeps AREA/STACK items, others convert to STACK<br>LINE1: all items convert to LINE1 items<br>LINE2: all items convert to LINE2 items<br>LINE3: all items convert to LINE3 items"
-msgstr ""
-"STACKed grafikler oluşturmak için bu Seçeneği kullanın. <br> AREA / STACK: "
-"1. grafik AREA / STACK öğelerini tutar, diğerleri STACK&#39;e dönüştürülür "
-"<br> LINE1: tüm öğeler LINE1 öğelerine dönüştürülür <br> LINE2: tüm öğeler "
-"LINE2 öğelerine dönüştürülür <br> LINE3: tüm öğeler LINE3 öğelere "
-"dönüştürülür"
+msgstr "STACKed grafikler oluşturmak için bu Seçeneği kullanın. <br> AREA / STACK: 1. grafik AREA / STACK öğelerini tutar, diğerleri STACK'e dönüştürülür <br> LINE1: tüm öğeler LINE1 öğelerine dönüştürülür <br> LINE2: tüm öğeler LINE2 öğelerine dönüştürülür <br> LINE3: tüm öğeler LINE3 öğelere dönüştürülür"
+
 
 #: include/global_form.php:1986 include/global_form.php:2072
 #: include/global_form.php:2177
@@ -11427,9 +11402,8 @@ msgstr "tutarında"
 #: include/global_form.php:1987 include/global_form.php:2073
 #: include/global_form.php:2178
 msgid "Please check those Items that shall be totaled in the \"Total\" column, when selecting any totaling option here."
-msgstr ""
-"Lütfen burada herhangi bir toplama seçeneğini seçerken, &quot;Toplam&quot; "
-"sütununda toplanacak Öğeleri kontrol edin."
+msgstr "Lütfen burada herhangi bir toplama seçeneğini seçerken, \"Toplam\" sütununda toplanacak Öğeleri kontrol edin."
+
 
 #: include/global_form.php:1994 include/global_form.php:2081
 #: include/global_form.php:2186
@@ -11613,9 +11587,8 @@ msgstr "Değişiklikleri Yay"
 
 #: include/global_form.php:2464
 msgid "Propagate all options on this form (except for 'Title') to all child 'Header' items."
-msgstr ""
-"Bu formdaki tüm seçenekleri (&#39;Başlık&#39; hariç) tüm alt &#39;Başlık&#39;"
-" öğelerine yay."
+msgstr "Bu formdaki tüm seçenekleri ('Başlık' hariç) tüm alt 'Başlık' öğelerine yay."
+
 
 #: include/global_form.php:2472
 msgid "The String Pattern (Regular Expression) to match against.<br>Enclosing '/' must <strong>NOT</strong> be provided!"
@@ -11799,10 +11772,8 @@ msgstr "Poller Standart Hata Günlüğü Yolu"
 
 #: include/global_settings.php:235
 msgid "If you are having issues with Cacti's Data Collectors, set this file path and the Data Collectors standard error will be redirected to this file"
-msgstr ""
-"Cacti&#39;nin Veri Toplayıcıları ile ilgili sorunlarınız varsa, bu dosya "
-"yolunu ayarlayın ve Veri Toplayıcıları standart hatası bu dosyaya "
-"yönlendirilecek"
+msgstr "Cacti'nin Veri Toplayıcıları ile ilgili sorunlarınız varsa, bu dosya yolunu ayarlayın ve Veri Toplayıcıları standart hatası bu dosyaya yönlendirilecek"
+
 
 #: include/global_settings.php:244
 msgid "Boost Debug Log"
@@ -11830,9 +11801,8 @@ msgstr "Spine Yapılandırma Dosyası Yolu"
 
 #: include/global_settings.php:266
 msgid "The path to Spine configuration file.  By default, in the cwd of Spine, or /etc if not specified."
-msgstr ""
-"Spine yapılandırma dosyasının yolu. Varsayılan olarak, Spine&#39;da veya "
-"belirtilmemişse / etc içinde."
+msgstr "Spine yapılandırma dosyasının yolu. Varsayılan olarak, Spine'da veya belirtilmemişse / etc içinde."
+
 
 #: include/global_settings.php:278
 msgid "RRDfile Auto Clean"
@@ -11840,9 +11810,8 @@ msgstr "RRDfile Otomatik Temizleme"
 
 #: include/global_settings.php:279
 msgid "Automatically archive or delete RRDfiles when their corresponding Data Sources are removed from Cacti"
-msgstr ""
-"Karşılık gelen Veri Kaynakları Cacti&#39;den kaldırıldığında RRD dosyalarını "
-"otomatik olarak arşivle veya sil"
+msgstr "Karşılık gelen Veri Kaynakları Cacti'den kaldırıldığında RRD dosyalarını otomatik olarak arşivle veya sil"
+
 
 #: include/global_settings.php:284
 msgid "RRDfile Auto Clean Method"
@@ -11850,9 +11819,8 @@ msgstr "RRDfile Otomatik Temizleme Yöntemi"
 
 #: include/global_settings.php:285
 msgid "The method used to Clean RRDfiles from Cacti after their Data Sources are deleted."
-msgstr ""
-"Veri Kaynakları silindikten sonra RRD dosyalarını Cacti&#39;den temizlemek "
-"için kullanılan yöntem."
+msgstr "Veri Kaynakları silindikten sonra RRD dosyalarını Cacti'den temizlemek için kullanılan yöntem."
+
 
 #: include/global_settings.php:289 plugins.php:52
 msgid "Archive"
@@ -12040,11 +12008,8 @@ msgstr "Otomatik Dil Tespiti"
 
 #: include/global_settings.php:440
 msgid "Allow to automatically determine the 'default' language of the user and provide it at login time if that language is supported by Cacti. If disabled, the default language will be in force until the user elects another language."
-msgstr ""
-"Kullanıcının &#39;varsayılan&#39; dilini otomatik olarak belirlemeye izin "
-"ver ve bu dil Cacti tarafından destekleniyorsa giriş zamanında verilmesine "
-"izin ver. Devre dışı bırakılırsa, varsayılan dil, kullanıcı başka bir dil "
-"seçinceye kadar yürürlükte kalacaktır."
+msgstr "Kullanıcının 'varsayılan' dilini otomatik olarak belirlemeye izin ver ve bu dil Cacti tarafından destekleniyorsa giriş zamanında verilmesine izin ver. Devre dışı bırakılırsa, varsayılan dil, kullanıcı başka bir dil seçinceye kadar yürürlükte kalacaktır."
+
 
 #: include/global_settings.php:449
 msgid "Preferred Language Processor"
@@ -12072,7 +12037,8 @@ msgstr "Tarih görüntüleme biçimi"
 
 #: include/global_settings.php:467
 msgid "The System default date format to use in Cacti."
-msgstr "Cacti&#39;de kullanılacak Sistem varsayılan tarih formatı."
+msgstr "Cacti'de kullanılacak Sistem varsayılan tarih formatı."
+
 
 #: include/global_settings.php:473 include/global_settings.php:2943
 msgid "Date Separator"
@@ -12080,7 +12046,8 @@ msgstr "Tarih Ayırıcı"
 
 #: include/global_settings.php:474
 msgid "The System default date separator to be used in Cacti."
-msgstr "Cacti&#39;de kullanılacak Sistem varsayılan tarih ayırıcısı."
+msgstr "Cacti'de kullanılacak Sistem varsayılan tarih ayırıcısı."
+
 
 #: include/global_settings.php:480
 msgid "Other Settings"
@@ -12226,21 +12193,18 @@ msgstr "Cacti Panosunu Gizle"
 
 #: include/global_settings.php:563
 msgid "For use with Cacti's External Link Support.  Using this setting, you can hide the Cacti Dashboard, so you can display just your own page."
-msgstr ""
-"Cacti&#39;nin Harici Bağlantı Desteği ile kullanmak için. Bu ayarı "
-"kullanarak Cacti Dashboard&#39;u gizleyebilirsiniz, böylece sadece kendi "
-"sayfanızı görüntüleyebilirsiniz."
+msgstr "Cacti'nin Harici Bağlantı Desteği ile kullanmak için. Bu ayarı kullanarak Cacti Dashboard'u gizleyebilirsiniz, böylece sadece kendi sayfanızı görüntüleyebilirsiniz."
+
 
 #: include/global_settings.php:568
 msgid "Enable Drag-N-Drop"
-msgstr "Drag-N-Drop&#39;u Etkinleştir"
+msgstr "Drag-N-Drop'u Etkinleştir"
+
 
 #: include/global_settings.php:569
 msgid "Some of Cacti's interfaces support Drag-N-Drop.  If checked this option will be enabled.  Note: For visually impaired user, this option may be disabled."
-msgstr ""
-"Cacti&#39;nin arabirimlerinin bazıları Drag-N-Drop özelliğini destekliyor. "
-"İşaretliyse bu seçenek etkinleştirilecektir. Not: Görme engelli kullanıcılar "
-"için bu seçenek devre dışı bırakılabilir."
+msgstr "Cacti'nin arabirimlerinin bazıları Drag-N-Drop özelliğini destekliyor. İşaretliyse bu seçenek etkinleştirilecektir. Not: Görme engelli kullanıcılar için bu seçenek devre dışı bırakılabilir."
+
 
 #: include/global_settings.php:574
 msgid "GitHub/GitLab API Settings"
@@ -12318,9 +12282,8 @@ msgstr "HTTPS Üzerindeki Bağlantıları Zorla"
 
 #: include/global_settings.php:644
 msgid "When checked, any attempts to access Cacti will be redirected to HTTPS to ensure high security."
-msgstr ""
-"İşaretlendiğinde, yüksek güvenlik sağlamak için Cacti&#39;ye erişme "
-"girişimleri HTTPS&#39;ye yönlendirilir."
+msgstr "İşaretlendiğinde, yüksek güvenlik sağlamak için Cacti'ye erişme girişimleri HTTPS'ye yönlendirilir."
+
 
 #: include/global_settings.php:650
 #, fuzzy
@@ -12657,11 +12620,8 @@ msgstr "Kullanılabilirlik / erişilebilirlik"
 
 #: include/global_settings.php:963
 msgid "Default Availability/Reachability for all new Devices.  The method Cacti will use to determine if a Device is available for polling.  <br><i>NOTE: It is recommended that, at a minimum, SNMP always be selected.</i>"
-msgstr ""
-"Tüm yeni cihazlar için varsayılan uygunluk / erişilebilirlik. Cacti yöntemi, "
-"bir aygıtın yoklama için uygun olup olmadığını belirlemek için "
-"kullanacaktır. <br> <i>NOT: En azından SNMP&#39;nin daima seçilmesi "
-"önerilir.</i>"
+msgstr "Tüm yeni cihazlar için varsayılan uygunluk / erişilebilirlik. Cacti yöntemi, bir aygıtın yoklama için uygun olup olmadığını belirlemek için kullanacaktır. <br> <i>NOT: En azından SNMP'nin daima seçilmesi önerilir.</i>"
+
 
 #: include/global_settings.php:977
 msgid "Downed Device SNMP Recovery Options Retry Frequency"
@@ -12681,26 +12641,18 @@ msgstr "Tüm yeni Cihazlar için varsayılan Ping türü.</i>"
 
 #: include/global_settings.php:992
 msgid "Default Ping Port for all new Devices.  With TCP, Cacti will attempt to Syn the port.  With UDP, Cacti requires either a successful connection, or a 'port not reachable' error to determine if the Device is up or not."
-msgstr ""
-"Tüm yeni cihazlar için varsayılan ping portu. TCP ile Cacti portu senkronize "
-"etmeye çalışacaktır. UDP ile Cacti, cihazın başarılı olup olmadığını veya "
-"bağlantı kurulup kurulmadığını belirlemek için &#39;bağlantıya "
-"ulaşılamıyor&#39; hatası gerektiriyor."
+msgstr "Tüm yeni cihazlar için varsayılan ping portu. TCP ile Cacti portu senkronize etmeye çalışacaktır. UDP ile Cacti, cihazın başarılı olup olmadığını veya bağlantı kurulup kurulmadığını belirlemek için 'bağlantıya ulaşılamıyor' hatası gerektiriyor."
+
 
 #: include/global_settings.php:1000
 msgid "Default Ping Timeout value in milli-seconds for all new Devices.  The timeout values to use for Device SNMP, ICMP, UDP and TCP pinging.  ICMP Pings will be rounded up to the nearest second.  TCP and UDP connection timeouts on Windows are controlled by the operating system, and are therefore not recommended on Windows."
-msgstr ""
-"Tüm yeni Aygıtlar için varsayılan Ping Zaman Aşımı değeri mili-saniye "
-"olarak. Aygıt SNMP, ICMP, UDP ve TCP ping için kullanılacak zaman aşımı "
-"değerleri. ICMP Pings, en yakın saniyeye yuvarlanır. Windows&#39;taki TCP ve "
-"UDP bağlantı zaman aşımları işletim sistemi tarafından kontrol edilir ve bu "
-"nedenle Windows&#39;ta önerilmez."
+msgstr "Tüm yeni Aygıtlar için varsayılan Ping Zaman Aşımı değeri mili-saniye olarak. Aygıt SNMP, ICMP, UDP ve TCP ping için kullanılacak zaman aşımı değerleri. ICMP Pings, en yakın saniyeye yuvarlanır. Windows'taki TCP ve UDP bağlantı zaman aşımları işletim sistemi tarafından kontrol edilir ve bu nedenle Windows'ta önerilmez."
+
 
 #: include/global_settings.php:1008
 msgid "The number of times Cacti will attempt to ping a Device before marking it as down."
-msgstr ""
-"Cacti&#39;nin, bir Cihazı aşağı olarak işaretlemeden önce bir cihazı "
-"pinglemeye çalışacağı sayı."
+msgstr "Cacti'nin, bir Cihazı aşağı olarak işaretlemeden önce bir cihazı pinglemeye çalışacağı sayı."
+
 
 #: include/global_settings.php:1015
 msgid "Up/Down Settings"
@@ -12737,7 +12689,8 @@ msgstr "Tema"
 
 #: include/global_settings.php:1045 include/global_settings.php:2882
 msgid "Please select one of the available Themes to skin your Cacti with."
-msgstr "Lütfen Cacti&#39;nizi ciltlemek için mevcut Temalardan birini seçin."
+msgstr "Lütfen Cacti'nizi ciltlemek için mevcut Temalardan birini seçin."
+
 
 #: include/global_settings.php:1051
 msgid "Table Settings"
@@ -12874,9 +12827,8 @@ msgstr "Sayfa başına maksimum satır sayısı"
 
 #: include/global_settings.php:1169
 msgid "User defined number of lines for the CLOG to tail when selecting 'All lines'."
-msgstr ""
-"CLOG için &#39;Tüm satırlar&#39; seçildiğinde kullanıcı tarafından "
-"tanımlanacak satır sayısı."
+msgstr "CLOG için 'Tüm satırlar' seçildiğinde kullanıcı tarafından tanımlanacak satır sayısı."
+
 
 #: include/global_settings.php:1176
 msgid "Log Tail Refresh"
@@ -12896,11 +12848,8 @@ msgstr "Dışlama Regex"
 
 #: include/global_settings.php:1189
 msgid "Any strings that match this regex will be excluded from the user display.  <strong>For example, if you want to exclude all log lines that include the words 'Admin' or 'Login' you would type '(Admin || Login)'</strong>"
-msgstr ""
-"Bu regex ile eşleşen dizeler kullanıcı ekranından çıkarılır. "
-"<strong>Örneğin, &#39;Yönetici&#39; veya &#39;Giriş&#39; kelimelerini içeren "
-"tüm günlük satırlarını hariç tutmak istiyorsanız &#39;yazarsınız (Yönetici ||"
-" Giriş)&#39;</strong>"
+msgstr "Bu regex ile eşleşen dizeler kullanıcı ekranından çıkarılır. <strong>Örneğin, 'Yönetici' veya 'Giriş' kelimelerini içeren tüm günlük satırlarını hariç tutmak istiyorsanız 'yazarsınız (Yönetici || Giriş)'</strong>"
+
 
 #: include/global_settings.php:1196
 msgid "Real-time Graphs"
@@ -12912,9 +12861,8 @@ msgstr "Gerçek Zamanlı Grafiği Etkinleştir"
 
 #: include/global_settings.php:1202
 msgid "When an option is checked, users will be able to put Cacti into Real-time mode."
-msgstr ""
-"Bir seçenek işaretlendiğinde, kullanıcılar Cacti&#39;yi Gerçek Zamanlı moda "
-"sokabilir."
+msgstr "Bir seçenek işaretlendiğinde, kullanıcılar Cacti'yi Gerçek Zamanlı moda sokabilir."
+
 
 #: include/global_settings.php:1208
 msgid "This timespan you wish to see on the default graph."
@@ -13197,9 +13145,8 @@ msgstr "Hata Ayıklama Çıkışı Genişliği"
 
 #: include/global_settings.php:1431
 msgid "If you choose this option, Cacti will check for output that exceeds Cacti's ability to store it and issue a warning when it finds it."
-msgstr ""
-"Bu seçeneği tercih ederseniz, Cacti, Cacti&#39;nin saklama kapasitesini aşan "
-"çıktıyı kontrol eder ve bulduğu zaman bir uyarı verir."
+msgstr "Bu seçeneği tercih ederseniz, Cacti, Cacti'nin saklama kapasitesini aşan çıktıyı kontrol eder ve bulduğu zaman bir uyarı verir."
+
 
 #: include/global_settings.php:1436
 msgid "Disable increasing OID Check"
@@ -13621,9 +13568,8 @@ msgstr "Misafir kullanıcı"
 
 #: include/global_settings.php:1793
 msgid "The name of the guest user for viewing graphs; is 'No User' by default."
-msgstr ""
-"Grafikleri görüntülemek için konuk kullanıcının adı; varsayılan olarak &#39;"
-"Kullanıcı Yok&#39; şeklindedir."
+msgstr "Grafikleri görüntülemek için konuk kullanıcının adı; varsayılan olarak 'Kullanıcı Yok' şeklindedir."
+
 
 #: include/global_settings.php:1800 user_domains.php:306
 msgid "User Template"
@@ -13631,10 +13577,8 @@ msgstr "Kullanıcı kalıbı"
 
 #: include/global_settings.php:1801
 msgid "The name of the user that Cacti will use as a template for new Web Basic and LDAP users; is 'guest' by default.  This user account will be disabled from logging in upon being selected."
-msgstr ""
-"Cacti&#39;nin yeni Web Basic ve LDAP kullanıcıları için şablon olarak "
-"kullanacağı kullanıcının adı; varsayılan olarak &#39;konuk&#39; şeklindedir. "
-"Bu kullanıcı hesabı seçildikten sonra giriş yapamaz."
+msgstr "Cacti'nin yeni Web Basic ve LDAP kullanıcıları için şablon olarak kullanacağı kullanıcının adı; varsayılan olarak 'konuk' şeklindedir. Bu kullanıcı hesabı seçildikten sonra giriş yapamaz."
+
 
 #: include/global_settings.php:1808
 msgid "Account Locking"
@@ -13897,7 +13841,8 @@ msgstr "URL Bağlantısı"
 
 #: include/global_settings.php:2071
 msgid "Server Base URL"
-msgstr "Sunucu Tabanı URL&#39;si"
+msgstr "Sunucu Tabanı URL'si"
+
 
 #: include/global_settings.php:2072
 msgid "This is a the server location that will be used for links to the Cacti site. This should include the subdirectory if Cacti does not run from root folder."
@@ -13915,11 +13860,8 @@ msgstr "Birincil Yöneticiyi Sorunlar Hakkında Bilgilendir"
 
 #: include/global_settings.php:2084
 msgid "In cases where the Cacti server is experiencing problems, should the Primary Administrator be notified by Email?  The Primary Administrator's Cacti user account is specified under the Authentication tab on Cacti's settings page. It defaults to the 'admin' account."
-msgstr ""
-"Cacti sunucusunun sorun yaşadığı durumlarda, Birincil Yöneticiye E-posta ile "
-"bildirilmeli mi? Birincil Yöneticinin Cacti kullanıcı hesabı, Cacti&#39;nin "
-"ayarlar sayfasındaki Kimlik Doğrulama sekmesi altında belirtilmiştir. "
-"Varsayılan olarak &#39;admin&#39; hesabına."
+msgstr "Cacti sunucusunun sorun yaşadığı durumlarda, Birincil Yöneticiye E-posta ile bildirilmeli mi? Birincil Yöneticinin Cacti kullanıcı hesabı, Cacti'nin ayarlar sayfasındaki Kimlik Doğrulama sekmesi altında belirtilmiştir. Varsayılan olarak 'admin' hesabına."
+
 
 #: include/global_settings.php:2089
 msgid "Test Email"
@@ -13985,9 +13927,8 @@ msgstr "Sendmail Yolu"
 
 #: include/global_settings.php:2138
 msgid "This is the path to sendmail on your server. (Only used if Sendmail is selected as the Mail Service)"
-msgstr ""
-"Bu, sunucunuzda sendmail&#39;in yoludur. (Yalnızca Posta Hizmeti olarak "
-"Sendmail seçilmişse kullanılır)"
+msgstr "Bu, sunucunuzda sendmail'in yoludur. (Yalnızca Posta Hizmeti olarak Sendmail seçilmişse kullanılır)"
+
 
 #: include/global_settings.php:2146
 msgid "SMTP Options"
@@ -14170,11 +14111,8 @@ msgstr "İsteğe Bağlı RRD Güncellemesini Etkinleştir"
 
 #: include/global_settings.php:2294
 msgid "Should Boost enable on demand RRD updating in Cacti?  If you disable, this change will not take affect until after the next polling cycle.  When you have Remote Data Collectors, this settings is required to be on."
-msgstr ""
-"Boost, talep üzerine RRD güncellemesinin Cacti&#39;de yapılmasına izin "
-"vermeli mi? Devre dışı bırakırsanız, bu değişiklik bir sonraki yoklama "
-"döngüsüne kadar geçerli olmaz. Uzak Veri Toplayıcılarınız olduğunda, bu "
-"ayarların açık olması gerekir."
+msgstr "Boost, talep üzerine RRD güncellemesinin Cacti'de yapılmasına izin vermeli mi? Devre dışı bırakırsanız, bu değişiklik bir sonraki yoklama döngüsüne kadar geçerli olmaz. Uzak Veri Toplayıcılarınız olduğunda, bu ayarların açık olması gerekir."
+
 
 #: include/global_settings.php:2299
 msgid "System Level RRD Updater"
@@ -14202,9 +14140,8 @@ msgstr "Takviye İşlem Sayısı"
 
 #: include/global_settings.php:2313
 msgid "The number of concurrent boost processes to use to use to process all of the RRDs in the boost table."
-msgstr ""
-"Takviye tablosundaki tüm RRD&#39;leri işlemek için kullanılacak eşzamanlı "
-"artırma işlemlerinin sayısı."
+msgstr "Takviye tablosundaki tüm RRD'leri işlemek için kullanılacak eşzamanlı artırma işlemlerinin sayısı."
+
 
 #: include/global_settings.php:2340
 msgid "Maximum Records"
@@ -14222,13 +14159,8 @@ msgstr "Geçiş Başına Maksimum Veri Kaynağı Öğesi"
 
 #: include/global_settings.php:2349
 msgid "To optimize performance, the boost RRD updater needs to know how many Data Source Items should be retrieved in one pass.  Please be careful not to set too high as graphing performance during major updates can be compromised.  If you encounter graphing or polling slowness during updates, lower this number.  The default value is 50000."
-msgstr ""
-"Performansı iyileştirmek için, artırıcı RRD güncelleyicisinin bir seferde "
-"kaç Veri Kaynağı Öğesi alınması gerektiğini bilmesi gerekir. Lütfen büyük "
-"güncellemeler sırasındaki grafik performansı tehlikeye girebileceğinden çok "
-"yüksek ayarlarda bulunmamaya dikkat edin. Güncellemeler sırasında grafik "
-"çizme veya yoklama yavaşlığıyla karşılaşırsanız, bu sayıyı azaltın. "
-"Varsayılan değer 50000&#39;dür."
+msgstr "Performansı iyileştirmek için, artırıcı RRD güncelleyicisinin bir seferde kaç Veri Kaynağı Öğesi alınması gerektiğini bilmesi gerekir. Lütfen büyük güncellemeler sırasındaki grafik performansı tehlikeye girebileceğinden çok yüksek ayarlarda bulunmamaya dikkat edin. Güncellemeler sırasında grafik çizme veya yoklama yavaşlığıyla karşılaşırsanız, bu sayıyı azaltın. Varsayılan değer 50000'dür."
+
 
 #: include/global_settings.php:2355
 msgid "Maximum Argument Length"
@@ -14236,12 +14168,8 @@ msgstr "Maksimum Bağımsız Değişken Uzunluğu"
 
 #: include/global_settings.php:2356
 msgid "When boost sends update commands to RRDtool, it must not exceed the operating systems Maximum Argument Length.  This varies by operating system and kernel level.  For example: Windows 2000 <= 2048, FreeBSD <= 65535, Linux 2.6.22-- <= 131072, Linux 2.6.23++ unlimited"
-msgstr ""
-"Yükseltme, RRDtool&#39;a güncelleme komutları gönderdiğinde, işletim "
-"sistemleri Maksimum Bağımsız Değişken Uzunluğunu geçmemelidir. Bu işletim "
-"sistemi ve çekirdek seviyesine göre değişir. Örneğin: Windows 2000 &lt;= "
-"2048, FreeBSD &lt;= 65535, Linux 2.6.22 - &lt;= 131072, Linux 2.6.23 ++ "
-"sınırsız"
+msgstr "Yükseltme, RRDtool'a güncelleme komutları gönderdiğinde, işletim sistemleri Maksimum Bağımsız Değişken Uzunluğunu geçmemelidir. Bu işletim sistemi ve çekirdek seviyesine göre değişir. Örneğin: Windows 2000 <= 2048, FreeBSD <= 65535, Linux 2.6.22 - <= 131072, Linux 2.6.23 ++ sınırsız"
+
 
 #: include/global_settings.php:2363
 msgid "Memory Limit for Boost and Poller"
@@ -14297,9 +14225,8 @@ msgstr "Görüntü Dosyalarının Konumu"
 
 #: include/global_settings.php:2401
 msgid "Specify the location where Boost should place your image files.  These files will be automatically purged by the poller when they expire."
-msgstr ""
-"Boost&#39;un görüntü dosyalarınızı yerleştireceği yeri belirtin. Bu dosyalar "
-"zaman aşımına uğradığında yoklayıcı tarafından otomatik olarak temizlenir."
+msgstr "Boost'un görüntü dosyalarınızı yerleştireceği yeri belirtin. Bu dosyalar zaman aşımına uğradığında yoklayıcı tarafından otomatik olarak temizlenir."
+
 
 #: include/global_settings.php:2410
 msgid "Data Sources Statistics"
@@ -14464,9 +14391,8 @@ msgstr "Veri Depolama Ayarları"
 
 #: include/global_settings.php:2585
 msgid "Choose if RRDs will be stored locally or being handled by an external RRDtool proxy server."
-msgstr ""
-"RRD&#39;lerin yerel olarak mı depolanacağını veya harici bir RRDtool proxy "
-"sunucusu tarafından mı işleneceğini seçin."
+msgstr "RRD'lerin yerel olarak mı depolanacağını veya harici bir RRDtool proxy sunucusu tarafından mı işleneceğini seçin."
+
 
 #: include/global_settings.php:2589 lib/auth.php:531 lib/auth.php:553
 #: lib/auth.php:563 lib/auth.php:573 user_admin.php:2137
@@ -14544,9 +14470,8 @@ msgstr "RSA Parmak İzi"
 
 #: include/global_settings.php:2644
 msgid "The fingerprint of the current public RSA key the proxy is using. This is required to establish a trusted connection."
-msgstr ""
-"Proxy&#39;nin kullandığı geçerli RSA anahtarının parmak izi. Güvenilir bir "
-"bağlantı kurmak için bu gereklidir."
+msgstr "Proxy'nin kullandığı geçerli RSA anahtarının parmak izi. Güvenilir bir bağlantı kurmak için bu gereklidir."
+
 
 #: include/global_settings.php:2651
 msgid "RRDtool Proxy Server - Backup"
@@ -14558,9 +14483,8 @@ msgstr "Yük dengeleme"
 
 #: include/global_settings.php:2657
 msgid "If both main and backup proxy are receivable this option allows to spread all requests against RRDtool."
-msgstr ""
-"Hem ana hem de yedek proxy alınabilirse, bu seçenek tüm istekleri "
-"RRDtool&#39;a karşı yaymaya izin verir."
+msgstr "Hem ana hem de yedek proxy alınabilirse, bu seçenek tüm istekleri RRDtool'a karşı yaymaya izin verir."
+
 
 #: include/global_settings.php:2662
 msgid "The DNS hostname or IP address of the RRDtool backup proxy server if proxy is running in MSR mode."
@@ -14574,9 +14498,8 @@ msgstr "Yedek proxy ile şifreli iletişim için TCP portu."
 
 #: include/global_settings.php:2676
 msgid "The fingerprint of the current public RSA key the backup proxy is using. This required to establish a trusted connection."
-msgstr ""
-"Yedek proxy&#39;nin kullandığı geçerli ortak RSA anahtarının parmak izi. Bu "
-"güvenilir bir bağlantı kurmak için gerekli."
+msgstr "Yedek proxy'nin kullandığı geçerli ortak RSA anahtarının parmak izi. Bu güvenilir bir bağlantı kurmak için gerekli."
+
 
 #: include/global_settings.php:2686
 msgid "Spike Kill Settings"
@@ -14684,9 +14607,8 @@ msgstr "RRA Başına Max Kills"
 
 #: include/global_settings.php:2779
 msgid "This value represents the maximum number of spikes to remove from a Graph RRA."
-msgstr ""
-"Bu değer, bir Grafik RRA&#39;sından kaldırılacak maksimum çivilerin sayısını "
-"temsil eder."
+msgstr "Bu değer, bir Grafik RRA'sından kaldırılacak maksimum çivilerin sayısını temsil eder."
+
 
 #: include/global_settings.php:2783 include/global_settings.php:2784
 #: include/global_settings.php:2785 include/global_settings.php:2786
@@ -14813,10 +14735,8 @@ msgstr "Baz zamanı"
 
 #: include/global_settings.php:2856
 msgid "The Base Time for Spike removal to occur.  For example, if you use '12:00am' and you choose once per day, the batch removal would begin at approximately midnight every day."
-msgstr ""
-"Spike kaldırma için Temel Zaman oluşması. Örneğin, &#39;12: 00 &#39;"
-"kullanırsanız ve günde bir kez seçerseniz, parti kaldırma işlemi her gün "
-"yaklaşık gece yarısında başlar."
+msgstr "Spike kaldırma için Temel Zaman oluşması. Örneğin, '12: 00 'kullanırsanız ve günde bir kez seçerseniz, parti kaldırma işlemi her gün yaklaşık gece yarısında başlar."
+
 
 #: include/global_settings.php:2863
 msgid "Graph Templates to Spike Kill"
@@ -14915,11 +14835,13 @@ msgstr ""
 
 #: include/global_settings.php:2937
 msgid "The date format to use in Cacti."
-msgstr "Cacti&#39;de kullanılacak tarih formatı."
+msgstr "Cacti'de kullanılacak tarih formatı."
+
 
 #: include/global_settings.php:2944
 msgid "The date separator to be used in Cacti."
-msgstr "Cacti&#39;de kullanılacak tarih ayırıcısı."
+msgstr "Cacti'de kullanılacak tarih ayırıcısı."
+
 
 #: include/global_settings.php:2950
 msgid "Page Refresh"
@@ -14967,9 +14889,8 @@ msgstr "Grafiğin Geleceğe Uzatmasına İzin Ver"
 
 #: include/global_settings.php:2994
 msgid "When displaying Graphs, allow Graph Dates to extend 'to future'"
-msgstr ""
-"Grafikleri görüntülerken, Grafik Tarihlerinin &#39;geleceğe&#39; uzanmasına "
-"izin ver"
+msgstr "Grafikleri görüntülerken, Grafik Tarihlerinin 'geleceğe' uzanmasına izin ver"
+
 
 #: include/global_settings.php:2999
 msgid "First Day of the Week"
@@ -15001,9 +14922,8 @@ msgstr "Küçük Resim Bölümleri"
 
 #: include/global_settings.php:3025
 msgid "Which portions of Cacti display Thumbnails by default."
-msgstr ""
-"Cacti&#39;nin hangi bölümleri varsayılan olarak Küçük Resimler&#39;i "
-"görüntüler."
+msgstr "Cacti'nin hangi bölümleri varsayılan olarak Küçük Resimler'i görüntüler."
+
 
 #: include/global_settings.php:3039
 msgid "Preview Thumbnail Columns"
@@ -15139,7 +15059,8 @@ msgstr "Gerçek Zamanlı Görüntüleme Modu"
 
 #: include/global_settings.php:3198
 msgid "How do you wish to view Realtime Graphs?"
-msgstr "Realtime Graphs&#39;ı nasıl görmek istersiniz?"
+msgstr "Realtime Graphs'ı nasıl görmek istersiniz?"
+
 
 #: include/global_settings.php:3201
 msgid "Inline"
@@ -15214,26 +15135,13 @@ msgstr "Çevrimdışı Kayıt Sayısı:"
 
 #: index.php:89
 msgid "<strong>NOTE:</strong> You are logged into a Remote Data Collector.  When <b>'online'</b>, you will be able to view and control much of the Main Cacti Web Site just as if you were logged into it.  Also, it's important to note that Remote Data Collectors are required to use the Cacti's Performance Boosting Services <b>'On Demand Updating'</b> feature, and we always recommend using Spine.  When the Remote Data Collector is <b>'offline'</b>, the Remote Data Collectors Web Site will contain much less information.  However, it will cache all updates until the Main Cacti Database and Web Server are reachable.  Then it will dump it's Boost table output back to the Main Cacti Database for updating."
-msgstr ""
-"<strong>NOT:</strong> Uzak Veri Toplayıcıya giriş yaptınız. "
-"<b>&#39;Online&#39;</b> olduğunda, Ana Cacti Web Sitesinin çoğunu, sanki "
-"giriş yapmış gibi görüntüleyebilir ve kontrol edebilirsiniz. Ayrıca, Uzaktan "
-"Veri Toplayıcıların Cacti&#39;nin Performans Artırma Hizmetleri <b>&#39;"
-"İsteğe Bağlı Güncelleme&#39;</b> özelliğini kullanması gerektiğini unutmayın "
-"ve daima Spine kullanmanızı öneririz. Uzak Veri Toplayıcı "
-"<b>&#39;çevrimdışı&#39;</b> olduğunda, Uzak Veri Toplayıcıları Web Sitesi "
-"çok daha az bilgi içerir. Bununla birlikte, Ana Kaktüs Veri Tabanı ve Web "
-"Sunucusu erişilinceye kadar tüm güncellemeleri önbelleğe alır. Ardından, "
-"Boost tablo çıkışını güncelleme için Ana Kaktüs Veri Tabanına geri gönderir."
+msgstr "<strong>NOT:</strong> Uzak Veri Toplayıcıya giriş yaptınız. <b>'Online'</b> olduğunda, Ana Cacti Web Sitesinin çoğunu, sanki giriş yapmış gibi görüntüleyebilir ve kontrol edebilirsiniz. Ayrıca, Uzaktan Veri Toplayıcıların Cacti'nin Performans Artırma Hizmetleri <b>'İsteğe Bağlı Güncelleme'</b> özelliğini kullanması gerektiğini unutmayın ve daima Spine kullanmanızı öneririz. Uzak Veri Toplayıcı <b>'çevrimdışı'</b> olduğunda, Uzak Veri Toplayıcıları Web Sitesi çok daha az bilgi içerir. Bununla birlikte, Ana Kaktüs Veri Tabanı ve Web Sunucusu erişilinceye kadar tüm güncellemeleri önbelleğe alır. Ardından, Boost tablo çıkışını güncelleme için Ana Kaktüs Veri Tabanına geri gönderir."
+
 
 #: index.php:94
 msgid "<strong>NOTE:</strong> None of the Core Cacti Plugins, to date, have been re-designed to work with Remote Data Collectors.  Therefore, Plugins such as MacTrack, and HMIB, which require direct access to devices will not work with Remote Data Collectors at this time.  However, plugins such as Thold will work so long as the Remote Data Collector is in <b>'online'</b> mode."
-msgstr ""
-"<strong>NOT:</strong> Bugüne kadar, Core Cacti Eklentilerinden hiçbiri Uzak "
-"Veri Toplayıcılarla çalışmak üzere yeniden tasarlanmamıştır. Bu nedenle, "
-"cihazlara doğrudan erişim gerektiren MacTrack ve HMIB gibi Eklentiler şu "
-"anda Uzak Veri Toplayıcılarla çalışmaz. Ancak, Thold gibi eklentiler, Uzak "
-"Veri Toplayıcı <b>&#39;çevrimiçi&#39;</b> modda olduğu sürece çalışacaktır."
+msgstr "<strong>NOT:</strong> Bugüne kadar, Core Cacti Eklentilerinden hiçbiri Uzak Veri Toplayıcılarla çalışmak üzere yeniden tasarlanmamıştır. Bu nedenle, cihazlara doğrudan erişim gerektiren MacTrack ve HMIB gibi Eklentiler şu anda Uzak Veri Toplayıcılarla çalışmaz. Ancak, Thold gibi eklentiler, Uzak Veri Toplayıcı <b>'çevrimiçi'</b> modda olduğu sürece çalışacaktır."
+
 
 #: install/functions.php:961
 #, php-format
@@ -15779,9 +15687,8 @@ msgstr ""
 #: lib/auth.php:3810
 #, php-format
 msgid "%s authenticated by Web Server, but both Template and Guest Users are not defined in Cacti."
-msgstr ""
-"%s Web Sunucusu tarafından doğrulandı, ancak hem Şablon hem de Konuk "
-"Kullanıcılar Cacti&#39;de tanımlanmadı."
+msgstr "%s Web Sunucusu tarafından doğrulandı, ancak hem Şablon hem de Konuk Kullanıcılar Cacti'de tanımlanmadı."
+
 
 #: lib/auth.php:3917
 #, fuzzy, php-format
@@ -16069,7 +15976,8 @@ msgstr "Tür Bulundu = '%s' [%s]."
 #: lib/data_query.php:135
 #, php-format
 msgid "Unknown Type = '%s'."
-msgstr "Bilinmeyen Tür = &#39; %s&#39;."
+msgstr "Bilinmeyen Tür = ' %s'."
+
 
 #: lib/data_query.php:172
 msgid "WARNING: Sort Field Association has Changed.  Re-mapping issues may occur!"
@@ -16223,15 +16131,13 @@ msgstr "Bulunan endeks sayısı: %s"
 
 #: lib/data_query.php:697
 msgid "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' not supported"
-msgstr ""
-"XML dosyasında &lt;arg_num_indexes&gt; eksik, &#39;Dizin Sayısı "
-"Değiştirildi&#39; desteklenmiyor"
+msgstr "XML dosyasında &lt;arg_num_indexes&gt; eksik, 'Dizin Sayısı Değiştirildi' desteklenmiyor"
+
 
 #: lib/data_query.php:699
 msgid "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting arg_index entries"
-msgstr ""
-"&lt;arg_num_indexes&gt; XML dosyasında eksik, arg_index girişleri sayılarak "
-"taklit edilen &#39;Dizin Sayısı Değiştirildi&#39"
+msgstr "&lt;arg_num_indexes&gt; XML dosyasında eksik, arg_index girişleri sayılarak taklit edilen 'Dizin Sayısı Değiştirildi&#39"
+
 
 #: lib/data_query.php:710
 msgid "ERROR: Data Query returned no indexes."
@@ -16244,7 +16150,8 @@ msgstr "'%s' dizin listesi için betik yürütülüyor, Dizin Sayısı: %s"
 
 #: lib/data_query.php:717
 msgid "Click to show Data Query output for 'index'"
-msgstr "&#39;İndex&#39; için Data Query çıktısını göstermek için tıklayın"
+msgstr "'İndex' için Data Query çıktısını göstermek için tıklayın"
+
 
 #: lib/data_query.php:720
 #, php-format
@@ -16316,9 +16223,8 @@ msgstr ""
 
 #: lib/data_query.php:937
 msgid "&lt;oid_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting oid_index entries"
-msgstr ""
-"&lt;oid_num_indexes&gt; XML dosyasında eksik, oid_index girişleri sayılarak "
-"taklit edilen &#39;Dizin Sayısı Değiştirildi&#39"
+msgstr "&lt;oid_num_indexes&gt; XML dosyasında eksik, oid_index girişleri sayılarak taklit edilen 'Dizin Sayısı Değiştirildi&#39"
+
 
 #: lib/data_query.php:940
 #, php-format
@@ -16691,9 +16597,8 @@ msgstr "SMTP hatası: "
 
 #: lib/functions.php:5835
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
-msgstr ""
-"Bu Cacti&#39;den üretilen bir test mesajıdır. Bu mesaj, Posta Ayarlarınızın "
-"yapılandırmasını test etmek için gönderildi."
+msgstr "Bu Cacti'den üretilen bir test mesajıdır. Bu mesaj, Posta Ayarlarınızın yapılandırmasını test etmek için gönderildi."
+
 
 #: lib/functions.php:5836
 msgid "Your email settings are currently set as follows"
@@ -16705,7 +16610,8 @@ msgstr "Yapılandırma Denetleniyor ... <br>"
 
 #: lib/functions.php:5849
 msgid "PHP's Mailer Class"
-msgstr "PHP&#39;nin Mailer Sınıfı"
+msgstr "PHP'nin Mailer Sınıfı"
+
 
 #: lib/functions.php:5855
 msgid "Method: SMTP"
@@ -17241,7 +17147,8 @@ msgstr "Operasyon Başarılı"
 
 #: lib/html.php:3123
 msgid "Click to Show/Hide Filter"
-msgstr "Filtreyi Göster / Gizle&#39;yi tıkla"
+msgstr "Filtreyi Göster / Gizle'yi tıkla"
+
 
 #: lib/html.php:3124
 msgid "SpikeKill Results"
@@ -17572,7 +17479,8 @@ msgstr "Yeni Rapor"
 
 #: lib/html_reports.php:38
 msgid "Give this Report a descriptive Name"
-msgstr "Bu Rapor&#39;a açıklayıcı bir Ad verin"
+msgstr "Bu Rapor'a açıklayıcı bir Ad verin"
+
 
 #: lib/html_reports.php:43 lib/html_reports.php:561
 msgid "Enable Report"
@@ -17601,12 +17509,8 @@ msgstr "Kullanılacak Dosyayı Biçimlendir"
 
 #: lib/html_reports.php:67
 msgid "Choose the custom html wrapper and CSS file to use.  This file contains both html and CSS to wrap around your report.  If it contains more than simply CSS, you need to place a special <REPORT> tag inside of the file.  This format tag will be replaced by the report content.  These files are located in the 'formats' directory."
-msgstr ""
-"Kullanılacak özel html sarıcısını ve CSS dosyasını seçin. Bu dosya, "
-"raporunuzu sarmak için hem html hem de CSS içeriyor. CSS&#39;den daha "
-"fazlasını içeriyorsa, özel bir <REPORT> Dosyanın içindeki etiketi kullanın. "
-"Bu biçim etiketi rapor içeriği ile değiştirilecektir. Bu dosyalar "
-"&#39;formatları&#39; dizininde bulunur."
+msgstr "Kullanılacak özel html sarıcısını ve CSS dosyasını seçin. Bu dosya, raporunuzu sarmak için hem html hem de CSS içeriyor. CSS'den daha fazlasını içeriyorsa, özel bir <REPORT> Dosyanın içindeki etiketi kullanın. Bu biçim etiketi rapor içeriği ile değiştirilecektir. Bu dosyalar 'formatları' dizininde bulunur."
+
 
 #: lib/html_reports.php:72
 msgid "Default Text Font Size"
@@ -17759,11 +17663,13 @@ msgstr "Tarih / Saat aynı saate taşındı Yarın"
 
 #: lib/html_reports.php:533
 msgid "Click 'Continue' to Delete the following Report."
-msgstr "Aşağıdaki Raporları silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Raporları silmek için 'Devam Et'i tıklayın."
+
 
 #: lib/html_reports.php:534
 msgid "Click 'Continue' to Delete the following Reports."
-msgstr "Aşağıdaki Raporları silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Raporları silmek için 'Devam Et'i tıklayın."
+
 
 #: lib/html_reports.php:535
 msgid "Delete Report"
@@ -17775,11 +17681,13 @@ msgstr "Raporları Sil"
 
 #: lib/html_reports.php:539
 msgid "Click 'Continue' to take ownership of the following Report."
-msgstr "Aşağıdaki Raporlara sahip olmak için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Raporlara sahip olmak için 'Devam Et'i tıklayın."
+
 
 #: lib/html_reports.php:540
 msgid "Click 'Continue' to take ownership of the following Reports."
-msgstr "Aşağıdaki Raporlara sahip olmak için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Raporlara sahip olmak için 'Devam Et'i tıklayın."
+
 
 #: lib/html_reports.php:541
 msgid "Take Report Ownership"
@@ -17811,11 +17719,13 @@ msgstr "İsim biçimi:"
 
 #: lib/html_reports.php:559
 msgid "Click 'Continue' to Enable the following Report."
-msgstr "Aşağıdaki Raporları etkinleştirmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Raporları etkinleştirmek için 'Devam Et'i tıklayın."
+
 
 #: lib/html_reports.php:560
 msgid "Click 'Continue' to Enable the following Reports."
-msgstr "Aşağıdaki Raporları etkinleştirmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Raporları etkinleştirmek için 'Devam Et'i tıklayın."
+
 
 #: lib/html_reports.php:562
 msgid "Enable Reports"
@@ -17823,13 +17733,13 @@ msgstr "Raporu Etkinleştir"
 
 #: lib/html_reports.php:565
 msgid "Click 'Continue' to Disable the following Report."
-msgstr ""
-"Aşağıdaki Raporları devre dışı bırakmak için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Raporları devre dışı bırakmak için 'Devam Et'i tıklayın."
+
 
 #: lib/html_reports.php:566
 msgid "Click 'Continue' to Disable the following Reports."
-msgstr ""
-"Aşağıdaki Raporları devre dışı bırakmak için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Raporları devre dışı bırakmak için 'Devam Et'i tıklayın."
+
 
 #: lib/html_reports.php:567
 msgid "Disable Report"
@@ -17841,11 +17751,13 @@ msgstr "Raporları Devre Dışı Bırak"
 
 #: lib/html_reports.php:571
 msgid "Click 'Continue' to Send the following Report now."
-msgstr "Aşağıdaki Raporları şimdi göndermek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Raporları şimdi göndermek için 'Devam Et'i tıklayın."
+
 
 #: lib/html_reports.php:572
 msgid "Click 'Continue' to Send the following Reports now."
-msgstr "Aşağıdaki Raporları şimdi göndermek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Raporları şimdi göndermek için 'Devam Et'i tıklayın."
+
 
 #: lib/html_reports.php:573
 msgid "Send Report Now"
@@ -17858,13 +17770,14 @@ msgstr "Rapor gönder"
 #: lib/html_reports.php:618
 #, php-format
 msgid "Unable to send Report '%s'.  Please set destination e-mail addresses"
-msgstr ""
-"%s &#39;raporu gönderilemedi. Lütfen hedef e-posta adreslerini ayarlayın"
+msgstr "%s 'raporu gönderilemedi. Lütfen hedef e-posta adreslerini ayarlayın"
+
 
 #: lib/html_reports.php:620
 #, php-format
 msgid "Unable to send Report '%s'.  Please set an e-mail subject"
-msgstr "%s &#39;raporu gönderilemedi. Lütfen bir e-posta konusu belirleyin"
+msgstr "%s 'raporu gönderilemedi. Lütfen bir e-posta konusu belirleyin"
+
 
 #: lib/html_reports.php:622
 #, php-format
@@ -18398,15 +18311,13 @@ msgstr "Bilinmeyen Sebep: %s"
 #: lib/installer.php:1732
 #, php-format
 msgid "You are attempting to install Cacti %s onto a 0.6.x database. Unfortunately, this can not be performed."
-msgstr ""
-"Cacti %s&#39;yi 0.6.x veritabanına yüklemeye çalışıyorsunuz. Ne yazık ki, bu "
-"yapılamaz."
+msgstr "Cacti %s'yi 0.6.x veritabanına yüklemeye çalışıyorsunuz. Ne yazık ki, bu yapılamaz."
+
 
 #: lib/installer.php:1733
 msgid "To be able continue, you <b>MUST</b> create a new database, import \"cacti.sql\" into it:"
-msgstr ""
-"Mümkün bunu içine yeni bir veritabanı, ithalat &quot;cacti.sql&quot; "
-"oluşturmak <b>GEREKİR</b> devam olmak için:"
+msgstr "Mümkün bunu içine yeni bir veritabanı, ithalat \"cacti.sql\" oluşturmak <b>GEREKİR</b> devam olmak için:"
+
 
 #: lib/installer.php:1735
 msgid "You <b>MUST</b> then update \"include/config.php\" to point to the new database."
@@ -18422,9 +18333,8 @@ msgstr ""
 
 #: lib/installer.php:1744
 msgid "You have created a new database, but have not yet imported the 'cacti.sql' file. At the command line, execute the following to continue:"
-msgstr ""
-"Yeni bir veritabanı oluşturdunuz, ancak &#39;cacti.sql&#39; dosyasını henüz "
-"içe aktarmadınız. Komut satırında, devam etmek için aşağıdakileri yürütün:"
+msgstr "Yeni bir veritabanı oluşturdunuz, ancak 'cacti.sql' dosyasını henüz içe aktarmadınız. Komut satırında, devam etmek için aşağıdakileri yürütün:"
+
 
 #: lib/installer.php:1746
 msgid "This error may also be generated if the cacti database user does not have correct permissions on the Cacti database. Please ensure that the Cacti database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX on the Cacti database."
@@ -18443,17 +18353,13 @@ msgstr ""
 
 #: lib/installer.php:1750
 msgid "On Linux/UNIX, run the following as 'root' in a shell:"
-msgstr ""
-"Linux / UNIX&#39;de, aşağıdakileri bir kabukta &#39;root&#39; olarak "
-"çalıştırın:"
+msgstr "Linux / UNIX'de, aşağıdakileri bir kabukta 'root' olarak çalıştırın:"
+
 
 #: lib/installer.php:1753
 msgid "On Windows, you must follow the instructions here <a target='_blank' href='https://dev.mysql.com/downloads/timezones.html'>Time zone description table</a>.  Once that is complete, you can issue the following command to grant the Cacti user access to the tables:"
-msgstr ""
-"Windows&#39;ta, <a target='_blank' href='https://dev.mysql.com/downloads/"
-"timezones.html'>Saat dilimi açıklama tablosundaki</a> talimatları "
-"uygulamanız gerekir. Bu işlem tamamlandıktan sonra, Cacti kullanıcısının "
-"tablolara erişmesini sağlamak için aşağıdaki komutu verebilirsiniz:"
+msgstr "Windows'ta, <a target='_blank' href='https://dev.mysql.com/downloads/timezones.html'>Saat dilimi açıklama tablosundaki</a> talimatları uygulamanız gerekir. Bu işlem tamamlandıktan sonra, Cacti kullanıcısının tablolara erişmesini sağlamak için aşağıdaki komutu verebilirsiniz:"
+
 
 #: lib/installer.php:1756
 msgid "Then run the following within MySQL as an administrator:"
@@ -18495,20 +18401,14 @@ msgstr ""
 
 #: lib/installer.php:1906
 msgid "Thanks for taking the time to download and install Cacti, the complete graphing solution for your network. Before you can start making cool graphs, there are a few pieces of data that Cacti needs to know."
-msgstr ""
-"Ağınız için eksiksiz bir grafik çözümü olan Cacti&#39;yi indirmek ve "
-"yüklemek için zaman ayırdığınızdan dolayı teşekkür ederiz. Harika grafikler "
-"çizmeye başlamadan önce, Cacti&#39;nin bilmesi gereken birkaç veri parçası "
-"var."
+msgstr "Ağınız için eksiksiz bir grafik çözümü olan Cacti'yi indirmek ve yüklemek için zaman ayırdığınızdan dolayı teşekkür ederiz. Harika grafikler çizmeye başlamadan önce, Cacti'nin bilmesi gereken birkaç veri parçası var."
+
 
 #: lib/installer.php:1907
 #, php-format
 msgid "Make sure you have read and followed the required steps needed to install Cacti before continuing. Install information can be found for <a href=\"%1$s\">Unix</a> and <a href=\"%2$s\">Win32</a>-based operating systems."
-msgstr ""
-"Devam etmeden önce Cacti&#39;yi yüklemek için gereken adımları okuduğunuzdan "
-"ve uyguladığınızdan emin olun. <a href=\"%1$s\">Unix</a> ve <a href=\"%2$s\""
-">Win32</a> tabanlı işletim sistemleri için yükleme bilgilerini "
-"bulabilirsiniz."
+msgstr "Devam etmeden önce Cacti'yi yüklemek için gereken adımları okuduğunuzdan ve uyguladığınızdan emin olun. <a href=\"%1$s\">Unix</a> ve <a href=\"%2$s\">Win32</a> tabanlı işletim sistemleri için yükleme bilgilerini bulabilirsiniz."
+
 
 #: lib/installer.php:1910
 #, php-format
@@ -18558,9 +18458,8 @@ msgstr "Yer kontrolleri"
 
 #: lib/installer.php:2025
 msgid "Please update config.php with the correct relative URI location of Cacti (url_path)."
-msgstr ""
-"Lütfen config.php dosyasını, Cacti&#39;nin (url_path) doğru URI konumu ile "
-"güncelleyin."
+msgstr "Lütfen config.php dosyasını, Cacti'nin (url_path) doğru URI konumu ile güncelleyin."
+
 
 #: lib/installer.php:2028
 msgid "Your Cacti configuration has the relative correct path (url_path) in config.php."
@@ -18619,13 +18518,8 @@ msgstr "PHP - Modül Desteği (Gerekli)"
 
 #: lib/installer.php:2116
 msgid "Cacti requires several PHP Modules to be installed to work properly. If any of these are not installed, you will be unable to continue the installation until corrected. In addition, for optimal system performance Cacti should be run with certain MySQL system variables set.  Please follow the MySQL recommendations at your discretion.  Always seek the MySQL documentation if you have any questions."
-msgstr ""
-"Cacti&#39;nin düzgün çalışması için birkaç PHP Modülünün kurulu olması "
-"gerekiyor. Bunlardan herhangi biri kurulmazsa, düzeltmeye kadar yüklemeye "
-"devam edemezsiniz. Ek olarak, optimum sistem performansı için Cacti, "
-"belirlenmiş MySQL sistem değişkenleriyle çalışılmalıdır. Lütfen MySQL "
-"önerilerini takdirinize göre takip edin. Herhangi bir sorunuz olursa daima "
-"MySQL dokümantasyonunu arayın."
+msgstr "Cacti'nin düzgün çalışması için birkaç PHP Modülünün kurulu olması gerekiyor. Bunlardan herhangi biri kurulmazsa, düzeltmeye kadar yüklemeye devam edemezsiniz. Ek olarak, optimum sistem performansı için Cacti, belirlenmiş MySQL sistem değişkenleriyle çalışılmalıdır. Lütfen MySQL önerilerini takdirinize göre takip edin. Herhangi bir sorunuz olursa daima MySQL dokümantasyonunu arayın."
+
 
 #: lib/installer.php:2118
 msgid "The following PHP extensions are mandatory, and MUST be installed before continuing your Cacti install."
@@ -18674,11 +18568,8 @@ msgstr ""
 
 #: lib/installer.php:2190
 msgid "Your Cacti database login account does not have access to the MySQL TimeZone database.  Please provide the Cacti database account \"select\" access to the \"time_zone_name\" table in the \"mysql\" database, and populate MySQL's TimeZone information before proceeding."
-msgstr ""
-"Cacti veritabanı giriş hesabınızın MySQL TimeZone veritabanına erişimi yok. "
-"Lütfen &quot;mysql&quot; veritabanındaki &quot;time_zone_name&quot; "
-"tablosuna &quot;select&quot; erişimini sağlayın ve devam etmeden önce "
-"MySQL&#39;in TimeZone bilgilerini doldurun."
+msgstr "Cacti veritabanı giriş hesabınızın MySQL TimeZone veritabanına erişimi yok. Lütfen \"mysql\" veritabanındaki \"time_zone_name\" tablosuna \"select\" erişimini sağlayın ve devam etmeden önce MySQL'in TimeZone bilgilerini doldurun."
+
 
 #: lib/installer.php:2195
 msgid "Your Cacti database account has access to the MySQL TimeZone database and that database is populated with global TimeZone information."
@@ -18774,10 +18665,8 @@ msgstr ""
 
 #: lib/installer.php:2321
 msgid "The following information has been determined from Cacti's configuration file. If it is not correct, please edit \"include/config.php\" before continuing."
-msgstr ""
-"Aşağıdaki bilgiler Cacti&#39;nin yapılandırma dosyasından belirlenmiştir. "
-"Doğru değilse, lütfen devam etmeden önce &quot;include / config.php&quot; "
-"dosyasını düzenleyin."
+msgstr "Aşağıdaki bilgiler Cacti'nin yapılandırma dosyasından belirlenmiştir. Doğru değilse, lütfen devam etmeden önce \"include / config.php\" dosyasını düzenleyin."
+
 
 #: lib/installer.php:2325
 msgid "Local Database Connection Information"
@@ -18818,11 +18707,8 @@ msgstr "Yapılandırma Salt Okunur!"
 
 #: lib/installer.php:2351
 msgid "Your config.php file must be writable by the web server during install in order to configure the Remote poller.  Once installation is complete, you must set this file to Read Only to prevent possible security issues."
-msgstr ""
-"Remote Poller&#39;ı yapılandırmak için config.php dosyanızın kurulum "
-"sırasında web sunucusu tarafından yazılabilir olması gerekir. Yükleme "
-"tamamlandığında, olası güvenlik sorunlarını önlemek için bu dosyayı Salt "
-"Okunur&#39;a ayarlamanız gerekir."
+msgstr "Remote Poller'ı yapılandırmak için config.php dosyanızın kurulum sırasında web sunucusu tarafından yazılabilir olması gerekir. Yükleme tamamlandığında, olası güvenlik sorunlarını önlemek için bu dosyayı Salt Okunur'a ayarlamanız gerekir."
+
 
 #: lib/installer.php:2355
 msgid "Configuration of Poller"
@@ -18853,12 +18739,8 @@ msgstr ""
 
 #: lib/installer.php:2375
 msgid "Once the variables are all set in the config.php file, you must also grant the $rdatabase_username access to the main Cacti database server.  Follow the same procedure you would with any other Cacti install.  You may then press the 'Test Connection' button.  If the test is successful you will be able to proceed and complete the install."
-msgstr ""
-"Değişkenlerin tümü config.php dosyasında ayarlandıktan sonra, ana Cacti "
-"veritabanı sunucusuna $ rdatabase_username erişimini de vermelisiniz. Diğer "
-"Cacti kurulumlarıyla aynı prosedürü uygulayın. Daha sonra &#39;Test "
-"Connection&#39; düğmesine basabilirsiniz. Sınama başarılı olursa, yükleme "
-"işlemine devam edip tamamlayabilirsiniz."
+msgstr "Değişkenlerin tümü config.php dosyasında ayarlandıktan sonra, ana Cacti veritabanı sunucusuna $ rdatabase_username erişimini de vermelisiniz. Diğer Cacti kurulumlarıyla aynı prosedürü uygulayın. Daha sonra 'Test Connection' düğmesine basabilirsiniz. Sınama başarılı olursa, yükleme işlemine devam edip tamamlayabilirsiniz."
+
 
 #: lib/installer.php:2379
 msgid "Additional Steps After Installation"
@@ -18866,12 +18748,8 @@ msgstr "Kurulumdan Sonra Ek Adımlar"
 
 #: lib/installer.php:2381
 msgid "It is essential that the Central Cacti server can communicate via MySQL to each remote Cacti database server.  Once the install is complete, you must edit the Remote Data Collector and ensure the settings are correct.  You can verify using the 'Test Connection' when editing the Remote Data Collector."
-msgstr ""
-"Central Cacti sunucusunun MySQL yoluyla her uzak Cacti veritabanı "
-"sunucusuyla iletişim kurabilmesi önemlidir. Kurulum tamamlandıktan sonra, "
-"Uzak Veri Toplayıcı&#39;yı düzenlemeli ve ayarların doğru olduğundan emin "
-"olmalısınız. Uzak Veri Toplayıcı&#39;yı düzenlerken &#39;Test Bağlantısı&#39;"
-"nı kullanarak doğrulayabilirsiniz."
+msgstr "Central Cacti sunucusunun MySQL yoluyla her uzak Cacti veritabanı sunucusuyla iletişim kurabilmesi önemlidir. Kurulum tamamlandıktan sonra, Uzak Veri Toplayıcı'yı düzenlemeli ve ayarların doğru olduğundan emin olmalısınız. Uzak Veri Toplayıcı'yı düzenlerken 'Test Bağlantısı'nı kullanarak doğrulayabilirsiniz."
+
 
 #: lib/installer.php:2395
 msgid "Critical Binary Locations and Versions"
@@ -18891,14 +18769,8 @@ msgstr "Dizin İzin Kontrolleri"
 
 #: lib/installer.php:2483
 msgid "Please ensure the directory permissions below are correct before proceeding.  During the install, these directories need to be owned by the Web Server user.  These permission changes are required to allow the Installer to install Device Template packages which include XML and script files that will be placed in these directories.  If you choose not to install the packages, there is an 'install_package.php' cli script that can be used from the command line after the install is complete."
-msgstr ""
-"Lütfen devam etmeden önce aşağıdaki dizin izinlerinin doğru olduğundan emin "
-"olun. Yükleme sırasında bu dizinlerin Web Sunucusu kullanıcısına ait olması "
-"gerekir. Bu izin değişiklikleri, Yükleyicinin, bu dizinlere yerleştirilecek "
-"XML ve komut dosyalarını içeren Aygıt Şablonu paketlerini yüklemesine izin "
-"vermek için gereklidir. Paketleri kurmamayı seçerseniz, kurulum "
-"tamamlandıktan sonra komut satırından kullanılabilecek bir "
-"&#39;install_package.php&#39; cli betiği vardır."
+msgstr "Lütfen devam etmeden önce aşağıdaki dizin izinlerinin doğru olduğundan emin olun. Yükleme sırasında bu dizinlerin Web Sunucusu kullanıcısına ait olması gerekir. Bu izin değişiklikleri, Yükleyicinin, bu dizinlere yerleştirilecek XML ve komut dosyalarını içeren Aygıt Şablonu paketlerini yüklemesine izin vermek için gereklidir. Paketleri kurmamayı seçerseniz, kurulum tamamlandıktan sonra komut satırından kullanılabilecek bir 'install_package.php' cli betiği vardır."
+
 
 #: lib/installer.php:2486
 msgid "After the install is complete, you can make some of these directories read only to increase security."
@@ -19193,11 +19065,8 @@ msgstr "Veritabanı varsayılan harmanlamanızın UTF8 uyumlu olduğu görünmü
 
 #: lib/installer.php:2824
 msgid "Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched.   Please ensure your database is changed to 'utf8mb4_unicode_ci' by running the following: "
-msgstr ""
-"Eklentiler tarafından oluşturulan tabloların, harmanlamanın eşleşmemesi "
-"durumunda Cacti Core tablolarıyla ilgili sorunları olabilir. Lütfen "
-"aşağıdakileri çalıştırarak veritabanınızın &#39;utf8mb4_unicode_ci&#39; "
-"olarak değiştirildiğinden emin olun: "
+msgstr "Eklentiler tarafından oluşturulan tabloların, harmanlamanın eşleşmemesi durumunda Cacti Core tablolarıyla ilgili sorunları olabilir. Lütfen aşağıdakileri çalıştırarak veritabanınızın 'utf8mb4_unicode_ci' olarak değiştirildiğinden emin olun: "
+
 
 #: lib/installer.php:2831
 msgid "Table Setup"
@@ -19213,11 +19082,8 @@ msgstr ""
 
 #: lib/installer.php:2846
 msgid "Conversion of tables may take some time especially on larger tables.  The conversion of these tables will occur in the background but will not prevent the installer from completing.  This may slow down some servers if there are not enough resources for MySQL to handle the conversion."
-msgstr ""
-"Tabloların dönüştürülmesi, özellikle büyük tablolarda biraz zaman alabilir. "
-"Bu tabloların dönüşümü arka planda gerçekleşecek, ancak yükleyicinin "
-"tamamlanmasını engellemeyecektir. Bu, MySQL&#39;in dönüşümü gerçekleştirmesi "
-"için yeterli kaynak yoksa, bazı sunucuları yavaşlatabilir."
+msgstr "Tabloların dönüştürülmesi, özellikle büyük tablolarda biraz zaman alabilir. Bu tabloların dönüşümü arka planda gerçekleşecek, ancak yükleyicinin tamamlanmasını engellemeyecektir. Bu, MySQL'in dönüşümü gerçekleştirmesi için yeterli kaynak yoksa, bazı sunucuları yavaşlatabilir."
+
 
 #: lib/installer.php:2850
 msgid "Tables"
@@ -19275,10 +19141,8 @@ msgstr "SÜRÜM DÜŞÜRME ALGILANDI"
 
 #: lib/installer.php:2924
 msgid "YOU MUST MANUALLY CHANGE THE CACTI DATABASE TO REVERT ANY UPGRADE CHANGES THAT HAVE BEEN MADE.<br/>THE INSTALLER HAS NO METHOD TO DO THIS AUTOMATICALLY FOR YOU"
-msgstr ""
-"YAPILAN BİR YÜKSELTME DEĞİŞTİRMESİNİ DEĞİŞTİRMEK İÇİN CACTI DATABASE&#39;İ "
-"MANUEL DEĞİŞTİRMELİDİR. <br/> KURULUMCU SİZİN İÇİN OTOMATİK OLARAK BU YAPIM "
-"YÖNTEMİ YOK"
+msgstr "YAPILAN BİR YÜKSELTME DEĞİŞTİRMESİNİ DEĞİŞTİRMEK İÇİN CACTI DATABASE'İ MANUEL DEĞİŞTİRMELİDİR. <br/> KURULUMCU SİZİN İÇİN OTOMATİK OLARAK BU YAPIM YÖNTEMİ YOK"
+
 
 #: lib/installer.php:2925
 msgid "Downgrading should only be performed when absolutely necessary and doing so may break your installation"
@@ -19597,7 +19461,8 @@ msgstr "Yerel ana bilgisayar için ilk kez veri sorgusu çalıştırma"
 
 #: lib/installer.php:3734
 msgid "Repopulating poller cache"
-msgstr "Poller Cache&#39;i Yeniden Oluştur"
+msgstr "Poller Cache'i Yeniden Oluştur"
+
 
 #: lib/installer.php:3739
 msgid "Repopulating SNMP Agent cache"
@@ -19771,7 +19636,8 @@ msgstr "Birden fazla eşleşen kullanıcı bulundu"
 
 #: lib/ldap.php:452
 msgid "Unable to find user from DN"
-msgstr "DN&#39;den kullanıcı bulunamıyor"
+msgstr "DN'den kullanıcı bulunamıyor"
+
 
 #: lib/ldap.php:456
 msgid "Unable to find users DN"
@@ -20098,12 +19964,14 @@ msgstr "'<i>%s</i>' Rapor Grafik Öğesi Oluşturuldu"
 #: lib/reports.php:2013
 #, php-format
 msgid "Failed Adding Report Graph Item '<i>%s</i>' Already Exists"
-msgstr "Rapor Grafiği Öğesi Eklenemedi &#39; <i> %s</i> &#39; Zaten Var"
+msgstr "Rapor Grafiği Öğesi Eklenemedi ' <i> %s</i> ' Zaten Var"
+
 
 #: lib/reports.php:2016
 #, php-format
 msgid "Skipped Report Graph Item '<i>%s</i>' Already Exists"
-msgstr "Atlanan Rapor Grafiği Öğesi &#39; <i> %s</i> &#39; Zaten Var"
+msgstr "Atlanan Rapor Grafiği Öğesi ' <i> %s</i> ' Zaten Var"
+
 
 #: lib/rrd.php:398
 #, php-format
@@ -20170,7 +20038,8 @@ msgstr ""
 #: lib/rrd.php:3476
 #, php-format
 msgid "The RRA '%s' missing in the existing Cacti RRDfile"
-msgstr "RRA &#39; %s&#39;, RRD dosyasında eksik"
+msgstr "RRA ' %s', RRD dosyasında eksik"
+
 
 #: lib/rrd.php:3483
 #, php-format
@@ -20240,7 +20109,8 @@ msgstr "%s öğesini %s olarak yeniden adlandır"
 
 #: lib/rrd.php:3770
 msgid "Error while parsing the XML of rrdtool dump"
-msgstr "Rrdtool dökümü XML&#39;sini ayrıştırırken hata oluştu"
+msgstr "Rrdtool dökümü XML'sini ayrıştırırken hata oluştu"
+
 
 #: lib/rrd.php:3803 lib/rrd.php:3865 lib/rrd.php:3928
 #, fuzzy, php-format
@@ -20254,7 +20124,8 @@ msgstr "HATA:% RRDdosyası yazılabilir değil"
 
 #: lib/rrd.php:3847 lib/rrd.php:3910
 msgid "Error while parsing the XML of RRDtool dump"
-msgstr "RRDtool dökümü XML&#39;sini ayrıştırırken hata oluştu"
+msgstr "RRDtool dökümü XML'sini ayrıştırırken hata oluştu"
+
 
 #: lib/rrd.php:4159
 #, php-format
@@ -20347,25 +20218,20 @@ msgstr ""
 
 #: lib/utility.php:1138 lib/utility.php:1175
 msgid "When using Cacti with languages other than English, it is important to use the utf8mb4_unicode_ci collation type as some characters take more than a single byte."
-msgstr ""
-"Cacti&#39;yi İngilizce dışındaki dillerle kullanırken, bazı karakterler tek "
-"bayttan daha fazla sürdüğü için utf8mb4_unicode_ci harmanlama türünü "
-"kullanmak önemlidir."
+msgstr "Cacti'yi İngilizce dışındaki dillerle kullanırken, bazı karakterler tek bayttan daha fazla sürdüğü için utf8mb4_unicode_ci harmanlama türünü kullanmak önemlidir."
+
 
 #: lib/utility.php:1144 lib/utility.php:1150 lib/utility.php:1181
 #: lib/utility.php:1187
 msgid "When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte."
-msgstr ""
-"Cacti&#39;yi İngilizce dışındaki dillerle kullanırken, bazı karakterler tek "
-"bir bayttan daha fazla sürdüğünde utf8mb4 karakter kümesini kullanmak "
-"önemlidir."
+msgstr "Cacti'yi İngilizce dışındaki dillerle kullanırken, bazı karakterler tek bir bayttan daha fazla sürdüğünde utf8mb4 karakter kümesini kullanmak önemlidir."
+
 
 #: lib/utility.php:1163
 #, php-format
 msgid "It is recommended that you enable InnoDB in any %s version greater than 5.1."
-msgstr ""
-"InnoDB&#39;yi 5.1&#39;den büyük herhangi bir %s sürümünde etkinleştirmeniz "
-"önerilir."
+msgstr "InnoDB'yi 5.1'den büyük herhangi bir %s sürümünde etkinleştirmeniz önerilir."
+
 
 #: lib/utility.php:1196
 #, php-format
@@ -20385,10 +20251,8 @@ msgstr ""
 
 #: lib/utility.php:1206
 msgid "With Remote polling capabilities, large amounts of data will be synced from the main server to the remote pollers.  Therefore, keep this value at or above 16M."
-msgstr ""
-"Uzaktan yoklama yetenekleriyle, ana sunucudan uzak yoklayıcılara büyük "
-"miktarda veri senkronize edilir. Bu nedenle, bu değeri 16M&#39;de veya "
-"üstünde tutun."
+msgstr "Uzaktan yoklama yetenekleriyle, ana sunucudan uzak yoklayıcılara büyük miktarda veri senkronize edilir. Bu nedenle, bu değeri 16M'de veya üstünde tutun."
+
 
 #: lib/utility.php:1212
 #, php-format
@@ -20445,7 +20309,7 @@ msgstr ""
 "düzgün tablo oluşturamayan eklentilerle sonuçlanabilir."
 
 #: lib/utility.php:1254
-#, php-format
+#, no-php-format
 msgid "InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size.  If you database is very large or remote, you can consider increasing this size.  If remote, it can by as high as 80% of the systems memory.  However, cautions must be taken to reduce the swappiness of the system, or to remove swap to keep the system from swapping."
 msgstr ""
 "InnoDB, sistem belleğinde mümkün olduğunca fazla tablo ve dizin tutacaktır. "
@@ -20485,10 +20349,8 @@ msgstr ""
 #: lib/utility.php:1285
 #, php-format
 msgid "Setting this value to 2 means that you will flush all transactions every second rather than at commit.  This allows %s to perform writing less often."
-msgstr ""
-"Bu değerin 2&#39;ye ayarlanması, tüm işlemleri taahhütte bulunmak yerine her "
-"saniye sifonlayacağınız anlamına gelir. Bu, %s&#39;nin daha az yazı "
-"yazmasını sağlar."
+msgstr "Bu değerin 2'ye ayarlanması, tüm işlemleri taahhütte bulunmak yerine her saniye sifonlayacağınız anlamına gelir. Bu, %s'nin daha az yazı yazmasını sağlar."
+
 
 #: lib/utility.php:1290
 msgid "With modern SSD type storage, having multiple io threads is advantageous for applications with high io characteristics."
@@ -20795,13 +20657,13 @@ msgstr "İçerik Dosyası / URL"
 
 #: links.php:561
 msgid "Web URL Below"
-msgstr "Aşağıda Web URL&#39;si"
+msgstr "Aşağıda Web URL'si"
+
 
 #: links.php:562
 msgid "The file that contains the content for this page. This file needs to be in the Cacti 'include/content/' directory."
-msgstr ""
-"Bu sayfanın içeriğini içeren dosya. Bu dosyanın Cacti &#39;include / content "
-"/&#39; dizininde olması gerekiyor."
+msgstr "Bu sayfanın içeriğini içeren dosya. Bu dosyanın Cacti 'include / content /' dizininde olması gerekiyor."
+
 
 #: links.php:566
 msgid "Web URL Location"
@@ -20809,11 +20671,8 @@ msgstr "Web URL Konumu"
 
 #: links.php:568
 msgid "The valid URL to use for this external link.  Must include the type, for example http://www.cacti.net.  Note that many websites do not allow them to be embedded in an iframe from a foreign site, and therefore External Linking may not work."
-msgstr ""
-"Bu harici bağlantı için kullanılacak geçerli URL. Türü içermelidir, örneğin "
-"http://www.cacti.net. Birçok web sitesinin yabancı bir siteden iframe içine "
-"gömülmelerine izin vermediğini ve bu nedenle External Linking&#39;in "
-"çalışmayabileceğini unutmayın."
+msgstr "Bu harici bağlantı için kullanılacak geçerli URL. Türü içermelidir, örneğin http://www.cacti.net. Birçok web sitesinin yabancı bir siteden iframe içine gömülmelerine izin vermediğini ve bu nedenle External Linking'in çalışmayabileceğini unutmayın."
+
 
 #: links.php:577
 msgid "If checked, the page will be available immediately to the admin user."
@@ -20956,11 +20815,13 @@ msgstr "SNMP Bildirim Günlüğü Girişi Yok"
 
 #: managers.php:1027
 msgid "Click 'Continue' to Delete the following Notification Receiver."
-msgstr "Aşağıdaki Bildirim Alıcısını silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Bildirim Alıcısını silmek için 'Devam Et'i tıklayın."
+
 
 #: managers.php:1028
 msgid "Click 'Continue' to Delete following Notification Receivers."
-msgstr "Aşağıdaki Bildirim Alıcısını silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Bildirim Alıcısını silmek için 'Devam Et'i tıklayın."
+
 
 #: managers.php:1029
 msgid "Delete Notification Receiver"
@@ -20972,15 +20833,13 @@ msgstr "Bildirim Alıcılarını Sil"
 
 #: managers.php:1033
 msgid "Click 'Continue' to Disable the following Notification Receiver."
-msgstr ""
-"Aşağıdaki Bildirim Alıcıyı devre dışı bırakmak için &#39;Devam Et&#39;i "
-"tıklayın."
+msgstr "Aşağıdaki Bildirim Alıcıyı devre dışı bırakmak için 'Devam Et'i tıklayın."
+
 
 #: managers.php:1034
 msgid "Click 'Continue' to Disable following Notification Receivers."
-msgstr ""
-"Aşağıdaki Bildirim Alıcıyı devre dışı bırakmak için &#39;Devam Et&#39;i "
-"tıklayın."
+msgstr "Aşağıdaki Bildirim Alıcıyı devre dışı bırakmak için 'Devam Et'i tıklayın."
+
 
 #: managers.php:1035
 msgid "Disable Notification Receiver"
@@ -20992,13 +20851,13 @@ msgstr "Bildirim Alıcılarını Devre Dışı Bırak"
 
 #: managers.php:1039
 msgid "Click 'Continue' to Enable the following Notification Receiver."
-msgstr ""
-"Aşağıdaki Bildirim Alıcıyı etkinleştirmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Bildirim Alıcıyı etkinleştirmek için 'Devam Et'i tıklayın."
+
 
 #: managers.php:1040
 msgid "Click 'Continue' to Enable following Notification Receivers."
-msgstr ""
-"Aşağıdaki Bildirim Alıcıyı etkinleştirmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Bildirim Alıcıyı etkinleştirmek için 'Devam Et'i tıklayın."
+
 
 #: managers.php:1041
 msgid "Enable Notification Receiver"
@@ -21010,15 +20869,13 @@ msgstr "Bildirim Alıcılarını Etkinleştir"
 
 #: managers.php:1080
 msgid "Click 'Continue' to Disable Forwarding the following Notification Object the following Notification Receiver."
-msgstr ""
-"Aşağıdaki Bildirim Nesnelerini bu Bildirim Alıcısına iletmeyi devre dışı "
-"bırakmak için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Bildirim Nesnelerini bu Bildirim Alıcısına iletmeyi devre dışı bırakmak için 'Devam Et'i tıklayın."
+
 
 #: managers.php:1081
 msgid "Click 'Continue' to Disable Forwarding the following Notification Objects to the following Notification Receiver."
-msgstr ""
-"Aşağıdaki Bildirim Nesnelerini bu Bildirim Alıcısına iletmeyi devre dışı "
-"bırakmak için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Bildirim Nesnelerini bu Bildirim Alıcısına iletmeyi devre dışı bırakmak için 'Devam Et'i tıklayın."
+
 
 #: managers.php:1082
 msgid "Disable Forwarding Object"
@@ -21110,10 +20967,8 @@ msgstr "Bağımlılıkları Dahil Et"
 
 #: package.php:717 templates_export.php:127
 msgid "Some templates rely on other items in Cacti to function properly. It is highly recommended that you select this box or the resulting import may fail."
-msgstr ""
-"Bazı şablonlar, düzgün çalışması için Cacti&#39;deki diğer öğelere dayanır. "
-"Bu kutuyu seçmeniz şiddetle tavsiye edilir, aksi takdirde elde edilen içe "
-"aktarma başarısız olabilir."
+msgstr "Bazı şablonlar, düzgün çalışması için Cacti'deki diğer öğelere dayanır. Bu kutuyu seçmeniz şiddetle tavsiye edilir, aksi takdirde elde edilen içe aktarma başarısız olabilir."
+
 
 #: package.php:723
 msgid "Package Information"
@@ -21800,10 +21655,8 @@ msgstr ""
 
 #: plugins.php:580
 msgid "Uninstalling this Plugin and may remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click 'Uninstall' below.  Otherwise click 'Cancel'."
-msgstr ""
-"Bu Eklentiyi kaldırmak, tüm Eklenti Verilerini ve Ayarlarını kaldırır. "
-"Eklentiyi gerçekten kaldırmak istiyorsanız, aşağıdaki &#39;Kaldır&#39;ı "
-"tıklayın. Aksi takdirde &#39;İptal&#39;i tıklayın."
+msgstr "Bu Eklentiyi kaldırmak, tüm Eklenti Verilerini ve Ayarlarını kaldırır. Eklentiyi gerçekten kaldırmak istiyorsanız, aşağıdaki 'Kaldır'ı tıklayın. Aksi takdirde 'İptal'i tıklayın."
+
 
 #: plugins.php:581
 msgid "Are you sure you want to Uninstall?"
@@ -21991,9 +21844,8 @@ msgstr "Bu Eklentinin en son Kurulduğu veya Yükseltildiği tarih."
 
 #: plugins.php:1135 plugins.php:1212
 msgid "Actions available include 'Install', 'Activate', 'Disable', 'Enable', 'Uninstall'."
-msgstr ""
-"Mevcut eylemler &#39;Kur&#39;, &#39;Etkinleştir&#39;, &#39;Devre Dışı "
-"Bırak&#39;, &#39;Etkinleştir&#39;, &#39;Kaldır&#39; seçeneklerini içerir."
+msgstr "Mevcut eylemler 'Kur', 'Etkinleştir', 'Devre Dışı Bırak', 'Etkinleştir', 'Kaldır' seçeneklerini içerir."
+
 
 #: plugins.php:1153
 msgid "The status of this Plugin."
@@ -22389,10 +22241,8 @@ msgstr "Veri Toplayıcı Ana Bilgisayar Adı"
 
 #: pollers.php:73
 msgid "The hostname for Data Collector.  It may have to be a Fully Qualified Domain name for the remote Pollers to contact it for activities such as re-indexing, Real-time graphing, etc."
-msgstr ""
-"Veri Toplayıcı için ana bilgisayar adı. Uzak Pollers&#39;ın, yeniden "
-"indeksleme, Gerçek zamanlı grafik oluşturma, vb. Etkinlikler için onunla "
-"iletişim kurması için Tam Nitelikli Alan Adı olması gerekebilir."
+msgstr "Veri Toplayıcı için ana bilgisayar adı. Uzak Pollers'ın, yeniden indeksleme, Gerçek zamanlı grafik oluşturma, vb. Etkinlikler için onunla iletişim kurması için Tam Nitelikli Alan Adı olması gerekebilir."
+
 
 #: pollers.php:81
 msgid "Custom Log Level"
@@ -22424,7 +22274,8 @@ msgstr "Süreçler"
 
 #: pollers.php:111
 msgid "The number of Data Collector processes to use to spawn."
-msgstr "Veri Toplayıcı&#39;nın sayısı üremek için kullanılacak şekilde işler."
+msgstr "Veri Toplayıcı'nın sayısı üremek için kullanılacak şekilde işler."
+
 
 #: pollers.php:120
 msgid "The number of Spine Threads to use per Data Collector process."
@@ -22588,15 +22439,13 @@ msgstr "Veri Toplayıcıyı Sil"
 
 #: pollers.php:609
 msgid "Click 'Continue' to Disable the following Data Collector."
-msgstr ""
-"Aşağıdaki Veri Toplayıcıyı devre dışı bırakmak için &#39;Devam Et&#39;i "
-"tıklayın."
+msgstr "Aşağıdaki Veri Toplayıcıyı devre dışı bırakmak için 'Devam Et'i tıklayın."
+
 
 #: pollers.php:610
 msgid "Click 'Continue' to Disable the following Data Collectors."
-msgstr ""
-"Aşağıdaki Veri Toplayıcıyı devre dışı bırakmak için &#39;Devam Et&#39;i "
-"tıklayın."
+msgstr "Aşağıdaki Veri Toplayıcıyı devre dışı bırakmak için 'Devam Et'i tıklayın."
+
 
 #: pollers.php:611
 msgid "Disable Data Collector"
@@ -22608,15 +22457,13 @@ msgstr "Veri Toplayıcıyı Devre Dışı Bırak"
 
 #: pollers.php:615
 msgid "Click 'Continue' to Enable the following Data Collector."
-msgstr ""
-"Aşağıdaki Veri Toplayıcı&#39;yı etkinleştirmek için &#39;Devam Et&#39;i "
-"tıklayın."
+msgstr "Aşağıdaki Veri Toplayıcı'yı etkinleştirmek için 'Devam Et'i tıklayın."
+
 
 #: pollers.php:616
 msgid "Click 'Continue' to Enable the following Data Collectors."
-msgstr ""
-"Aşağıdaki Veri Toplayıcı&#39;yı etkinleştirmek için &#39;Devam Et&#39;i "
-"tıklayın."
+msgstr "Aşağıdaki Veri Toplayıcı'yı etkinleştirmek için 'Devam Et'i tıklayın."
+
 
 #: pollers.php:617
 msgid "Enable Data Collector"
@@ -22628,15 +22475,13 @@ msgstr "Veri Toplayıcıyı Etkinleştir"
 
 #: pollers.php:621
 msgid "Click 'Continue' to Synchronize the Remote Data Collector for Offline Operation."
-msgstr ""
-"Çevrimdışı İşlem için Uzak Veri Toplayıcıyı Senkronize Etmek İçin &#39;Devam "
-"Et&#39;i tıklayın."
+msgstr "Çevrimdışı İşlem için Uzak Veri Toplayıcıyı Senkronize Etmek İçin 'Devam Et'i tıklayın."
+
 
 #: pollers.php:622
 msgid "Click 'Continue' to Synchronize the Remote Data Collectors for Offline Operation."
-msgstr ""
-"Çevrimdışı İşlem için Uzak Veri Toplayıcıyı Senkronize Etmek İçin &#39;Devam "
-"Et&#39;i tıklayın."
+msgstr "Çevrimdışı İşlem için Uzak Veri Toplayıcıyı Senkronize Etmek İçin 'Devam Et'i tıklayın."
+
 
 #: pollers.php:623 pollers.php:629
 msgid "Resync Data Collector"
@@ -22669,10 +22514,8 @@ msgstr "Site [yeni]"
 
 #: pollers.php:697
 msgid "Remote Data Collectors must be able to communicate to the Main Data Collector, and vice versa.  Use this button to verify that the Main Data Collector can communicate to this Remote Data Collector."
-msgstr ""
-"Uzak Veri Toplayıcıları, Ana Veri Toplayıcı ile iletişim kurabilmelidir ve "
-"bunun tersi de geçerlidir. Ana Veri Toplayıcı&#39;nın bu Uzak Veri Toplayıcı "
-"ile iletişim kurabildiğini doğrulamak için bu düğmeyi kullanın."
+msgstr "Uzak Veri Toplayıcıları, Ana Veri Toplayıcı ile iletişim kurabilmelidir ve bunun tersi de geçerlidir. Ana Veri Toplayıcı'nın bu Uzak Veri Toplayıcı ile iletişim kurabildiğini doğrulamak için bu düğmeyi kullanın."
+
 
 #: pollers.php:705
 msgid "Test Database Connection"
@@ -22700,11 +22543,13 @@ msgstr "Bu Veri Toplayıcı ile ilişkilendirilmiş benzersiz kimlik."
 
 #: pollers.php:1073
 msgid "The Hostname where the Data Collector is running."
-msgstr "Veri Toplayıcı&#39;nın çalıştığı ana bilgisayar adı."
+msgstr "Veri Toplayıcı'nın çalıştığı ana bilgisayar adı."
+
 
 #: pollers.php:1079
 msgid "The Status of this Data Collector."
-msgstr "Bu Veri Toplayıcı&#39;nın Durumu."
+msgstr "Bu Veri Toplayıcı'nın Durumu."
+
 
 #: pollers.php:1082
 msgid "Proc/Threads"
@@ -22765,7 +22610,8 @@ msgstr "Son biten"
 
 #: pollers.php:1127
 msgid "The last time this Data Collector completed."
-msgstr "Bu Veri Toplayıcı&#39;nın en son tamamlandığı zaman."
+msgstr "Bu Veri Toplayıcı'nın en son tamamlandığı zaman."
+
 
 #: pollers.php:1130
 msgid "Last Update"
@@ -22781,8 +22627,8 @@ msgstr "Son Eşzamanlama"
 
 #: pollers.php:1139
 msgid "The last time this Data Collector was full synced with main Cacti site."
-msgstr ""
-"Bu Veri Toplayıcı&#39;nın en son ana Cacti sitesiyle tam olarak eşitlendiği."
+msgstr "Bu Veri Toplayıcı'nın en son ana Cacti sitesiyle tam olarak eşitlendiği."
+
 
 #: pollers.php:1196
 msgid "No Data Collectors Found"
@@ -23725,7 +23571,7 @@ msgid "Max Total Memory Possible"
 msgstr "Olası En Yüksek Toplam Bellek"
 
 #: support.php:1594
-#, php-format
+#, no-php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr ""
 
@@ -23781,7 +23627,8 @@ msgstr "Kurulmuş. <span class=\"deviceDown\">Not: SNMPv3 kullanmayı planlıyor
 
 #: support.php:1735
 msgid "You've set memory limit to 'unlimited'."
-msgstr "Hafıza sınırını &#39;sınırsız&#39; olarak ayarladınız."
+msgstr "Hafıza sınırını 'sınırsız' olarak ayarladınız."
+
 
 #: support.php:1738
 #, php-format
@@ -23803,7 +23650,8 @@ msgstr "Ne ihraç etmek istiyorsunuz?"
 
 #: templates_export.php:108
 msgid "Select the Template type that you wish to export from Cacti."
-msgstr "Cacti&#39;den vermek istediğiniz Şablon türünü seçin."
+msgstr "Cacti'den vermek istediğiniz Şablon türünü seçin."
+
 
 #: templates_export.php:118
 msgid "Device Template to Export"
@@ -23811,7 +23659,8 @@ msgstr "Verilecek Aygıt Şablonu"
 
 #: templates_export.php:119
 msgid "Choose the Template to export to XML."
-msgstr "XML&#39;e dışa aktarılacak Şablonu seçin."
+msgstr "XML'e dışa aktarılacak Şablonu seçin."
+
 
 #: templates_export.php:133
 msgid "Output Format"
@@ -23943,11 +23792,13 @@ msgstr "Sayısal"
 
 #: tree.php:722
 msgid "Click 'Continue' to Delete the following Tree."
-msgstr "Aşağıdaki Ağacı silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Ağacı silmek için 'Devam Et'i tıklayın."
+
 
 #: tree.php:723
 msgid "Click 'Continue' to Delete following Trees."
-msgstr "Aşağıdaki Ağacı silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Ağacı silmek için 'Devam Et'i tıklayın."
+
 
 #: tree.php:724
 msgid "Delete Tree"
@@ -23959,11 +23810,13 @@ msgstr "Ağacı Sil"
 
 #: tree.php:728
 msgid "Click 'Continue' to Publish the following Tree."
-msgstr "Aşağıdaki Ağacı yayınlamak için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Ağacı yayınlamak için 'Devam Et'i tıklayın."
+
 
 #: tree.php:729
 msgid "Click 'Continue' to Publish following Trees."
-msgstr "Aşağıdaki Ağacı yayınlamak için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Ağacı yayınlamak için 'Devam Et'i tıklayın."
+
 
 #: tree.php:730
 msgid "Publish Tree"
@@ -24286,17 +24139,13 @@ msgstr "Reddet"
 
 #: user_admin.php:763 user_group_admin.php:728
 msgid "<b>Note:</b> System Graph Policy is 'Permissive' meaning the User must have access to at least one of Graph, Device, or Graph Template to gain access to the Graph"
-msgstr ""
-"<b>Not:</b> Sistem Grafiği Politikası &#39;İzin Vericidir&#39; anlamına "
-"gelir, yani Kullanıcı Grafiğe erişmek için Grafik, Aygıt veya Grafik "
-"Şablonundan en az birine erişebilmelidir"
+msgstr "<b>Not:</b> Sistem Grafiği Politikası 'İzin Vericidir' anlamına gelir, yani Kullanıcı Grafiğe erişmek için Grafik, Aygıt veya Grafik Şablonundan en az birine erişebilmelidir"
+
 
 #: user_admin.php:765 user_group_admin.php:730
 msgid "<b>Note:</b> System Graph Policy is 'Restrictive' meaning the User must have access to either the Graph or the Device and Graph Template to gain access to the Graph"
-msgstr ""
-"<b>Not:</b> Sistem Grafiği Politikası &#39;Kısıtlayıcı&#39;dır; yani, "
-"Grafiğe erişebilmek için Kullanıcının Grafiğe veya Cihaz ve Grafik Şablonuna "
-"erişebilmesi gerekir"
+msgstr "<b>Not:</b> Sistem Grafiği Politikası 'Kısıtlayıcı'dır; yani, Grafiğe erişebilmek için Kullanıcının Grafiğe veya Cihaz ve Grafik Şablonuna erişebilmesi gerekir"
+
 
 #: user_admin.php:767 user_group_admin.php:732
 msgid "<b>Note:</b> System Graph Policy is 'Device' meaning the User must have access to the Graph or Device to gain access to the Graph"
@@ -24696,9 +24545,8 @@ msgstr "Bunun ne tür bir etki alanı olduğunu seçin."
 
 #: user_domains.php:307
 msgid "The name of the user that Cacti will use as a template for new user accounts."
-msgstr ""
-"Cacti&#39;nin yeni kullanıcı hesapları için şablon olarak kullanacağı "
-"kullanıcının adı."
+msgstr "Cacti'nin yeni kullanıcı hesapları için şablon olarak kullanacağı kullanıcının adı."
+
 
 #: user_domains.php:317
 #, fuzzy
@@ -24828,10 +24676,8 @@ msgstr "Arama Tabanı"
 
 #: user_domains.php:432
 msgid "Search base for searching the LDAP directory, such as <i>\"dc=win2kdomain,dc=local\"</i> or <i>\"ou=people,dc=domain,dc=local\"</i>."
-msgstr ""
-"<i>&quot;Dc = win2kdomain, dc = local&quot;</i> veya <i>&quot;ou = people, "
-"dc = domain, dc = local&quot;</i> gibi LDAP dizinini aramak için arama "
-"tabanı."
+msgstr "<i>\"Dc = win2kdomain, dc = local\"</i> veya <i>\"ou = people, dc = domain, dc = local\"</i> gibi LDAP dizinini aramak için arama tabanı."
+
 
 #: user_domains.php:438
 msgid "Search Filter"
@@ -25006,7 +24852,8 @@ msgstr "Bu Kullanıcı Grubundaki bir kullanıcı oturum açtığında ne yapmal
 
 #: user_group_admin.php:455
 msgid "Click 'Continue' to Delete the following User Group."
-msgstr "Aşağıdaki Kullanıcı Grubunu silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Kullanıcı Grubunu silmek için 'Devam Et'i tıklayın."
+
 
 #: user_group_admin.php:456
 msgid "Click 'Continue' to Delete following User Groups."
@@ -25046,13 +24893,13 @@ msgstr "Yeni Grup"
 
 #: user_group_admin.php:475
 msgid "Click 'Continue' to Enable the following User Group."
-msgstr ""
-"Aşağıdaki Kullanıcı Grubunu etkinleştirmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Kullanıcı Grubunu etkinleştirmek için 'Devam Et'i tıklayın."
+
 
 #: user_group_admin.php:476
 msgid "Click 'Continue' to Enable following User Groups."
-msgstr ""
-"Aşağıdaki Kullanıcı Grubunu etkinleştirmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki Kullanıcı Grubunu etkinleştirmek için 'Devam Et'i tıklayın."
+
 
 #: user_group_admin.php:477
 msgid "Enable User Group"
@@ -25064,15 +24911,13 @@ msgstr "Kullanıcı Grubunu Etkinleştir"
 
 #: user_group_admin.php:481
 msgid "Click 'Continue' to Disable the following User Group."
-msgstr ""
-"Aşağıdaki Kullanıcı Grubunu devre dışı bırakmak için &#39;Devam Et&#39;i "
-"tıklayın."
+msgstr "Aşağıdaki Kullanıcı Grubunu devre dışı bırakmak için 'Devam Et'i tıklayın."
+
 
 #: user_group_admin.php:482
 msgid "Click 'Continue' to Disable following User Groups."
-msgstr ""
-"Aşağıdaki Kullanıcı Grubunu devre dışı bırakmak için &#39;Devam Et&#39;i "
-"tıklayın."
+msgstr "Aşağıdaki Kullanıcı Grubunu devre dışı bırakmak için 'Devam Et'i tıklayın."
+
 
 #: user_group_admin.php:483
 msgid "Disable User Group"
@@ -25371,14 +25216,13 @@ msgstr ""
 
 #: utilities.php:1242
 msgid "The Data Query Cache stores information gathered from Data Query input types. The values from these fields can be used in the text area of Graphs for Legends, Vertical Labels, and GPRINTS as well as in CDEF's."
-msgstr ""
-"Veri Sorgu Önbelleği, Veri Sorgu girdi türlerinden toplanan bilgileri "
-"depolar. Bu alanlardaki değerler, Efsaneler, Dikey Etiketler ve GPRINTS "
-"Grafikleri metin alanında ve CDEF&#39;lerde kullanılabilir."
+msgstr "Veri Sorgu Önbelleği, Veri Sorgu girdi türlerinden toplanan bilgileri depolar. Bu alanlardaki değerler, Efsaneler, Dikey Etiketler ve GPRINTS Grafikleri metin alanında ve CDEF'lerde kullanılabilir."
+
 
 #: utilities.php:1244
 msgid "Rebuild Poller Cache"
-msgstr "Poller Cache&#39;i Yeniden Oluştur"
+msgstr "Poller Cache'i Yeniden Oluştur"
+
 
 #: utilities.php:1247
 msgid "The Poller Cache will be re-generated if you select this option. Use this option only in the event of a database crash if you are experiencing issues after the crash and have already run the database repair tools.  Alternatively, if you are having problems with a specific Device, simply re-save that Device to rebuild its Poller Cache.  There is also a command line interface equivalent to this command that is recommended for large systems."
@@ -25401,15 +25245,8 @@ msgstr "Kaynak Önbelleğini Yeniden Oluştur"
 
 #: utilities.php:1256
 msgid "When operating multiple Data Collectors in Cacti, Cacti will attempt to maintain state for key files on all Data Collectors.  This includes all core, non-install related website and plugin files.  When you force a Resource Cache rebuild, Cacti will clear the local Resource Cache, and then rebuild it at the next scheduled poller start.  This will trigger all Remote Data Collectors to recheck their website and plugin files for consistency."
-msgstr ""
-"Cacti&#39;de birden fazla Veri Toplayıcıyı çalıştırırken, Cacti tüm Veri "
-"Toplayıcıları&#39;ndaki anahtar dosyalar için durumunu korumaya "
-"çalışacaktır. Bu, tüm çekirdek, yüklenmeyen ilgili web sitesi ve eklenti "
-"dosyalarını içerir. Bir Kaynak Önbelleği yeniden oluşturmaya zorladığınızda, "
-"Cacti yerel Kaynak Önbelleğini temizler ve ardından bir sonraki zamanlanmış "
-"yoklama başlangıcında yeniden oluşturur. Bu, tüm Uzak Veri Toplayıcılarının "
-"web sitelerini ve eklenti dosyalarını tutarlılık açısından yeniden "
-"denetlemelerini tetikler."
+msgstr "Cacti'de birden fazla Veri Toplayıcıyı çalıştırırken, Cacti tüm Veri Toplayıcıları'ndaki anahtar dosyalar için durumunu korumaya çalışacaktır. Bu, tüm çekirdek, yüklenmeyen ilgili web sitesi ve eklenti dosyalarını içerir. Bir Kaynak Önbelleği yeniden oluşturmaya zorladığınızda, Cacti yerel Kaynak Önbelleğini temizler ve ardından bir sonraki zamanlanmış yoklama başlangıcında yeniden oluşturur. Bu, tüm Uzak Veri Toplayıcılarının web sitelerini ve eklenti dosyalarını tutarlılık açısından yeniden denetlemelerini tetikler."
+
 
 #: utilities.php:1260
 msgid "Boost Utilities"
@@ -25461,9 +25298,8 @@ msgstr ""
 
 #: utilities.php:1290
 msgid "This menu pick allows you to view the latest events SNMP Agent has handled in relation to the registered notification receivers."
-msgstr ""
-"Bu menü seçimi, SNMPAgent&#39;ın kayıtlı bildirim alıcıları ile ilgili "
-"olarak ele aldığı en son olayları görüntülemenizi sağlar."
+msgstr "Bu menü seçimi, SNMPAgent'ın kayıtlı bildirim alıcıları ile ilgili olarak ele aldığı en son olayları görüntülemenizi sağlar."
+
 
 #: utilities.php:1297
 msgid "Cacti System Utilities"
@@ -25607,7 +25443,8 @@ msgstr "RRD Güncellemeleri:"
 
 #: utilities.php:1699
 msgid "MBytes"
-msgstr "MBytes&#39;ı"
+msgstr "MBytes'ı"
+
 
 #: utilities.php:1699
 msgid "Peak Poller Memory:"
@@ -25724,19 +25561,23 @@ msgstr "Önem Düzeyi: %s"
 
 #: vdef.php:256
 msgid "Click 'Continue' to Delete the following VDEF."
-msgstr "Aşağıdaki VDEF&#39;i silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki VDEF'i silmek için 'Devam Et'i tıklayın."
+
 
 #: vdef.php:257
 msgid "Click 'Continue' to Delete following VDEFs."
-msgstr "Aşağıdaki VDEF&#39;leri silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki VDEF'leri silmek için 'Devam Et'i tıklayın."
+
 
 #: vdef.php:258
 msgid "Delete VDEF"
-msgstr "VDEF&#39;i sil"
+msgstr "VDEF'i sil"
+
 
 #: vdef.php:259
 msgid "Delete VDEFs"
-msgstr "VDEF&#39;i sil"
+msgstr "VDEF'i sil"
+
 
 #: vdef.php:262
 msgid "Click 'Continue' to Duplicate the following VDEF."
@@ -25756,7 +25597,8 @@ msgstr "Yinelenen VDEF"
 
 #: vdef.php:303
 msgid "Click 'Continue' to delete the following VDEF's."
-msgstr "Aşağıdaki VDEF&#39;leri silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr "Aşağıdaki VDEF'leri silmek için 'Devam Et'i tıklayın."
+
 
 #: vdef.php:304
 #, php-format
@@ -25799,11 +25641,13 @@ msgstr "Bu VDEF maddesi için bir değer girin."
 #: vdef.php:547
 #, php-format
 msgid "VDEFs [edit: %s]"
-msgstr "VDEF&#39;ler [değiştir: %s]"
+msgstr "VDEF'ler [değiştir: %s]"
+
 
 #: vdef.php:549
 msgid "VDEFs [new]"
-msgstr "VDEF&#39;ler [yeni]"
+msgstr "VDEF'ler [yeni]"
+
 
 #: vdef.php:673
 msgid "Delete VDEF Item"
@@ -25815,21 +25659,23 @@ msgstr "VDEF Adı"
 
 #: vdef.php:873
 msgid "The name of this VDEF."
-msgstr "Bu VDEF&#39;in adı."
+msgstr "Bu VDEF'in adı."
+
 
 #: vdef.php:878
 msgid "VDEFs that are in use cannot be Deleted. In use is defined as being referenced by a Graph or a Graph Template."
-msgstr ""
-"Kullanımda olan VDEF&#39;ler Silinemez. Kullanımda, bir Grafik veya Grafik "
-"Şablonu tarafından referans olarak tanımlanır."
+msgstr "Kullanımda olan VDEF'ler Silinemez. Kullanımda, bir Grafik veya Grafik Şablonu tarafından referans olarak tanımlanır."
+
 
 #: vdef.php:884
 msgid "The number of Graphs using this VDEF."
-msgstr "Bu VDEF&#39;i kullanan Grafik sayısı."
+msgstr "Bu VDEF'i kullanan Grafik sayısı."
+
 
 #: vdef.php:890
 msgid "The number of Graphs Templates using this VDEF."
-msgstr "Bu VDEF&#39;i kullanan Grafik Şablonları sayısı."
+msgstr "Bu VDEF'i kullanan Grafik Şablonları sayısı."
+
 
 #: vdef.php:913
 msgid "No VDEFs"

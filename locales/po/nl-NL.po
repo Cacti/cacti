@@ -5595,7 +5595,8 @@ msgstr "%d seconden over."
 
 #: graph_realtime.php:456
 msgid " seconds left."
-msgstr " %d seconden over."
+msgstr " seconden over."
+
 
 #: graph_templates.php:39
 msgid "Change Settings"
@@ -10100,7 +10101,8 @@ msgstr "De naam van dit data template."
 
 #: include/global_form.php:580
 msgid "Choose a name for this data source.  It can include replacement variables such as |host_description| or |query_fieldName|.  For a complete list of supported replacement tags, please see the Cacti documentation."
-msgstr "Kies een naam voor deze data bron. Het kan variabelen bevatten zoals |host_description| of | query_fieldName|. Voor een complete lijst van ondersteunde variabelen, bekijk alstublieft de Cacti documentatie."
+msgstr "Kies een naam voor deze data bron. Het kan variabelen bevatten zoals |host_description| of |query_fieldName|. Voor een complete lijst van ondersteunde variabelen, bekijk alstublieft de Cacti documentatie."
+
 
 #: include/global_form.php:584
 msgid "Data Source Path"
@@ -10207,7 +10209,8 @@ msgstr "Titel (--title)"
 
 #: include/global_form.php:717
 msgid "The name that is printed on the graph.  It can include replacement variables such as |host_description| or |query_fieldName|.  For a complete list of supported replacement tags, please see the Cacti documentation."
-msgstr "De naam die wordt getoond in de grafiek. Het kan variabelen bevatten zoals |host_description| of | query_fieldName|. Voor een complete lijst van ondersteunde variabelen, bekijk alstublieft de Cacti documentatie."
+msgstr "De naam die wordt getoond in de grafiek. Het kan variabelen bevatten zoals |host_description| of |query_fieldName|. Voor een complete lijst van ondersteunde variabelen, bekijk alstublieft de Cacti documentatie."
+
 
 #: include/global_form.php:721
 msgid "Vertical Label (--vertical-label)"
@@ -12464,7 +12467,8 @@ msgstr "Ping type"
 
 #: include/global_settings.php:985
 msgid "Default Ping type for all new Devices.</i>"
-msgstr "De standaard ping methode voor alle nieuwe apparaten.</li>"
+msgstr "De standaard ping methode voor alle nieuwe apparaten.</i>"
+
 
 #: include/global_settings.php:992
 msgid "Default Ping Port for all new Devices.  With TCP, Cacti will attempt to Syn the port.  With UDP, Cacti requires either a successful connection, or a 'port not reachable' error to determine if the Device is up or not."
@@ -20118,7 +20122,7 @@ msgstr ""
 "doet, kan dit leiden tot plug-ins die niet goed tabellen kunnen maken."
 
 #: lib/utility.php:1254
-#, php-format
+#, no-php-format
 msgid "InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size.  If you database is very large or remote, you can consider increasing this size.  If remote, it can by as high as 80% of the systems memory.  However, cautions must be taken to reduce the swappiness of the system, or to remove swap to keep the system from swapping."
 msgstr ""
 "InnoDB houdt zoveel mogelijk tabellen en indexen in het systeemgeheugen. "
@@ -23397,7 +23401,7 @@ msgid "Max Total Memory Possible"
 msgstr "Maximaal mogelijk totaalgeheugen"
 
 #: support.php:1594
-#, php-format
+#, no-php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr ""
 

@@ -899,7 +899,8 @@ msgstr "Si sono verificati problemi con la pagina Modifica password.  Contatta s
 
 #: auth_changepassword.php:376
 msgid "Please enter your current password and your new<br>Cacti password."
-msgstr "Inserisci la tua password attuale e la tua nuova password Cacti."
+msgstr "Inserisci la tua password attuale e la tua nuova<br>password Cacti."
+
 
 #: auth_changepassword.php:378 auth_resetpassword.php:259
 msgid "Please enter your new Cacti password."
@@ -9096,7 +9097,8 @@ msgstr ""
 
 #: include/global_arrays.php:1901
 msgid "Matches Regular Expression"
-msgstr "verifica l&apos; espressione regolare"
+msgstr "verifica l' espressione regolare"
+
 
 #: include/global_arrays.php:1902
 msgid "Does Not Match Regular Expression"
@@ -10350,7 +10352,8 @@ msgstr "Nessun adattamento alla griglia (--no-gridfit)"
 
 #: include/global_form.php:885
 msgid "In order to avoid anti-aliasing blurring effects RRDtool snaps points to device resolution pixels, this results in a crisper appearance. If this is not to your liking, you can use this switch to turn this behavior off.<br><strong>Note: </strong>Gridfitting is turned off for PDF, EPS, SVG output by default."
-msgstr "Al fine di evitare effetti di sfocatura anti-aliasing RRDDtool scatta i punti ai pixel di risoluzione del dispositivo, questo si traduce in un aspetto più nitido. Se questo non è di vostro gradimento, potete usare questo interruttore per disattivare questo comportamento.<br><strong><strong>Nota: </strong>Il Gridfitting è disattivato per l'output PDF, EPS, SVG di default."
+msgstr "Al fine di evitare effetti di sfocatura anti-aliasing RRDDtool scatta i punti ai pixel di risoluzione del dispositivo, questo si traduce in un aspetto più nitido. Se questo non è di vostro gradimento, potete usare questo interruttore per disattivare questo comportamento.<br><strong>Nota: </strong>Il Gridfitting è disattivato per l'output PDF, EPS, SVG di default."
+
 
 #: include/global_form.php:888
 msgid "Alternative Y Grid (--alt-y-grid)"
@@ -11521,7 +11524,8 @@ msgstr "Il metodo utilizzato per pulire i file RRD da Cacti dopo che le loro ori
 
 #: include/global_settings.php:314
 msgid "Archive directory"
-msgstr "Directory dell&#39;archivio"
+msgstr "Directory dell'archivio"
+
 
 #: include/global_settings.php:315
 msgid "This is the directory where RRDfiles are <strong>moved</strong> for archiving"
@@ -16445,7 +16449,8 @@ msgstr ""
 
 #: lib/functions.php:5654
 msgid "Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting."
-msgstr "Errore di Mailer: No <b>TO</b>indirizzo impostato! <br>Se si utilizza il link <i>Test Mail</i>, impostare l'impostazione <b>Avviso e-mail</b>."
+msgstr "Errore di Mailer: No TOindirizzo impostato! <br>Se si utilizza il link <i>Test Mail</i>, impostare l'impostazione <b>Avviso e-mail</b>."
+
 
 #: lib/functions.php:6027
 #, php-format
@@ -17259,10 +17264,8 @@ msgstr "Rilevamento di modifiche non salvate"
 
 #: lib/html_form.php:2050
 msgid "You have unsaved changes on this form.  If you press 'Continue' these changes will be discarded.  Press 'Cancel' to continue editing the form."
-msgstr ""
-"Avete modifiche non salvate su questo modulo.  Se si preme &#39;Continua&#39;"
-" queste modifiche verranno scartate.  Premere Annulla per continuare a "
-"modificare il modulo."
+msgstr "Avete modifiche non salvate su questo modulo.  Se si preme 'Continua' queste modifiche verranno scartate.  Premere Annulla per continuare a modificare il modulo."
+
 
 #: lib/html_form_template.php:169
 msgid "Attempted SQL Injection"
@@ -20404,7 +20407,7 @@ msgid "If your tables have very large indexes, you must operate with the Barracu
 msgstr "Se le tue tabelle hanno indici molto grandi, devi operare con Barracuda innodb_file_format e innodb_large_prefix pari a 1. In caso contrario, i plug-in non possono creare tabelle in modo corretto."
 
 #: lib/utility.php:1227
-#, php-format
+#, no-php-format
 msgid "InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size.  If you database is very large or remote, you can consider increasing this size.  If remote, it can by as high as 80% of the systems memory.  However, cautions must be taken to reduce the swappiness of the system, or to remove swap to keep the system from swapping."
 msgstr ""
 
@@ -21131,7 +21134,8 @@ msgstr ""
 #: package_import.php:774
 #, php-format
 msgid "<b>Author:</b> &lt;%s&gt; %s.<br>"
-msgstr "<b>Autore:</b> <%s> %s.<br>"
+msgstr "<b>Autore:</b> &lt;%s&gt; %s.<br>"
+
 
 #: package_import.php:778
 #, php-format
@@ -23603,7 +23607,7 @@ msgid "Max Total Memory Possible"
 msgstr "Memoria totale massima possibile"
 
 #: support.php:1598
-#, php-format
+#, no-php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr ""
 "Riduci la memoria di MySQL/MariaDB a meno dell'80% della memoria di sistema. "
@@ -24653,7 +24657,8 @@ msgstr "Modalità"
 
 #: user_domains.php:418
 msgid "Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the users Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the users Distinguished Name (DN)."
-msgstr "Modalità che i cactus tenteranno di autenticare contro il server LDAP.<blockquote><i>No Searching</i> - Non si verifica alcuna ricerca di Distinguished Name (DN), basta tentare di collegarsi con il formato Distinguished Name (DN) fornito.<br><br><br><i>Ricerca anonima</i> - Tentativi di ricerca del nome utente contro la directory LDAP tramite binding anonimo per individuare gli utenti Distinguished Name (DN).<br><br><br><i>Ricerca specifica</i> - Tentativi di ricerca del nome utente contro la directory LDAP tramite Nome specifico Distinguished Name (DN) e Password specifica per il binding per individuare gli utenti Distinguished Name (DN)."
+msgstr "Modalità che i cactus tenteranno di autenticare contro il server LDAP.<blockquote><i>No Searching</i> - Non si verifica alcuna ricerca di Distinguished Name (DN), basta tentare di collegarsi con il formato Distinguished Name (DN) fornito.<br><br><i>Ricerca anonima</i> - Tentativi di ricerca del nome utente contro la directory LDAP tramite binding anonimo per individuare gli utenti Distinguished Name (DN).<br><br><i>Ricerca specifica</i> - Tentativi di ricerca del nome utente contro la directory LDAP tramite Nome specifico Distinguished Name (DN) e Password specifica per il binding per individuare gli utenti Distinguished Name (DN)."
+
 
 #: user_domains.php:424
 msgid "Distinguished Name (DN)"
@@ -25035,7 +25040,8 @@ msgstr "Successo - Gettone"
 
 #: user_log.php:212
 msgid "Click 'Continue' to purge the User Log.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog."
-msgstr "Fare clic su 'Continua' per eliminare il file di log.<br><br><br><br>Nota: se il logging è impostato sia su Cacti che su Syslog, le informazioni di log rimarranno in Syslog."
+msgstr "Fare clic su 'Continua' per eliminare il file di log.<br><br><br>Nota: se il logging è impostato sia su Cacti che su Syslog, le informazioni di log rimarranno in Syslog."
+
 
 #: user_log.php:247
 msgid "Local Auth"
@@ -25186,7 +25192,8 @@ msgstr "Ricostruire Cache Poller Cache"
 
 #: utilities.php:907
 msgid "The Poller Cache will be re-generated if you select this option. Use this option only in the event of a database crash if you are experiencing issues after the crash and have already run the database repair tools.  Alternatively, if you are having problems with a specific Device, simply re-save that Device to rebuild its Poller Cache.  There is also a command line interface equivalent to this command that is recommended for large systems."
-msgstr "La Poller Cache verrà rigenerata se si seleziona questa opzione. Utilizzare questa opzione solo in caso di arresto anomalo del database se si verificano problemi dopo l'arresto anomalo e si sono già stati eseguiti gli strumenti di riparazione del database.  In alternativa, se si verificano problemi con un dispositivo specifico, è sufficiente salvare nuovamente il dispositivo per ricostruire la cache Poller.  C'è anche un'interfaccia a riga di comando equivalente a questo comando che è raccomandato per sistemi di grandi dimensioni.  <i class=\"deviceDown\">NOTA: Nei sistemi di grandi dimensioni, questo comando può richiedere diversi minuti o ore per essere completato e quindi non dovrebbe essere eseguito dall'interfaccia utente Cacti.  Puoi semplicemente eseguire 'php -q cli/rebuild_poller_cache.php --help' nella riga di comando per maggiori informazioni.</i>."
+msgstr "La Poller Cache verrà rigenerata se si seleziona questa opzione. Utilizzare questa opzione solo in caso di arresto anomalo del database se si verificano problemi dopo l'arresto anomalo e si sono già stati eseguiti gli strumenti di riparazione del database.  In alternativa, se si verificano problemi con un dispositivo specifico, è sufficiente salvare nuovamente il dispositivo per ricostruire la cache Poller.  C'è anche un'interfaccia a riga di comando equivalente a questo comando che è raccomandato per sistemi di grandi dimensioni."
+
 
 #: utilities.php:909
 msgid "NOTE: On large systems, this command may take several minutes to hours to complete and therefore should not be run from the Cacti UI.  You can simply run 'php -q cli/rebuild_poller_cache.php --help' at the command line for more information."
