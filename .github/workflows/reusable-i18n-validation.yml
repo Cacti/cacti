@@ -1,0 +1,164 @@
+# +-------------------------------------------------------------------------+
+# | Copyright (C) 2004-2026 The Cacti Group                                 |
+# |                                                                         |
+# | This program is free software; you can redistribute it and/or           |
+# | modify it under the terms of the GNU General Public License             |
+# | as published by the Free Software Foundation; either version 2          |
+# | of the License, or (at your option) any later version.                  |
+# +-------------------------------------------------------------------------+
+
+name: Reusable i18n Validation
+
+on:
+  workflow_call:
+    inputs:
+      po_glob:
+        description: 'Pathspec for .po catalogs to validate when changed'
+        type: string
+        required: false
+        default: 'locales/po/*.po'
+      pot_path:
+        description: 'Repository-relative path to the gettext .pot template'
+        type: string
+        required: false
+        default: 'locales/po/cacti.pot'
+      base_ref:
+        description: 'Optional base git SHA/ref for incremental auditing'
+        type: string
+        required: false
+        default: ''
+      run_po_audit:
+        description: 'Validate changed .po files with msgfmt, msgcheck, and audit_po.py'
+        type: boolean
+        required: false
+        default: true
+      run_pot_audit:
+        description: 'Validate changed entries in pot_path with audit_pot.py'
+        type: boolean
+        required: false
+        default: true
+      tools_ref:
+        description: 'Git ref of Cacti/cacti to load shared i18n scripts from when absent locally'
+        type: string
+        required: false
+        default: 'develop'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-i18n:
+    name: Validate Translation Files
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout target repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Checkout shared Cacti i18n tools
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: Cacti/cacti
+          ref: ${{ inputs.tools_ref }}
+          path: .cacti-i18n-tools
+          persist-credentials: false
+          sparse-checkout: |
+            tests/tools
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq && sudo apt-get install -y gettext
+          python3 -m pip install --only-binary=:all: msgcheck==4.2.0 polib==1.2.0
+
+      - name: Identify changed catalogs and template
+        id: changed
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_BASE: ${{ inputs.base_ref }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PUSH_BEFORE: ${{ github.event.before }}
+          PO_GLOB: ${{ inputs.po_glob }}
+          POT_PATH: ${{ inputs.pot_path }}
+        run: |
+          set -euo pipefail
+          if [ -n "$INPUT_BASE" ]; then
+            BASE="$INPUT_BASE"
+          elif [ "$EVENT_NAME" = "pull_request" ]; then
+            BASE="$PR_BASE_SHA"
+          else
+            BASE="$PUSH_BEFORE"
+          fi
+
+          if [ -z "$BASE" ] || ! git cat-file -e "${BASE}^{commit}" 2>/dev/null; then
+            git show --name-only --diff-filter=d --format="" HEAD -- "$PO_GLOB" > /tmp/changed_po.txt
+            POT_CHANGED=$(git show --name-only --diff-filter=d --format="" HEAD -- "$POT_PATH" | grep -c '.' || true)
+          else
+            git diff --name-only --diff-filter=d "$BASE" HEAD -- "$PO_GLOB" > /tmp/changed_po.txt
+            POT_CHANGED=$(git diff --name-only --diff-filter=d "$BASE" HEAD -- "$POT_PATH" | grep -c '.' || true)
+            echo "base=$BASE" >> "$GITHUB_OUTPUT"
+          fi
+
+          PO_COUNT=$(grep -c '.' /tmp/changed_po.txt || true)
+          echo "po_count=$PO_COUNT" >> "$GITHUB_OUTPUT"
+          echo "pot_changed=$POT_CHANGED" >> "$GITHUB_OUTPUT"
+          echo "Changed .po files ($PO_COUNT):"
+          cat /tmp/changed_po.txt
+
+      - name: Run msgfmt syntax and format-string check
+        if: inputs.run_po_audit && steps.changed.outputs.po_count != '0'
+        run: xargs -a /tmp/changed_po.txt -I{} msgfmt -c -v -o /dev/null {}
+
+      - name: Run Devanagari-safe msgcheck linter
+        if: inputs.run_po_audit && steps.changed.outputs.po_count != '0'
+        run: |
+          set -euo pipefail
+          if [ -f tests/tools/run_msgcheck.py ]; then
+            xargs -a /tmp/changed_po.txt python3 tests/tools/run_msgcheck.py --error-on-fuzzy --no-lines
+          elif [ -f .cacti-i18n-tools/tests/tools/run_msgcheck.py ]; then
+            xargs -a /tmp/changed_po.txt python3 .cacti-i18n-tools/tests/tools/run_msgcheck.py --error-on-fuzzy --no-lines
+          else
+            xargs -a /tmp/changed_po.txt msgcheck --error-on-fuzzy --no-lines
+          fi
+
+      - name: Run HTML and placeholder audit on changed .po entries
+        if: inputs.run_po_audit && steps.changed.outputs.po_count != '0'
+        env:
+          BASE: ${{ steps.changed.outputs.base }}
+        run: |
+          set -euo pipefail
+          AUDIT_PO="tests/tools/audit_po.py"
+          if [ ! -f "$AUDIT_PO" ]; then
+            AUDIT_PO=".cacti-i18n-tools/tests/tools/audit_po.py"
+          fi
+          if [ -n "$BASE" ]; then
+            xargs -a /tmp/changed_po.txt python3 "$AUDIT_PO" --base "$BASE"
+          else
+            xargs -a /tmp/changed_po.txt python3 "$AUDIT_PO"
+          fi
+
+      - name: Run source-string audit on changed .pot entries
+        if: inputs.run_pot_audit && steps.changed.outputs.pot_changed != '0'
+        env:
+          BASE: ${{ steps.changed.outputs.base }}
+          POT_PATH: ${{ inputs.pot_path }}
+        run: |
+          set -euo pipefail
+          AUDIT_POT="tests/tools/audit_pot.py"
+          if [ ! -f "$AUDIT_POT" ]; then
+            AUDIT_POT=".cacti-i18n-tools/tests/tools/audit_pot.py"
+          fi
+          if [ -n "$BASE" ]; then
+            python3 "$AUDIT_POT" --base "$BASE" "$POT_PATH"
+          else
+            python3 "$AUDIT_POT" "$POT_PATH"
+          fi
