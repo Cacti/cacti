@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2026-03-10 10:57-0400\n"
-"PO-Revision-Date: 2026-11-26 05:54+0000\n"
+"PO-Revision-Date: 2026-11-26 19:34+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Greek <https://translate.cacti.net/projects/cacti/core/el/>\n"
 "Language: el-GR\n"
@@ -87,11 +87,21 @@ msgstr "Η Cacti είναι αδειοδοτημένη σύμφωνα με τη�
 
 #: about.php:101 lib/installer.php:2083
 msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
-msgstr "Το πρόγραμμα αυτό είναι ελεύθερο λογισμικό. Επιτρέπεται η αναδιανομή ή/και τροποποίησή του υπό τους όρους της Γενικής Άδειας Δημόσιας Χρήσης GNU (GNU General Public License), όπως αυτή έχει δημοσιευτεί από το Ίδρυμα Ελεύθερου Λογισμικού (Free Software Foundation) – είτε της έκδοσης 2 της Άδειας, είτε (κατ&apos; επιλογήν) οποιασδήποτε μεταγενέστερης έκδοσης."
+msgstr ""
+"Το πρόγραμμα αυτό είναι ελεύθερο λογισμικό. Επιτρέπεται η αναδιανομή ή/και "
+"τροποποίησή του υπό τους όρους της Γενικής Άδειας Δημόσιας Χρήσης (GNU "
+"General Public License), όπως αυτή έχει δημοσιευτεί από το Ίδρυμα Ελεύθερου "
+"Λογισμικού (Free Software Foundation) – είτε της έκδοσης 2 της Άδειας, είτε ("
+"κατ' επιλογήν) οποιασδήποτε μεταγενέστερης έκδοσης."
 
 #: about.php:103
 msgid "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."
-msgstr "Το πρόγραμμα αυτό διανέμεται με την ελπίδα ότι θα αποδειχθεί χρήσιμο, παρόλα αυτά ΧΩΡΙΣ ΚΑΜΙΑ ΕΓΓΥΗΣΗ – χωρίς ούτε και την σιωπηρή εγγύηση ΕΜΠΟΡΕΥΣΙΜΟΤΗΤΑΣ ή ΚΑΤΑΛΛΗΛΟΤΗΤΑΣ ΓΙΑ ΣΥΓΚΕΚΡΙΜΕΝΗ ΧΡΗΣΗ. Για περισσότερες λεπτομέρειες ανατρέξτε στη Γενική Άδεια Δημόσιας Χρήσης GNU (GNU General Public License)."
+msgstr ""
+"Το πρόγραμμα αυτό διανέμεται με την ελπίδα ότι θα αποδειχθεί χρήσιμο, παρόλα "
+"αυτά ΧΩΡΙΣ ΚΑΜΙΑ ΕΓΓΥΗΣΗ – χωρίς ούτε και την σιωπηρή εγγύηση "
+"ΕΜΠΟΡΕΥΣΙΜΟΤΗΤΑΣ ή ΚΑΤΑΛΛΗΛΟΤΗΤΑΣ ΓΙΑ ΣΥΓΚΕΚΡΙΜΕΝΗ ΧΡΗΣΗ. Για περισσότερες "
+"λεπτομέρειες ανατρέξτε στη Γενική Άδεια Δημόσιας Χρήσης (GNU General Public "
+"License)."
 
 #: aggregate_graphs.php:42 aggregate_templates.php:30
 #: automation_graph_rules.php:34 automation_networks.php:32
@@ -2508,7 +2518,7 @@ msgstr "Προσπάθειες"
 
 #: automation_snmp.php:746
 msgid "Max OIDS"
-msgstr "Μέγιστα OID"
+msgstr "Μέγιστος αριθμός OID"
 
 #: automation_snmp.php:750
 msgid "Auth Username"
@@ -2524,7 +2534,7 @@ msgstr "Πρωτόκολλο ελέγχου ταυτότητας"
 
 #: automation_snmp.php:762
 msgid "Priv Passphrase"
-msgstr "Priv Passphrase"
+msgstr "Φράση πρόσβασης απορρήτου"
 
 #: automation_snmp.php:766
 msgid "Priv Protocol"
@@ -2601,7 +2611,7 @@ msgstr "Καταχωρίσεις"
 
 #: automation_snmp.php:958
 msgid "V1 Entries"
-msgstr "V1 Καταχωρήσεις"
+msgstr "Καταχωρήσεις V1"
 
 #: automation_snmp.php:963
 msgid "V2 Entries"
@@ -3541,8 +3551,8 @@ msgstr "Πρότυπο χρώματος [νέο]"
 #, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
 msgstr ""
-"Από το πρότυπο χρωμάτων '%1$s' προωθήθηκαν %2$d συγκεντρωτικά πρότυπα και %3$"
-"d μη προτυποποιημένα συγκεντρωτικά"
+"Από το πρότυπο χρωμάτων '%s' προωθήθηκαν %d συγκεντρωτικά πρότυπα και %d μη "
+"προτυποποιημένα συγκεντρωτικά"
 
 #: color_templates.php:761
 #, php-format
@@ -3767,7 +3777,7 @@ msgstr "Πρώτος Έλεγχος Χρονικής Σφραγίδας"
 
 #: data_debug.php:743
 msgid "Second Check TimeStamp"
-msgstr "Second Check TimeStamp"
+msgstr "Χρονική σήμανση δεύτερου ελέγχου"
 
 #: data_debug.php:748
 msgid "Were we able to convert the title?"
@@ -4382,7 +4392,7 @@ msgstr ""
 #: data_source_profiles.php:350 data_source_profiles.php:352
 #, php-format
 msgid "Data Source Profile '%s' %s!"
-msgstr "Προφίλ προέλευσης δεδομένων '%1$s': %2$s!"
+msgstr "Προφίλ προέλευσης δεδομένων '%s': %s!"
 
 #: data_source_profiles.php:350 data_source_profiles.php:352
 #: lib/api_automation.php:5488 lib/api_automation.php:5490
@@ -4432,7 +4442,7 @@ msgstr "Ενημερώθηκε"
 #: data_source_profiles.php:356 data_source_profiles.php:358
 #, php-format
 msgid "Data Source Profile '%s' %s Failed!"
-msgstr "Προφίλ προέλευσης δεδομένων '%1$s': %2$s απέτυχε!"
+msgstr "Προφίλ προέλευσης δεδομένων '%s': %s απέτυχε!"
 
 #: data_source_profiles.php:356 data_source_profiles.php:358
 #: lib/api_automation.php:5494 lib/api_automation.php:5496
@@ -4775,7 +4785,7 @@ msgstr "Η συχνότητα δημοσκοπήσεων για το προφί�
 #: data_source_profiles.php:1413 include/global_form.php:257
 #: include/global_form.php:677 pollers.php:56
 msgid "Heartbeat"
-msgstr "Heartbeat"
+msgstr "Παλμός"
 
 #: data_source_profiles.php:1416
 msgid "The Amount of Time, in seconds, without good data before Data is stored as Unknown"
@@ -5054,7 +5064,7 @@ msgstr "Αποσφαλμάτωση πηγής δεδομένων"
 
 #: data_sources.php:1354
 msgid "RRDtool Tune Info"
-msgstr "Πληροφορίες συντονισμού RRDtool"
+msgstr "Πληροφορίες RRDtool Tune"
 
 #: data_sources.php:1380 data_templates.php:1182 include/global_form.php:621
 msgid "External"
@@ -5757,7 +5767,7 @@ msgstr "Αναγνωριστικό οικοδεσπότη"
 
 #: graph_xport.php:143 graph_xport.php:241
 msgid "Nth Percentile"
-msgstr "Nth Εκατοστημόριο"
+msgstr "Ν-οστό εκατοστημόριο"
 
 #: graph_xport.php:149 graph_xport.php:268
 msgid "Summation"
@@ -6199,7 +6209,7 @@ msgstr "Δημιουργία νέας συσκευής"
 #: graphs_new.php:472
 #, php-format
 msgid "New Graphs [ %s - %s ] [ %s ]"
-msgstr "Νέα γραφήματα [ %1$s - %2$s ] [ %3$s ]"
+msgstr "Νέα γραφήματα [ %s - %s ] [ %s ]"
 
 #: graphs_new.php:474
 msgid "New Graphs [ Search for a Device First ]"
@@ -6242,7 +6252,7 @@ msgstr "Σφάλμα κατά την ανάλυση του αρχείου πόρ
 #: graphs_new.php:743
 #, php-format
 msgid "Data Query [%s]"
-msgstr ""
+msgstr "Ερώτημα δεδομένων [%s]"
 
 #: graphs_new.php:746 host.php:1111
 msgid "Reload Query"
@@ -6356,8 +6366,8 @@ msgstr "ΣΦΑΛΜΑ: Μη έγκυρο αναγνωριστικό συσκευ�
 #, php-format
 msgid "Device Reindex Completed in %0.2f seconds.  There were %d items updated."
 msgstr ""
-"Η επαναδημιουργία ευρετηρίου της συσκευής ολοκληρώθηκε σε %1$0.2f "
-"δευτερόλεπτα. Ενημερώθηκαν %2$d στοιχεία."
+"Η επαναδημιουργία ευρετηρίου της συσκευής ολοκληρώθηκε σε %0.2f "
+"δευτερόλεπτα. Ενημερώθηκαν %d στοιχεία."
 
 #: host.php:359
 #, php-format
@@ -6604,7 +6614,7 @@ msgstr "%0.2f δευτερόλεπτα"
 #: host.php:1108
 #, php-format
 msgid " [%d Items, %d Rows]"
-msgstr " [%1$d στοιχεία, %2$d γραμμές]"
+msgstr " [%d στοιχεία, %d γραμμές]"
 
 #: host.php:1108
 msgid "Fail"
@@ -6616,7 +6626,7 @@ msgstr "Επιτυχία"
 
 #: host.php:1112
 msgid "Verbose Query"
-msgstr "Verbose Query"
+msgstr "Αναλυτικό ερώτημα"
 
 #: host.php:1113
 msgid "Remove Query"
@@ -7429,7 +7439,10 @@ msgstr "Ο συγχρονισμός δεν περιλαμβάνει τον κε�
 
 #: include/global_arrays.php:353
 msgid "When saving a Remote Data Collector, the Database Hostname must be unique from all others."
-msgstr "Κατά την αποθήκευση ενός Remote Data Collector, το όνομα κεντρικού υπολογιστή βάσης δεδομένων πρέπει να είναι μοναδικό από όλα τα άλλα."
+msgstr ""
+"Κατά την αποθήκευση ενός απομακρυσμένου συλλέκτη δεδομένων, το όνομα "
+"κεντρικού υπολογιστή βάσης δεδομένων πρέπει να είναι μοναδικό από όλα τα "
+"άλλα."
 
 #: include/global_arrays.php:356
 msgid "Your Remote Database Hostname must be something other than 'localhost' for each Remote Data Collector."
@@ -7734,7 +7747,7 @@ msgstr "χρόνος διαθεσιμότητας"
 
 #: include/global_arrays.php:704
 msgid "SNMP Desc"
-msgstr "SNMP Desc"
+msgstr "Περιγραφή SNMP"
 
 #: include/global_arrays.php:705
 msgid "SNMP getNext"
@@ -8040,7 +8053,7 @@ msgstr "Πλήθος όλων των παρόμοιων πηγών δεδομέ�
 
 #: include/global_arrays.php:1074 package.php:353
 msgid "Apache License 2.0"
-msgstr "Apache License 2.0"
+msgstr "Άδεια Apache 2.0"
 
 #: include/global_arrays.php:1075 package.php:354
 msgid "Creative Commons"
@@ -8182,7 +8195,7 @@ msgstr "Βοηθητικά προγράμματα συστήματος"
 
 #: include/global_arrays.php:1141 rrdcleaner.php:553
 msgid "RRDfile Cleaner"
-msgstr "Καθαριστικό αρχείου RRD"
+msgstr "Εκκαθάριση αρχείων RRD"
 
 #: include/global_arrays.php:1142
 msgid "SNMP Managers"
@@ -8247,7 +8260,7 @@ msgstr "Γενική συσκευή"
 
 #: include/global_arrays.php:1199
 msgid "HPC/Grid Computing"
-msgstr "HPC/Grid Computing"
+msgstr "Υπολογιστικά συστήματα HPC/Grid"
 
 #: include/global_arrays.php:1200
 msgid "Hypervisor Related"
@@ -8359,7 +8372,7 @@ msgstr "Στατιστικά ΚΜΕ Linux"
 
 #: include/global_arrays.php:1231
 msgid "Linux Kernel Params"
-msgstr "Linux Kernel Params"
+msgstr "Παράμετροι πυρήνα Linux"
 
 #: include/global_arrays.php:1232
 msgid "MongoDB Stats"
@@ -8671,17 +8684,17 @@ msgstr "Μετά την Ενίσχυση"
 #: include/global_arrays.php:1752
 #, php-format
 msgid "%d MBytes"
-msgstr "%d MBytes"
+msgstr "%d MB"
 
 #: include/global_arrays.php:1690
 msgid "1 GByte"
-msgstr "1 GByte"
+msgstr "1 GB"
 
 #: include/global_arrays.php:1691 include/global_arrays.php:1754
 #: lib/boost.php:80
 #, php-format
 msgid "%s GBytes"
-msgstr "%s GBytes"
+msgstr "%s GB"
 
 #: include/global_arrays.php:1692 include/global_arrays.php:1693
 #: include/global_arrays.php:1755 include/global_arrays.php:1756
@@ -8689,7 +8702,7 @@ msgstr "%s GBytes"
 #: include/global_arrays.php:1759 include/global_arrays.php:1760
 #, php-format
 msgid "%d GBytes"
-msgstr "%d GBytes"
+msgstr "%d GB"
 
 #: include/global_arrays.php:1713
 msgid "2,000 Data Source Items"
@@ -8749,7 +8762,7 @@ msgstr "%s Ώρες"
 #: include/global_arrays.php:1753
 #, php-format
 msgid "%d GByte"
-msgstr "%d GByte"
+msgstr "%d GB"
 
 #: include/global_arrays.php:1761 utilities.php:1321 utilities.php:1322
 #: utilities.php:1376
@@ -8775,14 +8788,14 @@ msgstr "%s λεπτά"
 
 #: include/global_arrays.php:1790
 msgid "1 Megabyte"
-msgstr "Mbyte"
+msgstr "1 MB"
 
 #: include/global_arrays.php:1791 include/global_arrays.php:1792
 #: include/global_arrays.php:1793 include/global_arrays.php:1794
 #: include/global_arrays.php:1795 include/global_arrays.php:1796
 #, php-format
 msgid "%d Megabytes"
-msgstr "%d Megabytes"
+msgstr "%d MB"
 
 #: include/global_arrays.php:1804
 msgid "Send Now"
@@ -9464,7 +9477,7 @@ msgstr "Αφαίρεση στοιχείου"
 
 #: include/global_arrays.php:2603 include/global_settings.php:293
 msgid "RRD Cleaner"
-msgstr "λειαντήρι"
+msgstr "Εκκαθάριση RRD"
 
 #: include/global_arrays.php:2615
 msgid "List unused Files"
@@ -9484,7 +9497,7 @@ msgstr "Προβολή αρχείου καταγραφής χρήστη"
 
 #: include/global_arrays.php:2645
 msgid "Clear User Log"
-msgstr "Εκκαθάριση Χρήστη"
+msgstr "Εκκαθάριση αρχείου καταγραφής χρήστη"
 
 #: include/global_arrays.php:2651 user_log.php:208
 msgid "Purge User Log"
@@ -9759,7 +9772,7 @@ msgstr "%d OID"
 #: include/global_form.php:192
 #, php-format
 msgid "%d OID's"
-msgstr "%d OID's"
+msgstr "%d OID"
 
 #: include/global_form.php:197
 msgid "Bulk Walk Maximum Repetitions"
@@ -9821,7 +9834,7 @@ msgstr "Πόσο καιρό μπορεί να λείπουν δεδομένα π
 
 #: include/global_form.php:265 lib/rrd.php:3714
 msgid "X-Files Factor"
-msgstr "Παράγοντας αρχείων X"
+msgstr "Συντελεστής X-Files"
 
 #: include/global_form.php:266
 msgid "The amount of unknown data that can still be regarded as known."
@@ -9996,7 +10009,7 @@ msgstr "Επιλέξτε ένα όνομα για αυτήν την προέλε
 
 #: include/global_form.php:600
 msgid "Data Source Path"
-msgstr "Πηγή δεδομένων"
+msgstr "Διαδρομή προέλευσης δεδομένων"
 
 #: include/global_form.php:605
 msgid "The full path to the RRDfile."
@@ -10335,7 +10348,7 @@ msgstr "Σχεδιάστε γραμμικούς δείκτες ως γραμμή
 
 #: include/global_form.php:964
 msgid "Force Rules Legend (--force-rules-legend)"
-msgstr "Force Rules Legend (--force-rules-legend)"
+msgstr "Επιβολή υπομνήματος κανόνων (--force-rules-legend)"
 
 #: include/global_form.php:967
 msgid "Force the generation of HRULE and VRULE legends."
@@ -10581,7 +10594,7 @@ msgstr ""
 
 #: include/global_form.php:1290
 msgid "Poller Association"
-msgstr "Poller Association"
+msgstr "Συσχέτιση Poller"
 
 #: include/global_form.php:1298
 msgid "Device Site Association"
@@ -11227,7 +11240,7 @@ msgstr "Ακίδες"
 
 #: include/global_settings.php:72
 msgid "Mail/Reporting/DNS/Proxy"
-msgstr "Mail/Reporting/DNS/Proxy"
+msgstr "Αλληλογραφία/Αναφορές/DNS/Proxy"
 
 #: include/global_settings.php:77
 msgid "Time Spanning/Shifting"
@@ -11347,7 +11360,7 @@ msgstr "Εάν αντιμετωπίζετε προβλήματα με τους �
 
 #: include/global_settings.php:264
 msgid "Boost Debug Log"
-msgstr "Boost Debug Log"
+msgstr "Αρχείο καταγραφής αποσφαλμάτωσης Boost"
 
 #: include/global_settings.php:265
 msgid "This is the Log file where Boost will write its information to.  It much be located in the same directory as the Cacti Log file."
@@ -11375,7 +11388,7 @@ msgstr "Η διαδρομή προς το αρχείο διαμόρφωσης σ
 
 #: include/global_settings.php:298
 msgid "RRDfile Auto Clean"
-msgstr "Αυτόματος καθαρισμός RRDfile"
+msgstr "Αυτόματη εκκαθάριση αρχείων RRD"
 
 #: include/global_settings.php:299
 msgid "Automatically archive or delete RRDfiles when their corresponding Data Sources are removed from Cacti"
@@ -11435,7 +11448,7 @@ msgstr "Τι επίπεδο επέκτασης θέλετε στο αρχείο 
 
 #: include/global_settings.php:357
 msgid "Log Input Validation Issues"
-msgstr "Προβλήματα επικύρωσης εισόδου καταγραφής"
+msgstr "Καταγραφή προβλημάτων επικύρωσης εισόδου"
 
 #: include/global_settings.php:358
 msgid "Record when request fields are accessed without going through proper input validation"
@@ -12451,7 +12464,7 @@ msgstr "Ρυθμίσεις προγράμματος προβολής αρχεί�
 
 #: include/global_settings.php:1352
 msgid "Exclusion Regex"
-msgstr "Exclusion Regex"
+msgstr "Κανονική έκφραση εξαίρεσης"
 
 #: include/global_settings.php:1353
 msgid "Any strings that match this regex will be excluded from the user display.  <strong>For example, if you want to exclude all log lines that include the words 'Admin' or 'Login' you would type '(Admin || Login)'</strong>"
@@ -13090,7 +13103,7 @@ msgstr "1 Ημέρα"
 
 #: include/global_settings.php:1962
 msgid "Pwned Checks (Online)"
-msgstr "Pwned Checks (Online)"
+msgstr "Έλεγχοι Pwned (Διαδικτυακά)"
 
 #: include/global_settings.php:1967
 msgid "Pwned Check"
@@ -13907,7 +13920,7 @@ msgstr "Διακομιστής μεσολάβησης RRDtool"
 
 #: include/global_settings.php:2791
 msgid "Structure RRDfile Paths"
-msgstr "Δομή διαδρομών αρχείου RRD"
+msgstr "Δόμηση διαδρομών αρχείου RRD"
 
 #: include/global_settings.php:2796
 msgid "Enable Structured Paths"
@@ -14094,7 +14107,7 @@ msgstr "100 Χιλιάδες"
 
 #: include/global_settings.php:2957
 msgid "1 Million"
-msgstr "1 Million"
+msgstr "1 εκατομμύριο"
 
 #: include/global_settings.php:2958
 msgid "2.5 Million (20 Megabits)"
@@ -14156,7 +14169,7 @@ msgstr ""
 
 #: include/global_settings.php:2980
 msgid "RRDfile Backup Directory"
-msgstr "Κατάλογος αντιγράφων ασφαλείας RRDfile"
+msgstr "Κατάλογος αντιγράφων ασφαλείας αρχείων RRD"
 
 #: include/global_settings.php:2981
 msgid "If this directory is not empty, then your original RRDfiles will be backed up to this location."
@@ -14893,38 +14906,37 @@ msgstr ""
 #: lib/api_automation.php:6086 lib/api_automation.php:6088
 #, php-format
 msgid "Automation Graph Rule '%s' %s!"
-msgstr "Κανόνας γραφήματος αυτοματισμού '%1$s': %2$s!"
+msgstr "Κανόνας γραφήματος αυτοματισμού '%s': %s!"
 
 #: lib/api_automation.php:5731 lib/api_automation.php:5733
 #: lib/api_automation.php:6092 lib/api_automation.php:6094
 #, php-format
 msgid "Automation Graph Rule '%s' %s Failed!"
-msgstr "Κανόνας γραφήματος αυτοματισμού '%1$s': %2$s απέτυχε!"
+msgstr "Κανόνας γραφήματος αυτοματισμού '%s': %s απέτυχε!"
 
 #: lib/api_automation.php:5752 lib/api_automation.php:5754
 #: lib/api_automation.php:6113 lib/api_automation.php:6115
 #, php-format
 msgid "Automation Graph Rule Item '%s' %s!"
-msgstr "Στοιχείο κανόνα γραφήματος αυτοματισμού '%1$s': %2$s!"
+msgstr "Στοιχείο κανόνα γραφήματος αυτοματισμού '%s': %s!"
 
 #: lib/api_automation.php:5758 lib/api_automation.php:5760
 #: lib/api_automation.php:6119 lib/api_automation.php:6121
 #, php-format
 msgid "Automation Graph Rule Item '%s' %s Failed!"
-msgstr "Στοιχείο κανόνα γραφήματος αυτοματισμού '%1$s': %2$s απέτυχε!"
+msgstr "Στοιχείο κανόνα γραφήματος αυτοματισμού '%s': %s απέτυχε!"
 
 #: lib/api_automation.php:5781 lib/api_automation.php:5783
 #: lib/api_automation.php:6142 lib/api_automation.php:6144
 #, php-format
 msgid "Automation Graph Rule Match Item '%s' %s!"
-msgstr "Στοιχείο αντιστοίχισης κανόνα γραφήματος αυτοματισμού '%1$s': %2$s!"
+msgstr "Στοιχείο αντιστοίχισης κανόνα γραφήματος αυτοματισμού '%s': %s!"
 
 #: lib/api_automation.php:5787 lib/api_automation.php:5789
 #: lib/api_automation.php:6148 lib/api_automation.php:6150
 #, php-format
 msgid "Automation Graph Rule Match Item '%s' %s Failed!"
-msgstr ""
-"Στοιχείο αντιστοίχισης κανόνα γραφήματος αυτοματισμού '%1$s': %2$s απέτυχε!"
+msgstr "Στοιχείο αντιστοίχισης κανόνα γραφήματος αυτοματισμού '%s': %s απέτυχε!"
 
 #: lib/api_automation.php:5797
 msgid "Automation Graph Rule Import data is either for another object type or not JSON formatted."
@@ -14936,39 +14948,38 @@ msgstr ""
 #: lib/api_automation.php:6195 lib/api_automation.php:6197
 #, php-format
 msgid "Automation Tree Rule '%s' %s!"
-msgstr "Κανόνας δέντρου αυτοματισμού '%1$s': %2$s!"
+msgstr "Κανόνας δέντρου αυτοματισμού '%s': %s!"
 
 #: lib/api_automation.php:5865 lib/api_automation.php:5867
 #: lib/api_automation.php:6201 lib/api_automation.php:6203
 #, php-format
 msgid "Automation Tree Device Rule '%s' %s Failed!"
-msgstr "Κανόνας συσκευής δέντρου αυτοματισμού '%1$s': %2$s απέτυχε!"
+msgstr "Κανόνας συσκευής δέντρου αυτοματισμού '%s': %s απέτυχε!"
 
 #: lib/api_automation.php:5884 lib/api_automation.php:5886
 #: lib/api_automation.php:6220 lib/api_automation.php:6222
 #, php-format
 msgid "Automation Tree Rule Item '%s' %s!"
-msgstr "Στοιχείο κανόνα δέντρου αυτοματισμού '%1$s': %2$s!"
+msgstr "Στοιχείο κανόνα δέντρου αυτοματισμού '%s': %s!"
 
 #: lib/api_automation.php:5890 lib/api_automation.php:5892
 #: lib/api_automation.php:6226 lib/api_automation.php:6228
 #, php-format
 msgid "Automation Tree Device Rule Item '%s' %s Failed!"
-msgstr "Στοιχείο κανόνα συσκευής δέντρου αυτοματισμού '%1$s': %2$s απέτυχε!"
+msgstr "Στοιχείο κανόνα συσκευής δέντρου αυτοματισμού '%s': %s απέτυχε!"
 
 #: lib/api_automation.php:5915 lib/api_automation.php:5917
 #: lib/api_automation.php:6251 lib/api_automation.php:6253
 #, php-format
 msgid "Automation Tree Rule Match Item '%s' %s!"
-msgstr "Στοιχείο αντιστοίχισης κανόνα δέντρου αυτοματισμού '%1$s': %2$s!"
+msgstr "Στοιχείο αντιστοίχισης κανόνα δέντρου αυτοματισμού '%s': %s!"
 
 #: lib/api_automation.php:5921 lib/api_automation.php:5923
 #: lib/api_automation.php:6257 lib/api_automation.php:6259
 #, php-format
 msgid "Automation Tree Device Rule Match Item '%s' %s Failed!"
 msgstr ""
-"Στοιχείο αντιστοίχισης κανόνα συσκευής δέντρου αυτοματισμού '%1$s': %2$s "
-"απέτυχε!"
+"Στοιχείο αντιστοίχισης κανόνα συσκευής δέντρου αυτοματισμού '%s': %s απέτυχε!"
 
 #: lib/api_automation.php:5930
 msgid "Automation Tree Rule Import data is either for another object type or not JSON formatted."
@@ -14984,22 +14995,22 @@ msgstr ""
 #: lib/api_automation.php:6028 lib/api_automation.php:6030
 #, php-format
 msgid "Automation Device Rule '%s' %s!"
-msgstr "Κανόνας συσκευής αυτοματισμού '%1$s': %2$s!"
+msgstr "Κανόνας συσκευής αυτοματισμού '%s': %s!"
 
 #: lib/api_automation.php:6034 lib/api_automation.php:6036
 #, php-format
 msgid "Automation Device Rule '%s' %s Failed!"
-msgstr "Κανόνας συσκευής αυτοματισμού '%1$s': %2$s απέτυχε!"
+msgstr "Κανόνας συσκευής αυτοματισμού '%s': %s απέτυχε!"
 
 #: lib/api_automation.php:6307 lib/api_automation.php:6309
 #, php-format
 msgid "Automation Device Rule Item '%s' %s!"
-msgstr "Στοιχείο κανόνα συσκευής αυτοματισμού '%1$s': %2$s!"
+msgstr "Στοιχείο κανόνα συσκευής αυτοματισμού '%s': %s!"
 
 #: lib/api_automation.php:6313 lib/api_automation.php:6315
 #, php-format
 msgid "Automation Device Rule Item '%s' %s Failed!"
-msgstr "Στοιχείο κανόνα συσκευής αυτοματισμού '%1$s': %2$s απέτυχε!"
+msgstr "Στοιχείο κανόνα συσκευής αυτοματισμού '%s': %s απέτυχε!"
 
 #: lib/api_automation.php:6324
 msgid "The Thold Plugin is not Installed on this system.  So, Thresholds will not be imported."
@@ -15008,12 +15019,12 @@ msgstr ""
 #: lib/api_automation.php:6359 lib/api_automation.php:6361
 #, php-format
 msgid "Automation Threshold Template '%s' %s!"
-msgstr "Πρότυπο κατωφλίου αυτοματισμού '%1$s': %2$s!"
+msgstr "Πρότυπο κατωφλίου αυτοματισμού '%s': %s!"
 
 #: lib/api_automation.php:6365 lib/api_automation.php:6367
 #, php-format
 msgid "Automation Threshold Template Device '%s' %s Failed!"
-msgstr "Συσκευή προτύπου κατωφλίου αυτοματισμού '%1$s': %2$s απέτυχε!"
+msgstr "Συσκευή προτύπου κατωφλίου αυτοματισμού '%s': %s απέτυχε!"
 
 #: lib/api_automation.php:6383
 msgid "Automation Device Rule Import data is either for another object type or not JSON formatted."
@@ -15304,7 +15315,7 @@ msgstr "Νέος κλάδος"
 
 #: lib/auth.php:584
 msgid "Web Basic"
-msgstr "Βασικό Web"
+msgstr "Βασικός έλεγχος ταυτότητας Web"
 
 #: lib/auth.php:2283
 msgid "Device:(Hide Disabled)"
@@ -15486,12 +15497,12 @@ msgstr "Το 2FA έχει ενεργοποιηθεί και επαληθευτε
 #: lib/boost.php:82 utilities.php:1378
 #, php-format
 msgid "%s MBytes"
-msgstr "%s MBytes"
+msgstr "%s MB"
 
 #: lib/boost.php:85
 #, php-format
 msgid "%s KBytes"
-msgstr "%s KBytes"
+msgstr "%s KB"
 
 #: lib/boost.php:88
 #, php-format
@@ -15561,12 +15572,12 @@ msgstr " - Προβολή διαχειριστή"
 #: lib/clog_webapi.php:358
 #, php-format
 msgid "Log [Total Lines: %d %s - Filter active]"
-msgstr "Αρχείο καταγραφής [Σύνολο γραμμών: %1$d %2$s - Ενεργό φίλτρο]"
+msgstr "Αρχείο καταγραφής [Σύνολο γραμμών: %d %s - Ενεργό φίλτρο]"
 
 #: lib/clog_webapi.php:360
 #, php-format
 msgid "Log [Total Lines: %d %s - Unfiltered]"
-msgstr "Αρχείο καταγραφής [Σύνολο γραμμών: %1$d %2$s - Χωρίς φίλτρο]"
+msgstr "Αρχείο καταγραφής [Σύνολο γραμμών: %d %s - Χωρίς φίλτρο]"
 
 #: lib/clog_webapi.php:365 managers.php:323 managers.php:515 managers.php:550
 #: utilities.php:336 utilities.php:375 utilities.php:466 utilities.php:607
@@ -15881,12 +15892,12 @@ msgstr "Εκτέλεση ερωτήματος δέσμης ενεργειών '%
 #: lib/data_query.php:861 lib/data_query.php:868
 #, php-format
 msgid "Found item [%s='%s'] index: %s"
-msgstr "Βρέθηκε στοιχείο [%1$s='%2$s'] ευρετήριο: %3$s"
+msgstr "Βρέθηκε στοιχείο [%s='%s'] ευρετήριο: %s"
 
 #: lib/data_query.php:919 lib/data_query.php:942
 #, php-format
 msgid "Total: %f, Delta: %f, %s"
-msgstr "Σύνολο: %1$f, Διαφορά: %2$f, %3$s"
+msgstr "Σύνολο: %f, Διαφορά: %f, %s"
 
 #: lib/data_query.php:977
 #, php-format
@@ -15955,8 +15966,7 @@ msgstr "Λίστα ευρετηρίων φιλτραρισμένη κατά τι
 #: lib/data_query.php:1112
 #, php-format
 msgid "Filtered Index by value found at OID: '%s' value: '%s'"
-msgstr ""
-"Φιλτραρισμένο ευρετήριο κατά τιμή που βρέθηκε στο OID: '%1$s' τιμή: '%2$s'"
+msgstr "Φιλτραρισμένο ευρετήριο κατά τιμή που βρέθηκε στο OID: '%s' τιμή: '%s'"
 
 #: lib/data_query.php:1129
 #, php-format
@@ -16014,8 +16024,7 @@ msgstr "Εκτέλεση SNMP get για %s oids (%s)"
 #, php-format
 msgid "Sort field returned no data for Host[%s] DQ[%s], skipping."
 msgstr ""
-"Το πεδίο ταξινόμησης δεν επέστρεψε δεδομένα για Host[%1$s] DQ[%2$s], "
-"παράλειψη."
+"Το πεδίο ταξινόμησης δεν επέστρεψε δεδομένα για Host[%s] DQ[%s], παράλειψη."
 
 #: lib/data_query.php:1314
 #, php-format
@@ -16067,7 +16076,7 @@ msgstr "Δεν υπάρχει δείκτης[%s] στο value_index_parse, πα�
 #: lib/data_query.php:1477
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from %s]"
-msgstr "Βρέθηκε στοιχείο [%1$s='%2$s'] ευρετήριο: %3$s [από %4$s]"
+msgstr "Βρέθηκε στοιχείο [%s='%s'] ευρετήριο: %s [από %s]"
 
 #: lib/data_query.php:1526
 #, php-format
@@ -16078,14 +16087,14 @@ msgstr "Βρέθηκε OCTET STRING '%s' αποκωδικοποιημένη τι
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid parse]"
 msgstr ""
-"Βρέθηκε στοιχείο [%1$s='%2$s'] ευρετήριο: %3$s "
+"Βρέθηκε στοιχείο [%s='%s'] ευρετήριο: %s "
 "[από ανάλυση OID με κανονική έκφραση]"
 
 #: lib/data_query.php:1618
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid value parse]"
 msgstr ""
-"Βρέθηκε στοιχείο [%1$s='%2$s'] ευρετήριο: %3$s "
+"Βρέθηκε στοιχείο [%s='%s'] ευρετήριο: %s "
 "[από ανάλυση τιμής OID με κανονική έκφραση]"
 
 #: lib/data_query.php:1905
@@ -16391,8 +16400,8 @@ msgid ""
 "Reason: %s.\n"
 "See Cacti Log for details."
 msgstr ""
-"Αποτυχία επικοινωνίας με τον απομακρυσμένο πράκτορα %1$s\n"
-"Αιτία: %2$s.\n"
+"Αποτυχία επικοινωνίας με τον απομακρυσμένο πράκτορα %s\n"
+"Αιτία: %s.\n"
 "Δείτε το αρχείο καταγραφής του Cacti για λεπτομέρειες."
 
 #: lib/functions.php:7524
@@ -16415,8 +16424,8 @@ msgstr "Έκδοση %s %s"
 msgid "WARNING: Key Cacti Include File \"%s\" missing.  Please locate and replace this file as we checked in \"%s\""
 msgstr ""
 "ΠΡΟΕΙΔΟΠΟΙΗΣΗ: Λείπει το βασικό αρχείο συμπερίληψης (Include) του Cacti "
-"\"%1$s\".  Παρακαλούμε εντοπίστε και αντικαταστήστε αυτό το αρχείο όπως "
-"ελέγχθηκε στο \"%2$s\""
+"\"%s\".  Παρακαλούμε εντοπίστε και αντικαταστήστε αυτό το αρχείο όπως "
+"ελέγχθηκε στο \"%s\""
 
 #: lib/functions.php:9354
 msgid "System Device"
@@ -16473,12 +16482,12 @@ msgstr "Σκότωμα αιχμών σε γραφήματα"
 #: lib/html.php:625
 #, php-format
 msgid "%d to %d of %s [ %s ]"
-msgstr "%1$d έως %2$d από %3$s [ %4$s ]"
+msgstr "%d έως %d από %s [ %s ]"
 
 #: lib/html.php:635
 #, php-format
 msgid "All %d %s"
-msgstr "Όλα τα %1$d %2$s"
+msgstr "Όλα τα %d %s"
 
 #: lib/html.php:654
 #, php-format
@@ -16608,7 +16617,7 @@ msgstr "Απόλυτο Μέγιστο"
 
 #: lib/html.php:2954
 msgid "Dry Run StdDev"
-msgstr "Στεγνή Εκτέλεση StdDev"
+msgstr "Δοκιμαστική εκτέλεση StdDev"
 
 #: lib/html.php:2955
 msgid "Dry Run Gap Fill Range"
@@ -18150,7 +18159,12 @@ msgstr "Η Cacti αδειοδοτείται βάσει της Γενικής Ά�
 
 #: lib/installer.php:2084
 msgid "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details."
-msgstr "Το πρόγραμμα αυτό διανέμεται με την ελπίδα ότι θα αποδειχθεί χρήσιμο, παρόλα αυτά ΧΩΡΙΣ ΚΑΜΙΑ ΕΓΓΥΗΣΗ – χωρίς ούτε και την σιωπηρή εγγύηση ΕΜΠΟΡΕΥΣΙΜΟΤΗΤΑΣ ή ΚΑΤΑΛΛΗΛΟΤΗΤΑΣ ΓΙΑ ΣΥΓΚΕΚΡΙΜΕΝΗ ΧΡΗΣΗ. Για περισσότερες λεπτομέρειες ανατρέξτε στη Γενική Άδεια Δημόσιας Χρήσης GNU (GNU General Public License)."
+msgstr ""
+"Το πρόγραμμα αυτό διανέμεται με την ελπίδα ότι θα αποδειχθεί χρήσιμο, παρόλα "
+"αυτά ΧΩΡΙΣ ΚΑΜΙΑ ΕΓΓΥΗΣΗ – χωρίς ούτε και την σιωπηρή εγγύηση "
+"ΕΜΠΟΡΕΥΣΙΜΟΤΗΤΑΣ ή ΚΑΤΑΛΛΗΛΟΤΗΤΑΣ ΓΙΑ ΣΥΓΚΕΚΡΙΜΕΝΗ ΧΡΗΣΗ. Για περισσότερες "
+"λεπτομέρειες ανατρέξτε στη Γενική Άδεια Δημόσιας Χρήσης (GNU General Public "
+"License)."
 
 #: lib/installer.php:2127
 msgid "Accept GPL License Agreement"
@@ -19763,9 +19777,9 @@ msgstr "Το αρχείο RRA '%s' έχει τα ίδια CF/βήματα (%s, %
 #, php-format
 msgid "The pdp_per_row of '%s' is invalid for RRA '%s' should be '%s'.  Consider deleting and allowing Cacti to re-create RRDfile."
 msgstr ""
-"Η τιμή pdp_per_row '%1$s' δεν είναι έγκυρη για το RRA '%2$s', θα έπρεπε να "
-"είναι '%3$s'. Εξετάστε το ενδεχόμενο διαγραφής ώστε το Cacti να δημιουργήσει "
-"ξανά το RRDfile."
+"Η τιμή pdp_per_row '%s' δεν είναι έγκυρη για το RRA '%s', θα έπρεπε να είναι "
+"'%s'. Εξετάστε το ενδεχόμενο διαγραφής ώστε το Cacti να δημιουργήσει ξανά το "
+"RRDfile."
 
 #: lib/rrd.php:3570
 #, php-format
@@ -19821,7 +19835,7 @@ msgstr "Στρογγυλό αρχείο Robin"
 
 #: lib/rrd.php:3712
 msgid "Cur Row"
-msgstr "Cur Row"
+msgstr "Τρέχουσα γραμμή"
 
 #: lib/rrd.php:3713
 msgid "PDP per Row"
@@ -19870,15 +19884,12 @@ msgstr "Σφάλμα κατά την ανάλυση του XML της απόρρ
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file"
 msgstr ""
-"Αφαίρεση RRA (CF=%1$s, ROWS=%2$d, PDP_PER_ROW=%3$d, XFF=%4$1.2f) από το "
-"αρχείο RRD"
+"Αφαίρεση RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) από το αρχείο RRD"
 
 #: lib/rrd.php:4375
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file"
-msgstr ""
-"Προσθήκη RRA (CF=%1$s, ROWS=%2$d, PDP_PER_ROW=%3$d, XFF=%4$1.2f) στο αρχείο "
-"RRD"
+msgstr "Προσθήκη RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) στο αρχείο RRD"
 
 #: lib/rrd.php:4472 lib/rrd.php:4488
 #, php-format
@@ -19997,7 +20008,7 @@ msgstr ""
 #: lib/spikekill.php:356
 #, php-format
 msgid "RRDfile:       %s"
-msgstr "RRDfile:       %s"
+msgstr "Αρχείο RRD:       %s"
 
 #: lib/spikekill.php:357
 #, php-format
@@ -20235,6 +20246,18 @@ msgstr ""
 #, php-format
 msgid "If using the Cacti Performance Booster and choosing a memory storage engine, you have to be careful to flush your Performance Booster buffer before the system runs out of memory table space.  This is done two ways, first reducing the size of your output column to just the right size.  This column is in the tables poller_output, and poller_output_boost.  The second thing you can do is allocate more memory to memory tables.  We have arbitrarily chosen a recommended value of 10%% of system memory, but if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation or choose a different storage engine.  You may see the expected consumption of the Performance Booster tables under Console -> System Utilities -> View Boost Status."
 msgstr ""
+"Εάν χρησιμοποιείτε το Cacti Performance Booster και επιλέγετε μια μηχανή "
+"αποθήκευσης μνήμης, θα πρέπει να είστε προσεκτικοί για να ξεπλύνετε το "
+"ρυθμιστή απόδοσης Booster πριν το σύστημα ξεπεράσει το χώρο μνήμης. Αυτό "
+"γίνεται με δύο τρόπους, αρχικά μειώνοντας το μέγεθος της στήλης εξόδου σας "
+"στο σωστό μέγεθος. Αυτή η στήλη βρίσκεται στους πίνακες poller_output και "
+"poller_output_boost. Το δεύτερο πράγμα που μπορείτε να κάνετε είναι να "
+"διαθέσετε περισσότερη μνήμη στους πίνακες μνήμης. Έχουμε επιλέξει αυθαίρετα "
+"μια συνιστώμενη τιμή 10 %% μνήμης συστήματος, αλλά αν χρησιμοποιείτε SSD "
+"δίσκους ή έχετε μικρότερο σύστημα, μπορείτε να αγνοήσετε αυτή τη σύσταση ή "
+"να επιλέξετε διαφορετική μηχανή αποθήκευσης. Ενδέχεται να δείτε την "
+"αναμενόμενη κατανάλωση των πινάκων Performance Booster κάτω από την Κονσόλα "
+"-&gt; Συστήματα Utilities -&gt; View Boost Status."
 
 #: lib/utility.php:1191
 msgid "When executing subqueries, having a larger temporary table size, keep those temporary tables in memory."
@@ -20603,8 +20626,7 @@ msgstr "Έχετε αποσυνδεθεί από το Cacti λόγω %s."
 #: logout.php:71
 #, php-format
 msgid "Please close your browser or %sLogin Again%s"
-msgstr ""
-"Παρακαλούμε κλείστε το πρόγραμμα περιήγησής σας ή %1$sΣυνδεθείτε ξανά%2$s"
+msgstr "Παρακαλούμε κλείστε το πρόγραμμα περιήγησής σας ή %sΣυνδεθείτε ξανά%s"
 
 #: logout.php:72
 msgid "Cookies have been cleared"
@@ -21961,7 +21983,7 @@ msgstr "ΠΡΟΕΙΔΟΠΟΙΗΣΗ: Ο πίνακας αποτελεσμάτων
 #, php-format
 msgid "ERROR: The spine path: %s is invalid for Poller[%d].  Poller can not continue!"
 msgstr ""
-"ΣΦΑΛΜΑ: Η διαδρομή του Spine: %1$s δεν είναι έγκυρη για το Poller[%2$d]. Το "
+"ΣΦΑΛΜΑ: Η διαδρομή του Spine: %s δεν είναι έγκυρη για το Poller[%d]. Το "
 "Poller δεν μπορεί να συνεχίσει!"
 
 #: poller.php:842
@@ -21983,14 +22005,14 @@ msgstr "Δημοσκόπηση σε λειτουργία καρδιακού πα
 msgid "WARNING: 24 Hour Poller[%d] Average run time threshold breached.  It is %f seconds (more than %d &#37; of threshold.)"
 msgstr ""
 "ΠΡΟΕΙΔΟΠΟΙΗΣΗ: Παραβιάστηκε το όριο μέσου χρόνου εκτέλεσης 24 ωρών του Poller"
-"[%1$d].  Είναι %2$f δευτερόλεπτα (πάνω από %3$d &#37; του ορίου.)"
+"[%d].  Είναι %f δευτερόλεπτα (πάνω από %d &#37; του ορίου.)"
 
 #: poller.php:1399
 #, php-format
 msgid "WARNING: In last hour Poller[%d] run time exceeded the threshold %d times (limit %d) by %d percent of the time limit."
 msgstr ""
-"ΠΡΟΕΙΔΟΠΟΙΗΣΗ: Την τελευταία ώρα ο χρόνος εκτέλεσης του Poller[%1$d] υπερέβη "
-"το όριο %2$d φορές (όριο %3$d) κατά %4$d τοις εκατό του χρονικού ορίου."
+"ΠΡΟΕΙΔΟΠΟΙΗΣΗ: Την τελευταία ώρα ο χρόνος εκτέλεσης του Poller[%d] υπερέβη "
+"το όριο %d φορές (όριο %d) κατά %d τοις εκατό του χρονικού ορίου."
 
 #: poller.php:1423
 msgid "Cacti System Notification"
@@ -22377,7 +22399,7 @@ msgstr "Η κατάσταση αυτού του Συλλέκτη Δεδομέν�
 
 #: pollers.php:982
 msgid "Proc/Threads"
-msgstr "Proc/Threads"
+msgstr "Διεργασίες/Νήματα"
 
 #: pollers.php:985
 msgid "The Number of Poller Processes and Threads for this Data Collector."
@@ -22405,7 +22427,7 @@ msgstr "Ο αριθμός των συσκευών που σχετίζονται 
 
 #: pollers.php:1006
 msgid "SNMP Gets"
-msgstr "SNMP Gets"
+msgstr "Λήψεις SNMP"
 
 #: pollers.php:1009
 msgid "The number of SNMP gets associated with this Collector."
@@ -23078,7 +23100,7 @@ msgstr "Τεχνική υποστήριξη [ Διεργασίες παρασκ�
 
 #: support.php:586 support.php:639
 msgid "Cacti Poller"
-msgstr "Cacti Poller"
+msgstr "Poller του Cacti"
 
 #: support.php:587
 msgid "Cacti Process"
@@ -24153,11 +24175,11 @@ msgstr "Συμμετοχή σε μια Ομάδα"
 
 #: user_admin.php:1855 user_group_admin.php:1716
 msgid "Graph Perms"
-msgstr "Graph Perms"
+msgstr "Δικαιώματα γραφημάτων"
 
 #: user_admin.php:1856 user_group_admin.php:1717
 msgid "Device Perms"
-msgstr "Άδειες χρήσης συσκευής"
+msgstr "Δικαιώματα συσκευών"
 
 #: user_admin.php:1857 user_group_admin.php:1718
 msgid "Template Perms"
@@ -24964,7 +24986,11 @@ msgstr "Σελίδα τεχνικής υποστήριξης Cacti.  Χρησι�
 
 #: utilities.php:887
 msgid "The Cacti Log stores statistic, error and other message depending on system settings.  This information can be used to identify problems with the poller and application."
-msgstr "Το αρχείο καταγραφής Cacti αποθηκεύει στατιστικά στοιχεία, σφάλματα και άλλα μηνύματα ανάλογα με τις ρυθμίσεις του συστήματος.  Αυτές οι πληροφορίες μπορούν να χρησιμοποιηθούν για τον εντοπισμό προβλημάτων με τον επικονιαστή και την εφαρμογή."
+msgstr ""
+"Το αρχείο καταγραφής Cacti αποθηκεύει στατιστικά στοιχεία, σφάλματα και άλλα "
+"μηνύματα ανάλογα με τις ρυθμίσεις του συστήματος. Αυτές οι πληροφορίες "
+"μπορούν να χρησιμοποιηθούν για τον εντοπισμό προβλημάτων με το poller και "
+"την εφαρμογή."
 
 #: utilities.php:891
 msgid "Allows Administrators to browse the user log.  Administrators can filter and export the log as well."
@@ -25012,7 +25038,7 @@ msgstr ""
 
 #: utilities.php:920
 msgid "Boost Utilities"
-msgstr "Βοηθητικά προγράμματα Boost"
+msgstr "Εργαλεία Boost"
 
 #: utilities.php:921
 msgid "View Boost Status"
@@ -25059,7 +25085,7 @@ msgstr "Αυτή η επιλογή μενού σάς επιτρέπει να δ�
 
 #: utilities.php:957
 msgid "Cacti System Utilities"
-msgstr "Βοηθητικά προγράμματα συστήματος Cacti"
+msgstr "Εργαλεία συστήματος Cacti"
 
 #: utilities.php:1059 utilities.php:1062
 msgid "Refresh Interval"
@@ -25199,11 +25225,11 @@ msgstr "Ενημερώσεις RRD:"
 
 #: utilities.php:1369
 msgid "MBytes"
-msgstr "MBytes"
+msgstr "MB"
 
 #: utilities.php:1369
 msgid "Peak Poller Memory:"
-msgstr "Κορυφαία μνήμη Poller:"
+msgstr "Μέγιστη μνήμη Poller:"
 
 #: utilities.php:1383
 msgid "Max Poller Memory Allowed:"
