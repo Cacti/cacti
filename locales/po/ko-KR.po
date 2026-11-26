@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-26 05:54+0000\n"
+"PO-Revision-Date: 2026-11-26 19:34+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Korean <https://translate.cacti.net/projects/cacti/core/ko/>\n"
 "Language: ko-KR\n"
@@ -2796,7 +2796,7 @@ msgstr "인증 프로토콜"
 
 #: automation_snmp.php:726
 msgid "Priv Passphrase"
-msgstr "Priv Passphrase"
+msgstr "Priv 암호 구문"
 
 #: automation_snmp.php:727
 msgid "Priv Protocol"
@@ -3760,8 +3760,7 @@ msgstr "색상 템플릿 [신규]"
 #: color_templates.php:762
 #, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
-msgstr "색상 템플릿 '%1$s'에서 집계 템플릿 %2$d개와 비템플릿 집계 %3$d개가 "
-"푸시되었습니다"
+msgstr "색상 템플릿 '%s'에서 집계 템플릿 %d개와 비템플릿 집계 %d개가 푸시되었습니다"
 
 #: color_templates.php:764
 #, php-format
@@ -3981,7 +3980,7 @@ msgstr "RRD 파일이 업데이트 되었습니까?"
 
 #: data_debug.php:802
 msgid "First Check TimeStamp"
-msgstr "First Check TimeStamp"
+msgstr "최초 확인 타임스탬프"
 
 #: data_debug.php:807
 msgid "Second Check TimeStamp"
@@ -4047,7 +4046,7 @@ msgstr "문의"
 #: data_debug.php:910
 #, php-format
 msgid "For attribute '%s', issue found '%s'"
-msgstr "속성 '%1$s'에서 문제가 발견되었습니다: '%2$s'"
+msgstr "속성 '%s'에서 문제가 발견되었습니다: '%s'"
 
 #: data_debug.php:925
 msgid "Apply Suggested Fixes"
@@ -4909,7 +4908,7 @@ msgstr "데이터 소스에 제안 된 이름 다시 적용"
 #: data_sources.php:651 data_templates.php:875
 #, php-format
 msgid "Custom Data [data input: %s]"
-msgstr "맞춤 데이터 [데이터 입력 : %s]"
+msgstr "맞춤 데이터 [입력: %s]"
 
 #: data_sources.php:684
 #, php-format
@@ -5027,7 +5026,7 @@ msgstr "데이터 소스 디버그"
 
 #: data_sources.php:1189
 msgid "RRDtool Tune Info"
-msgstr "RRDtool Tune Info"
+msgstr "RRDtool 튜닝 정보"
 
 #: data_sources.php:1217 data_templates.php:1329 include/global_form.php:605
 msgid "External"
@@ -6277,7 +6276,7 @@ msgstr "모든 행 선택"
 #: graphs_new.php:678
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id of '%s'"
-msgstr "ID가 '%1$s'인 데이터 쿼리 '%2$s'에 대한 데이터 쿼리 리소스 XML 파일을 구문 "
+msgstr "ID가 '%s'인 데이터 쿼리 '%s'에 대한 데이터 쿼리 리소스 XML 파일을 구문 "
 "분석하는 동안 오류가 발생했습니다"
 
 #: graphs_new.php:695
@@ -6288,7 +6287,7 @@ msgstr ""
 #: graphs_new.php:699
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'"
-msgstr "ID가 '%1$s'인 데이터 쿼리 '%2$s'에 대한 데이터 쿼리 리소스 XML 파일을 구문 "
+msgstr "ID가 '%s'인 데이터 쿼리 '%s'에 대한 데이터 쿼리 리소스 XML 파일을 구문 "
 "분석하는 동안 오류가 발생했습니다"
 
 #: graphs_new.php:740
@@ -6335,8 +6334,7 @@ msgstr "기본 설정"
 #: help.php:44
 #, php-format
 msgid "WARNING: Cacti Page:%s for User:%s Generated a Fatal Error %d!"
-msgstr "경고: Cacti 페이지:%1$s(사용자:%2$s)에서 치명적인 오류 %3$d이(가) "
-"발생했습니다!"
+msgstr "경고: Cacti 페이지:%s(사용자:%s)에서 치명적인 오류 %d이(가) 발생했습니다!"
 
 #: help.php:74
 #, php-format
@@ -6404,8 +6402,7 @@ msgstr "오류 : 장치 [."
 #: host.php:217
 #, php-format
 msgid "Device Reindex Completed in %0.2f seconds.  There were %d items updated."
-msgstr "장치 재색인이 %1$0.2f초 만에 완료되었습니다. %2$d개 항목이 "
-"업데이트되었습니다."
+msgstr "장치 재색인이 %0.2f초 만에 완료되었습니다. %d개 항목이 업데이트되었습니다."
 
 #: host.php:360
 #, php-format
@@ -6641,7 +6638,7 @@ msgstr "색인 다시 생성 방법"
 #: host.php:982
 #, php-format
 msgid " [%d Items, %d Rows]"
-msgstr " [%1$d개 항목, %2$d행]"
+msgstr " [%d개 항목, %d행]"
 
 #: host.php:982
 msgid "Fail"
@@ -8553,7 +8550,7 @@ msgstr "1 기가 바이트"
 #: lib/boost.php:62
 #, php-format
 msgid "%s GBytes"
-msgstr "%s GBytes"
+msgstr "%s 기가바이트"
 
 #: include/global_arrays.php:1682 include/global_arrays.php:1683
 #: include/global_arrays.php:1745 include/global_arrays.php:1746
@@ -9330,7 +9327,7 @@ msgstr "패키지 공개 키"
 #: include/global_arrays.php:2835 include/global_arrays.php:2865
 #: lib/html.php:2116
 msgid "Reporting"
-msgstr "Reporting"
+msgstr "보고"
 
 #: include/global_arrays.php:2841 include/global_arrays.php:2871
 msgid "Report Add"
@@ -10941,7 +10938,7 @@ msgstr " K"
 
 #: include/global_settings.php:40
 msgid "Paths"
-msgstr "Paths"
+msgstr "경로"
 
 #: include/global_settings.php:41 include/global_settings.php:219
 msgid "Logging"
@@ -14552,29 +14549,29 @@ msgstr "기기가 사용 중지되었습니다"
 #: lib/auth.php:2355 lib/auth.php:2357 lib/auth.php:2363 lib/auth.php:2365
 #, php-format
 msgid "Graph:(%s%s)"
-msgstr "그래프:(%1$s%2$s)"
+msgstr "그래프:(%s%s)"
 
 #: lib/auth.php:2378 lib/auth.php:2384 lib/auth.php:2451 lib/auth.php:2453
 #: lib/auth.php:2457 lib/auth.php:2459
 #, php-format
 msgid "Device:(%s%s)"
-msgstr "장치:(%1$s%2$s)"
+msgstr "장치:(%s%s)"
 
 #: lib/auth.php:2392 lib/auth.php:2398 lib/auth.php:2467 lib/auth.php:2469
 #: lib/auth.php:2473 lib/auth.php:2475
 #, php-format
 msgid "Template:(%s%s)"
-msgstr "템플릿:(%1$s%2$s)"
+msgstr "템플릿:(%s%s)"
 
 #: lib/auth.php:2405
 #, php-format
 msgid "Graph+Device+Template:(%s%s)"
-msgstr "그래프+장치+템플릿:(%1$s%2$s)"
+msgstr "그래프+장치+템플릿:(%s%s)"
 
 #: lib/auth.php:2442 lib/auth.php:2444
 #, php-format
 msgid "Device+Template:(%s%s)"
-msgstr "장치+템플릿:(%1$s%2$s)"
+msgstr "장치+템플릿:(%s%s)"
 
 #: lib/auth.php:2488 lib/auth.php:2495 lib/auth.php:2504
 msgid "Restricted By: "
@@ -14723,7 +14720,7 @@ msgstr "2FA가 활성화되고 검증되었습니다"
 #: lib/boost.php:64 utilities.php:1708
 #, php-format
 msgid "%s MBytes"
-msgstr ""
+msgstr "%s 메가바이트"
 
 #: lib/boost.php:67
 #, php-format
@@ -14767,12 +14764,12 @@ msgstr " - 관리자보기"
 #: lib/clog_webapi.php:290
 #, php-format
 msgid "Log [Total Lines: %d %s - Filter active]"
-msgstr "로그 [총 줄 수: %1$d %2$s - 필터 활성]"
+msgstr "로그 [총 줄 수: %d %s - 필터 활성]"
 
 #: lib/clog_webapi.php:292
 #, php-format
 msgid "Log [Total Lines: %d %s - Unfiltered]"
-msgstr "로그 [총 줄 수: %1$d %2$s - 필터 미적용]"
+msgstr "로그 [총 줄 수: %d %s - 필터 미적용]"
 
 #: lib/clog_webapi.php:297 utilities.php:430 utilities.php:791
 #: utilities.php:1042 utilities.php:1045 utilities.php:1141 utilities.php:2008
@@ -14983,7 +14980,7 @@ msgstr "정렬 필드 변경 확인 중. 변경 사항이 감지되지 않았습
 #: lib/data_query.php:509
 #, php-format
 msgid "Detected New Sort Field: '%s' Old Sort Field '%s'"
-msgstr "감지 된 새 정렬 필드 : &#39; %1$s&#39;이전 정렬 필드 &#39; %2$s&#39"
+msgstr "감지 된 새 정렬 필드 : '%s'이전 정렬 필드 '%s'"
 
 #: lib/data_query.php:526
 msgid "ERROR: New Sort Field not suitable.  Sort Field will not change."
@@ -15093,7 +15090,7 @@ msgstr "발견된 항목 [%s='%s'] 색인: %s"
 #: lib/data_query.php:799 lib/data_query.php:814
 #, php-format
 msgid "Total: %f, Delta: %f, %s"
-msgstr "합계: %1$f, 델타: %2$f, %3$s"
+msgstr "합계: %f, 델타: %f, %s"
 
 #: lib/data_query.php:839
 #, php-format
@@ -15111,7 +15108,7 @@ msgstr "SNMP 세션을로드하지 못했습니다."
 #: lib/data_query.php:886
 #, php-format
 msgid "Tested Bulk Walk Size %d with a response of %2.4f."
-msgstr "Bulk Walk 크기 %1$d을(를) 테스트했으며 응답은 %2$2.4f입니다."
+msgstr "Bulk Walk 크기 %d을(를) 테스트했으며 응답은 %2.4f입니다."
 
 #: lib/data_query.php:898
 #, php-format
@@ -15150,7 +15147,7 @@ msgstr "반환 된 SNMP 데이터가 없습니다"
 #: lib/data_query.php:950
 #, php-format
 msgid "Index found at OID: '%s' value: '%s'"
-msgstr "OID에있는 색인 : &#39; %1$s&#39;값 : &#39; %2$s&#39"
+msgstr "OID에있는 색인 : '%s'값 : '%s'"
 
 #: lib/data_query.php:966
 #, php-format
@@ -15160,7 +15157,7 @@ msgstr "@ &#39; %s&#39;인덱스 목록 필터링 인덱스 개수 : %s"
 #: lib/data_query.php:970
 #, php-format
 msgid "Filtered Index by value found at OID: '%s' value: '%s'"
-msgstr "OID에서 필터링 된 인덱스 : &#39; %1$s&#39;값 : &#39; %2$s&#39"
+msgstr "OID에서 필터링 된 인덱스 : '%s'값 : '%s'"
 
 #: lib/data_query.php:987
 #, php-format
@@ -15170,7 +15167,7 @@ msgstr "@ &#39; %s&#39;인덱스 목록 필터링 인덱스 개수 : %s"
 #: lib/data_query.php:991
 #, php-format
 msgid "Filtered Index found at OID: '%s' value: '%s'"
-msgstr "OID에서 필터링 된 인덱스 : &#39; %1$s&#39;값 : &#39; %2$s&#39"
+msgstr "OID에서 필터링 된 인덱스 : '%s'값 : '%s'"
 
 #: lib/data_query.php:1011
 #, php-format
@@ -15190,12 +15187,12 @@ msgstr "찾은 입력 필드 '%s' [get]"
 #: lib/data_query.php:1032
 #, php-format
 msgid "Found OID rewrite rule: 's/%s/%s/'"
-msgstr "발견 된 OID 다시 쓰기 규칙 : &#39;s / %1$s / %2$s /&#39"
+msgstr "발견 된 OID 다시 쓰기 규칙 : 's / %s / %s /'"
 
 #: lib/data_query.php:1043
 #, php-format
 msgid "oid_rewrite at OID: '%s' new OID: '%s'"
-msgstr "OID에서 oid_rewrite : &#39; %1$s&#39;새로운 OID : &#39; %2$s&#39"
+msgstr "OID에서 oid_rewrite : '%s'새로운 OID : '%s'"
 
 #: lib/data_query.php:1064
 #, php-format
@@ -15210,7 +15207,7 @@ msgstr "필드 '%s' %s"
 #: lib/data_query.php:1140
 #, php-format
 msgid "Executing SNMP get for %s oids (%s)"
-msgstr "%1$s oids ( %2$s)에 대해 SNMP 실행을 실행 중입니다"
+msgstr "%s oids ( %s)에 대해 SNMP 실행을 실행 중입니다"
 
 #: lib/data_query.php:1167 lib/data_query.php:1260 lib/data_query.php:1269
 #, php-format
@@ -15290,7 +15287,7 @@ msgstr "번역 맵을 구문 분석할 수 없습니다 (rewrite_value)"
 #: lib/data_query.php:1750
 #, php-format
 msgid "rewrite_value: '%s' => '%s'"
-msgstr "rewrite_value: '%1$s' => '%2$s'"
+msgstr "rewrite_value: '%s' => '%s'"
 
 #: lib/data_query.php:1856
 msgid "Update graph data query cache complete"
@@ -15570,8 +15567,8 @@ msgid ""
 "Reason: %s.\n"
 "See Cacti Log for details."
 msgstr ""
-"원격 에이전트 %1$s에 연결하지 못했습니다\n"
-"원인: %2$s.\n"
+"원격 에이전트 %s에 연결하지 못했습니다\n"
+"원인: %s.\n"
 "자세한 내용은 Cacti 로그를 참조하십시오."
 
 #: lib/functions.php:7247
@@ -15592,8 +15589,7 @@ msgstr "버전 %s %s"
 #: lib/functions.php:7852
 #, php-format
 msgid "WARNING: Key Cacti Include File \"%s\" missing.  Please locate and replace this file as we checked in \"%s\""
-msgstr ""
-"경고: 주요 Cacti 포함 파일 \"%1$s\"이(가) 누락되었습니다. \"%2$s\"에서 "
+msgstr "경고: 주요 Cacti 포함 파일 \"%s\"이(가) 누락되었습니다. \"%s\"에서 "
 "확인했으므로 이 파일을 찾아 교체하십시오"
 
 #: lib/functions.php:8996
@@ -15664,7 +15660,7 @@ msgstr "다음"
 #: lib/html.php:681
 #, php-format
 msgid "All %d %s"
-msgstr "모든 %1$d %2$s"
+msgstr "모든 %d %s"
 
 #: lib/html.php:700
 #, php-format
@@ -16945,7 +16941,7 @@ msgstr "선택된"
 #: lib/html_utility.php:589 lib/html_utility.php:828
 #, php-format
 msgid "The regular expression \"%s\" is not valid. Error is %s"
-msgstr "검색어 &quot; %1$s&quot;이 (가) 유효하지 않습니다. 오류는 %2$s입니다"
+msgstr "검색어 &quot; %s&quot;이 (가) 유효하지 않습니다. 오류는 %s입니다"
 
 #: lib/html_utility.php:1040
 msgid "Cacti regular expressions are limited to 50 characters only for security reasons."
@@ -17106,7 +17102,7 @@ msgstr "예기치 않은 경로 매개 변수"
 #: lib/installer.php:968
 #, php-format
 msgid "Failed to apply specified profile %s != %s"
-msgstr "지정한 프로필 %1$s! = %2$s을 적용하지 못했습니다"
+msgstr "지정한 프로필 %s! = %s을 적용하지 못했습니다"
 
 #: lib/installer.php:1015
 #, php-format
@@ -17412,7 +17408,7 @@ msgstr "설치 유형"
 #: lib/installer.php:2239
 #, php-format
 msgid "Upgrade from <strong>%s</strong> to <strong>%s</strong>"
-msgstr ""
+msgstr "<strong>%s</strong>에서 <strong>%s</strong>(으)로 업그레이드"
 
 #: lib/installer.php:2241
 msgid "In the event of issues, It is highly recommended that you clear your browser cache, closing then reopening your browser (not just the tab Cacti is on) and retrying, before raising an issue with The Cacti Group"
@@ -18051,12 +18047,12 @@ msgstr "패키지 # %s '%s'을 (를) 가져 오려고합니다."
 #: lib/installer.php:3447
 #, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' succeeded"
-msgstr "프로필 '%1$s'에서 패키지 # %2$s '%3$s'을 (를) 가져 왔습니다"
+msgstr "프로필 '%s'에서 패키지 # %s '%s'을 (를) 가져 왔습니다"
 
 #: lib/installer.php:3453
 #, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' failed"
-msgstr "프로필 '%1$s'에서 패키지 # %2$s '%3$s'을 (를) 가져 오지 못했습니다"
+msgstr "프로필 '%s'에서 패키지 # %s '%s'을 (를) 가져 오지 못했습니다"
 
 #: lib/installer.php:3469
 #, php-format
@@ -18219,7 +18215,7 @@ msgstr "EULA 승인이 없어 설치가 중단되었습니다"
 #: lib/installer.php:3920
 #, php-format
 msgid "Background was already started at %s, this attempt at %s was skipped"
-msgstr "백그라운드가 이미 %1$s에서 시작되었습니다. %2$s에서의이 시도는 생략되었습니다"
+msgstr "백그라운드가 이미 %s에서 시작되었습니다. %s에서의이 시도는 생략되었습니다"
 
 #: lib/installer.php:3946
 #, php-format
@@ -18229,7 +18225,7 @@ msgstr ""
 #: lib/installer.php:3956
 #, php-format
 msgid "Installation was started at %s, completed at %s"
-msgstr "설치가 %1$s에서 시작되어 %2$s에서 완료되었습니다"
+msgstr "설치가 %s에서 시작되어 %s에서 완료되었습니다"
 
 #: lib/installer.php:3997
 msgid "Both"
@@ -18611,8 +18607,8 @@ msgstr "장치 '%s'이(가) 보고서에 이미 있으므로 보고서에 추가
 #: lib/reports.php:625
 #, php-format
 msgid "Problems sending Report '%s' Problem with e-mail Subsystem Error is '%s'"
-msgstr "보고서 '%1$s'을 (를) 보내는 데 문제가 있음 전자 메일 하위 시스템 오류 문제는 "
-"'%2$s'입니다"
+msgstr "보고서 '%s'을 (를) 보내는 데 문제가 있음 전자 메일 하위 시스템 오류 문제는 "
+"'%s'입니다"
 
 #: lib/reports.php:634
 #, php-format
@@ -18680,17 +18676,17 @@ msgstr ""
 #: lib/rrd.php:3359
 #, php-format
 msgid "Type for Data Source '%s' should be '%s'"
-msgstr "데이터 원본 &#39; %1$s&#39;의 형식이 &#39; %2$s&#39;이어야합니다"
+msgstr "데이터 원본 '%s'의 형식이 '%s'이어야합니다"
 
 #: lib/rrd.php:3365
 #, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
-msgstr "데이터 원본 &#39; %1$s&#39;의 하트 비트가 &#39; %2$s&#39;이어야합니다"
+msgstr "데이터 원본 '%s'의 하트 비트가 '%s'이어야합니다"
 
 #: lib/rrd.php:3377
 #, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
-msgstr "데이터 원본 &#39; %1$s&#39;의 RRD 최소값은 &#39; %2$s&#39;이어야합니다"
+msgstr "데이터 원본 '%s'의 RRD 최소값은 '%s'이어야합니다"
 
 #: lib/rrd.php:3386
 #, php-format
@@ -18700,7 +18696,7 @@ msgstr "Cacti 정의에서 DS &#39; %s&#39;이 누락되었습니다."
 #: lib/rrd.php:3400 lib/rrd.php:3401
 #, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
-msgstr "Cacti RRA '%1$s'의 CF/steps(%2$s, %3$s)가 '%4$s'와(과) 동일합니다"
+msgstr "Cacti RRA '%s'의 CF/steps(%s, %s)가 '%s'와(과) 동일합니다"
 
 #: lib/rrd.php:3415 lib/rrd.php:3416
 #, php-format
@@ -18715,7 +18711,7 @@ msgstr "'%s' 의 pdp_per_row가 유효하지 않습니다. RRA '%s' 은 (는) '%
 #: lib/rrd.php:3454
 #, php-format
 msgid "The XFF for Cacti RRA id is '%s' but should be '%s'"
-msgstr "Cacti RRA ID의 XFF가 '%1$s'이지만 '%2$s'이어야 합니다"
+msgstr "Cacti RRA ID의 XFF가 '%s'이지만 '%s'이어야 합니다"
 
 #: lib/rrd.php:3458
 #, php-format
@@ -18814,12 +18810,12 @@ msgstr "RRDtool 덤프의 XML을 구문 분석하는 동안 오류가 발생했�
 #: lib/rrd.php:4159
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file"
-msgstr "RRD 파일에서 RRA(CF=%1$s, ROWS=%2$d, PDP_PER_ROW=%3$d, XFF=%4$1.2f) 제거됨"
+msgstr "RRD 파일에서 RRA(CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) 제거됨"
 
 #: lib/rrd.php:4199
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file"
-msgstr "RRD 파일에 RRA(CF=%1$s, ROWS=%2$d, PDP_PER_ROW=%3$d, XFF=%4$1.2f) 추가 중"
+msgstr "RRD 파일에 RRA(CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) 추가 중"
 
 #: lib/rrd.php:4291 lib/rrd.php:4305
 #, php-format
@@ -20662,8 +20658,7 @@ msgstr "플러그인 디렉토리는 공백을 포함 할 수 없습니다"
 #: plugins.php:1870
 #, php-format
 msgid "Plugin directory is not correct.  Should be '%s' but is '%s'"
-msgstr "플러그인 디렉토리가 올바르지 않습니다. &#39; %1$s&#39;이어야하지만 &#39; "
-"%2$s&#39;입니다"
+msgstr "플러그인 디렉토리가 올바르지 않습니다. '%s'이어야하지만 '%s'입니다"
 
 #: plugins.php:1881
 msgid "Plugin is integrated into Cacti core"
@@ -21290,7 +21285,7 @@ msgstr "참고 :이 탭의 경로 설정은 로컬에만 저장됩니다!"
 #: settings.php:138
 #, php-format
 msgid "Cacti Settings (%s)%s"
-msgstr "Cacti 설정 (%1$s)%2$s"
+msgstr "Cacti 설정 (%s)%s"
 
 #: settings.php:248
 msgid "Changing Permission Model Warning"
@@ -21738,7 +21733,7 @@ msgstr "데이터 쿼리 없음"
 
 #: support.php:503 support.php:650
 msgid "Cacti Poller"
-msgstr "Cacti Poller"
+msgstr "Cacti 폴러"
 
 #: support.php:504
 msgid "Cacti Process"
@@ -23621,7 +23616,13 @@ msgstr "리소스 캐시 다시 작성"
 
 #: utilities.php:1256
 msgid "When operating multiple Data Collectors in Cacti, Cacti will attempt to maintain state for key files on all Data Collectors.  This includes all core, non-install related website and plugin files.  When you force a Resource Cache rebuild, Cacti will clear the local Resource Cache, and then rebuild it at the next scheduled poller start.  This will trigger all Remote Data Collectors to recheck their website and plugin files for consistency."
-msgstr "Cacti에서 여러 데이터 수집기를 운영 할 때 Cacti는 모든 Data Collector에서 주요 파일의 상태를 유지하려고 시도합니다. 여기에는 모든 핵심 설치되지 않은 웹 사이트 및 플러그인 파일이 포함됩니다. 리소스 캐시 재 작성을 강제하면 Cacti는 로컬 리소스 캐시를 지운 다음 다음 예약 폴러 시작시 다시 작성합니다. 이렇게하면 모든 원격 데이터 수집기가 웹 사이트 및 플러그인 파일의 일관성을 다시 검사하도록 트리거합니다."
+msgstr ""
+"Cacti에서 여러 데이터 수집기를 운영할 때 Cacti는 모든 데이터 수집기에서 주요 "
+"파일의 상태를 유지하려고 시도합니다. 여기에는 설치 관련 파일을 제외한 모든 "
+"핵심 웹사이트 및 플러그인 파일이 포함됩니다. 리소스 캐시를 강제로 다시 "
+"빌드하면 Cacti는 로컬 리소스 캐시를 지운 후, 다음 예약된 폴러 시작 시 다시 "
+"빌드합니다. 이렇게 하면 모든 원격 데이터 수집기가 웹사이트 및 플러그인 "
+"파일의 일관성을 다시 검사하게 됩니다."
 
 #: utilities.php:1260
 msgid "Boost Utilities"
@@ -23809,7 +23810,7 @@ msgstr "RRD 업데이트 :"
 
 #: utilities.php:1699
 msgid "MBytes"
-msgstr "MBytes"
+msgstr "메가바이트"
 
 #: utilities.php:1699
 msgid "Peak Poller Memory:"
@@ -23841,9 +23842,9 @@ msgstr "프로세스: %d"
 #, php-format
 msgid "Status: <span class=\"deviceUp\"><b>Running</b></span>, Remaining: %s (dses), CurrentRuntime: %s (secs), PrevRuntime: %s (secs), PrevProcessed: %10s (ds rows)"
 msgstr ""
-"상태: <span class=\"deviceUp\"><b>실행 중</b></span>, 남음: %1$s (데이터 "
-"소스), 현재 실행 시간: %2$s (초), 이전 실행 시간: %3$s (초), 이전 처리: %4$"
-"10s (데이터 소스 행)"
+"상태: <span class=\"deviceUp\"><b>실행 중</b></span>, 남음: %s (데이터 소스)"
+", 현재 실행 시간: %s (초), 이전 실행 시간: %s (초), 이전 처리: %10s (데이터 "
+"소스 행)"
 
 #: utilities.php:1781
 #, php-format
