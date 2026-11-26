@@ -255,8 +255,9 @@ function dirToArray($dir,$base,$ignore) {
 	if (isset($dir) && strlen($dir)) {
 		$fulldir .= DIRECTORY_SEPARATOR.$dir;
 	}
-	$fulldir = realpath($fulldir);
-	if ($fulldir !== false && cacti_path_is_within($fulldir, $base)) {
+	$real_base = realpath($base);
+	$fulldir   = realpath($fulldir);
+	if ($fulldir !== false && $real_base !== false && ($fulldir === $real_base || cacti_path_is_within($fulldir, $real_base))) {
 		if (is_dir($fulldir)) {
 			$cdir = scandir($fulldir);
 		} else {

@@ -380,7 +380,7 @@ function get_graph_data() {
 
 			return false;
 		}
-	} elseif (!function_exists('read_config_option') || read_config_option('auth_method') != 0) {
+	} elseif (read_config_option('auth_method') != 0) {
 		http_response_code(403);
 		cacti_log('WARNING: Rejected a Remote Agent graph request missing an effective user.', false, 'SECURITY');
 

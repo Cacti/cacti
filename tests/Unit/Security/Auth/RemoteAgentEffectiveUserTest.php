@@ -65,9 +65,20 @@ test('a graph for a disabled or unknown user is not drawn', function ($user_id) 
 	'zero'     => array('0'),
 ));
 
-test('a request that names no user is unchanged', function () {
-	$result = remote_agent_effective_user('graph', array('graph_height' => 0));
+test('a request that names no user is rejected when authentication is enabled', function () {
+	expect(remote_agent_effective_user('graph', array('graph_height' => 0)))->toBe(array(
+		'status'   => 403,
+		'log'      => array('SECURITY: WARNING: Rejected a Remote Agent graph request missing an effective user.'),
+		'graphs'   => array(),
+		'returned' => false,
+		'output'   => '',
+	));
+});
+
+test('a request that names no user is allowed when authentication is disabled', function () {
+	$result = remote_agent_effective_user('graph', array('graph_height' => 0), 0);
 
 	expect($result['returned'])->toBeTrue()
+		->and($result['status'])->toBe(200)
 		->and($result['graphs'])->toBe(array(array(12, 0)));
 });

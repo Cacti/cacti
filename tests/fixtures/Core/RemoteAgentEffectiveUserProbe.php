@@ -30,6 +30,14 @@ require dirname(__DIR__, 2) . '/Helpers/SourceSlice.php';
 $root = dirname(__DIR__, 3);
 require $root . '/include/global_constants.php';
 
+function read_config_option($name, $force = false) {
+	if ($name === 'auth_method') {
+		return isset($GLOBALS['auth_method']) ? $GLOBALS['auth_method'] : 1;
+	}
+
+	return '';
+}
+
 function db_fetch_cell_prepared($sql, $params = array()) {
 	$users = array(3 => 'on', 4 => '');
 
@@ -71,11 +79,12 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 \cacti_fixture_source_function($root . '/remote_agent.php', 'remote_agent_validate_effective_user', __NAMESPACE__);
 \cacti_fixture_source_function($root . '/remote_agent.php', 'get_graph_data', __NAMESPACE__);
 
-function remote_agent_effective_user($mode, $value) {
+function remote_agent_effective_user($mode, $value, $auth_method = 1) {
 	if ($mode == 'validate') {
 		return array('user' => remote_agent_validate_effective_user($value));
 	}
 
+	$GLOBALS['auth_method'] = $auth_method;
 	$GLOBALS['request'] = $value + array('local_graph_id' => 12, 'rra_id' => 0);
 	$GLOBALS['result']  = array('status' => 200, 'log' => array(), 'graphs' => array());
 

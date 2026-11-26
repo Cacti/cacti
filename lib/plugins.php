@@ -91,8 +91,8 @@ function api_plugin_callback_is_allowed($plugin_name, $function_name) {
 	}
 
 	try {
-		$rf = new ReflectionFunction($function_name);
-	} catch (ReflectionException $e) {
+		$rf = new \ReflectionFunction($function_name);
+	} catch (\ReflectionException $e) {
 		return false;
 	}
 
