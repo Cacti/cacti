@@ -9,7 +9,7 @@
 # Wolfgang Stöggl <c72578@yahoo.de>, 2017.
 #
 msgid ""
-msgstr "Project-Id-Version: Cacti German Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-25 22:34+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: German <https://translate.cacti.net/projects/cacti/core-v1-2-x/de/>\nLanguage: de-DE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\nX-Poedit-Basepath: .\nX-Poedit-KeywordsList: __;__date\n"
+msgstr "Project-Id-Version: Cacti German Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-26 05:53+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: German <https://translate.cacti.net/projects/cacti/core-v1-2-x/de/>\nLanguage: de-DE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\nX-Poedit-Basepath: .\nX-Poedit-KeywordsList: __;__date\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -559,10 +559,8 @@ msgid "No Aggregate Graphs Found"
 msgstr "Keine Aggregatdiagramme gefunden"
 
 #: aggregate_templates.php
-#, fuzzy
-#| msgid "No Aggregate Templates Found"
 msgid "Aggregate Template not found."
-msgstr "Keine Aggregatvorlagen gefunden"
+msgstr "Aggregatvorlage nicht gefunden."
 
 #: aggregate_templates.php
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -619,7 +617,7 @@ msgstr "Diagramme mit"
 #: include/global_arrays.php include/global_form.php lib/html_reports.php
 #: tree.php
 msgid "Graph Template"
-msgstr "Diagrammvorlage"
+msgstr "Graph-Vorlage"
 
 #: aggregate_templates.php
 msgid "No Aggregate Templates Found"
@@ -996,7 +994,7 @@ msgstr "Betriebsystem"
 
 #: automation_devices.php host.php include/global_arrays.php
 msgid "Uptime"
-msgstr "Laufzeit"
+msgstr "Betriebszeit"
 
 #: automation_devices.php include/global_arrays.php utilities.php
 msgid "SNMP"
@@ -1055,7 +1053,7 @@ msgstr "Entdeckte Geräte bereinigen"
 #: lib/html.php lib/html_reports.php lib/spikekill.php lib/utility.php
 #: plugins.php pollers.php user_admin.php utilities.php
 msgid "N/A"
-msgstr "Nicht verfügbar"
+msgstr "Nicht zutreffend"
 
 #: automation_graph_rules.php automation_snmp.php automation_tree_rules.php
 #: cdef.php color_templates.php data_input.php data_queries.php
@@ -1521,7 +1519,7 @@ msgstr "Wochentage"
 
 #: automation_networks.php
 msgid "What Day(s) of the week will this Network Range be discovered."
-msgstr "An welchem/welchen Wochentag(en) wird dieser Netzwerkbereich ermittelt?."
+msgstr "Legt fest, an welchem/welchen Wochentag(en) dieser Netzwerkbereich ermittelt wird."
 
 #: automation_networks.php include/global_arrays.php
 msgid "Sunday"
@@ -1557,7 +1555,7 @@ msgstr "Monate des Jahres"
 
 #: automation_networks.php
 msgid "What Months(s) of the Year will this Network Range be discovered."
-msgstr "In welchem/welchen Monat(en) des Jahres wird dieser Netzwerkbereich ermittelt?."
+msgstr "Legt fest, in welchem/welchen Monat(en) des Jahres dieser Netzwerkbereich ermittelt wird."
 
 #: automation_networks.php include/global_arrays.php
 msgid "January"
@@ -1613,7 +1611,7 @@ msgstr "Tage des Monats"
 
 #: automation_networks.php
 msgid "What Day(s) of the Month will this Network Range be discovered."
-msgstr "An welchem/welchen Tag(en) des Monats wird dieser Netzwerkbereich ermittelt?."
+msgstr "Legt fest, an welchem/welchen Tag(en) des Monats dieser Netzwerkbereich ermittelt wird."
 
 #: automation_networks.php
 msgid "Last"
@@ -1625,7 +1623,7 @@ msgstr "Woche(n) des Monats"
 
 #: automation_networks.php
 msgid "What Week(s) of the Month will this Network Range be discovered."
-msgstr "In welcher/welchen Woche(n) des Monats wird dieser Netzwerkbereich ermittelt?."
+msgstr "Legt fest, in welcher/welchen Woche(n) des Monats dieser Netzwerkbereich ermittelt wird."
 
 #: automation_networks.php
 msgid "First"
@@ -1801,7 +1799,7 @@ msgstr "Keine Netzwerke gefunden"
 #: automation_networks.php data_debug.php lib/clog_webapi.php
 #: lib/html_graph.php lib/html_tree.php pollers.php utilities.php
 msgid "Refresh"
-msgstr "Aktualisieren"
+msgstr "Neu laden"
 
 #: automation_networks.php data_sources.php include/global_arrays.php
 #: include/global_settings.php pollers.php
@@ -2462,7 +2460,7 @@ msgstr "Der Name dieser Farbdefinition."
 
 #: color.php
 msgid "Is this color a named color which are read only."
-msgstr "Handelt es sich bei dieser Farbe um eine benannte Farbe, die schreibgeschützt ist?."
+msgstr "Gibt an, ob es sich bei dieser Farbe um eine benannte, schreibgeschützte Farbe handelt."
 
 #: color.php
 msgid "Named Color"
@@ -2561,10 +2559,8 @@ msgid "Delete Color Item"
 msgstr "Farbelement löschen"
 
 #: color_templates.php
-#, fuzzy
-#| msgid "No Color Templates Found"
 msgid "Color Template not found."
-msgstr "Keine Farbvorlagen gefunden"
+msgstr "Farbvorlage nicht gefunden."
 
 #: color_templates.php
 #, php-format
@@ -2598,10 +2594,8 @@ msgid "No Color Templates Found"
 msgstr "Keine Farbvorlagen gefunden"
 
 #: color_templates_items.php
-#, fuzzy
-#| msgid "Color Template Items"
 msgid "Color Template or Item not found."
-msgstr "Elemente von Farbvorlagen"
+msgstr "Farbvorlage oder Element nicht gefunden."
 
 #: color_templates_items.php
 msgid "Click 'Continue' to delete the following Color Template Color."
@@ -4278,10 +4272,8 @@ msgid "No Inputs"
 msgstr "Keine Eingaben"
 
 #: graph_templates.php
-#, fuzzy
-#| msgid "No Graph Templates Found"
 msgid "Graph Template not found."
-msgstr "Keine Grafikvorlagen gefunden"
+msgstr "Diagrammvorlage nicht gefunden."
 
 #: graph_templates.php
 #, php-format
@@ -5328,7 +5320,7 @@ msgstr "Der Überwachungszustand des Geräts basierend auf den Ping-Ergebnissen.
 
 #: host.php
 msgid "In State"
-msgstr "Bundesland"
+msgstr "Im Zustand"
 
 #: host.php
 msgid "The amount of time that this Device has been in its current state."
@@ -5784,10 +5776,8 @@ msgid "Unable to determine size of password field, please check permissions of d
 msgstr "Die Größe des Kennwortfelds kann nicht ermittelt werden. Bitte überprüfen Sie die Berechtigungen des Datenbankbenutzers"
 
 #: include/global_arrays.php
-#, fuzzy
-#| msgid "Unable to increase size of password field, pleas check permission of db user"
 msgid "Unable to increase size of password field, please check permission of db user"
-msgstr "Das Passwortfeld kann nicht vergrößert werden, bitte prüfen Sie die Berechtigung des db-Benutzers."
+msgstr "Das Passwortfeld kann nicht vergrößert werden, bitte prüfen Sie die Berechtigung des DB-Benutzers"
 
 #: include/global_arrays.php
 msgid "LDAP/AD based password change not supported."
@@ -7618,7 +7608,7 @@ msgstr "Wählen Sie die SNMP-Version für diesen Host aus."
 
 #: include/global_form.php
 msgid "SNMP Community String"
-msgstr "SNMP Community String"
+msgstr "SNMP-Community-Zeichenkette"
 
 #: include/global_form.php
 msgid "Fill in the SNMP read community for this device."
@@ -8357,7 +8347,7 @@ msgstr "Eine VDEF (Mathematik)-Funktion, die auf dieses Element in der Diagramml
 
 #: include/global_form.php
 msgid "Shift Data"
-msgstr "Nach links verschieben"
+msgstr "Daten verschieben"
 
 #: include/global_form.php
 msgid "Offset your data on the time axis (x-axis) by the amount specified in the 'value' field."
@@ -8417,7 +8407,7 @@ msgstr "Der Strichmodifikator ermöglicht den Stil der gestrichelten Linie."
 
 #: include/global_form.php
 msgid "Dash Offset (dash-offset=offset)"
-msgstr "Strich-Abstand (dash-offset=Abstand)"
+msgstr "Strich-Abstand (dash-offset=offset)"
 
 #: include/global_form.php
 msgid "The dash-offset parameter specifies an offset into the pattern at which the stroke begins."
@@ -8485,7 +8475,7 @@ msgstr "Geräte-Standortzuordnung"
 
 #: include/global_form.php
 msgid "What Site is this Device associated with."
-msgstr "Mit welcher Site ist dieses Gerät verbunden?."
+msgstr "Die Site, der dieses Gerät zugeordnet ist."
 
 #: include/global_form.php
 msgid "Choose the Device Template to use to define the default Graph Templates and Data Queries associated with this Device."
@@ -8815,7 +8805,7 @@ msgstr "Gesamttyp"
 
 #: include/global_form.php
 msgid "Which type of totaling shall be performed."
-msgstr "Welche Art der Summierung soll durchgeführt werden?."
+msgstr "Art der durchzuführenden Summierung."
 
 #: include/global_form.php
 msgid "Prefix for GPRINT Totals"
@@ -9232,7 +9222,7 @@ msgstr "Ziel für Log"
 
 #: include/global_settings.php
 msgid "How will Cacti handle event logging."
-msgstr "Wie wird Cacti die Ereignisprotokollierung handhaben?."
+msgstr "Legt fest, wie Cacti die Ereignisprotokollierung handhabt."
 
 #: include/global_settings.php
 msgid "Generic Log Level"
@@ -9361,7 +9351,7 @@ msgstr "MySQL - TimeZone Unterstützung"
 
 #: include/global_settings.php
 msgid "How should Cacti support Client Dates based upon the Client browsers timezone."
-msgstr "Wie sollte Cacti Client-Daten basierend auf der Zeitzone des Client-Browsers unterstützen?."
+msgstr "Legt fest, wie Cacti Client-Daten basierend auf der Zeitzone des Client-Browsers unterstützt."
 
 #: include/global_settings.php
 msgid "Date Display Format"
@@ -9399,7 +9389,7 @@ msgstr "Grafiken/Datenquellen prüfen lassen"
 
 #: include/global_settings.php
 msgid "Should the Has Graphs and Has Data Sources be Checked by Default."
-msgstr "Sollte „Hat Diagramme“ und „Hat Datenquellen“ standardmäßig aktiviert sein?."
+msgstr "Legt fest, ob „Hat Diagramme“ und „Hat Datenquellen“ standardmäßig aktiviert sind."
 
 #: include/global_settings.php utilities.php
 msgid "RRDtool Version"
@@ -9692,7 +9682,7 @@ msgstr "Standard-Schnittstellengeschwindigkeit"
 
 #: include/global_settings.php
 msgid "If Cacti can not determine the interface speed due to either ifSpeed or ifHighSpeed not being set or being zero, what maximum value do you wish on the resulting RRDfiles."
-msgstr "Wenn Cacti die Schnittstellengeschwindigkeit nicht bestimmen kann, weil entweder „ifSpeed“ oder „ifHighSpeed“ nicht festgelegt ist oder Null beträgt, welchen Maximalwert wünschen Sie für die resultierenden RRD-Dateien?."
+msgstr "Maximalwert für die resultierenden RRD-Dateien, wenn Cacti die Schnittstellengeschwindigkeit nicht bestimmen kann, weil entweder „ifSpeed“ oder „ifHighSpeed“ nicht festgelegt ist oder Null beträgt."
 
 #: include/global_settings.php
 msgid "100 Mbps Ethernet"
@@ -11052,7 +11042,7 @@ msgstr "Standard-Grafikbildformat"
 
 #: include/global_settings.php
 msgid "When creating a new report, what image type should be used for the inline graphs."
-msgstr "Welcher Bildtyp soll beim Erstellen eines neuen Berichts für die Inline-Diagramme verwendet werden?."
+msgstr "Bildtyp, der beim Erstellen eines neuen Berichts für die Inline-Diagramme verwendet werden soll."
 
 #: include/global_settings.php
 msgid "Maximum E-Mail Size"
@@ -11721,7 +11711,7 @@ msgstr "Thumbnail Bereich"
 
 #: include/global_settings.php
 msgid "Which portions of Cacti display Thumbnails by default."
-msgstr "Welche Teile von Cacti zeigen standardmäßig Miniaturansichten an?."
+msgstr "Bereiche von Cacti, in denen standardmäßig Miniaturansichten angezeigt werden."
 
 #: include/global_settings.php
 msgid "Preview Thumbnail Columns"
@@ -14603,7 +14593,7 @@ msgstr "Anfang"
 
 #: lib/installer.php
 msgid "Upgrade"
-msgstr "Upgrade"
+msgstr "Aktualisierung"
 
 #: lib/installer.php
 msgid "Downgrade"
@@ -15864,9 +15854,9 @@ msgid "RRD minimum for Data Source '%s' should be '%s'"
 msgstr "Das RRD-Minimum für die Datenquelle „%1$s“ sollte „%2$s“ sein"
 
 #: lib/rrd.php
-#, fuzzy, php-format
+#, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
-msgstr "Cacti RRA'%s' hat die gleichen CF/Schritte (%s, %s) wie'%s'."
+msgstr "Cacti RRA '%1$s' hat die gleichen CF/Schritte (%2$s, %3$s) wie '%4$s'"
 
 #: lib/rrd.php
 #, php-format
@@ -16475,10 +16465,8 @@ msgid "Number of I/O threads used for read operations in InnoDB."
 msgstr ""
 
 #: lib/utility.php
-#, fuzzy
-#| msgid "default"
 msgid "1-64; default 4."
-msgstr "Standard"
+msgstr "1-64; Standard 4."
 
 #: lib/utility.php
 msgid "Number of I/O threads used for write operations in InnoDB."
@@ -16906,7 +16894,7 @@ msgstr "Automatische Seitenaktualisierung"
 
 #: links.php
 msgid "How often do you wish this page to be refreshed automatically."
-msgstr "Wie oft soll diese Seite automatisch aktualisiert werden?."
+msgstr "Intervall, in dem diese Seite automatisch aktualisiert werden soll."
 
 #: links.php
 #, php-format
@@ -18060,7 +18048,7 @@ msgstr "Geben Sie die Stadt oder Ortschaft ein"
 
 #: sites.php
 msgid "State"
-msgstr "Bundesland"
+msgstr "Zustand"
 
 #: sites.php
 msgid "The state for the Site."
@@ -18929,7 +18917,7 @@ msgstr "LDAP"
 
 #: user_admin.php
 msgid "Domain"
-msgstr "Domain"
+msgstr "Domäne"
 
 #: user_admin.php
 msgid "User ID"
@@ -19203,7 +19191,7 @@ msgstr "Sollen Benutzer dieser Gruppe Zugriff auf die Grafikvorschau haben?"
 
 #: user_group_admin.php
 msgid "What to do when a User from this User Group logs in."
-msgstr "Was tun, wenn sich ein Benutzer aus dieser Benutzergruppe anmeldet?"
+msgstr "Aktion, die ausgeführt wird, wenn sich ein Benutzer aus dieser Benutzergruppe anmeldet."
 
 #: user_group_admin.php
 msgid "Click 'Continue' to delete the following User Group"
@@ -19545,10 +19533,8 @@ msgid "PHP SNMP"
 msgstr "PHP SNMP"
 
 #: utilities.php
-#, fuzzy
-#| msgid "Installed"
 msgid "Installed."
-msgstr "Installiert"
+msgstr "Installiert."
 
 #: utilities.php
 msgid "You've set memory limit to 'unlimited'."
