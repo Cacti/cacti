@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-25 22:34+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Vietnamese <https://translate.cacti.net/projects/cacti/core-v1-2-x/vi/>\nLanguage: vi-VN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-26 05:54+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Vietnamese <https://translate.cacti.net/projects/cacti/core-v1-2-x/vi/>\nLanguage: vi-VN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -550,10 +550,8 @@ msgid "No Aggregate Graphs Found"
 msgstr "Không tìm thấy đồ thị tổng hợp"
 
 #: aggregate_templates.php
-#, fuzzy
-#| msgid "No Aggregate Templates Found"
 msgid "Aggregate Template not found."
-msgstr "Không tìm thấy mẫu tổng hợp"
+msgstr "Không tìm thấy mẫu tổng hợp."
 
 #: aggregate_templates.php
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -2535,10 +2533,8 @@ msgid "Delete Color Item"
 msgstr "Xóa mục màu"
 
 #: color_templates.php
-#, fuzzy
-#| msgid "No Color Templates Found"
 msgid "Color Template not found."
-msgstr "Không tìm thấy mẫu màu nào"
+msgstr "Không tìm thấy mẫu màu."
 
 #: color_templates.php
 #, php-format
@@ -4229,10 +4225,8 @@ msgid "No Inputs"
 msgstr "Không có đầu vào"
 
 #: graph_templates.php
-#, fuzzy
-#| msgid "No Graph Templates Found"
 msgid "Graph Template not found."
-msgstr "Không tìm thấy mẫu đồ thị"
+msgstr "Không tìm thấy mẫu đồ thị."
 
 #: graph_templates.php
 #, php-format
@@ -8355,7 +8349,7 @@ msgstr "Công cụ sửa đổi dấu gạch ngang cho phép kiểu đường đ
 
 #: include/global_form.php
 msgid "Dash Offset (dash-offset=offset)"
-msgstr "Dash Offset (dash-offset = offset)"
+msgstr "Độ lệch nét đứt (dash-offset=offset)"
 
 #: include/global_form.php
 msgid "The dash-offset parameter specifies an offset into the pattern at which the stroke begins."
@@ -13670,11 +13664,11 @@ msgstr "Quay trở lại khoảng thời gian mặc định"
 
 #: lib/html_graph.php lib/html_tree.php
 msgid "Window"
-msgstr "Window"
+msgstr "Cửa sổ"
 
 #: lib/html_graph.php utilities.php
 msgid "Interval"
-msgstr "Interval"
+msgstr "Khoảng thời gian"
 
 #: lib/html_graph.php lib/html_tree.php
 msgid "Stop"
@@ -14230,10 +14224,8 @@ msgid "Cacti regular expressions can not includes the semi-color character."
 msgstr ""
 
 #: lib/html_utility.php
-#, fuzzy
-#| msgid "Enter a regular expression"
 msgid "Invalid regular expression."
-msgstr "Nhập một biểu thức chính quy"
+msgstr "Biểu thức chính quy không hợp lệ."
 
 #: lib/html_utility.php
 msgid "There was an internal error!"
@@ -17161,10 +17153,8 @@ msgid "Are you sure you want to Force Uninstall the plugin"
 msgstr "Bạn có chắc là muốn gỡ cài đặt không?"
 
 #: plugins.php
-#, fuzzy
-#| msgid "Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click 'Uninstall' below.  Otherwise click 'Cancel'"
 msgid "This permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone.  If you really want to Force Uninstall the Plugin, click 'Force Uninstall' below.  Otherwise click 'Cancel'."
-msgstr "Gỡ cài đặt Plugin này sẽ xóa tất cả Dữ liệu và Cài đặt của Plugin. Nếu bạn thực sự muốn Gỡ cài đặt Plugin, nhấp vào &#39;Gỡ cài đặt&#39; bên dưới. Nếu không, nhấp vào &#39;Hủy&#39;"
+msgstr "Thao tác này sẽ xóa vĩnh viễn tất cả các mục của plugin khỏi các bảng plugin của Cacti (cấu hình, hook, quyền và bất kỳ bảng hoặc cột nào do plugin tạo). Không thể hoàn tác thao tác này. Nếu bạn thực sự muốn Buộc gỡ cài đặt Plugin, hãy nhấp vào 'Buộc gỡ cài đặt' bên dưới. Nếu không, hãy nhấp vào 'Hủy'."
 
 #: plugins.php
 #, fuzzy
@@ -18091,10 +18081,8 @@ msgid_plural "Duplicate Sites"
 msgstr[0] "Bản sao"
 
 #: sites.php
-#, fuzzy
-#| msgid "File not found"
 msgid "Site not found."
-msgstr "Không tìm thấy tập tin"
+msgstr "Không tìm thấy địa điểm."
 
 #: sites.php tree.php
 msgid "Site Name"
@@ -19414,10 +19402,8 @@ msgid "PHP SNMP"
 msgstr "PHP SNMP"
 
 #: utilities.php
-#, fuzzy
-#| msgid "Installed"
 msgid "Installed."
-msgstr "Đã lắp đặt"
+msgstr "Đã cài đặt."
 
 #: utilities.php
 msgid "You've set memory limit to 'unlimited'."
