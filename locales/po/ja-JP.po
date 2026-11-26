@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: cacti\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-26 09:54+0000\n"
+"PO-Revision-Date: 2026-11-26 19:34+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Japanese <https://translate.cacti.net/projects/cacti/core/ja/>"
 "\n"
@@ -1025,7 +1025,7 @@ msgstr "ユーザーアカウントの詳細"
 #: auth_profile.php:329 include/global_arrays.php:937
 #: include/global_settings.php:3033 lib/html.php:2271 lib/html.php:3131
 msgid "Tree View"
-msgstr "Tree View"
+msgstr "ツリービュー"
 
 #: auth_profile.php:333 include/global_arrays.php:938 lib/html.php:2280
 #: lib/html.php:3096
@@ -1274,7 +1274,7 @@ msgstr "発見された機器"
 #: automation_devices.php:233 include/global_settings.php:43
 #: include/global_settings.php:803
 msgid "Poller"
-msgstr "Poller"
+msgstr "ポーラー"
 
 #: automation_devices.php:241 automation_templates.php:899
 #: include/global_arrays.php:1503 include/global_form.php:1291
@@ -1783,13 +1783,13 @@ msgstr "エラー：曜日を指定する必要があります。ネットワー
 #, php-format
 msgid "ERROR: You must specify both the Months and Days of Month.  Disabling Network %s!"
 msgstr "エラー：月と月の日の両方を指定しなければなりません。ネットワーク%sを無効にし"
-"ています"
+"ています！"
 
 #: automation_networks.php:451
 #, php-format
 msgid "ERROR: You must specify the Months, Weeks of Months, and Days of Week.  Disabling Network %s!"
-msgstr "エラー：月、週の週、および曜日を指定する必要があります。ネットワーク%sを無効"
-"にしています"
+msgstr "エラー：月、月の週、および曜日を指定する必要があります。ネットワーク%sを無効"
+"にしています！"
 
 #: automation_networks.php:469
 #, php-format
@@ -8620,7 +8620,7 @@ msgstr "%s 時"
 #: include/global_arrays.php:1743
 #, php-format
 msgid "%d GByte"
-msgstr "%d GByte"
+msgstr "%d ギガバイト"
 
 #: include/global_arrays.php:1751 utilities.php:1656 utilities.php:1657
 #: utilities.php:1706
@@ -10227,9 +10227,9 @@ msgid "All subsequent legend line(s) will be aligned as given here.  You may use
 msgstr ""
 "それ以降のすべての凡例行は、ここに示すとおりに配置されます。単一のグラフ内で"
 "このコマンドを複数回使用することができます。このコマンドは表レイアウトを生成"
-"しません。 <br/> "
-"<strong>注：</strong>前のグラフ項目に&lt;HR&gt;を挿入することをお勧めします。"
-" <br/> <strong>注：</strong>この凡例行の&lt;HR&gt;はこの設定を廃止します"
+"しません。<br/"
+"><strong>注：</strong>前のグラフ項目に&lt;HR&gt;を挿入することをお勧めします"
+"。<br/><strong>注：</strong>この凡例行の&lt;HR&gt;はこの設定を無効にします！"
 
 #: include/global_form.php:1090
 msgid "Text Format"
@@ -10521,7 +10521,7 @@ msgstr "ユーザーに連絡できるEメールアドレス。"
 #: include/global_form.php:1666
 msgid "Enter the password for this user twice. Remember that passwords are case sensitive!"
 msgstr "このユーザーのパスワードを2回入力してください。パスワードでは大文字と小文字が"
-"区別されます"
+"区別されます！"
 
 #: include/global_form.php:1674 user_group_admin.php:88
 msgid "Determines if user is able to login."
@@ -10895,8 +10895,8 @@ msgstr "オプション：サブツリー項目"
 
 #: include/global_form.php:2426
 msgid "Choose a Sub-Tree Item to hook in.<br>Make sure, that it is still there when this rule is executed!"
-msgstr "フックするサブツリー項目を選択してください。 "
-"<br>このルールが実行されたときにまだそこにあることを確認してください"
+msgstr "フックするサブツリー項目を選択してください。<br>このルールが実行されたときに"
+"まだそこにあることを確認してください！"
 
 #: include/global_form.php:2446
 msgid "Header Type"
@@ -10916,8 +10916,8 @@ msgstr "このフォームのすべてのオプション（「タイトル」を
 
 #: include/global_form.php:2472
 msgid "The String Pattern (Regular Expression) to match against.<br>Enclosing '/' must <strong>NOT</strong> be provided!"
-msgstr "照合する文字列パターン（正規表現）。 <br> "
-"「/」を囲むことはできませ<strong>ん</strong>"
+msgstr "照合する文字列パターン（正規表現）。<br>前後の「/」は指定<strong>しない</stro"
+"ng>でください！"
 
 #: include/global_form.php:2479
 msgid "Replacement Pattern"
@@ -10926,9 +10926,8 @@ msgstr "交換パターン"
 #: include/global_form.php:2480
 msgid "The Replacement String Pattern for use as a Tree Header.<br>Refer to a Match by e.g. <strong>\\${1}</strong> for the first match!"
 msgstr ""
-"ツリーヘッダーとして使用するための置換文字列パターン。 "
-"<br>最初の一致については、例えば<strong>\\ $ "
-"{1}</strong>による一致を参照してください"
+"ツリーヘッダーとして使用する置換文字列パターン。<br>最初の一致を参照する場合"
+"は、例えば <strong>\\${1}</strong> のように指定してください！"
 
 #: include/global_languages.php:971
 msgid " T"
@@ -13630,7 +13629,7 @@ msgstr "100,000"
 
 #: include/global_settings.php:2806
 msgid "1 Million"
-msgstr "1 Million"
+msgstr "100万"
 
 #: include/global_settings.php:2807
 msgid "2.5 Million (20 Megabits)"
@@ -13642,7 +13641,7 @@ msgstr "750万（ 60メガビット）"
 
 #: include/global_settings.php:2809
 msgid "10 Million"
-msgstr "10 Million"
+msgstr "1000万"
 
 #: include/global_settings.php:2810
 msgid "12.5 Million (100 Megabits)"
@@ -13658,7 +13657,7 @@ msgstr "7500万（ 600メガビット）"
 
 #: include/global_settings.php:2813
 msgid "100 Million"
-msgstr "100 Million"
+msgstr "1億"
 
 #: include/global_settings.php:2814
 msgid "125 Million (1 Gigabit)"
@@ -14660,11 +14659,11 @@ msgstr "あなたのパスワードは少なくとも1つの数字を含まな�
 
 #: lib/auth.php:4551
 msgid "Your password must contain a mix of lower case and upper case characters!"
-msgstr "パスワードには、小文字と大文字が混在している必要があります"
+msgstr "パスワードには、小文字と大文字が混在している必要があります！"
 
 #: lib/auth.php:4557
 msgid "Your password must contain at least 1 special character!"
-msgstr "パスワードには少なくとも1つの特殊文字を含める必要があります"
+msgstr "パスワードには少なくとも1つの特殊文字を含める必要があります！"
 
 #: lib/auth.php:4593
 msgid "This password appears to be a well known password, please use a different one"
@@ -14894,7 +14893,7 @@ msgstr "不明なタイプ = '%s'."
 #: lib/data_query.php:172
 msgid "WARNING: Sort Field Association has Changed.  Re-mapping issues may occur!"
 msgstr "警告：ソートフィールドの関連付けが変更されました。再マッピングの問題が発生す"
-"る可能性があります"
+"る可能性があります！"
 
 #: lib/data_query.php:184
 msgid "Update Data Query Sort Cache complete"
@@ -15548,7 +15547,7 @@ msgstr "次のエラーのため、Cactiはプラグイン%sを無効にしま�
 #: lib/functions.php:6752
 #, php-format
 msgid "WARNING: PollerID:%s has an invalid hostname:%s.  Is it not reachable via DNS!"
-msgstr "警告：PollerID:%1$s には無効なホスト名:%2$s があります。DNS "
+msgstr "警告：PollerID:%s には無効なホスト名:%s があります。DNS "
 "経由で到達できません！"
 
 #: lib/functions.php:6781
@@ -15562,7 +15561,7 @@ msgstr ""
 #: lib/functions.php:7247
 #, php-format
 msgid "- Dev %s"
-msgstr "- Dev %s"
+msgstr "- デバイス %s"
 
 #: lib/functions.php:7249
 #, php-format
@@ -15809,7 +15808,7 @@ msgstr "ドライランフロートレンジ"
 
 #: lib/html.php:2821
 msgid "Dry Run Absolute Maximum"
-msgstr "Dry Run Absolute Maximum"
+msgstr "ドライラン絶対最大値"
 
 #: lib/html.php:3047
 msgid "Charts"
@@ -15877,7 +15876,7 @@ msgstr "クリップボード"
 
 #: lib/html.php:3073
 msgid "Failed to find data to copy!"
-msgstr "コピーするデータが見つかりませんでした"
+msgstr "コピーするデータが見つかりませんでした！"
 
 #: lib/html.php:3074
 msgid "Clipboard ID"
@@ -16314,7 +16313,7 @@ msgstr "%sからグラフを作成"
 #: lib/html_graph.php:677
 #, php-format
 msgid "Create %s Graphs from %s"
-msgstr "%2$s から %1$s 個のグラフを作成"
+msgstr "%s 個のグラフを %s から作成"
 
 #: lib/html_graph.php:718
 #, php-format
@@ -16932,7 +16931,7 @@ msgstr "Cacti正規表現には、セミカラー文字を含めることはで�
 
 #: lib/html_utility.php:1065
 msgid "There was an internal error!"
-msgstr "内部エラーがありました"
+msgstr "内部エラーが発生しました！"
 
 #: lib/html_utility.php:1066
 msgid "Backtrack limit was exhausted!"
@@ -16944,11 +16943,11 @@ msgstr "再帰制限が尽きました！"
 
 #: lib/html_utility.php:1068
 msgid "Bad UTF-8 error!"
-msgstr "不正なUTF-8エラーです"
+msgstr "不正なUTF-8エラーです！"
 
 #: lib/html_utility.php:1069
 msgid "Bad UTF-8 offset error!"
-msgstr "不正なUTF-8オフセットエラーです"
+msgstr "不正なUTF-8オフセットエラーです！"
 
 #: lib/html_utility.php:1128
 msgid "Down (Thold)"
@@ -17406,7 +17405,7 @@ msgstr "キャッシュをクリアしてブラウザを再起動しても問題
 #: lib/installer.php:2250
 #, php-format
 msgid "Downgrade from <strong>%s</strong> to <strong>%s</strong>"
-msgstr "<strong>%1$s</strong> から <strong>%2$s</strong> へダウングレード"
+msgstr "<strong>%s</strong> から <strong>%s</strong> へダウングレード"
 
 #: lib/installer.php:2251
 msgid "You appear to be downgrading to a previous version.  Database changes made for the newer version will not be reversed and <i>could</i> cause issues."
@@ -17478,7 +17477,7 @@ msgstr "中央データベース接続情報"
 
 #: lib/installer.php:2349
 msgid "Configuration Readonly!"
-msgstr "構成は読み取り専用です"
+msgstr "構成は読み取り専用です！"
 
 #: lib/installer.php:2351
 msgid "Your config.php file must be writable by the web server during install in order to configure the Remote poller.  Once installation is complete, you must set this file to Read Only to prevent possible security issues."
@@ -18412,8 +18411,8 @@ msgstr "設定によりpingが実行されません。"
 #: lib/plugins.php:681
 #, php-format
 msgid "'%s' versions '%s' above or in range are required to install '%s'. "
-msgstr "'%3$s' をインストールするには、'%1$s' のバージョン '%2$s' "
-"以上または範囲内である必要があります。 "
+msgstr "'%s' のバージョン '%s' 以上または範囲内であることが、'%s' "
+"をインストールするために必要です。 "
 
 #: lib/plugins.php:685
 #, php-format
@@ -18744,7 +18743,7 @@ msgstr "ラウンドロビンアーカイブ"
 
 #: lib/rrd.php:3597
 msgid "Cur Row"
-msgstr "Cur Row"
+msgstr "現在の行"
 
 #: lib/rrd.php:3598
 msgid "PDP per Row"
@@ -19444,7 +19443,7 @@ msgstr "転送オブジェクトを有効にする"
 #: package.php:156 templates_export.php:68
 msgid "WARNING: Export Errors Encountered. Refresh Browser Window for Details!"
 msgstr "警告：エクスポートエラーが発生しました。詳細についてはブラウザウィンドウを更"
-"新してください"
+"新してください！"
 
 #: package.php:163
 msgid "There were errors packaging your Templates.  Errors Follow. "
@@ -21261,7 +21260,7 @@ msgstr "注：このタブのパス設定はローカルでのみ保存されま
 #: settings.php:138
 #, php-format
 msgid "Cacti Settings (%s)%s"
-msgstr "Cacti 設定 (%1$s)%2$s"
+msgstr "Cacti 設定 (%s)%s"
 
 #: settings.php:248
 msgid "Changing Permission Model Warning"
@@ -21709,7 +21708,7 @@ msgstr "データクエリが見つかりません"
 
 #: support.php:503 support.php:650
 msgid "Cacti Poller"
-msgstr "Cacti Poller"
+msgstr "Cacti ポーラー"
 
 #: support.php:504
 msgid "Cacti Process"
@@ -21749,7 +21748,7 @@ msgstr "タイプ"
 
 #: support.php:680 support.php:716 support.php:725
 msgid "Poller:"
-msgstr "Poller:"
+msgstr "ポーラー:"
 
 #: support.php:698 support.php:707
 msgid "Collector"
@@ -21891,7 +21890,9 @@ msgstr "エラー：インストールされているRRDtoolのバージョン�
 #: support.php:1174
 #, php-format
 msgid "ERROR: RRDtool 1.2.x+ does not support the GIF images format, but %d\" graph(s) and/or templates have GIF set as the image format."
-msgstr "エラー：RRDtool 1.2.x +はGIF画像フォーマットをサポートしていませんが、%d &quot;グラフやテンプレートは画像フォーマットとしてGIFを設定しています。"
+msgstr ""
+"エラー：RRDtool 1.2.x+はGIF画像フォーマットをサポートしていませんが、%"
+"d\"グラフやテンプレートには画像フォーマットとしてGIFが設定されています。"
 
 #: support.php:1189
 msgid "General Information"
@@ -23143,7 +23144,7 @@ msgstr "CN Eメール"
 
 #: user_domains.php:718
 msgid "None Selected"
-msgstr "None Selected"
+msgstr "未選択"
 
 #: user_domains.php:726
 msgid "No User Domains Found"
@@ -23673,7 +23674,7 @@ msgstr "ディレクトリを開けません"
 
 #: utilities.php:1559
 msgid "Directory Does NOT Exist!!"
-msgstr "ディレクトリが存在しません"
+msgstr "ディレクトリが存在しません！"
 
 #: utilities.php:1568
 msgid "Current Boost Status"
