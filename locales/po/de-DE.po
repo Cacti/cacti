@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Cacti German Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-26 05:54+0000\n"
+"PO-Revision-Date: 2026-11-26 09:54+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: German <https://translate.cacti.net/projects/cacti/core/de/>\n"
 "Language: de-DE\n"
@@ -3503,7 +3503,7 @@ msgstr "Keine CDEFs"
 
 #: changelog.php:58
 msgid "Highlights"
-msgstr "Highlights"
+msgstr "Hervorhebungen"
 
 #: changelog.php:59
 msgid "Full"
@@ -3769,8 +3769,8 @@ msgstr "Farbvorlage [neu]"
 #, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
 msgstr ""
-"Für die Farbvorlage '%1$s' wurden %2$d Aggregatvorlagen und %3$d Aggregate "
-"ohne Vorlage übertragen"
+"Für die Farbvorlage '%s' wurden %d Aggregatvorlagen und %d Aggregate ohne "
+"Vorlage übertragen"
 
 #: color_templates.php:764
 #, php-format
@@ -4058,7 +4058,7 @@ msgstr "Problem"
 #: data_debug.php:910
 #, php-format
 msgid "For attribute '%s', issue found '%s'"
-msgstr "Für Attribut '%1$s' wurde ein Problem gefunden: '%2$s'"
+msgstr "Für Attribut '%s' wurde ein Problem gefunden: '%s'"
 
 #: data_debug.php:925
 msgid "Apply Suggested Fixes"
@@ -4465,7 +4465,7 @@ msgstr "Name des Graph Templates"
 
 #: data_queries.php:1143
 msgid "Mapping ID"
-msgstr "Mapping ID"
+msgstr "Zuordnungs-ID"
 
 #: data_queries.php:1168
 msgid "Association Read Only until XML file located"
@@ -5046,7 +5046,7 @@ msgstr "Fehleranalyse für Datenquellen"
 
 #: data_sources.php:1189
 msgid "RRDtool Tune Info"
-msgstr "RRDtool Tune Info"
+msgstr "RRDtool-Tune-Informationen"
 
 #: data_sources.php:1217 data_templates.php:1329 include/global_form.php:605
 msgid "External"
@@ -5098,7 +5098,9 @@ msgstr "Die interne Datenbank-ID für diese Datenquelle. Nützlich bei der Autom
 
 #: data_sources.php:1658
 msgid "The number of Graphs and Aggregate Graphs that are using the Data Source."
-msgstr "Die Anzahl der Diagramme und aggregierten Diagramme, die die Datenquelle verwenden."
+msgstr ""
+"Die Anzahl der Diagramme und aggregierten Diagramme, welche die Datenquelle "
+"verwenden."
 
 #: data_sources.php:1664
 msgid "The frequency that data is collected for this Data Source."
@@ -6311,8 +6313,8 @@ msgstr "Fehler beim Parsen der XML-Datei der Datenabfrageressource für die Date
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'.  Field Name '%s' missing a 'direction' attribute"
 msgstr ""
 "Fehler beim Parsen der XML-Datei der Datenabfrageressource für die "
-"Datenabfrage „%1$s“ mit der ID „%2$s“. Dem Feldnamen „%3$s“ fehlt das "
-"Attribut „direction“"
+"Datenabfrage „%s“ mit der ID „%s“. Dem Feldnamen „%s“ fehlt das Attribut "
+"„direction“"
 
 #: graphs_new.php:699
 #, php-format
@@ -6371,8 +6373,8 @@ msgstr ""
 #, php-format
 msgid "The Document page '%s' count not be reached.  The Cacti Documentation site is not reachable.  The http error was '%s'.  Consider downloading an official release to obtain the latest documentation and hosting the documentation locally."
 msgstr ""
-"Die Dokumentationsseite '%1$s' konnte nicht erreicht werden. Die Cacti-"
-"Dokumentationswebsite ist nicht erreichbar. Der HTTP-Fehler lautete '%2$s'. "
+"Die Dokumentationsseite '%s' konnte nicht erreicht werden. Die Cacti-"
+"Dokumentationswebsite ist nicht erreichbar. Der HTTP-Fehler lautete '%s'. "
 "Erwägen Sie, eine offizielle Version herunterzuladen, um die neueste "
 "Dokumentation zu erhalten und lokal zu hosten."
 
@@ -7869,7 +7871,7 @@ msgstr "Numerische Sortierung"
 
 #: include/global_arrays.php:1032 lib/rrd.php:3508
 msgid "Header"
-msgstr "Header"
+msgstr "Kopfzeile"
 
 #: include/global_arrays.php:1033 include/global_arrays.php:1096
 #: include/global_arrays.php:1830 include/global_arrays.php:1999
@@ -8103,7 +8105,7 @@ msgstr "Systemwerkzeuge"
 
 #: include/global_arrays.php:1132
 msgid "RRDfile Cleaner"
-msgstr "RRDfile Cleaner"
+msgstr "RRD-Datei-Bereinigung"
 
 #: include/global_arrays.php:1133
 msgid "SNMP Managers"
@@ -8188,7 +8190,7 @@ msgstr "Linux-bezogen"
 
 #: include/global_arrays.php:1195
 msgid "Load Balancer"
-msgstr "Load Balancer"
+msgstr "Lastverteiler"
 
 #: include/global_arrays.php:1196
 msgid "Network Switch"
@@ -8592,7 +8594,7 @@ msgstr "%d MByte"
 
 #: include/global_arrays.php:1680
 msgid "1 GByte"
-msgstr "1 GByte"
+msgstr "1 Gigabyte"
 
 #: include/global_arrays.php:1681 include/global_arrays.php:1744
 #: lib/boost.php:62
@@ -8666,7 +8668,7 @@ msgstr "%s Stunden"
 #: include/global_arrays.php:1743
 #, php-format
 msgid "%d GByte"
-msgstr "%d GByte"
+msgstr "%d Gigabyte"
 
 #: include/global_arrays.php:1751 utilities.php:1656 utilities.php:1657
 #: utilities.php:1706
@@ -10580,7 +10582,7 @@ msgstr "Soll dieser Baum veröffentlicht werden, damit Benutzer darauf zugreifen
 
 #: include/global_form.php:1657
 msgid "An Email Address where the User can be reached."
-msgstr "Eine E-Mail-Adresse, unter der der Benutzer erreichbar ist."
+msgstr "Eine E-Mail-Adresse, unter welcher der Benutzer erreichbar ist."
 
 #: include/global_form.php:1666
 msgid "Enter the password for this user twice. Remember that passwords are case sensitive!"
@@ -11191,7 +11193,7 @@ msgstr "Der Pfad zur Spine-Konfigurationsdatei. Standardmäßig im cwd von Spine
 
 #: include/global_settings.php:278
 msgid "RRDfile Auto Clean"
-msgstr "RRDfile Auto Clean"
+msgstr "Automatische RRD-Datei-Bereinigung"
 
 #: include/global_settings.php:279
 msgid "Automatically archive or delete RRDfiles when their corresponding Data Sources are removed from Cacti"
@@ -11251,7 +11253,7 @@ msgstr ""
 
 #: include/global_settings.php:330
 msgid "Log Input Validation Issues"
-msgstr "Probleme bei der Validierung der Protokolleingabe"
+msgstr "Eingabevalidierungsprobleme protokollieren"
 
 #: include/global_settings.php:331
 msgid "Record when request fields are accessed without going through proper input validation"
@@ -12147,7 +12149,7 @@ msgid "Any strings that match this regex will be excluded from the user display.
 msgstr ""
 "Alle Zeichenketten, die diesem regulären Ausdruck entsprechen, werden aus "
 "der Benutzeranzeige ausgeschlossen. <strong>Wenn Sie beispielsweise alle "
-"Protokollzeilen ausschließen möchten, die die Wörter 'Admin' oder 'Login' "
+"Protokollzeilen ausschließen möchten, welche die Wörter 'Admin' oder 'Login' "
 "enthalten, geben Sie '(Admin || Login)' ein</strong>"
 
 #: include/global_settings.php:1196
@@ -12390,7 +12392,12 @@ msgstr "Cron/Daemon-Intervall"
 
 #: include/global_settings.php:1418
 msgid "The frequency that the Cacti data collector will be started.  You can use either crontab, a scheduled task (for windows), or the cactid systemd service to control launching the Cacti data collector.  For instructions on using the cactid daemon, review the README.md file in the service directory."
-msgstr "Die Häufigkeit, mit der der Cacti-Datensammler gestartet wird. Sie können entweder crontab, eine geplante Aufgabe (für Windows) oder den Cactid-Systemd-Dienst verwenden, um den Start des Cacti-Datensammlers zu steuern. Anweisungen zur Verwendung des Cactid-Daemons finden Sie in der Datei README.md im Serviceverzeichnis."
+msgstr ""
+"Die Häufigkeit, mit welcher der Cacti-Datensammler gestartet wird. Sie "
+"können entweder crontab, eine geplante Aufgabe (für Windows) oder den Cactid-"
+"Systemd-Dienst verwenden, um den Start des Cacti-Datensammlers zu steuern. "
+"Anweisungen zur Verwendung des Cactid-Daemons finden Sie in der Datei "
+"README.md im Serviceverzeichnis."
 
 #: include/global_settings.php:1424
 msgid "Balance Process Load"
@@ -12406,7 +12413,10 @@ msgstr "Breite der Debug-Ausgabe"
 
 #: include/global_settings.php:1431
 msgid "If you choose this option, Cacti will check for output that exceeds Cacti's ability to store it and issue a warning when it finds it."
-msgstr "Wenn Sie diese Option wählen, sucht Cacti nach Ausgaben, die die Speicherkapazität von Cacti überschreiten, und gibt eine Warnung aus, wenn es welche findet."
+msgstr ""
+"Wenn Sie diese Option wählen, sucht Cacti nach Ausgaben, welche die "
+"Speicherkapazität von Cacti überschreiten, und gibt eine Warnung aus, wenn "
+"es welche findet."
 
 #: include/global_settings.php:1436
 msgid "Disable increasing OID Check"
@@ -12814,7 +12824,7 @@ msgstr "%d Versuche"
 
 #: include/global_settings.php:1828
 msgid "Auto Unlock"
-msgstr "Auto Unlock"
+msgstr "Automatisch entsperren"
 
 #: include/global_settings.php:1829
 msgid "An account will automatically be unlocked after this many minutes.  Even if the correct password is entered, the account will not unlock until this time limit has been met.  Max of 1440 minutes (1 Day)"
@@ -12837,7 +12847,7 @@ msgstr "Wie lange das Zwei-Faktor-Authentifizierungstoken gültig ist, bevor es 
 
 #: include/global_settings.php:1873
 msgid "Pwned Checks (Online)"
-msgstr "Pwned Checks (Online)"
+msgstr "Pwned-Prüfungen (Online)"
 
 #: include/global_settings.php:1878
 msgid "Pwned Check"
@@ -13070,7 +13080,7 @@ msgstr "Mail-Dienste"
 
 #: include/global_settings.php:2096
 msgid "Which mail service to use in order to send mail"
-msgstr "Welcher Mail-Dienst soll zum Senden von E-Mails verwendet werden?"
+msgstr "Zu verwendender E-Mail-Dienst für den E-Mail-Versand"
 
 #: include/global_settings.php:2102
 msgid "Ping Mail Server"
@@ -13296,7 +13306,7 @@ msgstr ""
 
 #: include/global_settings.php:2305
 msgid "How Often Should Boost Update All RRDs"
-msgstr "Wie oft sollte Boost alle RRDs aktualisieren?"
+msgstr "Aktualisierungsintervall von Boost für alle RRDs"
 
 #: include/global_settings.php:2306
 msgid "When you enable boost, your RRD files are only updated when they are requested by a user, or when this time period elapses."
@@ -13562,7 +13572,7 @@ msgstr "RRDtool-Proxyserver"
 
 #: include/global_settings.php:2594
 msgid "Structure RRDfile Paths"
-msgstr "Strukturieren Sie RRDfile-Pfade"
+msgstr "RRDfile-Pfade strukturieren"
 
 #: include/global_settings.php:2599
 msgid "Enable Structured Paths"
@@ -13644,7 +13654,7 @@ msgstr "Der Fingerabdruck des aktuellen öffentlichen RSA-Schlüssels, den der P
 
 #: include/global_settings.php:2651
 msgid "RRDtool Proxy Server - Backup"
-msgstr "RRDtool Proxy Server - Backup"
+msgstr "RRDtool-Proxyserver - Sicherung"
 
 #: include/global_settings.php:2656
 msgid "Load Balancing"
@@ -14483,7 +14493,7 @@ msgstr "Baumregel erstellen (Diagramm)"
 #: lib/api_automation.php:2435
 #, php-format
 msgid "Rule Item [edit rule item for %s: %s]"
-msgstr "Regelelement [Regelelement für %s bearbeiten: %s]"
+msgstr "Regelelement [Eintrag für %s bearbeiten: %s]"
 
 #: lib/api_automation.php:2437
 #, php-format
@@ -14881,12 +14891,12 @@ msgstr "2FA wurde aktiviert und verifiziert"
 #: lib/boost.php:64 utilities.php:1708
 #, php-format
 msgid "%s MBytes"
-msgstr "%s MBytes"
+msgstr "%s Megabyte"
 
 #: lib/boost.php:67
 #, php-format
 msgid "%s KBytes"
-msgstr "%s KBytes"
+msgstr "%s Kilobyte"
 
 #: lib/boost.php:70
 #, php-format
@@ -15295,7 +15305,7 @@ msgstr "Die Bulk Walk-Größe ist auf %d festgelegt."
 #: lib/data_query.php:935
 #, php-format
 msgid "Executing SNMP get for num of indexes @ '%s' Index Count: %s"
-msgstr "Führe SNMP-Get für Anzahl der Indizes @ '%1$s' Indexanzahl: %2$s aus"
+msgstr "Führe SNMP-Get für Anzahl der Indizes @ '%s' Indexanzahl: %s aus"
 
 #: lib/data_query.php:937
 msgid "&lt;oid_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting oid_index entries"
@@ -15306,7 +15316,7 @@ msgstr ""
 #: lib/data_query.php:940
 #, php-format
 msgid "Executing SNMP walk for list of indexes @ '%s' Index Count: %s"
-msgstr "Führe SNMP-Walk für Indexliste @ '%1$s' Indexanzahl: %2$s aus"
+msgstr "Führe SNMP-Walk für Indexliste @ '%s' Indexanzahl: %s aus"
 
 #: lib/data_query.php:944
 msgid "No SNMP data returned"
@@ -15320,7 +15330,7 @@ msgstr "Index gefunden bei OID: '%s' Wert: '%s'"
 #: lib/data_query.php:966
 #, php-format
 msgid "List of indexes filtered by value @ '%s' Index Count: %s"
-msgstr "Liste der nach Wert gefilterten Indizes @ '%1$s' Indexanzahl: %2$s"
+msgstr "Liste der nach Wert gefilterten Indizes @ '%s' Indexanzahl: %s"
 
 #: lib/data_query.php:970
 #, php-format
@@ -15330,7 +15340,7 @@ msgstr "Gefilterter Index nach Wert gefunden bei OID: „%s“ Wert: „%s“"
 #: lib/data_query.php:987
 #, php-format
 msgid "Filtering list of indexes @ '%s' Index Count: %s"
-msgstr "Filtere Indexliste @ '%1$s' Indexanzahl: %2$s"
+msgstr "Filtere Indexliste @ '%s' Indexanzahl: %s"
 
 #: lib/data_query.php:991
 #, php-format
@@ -15367,7 +15377,7 @@ msgstr "oid_rewrite bei OID: „%s“ neue OID: „%s“"
 #: lib/data_query.php:1064
 #, php-format
 msgid "Executing SNMP get for data @ '%s' [value='%s']"
-msgstr "Führe SNMP-Get für Daten @ '%1$s' [Wert='%2$s'] aus"
+msgstr "Führe SNMP-Get für Daten @ '%s' [Wert='%s'] aus"
 
 #: lib/data_query.php:1076
 #, php-format
@@ -15377,7 +15387,7 @@ msgstr "Feld '%s' %s"
 #: lib/data_query.php:1140
 #, php-format
 msgid "Executing SNMP get for %s oids (%s)"
-msgstr "Führe SNMP-Get für %1$s OIDs (%2$s) aus"
+msgstr "Führe SNMP-Get für %s OIDs (%s) aus"
 
 #: lib/data_query.php:1167 lib/data_query.php:1260 lib/data_query.php:1269
 #, php-format
@@ -15404,8 +15414,7 @@ msgstr "Übersprungenes Ergebnis für Daten @ '%s' [Schlüssel='%s', Wert='%s']"
 #: lib/data_query.php:1197
 #, php-format
 msgid "Got SNMP get result for data @ '%s' [value='%s'] (index: %s)"
-msgstr ""
-"SNMP-Get-Ergebnis für Daten @ '%1$s' [Wert='%2$s'] (Index: %3$s) erhalten"
+msgstr "SNMP-Get-Ergebnis für Daten @ '%s' [Wert='%s'] (Index: %s) erhalten"
 
 #: lib/data_query.php:1227
 #, php-format
@@ -15736,7 +15745,9 @@ msgstr "Cacti hat das Plugin %s aufgrund des folgenden Fehlers deaktiviert: %s! 
 #: lib/functions.php:6752
 #, php-format
 msgid "WARNING: PollerID:%s has an invalid hostname:%s.  Is it not reachable via DNS!"
-msgstr "WARNUNG: PollerID:%s hat einen ungültigen Hostnamen:%s. Ist er nicht über DNS erreichbar?"
+msgstr ""
+"WARNUNG: PollerID:%1$s hat einen ungültigen Hostnamen:%2$s. Er ist nicht "
+"über DNS erreichbar!"
 
 #: lib/functions.php:6781
 #, php-format
@@ -15768,8 +15779,8 @@ msgstr "Version %s %s"
 #, php-format
 msgid "WARNING: Key Cacti Include File \"%s\" missing.  Please locate and replace this file as we checked in \"%s\""
 msgstr ""
-"WARNUNG: Die Cacti-Schlüsseldatei \"%1$s\" fehlt. Bitte suchen und ersetzen "
-"Sie diese Datei, da wir \"%2$s\" eingecheckt haben"
+"WARNUNG: Die Cacti-Schlüsseldatei \"%s\" fehlt. Bitte suchen und ersetzen "
+"Sie diese Datei, da wir \"%s\" eingecheckt haben"
 
 #: lib/functions.php:8996
 msgid "System Device"
@@ -16005,7 +16016,7 @@ msgstr "Trockenlauf Absolutes Maximum"
 
 #: lib/html.php:3047
 msgid "Charts"
-msgstr "Charts"
+msgstr "Diagramme"
 
 #: lib/html.php:3048
 msgid "Client"
@@ -16049,7 +16060,7 @@ msgstr "RRDProxy"
 
 #: lib/html.php:3065
 msgid "Shortcuts"
-msgstr "Shortcuts"
+msgstr "Tastenkürzel"
 
 #: lib/html.php:3066
 msgid "Spine"
@@ -16959,7 +16970,7 @@ msgstr "Artikeldetails"
 #: lib/html_reports.php:1727
 #, php-format
 msgid "Graph: %s"
-msgstr "Graph: %s"
+msgstr "Diagramm: %s"
 
 #: lib/html_reports.php:1730 lib/html_reports.php:1758
 #: lib/html_reports.php:1771 lib/html_reports.php:1772
@@ -17283,7 +17294,7 @@ msgstr "Unerwarteter Pfadparameter"
 #: lib/installer.php:968
 #, php-format
 msgid "Failed to apply specified profile %s != %s"
-msgstr "Das Anwenden des angegebenen Profils %1$s != %2$s ist fehlgeschlagen"
+msgstr "Das Anwenden des angegebenen Profils %s != %s ist fehlgeschlagen"
 
 #: lib/installer.php:1015
 #, php-format
@@ -17588,7 +17599,7 @@ msgstr "Installationsart"
 #: lib/installer.php:2239
 #, php-format
 msgid "Upgrade from <strong>%s</strong> to <strong>%s</strong>"
-msgstr "Upgrade von <strong>%1$s</strong> auf <strong>%2$s</strong>"
+msgstr "Upgrade von <strong>%s</strong> auf <strong>%s</strong>"
 
 #: lib/installer.php:2241
 msgid "In the event of issues, It is highly recommended that you clear your browser cache, closing then reopening your browser (not just the tab Cacti is on) and retrying, before raising an issue with The Cacti Group"
@@ -17609,7 +17620,7 @@ msgstr "Wenn nach dem Leeren des Caches und dem Neustart des Browsers weiterhin 
 #: lib/installer.php:2250
 #, php-format
 msgid "Downgrade from <strong>%s</strong> to <strong>%s</strong>"
-msgstr "Downgrade von <strong>%1$s</strong> auf <strong>%2$s</strong>"
+msgstr "Downgrade von <strong>%s</strong> auf <strong>%s</strong>"
 
 #: lib/installer.php:2251
 msgid "You appear to be downgrading to a previous version.  Database changes made for the newer version will not be reversed and <i>could</i> cause issues."
@@ -18188,7 +18199,7 @@ msgstr "Ihr Cacti Server installiert sich gerade"
 #: lib/installer.php:3165
 #, php-format
 msgid "Spawning background process: %s %s"
-msgstr "Hintergrundprozess wird gestartet: %1$s %2$s"
+msgstr "Hintergrundprozess wird gestartet: %s %s"
 
 #: lib/installer.php:3192
 msgid "Complete"
@@ -18417,7 +18428,7 @@ msgstr "Während der Installation ist eine Ausnahme aufgetreten: #%s - %s"
 #: lib/installer.php:3956
 #, php-format
 msgid "Installation was started at %s, completed at %s"
-msgstr "Die Installation wurde um %1$s gestartet und um %2$s abgeschlossen"
+msgstr "Die Installation wurde um %s gestartet und um %s abgeschlossen"
 
 #: lib/installer.php:3997
 msgid "Both"
@@ -18444,7 +18455,7 @@ msgstr "%s - Nein"
 
 #: lib/installer.php:4010
 msgid "Cli"
-msgstr "Cli"
+msgstr "Befehlszeile"
 
 #: lib/installer.php:4015
 #, php-format
@@ -18455,8 +18466,7 @@ msgstr "Festlegen der PHP-Option %s = %s"
 #, php-format
 msgid "Failed to set PHP option %s, is %s (should be %s)"
 msgstr ""
-"Die PHP-Option %1$s konnte nicht festgelegt werden. Sie ist %2$s (sollte %3$"
-"s sein)"
+"Die PHP-Option %s konnte nicht festgelegt werden. Sie ist %s (sollte %s sein)"
 
 #: lib/installer.php:4043
 msgid "No Remote Data Collectors found for full synchronization"
@@ -18487,8 +18497,8 @@ msgstr "Protokollfehler, Version (%s) kann auf Server (%s) nicht festgelegt werd
 #, php-format
 msgid "Protocol Error, Unable to set referrals option (%s) on Server (%s)"
 msgstr ""
-"Protokollfehler. Die Empfehlungsoption (%1$s) konnte auf dem Server (%2$s) "
-"nicht festgelegt werden"
+"Protokollfehler. Die Empfehlungsoption (%s) konnte auf dem Server (%s) nicht "
+"festgelegt werden"
 
 #: lib/ldap.php:420
 #, php-format
@@ -18814,8 +18824,8 @@ msgstr "Gerät „%s“ wurde nicht zum Bericht hinzugefügt, da es bereits im B
 #, php-format
 msgid "Problems sending Report '%s' Problem with e-mail Subsystem Error is '%s'"
 msgstr ""
-"Probleme beim Senden des Berichts „%1$s“. Problem mit dem E-Mail-"
-"Subsystemfehler ist „%2$s“"
+"Probleme beim Senden des Berichts „%s“. Problem mit dem E-Mail-"
+"Subsystemfehler ist „%s“"
 
 #: lib/reports.php:634
 #, php-format
@@ -18880,13 +18890,13 @@ msgstr "RRDtool-Befehl abgestürzt"
 #, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
 msgstr ""
-"Die erforderliche RRD-Datei-Schrittweite ist „%1$s“, aber der beobachtete "
-"Schritt ist „%2$s“"
+"Die erforderliche RRD-Datei-Schrittweite ist „%s“, aber der beobachtete "
+"Schritt ist „%s“"
 
 #: lib/rrd.php:3359
 #, php-format
 msgid "Type for Data Source '%s' should be '%s'"
-msgstr "Der Typ für die Datenquelle „%1$s“ sollte „%2$s“ sein"
+msgstr "Der Typ für die Datenquelle „%s“ sollte „%s“ sein"
 
 #: lib/rrd.php:3365
 #, php-format
@@ -18896,7 +18906,7 @@ msgstr "Heartbeat für Datenquelle '%s' sollte '%s' sein"
 #: lib/rrd.php:3377
 #, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
-msgstr "Das RRD-Minimum für die Datenquelle „%1$s“ sollte „%2$s“ sein"
+msgstr "Das RRD-Minimum für die Datenquelle „%s“ sollte „%s“ sein"
 
 #: lib/rrd.php:3386
 #, php-format
@@ -18906,7 +18916,7 @@ msgstr "DS „%s“ fehlt in der Cacti-Definition"
 #: lib/rrd.php:3400 lib/rrd.php:3401
 #, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
-msgstr "Cacti RRA '%1$s' hat die gleichen CF/Schritte (%2$s, %3$s) wie '%4$s'"
+msgstr "Cacti RRA '%s' hat die gleichen CF/Schritte (%s, %s) wie '%s'"
 
 #: lib/rrd.php:3415 lib/rrd.php:3416
 #, php-format
@@ -18921,14 +18931,14 @@ msgstr "Der pdp_per_row von „%s“ ist für RRA „%s“ ungültig und sollte 
 #: lib/rrd.php:3454
 #, php-format
 msgid "The XFF for Cacti RRA id is '%s' but should be '%s'"
-msgstr "Die XFF für die Cacti RRA-ID ist „%1$s“, sollte aber „%2$s“ sein"
+msgstr "Die XFF für die Cacti RRA-ID ist „%s“, sollte aber „%s“ sein"
 
 #: lib/rrd.php:3458
 #, php-format
 msgid "The number of rows for Cacti RRA id '%s' is incorrect.  The number of rows are '%s' but should be '%s'"
 msgstr ""
-"Die Anzahl der Zeilen für die Cacti RRA-ID „%1$s“ ist falsch. Die "
-"Zeilenanzahl beträgt „%2$s“, sollte aber „%3$s“ sein"
+"Die Anzahl der Zeilen für die Cacti RRA-ID „%s“ ist falsch. Die Zeilenanzahl "
+"beträgt „%s“, sollte aber „%s“ sein"
 
 #: lib/rrd.php:3476
 #, php-format
@@ -18970,7 +18980,7 @@ msgstr "Unbekannte Sekunde"
 
 #: lib/rrd.php:3594
 msgid "Round Robin Archive"
-msgstr "Round Robin Archive"
+msgstr "Round-Robin-Archiv"
 
 #: lib/rrd.php:3597
 msgid "Cur Row"
@@ -19084,7 +19094,7 @@ msgstr "Aufgrund fehlerhafter Daten konnte für %s kein Diagramm erstellt werden
 #, php-format
 msgid "NOTE: Graph not added for Data Query %s and index %s due to Data Source verification failure"
 msgstr ""
-"HINWEIS: Für die Datenabfrage %1$s und den Index %2$s wurde kein Diagramm "
+"HINWEIS: Für die Datenabfrage %s und den Index %s wurde kein Diagramm "
 "hinzugefügt, da die Überprüfung der Datenquelle fehlgeschlagen ist"
 
 #: lib/timespan_settings.php:136
@@ -19203,9 +19213,9 @@ msgstr "Bei modernen SSD-Speichern ist das Vorhandensein mehrerer E/A-Threads f�
 #, php-format
 msgid "As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential"
 msgstr ""
-"Ab %1$s %2$s können Sie steuern, wie oft %3$s Transaktionen auf die "
-"Festplatte schreibt. Der Standardwert ist 1 Sekunde. In Systemen mit hohem I/"
-"O-Aufkommen kann ein Wert größer als 1 jedoch zu einer sequentielleren "
+"Ab %s %s können Sie steuern, wie oft %s Transaktionen auf die Festplatte "
+"schreibt. Der Standardwert ist 1 Sekunde. In Systemen mit hohem I/O-"
+"Aufkommen kann ein Wert größer als 1 jedoch zu einer sequentielleren "
 "Festplatten-E/A führen"
 
 #: lib/utility.php:1303
@@ -19519,8 +19529,7 @@ msgstr "Sie wurden aufgrund von %s von Cacti abgemeldet."
 #: logout.php:61
 #, php-format
 msgid "Please close your browser or %sLogin Again%s"
-msgstr ""
-"Bitte schließen Sie Ihren Browser oder %1$smelden Sie sich erneut an%2$s"
+msgstr "Bitte schließen Sie Ihren Browser oder %smelden Sie sich erneut an%s"
 
 #: logout.php:62
 msgid "Cookies have been cleared"
@@ -20879,8 +20888,7 @@ msgstr "Plugin-Verzeichnisse dürfen keine Leerzeichen enthalten"
 #, php-format
 msgid "Plugin directory is not correct.  Should be '%s' but is '%s'"
 msgstr ""
-"Das Plugin-Verzeichnis ist nicht korrekt. Es sollte „%1$s“ sein, ist aber "
-"„%2$s“"
+"Das Plugin-Verzeichnis ist nicht korrekt. Es sollte „%s“ sein, ist aber „%s“"
 
 #: plugins.php:1881
 msgid "Plugin is integrated into Cacti core"
@@ -23060,7 +23068,7 @@ msgstr "Vor > 4 Monaten"
 
 #: user_admin.php:2138
 msgid "Basic"
-msgstr "Basic"
+msgstr "Basis"
 
 #: user_admin.php:2139
 msgid "LDAP/AD"
@@ -24080,16 +24088,16 @@ msgstr "Prozess: %d"
 #, php-format
 msgid "Status: <span class=\"deviceUp\"><b>Running</b></span>, Remaining: %s (dses), CurrentRuntime: %s (secs), PrevRuntime: %s (secs), PrevProcessed: %10s (ds rows)"
 msgstr ""
-"Status: <span class=\"deviceUp\"><b>Läuft</b></span>, Verbleibend: %1$s (DS)"
-", Akt. Laufzeit: %2$s (Sek.), Vorh. Laufzeit: %3$s (Sek.), Vorh. verarbeitet:"
-" %4$10s (DS-Zeilen)"
+"Status: <span class=\"deviceUp\"><b>Läuft</b></span>, Verbleibend: %s (DS), "
+"Akt. Laufzeit: %s (Sek.), Vorh. Laufzeit: %s (Sek.), Vorh. verarbeitet: %10s "
+"(DS-Zeilen)"
 
 #: utilities.php:1781
 #, php-format
 msgid "Status: <span class=\"deviceRecovering\"><b>Idle</b></span>, PrevRuntime: %s (secs), PrevProcessed: %10s (ds rows)"
 msgstr ""
 "Status: <span class=\"deviceRecovering\"><b>Leerlauf</b></span>, Vorh. "
-"Laufzeit: %1$s (Sek.), Vorh. verarbeitet: %2$10s (DS-Zeilen)"
+"Laufzeit: %s (Sek.), Vorh. verarbeitet: %10s (DS-Zeilen)"
 
 #: utilities.php:1787
 msgid "Run Time Configuration"
