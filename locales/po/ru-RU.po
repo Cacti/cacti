@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: Cacti Russian Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-26 05:54+0000\n"
+"PO-Revision-Date: 2026-11-26 19:34+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Russian <https://translate.cacti.net/projects/cacti/core/ru/>"
 "\n"
@@ -2586,7 +2586,7 @@ msgstr "Ожидание/Выполнение/Готово"
 
 #: automation_networks.php:1381
 msgid "Up/SNMP Hosts"
-msgstr "Up/SNMP Hosts"
+msgstr "Доступные/SNMP хосты"
 
 #: automation_networks.php:1386 host.php:1772 pollers.php:119
 msgid "Threads"
@@ -2782,7 +2782,7 @@ msgstr "Версия SNMP: <b>%s</b>"
 #: automation_snmp.php:538
 #, php-format
 msgid "SNMP Community/Username: <b>%s</b>"
-msgstr "SNMP Community/Username: <b>%s</b>"
+msgstr "Сообщество SNMP/Имя пользователя: <b>%s</b>"
 
 #: automation_snmp.php:543 automation_templates.php:675
 #: automation_templates.php:797 cdef.php:317 color_templates.php:495
@@ -6208,9 +6208,8 @@ msgid "Host ID"
 msgstr "ID хоста"
 
 #: graph_xport.php:134 graph_xport.php:211
-#, fuzzy
 msgid "Nth Percentile"
-msgstr "Nth Percentile"
+msgstr "N-й процентиль"
 
 #: graph_xport.php:140 graph_xport.php:226
 msgid "Summation"
@@ -6799,8 +6798,8 @@ msgstr "Установить по умолчанию"
 #, php-format
 msgid "WARNING: Cacti Page:%s for User:%s Generated a Fatal Error %d!"
 msgstr ""
-"ПРЕДУПРЕЖДЕНИЕ: Страница Cacti: %1$s для пользователя: %2$s вызвала "
-"фатальную ошибку %3$d!"
+"ПРЕДУПРЕЖДЕНИЕ: Страница Cacti: %s для пользователя: %s вызвала фатальную "
+"ошибку %d!"
 
 #: help.php:74
 #, php-format
@@ -8262,9 +8261,8 @@ msgid "SNMP Uptime"
 msgstr "Время безотказной работы SNMP"
 
 #: include/global_arrays.php:694
-#, fuzzy
 msgid "SNMP Desc"
-msgstr "SNMP Desc"
+msgstr "Описание SNMP"
 
 #: include/global_arrays.php:695
 msgid "SNMP getNext"
@@ -9967,9 +9965,8 @@ msgid "[Success]"
 msgstr "Выполненно"
 
 #: include/global_arrays.php:2138
-#, fuzzy
 msgid "[Skipped]"
-msgstr "[Skipped]"
+msgstr "[Пропущено]"
 
 #: include/global_arrays.php:2143 include/global_arrays.php:2149
 #, fuzzy
@@ -10060,9 +10057,8 @@ msgstr "(Удалить элемент)"
 
 #: include/global_arrays.php:2571 include/global_settings.php:273
 #: rrdcleaner.php:328
-#, fuzzy
 msgid "RRD Cleaner"
-msgstr "RRD Cleaner"
+msgstr "Очистка RRD"
 
 #: include/global_arrays.php:2583
 #, fuzzy
@@ -12963,20 +12959,19 @@ msgstr "1 Гбит/с Ethernet"
 
 #: include/global_settings.php:843
 msgid "10 Gbps Ethernet"
-msgstr "10 Gbps Ethernet"
+msgstr "10 Гбит/с Ethernet"
 
 #: include/global_settings.php:844
 msgid "25 Gbps Ethernet"
-msgstr "25 Gbps Ethernet"
+msgstr "25 Гбит/с Ethernet"
 
 #: include/global_settings.php:845
-#, fuzzy
 msgid "40 Gbps Ethernet"
-msgstr "40 Gbps Ethernet"
+msgstr "40 Гбит/с Ethernet"
 
 #: include/global_settings.php:846
 msgid "56 Gbps Ethernet"
-msgstr "56 Gbps Ethernet"
+msgstr "56 Гбит/с Ethernet"
 
 #: include/global_settings.php:847
 #, fuzzy
@@ -15924,7 +15919,7 @@ msgstr "Неизвестный шаблон"
 #: lib/api_automation.php:5404 lib/api_automation.php:5406
 #, php-format
 msgid "Automation Network Rule '%s' %s!"
-msgstr "Правило сети автоматизации '%1$s' %2$s!"
+msgstr "Правило сети автоматизации '%s' %s!"
 
 #: lib/api_automation.php:5410 lib/api_automation.php:5412
 #, php-format
@@ -16039,9 +16034,8 @@ msgid "New Branch"
 msgstr "Новый филиал"
 
 #: lib/auth.php:575
-#, fuzzy
 msgid "Web Basic"
-msgstr "Web Basic"
+msgstr "Базовая веб-аутентификация"
 
 #: lib/auth.php:2336
 #, fuzzy
@@ -17089,9 +17083,8 @@ msgid "Checking Configuration...<br>"
 msgstr "Проверка конфигурации... <br>"
 
 #: lib/functions.php:5849
-#, fuzzy
 msgid "PHP's Mailer Class"
-msgstr "PHP's Mailer Class"
+msgstr "Почтовый класс PHP"
 
 #: lib/functions.php:5855
 #, fuzzy
@@ -18600,9 +18593,8 @@ msgid "Report Title"
 msgstr "Название отчета"
 
 #: lib/html_reports.php:2104
-#, fuzzy
 msgid "Report Disabled - No Owner"
-msgstr "Report Disabled - No Owner"
+msgstr "Отчёт отключён - нет владельца"
 
 #: lib/html_reports.php:2108
 msgid "Every"
@@ -18664,9 +18656,8 @@ msgid "Set/Refresh Filter"
 msgstr "Установить / Обновить фильтр"
 
 #: lib/html_tree.php:1766
-#, fuzzy
 msgid "(Non Graph Template)"
-msgstr "(Non Graph Template)"
+msgstr "(Не шаблон графика)"
 
 #: lib/html_utility.php:333
 msgid "Selected"
@@ -18801,7 +18792,7 @@ msgstr "[предпросмотр]"
 
 #: lib/import.php:2723
 msgid "[updated]"
-msgstr "[updated]"
+msgstr "[обновлено]"
 
 #: lib/import.php:2727
 #, fuzzy
@@ -18854,7 +18845,7 @@ msgstr "Параметр Неожиданный путь"
 #: lib/installer.php:968
 #, php-format
 msgid "Failed to apply specified profile %s != %s"
-msgstr "Не удалось применить указанный профиль %1$s != %2$s"
+msgstr "Не удалось применить указанный профиль %s != %s"
 
 #: lib/installer.php:1015
 #, fuzzy, php-format
@@ -19936,7 +19927,7 @@ msgstr "Обновление удаленного файла конфигура�
 #: lib/installer.php:3532
 #, php-format
 msgid "Setting default data source profile to %s (%s)"
-msgstr "Установка профиля источника данных по умолчанию в %1$s (%2$s)"
+msgstr "Установка профиля источника данных по умолчанию в %s (%s)"
 
 #: lib/installer.php:3557
 #, fuzzy, php-format
@@ -20102,7 +20093,7 @@ msgstr "Во время установки произошло исключени
 #: lib/installer.php:3956
 #, php-format
 msgid "Installation was started at %s, completed at %s"
-msgstr "Установка начата в %1$s, завершена в %2$s"
+msgstr "Установка начата в %s, завершена в %s"
 
 #: lib/installer.php:3997
 msgid "Both"
@@ -20171,21 +20162,20 @@ msgstr "Имя пользователя не определено"
 #: lib/ldap.php:412
 #, php-format
 msgid "Protocol Error, Unable to set version (%s) on Server (%s)"
-msgstr "Ошибка протокола: не удалось установить версию (%1$s) на сервере (%2$s)"
+msgstr "Ошибка протокола: не удалось установить версию (%s) на сервере (%s)"
 
 #: lib/ldap.php:416
 #, php-format
 msgid "Protocol Error, Unable to set referrals option (%s) on Server (%s)"
 msgstr ""
-"Ошибка протокола: не удалось установить параметр перенаправления (%1$s) на "
-"сервере (%2$s)"
+"Ошибка протокола: не удалось установить параметр перенаправления (%s) на "
+"сервере (%s)"
 
 #: lib/ldap.php:420
 #, php-format
 msgid "Protocol Error, unable to start TLS communications (%s) on Server (%s)"
 msgstr ""
-"Ошибка протокола: не удалось запустить обмен данными TLS (%1$s) на сервере "
-"(%2$s)"
+"Ошибка протокола: не удалось запустить обмен данными TLS (%s) на сервере (%s)"
 
 #: lib/ldap.php:424
 #, fuzzy, php-format
@@ -20196,8 +20186,8 @@ msgstr "Ошибка протокола, Общий сбой (%s)"
 #, php-format
 msgid "Protocol Error, Unable to bind, LDAP result: (%s) on Server (%s)"
 msgstr ""
-"Ошибка протокола: не удалось выполнить привязку, результат LDAP: (%1$s) на "
-"сервере (%2$s)"
+"Ошибка протокола: не удалось выполнить привязку, результат LDAP: (%s) на "
+"сервере (%s)"
 
 #: lib/ldap.php:432
 #, php-format
@@ -20252,7 +20242,7 @@ msgstr "Введен неверный пароль. Авторизация не 
 #: lib/ldap.php:473
 #, php-format
 msgid "Unexpected error %s (Ldap Error: %s) on Server (%s)"
-msgstr "Непредвиденная ошибка %1$s (ошибка LDAP: %2$s) на сервере (%3$s)"
+msgstr "Непредвиденный сбой %s (ошибка LDAP: %s) на сервере (%s)"
 
 #: lib/ping.php:149
 #, fuzzy
@@ -20579,7 +20569,7 @@ msgstr "RRDtool команда:"
 #: lib/rrd.php:3299
 #, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
-msgstr "Требуемый размер шага файла RRD — '%1$s', но обнаруженный шаг — '%2$s'"
+msgstr "Требуемый размер шага файла RRD — '%s', но обнаруженный шаг — '%s'"
 
 #: lib/rrd.php:3359
 #, php-format
@@ -20676,9 +20666,8 @@ msgid "Round Robin Archive"
 msgstr "Круглый архив Робин"
 
 #: lib/rrd.php:3597
-#, fuzzy
 msgid "Cur Row"
-msgstr "Cur Row"
+msgstr "Текущая строка"
 
 #: lib/rrd.php:3598
 #, fuzzy
@@ -22220,9 +22209,8 @@ msgid "Disabled No INFO File"
 msgstr "Отключено: отсутствует файл INFO"
 
 #: plugins.php:75
-#, fuzzy
 msgid "Disabled Directory Missing"
-msgstr "Каталог плагина отсутствует!"
+msgstr "Отключён, каталог отсутствует"
 
 #: plugins.php:76
 #, fuzzy
@@ -22810,36 +22798,35 @@ msgstr "Включить плагин"
 #, php-format
 msgid "WARNING: %s is out of sync with the Poller Interval for Poller[%d]!  The Poller Interval is %d seconds, with a maximum of a %d seconds, but %d seconds have passed since the last poll!"
 msgstr ""
-"ПРЕДУПРЕЖДЕНИЕ: %1$s не синхронизирован с интервалом опроса для Poller[%2$d]"
-"! Интервал опроса составляет %3$d секунд при максимуме %4$d секунд, но с "
-"момента последнего опроса прошло %5$d секунд!"
+"ПРЕДУПРЕЖДЕНИЕ: %s не синхронизирован с интервалом опроса для Poller[%d]! "
+"Интервал опроса составляет %d секунд при максимуме %d секунд, но с момента "
+"последнего опроса прошло %d секунд!"
 
 #: poller.php:579
 #, php-format
 msgid "WARNING: There are %d processes detected as overrunning a polling cycle for Poller[%d], please investigate."
 msgstr ""
-"ПРЕДУПРЕЖДЕНИЕ: Обнаружено %1$d процессов, превышающих цикл опроса для Poller"
-"[%2$d], пожалуйста, проверьте."
+"ПРЕДУПРЕЖДЕНИЕ: Обнаружено %d процессов, превышающих цикл опроса для Poller"
+"[%d], пожалуйста, проверьте."
 
 #: poller.php:637
 #, php-format
 msgid "WARNING: Poller Output Table not empty for Poller[%d].  Issues: %d, %s."
 msgstr ""
-"ПРЕДУПРЕЖДЕНИЕ: Таблица вывода поллера не пуста для Poller[%1$d]. Проблемы: "
-"%2$d, %3$s."
+"ПРЕДУПРЕЖДЕНИЕ: Таблица вывода поллера не пуста для Poller[%d]. Проблемы: "
+"%d, %s."
 
 #: poller.php:671
 #, php-format
 msgid "ERROR: The spine path: %s is invalid for Poller[%d].  Poller can not continue!"
 msgstr ""
-"ОШИБКА: Путь к spine: %1$s недопустим для Poller[%2$d]. Поллер не может "
+"ОШИБКА: Путь к spine: %s недопустим для Poller[%d]. Поллер не может "
 "продолжить работу!"
 
 #: poller.php:819
 #, php-format
 msgid "Maximum runtime of %d seconds exceeded for Poller[%d]. Exiting."
-msgstr ""
-"Превышено максимальное время работы в %1$d секунд для Poller[%2$d]. Выход."
+msgstr "Превышено максимальное время работы в %d секунд для Poller[%d]. Выход."
 
 #: poller.php:944
 msgid "WARNING: Cacti Polling Cycle Exceeded Poller Interval by "
@@ -23531,7 +23518,7 @@ msgstr "ПРИМЕЧАНИЕ. Настройки пути на этой вкла
 #: settings.php:138
 #, php-format
 msgid "Cacti Settings (%s)%s"
-msgstr "Настройки Cacti (%1$s)%2$s"
+msgstr "Настройки Cacti (%s)%s"
 
 #: settings.php:248
 msgid "Changing Permission Model Warning"
@@ -24561,6 +24548,8 @@ msgstr ""
 #: templates_import.php:333
 msgid "Some CDEF Items will not import due to an export error! Contact Template provider for an updated export."
 msgstr ""
+"Некоторые элементы CDEF не будут импортированы из-за ошибки экспорта! "
+"Свяжитесь с поставщиком шаблонов для обновления экспорта."
 
 #: templates_import.php:374 templates_import.php:461
 msgid "Import Template"
@@ -26335,9 +26324,8 @@ msgid "Current Boost Table(s) Size:"
 msgstr "Текущий размер таблицы (таблиц) увеличения:"
 
 #: utilities.php:1619
-#, fuzzy
 msgid "Avg Bytes/Record:"
-msgstr "Avg Bytes/Record:"
+msgstr "Сред. байт/запись:"
 
 #: utilities.php:1649
 #, fuzzy, php-format
@@ -26441,11 +26429,16 @@ msgstr "Процесс: %d"
 #, php-format
 msgid "Status: <span class=\"deviceUp\"><b>Running</b></span>, Remaining: %s (dses), CurrentRuntime: %s (secs), PrevRuntime: %s (secs), PrevProcessed: %10s (ds rows)"
 msgstr ""
+"Статус: <span class=\"deviceUp\"><b>Выполняется</b></span>, Осталось: %s ("
+"источников данных), Текущее время выполнения: %s (сек.), Пред. время "
+"выполнения: %s (сек.), Пред. обработано: %10s (строк источников данных)"
 
 #: utilities.php:1781
 #, php-format
 msgid "Status: <span class=\"deviceRecovering\"><b>Idle</b></span>, PrevRuntime: %s (secs), PrevProcessed: %10s (ds rows)"
 msgstr ""
+"Статус: <span class=\"deviceRecovering\"><b>Простой</b></span>, Пред. время "
+"выполнения: %s (сек.), Пред. обработано: %10s (строк источников данных)"
 
 #: utilities.php:1787
 #, fuzzy
