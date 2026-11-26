@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-25 22:34+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Turkish <https://translate.cacti.net/projects/cacti/core-v1-2-x/tr/>\nLanguage: tr-TR\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-26 05:54+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Turkish <https://translate.cacti.net/projects/cacti/core-v1-2-x/tr/>\nLanguage: tr-TR\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -552,10 +552,8 @@ msgid "No Aggregate Graphs Found"
 msgstr "Toplam Grafik Bulunamadı"
 
 #: aggregate_templates.php
-#, fuzzy
-#| msgid "No Aggregate Templates Found"
 msgid "Aggregate Template not found."
-msgstr "Toplama Şablonu Bulunamadı"
+msgstr "Toplama Şablonu Bulunamadı."
 
 #: aggregate_templates.php
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -1035,7 +1033,7 @@ msgstr "Bir dosyaya ver"
 
 #: automation_devices.php data_debug.php lib/clog_webapi.php managers.php
 msgid "Purge"
-msgstr "Temizle"
+msgstr "Tamamen Temizle"
 
 #: automation_devices.php
 msgid "Purge Discovered Devices"
@@ -1046,7 +1044,7 @@ msgstr "Keşfedilen Cihazları Temizle"
 #: lib/html.php lib/html_reports.php lib/spikekill.php lib/utility.php
 #: plugins.php pollers.php user_admin.php utilities.php
 msgid "N/A"
-msgstr "Yok"
+msgstr "Geçerli Değil"
 
 #: automation_graph_rules.php automation_snmp.php automation_tree_rules.php
 #: cdef.php color_templates.php data_input.php data_queries.php
@@ -2548,10 +2546,8 @@ msgid "Delete Color Item"
 msgstr "Renk Öğesini Sil"
 
 #: color_templates.php
-#, fuzzy
-#| msgid "No Color Templates Found"
 msgid "Color Template not found."
-msgstr "Renk Şablonu Bulunamadı"
+msgstr "Renk Şablonu Bulunamadı."
 
 #: color_templates.php
 #, php-format
@@ -3405,7 +3401,7 @@ msgstr "Veri Saklama"
 
 #: data_source_profiles.php include/global_settings.php lib/html_reports.php
 msgid "Graph Timespan"
-msgstr "Graph Timespan"
+msgstr "Grafik Zaman Aralığı"
 
 #: data_source_profiles.php
 msgid "Steps"
@@ -4262,10 +4258,8 @@ msgid "No Inputs"
 msgstr "Giriş Yok"
 
 #: graph_templates.php
-#, fuzzy
-#| msgid "No Graph Templates Found"
 msgid "Graph Template not found."
-msgstr "Grafik Şablonu Bulunamadı"
+msgstr "Grafik Şablonu Bulunamadı."
 
 #: graph_templates.php
 #, php-format
@@ -5018,7 +5012,7 @@ msgstr "Aşağıdaki cihazları etkinleştirmek için 'Devam Et'e tıklayın."
 
 #: host.php
 msgid "Enable Device(s)"
-msgstr "Aygıtları Etkinleştir"
+msgstr "Aygıt(lar)ı Etkinleştir"
 
 #: host.php
 msgid "Click 'Continue' to disable the following Device(s)."
@@ -6350,7 +6344,7 @@ msgstr "Yeni grafikler"
 
 #: include/global_arrays.php
 msgid "Management"
-msgstr "Kullanıcı Yonetimi"
+msgstr "Yönetim"
 
 #: include/global_arrays.php sites.php tree.php
 msgid "Sites"
@@ -8382,7 +8376,7 @@ msgstr "LINE seçildiğinde, burada çizgi genişliğini belirtin. Ondalık bir 
 
 #: include/global_form.php
 msgid "Dashes (dashes[=on_s[,off_s[,on_s,off_s]...]])"
-msgstr "Kısa çizgiler (kısa çizgiler [= on_s [, off_s [, on_s, off_s] ...]])"
+msgstr "Kesik Çizgiler (dashes[=on_s[,off_s[,on_s,off_s]...]])"
 
 #: include/global_form.php
 msgid "The dashes modifier enables dashed line style."
@@ -8390,7 +8384,7 @@ msgstr "Kısa çizgi değiştiricisi kesikli çizgi stili sağlar."
 
 #: include/global_form.php
 msgid "Dash Offset (dash-offset=offset)"
-msgstr "Çizgi Ofseti (çizgi ofset = ofset)"
+msgstr "Çizgi Ofseti (dash-offset=offset)"
 
 #: include/global_form.php
 msgid "The dash-offset parameter specifies an offset into the pattern at which the stroke begins."
@@ -9202,7 +9196,7 @@ msgstr "Günlük Hedefi"
 
 #: include/global_settings.php
 msgid "How will Cacti handle event logging."
-msgstr "Cacti olay günlüğünü nasıl idare edecek?."
+msgstr "Cacti'nin olay günlüğünü nasıl yöneteceğini belirler."
 
 #: include/global_settings.php
 msgid "Generic Log Level"
@@ -9330,7 +9324,7 @@ msgstr "İstemci Saat Dilimi Desteği"
 
 #: include/global_settings.php
 msgid "How should Cacti support Client Dates based upon the Client browsers timezone."
-msgstr "Cacti, İstemci tarayıcılarının saat dilimine bağlı olarak İstemci Tarihlerini nasıl desteklemelidir?"
+msgstr "Cacti'nin istemci tarayıcısının saat dilimine bağlı olarak istemci tarihlerini nasıl destekleyeceğini belirler."
 
 #: include/global_settings.php
 msgid "Date Display Format"
@@ -9658,7 +9652,7 @@ msgstr "Varsayılan Arayüz Hızı"
 
 #: include/global_settings.php
 msgid "If Cacti can not determine the interface speed due to either ifSpeed or ifHighSpeed not being set or being zero, what maximum value do you wish on the resulting RRDfiles."
-msgstr "Eğer Cacti, ifSpeed veya ifHighSpeed'in ayarlanmaması veya sıfır olması nedeniyle arayüz hızını belirleyemiyorsa, elde edilen RRD dosyalarında maksimum değerin ne olmasını istersiniz?."
+msgstr "Cacti, ifSpeed veya ifHighSpeed ayarlanmadığından ya da sıfır olduğundan arayüz hızını belirleyemediğinde elde edilen RRD dosyalarında kullanılacak maksimum değer."
 
 #: include/global_settings.php
 msgid "100 Mbps Ethernet"
@@ -9982,7 +9976,7 @@ msgstr "Günlük Kuyruk Yenile"
 
 #: include/global_settings.php
 msgid "How often do you want the Cacti log display to update."
-msgstr "Cacti günlüğü ekranının ne sıklıkla güncellenmesini istiyorsunuz?."
+msgstr "Cacti günlük ekranının ne sıklıkla güncelleneceğini belirler."
 
 #: include/global_settings.php
 msgid "Log Viewer Settings"
@@ -11707,7 +11701,7 @@ msgstr "Ağaç modunda Küçük Resim grafiklerini görüntülerken kullanılaca
 
 #: include/global_settings.php
 msgid "Thumbnail Height"
-msgstr "Küçük resim"
+msgstr "Küçük Resim Yüksekliği"
 
 #: include/global_settings.php
 msgid "The height of Thumbnail graphs in pixels."
@@ -11851,7 +11845,7 @@ msgstr "Çevrimiçi"
 
 #: index.php
 msgid "Recovery"
-msgstr "Recovery"
+msgstr "Kurtarma"
 
 #: index.php
 msgid "Remote Data Collector Status:"
@@ -12364,7 +12358,7 @@ msgstr "Günlük [Toplam Satır: %1$d %2$s - Filtresiz]"
 
 #: lib/clog_webapi.php utilities.php
 msgid "Entries"
-msgstr "Kayıtlar"
+msgstr "Girdiler"
 
 #: lib/clog_webapi.php utilities.php
 msgid "File"
@@ -13217,7 +13211,7 @@ msgstr "Eylemi Yürüt"
 
 #: lib/html.php managers.php
 msgid "Logs"
-msgstr "Kayıtlar"
+msgstr "Günlükler"
 
 #: lib/html.php
 msgid "Standard Deviations"
@@ -16857,7 +16851,7 @@ msgstr "Otomatik Sayfa Yenileme"
 
 #: links.php
 msgid "How often do you wish this page to be refreshed automatically."
-msgstr "Bu sayfanın ne kadar sıklıkla otomatik olarak yenilenmesini istersiniz?."
+msgstr "Bu sayfanın ne sıklıkla otomatik olarak yenileneceğini belirler."
 
 #: links.php
 #, php-format
@@ -17198,10 +17192,8 @@ msgid "Are you sure you want to Force Uninstall the plugin"
 msgstr "Kaldırmak istediğinize emin misiniz?"
 
 #: plugins.php
-#, fuzzy
-#| msgid "Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click 'Uninstall' below.  Otherwise click 'Cancel'"
 msgid "This permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone.  If you really want to Force Uninstall the Plugin, click 'Force Uninstall' below.  Otherwise click 'Cancel'."
-msgstr "Bu Eklentiyi kaldırmak, tüm Eklenti Verilerini ve Ayarlarını kaldırır. Eklentiyi gerçekten kaldırmak istiyorsanız, aşağıdaki &#39;Kaldır&#39;ı tıklayın. Aksi takdirde &#39;İptal&#39;i tıklayın"
+msgstr "Bu işlem, eklentiye ait tüm girdileri Cacti eklenti tablolarından (yapılandırma, kancalar, izinler ve oluşturduğu tüm tablo veya sütunlar) kalıcı olarak siler. Bu işlem geri alınamaz. Eklentiyi gerçekten zorla kaldırmak istiyorsanız aşağıdaki 'Zorla Kaldır' düğmesine tıklayın. Aksi halde 'İptal' düğmesine tıklayın."
 
 #: plugins.php
 #, fuzzy
@@ -19483,10 +19475,8 @@ msgid "PHP SNMP"
 msgstr "PHP SNMP"
 
 #: utilities.php
-#, fuzzy
-#| msgid "Installed"
 msgid "Installed."
-msgstr "Yüklü"
+msgstr "Yüklü."
 
 #: utilities.php
 msgid "You've set memory limit to 'unlimited'."
