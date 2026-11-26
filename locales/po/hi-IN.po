@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-25 22:34+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Hindi <https://translate.cacti.net/projects/cacti/core-v1-2-x/hi/>\nLanguage: hi-IN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n==0 || n==1);\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-26 05:53+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Hindi <https://translate.cacti.net/projects/cacti/core-v1-2-x/hi/>\nLanguage: hi-IN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n==0 || n==1);\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -552,10 +552,8 @@ msgid "No Aggregate Graphs Found"
 msgstr "कोई सकल रेखांकन नहीं मिला"
 
 #: aggregate_templates.php
-#, fuzzy
-#| msgid "No Aggregate Templates Found"
 msgid "Aggregate Template not found."
-msgstr "कोई सकल टेम्पलेट नहीं मिला"
+msgstr "सकल टेम्पलेट नहीं मिला।"
 
 #: aggregate_templates.php
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -2546,10 +2544,8 @@ msgid "Delete Color Item"
 msgstr "रंग आइटम हटाएँ"
 
 #: color_templates.php
-#, fuzzy
-#| msgid "No Color Templates Found"
 msgid "Color Template not found."
-msgstr "कोई रंग टेम्पलेट नहीं मिला"
+msgstr "रंग टेम्पलेट नहीं मिला।"
 
 #: color_templates.php
 #, php-format
@@ -3586,7 +3582,7 @@ msgstr[1] "डेटा स्रोतों को हटाएं"
 msgid "Choose a new Device for this Data Source and click 'Continue'."
 msgid_plural "Choose a new Device for these Data Sources and click 'Continue'"
 msgstr[0] "इस डेटा स्रोत के लिए एक नया उपकरण चुनें और 'जारी रखें' पर क्लिक करें।"
-msgstr[1] "इन डेटा स्रोतों के लिए एक नया उपकरण चुनें और 'जारी रखें' पर क्लिक करें।"
+msgstr[1] "इन डेटा स्रोतों के लिए एक नया उपकरण चुनें और 'जारी रखें' पर क्लिक करें"
 
 #: data_sources.php
 msgid "New Device:"
@@ -4260,10 +4256,8 @@ msgid "No Inputs"
 msgstr "कोई इनपुट नहीं"
 
 #: graph_templates.php
-#, fuzzy
-#| msgid "No Graph Templates Found"
 msgid "Graph Template not found."
-msgstr "कोई ग्राफ़ टेम्पलेट नहीं मिला"
+msgstr "ग्राफ़ टेम्पलेट नहीं मिला।"
 
 #: graph_templates.php
 #, php-format
@@ -8378,7 +8372,7 @@ msgstr "यदि लाइन को चुना गया था, तो य�
 
 #: include/global_form.php
 msgid "Dashes (dashes[=on_s[,off_s[,on_s,off_s]...]])"
-msgstr "डैश (डैश [= on_s [, off_s [, on_s, off_s] ...]))"
+msgstr "डैश (dashes[=on_s[,off_s[,on_s,off_s]...]])"
 
 #: include/global_form.php
 msgid "The dashes modifier enables dashed line style."
@@ -8386,7 +8380,7 @@ msgstr "डैश डैशफ़ॉर्म धराशायी रेखा
 
 #: include/global_form.php
 msgid "Dash Offset (dash-offset=offset)"
-msgstr "डैश ऑफसेट (डैश ऑफ़सेट = ऑफसेट)"
+msgstr "डैश ऑफसेट (dash-offset=offset)"
 
 #: include/global_form.php
 msgid "The dash-offset parameter specifies an offset into the pattern at which the stroke begins."
@@ -19460,10 +19454,8 @@ msgid "PHP SNMP"
 msgstr "PHP SNMP"
 
 #: utilities.php
-#, fuzzy
-#| msgid "Installed"
 msgid "Installed."
-msgstr "इंस्‍टॉल हो गया"
+msgstr "इंस्टॉल हो गया।"
 
 #: utilities.php
 msgid "You've set memory limit to 'unlimited'."
