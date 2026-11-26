@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: cacti\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-25 22:34+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Japanese <https://translate.cacti.net/projects/cacti/core-v1-2-x/ja/>\nLanguage: ja-JP\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: cacti\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-26 05:54+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Japanese <https://translate.cacti.net/projects/cacti/core-v1-2-x/ja/>\nLanguage: ja-JP\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -545,10 +545,8 @@ msgid "No Aggregate Graphs Found"
 msgstr "集約グラフが見つかりません"
 
 #: aggregate_templates.php
-#, fuzzy
-#| msgid "No Aggregate Templates Found"
 msgid "Aggregate Template not found."
-msgstr "集約テンプレートが見つかりません"
+msgstr "集約テンプレートが見つかりません。"
 
 #: aggregate_templates.php
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -1085,7 +1083,7 @@ msgstr "次のルールを有効にするには、[続行]をクリックしま�
 
 #: automation_graph_rules.php automation_tree_rules.php
 msgid "Make sure, that those rules have successfully been tested!"
-msgstr "これらのルールが正しくテストされたことを確認してください。"
+msgstr "これらのルールが正しくテストされたことを確認してください！"
 
 #: automation_graph_rules.php automation_tree_rules.php
 msgid "Click 'Continue' to disable the following Rule(s)."
@@ -1204,7 +1202,7 @@ msgstr "無効なネットワーク'%s'の検出を実行できません"
 #: automation_networks.php
 #, php-format
 msgid "ERROR: You must specify the day of the week.  Disabling Network %s!."
-msgstr "エラー：曜日を指定する必要があります。ネットワーク%sを無効にしています！"
+msgstr "エラー：曜日を指定する必要があります。ネットワーク%sを無効にしています。"
 
 #: automation_networks.php
 #, php-format
@@ -2528,10 +2526,8 @@ msgid "Delete Color Item"
 msgstr "カラーアイテムを削除"
 
 #: color_templates.php
-#, fuzzy
-#| msgid "No Color Templates Found"
 msgid "Color Template not found."
-msgstr "カラーテンプレートが見つかりません"
+msgstr "カラーテンプレートが見つかりません。"
 
 #: color_templates.php
 #, php-format
@@ -4224,10 +4220,8 @@ msgid "No Inputs"
 msgstr "入力なし"
 
 #: graph_templates.php
-#, fuzzy
-#| msgid "No Graph Templates Found"
 msgid "Graph Template not found."
-msgstr "グラフテンプレートが見つかりません"
+msgstr "グラフテンプレートが見つかりません。"
 
 #: graph_templates.php
 #, php-format
@@ -8355,7 +8349,7 @@ msgstr "ダッシュ修飾子は、破線スタイルを有効にします。"
 
 #: include/global_form.php
 msgid "Dash Offset (dash-offset=offset)"
-msgstr "ダッシュオフセット（ダッシュオフセット=オフセット）"
+msgstr "ダッシュオフセット (dash-offset=offset)"
 
 #: include/global_form.php
 msgid "The dash-offset parameter specifies an offset into the pattern at which the stroke begins."
@@ -9910,10 +9904,8 @@ msgid "Default Graph Type"
 msgstr "デフォルトグラフタイプ"
 
 #: include/global_settings.php
-#, fuzzy
-#| msgid "When creating graphs, what Graph Type would you like pre-selected?"
 msgid "When creating graphs, what Graph Type would you like preselected?"
-msgstr "グラフを作成するときに、どの種類のグラフを選択しますか。"
+msgstr "グラフを作成するときに、どの種類のグラフをあらかじめ選択しますか？"
 
 #: include/global_settings.php
 msgid "All Types"
@@ -12432,7 +12424,7 @@ msgstr "タイプ= '%s' [%s]が見つかりました。"
 #: lib/data_query.php
 #, php-format
 msgid "Unknown Type = '%s'."
-msgstr "不明なタイプ = '%s'。"
+msgstr "不明なタイプ = '%s'."
 
 #: lib/data_query.php
 msgid "WARNING: Sort Field Association has Changed.  Re-mapping issues may occur!"
@@ -13899,7 +13891,7 @@ msgstr "次のレポートを有効にするには、[続行]をクリックし�
 
 #: lib/html_reports.php
 msgid "Please be certain that those Report(s) have successfully been tested first!"
-msgstr "それらのレポートが最初にテストされたことを確認してください。"
+msgstr "それらのレポートが最初にテストされたことを確認してください！"
 
 #: lib/html_reports.php
 msgid "Click 'Continue' to disable the following Reports."
@@ -14229,10 +14221,8 @@ msgid "Cacti regular expressions can not includes the semi-color character."
 msgstr "Cacti正規表現には、セミカラー文字を含めることはできません。"
 
 #: lib/html_utility.php
-#, fuzzy
-#| msgid "Enter a regular expression"
 msgid "Invalid regular expression."
-msgstr "正規表現を入力してください"
+msgstr "無効な正規表現です。"
 
 #: lib/html_utility.php
 msgid "There was an internal error!"
@@ -15576,7 +15566,7 @@ msgstr "デフォルト"
 
 #: lib/ping.php
 msgid "Please upgrade to PHP 5.5.4+ for IPv6 support!"
-msgstr "IPv6をサポートするためにPHP 5.5.4以降にアップグレードしてください。"
+msgstr "IPv6をサポートするためにPHP 5.5.4以降にアップグレードしてください！"
 
 #: lib/ping.php
 #, php-format
@@ -16402,10 +16392,8 @@ msgid "Number of I/O threads used for read operations in InnoDB."
 msgstr ""
 
 #: lib/utility.php
-#, fuzzy
-#| msgid "default"
 msgid "1-64; default 4."
-msgstr "デフォルト"
+msgstr "1-64、デフォルトは 4。"
 
 #: lib/utility.php
 msgid "Number of I/O threads used for write operations in InnoDB."
@@ -17026,10 +17014,8 @@ msgid "The Package %s Import Failed"
 msgstr "パッケージ%sのインポートに失敗しました"
 
 #: package_import.php
-#, fuzzy
-#| msgid "Enter a valid file path"
 msgid "Error: Invalid file path."
-msgstr "有効なファイルパスを入力してください"
+msgstr "エラー：無効なファイルパスです。"
 
 #: package_import.php
 msgid "Error in Package"
@@ -18107,10 +18093,8 @@ msgid_plural "Duplicate Sites"
 msgstr[0] "サイトを複製します"
 
 #: sites.php
-#, fuzzy
-#| msgid "File not found"
 msgid "Site not found."
-msgstr "ファイルが見つかりません"
+msgstr "サイトが見つかりません。"
 
 #: sites.php tree.php
 msgid "Site Name"
@@ -19434,10 +19418,8 @@ msgid "PHP SNMP"
 msgstr "PHP SNMP"
 
 #: utilities.php
-#, fuzzy
-#| msgid "Installed"
 msgid "Installed."
-msgstr "インストール済み"
+msgstr "インストール済み。"
 
 #: utilities.php
 msgid "You've set memory limit to 'unlimited'."
