@@ -4,7 +4,7 @@
 # Patrick Rademaker, 2017.
 #
 msgid ""
-msgstr "Project-Id-Version: Cacti\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-25 22:34+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Dutch <https://translate.cacti.net/projects/cacti/core-v1-2-x/nl/>\nLanguage: nl-NL\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: Cacti\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-26 05:54+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Dutch <https://translate.cacti.net/projects/cacti/core-v1-2-x/nl/>\nLanguage: nl-NL\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -147,7 +147,7 @@ msgstr "Annuleer"
 #: lib/html_reports.php links.php managers.php pollers.php sites.php tree.php
 #: user_admin.php user_domains.php user_group_admin.php vdef.php
 msgid "Continue"
-msgstr "Volgende"
+msgstr "Doorgaan"
 
 #: aggregate_graphs.php graphs.php
 msgid "Delete Graph(s)"
@@ -519,7 +519,7 @@ msgstr "Template"
 #: lib/api_automation.php lib/auth.php lib/html.php lib/html_reports.php
 #: managers.php user_admin.php user_group_admin.php utilities.php
 msgid "Any"
-msgstr "Alle"
+msgstr "Elke"
 
 #: aggregate_graphs.php automation_graph_rules.php automation_networks.php
 #: automation_tree_rules.php data_debug.php data_sources.php data_templates.php
@@ -552,10 +552,8 @@ msgid "No Aggregate Graphs Found"
 msgstr "Geen geaggregeerde grafieken gevonden"
 
 #: aggregate_templates.php
-#, fuzzy
-#| msgid "No Aggregate Templates Found"
 msgid "Aggregate Template not found."
-msgstr "Geen geaggregeerde template gevonden"
+msgstr "Geaggregeerde template niet gevonden."
 
 #: aggregate_templates.php
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -987,7 +985,7 @@ msgstr "OS"
 
 #: automation_devices.php host.php include/global_arrays.php
 msgid "Uptime"
-msgstr "Uptime"
+msgstr "Bedrijfstijd"
 
 #: automation_devices.php include/global_arrays.php utilities.php
 msgid "SNMP"
@@ -1314,7 +1312,7 @@ msgstr "Nieuwe netwerk zoek bereik"
 
 #: automation_networks.php host.php
 msgid "Data Collector"
-msgstr "Data Collector"
+msgstr "Gegevensverzamelaar"
 
 #: automation_networks.php include/global_form.php
 msgid "Choose the Cacti Data Collector/Poller to be used to gather data from this Device."
@@ -1772,7 +1770,7 @@ msgstr "Laatst gestart"
 
 #: automation_networks.php pollers.php utilities.php
 msgid "Running"
-msgstr "Actief"
+msgstr "Wordt uitgevoerd"
 
 #: automation_networks.php pollers.php utilities.php
 msgid "Idle"
@@ -1903,7 +1901,7 @@ msgstr "Poort"
 
 #: automation_snmp.php include/global_settings.php
 msgid "Timeout"
-msgstr "Timeout"
+msgstr "Time-out"
 
 #: automation_snmp.php include/global_settings.php
 msgid "Retries"
@@ -2548,10 +2546,8 @@ msgid "Delete Color Item"
 msgstr "Verwijder kleur item"
 
 #: color_templates.php
-#, fuzzy
-#| msgid "No Color Templates Found"
 msgid "Color Template not found."
-msgstr "Geen kleurentemplates gevonden"
+msgstr "Kleurtemplate niet gevonden."
 
 #: color_templates.php
 #, php-format
@@ -2896,7 +2892,7 @@ msgstr "Wachten op gegevensbroncontrole om te voltooien"
 
 #: data_debug.php
 msgid "All Devices"
-msgstr "All Devices"
+msgstr "Alle apparaten"
 
 #: data_debug.php
 #, php-format
@@ -4167,7 +4163,7 @@ msgstr "Vernieuwingsinterval"
 
 #: graph_realtime.php lib/html_graph.php lib/html_reports.php lib/html_tree.php
 msgid "Thumbnails"
-msgstr "Thumbnails"
+msgstr "Miniaturen"
 
 #: graph_realtime.php
 #, php-format
@@ -4262,10 +4258,8 @@ msgid "No Inputs"
 msgstr "Geen invoer"
 
 #: graph_templates.php
-#, fuzzy
-#| msgid "No Graph Templates Found"
 msgid "Graph Template not found."
-msgstr "Geen grafiek templates gevonden"
+msgstr "Grafiektemplate niet gevonden."
 
 #: graph_templates.php
 #, php-format
@@ -8382,7 +8376,7 @@ msgstr "Indien LINE werd gekozen, geef hier de breedte van de lijn aan.  U moet 
 
 #: include/global_form.php
 msgid "Dashes (dashes[=on_s[,off_s[,on_s,off_s]...]])"
-msgstr "Streepjes (streepjes[=on_s[,off_s[,on_s,off_s]....]])"
+msgstr "Streepjes (dashes[=on_s[,off_s[,on_s,off_s]...]])"
 
 #: include/global_form.php
 msgid "The dashes modifier enables dashed line style."
@@ -12151,7 +12145,7 @@ msgstr "Systeem:"
 
 #: lib/api_device.php
 msgid "Uptime:"
-msgstr "Uptime:"
+msgstr "Bedrijfstijd:"
 
 #: lib/api_device.php
 msgid "Hostname:"
@@ -13218,7 +13212,7 @@ msgstr "Actie uitvoeren"
 
 #: lib/html.php managers.php
 msgid "Logs"
-msgstr "Logs"
+msgstr "Logboeken"
 
 #: lib/html.php
 msgid "Standard Deviations"
@@ -14261,10 +14255,8 @@ msgid "Cacti regular expressions can not includes the semi-color character."
 msgstr "Reguliere expressies in Cacti mogen geen puntkomma bevatten."
 
 #: lib/html_utility.php
-#, fuzzy
-#| msgid "Enter a regular expression"
 msgid "Invalid regular expression."
-msgstr "Voer een reguliere expressie in"
+msgstr "Ongeldige reguliere expressie."
 
 #: lib/html_utility.php
 msgid "There was an internal error!"
@@ -14562,7 +14554,7 @@ msgstr "Start"
 
 #: lib/installer.php
 msgid "Upgrade"
-msgstr "Upgrade"
+msgstr "Bijwerken"
 
 #: lib/installer.php
 msgid "Downgrade"
@@ -17136,7 +17128,7 @@ msgstr "Wijzigingen/verschillen"
 
 #: package_import.php templates_import.php
 msgid "Updated"
-msgstr "Bijwerken"
+msgstr "Bijgewerkt"
 
 #: package_import.php templates_import.php
 msgid "Orphans"
@@ -19484,10 +19476,8 @@ msgid "PHP SNMP"
 msgstr "PHP SNMP"
 
 #: utilities.php
-#, fuzzy
-#| msgid "Installed"
 msgid "Installed."
-msgstr "Geïnstalleerd"
+msgstr "Geïnstalleerd."
 
 #: utilities.php
 msgid "You've set memory limit to 'unlimited'."
