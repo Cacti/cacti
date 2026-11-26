@@ -1,0 +1,1 @@
+Set the html lang and dir attributes on every page from the active language; dir is rtl only for a right-to-left language on a theme that declares support with an rtl marker file, and no bundled theme declares it yet, so layout is unchanged for everyone

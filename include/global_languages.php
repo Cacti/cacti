@@ -1014,6 +1014,84 @@ function get_installed_locales() {
 }
 
 /**
+ * get_locale_direction - returns the text direction of a locale
+ *
+ * Unknown locales fall back to left-to-right so a bad session value can never
+ * mirror the whole interface.
+ *
+ * @param string|null $locale The locale code, e.g. 'he-IL'.  Defaults to the active locale.
+ *
+ * @return string 'rtl' or 'ltr'
+ */
+function get_locale_direction(string|null $locale = null) : string {
+	if ($locale === null) {
+		$locale = defined('CACTI_LOCALE') ? CACTI_LOCALE : '';
+	}
+
+	$locales = get_list_of_locales();
+
+	if (isset($locales[$locale]['direction']) && $locales[$locale]['direction'] === 'rtl') {
+		return 'rtl';
+	}
+
+	return 'ltr';
+}
+
+/**
+ * theme_supports_rtl - reports whether a theme declares right-to-left support
+ *
+ * A theme opts in by shipping an `rtl` file in its directory.  Most themes lay
+ * out their navigation and content with fixed left offsets, so mirroring the
+ * document under them hides content; they stay left-to-right until they ship
+ * that file.  A child theme does not inherit the flag from its parent because
+ * its own stylesheets may undo the parent's right-to-left handling.
+ *
+ * @param string $theme The theme directory name
+ *
+ * @return bool True when the theme ships an `rtl` file
+ */
+function theme_supports_rtl(string $theme) : bool {
+	return preg_match('/^[a-z0-9_-]+$/', $theme) === 1 && is_file(CACTI_PATH_INCLUDE . '/themes/' . $theme . '/rtl');
+}
+
+/**
+ * get_document_direction - returns the direction a page should declare
+ *
+ * A right-to-left locale yields 'rtl' only when the theme supports it; other
+ * themes stay 'ltr' so their layout is unchanged.
+ *
+ * @param string      $locale The locale code, e.g. 'he-IL'
+ * @param string|null $theme  The theme rendering the page.  Defaults to the selected theme.
+ *
+ * @return string 'rtl' or 'ltr'
+ */
+function get_document_direction(string $locale, string|null $theme = null) : string {
+	// Only a right-to-left locale needs the theme, so left-to-right pages never look it up.
+	if (get_locale_direction($locale) !== 'rtl') {
+		return 'ltr';
+	}
+
+	if ($theme === null) {
+		$theme = function_exists('get_selected_theme') ? get_selected_theme() : '';
+	}
+
+	return theme_supports_rtl($theme) ? 'rtl' : 'ltr';
+}
+
+/**
+ * get_html_document_attributes - returns the lang and dir attributes for the <html> element
+ *
+ * lang always follows the active locale; dir follows get_document_direction().
+ *
+ * @return string The escaped attribute string, starting with a space.
+ */
+function get_html_document_attributes() : string {
+	$locale = defined('CACTI_LOCALE') ? CACTI_LOCALE : 'en-US';
+
+	return " lang='" . htmlspecialchars($locale, ENT_QUOTES, 'UTF-8') . "' dir='" . get_document_direction($locale) . "'";
+}
+
+/**
  * read_user_i18n_setting - finds the current value of a i18n configuration setting
  *
  * @param string $config_name The name of the configuration setting to retrieve.
