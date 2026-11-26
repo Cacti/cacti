@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-25 22:34+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-26 05:54+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -1499,7 +1499,7 @@ msgstr "Veckodagar"
 
 #: automation_networks.php
 msgid "What Day(s) of the week will this Network Range be discovered."
-msgstr "Vilka veckodagar ska nätverksintervallet genomsökas?."
+msgstr "Veckodagar då nätverksintervallet ska genomsökas."
 
 #: automation_networks.php include/global_arrays.php
 msgid "Sunday"
@@ -1535,7 +1535,7 @@ msgstr "Årets månader"
 
 #: automation_networks.php
 msgid "What Months(s) of the Year will this Network Range be discovered."
-msgstr "Vilka månader ska nätverksintervallet genomsökas?."
+msgstr "Månader då nätverksintervallet ska genomsökas."
 
 #: automation_networks.php include/global_arrays.php
 msgid "January"
@@ -1591,7 +1591,7 @@ msgstr "Månadens dagar"
 
 #: automation_networks.php
 msgid "What Day(s) of the Month will this Network Range be discovered."
-msgstr "Vilka dagar i månaden ska nätverksintervallet genomsökas?."
+msgstr "Dagar i månaden då nätverksintervallet ska genomsökas."
 
 #: automation_networks.php
 msgid "Last"
@@ -1603,7 +1603,7 @@ msgstr "Veckor i månaden"
 
 #: automation_networks.php
 msgid "What Week(s) of the Month will this Network Range be discovered."
-msgstr "Vilka veckor i månaden ska nätverksintervallet genomsökas?."
+msgstr "Veckor i månaden då nätverksintervallet ska genomsökas."
 
 #: automation_networks.php
 msgid "First"
@@ -7722,7 +7722,7 @@ msgstr "Insamlingsintervall"
 
 #: include/global_form.php
 msgid "The frequency that data will be collected from the Data Source?"
-msgstr "Hur ofta data ska samlas in från datakällan"
+msgstr "Hur ofta ska data samlas in från datakällan?"
 
 #: include/global_form.php
 msgid "How long can data be missing before RRDtool records unknown data.  Increase this value if your Data Source is unstable and you wish to carry forward old data rather than show gaps in your graphs.  This value is multiplied by the X-Files Factor to determine the actual amount of time."
@@ -9343,7 +9343,7 @@ msgstr "”Har grafer” och ”Har datakällor” markerade"
 
 #: include/global_settings.php
 msgid "Should the Has Graphs and Has Data Sources be Checked by Default."
-msgstr "Ska ”Har grafer” och ”Har datakällor” vara markerade som standard?."
+msgstr "Anger om ”Har grafer” och ”Har datakällor” ska vara markerade som standard."
 
 #: include/global_settings.php utilities.php
 msgid "RRDtool Version"
@@ -9825,7 +9825,7 @@ msgstr "Autokomplettering aktiverad"
 
 #: include/global_settings.php
 msgid "In very large systems, select lists can slow the user interface significantly.  If this option is enabled, Cacti will use autocomplete callbacks to populate the select list systematically.  Note: autocomplete is forcibly disabled on the Classic theme."
-msgstr "I mycket stora system kan urvalslistor göra användargränssnittet avsevärt långsammare. Om det här alternativet är aktiverat använder Cacti återanrop för automatisk komplettering för att fylla i urvalslistan systematiskt. Obs: automatisk komplettering är tvingande inaktiverad i temat Classic."
+msgstr "I mycket stora system kan vallistor göra användargränssnittet betydligt långsammare. Om alternativet är aktiverat använder Cacti autokomplettering för att fylla vallistan efter hand. Observera att autokomplettering alltid är inaktiverad i temat Classic."
 
 #: include/global_settings.php
 msgid "Select Search Minimum Rows"
@@ -11106,7 +11106,7 @@ msgstr "Maximal körtid för RRD-uppdateringsskript"
 
 #: include/global_settings.php
 msgid "If the boost poller exceeds this runtime, a warning will be placed in the cacti log,"
-msgstr "Om Boost-processen överskrider denna körtid skrivs en varning till Cactis logg.,"
+msgstr "Om Boost-processen överskrider denna körtid skrivs en varning till Cactis logg"
 
 #: include/global_settings.php
 msgid "Maximum Failed RRDs Queued"
@@ -12550,7 +12550,7 @@ msgstr "Ogiltigt fält &lt;index_order&gt;%s&lt;/index_order&gt;"
 
 #: lib/data_query.php
 msgid "Must contain &lt;direction&gt;input&lt;/direction&gt; or &lt;direction&gt;input-output&lt;/direction&gt; fields only"
-msgstr "Får endast innehålla fälten &lt;direction&gt;input&lt;/direction&gt; eller &lt;direction&gt;input-output&lt;/direction&gt"
+msgstr "Får endast innehålla fälten &lt;direction&gt;input&lt;/direction&gt; eller &lt;direction&gt;input-output&lt;/direction&gt;"
 
 #: lib/data_query.php
 msgid "Data Query returned no indexes."
@@ -12604,7 +12604,7 @@ msgstr "Klicka för att visa datafrågans utdata för fältet ”%s”"
 #: lib/data_query.php
 #, php-format
 msgid "Sort field returned no data for field name %s, skipping"
-msgstr "Sorteringsfältet returnerade inga data för fältnamnet %s. Hoppar över"
+msgstr "Sorteringsfältet returnerade inga data för fältnamnet %s, hoppar över"
 
 #: lib/data_query.php
 #, php-format
@@ -14988,7 +14988,7 @@ msgstr "Cacti kan automatiskt skanna nätverket när installationen är klar. N�
 
 #: lib/installer.php
 msgid "If your devices require a different set of options to be used first, you may define them below and they will be utilized before the defaults"
-msgstr "Om enheterna först kräver andra alternativ kan du ange dem nedan. De används då före standardalternativen"
+msgstr "Om enheterna först kräver andra alternativ kan du ange dem nedan så används de före standardalternativen"
 
 #: lib/installer.php
 msgid "All options may be adjusted post installation"
@@ -16788,7 +16788,7 @@ msgstr "Automatisk siduppdatering"
 
 #: links.php
 msgid "How often do you wish this page to be refreshed automatically."
-msgstr "Hur ofta ska sidan uppdateras automatiskt?."
+msgstr "Anger hur ofta den här sidan ska uppdateras automatiskt."
 
 #: links.php
 #, php-format
@@ -19356,7 +19356,7 @@ msgstr "Största möjliga totala minne"
 
 #: utilities.php
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
-msgstr "Minska minnet för MySQL/MariaDB till mindre än 80% av systemminnet. Bevara ytterligare cacheminne för RRD-filer om databasen finns på samma system som RRD-filerna. Se Kärn- och klientsummor nedan för en förklaring av beräkningsmetoden."
+msgstr "Minska MySQL/MariaDB-minnet till mindre än 80 % av systemminnet. Reservera ytterligare cacheminne för RRD-filer om databasen och RRD-filerna finns på samma system. Se de totala värdena för kärna och klienter nedan för en förklaring av beräkningsmetoden."
 
 #: utilities.php
 msgid "Max Core Memory Possible"
