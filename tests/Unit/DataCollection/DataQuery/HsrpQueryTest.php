@@ -1,5 +1,7 @@
 <?php
 
+require_once dirname(__DIR__, 4) . '/lib/import.php';
+
 function hsrp_query_fixture(): SimpleXMLElement {
 	return simplexml_load_file(dirname(__DIR__, 4) . '/resource/snmp_queries/cisco_hsrp.xml');
 }
@@ -50,4 +52,10 @@ test('the Cisco Router package ships the corrected HSRP query with valid signatu
 		}
 	}
 	expect($found)->toBeTrue();
+});
+
+
+test('the release package uses an official Cacti signing key', function () {
+	$xml = simplexml_load_string(gzdecode(file_get_contents(dirname(__DIR__, 4) . '/install/templates/Cisco_Router.xml.gz')));
+	expect(is_cacti_public_key(base64_decode((string) $xml->publickey, true)))->toBeTrue('Maintainer signing is required before release');
 });
