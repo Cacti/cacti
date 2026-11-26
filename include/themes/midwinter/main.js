@@ -539,7 +539,8 @@ function setupDefaultElements() {
 	// ensure that filter table and 1st navBar will stay on top
 	if ($('#filterTableOnTop').length !== 0 ) $('#filterTableOnTop').remove();
 
-	if ($(".filterTable").length !== 0) {
+	// pages without the content pane, such as the real-time popup, keep their filter in place
+	if ($(".filterTable").length !== 0 && $('#navigation_right').length !== 0) {
 		$('<div id="filterTableOnTop">').prependTo('#navigation_right');
 		$(".filterTable:first").closest('div').detach().prependTo('#filterTableOnTop');
 		$(".break:first").detach().appendTo('#filterTableOnTop');

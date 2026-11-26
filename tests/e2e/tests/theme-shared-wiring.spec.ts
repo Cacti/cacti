@@ -1,6 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 
-/* Run against the standard disposable Cacti 1.2 compose installation.
+/* Run against the standard disposable Cacti 1.2 compose installation with real-time graphs
+ * enabled (the CSP workflow does this before the step that runs this spec).
  * Every theme with a navigation menu takes its host filter, menu section and file import
  * handling from include/layout.js; these tests drive them in a real browser, theme by theme. */
 
@@ -26,23 +27,41 @@ async function selectTheme(page: Page, theme: string): Promise<void> {
 	}
 }
 
-/* Page errors raised by theme code or by the shared functions. Other layout.js errors
- * (resizeTreePanel() on pages without a tree, for one) are outside what these tests cover. */
-function themeErrors(page: Page): string[] {
+function pageErrors(page: Page): string[] {
 	const errors: string[] = [];
-	page.on('pageerror', error => {
-		if (/\/include\/themes\/|setMenuVisibility|setHostAutocomplete/.test(String(error.stack))) {
-			errors.push(error.message);
-		}
-	});
+	page.on('pageerror', error => errors.push(error.message));
 	return errors;
 }
+
+async function savedTheme(page: Page): Promise<string> {
+	await page.goto('/auth_profile.php?action=edit&tab=general');
+	return page.locator('#selected_theme').inputValue();
+}
+
+// The theme is a saved user setting, so put back the one the admin had for the specs that
+// run after this one.
+let originalTheme = '';
+
+test.beforeAll(async ({ browser }, testInfo) => {
+	const page = await browser.newPage({ baseURL: testInfo.project.use.baseURL });
+	await login(page);
+	originalTheme = await savedTheme(page);
+	await page.close();
+});
+
+test.afterAll(async ({ browser }, testInfo) => {
+	const page = await browser.newPage({ baseURL: testInfo.project.use.baseURL });
+	await login(page);
+	await selectTheme(page, originalTheme);
+	expect(await savedTheme(page)).toBe(originalTheme);
+	await page.close();
+});
 
 test.beforeEach(async ({ page }) => { await login(page); });
 
 for (const theme of menuThemes) {
 	test(`${theme}: the menu opens the selected section and a click moves it`, async ({ page }) => {
-		const errors = themeErrors(page);
+		const errors = pageErrors(page);
 
 		await selectTheme(page, theme);
 		await page.goto('/host.php');
@@ -87,7 +106,7 @@ for (const theme of menuThemes) {
 	});
 
 	test(`${theme}: the host filter offers its choices and applies the one chosen`, async ({ page }) => {
-		const errors = themeErrors(page);
+		const errors = pageErrors(page);
 
 		await selectTheme(page, theme);
 		await page.goto('/graphs.php');
@@ -125,7 +144,7 @@ for (const theme of menuThemes) {
 	});
 
 	test(`${theme}: a file import field shows the name of the chosen file`, async ({ page }) => {
-		const errors = themeErrors(page);
+		const errors = pageErrors(page);
 
 		await selectTheme(page, theme);
 		await page.goto('/color.php?action=import');
@@ -143,3 +162,24 @@ for (const theme of menuThemes) {
 		expect(errors).toEqual([]);
 	});
 }
+
+test('midwinter: the real-time popup keeps its filter controls', async ({ page }) => {
+	const errors = pageErrors(page);
+
+	await selectTheme(page, 'midwinter');
+	await page.route('**/graph_realtime.php?**', async route => {
+		if (new URL(route.request().url()).searchParams.has('action')) {
+			await route.fulfill({ json: { image_format: 'png', data: '', ds_step: 10, size: 50, thumbnails: 'false' } });
+		} else {
+			await route.continue();
+		}
+	});
+	await page.goto('/graph_realtime.php?local_graph_id=0');
+	await expect(page.locator(`script[src*="themes/midwinter/main.js"]`)).toHaveCount(1);
+
+	await expect(page.locator('#rtfilter #graph_start')).toBeAttached();
+	await expect(page.locator('#rtfilter #ds_step')).toBeAttached();
+	await expect(page.locator('#filterTableOnTop')).toHaveCount(0);
+
+	expect(errors).toEqual([]);
+});

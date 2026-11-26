@@ -2025,6 +2025,11 @@ function resizeTreePanel() {
 		$('#jstree').height(jsTreeHeight + 30);
 		$('.cactiTreeNavigationArea').height(treeAreaHeight+searchHeight);
 
+		// a page can carry the tree area without a tree; there is no width to fit then
+		if ($('#jstree').length === 0) {
+			return;
+		}
+
 		var treeLeft = $('#jstree').offset().left;
 		var visWidth = Math.max.apply(Math, $('#jstree').find('.jstree-anchor:visible').map(function() {
 			return this.getBoundingClientRect().right - treeLeft;
