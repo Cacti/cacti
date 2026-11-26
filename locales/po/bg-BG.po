@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-25 10:18+0000\n"
+"PO-Revision-Date: 2026-11-26 05:54+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Bulgarian <https://translate.cacti.net/projects/cacti/core/bg/"
 ">\n"
@@ -714,7 +714,7 @@ msgstr "Шаблон"
 #: utilities.php:649 utilities.php:976 utilities.php:1025 utilities.php:1035
 #: utilities.php:1934 utilities.php:2195 utilities.php:2212
 msgid "Any"
-msgstr "Всички"
+msgstr "Всеки"
 
 #: aggregate_graphs.php:1999 aggregate_graphs.php:2144
 #: automation_graph_rules.php:1024 automation_graph_rules.php:1025
@@ -1486,7 +1486,7 @@ msgstr "Прочистване на откритите устройства"
 #: utilities.php:1710 utilities.php:1721 utilities.php:1744 utilities.php:1790
 #: utilities.php:2034
 msgid "N/A"
-msgstr "Няма"
+msgstr "Неприложимо"
 
 #: automation_graph_rules.php:30 automation_networks.php:34
 #: automation_snmp.php:31 automation_tree_rules.php:30 cdef.php:30
@@ -2577,7 +2577,7 @@ msgstr "Не са намерени мрежи"
 #: support.php:335 support.php:579 support.php:616 utilities.php:372
 #: utilities.php:375 utilities.php:1412
 msgid "Refresh"
-msgstr "Обновяване"
+msgstr "Опресняване"
 
 #: automation_networks.php:1542 automation_networks.php:1543
 #: automation_networks.php:1544 automation_networks.php:1545
@@ -4281,7 +4281,7 @@ msgstr "Заявка за скрипт"
 
 #: data_input.php:524 include/global_arrays.php:523
 msgid "Script Server Query"
-msgstr "Сървър за скриптове"
+msgstr "Заявка към сървър за скриптове"
 
 #: data_input.php:533
 msgid "White List Verification Succeeded."
@@ -4900,15 +4900,15 @@ msgstr[1] "Следните графики използват тези изто�
 #: data_sources.php:551
 msgid "Leave the Graph Untouched"
 msgid_plural "Leave all Graphs untouched."
-msgstr[0] "Оставете <strong>графиката</strong> недокосната."
-msgstr[1] "Оставете всички <strong>графики</strong> недокоснати."
+msgstr[0] "Оставете графиката недокосната"
+msgstr[1] "Оставете всички графики недокоснати."
 
 #: data_sources.php:555
 msgid "Delete all Graph Items that reference this Data Source."
 msgid_plural "Delete all Graph Items that reference these Data Sources"
 msgstr[0] ""
 "Изтриване на всички елементи на графики, които препращат към този източник "
-"на данни"
+"на данни."
 msgstr[1] ""
 "Изтриване на всички елементи на графики, които препращат към тези източници "
 "на данни"
@@ -4916,7 +4916,8 @@ msgstr[1] ""
 #: data_sources.php:559
 msgid "Delete all Graphs that reference this Data Source."
 msgid_plural "Delete all Graphs that reference these Data Sources"
-msgstr[0] "Изтриване на всички графики, които препращат към този източник на данни"
+msgstr[0] ""
+"Изтриване на всички графики, които препращат към този източник на данни."
 msgstr[1] ""
 "Изтриване на всички графики, които препращат към тези източници на данни"
 
@@ -6561,7 +6562,7 @@ msgstr "Кликнете върху „Напред“, за да активир
 
 #: host.php:502
 msgid "Enable Device"
-msgstr "Активиране на устройствата"
+msgstr "Активиране на устройство"
 
 #: host.php:503
 msgid "Enable Devices"
@@ -6777,7 +6778,7 @@ msgstr "Скъсан"
 
 #: host.php:982 lib/functions.php:5879 lib/functions.php:5884
 msgid "Success"
-msgstr "Готово"
+msgstr "Успех"
 
 #: host.php:985
 msgid "Reload Query"
@@ -6827,7 +6828,7 @@ msgstr "Не е активен"
 #: host.php:1649 lib/api_automation.php:77 lib/api_automation.php:1177
 #: lib/html.php:86 lib/html_utility.php:1138 pollers.php:48
 msgid "Recovering"
-msgstr "Възстановяване"
+msgstr "Възстановява се"
 
 #: host.php:1654 host.php:1657 host.php:1802
 msgid "Service Check"
@@ -7734,7 +7735,7 @@ msgstr "Ping или SNMP Uptime"
 
 #: include/global_arrays.php:693
 msgid "SNMP Uptime"
-msgstr "SNMP Uptime"
+msgstr "SNMP време на работа"
 
 #: include/global_arrays.php:694
 msgid "SNMP Desc"
@@ -8251,7 +8252,7 @@ msgstr "Свързани с Cacti"
 
 #: include/global_arrays.php:1187
 msgid "Database Related"
-msgstr "Бази данни"
+msgstr "Свързани с базата данни"
 
 #: include/global_arrays.php:1188
 msgid "Facilities Related"
@@ -9547,7 +9548,7 @@ msgstr "Изберете SNMP версията за този хост."
 
 #: include/global_form.php:44
 msgid "SNMP Community String"
-msgstr "SNMP Community String"
+msgstr "SNMP низ на общността"
 
 #: include/global_form.php:45
 msgid "Fill in the SNMP read community for this device."
@@ -9595,7 +9596,7 @@ msgstr "Изберете протокола за поверителност на
 
 #: include/global_form.php:99
 msgid "SNMP Privacy Passphrase (v3)"
-msgstr "Декларация за поверителност на SNMP (v3)"
+msgstr "Паролна фраза за поверителност на SNMP (v3)"
 
 #: include/global_form.php:100
 msgid "Choose the SNMPv3 Privacy Passphrase."
@@ -9638,7 +9639,7 @@ msgstr "Максималното време в милисекунди, коет�
 
 #: include/global_form.php:144 include/global_form.php:211
 msgid "SNMP Retries"
-msgstr "SNMP Retries"
+msgstr "Повторни опити за SNMP"
 
 #: include/global_form.php:145
 msgid "The maximum number of times SNMP will attempt to contact the remote device before giving up."
@@ -9774,7 +9775,7 @@ msgstr "Колко поколения данни се съхраняват в RR
 
 #: include/global_form.php:316 include/global_settings.php:2979
 msgid "Default Timespan"
-msgstr "По подразбиране"
+msgstr "Времеви интервал по подразбиране"
 
 #: include/global_form.php:317
 msgid "When viewing a Graph based upon the RRA in question, the default Timespan to show for that Graph."
@@ -10422,7 +10423,7 @@ msgstr "В случай, че е избрана LINE, укажете тук ши
 
 #: include/global_form.php:1120
 msgid "Dashes (dashes[=on_s[,off_s[,on_s,off_s]...]])"
-msgstr "Тирета (тирета [= on_s [, off_s [, on_s, off_s] ...]])"
+msgstr "Тирета (dashes[=on_s[,off_s[,on_s,off_s]...]])"
 
 #: include/global_form.php:1125
 msgid "The dashes modifier enables dashed line style."
@@ -10430,7 +10431,7 @@ msgstr "Модификаторът за тирета позволява стил
 
 #: include/global_form.php:1128
 msgid "Dash Offset (dash-offset=offset)"
-msgstr "Отместване на тире (тире-отместване = отместване)"
+msgstr "Отместване на тире (dash-offset=offset)"
 
 #: include/global_form.php:1133 include/global_form.php:1141
 msgid "The dash-offset parameter specifies an offset into the pattern at which the stroke begins."
@@ -13984,7 +13985,7 @@ msgstr "Скрива деактивираните устройства и гра
 
 #: include/global_settings.php:2924
 msgid "Show Device Aggregates"
-msgstr "агрегати"
+msgstr "Показване на агрегати на устройства"
 
 #: include/global_settings.php:2925
 msgid "If a Device Data Source is included in an Aggregate Graph, show that Graph along with other Device Graphs"
@@ -22048,7 +22049,7 @@ msgstr "Настройки на база данни"
 
 #: support.php:50
 msgid "Database Status"
-msgstr "Бази данни"
+msgstr "Състояние на базата данни"
 
 #: support.php:51
 msgid "Database Permissions"
@@ -23293,7 +23294,7 @@ msgstr "Правила за шаблоните"
 
 #: user_admin.php:2286
 msgid "Unavailable"
-msgstr "Изтекла"
+msgstr "Недостъпно"
 
 #: user_admin.php:2312
 msgid "No Users Found"
