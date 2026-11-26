@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.2.23\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-26 05:54+0000\n"
+"PO-Revision-Date: 2026-11-26 19:34+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Ukrainian <https://translate.cacti.net/projects/cacti/core/uk/"
 ">\n"
@@ -844,7 +844,7 @@ msgstr "Зведені шаблони, які використовуються, 
 #: gprint_presets.php:357 graph_templates.php:1808 host_templates.php:971
 #: vdef.php:876
 msgid "Deletable"
-msgstr "Deletable"
+msgstr "Можна видалити"
 
 #: aggregate_templates.php:686 cdef.php:874 color.php:685 data_queries.php:1142
 #: data_queries.php:1411 gprint_presets.php:362 graph_templates.php:1819
@@ -1774,7 +1774,7 @@ msgstr "Змінити настройки"
 
 #: automation_networks.php:37
 msgid "Discover Now"
-msgstr "Discover Now"
+msgstr "Виявити зараз"
 
 #: automation_networks.php:38
 msgid "Cancel Discovery"
@@ -2130,7 +2130,7 @@ msgstr "%d потоків"
 
 #: automation_networks.php:824
 msgid "Run Limit"
-msgstr "Run Limit"
+msgstr "Обмеження запуску"
 
 #: automation_networks.php:825
 msgid "After the selected Run Limit, the discovery process will be terminated."
@@ -2878,11 +2878,11 @@ msgstr "Протокол авторизації"
 
 #: automation_snmp.php:726
 msgid "Priv Passphrase"
-msgstr "Пароль Priv"
+msgstr "Парольна фраза приватності"
 
 #: automation_snmp.php:727
 msgid "Priv Protocol"
-msgstr "Приватний протокол"
+msgstr "Протокол приватності"
 
 #: automation_snmp.php:728
 msgid "Context"
@@ -4915,7 +4915,7 @@ msgstr "Частота опитування для профілю"
 #: data_source_profiles.php:1050 include/global_form.php:241
 #: include/global_form.php:661 pollers.php:49
 msgid "Heartbeat"
-msgstr "Серцебиття"
+msgstr "Інтервал активності"
 
 #: data_source_profiles.php:1053
 msgid "The Amount of Time, in seconds, without good data before Data is stored as Unknown"
@@ -5638,11 +5638,11 @@ msgstr "Графіки швидкої синхронізації"
 
 #: graph_templates.php:339 graph_templates.php:365 graphs.php:568
 msgid "Cur:"
-msgstr "Cur:"
+msgstr "Пот.:"
 
 #: graph_templates.php:346 graph_templates.php:372 graphs.php:575
 msgid "Avg:"
-msgstr "Середнє:"
+msgstr "Сер.:"
 
 #: graph_templates.php:353 graph_templates.php:386 graphs.php:589
 msgid "Max:"
@@ -6584,8 +6584,8 @@ msgstr "Встановити за замовчуванням"
 #, php-format
 msgid "WARNING: Cacti Page:%s for User:%s Generated a Fatal Error %d!"
 msgstr ""
-"ПОПЕРЕДЖЕННЯ: Сторінка Cacti:%1$s для користувача:%2$s спричинила фатальну "
-"помилку %3$d!"
+"ПОПЕРЕДЖЕННЯ: Сторінка Cacti:%s для користувача:%s спричинила фатальну "
+"помилку %d!"
 
 #: help.php:74
 #, php-format
@@ -7877,11 +7877,11 @@ msgstr "Лише файл журналу"
 
 #: include/global_arrays.php:685
 msgid "Logfile and Syslog/Eventlog"
-msgstr "Журнал і системний журнал/журнал подій"
+msgstr "Журнал і Syslog/журнал подій"
 
 #: include/global_arrays.php:686
 msgid "Syslog/Eventlog Only"
-msgstr "Тільки системний журнал/журнал подій"
+msgstr "Тільки Syslog/журнал подій"
 
 #: include/global_arrays.php:691
 msgid "Ping and SNMP Uptime"
@@ -7893,11 +7893,11 @@ msgstr "Ping або SNMP Uptime"
 
 #: include/global_arrays.php:693
 msgid "SNMP Uptime"
-msgstr "SNMP Uptime"
+msgstr "Час роботи SNMP"
 
 #: include/global_arrays.php:694
 msgid "SNMP Desc"
-msgstr "SNMP Desc"
+msgstr "Опис SNMP"
 
 #: include/global_arrays.php:695
 msgid "SNMP getNext"
@@ -8357,7 +8357,7 @@ msgstr "Системні утиліти"
 
 #: include/global_arrays.php:1132
 msgid "RRDfile Cleaner"
-msgstr "RRDfile Cleaner"
+msgstr "Очисник RRDfile"
 
 #: include/global_arrays.php:1133
 #, fuzzy
@@ -8393,7 +8393,7 @@ msgstr "Технічна підтримка"
 
 #: include/global_arrays.php:1141 include/global_arrays.php:3015
 msgid "Change Log"
-msgstr "Change Log"
+msgstr "Журнал змін"
 
 #: include/global_arrays.php:1179
 msgid "Support"
@@ -8425,7 +8425,7 @@ msgstr "Загальний пристрій"
 
 #: include/global_arrays.php:1190
 msgid "HPC/Grid Computing"
-msgstr "HPC/Grid Computing"
+msgstr "HPC/Грід-обчислення"
 
 #: include/global_arrays.php:1191
 msgid "Hypervisor Related"
@@ -9552,7 +9552,7 @@ msgstr "(Видалити елемент)"
 #: include/global_arrays.php:2571 include/global_settings.php:273
 #: rrdcleaner.php:328
 msgid "RRD Cleaner"
-msgstr "RRD Cleaner"
+msgstr "Очищення RRD"
 
 #: include/global_arrays.php:2583
 msgid "List unused Files"
@@ -11539,11 +11539,13 @@ msgstr "Відокремлений комами список ідентифік�
 
 #: include/global_settings.php:371
 msgid "Syslog/Eventlog Item Selection"
-msgstr "Вибір елемента системного журналу/журналу подій"
+msgstr "Вибір елемента Syslog/журналу подій"
 
 #: include/global_settings.php:372
 msgid "When using Syslog/Eventlog for logging, the Cacti log messages that will be forwarded to the Syslog/Eventlog."
-msgstr "У разі використання системного журналу/журналу подій для журналювання, повідомлення журналу Cacti пересилатимуться до системного журналу/журналу подій."
+msgstr ""
+"У разі використання Syslog/журналу подій для журналювання, повідомлення "
+"журналу Cacti пересилатимуться до Syslog/журналу подій."
 
 #: include/global_settings.php:377
 msgid "Statistics"
@@ -13060,7 +13062,7 @@ msgstr "Під час використання базової автентифі
 
 #: include/global_settings.php:1905
 msgid "Basic Auth Mapfile"
-msgstr "Basic Auth Mapfile"
+msgstr "Файл відповідності базової автентифікації"
 
 #: include/global_settings.php:1906
 msgid "When using basic authentication, if the basic account needs to be translated to a different login account, you can specify a CSV file here to map the basic account to the desired login account."
@@ -13745,7 +13747,6 @@ msgid "RRDtool Proxy Server"
 msgstr "Проксі-сервер RRDtool"
 
 #: include/global_settings.php:2594
-#, fuzzy
 msgid "Structure RRDfile Paths"
 msgstr "Структуровані шляхи RRDfile"
 
@@ -14872,7 +14873,7 @@ msgstr "Нова філія"
 
 #: lib/auth.php:575
 msgid "Web Basic"
-msgstr "Web Basic"
+msgstr "Базова вебавтентифікація"
 
 #: lib/auth.php:2336
 msgid "Device:(Hide Disabled)"
@@ -15090,7 +15091,7 @@ msgstr " - Фільтр адміністратора активний"
 
 #: lib/clog_webapi.php:282
 msgid " - Admin Unfiltered"
-msgstr " - Admin Unfiltered"
+msgstr " - Адмін (без фільтра)"
 
 #: lib/clog_webapi.php:285
 msgid " - Admin view"
@@ -15182,7 +15183,7 @@ msgstr "Пристрій онлайн/офлайн"
 
 #: lib/clog_webapi.php:592
 msgid "Recaches"
-msgstr "Recaches"
+msgstr "Перекешування"
 
 #: lib/clog_webapi.php:593
 #, fuzzy
@@ -15295,8 +15296,8 @@ msgstr "Зв’язок індексу з локальними даними за
 #, php-format
 msgid "Update Re-Index Cache complete. There were %s index changes, and %s orphaned indexes."
 msgstr ""
-"Оновлення кешу повторного індексування завершено. Змін індексів: %1$s, "
-"осиротілих індексів: %2$s."
+"Оновлення кешу повторного індексування завершено. Змін індексів: %s, "
+"осиротілих індексів: %s."
 
 #: lib/data_query.php:396
 msgid "Update Poller Cache for Query complete"
@@ -16146,7 +16147,7 @@ msgstr "Абсолютний максимум"
 
 #: lib/html.php:2817
 msgid "Dry Run StdDev"
-msgstr "Dry Run StdDev"
+msgstr "Пробний запуск: станд. відхилення"
 
 #: lib/html.php:2818
 msgid "Dry Run Variance"
@@ -16158,7 +16159,7 @@ msgstr "Діапазон заповнення зазорів у сухому р�
 
 #: lib/html.php:2820
 msgid "Dry Run Float Range"
-msgstr "Dry Run Float Range"
+msgstr "Пробний запуск: діапазон з рухомою комою"
 
 #: lib/html.php:2821
 msgid "Dry Run Absolute Maximum"
@@ -16438,11 +16439,11 @@ msgstr "Відкрити в новій вкладці"
 
 #: lib/html.php:3148
 msgid "Always Off"
-msgstr "Always Off"
+msgstr "Завжди вимкнено"
 
 #: lib/html.php:3149
 msgid "Always On"
-msgstr "Always On"
+msgstr "Завжди увімкнено"
 
 #: lib/html.php:3150
 msgid "Quick"
@@ -19007,7 +19008,7 @@ msgstr "Команда RRDtool:"
 #: lib/rrd.php:3299
 #, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
-msgstr "Необхідний розмір кроку файлу RRD — '%1$s', але зафіксовано крок '%2$s'"
+msgstr "Необхідний розмір кроку файлу RRD — '%s', але зафіксовано крок '%s'"
 
 #: lib/rrd.php:3359
 #, php-format
@@ -19100,7 +19101,7 @@ msgstr "Архів Round Robin"
 
 #: lib/rrd.php:3597
 msgid "Cur Row"
-msgstr "Cur Row"
+msgstr "Поточний рядок"
 
 #: lib/rrd.php:3598
 msgid "PDP per Row"
@@ -19108,7 +19109,7 @@ msgstr "PDP на рядок"
 
 #: lib/rrd.php:3600
 msgid "CDP Prep Value (0)"
-msgstr "CDP Prep Value (0)"
+msgstr "Значення підготовки CDP (0)"
 
 #: lib/rrd.php:3601
 msgid "CDP Unknown Data points (0)"
@@ -20543,9 +20544,8 @@ msgid "Disabled No INFO File"
 msgstr "Вимкнено: відсутній файл INFO"
 
 #: plugins.php:75
-#, fuzzy
 msgid "Disabled Directory Missing"
-msgstr "Відсутній каталог плагінів!"
+msgstr "Вимкнено, каталог відсутній"
 
 #: plugins.php:76
 #, fuzzy
@@ -21343,7 +21343,7 @@ msgstr "Файл, що містить сертифікат SSL для підкл
 
 #: pollers.php:224
 msgid "Remote Database SSL Authority"
-msgstr "Remote Database SSL Authority"
+msgstr "Центр сертифікації SSL віддаленої бази даних"
 
 #: pollers.php:225
 msgid "The file holding the SSL Certificate Authority to use to connect to the remote database.  This is an optional parameter that can be required by the database provider if they have started SSL using the --ssl-mode=VERIFY_CA option."
@@ -24141,7 +24141,14 @@ msgstr "Відновити кеш ресурсів"
 
 #: utilities.php:1256
 msgid "When operating multiple Data Collectors in Cacti, Cacti will attempt to maintain state for key files on all Data Collectors.  This includes all core, non-install related website and plugin files.  When you force a Resource Cache rebuild, Cacti will clear the local Resource Cache, and then rebuild it at the next scheduled poller start.  This will trigger all Remote Data Collectors to recheck their website and plugin files for consistency."
-msgstr "Під час роботи кількох збирачів даних у Cacti Cacti намагатиметься підтримувати стан ключових файлів на всіх збирачах даних. Сюди входять усі основні, не пов’язані з установкою файли веб-сайтів і плагінів. Коли ви примусово відновлюєте кеш ресурсів, Cacti очистить локальний кеш ресурсів, а потім відновить його під час наступного запланованого запуску опитувальника. Це змусить усіх віддалених збирачів даних повторно перевірити їхні веб-сайти та файли плагінів на відповідність."
+msgstr ""
+"Під час роботи кількох збирачів даних у Cacti система намагатиметься "
+"підтримувати стан ключових файлів на всіх збирачах даних. Сюди входять усі "
+"основні, не пов’язані з установкою файли веб-сайтів і плагінів. Коли ви "
+"примусово відновлюєте кеш ресурсів, Cacti очистить локальний кеш ресурсів, а "
+"потім відновить його під час наступного запланованого запуску опитувальника. "
+"Це змусить усіх віддалених збирачів даних повторно перевірити їхні веб-сайти "
+"та файли плагінів на відповідність."
 
 #: utilities.php:1260
 msgid "Boost Utilities"
