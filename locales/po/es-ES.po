@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-26 05:54+0000\n"
+"PO-Revision-Date: 2026-11-26 19:34+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Spanish <https://translate.cacti.net/projects/cacti/core/es/>"
 "\n"
@@ -3517,7 +3517,7 @@ msgstr "El número de plantillas de gráfico usando este CDEF."
 
 #: cdef.php:908
 msgid "No CDEFs"
-msgstr "No CDEFs"
+msgstr "Sin CDEFs"
 
 #: changelog.php:58
 msgid "Highlights"
@@ -3792,7 +3792,7 @@ msgstr "Plantilla de color [nuevo]"
 #, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
 msgstr ""
-"La plantilla de color '%1$s' ha propagado %2$d plantillas agregadas y %3$d "
+"La plantilla de color '%s' ha propagado %d plantillas agregadas y %d "
 "agregados sin plantilla"
 
 #: color_templates.php:764
@@ -4098,7 +4098,7 @@ msgstr "Problema"
 #: data_debug.php:910
 #, php-format
 msgid "For attribute '%s', issue found '%s'"
-msgstr "Para el atributo '%1$s', se encontró el problema '%2$s'"
+msgstr "Para el atributo '%s', se encontró el problema '%s'"
 
 #: data_debug.php:925
 msgid "Apply Suggested Fixes"
@@ -5124,7 +5124,7 @@ msgstr "Depurar de Data Source"
 
 #: data_sources.php:1189
 msgid "RRDtool Tune Info"
-msgstr "RRDtool Tune Info"
+msgstr "Información de ajuste de RRDtool"
 
 #: data_sources.php:1217 data_templates.php:1329 include/global_form.php:605
 msgid "External"
@@ -5212,7 +5212,7 @@ msgstr "Sin gráficos"
 
 #: data_sources.php:1796 include/global_arrays.php:1087
 msgid "Aggregates"
-msgstr "Aggregates"
+msgstr "Agregados"
 
 #: data_sources.php:1798
 msgid "No Aggregates"
@@ -5605,7 +5605,7 @@ msgstr ""
 #, php-format
 msgid "Sync of Graph Template '%s' Resulted in %s Repairs!"
 msgstr ""
-"¡La sincronización de la plantilla de gráfico '%1$s' dio como resultado %2$s "
+"¡La sincronización de la plantilla de gráfico '%s' dio como resultado %s "
 "reparaciones!"
 
 #: graph_templates.php:1165 graph_templates.php:1180
@@ -6475,22 +6475,22 @@ msgstr "Seleccionar todas las filas"
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id of '%s'"
 msgstr ""
 "Error al analizar el archivo XML de recursos de consulta de datos para la "
-"consulta de datos '%1$s' con ID '%2$s'"
+"consulta de datos '%s' con ID '%s'"
 
 #: graphs_new.php:695
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'.  Field Name '%s' missing a 'direction' attribute"
 msgstr ""
 "Error al analizar el archivo XML de recursos de consulta de datos para la "
-"consulta de datos '%1$s' con ID '%2$s'.  Al nombre de campo '%3$s' le falta "
-"un atributo 'direction'"
+"consulta de datos '%s' con ID '%s'.  Al nombre de campo '%s' le falta un "
+"atributo 'direction'"
 
 #: graphs_new.php:699
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'"
 msgstr ""
 "Error al analizar el archivo XML de recursos de consulta de datos para la "
-"consulta de datos '%1$s' con ID '%2$s'"
+"consulta de datos '%s' con ID '%s'"
 
 #: graphs_new.php:740
 #, php-format
@@ -6542,8 +6542,8 @@ msgstr "Establecer como predeterminado"
 #, php-format
 msgid "WARNING: Cacti Page:%s for User:%s Generated a Fatal Error %d!"
 msgstr ""
-"ADVERTENCIA: ¡La página de Cacti:%1$s para el usuario:%2$s generó un error "
-"fatal %3$d!"
+"ADVERTENCIA: ¡La página de Cacti:%s para el usuario:%s generó un error fatal "
+"%d!"
 
 #: help.php:74
 #, php-format
@@ -6612,8 +6612,8 @@ msgstr "ERROR: ID de dispositivo no válido."
 #, php-format
 msgid "Device Reindex Completed in %0.2f seconds.  There were %d items updated."
 msgstr ""
-"Reindexación del dispositivo completada en %1$0.2f segundos. Se actualizaron "
-"%2$d elementos."
+"Reindexación del dispositivo completada en %0.2f segundos. Se actualizaron "
+"%d elementos."
 
 #: host.php:360
 #, php-format
@@ -7697,7 +7697,7 @@ msgstr "Normal"
 
 #: include/global_arrays.php:575
 msgid "Light"
-msgstr "Light"
+msgstr "Claro"
 
 #: include/global_arrays.php:576 include/global_arrays.php:581
 msgid "Mono"
@@ -8232,7 +8232,7 @@ msgstr "Recolectores de datos"
 
 #: include/global_arrays.php:1098 include/global_arrays.php:3090
 msgid "Aggregate"
-msgstr "Aggregate"
+msgstr "Agregado"
 
 #: include/global_arrays.php:1101 include/global_arrays.php:1173
 #: include/global_arrays.php:1357 include/global_settings.php:693
@@ -8805,17 +8805,17 @@ msgstr "Después de Boost"
 #: include/global_arrays.php:1742
 #, php-format
 msgid "%d MBytes"
-msgstr "%d MBytes"
+msgstr "%d Megabytes"
 
 #: include/global_arrays.php:1680
 msgid "1 GByte"
-msgstr "1 GByte"
+msgstr "1 Gigabyte"
 
 #: include/global_arrays.php:1681 include/global_arrays.php:1744
 #: lib/boost.php:62
 #, php-format
 msgid "%s GBytes"
-msgstr "%s GBytes"
+msgstr "%s Gigabytes"
 
 #: include/global_arrays.php:1682 include/global_arrays.php:1683
 #: include/global_arrays.php:1745 include/global_arrays.php:1746
@@ -8823,7 +8823,7 @@ msgstr "%s GBytes"
 #: include/global_arrays.php:1749 include/global_arrays.php:1750
 #, php-format
 msgid "%d GBytes"
-msgstr "%d GBytes"
+msgstr "%d Gigabytes"
 
 #: include/global_arrays.php:1703
 msgid "2,000 Data Source Items"
@@ -9638,7 +9638,7 @@ msgstr "días"
 
 #: include/global_arrays.php:3050
 msgid "hrs"
-msgstr "hrs"
+msgstr "horas"
 
 #: include/global_arrays.php:3051
 msgid "mins"
@@ -11277,7 +11277,7 @@ msgstr "Rendimiento"
 
 #: include/global_settings.php:48
 msgid "Spikes"
-msgstr "Spikes"
+msgstr "Picos"
 
 #: include/global_settings.php:49
 msgid "Mail/Reporting/DNS/Proxy"
@@ -12382,7 +12382,7 @@ msgstr "Número definido por el usuario de líneas de CLOG a la cola al seleccio
 
 #: include/global_settings.php:1176
 msgid "Log Tail Refresh"
-msgstr "Log Tail Refresh"
+msgstr "Actualización de cola del registro"
 
 #: include/global_settings.php:1177
 msgid "How often do you want the Cacti log display to update."
@@ -13945,7 +13945,7 @@ msgstr "Puerto TCP para comunicación encriptada."
 #: include/global_settings.php:2643 include/global_settings.php:2675
 #: support.php:1208
 msgid "RSA Fingerprint"
-msgstr "RSA Fingerprint"
+msgstr "Huella digital RSA"
 
 #: include/global_settings.php:2644
 msgid "The fingerprint of the current public RSA key the proxy is using. This is required to establish a trusted connection."
@@ -14916,7 +14916,7 @@ msgstr "Plantilla desconocida"
 #: lib/api_automation.php:5404 lib/api_automation.php:5406
 #, php-format
 msgid "Automation Network Rule '%s' %s!"
-msgstr "¡Regla de red de automatización '%1$s' %2$s!"
+msgstr "¡Regla de red de automatización '%s' %s!"
 
 #: lib/api_automation.php:5410 lib/api_automation.php:5412
 #, php-format
@@ -15037,29 +15037,29 @@ msgstr "Dispositivo:(Ocultar deshabilitados)"
 #: lib/auth.php:2355 lib/auth.php:2357 lib/auth.php:2363 lib/auth.php:2365
 #, php-format
 msgid "Graph:(%s%s)"
-msgstr "Gráfico:(%1$s%2$s)"
+msgstr "Gráfico:(%s%s)"
 
 #: lib/auth.php:2378 lib/auth.php:2384 lib/auth.php:2451 lib/auth.php:2453
 #: lib/auth.php:2457 lib/auth.php:2459
 #, php-format
 msgid "Device:(%s%s)"
-msgstr "Dispositivo:(%1$s%2$s)"
+msgstr "Dispositivo:(%s%s)"
 
 #: lib/auth.php:2392 lib/auth.php:2398 lib/auth.php:2467 lib/auth.php:2469
 #: lib/auth.php:2473 lib/auth.php:2475
 #, php-format
 msgid "Template:(%s%s)"
-msgstr "Plantilla:(%1$s%2$s)"
+msgstr "Plantilla:(%s%s)"
 
 #: lib/auth.php:2405
 #, php-format
 msgid "Graph+Device+Template:(%s%s)"
-msgstr "Gráfico+Dispositivo+Plantilla:(%1$s%2$s)"
+msgstr "Gráfico+Dispositivo+Plantilla:(%s%s)"
 
 #: lib/auth.php:2442 lib/auth.php:2444
 #, php-format
 msgid "Device+Template:(%s%s)"
-msgstr "Dispositivo+Plantilla:(%1$s%2$s)"
+msgstr "Dispositivo+Plantilla:(%s%s)"
 
 #: lib/auth.php:2488 lib/auth.php:2495 lib/auth.php:2504
 msgid "Restricted By: "
@@ -15212,12 +15212,12 @@ msgstr ""
 #: lib/boost.php:64 utilities.php:1708
 #, php-format
 msgid "%s MBytes"
-msgstr "%s MBytes"
+msgstr "%s Megabytes"
 
 #: lib/boost.php:67
 #, php-format
 msgid "%s KBytes"
-msgstr "%s KBytes"
+msgstr "%s Kilobytes"
 
 #: lib/boost.php:70
 #, php-format
@@ -15433,7 +15433,7 @@ msgstr "Verificación de %s ID de datos locales completada"
 #, php-format
 msgid "Found Changed %s and %s Orphaned Local Data ID's to Re-map."
 msgstr ""
-"Se encontraron %1$s ID de datos locales cambiados y %2$s huérfanos para "
+"Se encontraron %s ID de datos locales cambiados y %s huérfanos para "
 "reasignar."
 
 #: lib/data_query.php:366
@@ -15456,8 +15456,8 @@ msgstr "Asociación de índices con datos locales completada"
 #, php-format
 msgid "Update Re-Index Cache complete. There were %s index changes, and %s orphaned indexes."
 msgstr ""
-"Actualización de la caché de reindexación completada. Hubo %1$s cambios de "
-"índice y %2$s índices huérfanos."
+"Actualización de la caché de reindexación completada. Hubo %s cambios de "
+"índice y %s índices huérfanos."
 
 #: lib/data_query.php:396
 msgid "Update Poller Cache for Query complete"
@@ -15485,8 +15485,8 @@ msgstr ""
 #, php-format
 msgid "Detected New Sort Field: '%s' Old Sort Field '%s'"
 msgstr ""
-"Se detectó un nuevo campo de ordenación: '%1$s' Campo de ordenación anterior "
-"'%2$s'"
+"Se detectó un nuevo campo de ordenación: '%s' Campo de ordenación anterior "
+"'%s'"
 
 #: lib/data_query.php:526
 msgid "ERROR: New Sort Field not suitable.  Sort Field will not change."
@@ -15616,7 +15616,7 @@ msgstr "No se pudo cargar la sesión SNMP."
 #: lib/data_query.php:886
 #, php-format
 msgid "Tested Bulk Walk Size %d with a response of %2.4f."
-msgstr "Tamaño de Bulk Walk %1$d probado con una respuesta de %2$2.4f."
+msgstr "Tamaño de Bulk Walk %d probado con una respuesta de %2.4f."
 
 #: lib/data_query.php:898
 #, php-format
@@ -15658,12 +15658,12 @@ msgstr "Índice encontrado en OID: '%s' valor: '%s'"
 #: lib/data_query.php:966
 #, php-format
 msgid "List of indexes filtered by value @ '%s' Index Count: %s"
-msgstr "Lista de índices filtrados por valor @ '%1$s' Recuento de índices: %2$s"
+msgstr "Lista de índices filtrados por valor @ '%s' Recuento de índices: %s"
 
 #: lib/data_query.php:970
 #, php-format
 msgid "Filtered Index by value found at OID: '%s' value: '%s'"
-msgstr "Índice filtrado por valor encontrado en OID: '%1$s' valor: '%2$s'"
+msgstr "Índice filtrado por valor encontrado en OID: '%s' valor: '%s'"
 
 #: lib/data_query.php:987
 #, php-format
@@ -15795,7 +15795,7 @@ msgstr ""
 #: lib/data_query.php:1750
 #, php-format
 msgid "rewrite_value: '%s' => '%s'"
-msgstr "rewrite_value: '%1$s' => '%2$s'"
+msgstr "rewrite_value: '%s' => '%s'"
 
 #: lib/data_query.php:1856
 msgid "Update graph data query cache complete"
@@ -15852,14 +15852,14 @@ msgstr "El Data Source activo no está configurado como Activo"
 msgid "RRDfile Folder (rra) is not writable by Poller.  Folder owner: %s.  Poller runs as: %s"
 msgstr ""
 "La carpeta de archivos RRD (rra) no tiene permisos de escritura para "
-"Poller.  Propietario de la carpeta: %1$s.  Poller se ejecuta como: %2$s"
+"Poller.  Propietario de la carpeta: %s.  Poller se ejecuta como: %s"
 
 #: lib/dsdebug.php:282
 #, php-format
 msgid "RRDfile is not writable by Poller.  RRDfile owner: %s.  Poller runs as %s"
 msgstr ""
 "El archivo RRD no tiene permisos de escritura para Poller.  Propietario del "
-"archivo RRD: %1$s.  Poller se ejecuta como %2$s"
+"archivo RRD: %s.  Poller se ejecuta como %s"
 
 #: lib/dsdebug.php:291
 msgid "RRDfile does not match Data Source"
@@ -16021,7 +16021,7 @@ msgstr "Revisando configuración...<br>"
 
 #: lib/functions.php:5849
 msgid "PHP's Mailer Class"
-msgstr "PHP's Mailer Class"
+msgstr "Clase Mailer de PHP"
 
 #: lib/functions.php:5855
 msgid "Method: SMTP"
@@ -16682,7 +16682,7 @@ msgstr ""
 #: lib/html.php:3403
 #, php-format
 msgid "Version %s | %s"
-msgstr "Versión %1$s | %2$s"
+msgstr "Versión %s | %s"
 
 #: lib/html_filter.php:89
 msgid "Apply filter to table"
@@ -17467,7 +17467,7 @@ msgstr "Seleccionado"
 #: lib/html_utility.php:589 lib/html_utility.php:828
 #, php-format
 msgid "The regular expression \"%s\" is not valid. Error is %s"
-msgstr "La expresión regular \"%1$s\" no es válida. El error es %2$s"
+msgstr "La expresión regular \"%s\" no es válida. El error es %s"
 
 #: lib/html_utility.php:1040
 msgid "Cacti regular expressions are limited to 50 characters only for security reasons."
@@ -17730,7 +17730,7 @@ msgstr "Actualizar versión"
 
 #: lib/installer.php:1794 lib/installer.php:2911 lib/installer.php:2975
 msgid "Downgrade"
-msgstr "Downgrade"
+msgstr "Degradar"
 
 #: lib/installer.php:1900 support.php:1198
 msgid "Cacti Version"
@@ -18574,7 +18574,7 @@ msgstr "Su servidor Cacti se está instalando"
 #: lib/installer.php:3165
 #, php-format
 msgid "Spawning background process: %s %s"
-msgstr "Iniciando proceso en segundo plano: %1$s %2$s"
+msgstr "Iniciando proceso en segundo plano: %s %s"
 
 #: lib/installer.php:3192
 msgid "Complete"
@@ -18605,12 +18605,12 @@ msgstr "Comenzar"
 #: lib/installer.php:3359
 #, php-format
 msgid "Starting %s Process for v%s"
-msgstr "Iniciando proceso de %1$s para v%2$s"
+msgstr "Iniciando proceso de %s para v%s"
 
 #: lib/installer.php:3388
 #, php-format
 msgid "Finished %s Process for v%s"
-msgstr "Proceso %1$s finalizado para v%2$s"
+msgstr "Proceso %s finalizado para v%s"
 
 #: lib/installer.php:3428
 #, php-format
@@ -18620,20 +18620,19 @@ msgstr "Se encontraron%s plantillas para instalar"
 #: lib/installer.php:3438
 #, php-format
 msgid "About to import Package #%s '%s'."
-msgstr "A punto de importar el paquete #%1$s '%2$s'."
+msgstr "A punto de importar el paquete #%s '%s'."
 
 #: lib/installer.php:3447
 #, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' succeeded"
 msgstr ""
-"La importación del paquete #%1$s '%2$s' bajo el perfil '%3$s' se ha "
-"realizado correctamente"
+"La importación del paquete #%s '%s' bajo el perfil '%s' se ha realizado "
+"correctamente"
 
 #: lib/installer.php:3453
 #, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' failed"
-msgstr ""
-"La importación del paquete #%1$s '%2$s' bajo el perfil '%3$s' ha fallado"
+msgstr "La importación del paquete #%s '%s' bajo el perfil '%s' ha fallado"
 
 #: lib/installer.php:3469
 #, php-format
@@ -18652,8 +18651,7 @@ msgstr "Actualizando el archivo de configuración remoto"
 #: lib/installer.php:3532
 #, php-format
 msgid "Setting default data source profile to %s (%s)"
-msgstr ""
-"Estableciendo el perfil de origen de datos predeterminado en %1$s (%2$s)"
+msgstr "Estableciendo el perfil de origen de datos predeterminado en %s (%s)"
 
 #: lib/installer.php:3557
 #, fuzzy, php-format
@@ -18664,8 +18662,8 @@ msgstr "Error al aplicar el perfil especificado %s! = %s"
 #, php-format
 msgid "Updating automation network (%s), mode \"%s\" => \"%s\", subnet \"%s\" => %s\""
 msgstr ""
-"Actualizando la red de automatización (%1$s), modo \"%2$s\" => \"%3$s\", "
-"subred \"%4$s\" => %5$s\""
+"Actualizando la red de automatización (%s), modo \"%s\" => \"%s\", subred "
+"\"%s\" => %s\""
 
 #: lib/installer.php:3583
 msgid "Failed to find automation network, no changes were made"
@@ -18771,7 +18769,7 @@ msgstr "Se encontraron%s tablas para convertir"
 #: lib/installer.php:3767
 #, php-format
 msgid "Converting Table #%s '%s'"
-msgstr "Convirtiendo la tabla #%1$s '%2$s'"
+msgstr "Convirtiendo la tabla #%s '%s'"
 
 #: lib/installer.php:3784
 #, fuzzy
@@ -18791,7 +18789,7 @@ msgstr "NOTA: Usando un archivo temporal para la caché de la base de datos:%s"
 #: lib/installer.php:3822
 #, php-format
 msgid "Upgrading from v%s (DB %s) to v%s"
-msgstr "Actualizando de v%1$s (BD %2$s) a v%3$s"
+msgstr "Actualizando de v%s (BD %s) a v%s"
 
 #: lib/installer.php:3831
 #, php-format
@@ -18806,13 +18804,13 @@ msgstr "Instalación cancelada debido a que no se ha aceptado el EULA"
 #, php-format
 msgid "Background was already started at %s, this attempt at %s was skipped"
 msgstr ""
-"El proceso en segundo plano ya se había iniciado a las %1$s; se omitió este "
-"intento a las %2$s"
+"El proceso en segundo plano ya se había iniciado a las %s; se omitió este "
+"intento a las %s"
 
 #: lib/installer.php:3946
 #, php-format
 msgid "Exception occurred during installation: #%s - %s"
-msgstr "Se ha producido una excepción durante la instalación: #%1$s - %2$s"
+msgstr "Se ha producido una excepción durante la instalación: #%s - %s"
 
 #: lib/installer.php:3956
 #, php-format
@@ -18849,12 +18847,12 @@ msgstr "cli"
 #: lib/installer.php:4015
 #, php-format
 msgid "Setting PHP Option %s = %s"
-msgstr "Estableciendo la opción de PHP %1$s = %2$s"
+msgstr "Estableciendo la opción de PHP %s = %s"
 
 #: lib/installer.php:4023
 #, php-format
 msgid "Failed to set PHP option %s, is %s (should be %s)"
-msgstr "No se pudo establecer la opción de PHP %1$s, es %2$s (debería ser %3$s)"
+msgstr "No se pudo establecer la opción de PHP %s, es %s (debería ser %s)"
 
 #: lib/installer.php:4043
 msgid "No Remote Data Collectors found for full synchronization"
@@ -18880,22 +18878,21 @@ msgstr "Nombre de usuario no definido"
 #, php-format
 msgid "Protocol Error, Unable to set version (%s) on Server (%s)"
 msgstr ""
-"Error de protocolo, no se pudo establecer la versión (%1$s) en el servidor "
-"(%2$s)"
+"Error de protocolo, no se pudo establecer la versión (%s) en el servidor (%s)"
 
 #: lib/ldap.php:416
 #, php-format
 msgid "Protocol Error, Unable to set referrals option (%s) on Server (%s)"
 msgstr ""
-"Error de protocolo, no se pudo establecer la opción de referencias (%1$s) en "
-"el servidor (%2$s)"
+"Error de protocolo, no se pudo establecer la opción de referencias (%s) en "
+"el servidor (%s)"
 
 #: lib/ldap.php:420
 #, php-format
 msgid "Protocol Error, unable to start TLS communications (%s) on Server (%s)"
 msgstr ""
-"Error de protocolo, no se pudieron iniciar las comunicaciones TLS (%1$s) en "
-"el servidor (%2$s)"
+"Error de protocolo, no se pudieron iniciar las comunicaciones TLS (%s) en el "
+"servidor (%s)"
 
 #: lib/ldap.php:424
 #, php-format
@@ -18906,8 +18903,8 @@ msgstr "Error de protocolo, fallo general (%s)"
 #, php-format
 msgid "Protocol Error, Unable to bind, LDAP result: (%s) on Server (%s)"
 msgstr ""
-"Error de protocolo, no se pudo vincular, resultado LDAP: (%1$s) en el "
-"servidor (%2$s)"
+"Error de protocolo, no se pudo vincular, resultado LDAP: (%s) en el servidor "
+"(%s)"
 
 #: lib/ldap.php:432
 #, php-format
@@ -18957,7 +18954,7 @@ msgstr "Contraseña proporcionada no válida. Error de inicio de sesion."
 #: lib/ldap.php:473
 #, php-format
 msgid "Unexpected error %s (Ldap Error: %s) on Server (%s)"
-msgstr "Error inesperado %1$s (error de LDAP: %2$s) en el servidor (%3$s)"
+msgstr "Error inesperado %s (error de LDAP: %s) en el servidor (%s)"
 
 #: lib/ping.php:149
 msgid "ICMP Ping timed out"
@@ -19030,13 +19027,13 @@ msgstr "Ping no realizado debido a la configuración."
 #, php-format
 msgid "'%s' versions '%s' above or in range are required to install '%s'. "
 msgstr ""
-"Se requieren las versiones '%2$s' superiores o dentro del rango de '%1$s' "
-"para instalar '%3$s'. "
+"Se requiere '%s' en versiones '%s' o superiores (o dentro del rango) para "
+"instalar '%s'. "
 
 #: lib/plugins.php:685
 #, php-format
 msgid "'%s' must first be installed before '%s' is installed. "
-msgstr "'%1$s' debe instalarse primero antes de instalar '%2$s'. "
+msgstr "'%s' debe instalarse primero antes de instalar '%s'. "
 
 #: lib/plugins.php:708
 msgid "Plugin cannot be installed."
@@ -19213,8 +19210,8 @@ msgstr ""
 #, php-format
 msgid "Problems sending Report '%s' Problem with e-mail Subsystem Error is '%s'"
 msgstr ""
-"Problemas al enviar el informe '%1$s' Problema con el subsistema de correo "
-"electrónico El error es '%2$s'"
+"Problemas al enviar el informe '%s' Problema con el subsistema de correo "
+"electrónico El error es '%s'"
 
 #: lib/reports.php:634
 #, php-format
@@ -19278,8 +19275,8 @@ msgstr "Comando RRDtool:"
 #, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
 msgstr ""
-"El tamaño de paso de archivo RRD requerido es '%1$s', pero el paso observado "
-"es '%2$s'"
+"El tamaño de paso de archivo RRD requerido es '%s', pero el paso observado "
+"es '%s'"
 
 #: lib/rrd.php:3359
 #, php-format
@@ -19319,14 +19316,14 @@ msgstr ""
 #: lib/rrd.php:3454
 #, php-format
 msgid "The XFF for Cacti RRA id is '%s' but should be '%s'"
-msgstr "El XFF para el ID de RRA de Cacti es '%1$s', pero debería ser '%2$s'"
+msgstr "El XFF para el ID de RRA de Cacti es '%s', pero debería ser '%s'"
 
 #: lib/rrd.php:3458
 #, php-format
 msgid "The number of rows for Cacti RRA id '%s' is incorrect.  The number of rows are '%s' but should be '%s'"
 msgstr ""
-"El número de filas para el ID de RRA de Cacti '%1$s' es incorrecto. El "
-"número de filas es '%2$s', pero debería ser '%3$s'"
+"El número de filas para el ID de RRA de Cacti '%s' es incorrecto. El número "
+"de filas es '%s', pero debería ser '%s'"
 
 # traducir rrdfile como archivo RRD?
 #: lib/rrd.php:3476
@@ -19422,15 +19419,13 @@ msgstr "Error mientras se analizaba el XML volcado de rrdtool"
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file"
 msgstr ""
-"RRA (CF=%1$s, ROWS=%2$d, PDP_PER_ROW=%3$d, XFF=%4$1.2f) eliminado del "
-"archivo RRD"
+"RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) eliminado del archivo RRD"
 
 #: lib/rrd.php:4199
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file"
 msgstr ""
-"RRA (CF=%1$s, ROWS=%2$d, PDP_PER_ROW=%3$d, XFF=%4$1.2f) añadiéndose al "
-"archivo RRD"
+"RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) añadiéndose al archivo RRD"
 
 #: lib/rrd.php:4291 lib/rrd.php:4305
 #, php-format
@@ -21400,37 +21395,37 @@ msgstr "Habilitar complemento localmente"
 #, php-format
 msgid "WARNING: %s is out of sync with the Poller Interval for Poller[%d]!  The Poller Interval is %d seconds, with a maximum of a %d seconds, but %d seconds have passed since the last poll!"
 msgstr ""
-"ADVERTENCIA: %1$s está desincronizado con el intervalo del Poller para Poller"
-"[%2$d]. El intervalo del Poller es de %3$d segundos, con un máximo de %4$d "
-"segundos, ¡pero han pasado %5$d segundos desde el último sondeo!"
+"ADVERTENCIA: %s está desincronizado con el intervalo del Poller para Poller"
+"[%d]. El intervalo del Poller es de %d segundos, con un máximo de %d "
+"segundos, ¡pero han pasado %d segundos desde el último sondeo!"
 
 #: poller.php:579
 #, php-format
 msgid "WARNING: There are %d processes detected as overrunning a polling cycle for Poller[%d], please investigate."
 msgstr ""
-"ADVERTENCIA: Se han detectado %1$d procesos que exceden un ciclo de sondeo "
-"para Poller[%2$d]; por favor, investíguelo."
+"ADVERTENCIA: Se han detectado %d procesos que exceden un ciclo de sondeo "
+"para Poller[%d]; por favor, investíguelo."
 
 #: poller.php:637
 #, php-format
 msgid "WARNING: Poller Output Table not empty for Poller[%d].  Issues: %d, %s."
 msgstr ""
-"ADVERTENCIA: La tabla de salida del Poller no está vacía para Poller[%1$d]. "
-"Problemas: %2$d, %3$s."
+"ADVERTENCIA: La tabla de salida del Poller no está vacía para Poller[%d]. "
+"Problemas: %d, %s."
 
 #: poller.php:671
 #, php-format
 msgid "ERROR: The spine path: %s is invalid for Poller[%d].  Poller can not continue!"
 msgstr ""
-"ERROR: La ruta de Spine: %1$s no es válida para Poller[%2$d].  ¡Poller no "
-"puede continuar!"
+"ERROR: La ruta de Spine: %s no es válida para Poller[%d].  ¡Poller no puede "
+"continuar!"
 
 #: poller.php:819
 #, php-format
 msgid "Maximum runtime of %d seconds exceeded for Poller[%d]. Exiting."
 msgstr ""
-"Se ha superado el tiempo máximo de ejecución de %1$d segundos para Poller"
-"[%2$d]. Saliendo."
+"Se ha superado el tiempo máximo de ejecución de %d segundos para Poller[%d]. "
+"Saliendo."
 
 #: poller.php:944
 #, fuzzy
@@ -21856,7 +21851,7 @@ msgstr "El número de dispositivos asociados con esta Sonda."
 
 #: pollers.php:1106
 msgid "SNMP Gets"
-msgstr "SNMP Gets"
+msgstr "Consultas SNMP Get"
 
 #: pollers.php:1109
 msgid "The number of SNMP gets associated with this Collector."
@@ -22060,7 +22055,7 @@ msgstr ""
 #: settings.php:138
 #, php-format
 msgid "Cacti Settings (%s)%s"
-msgstr "Configuración de Cacti (%1$s)%2$s"
+msgstr "Configuración de Cacti (%s)%s"
 
 #: settings.php:248
 msgid "Changing Permission Model Warning"
@@ -22766,12 +22761,12 @@ msgstr "Servidores PHP"
 #: support.php:1370 support.php:1372 support.php:1378 support.php:1380
 #, php-format
 msgid "Main Server: Current: %s, Min Required: %s"
-msgstr "Servidor principal: Actual: %1$s, Mínimo requerido: %2$s"
+msgstr "Servidor principal: Actual: %s, Mínimo requerido: %s"
 
 #: support.php:1388 support.php:1390
 #, php-format
 msgid "Local Server: Current: %s, Min Required: %s"
-msgstr "Servidor local: Actual: %1$s, Mínimo requerido: %2$s"
+msgstr "Servidor local: Actual: %s, Mínimo requerido: %s"
 
 #: support.php:1395
 msgid "Minimum Connections:"
@@ -22984,6 +22979,9 @@ msgstr ""
 #: templates_import.php:333
 msgid "Some CDEF Items will not import due to an export error! Contact Template provider for an updated export."
 msgstr ""
+"¡Algunos artículos CDEF no se importarán debido a un error de exportación! "
+"Póngase en contacto con el proveedor de plantillas para una exportación "
+"actualizada."
 
 #: templates_import.php:374 templates_import.php:461
 msgid "Import Template"
@@ -23837,7 +23835,7 @@ msgstr "Modo en el que Cacti intentará autenticar con un servidor LDAP.<blockqu
 
 #: user_domains.php:388
 msgid "Distinguished Name (DN)"
-msgstr "Distinguished Name (DN)"
+msgstr "Nombre distinguido (DN)"
 
 #: user_domains.php:389
 msgid "The \"Distinguished Name\" syntax, applicable for both OpenLDAP and Windows AD configurations, offers flexibility in defining user identity. For OpenLDAP, the format follows this structure: <i>\"uid=&lt;username&gt;,ou=people,dc=domain,dc=local\"</i>. Windows AD provides an alternative syntax: <i>\"&lt;username&gt;@win2kdomain.local\"</i>, commonly known as \"userPrincipalName (UPN)\". In this context, \"&lt;username&gt;\" represents the specific username provided during the login prompt. This is particularly pertinent when operating in \"No Searching\" mode, or \"Require Group Membership\" enabled."
@@ -24614,7 +24612,7 @@ msgstr "Actualizaciones RRD:"
 
 #: utilities.php:1699
 msgid "MBytes"
-msgstr "MBytes"
+msgstr "Megabytes"
 
 #: utilities.php:1699
 msgid "Peak Poller Memory:"
@@ -24838,7 +24836,7 @@ msgstr "Número de Plantillas de gráficos usando este VDEF."
 
 #: vdef.php:913
 msgid "No VDEFs"
-msgstr "No VDEFs"
+msgstr "Sin VDEFs"
 
 #~ msgid "#"
 #~ msgstr "#"
