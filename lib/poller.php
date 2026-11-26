@@ -1973,7 +1973,8 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 			FROM poller_item AS pi
 			WHERE pi.poller_id = ?',
 			array($remote_poller_id));
-		replicate_out_table($rcnn_id, $data, 'poller_item', $remote_poller_id, false, array('last_updated'));
+		// rrd_next_step is owned by the Remote Data Collector's poll schedule, never overwrite it
+		replicate_out_table($rcnn_id, $data, 'poller_item', $remote_poller_id, false, array('last_updated', 'rrd_next_step'));
 
 		// Remove anything not updated recently
 		$time = db_fetch_cell('SELECT MAX(UNIX_TIMESTAMP(last_updated)) FROM poller_item', '', false, $rcnn_id);
@@ -2403,7 +2404,8 @@ function poller_push_reindex_data_to_poller($device_id = 0, $data_query_id = 0, 
  * @param mixed $conn The conn.
  * @param mixed &$data The data.
  * @param string $table The table.
- * @param mixed $exclude The exclude.
+ * @param mixed $exclude Column name(s) that are written when a row is first
+ *                       inserted, but never overwritten on an existing row.
  *
  * @return void No value is returned.
  */
@@ -2421,6 +2423,7 @@ function replicate_table_to_poller($conn, &$data, $table, $exclude = false) {
 		$suffix    = ' ON DUPLICATE KEY UPDATE ';
 		$sql       = '';
 		$colcnt    = 0;
+		$updcnt    = 0;
 		$rows_done = 0;
 		$columns   = array_keys($data[0]);
 		$skipcols  = array();
@@ -2435,19 +2438,30 @@ function replicate_table_to_poller($conn, &$data, $table, $exclude = false) {
 			$exclude = false;
 		}
 
-		// Find columns to skip from updates
+		/**
+		 * Columns missing on the remote are skipped entirely.  Excluded columns
+		 * are still inserted for new rows, but are left out of the update list
+		 * so the remote's value is kept, matching replicate_out_table().
+		 */
 		foreach($columns as $index => $c) {
 			if (!db_column_exists($table, $c, false, $conn)) {
 				$skipcols[$index] = $c;
-			} elseif ($exclude !== false && array_search($c, $exclude, true) !== false) {
-				$skipcols[$index] = $c;
 			} else {
 				$prefix .= ($colcnt > 0 ? ', ':'') . $c;
-				$suffix .= ($colcnt > 0 ? ', ':'') . "$c=VALUES($c)";
 				$colcnt++;
+
+				if ($exclude === false || array_search($c, $exclude, true) === false) {
+					$suffix .= ($updcnt > 0 ? ', ':'') . "$c=VALUES($c)";
+					$updcnt++;
+				}
 			}
 		}
 		$prefix .= ') VALUES ';
+
+		if ($updcnt == 0) {
+			$prefix = 'INSERT IGNORE' . substr($prefix, 6);
+			$suffix = '';
+		}
 
 		$rowcnt = 0;
 		$ohead  = strlen($prefix) + strlen($suffix);
@@ -2506,7 +2520,11 @@ function poller_recovery_flush_boost($poller_id) {
 }
 
 /**
- * Handles the poller push data to main. Used as part of Cacti's lib functionality.
+ * Push the Remote Data Collector's device status columns back to the main
+ * Cacti database.  poller_item.rrd_next_step is deliberately not pushed, the
+ * Remote Data Collector owns its own poll schedule, and the replication paths
+ * no longer overwrite it.  Pushing every poller_item row on every polling
+ * cycle only generated traffic and load on the main database.
  *
  * @return void No value is returned.
  */
@@ -2547,17 +2565,6 @@ function poller_push_data_to_main() {
 		);
 
 		poller_push_table($remote_db_cnn_id, $host_records, 'host', true, $updates);
-
-		$poller_item_records = db_fetch_assoc_prepared('SELECT local_data_id, host_id, rrd_name, rrd_step, rrd_next_step
-			FROM poller_item
-			WHERE poller_id = ?',
-			array($config['poller_id']));
-
-		$updates = array(
-			'rrd_next_step'
-		);
-
-		poller_push_table($remote_db_cnn_id, $poller_item_records, 'poller_item', true, $updates);
 	}
 }
 
