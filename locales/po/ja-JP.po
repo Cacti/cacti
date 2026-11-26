@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: cacti\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-26 05:54+0000\n"
+"PO-Revision-Date: 2026-11-26 09:54+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Japanese <https://translate.cacti.net/projects/cacti/core/ja/>"
 "\n"
@@ -12115,7 +12115,7 @@ msgstr "フォント選択方法"
 
 #: include/global_settings.php:1257
 msgid "How do you wish fonts to be handled by default?"
-msgstr "フォントをデフォルトでどのように処理しますか"
+msgstr "フォントをデフォルトでどのように処理しますか？"
 
 #: include/global_settings.php:1261 lib/api_device.php:1669
 msgid "System"
@@ -13747,7 +13747,7 @@ msgstr "デフォルト表示モード"
 #: include/global_settings.php:2889
 msgid "Which Graph mode you want displayed by default when you first visit the Graphs page?"
 msgstr "初めてグラフページにアクセスしたときにデフォルトで表示されるグラフモードはど"
-"れですか"
+"れですか？"
 
 #: include/global_settings.php:2895
 msgid "TimeZone Support"
@@ -14013,7 +14013,7 @@ msgstr "リアルタイム表示モード"
 
 #: include/global_settings.php:3198
 msgid "How do you wish to view Realtime Graphs?"
-msgstr "リアルタイムグラフをどのように表示しますか"
+msgstr "リアルタイムグラフをどのように表示しますか？"
 
 #: include/global_settings.php:3201
 msgid "Inline"
@@ -15548,7 +15548,8 @@ msgstr "次のエラーのため、Cactiはプラグイン%sを無効にしま�
 #: lib/functions.php:6752
 #, php-format
 msgid "WARNING: PollerID:%s has an invalid hostname:%s.  Is it not reachable via DNS!"
-msgstr ""
+msgstr "警告：PollerID:%1$s には無効なホスト名:%2$s があります。DNS "
+"経由で到達できません！"
 
 #: lib/functions.php:6781
 #, php-format
