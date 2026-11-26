@@ -39,6 +39,9 @@ if [[ -f tests/fixtures/Core/RraContainmentMatrix.php ]]; then
 	run_probe RraContainmentMatrix.php rra-normal normal
 	run_probe RraContainmentMatrix.php rra-missing missing
 fi
+if [[ -f tests/fixtures/Core/StoredTextAndPasswordHint.php ]]; then
+	run_probe StoredTextAndPasswordHint.php stored-text-password-hint
+fi
 if [[ -f tests/fixtures/Core/TableColumnSizing.php ]]; then
 	case_number=0
 	for request in '{}' '{"action":"go"}' '{"action":"change","tab":"devices"}' '{"action":"reset","report":"summary"}' '{"action":"edit"}'; do
