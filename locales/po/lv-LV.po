@@ -4845,9 +4845,10 @@ msgstr[2] "Sekojošie grafiki izmanto šos datu avotus."
 #: data_sources.php:551
 msgid "Leave the Graph Untouched"
 msgid_plural "Leave all Graphs untouched."
-msgstr[0] "Atstāt <strong>grafiku</strong> neskartu."
-msgstr[1] "Atstāt <strong>grafiku</strong> neskartu."
-msgstr[2] "Atstāt visus <strong>grafikus</strong> neskartus."
+msgstr[0] "Atstāt grafiku neskartu."
+msgstr[1] "Atstāt grafiku neskartu."
+msgstr[2] "Atstāt visus grafikus neskartus."
+
 
 #: data_sources.php:555
 msgid "Delete all Graph Items that reference this Data Source."
@@ -10470,7 +10471,8 @@ msgstr "Ja ierīce nedarbojas, izmantojiet šo SNMP opciju kopu, lai mēģinātu
 
 #: include/global_form.php:1344
 msgid "The type of ping packet to sent.  <br><i>NOTE: ICMP on Linux/UNIX requires root privileges.</i>  <br><i>NOTE: TCP Ping Closed - Even if the tcp ping is not successful, the device can be considered UP.</i>"
-msgstr "Nosūtāmās ping pakotnes veids.<br> <i>PIEZĪME. ICMP operētājsistēmā Linux/UNIX ir nepieciešamas root tiesības.</i>"
+msgstr "Nosūtāmās ping pakotnes veids.<br><i>PIEZĪME. ICMP operētājsistēmā Linux/UNIX ir nepieciešamas root tiesības.</i> <br><i>PIEZĪME. TCP Ping Closed - pat ja TCP ping nav veiksmīgs, ierīce var tikt uzskatīta par UP.</i>"
+
 
 #: include/global_form.php:1381 include/global_form.php:1931
 msgid "Additional Options"
@@ -14920,7 +14922,8 @@ msgstr "Fails"
 
 #: lib/clog_webapi.php:541 lib/clog_webapi.php:544
 msgid "Head Lines"
-msgstr "%d rindas"
+msgstr "Sākuma rindas"
+
 
 #: lib/clog_webapi.php:541 lib/clog_webapi.php:544 utilities.php:323
 #: utilities.php:326
@@ -16521,7 +16524,8 @@ msgstr "Izmantotais faila formāts"
 
 #: lib/html_reports.php:67
 msgid "Choose the custom html wrapper and CSS file to use.  This file contains both html and CSS to wrap around your report.  If it contains more than simply CSS, you need to place a special <REPORT> tag inside of the file.  This format tag will be replaced by the report content.  These files are located in the 'formats' directory."
-msgstr "Izvēlieties pielāgotu HTML noformējuma un CSS failu.  Šis fails satur gan HTML, gan CSS kodu, kas noformē jūsu atskaites izskatu.  Ja tas satur kaut ko vairāk par CSS kodu, tad failā jāievieto īpašs tags <REPORT>.  Šis <REPORT> tags tiks aizstāts ar atskaites saturu.   Šie faili atrodas 'formats' mapē."
+msgstr "Izvēlieties pielāgotu HTML noformējuma un CSS failu.  Šis fails satur gan HTML, gan CSS kodu, kas noformē jūsu atskaites izskatu.  Ja tas satur kaut ko vairāk par CSS kodu, tad failā jāievieto īpašs tags <REPORT>.  Šis formāta tags tiks aizstāts ar atskaites saturu.   Šie faili atrodas 'formats' mapē."
+
 
 #: lib/html_reports.php:72
 msgid "Default Text Font Size"
@@ -19096,7 +19100,7 @@ msgid "If your tables have very large indexes, you must operate with the Barracu
 msgstr "Ja jūsu tabulām ir ļoti lieli indeksi, jums ir jādarbojas ar Barracuda innodb_file_format un innodb_large_prefiksu, kas ir vienāds ar 1. Ja to neizdarīsit, spraudņi var nespēt pareizi izveidot tabulas."
 
 #: lib/utility.php:1254
-#, php-format
+#, no-php-format
 msgid "InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size.  If you database is very large or remote, you can consider increasing this size.  If remote, it can by as high as 80% of the systems memory.  However, cautions must be taken to reduce the swappiness of the system, or to remove swap to keep the system from swapping."
 msgstr ""
 
@@ -19884,7 +19888,8 @@ msgstr "Vienas vai vairāku paku paraksts nav uzticams.<br>"
 #: package_import.php:762
 #, php-format
 msgid "<b>Author:</b> &lt;%s&gt; %s.<br>"
-msgstr "<b>Autors:</b> <%s> %s.<br>"
+msgstr "<b>Autors:</b> &lt;%s&gt; %s.<br>"
+
 
 #: package_import.php:766
 #, php-format
@@ -23313,7 +23318,8 @@ msgstr "Meklēšanas filtrs"
 
 #: user_domains.php:439
 msgid "Search filter to use to locate the user in the LDAP directory, such as for windows: <i>\"(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))\"</i> or for OpenLDAP: <i>\"(&(objectClass=account)(uid=&lt;username&gt))\"</i>.  \"&lt;username&gt\" is replaced with the username that was supplied at the login prompt."
-msgstr "Meklēšanas filtrs, ko izmantot, lai atrastu lietotāju LDAP direktorijā, piemēram, logiem: <i>&quot;(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;lietotājvārds&gt;*))&quot;</i> vai OpenLDAP: <i>&quot;(&amp;(objectClass =konts)(uid=&lt;lietotājvārds&gt;))&quot;</i> . &quot;&lt;lietotājvārds&gt;&quot; tiek aizstāts ar lietotājvārdu, kas tika norādīts pieteikšanās uzvednē."
+msgstr "Meklēšanas filtrs, ko izmantot, lai atrastu lietotāju LDAP direktorijā, piemēram, logiem: <i>\"(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;lietotājvārds&gt;*))\"</i> vai OpenLDAP: <i>\"(&amp;(objectClass =konts)(uid=&lt;lietotājvārds&gt;))\"</i> . \"&lt;lietotājvārds&gt;\" tiek aizstāts ar lietotājvārdu, kas tika norādīts pieteikšanās uzvednē."
+
 
 #: user_domains.php:445
 msgid "Search Distinguished Name (DN)"

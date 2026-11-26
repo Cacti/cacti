@@ -113,7 +113,7 @@ function check_get_author_info() : mixed {
 		?>
 		<script type='text/javascript'>
 		var mixedReasonTitle = <?php print json_encode(__('Key Generation Required to Use Tool')); ?>;
-		var mixedOnPage      = '<?php print __esc('Packaging Key Information Not Found'); ?>';
+		var mixedOnPage      = <?php print json_encode(__('Packaging Key Information Not Found')); ?>;
 
 		sessionMessage = {
 			message: <?php print json_encode(__('In order to use this Packaging Tool, you must first run the <b><i class="deviceUp">genkey.php</i></b> script in the cli directory.  Once that is complete, you will have a public and private key used to sign your packages.')); ?>,

@@ -889,7 +889,8 @@ msgstr "Proszę podać aktualne hasło i nowe<br> hasło."
 
 #: auth_changepassword.php:378 auth_resetpassword.php:259
 msgid "Please enter your new Cacti password."
-msgstr "Proszę podać aktualne hasło i nowe<br> hasło."
+msgstr "Proszę podać nowe hasło Cacti."
+
 
 #: auth_changepassword.php:381 include/global_form.php:1722
 #: lib/functions.php:4167 lib/html.php:3179
@@ -16315,7 +16316,8 @@ msgstr ""
 
 #: lib/functions.php:5654
 msgid "Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting."
-msgstr "Błąd mailingowy: Nie <b>TO</b> adres ustawiony! <br>Jeśli korzystasz z linku <i>Test Mail</i>, ustaw ustawienie <b>Alert e-mail</b>."
+msgstr "Błąd mailingowy: Nie TO adres ustawiony! <br>Jeśli korzystasz z linku <i>Test Mail</i>, ustaw ustawienie <b>Alert e-mail</b>."
+
 
 #: lib/functions.php:6027
 #, php-format
@@ -20220,7 +20222,7 @@ msgid "If your tables have very large indexes, you must operate with the Barracu
 msgstr "Jeśli Twoje tabele mają bardzo duże indeksy, musisz ustawić wartość Barracuda innodb_file_format oraz innodb_large_prefix jako 1. Nieustawienie tego może skutkować niepoprawnym utworzeniem tabel przez wtyczki."
 
 #: lib/utility.php:1227
-#, php-format
+#, no-php-format
 msgid "InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size.  If you database is very large or remote, you can consider increasing this size.  If remote, it can by as high as 80% of the systems memory.  However, cautions must be taken to reduce the swappiness of the system, or to remove swap to keep the system from swapping."
 msgstr ""
 
@@ -20953,7 +20955,8 @@ msgstr ""
 #: package_import.php:774
 #, php-format
 msgid "<b>Author:</b> &lt;%s&gt; %s.<br>"
-msgstr "<b>Autor:</b> <%s> %s.<br>"
+msgstr "<b>Autor:</b> &lt;%s&gt; %s.<br>"
+
 
 #: package_import.php:778
 #, php-format
@@ -23403,7 +23406,7 @@ msgid "Max Total Memory Possible"
 msgstr "Maksymalna możliwa pamięć całkowita"
 
 #: support.php:1598
-#, php-format
+#, no-php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr ""
 "Zmniejsz pamięć MySQL/MariaDB do mniej niż 80% pamięci systemowej. Zachowaj "
@@ -24445,7 +24448,8 @@ msgstr "Tryb"
 
 #: user_domains.php:418
 msgid "Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the users Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the users Distinguished Name (DN)."
-msgstr "Tryb, w którym Cacti będą próbowały uwierzytelnić się w stosunku do serwera LDAP.<blockquote><i><i>Brak wyszukiwania</i> - Nie występuje wyszukiwanie Distinguished Name (DN), po prostu spróbuj powiązać z podanym formatem Distinguished Name (DN).<br><br><br><i>Wyszukiwanie anonimowe</i> - Próby wyszukania nazwy użytkownika w stosunku do katalogu LDAP za pomocą wiązania anonimowego w celu zlokalizowania użytkowników Distinguished Name (DN).<br><br><i>Specyficzne wyszukiwanie</i> - Próby wyszukania nazwy użytkownika w stosunku do katalogu LDAP za pomocą Specyficznej Nazwy Distinguished Name (DN) i Specyficznego hasła do wiązania w celu zlokalizowania użytkowników Distinguished Name (DN)."
+msgstr "Tryb, w którym Cacti będą próbowały uwierzytelnić się w stosunku do serwera LDAP.<blockquote><i>Brak wyszukiwania</i> - Nie występuje wyszukiwanie Distinguished Name (DN), po prostu spróbuj powiązać z podanym formatem Distinguished Name (DN).<br><br><i>Wyszukiwanie anonimowe</i> - Próby wyszukania nazwy użytkownika w stosunku do katalogu LDAP za pomocą wiązania anonimowego w celu zlokalizowania użytkowników Distinguished Name (DN).<br><br><i>Specyficzne wyszukiwanie</i> - Próby wyszukania nazwy użytkownika w stosunku do katalogu LDAP za pomocą Specyficznej Nazwy Distinguished Name (DN) i Specyficznego hasła do wiązania w celu zlokalizowania użytkowników Distinguished Name (DN)."
+
 
 #: user_domains.php:424
 msgid "Distinguished Name (DN)"
@@ -24509,7 +24513,8 @@ msgstr "Filtr wyszukiwania"
 
 #: user_domains.php:475
 msgid "Search filter to use to locate the user in the LDAP directory, such as for windows: <i>\"(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))\"</i> or for OpenLDAP: <i>\"(&(objectClass=account)(uid=&lt;username&gt))\"</i>.  \"&lt;username&gt\" is replaced with the username that was supplied at the login prompt."
-msgstr "Wyszukaj filtr, za pomocą którego można zlokalizować użytkownika w katalogu LDAP, np. dla okien: <i>\"(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))\"</i>\" lub dla OpenLDAP: <i>\"(&(objectClass=account)(uid=&lt;username&gt)))</i>\"</i>.  \"Nazwa użytkownika\" zostaje zastąpiona nazwą użytkownika, która została podana w oknie logowania."
+msgstr "Wyszukaj filtr, za pomocą którego można zlokalizować użytkownika w katalogu LDAP, np. dla okien: <i>\"(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))\"</i>\" lub dla OpenLDAP: <i>\"(&(objectClass=account)(uid=&lt;username&gt)))</i>\".  \"Nazwa użytkownika\" zostaje zastąpiona nazwą użytkownika, która została podana w oknie logowania."
+
 
 #: user_domains.php:481
 msgid "Search Distinguished Name (DN)"
@@ -24829,7 +24834,8 @@ msgstr "Sukces - Żeton"
 
 #: user_log.php:212
 msgid "Click 'Continue' to purge the User Log.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog."
-msgstr "Kliknij 'Kontynuuj', aby oczyścić plik dziennika.<br><br><br><br>Note: Jeśli logowanie jest ustawione zarówno na Cacti jak i Syslog, informacja o dzienniku pozostanie w Syslog."
+msgstr "Kliknij 'Kontynuuj', aby oczyścić plik dziennika.<br><br><br>Note: Jeśli logowanie jest ustawione zarówno na Cacti jak i Syslog, informacja o dzienniku pozostanie w Syslog."
+
 
 #: user_log.php:247
 msgid "Local Auth"

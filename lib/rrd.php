@@ -79,14 +79,16 @@ function rrd_strip_control_chars(string $command_line): string {
  * @return void
  */
 function rrdtool_set_language(mixed $lang = false) : void {
-	global $prev_lang;
+	global $prev_lang, $prev_lc_numeric;
 
-	$prev_lang = getenv('LANG');
+	$prev_lang       = getenv('LANG');
+	$prev_lc_numeric = getenv('LC_NUMERIC');
 
 	if ($lang == false) {
 		putenv('LANG=' . str_replace('-', '_', CACTI_LOCALE) . '.UTF-8');
 	} else {
-		putenv('LANG=en_EN.UTF-8');
+		putenv('LANG=C.UTF-8');
+		putenv('LC_NUMERIC=C');
 	}
 }
 
@@ -96,9 +98,19 @@ function rrdtool_set_language(mixed $lang = false) : void {
  * @return void
  */
 function rrdtool_reset_language() : void {
-	global $prev_lang;
+	global $prev_lang, $prev_lc_numeric;
 
-	putenv('LANG=' . $prev_lang);
+	if ($prev_lang === false || $prev_lang === null) {
+		putenv('LANG');
+	} else {
+		putenv('LANG=' . $prev_lang);
+	}
+
+	if ($prev_lc_numeric === false || $prev_lc_numeric === null) {
+		putenv('LC_NUMERIC');
+	} else {
+		putenv('LC_NUMERIC=' . $prev_lc_numeric);
+	}
 }
 
 function rrd_init(bool $output_to_term = true) : mixed {

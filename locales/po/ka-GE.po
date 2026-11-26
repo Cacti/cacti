@@ -18828,7 +18828,7 @@ msgid "If your tables have very large indexes, you must operate with the Barracu
 msgstr ""
 
 #: lib/utility.php:1254
-#, php-format
+#, no-php-format
 msgid "InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size.  If you database is very large or remote, you can consider increasing this size.  If remote, it can by as high as 80% of the systems memory.  However, cautions must be taken to reduce the swappiness of the system, or to remove swap to keep the system from swapping."
 msgstr ""
 
@@ -21904,7 +21904,7 @@ msgid "Max Total Memory Possible"
 msgstr ""
 
 #: support.php:1594
-#, php-format
+#, no-php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr ""
 

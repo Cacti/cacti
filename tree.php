@@ -1716,7 +1716,7 @@ function tree_edit(bool $partial = false) : void {
 							'separator_before'	: false,
 							'icon'				: getBranchSortIcon('alpha', nodeid),
 							'separator_after'	: false,
-							'label'				: '<?php print __esc('Alphabetic'); ?>',
+							'label'				: <?php print json_encode(__('Alphabetic')); ?>,
 							'action'			: function (data) {
 								setBranchSortOrder('alpha', nodeid);
 								var inst = $.jstree.reference(data.reference);

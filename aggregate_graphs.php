@@ -1421,12 +1421,12 @@ function graph_edit() : bool {
 				function changeTotalsType() {
 					if ($('#total_type').val() == '<?php print AGGREGATE_TOTAL_TYPE_SIMILAR; ?>') {
 						if ($('#total_prefix').val() == '' && $('#id').val() == 0) {
-							$('#total_prefix').attr('value', '<?php print __('Total'); ?>');
+							$('#total_prefix').attr('value', <?php print json_encode(__('Total')); ?>);
 						}
 					} else if ($('#total_type').val() == '<?php print AGGREGATE_TOTAL_TYPE_ALL; ?>') {
 						if ($('#total_prefix').val() == '' && $('#id').val() == 0) {
 							if ($('#total_prefix').val() == '') {
-								$('#total_prefix').attr('value', '<?php print __('All Items'); ?>');
+								$('#total_prefix').attr('value', <?php print json_encode(__('All Items')); ?>);
 							}
 						}
 					}
@@ -1494,7 +1494,7 @@ function graph_edit() : bool {
 			});
 
 			$('#toggle_items').click(function() {
-				if ($('#toggle_items').is(":contains('<?php print __('Show'); ?>')")) {
+				if ($('#toggle_items').text().indexOf(<?php print json_encode(__('Show')); ?>) !== -1) {
 					$('#local_graph_template_graph_id').next('table').css('display', '');
 					$('#toggle_items').text(<?php print json_encode(__('Hide Item Details')); ?>);
 				} else {

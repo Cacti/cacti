@@ -2188,9 +2188,9 @@ function graph_aggregate_javascript() : void {
 
 	function changeTotalsType() {
 		if (($('#aggregate_total_type').val() == <?php print AGGREGATE_TOTAL_TYPE_SIMILAR; ?>)) {
-			$('#aggregate_total_prefix').attr('value', '<?php print __('Total'); ?>');
+			$('#aggregate_total_prefix').attr('value', <?php print json_encode(__('Total')); ?>);
 		} else if (($('#aggregate_total_type').val() == <?php print AGGREGATE_TOTAL_TYPE_ALL; ?>)) {
-			$('#aggregate_total_prefix').attr('value', '<?php print __('All Items'); ?>');
+			$('#aggregate_total_prefix').attr('value', <?php print json_encode(__('All Items')); ?>);
 		}
 	}
 

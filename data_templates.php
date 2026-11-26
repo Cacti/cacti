@@ -1035,7 +1035,7 @@ function template_edit() : void {
 		$('.customDataCheckbox').find('input').on('change', function() {
 			if ($(this).prop('checked') == false) {
 				raiseMessage(
-					'<?= __('Custom Data Warning Message'); ?>',
+					<?php print json_encode(__('Custom Data Warning Message')); ?>,
 					'<?= __esc('WARNING: Data Loss can Occur'); ?>',
 					'<?= __esc('After you uncheck this checkbox and then Save the Data Template, any existing Data Sources based on this Data Template will lose their Custom Data.  This can result in broken Data Collection and Graphs'); ?>',
 					MESSAGE_LEVEL_MIXED

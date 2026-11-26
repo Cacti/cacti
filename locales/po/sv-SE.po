@@ -10196,7 +10196,8 @@ msgstr "Välj ett unikt namn för denna datadel i RRD-filen."
 
 #: include/global_form.php:638
 msgid "Minimum Value (\"U\" for No Minimum)"
-msgstr "Minsta värde (&quot;U&quot; för inget minimum)"
+msgstr "Minsta värde (\"U\" för inget minimum)"
+
 
 #: include/global_form.php:643
 msgid "The minimum value of data that is allowed to be collected."
@@ -10204,7 +10205,8 @@ msgstr "Minsta värdet på data som får samlas in."
 
 #: include/global_form.php:646
 msgid "Maximum Value (\"U\" for No Maximum)"
-msgstr "Högsta värde (&quot;U&quot; för ingen övre gräns)"
+msgstr "Högsta värde (\"U\" för ingen övre gräns)"
+
 
 #: include/global_form.php:651
 msgid "The maximum value of data that is allowed to be collected."
@@ -10220,9 +10222,8 @@ msgstr "Hur data representeras i RRA."
 
 #: include/global_form.php:666
 msgid "The maximum amount of time that can pass before data is entered as 'unknown'. (Usually 2x300=600)"
-msgstr ""
-"Den längsta tid som får gå innan data registreras som &quot;okända&quot;. ("
-"Vanligen 2 × 300 = 600)"
+msgstr "Den längsta tid som får gå innan data registreras som \"okända\". (Vanligen 2 × 300 = 600)"
+
 
 #: include/global_form.php:672 lib/html_utility.php:335
 msgid "Not Selected"
@@ -10420,9 +10421,8 @@ msgstr "Enhetsexponent (--units-exponent)"
 
 #: include/global_form.php:854
 msgid "What unit Cacti should use on the Y-axis. Use 3 to display everything in \"k\" or -6 to display everything in \"u\" (micro)."
-msgstr ""
-"Vilken enhet Cacti ska använda på y-axeln. Använd 3 för att visa allt i "
-"&quot;k&quot; eller -6 för att visa allt i &quot;u&quot; (mikro)."
+msgstr "Vilken enhet Cacti ska använda på y-axeln. Använd 3 för att visa allt i \"k\" eller -6 för att visa allt i \"u\" (mikro)."
+
 
 #: include/global_form.php:858
 msgid "Unit Length (--units-length &lt;length&gt;)"
@@ -18909,11 +18909,8 @@ msgstr ""
 
 #: lib/installer.php:2753
 msgid "Please select the Device Templates that you wish to use after the Install.  If you Operating System is Windows, you need to ensure that you select the 'Windows Device' Template.  If your Operating System is Linux/UNIX, make sure you select the 'Local Linux Machine' Device Template."
-msgstr ""
-"Var god välj Enhetsmallar som du vill använda efter Installera. Om "
-"operativsystemet är Windows måste du se till att du väljer &quot;Windows "
-"Device&quot; -mall. Om ditt operativsystem är Linux / UNIX, se till att du "
-"väljer &quot;Local Linux Machine&quot; Device Template."
+msgstr "Var god välj Enhetsmallar som du vill använda efter Installera. Om operativsystemet är Windows måste du se till att du väljer \"Windows Device\" -mall. Om ditt operativsystem är Linux / UNIX, se till att du väljer \"Local Linux Machine\" Device Template."
+
 
 #: lib/installer.php:2759 package.php:793 package_import.php:1040
 msgid "Homepage"
@@ -20262,7 +20259,7 @@ msgstr ""
 "problem med att skapa tabeller."
 
 #: lib/utility.php:1254
-#, php-format
+#, no-php-format
 msgid "InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size.  If you database is very large or remote, you can consider increasing this size.  If remote, it can by as high as 80% of the systems memory.  However, cautions must be taken to reduce the swappiness of the system, or to remove swap to keep the system from swapping."
 msgstr ""
 "InnoDB håller så många tabeller och index i systemminnet som möjligt. Därför "
@@ -21831,9 +21828,8 @@ msgstr "Datum då insticksmodulen senast installerades eller uppgraderades."
 
 #: plugins.php:1135 plugins.php:1212
 msgid "Actions available include 'Install', 'Activate', 'Disable', 'Enable', 'Uninstall'."
-msgstr ""
-"Tillgängliga åtgärder inkluderar &quot;Installera&quot;, &quot;Aktivera&quot;"
-", &quot;Inaktivera&quot;, &quot;Aktivera&quot;, &quot;Avinstallera&quot;."
+msgstr "Tillgängliga åtgärder inkluderar \"Installera\", \"Aktivera\", \"Inaktivera\", \"Aktivera\", \"Avinstallera\"."
+
 
 #: plugins.php:1153
 msgid "The status of this Plugin."
@@ -23563,7 +23559,7 @@ msgid "Max Total Memory Possible"
 msgstr "Största möjliga totala minne"
 
 #: support.php:1594
-#, php-format
+#, no-php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr ""
 "Minska MySQL/MariaDB-minnet till mindre än 80 % av systemminnet. Reservera "
@@ -24481,7 +24477,8 @@ msgstr "Inaktivera användardomäner"
 
 #: user_domains.php:240
 msgid "Click 'Continue' to Enable the following User Domain."
-msgstr "Klicka på &quot;Fortsätt&quot; för att aktivera följande användardomän."
+msgstr "Klicka på \"Fortsätt\" för att aktivera följande användardomän."
+
 
 #: user_domains.php:241
 msgid "Click 'Continue' to Enable following User Domains."
@@ -24497,9 +24494,8 @@ msgstr "Aktivera användardomäner"
 
 #: user_domains.php:246
 msgid "Click 'Continue' to make the following the following User Domain the default one."
-msgstr ""
-"Klicka på &quot;Fortsätt&quot; för att göra följande följande användardomän "
-"som standard."
+msgstr "Klicka på \"Fortsätt\" för att göra följande följande användardomän som standard."
+
 
 #: user_domains.php:247
 msgid "Make Selected Domain Default"
@@ -24598,15 +24594,8 @@ msgstr "Läge"
 
 #: user_domains.php:382
 msgid "Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the users Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the users Distinguished Name (DN)."
-msgstr ""
-"Läge vilken Cacti försöker autentisera mot LDAP-servern. <blockquote> "
-"<i>Ingen sökning</i> - <i>Sökning utan</i> Distinguished Name (DN) sker, "
-"försök bara binda med det angivna Distinguished Name-formatet (DN). <br><br> "
-"<i>Anonym Sökning</i> - Försök att söka efter användarnamn mot LDAP-katalog "
-"via anonym bindning för att hitta användarna Distinguished Name (DN). "
-"<br><br> <i>Särskild</i> sökning - Försök söka efter användarnamn mot LDAP-"
-"katalog via Specifikt Distinguished Name (DN) och Specifikt lösenord för "
-"bindning för att hitta användarnas Distinguished Name (DN)."
+msgstr "Läge vilken Cacti försöker autentisera mot LDAP-servern. <blockquote> <i>Ingen sökning</i> - Sökning utan Distinguished Name (DN) sker, försök bara binda med det angivna Distinguished Name-formatet (DN). <br><br> <i>Anonym Sökning</i> - Försök att söka efter användarnamn mot LDAP-katalog via anonym bindning för att hitta användarna Distinguished Name (DN). <br><br> <i>Särskild</i> sökning - Försök söka efter användarnamn mot LDAP-katalog via Specifikt Distinguished Name (DN) och Specifikt lösenord för bindning för att hitta användarnas Distinguished Name (DN)."
+
 
 #: user_domains.php:388
 msgid "Distinguished Name (DN)"

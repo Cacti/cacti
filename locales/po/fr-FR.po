@@ -902,7 +902,8 @@ msgstr "Veuillez entrer votre mot de passe courant et votre nouveau<br>mot de pa
 
 #: auth_changepassword.php:412 auth_resetpassword.php:263
 msgid "Please enter your new Cacti password."
-msgstr "Veuillez saisir votre nouveau mot de passe."
+msgstr "Veuillez entrer votre nouveau mot de passe Cacti."
+
 
 #: auth_changepassword.php:415 include/global_form.php:1698
 #: lib/functions.php:4080 lib/html.php:3070
@@ -1397,7 +1398,8 @@ msgstr "Pas enregistré"
 
 #: automation_devices.php:405 host.php:1930
 msgid "No Devices Found"
-msgstr "Aucun périphérique n&apos;a été trouvé"
+msgstr "Aucun périphérique n'a été trouvé"
+
 
 #: automation_devices.php:427 automation_devices.php:441
 msgid "Removed from Cacti"
@@ -2784,7 +2786,8 @@ msgstr "Nom d'utilisateur d'authentification"
 
 #: automation_snmp.php:724
 msgid "Auth Password"
-msgstr "Mot de passe d&apos;authentification"
+msgstr "Mot de passe d'authentification"
+
 
 #: automation_snmp.php:725
 msgid "Auth Protocol"
@@ -4194,7 +4197,8 @@ msgstr "Méthode de saisie des données [edit : %s]"
 
 #: data_input.php:498
 msgid "Data Input Method [new]"
-msgstr "PROCEDE D&#39;ENTREE DE DONNEES"
+msgstr "PROCEDE D'ENTREE DE DONNEES"
+
 
 #: data_input.php:516 include/global_arrays.php:519
 msgid "SNMP Query"
@@ -5204,7 +5208,8 @@ msgstr "Modèles de données [modifier : %s]"
 
 #: data_templates.php:691
 msgid "Edit Data Input Method."
-msgstr "PROCEDE D&#39;INTRODUCTION DE DONNEES."
+msgstr "PROCEDE D'INTRODUCTION DE DONNEES."
+
 
 #: data_templates.php:700
 msgid "Data Templates [new]"
@@ -8896,11 +8901,13 @@ msgstr "n'est pas vide"
 
 #: include/global_arrays.php:1901
 msgid "matches regular expression"
-msgstr "correspond à l&apos;expression rationnelle"
+msgstr "correspond à l'expression rationnelle"
+
 
 #: include/global_arrays.php:1902
 msgid "does not match regular expression"
-msgstr "Ne correspond pas Ã  l&apos;expression rationnelle"
+msgstr "Ne correspond pas Ã  l'expression rationnelle"
+
 
 #: include/global_arrays.php:2004
 msgid "Fixed String"
@@ -9955,7 +9962,8 @@ msgstr "Unités SI pour la mise à l'échelle logarithmique (--units =si)"
 
 #: include/global_form.php:812
 msgid "Use SI Units for Logarithmic Scaling instead of using exponential notation.<br> Note: Linear graphs use SI notation by default."
-msgstr "Utilisez les unités SI pour la mise à l'échelle logarithmique au lieu d'utiliser la notation exponentielle.<br> Remarque&nbsp;: les graphiques linéaires utilisent la notation SI par défaut."
+msgstr "Utilisez les unités SI pour la mise à l'échelle logarithmique au lieu d'utiliser la notation exponentielle.<br> Remarque : les graphiques linéaires utilisent la notation SI par défaut."
+
 
 #: include/global_form.php:815
 msgid "Rigid Boundaries Mode (--rigid)"
@@ -10015,7 +10023,8 @@ msgstr "Pas de Gridfit (--no-gridfit)"
 
 #: include/global_form.php:869
 msgid "In order to avoid anti-aliasing blurring effects RRDtool snaps points to device resolution pixels, this results in a crisper appearance. If this is not to your liking, you can use this switch to turn this behavior off.<br><strong>Note: </strong>Gridfitting is turned off for PDF, EPS, SVG output by default."
-msgstr "Afin d'éviter les effets de flou anti-aliasing, RRDtool accroche les points aux pixels de résolution de l'appareil, ce qui donne une apparence plus nette. Si cela ne vous convient pas, vous pouvez utiliser cet interrupteur pour désactiver ce comportement.<br><strong>Remarque&nbsp;: </strong>le Gridfitting est désactivé par défaut pour les sorties PDF, EPS, SVG."
+msgstr "Afin d'éviter les effets de flou anti-aliasing, RRDtool accroche les points aux pixels de résolution de l'appareil, ce qui donne une apparence plus nette. Si cela ne vous convient pas, vous pouvez utiliser cet interrupteur pour désactiver ce comportement.<br><strong>Remarque : </strong>le Gridfitting est désactivé par défaut pour les sorties PDF, EPS, SVG."
+
 
 #: include/global_form.php:872
 msgid "Alternative Y Grid (--alt-y-grid)"
@@ -10023,7 +10032,8 @@ msgstr "Grille Y alternative (--alt-y-grid)"
 
 #: include/global_form.php:875
 msgid "The algorithm ensures that you always have a grid, that there are enough but not too many grid lines, and that the grid is metric. This parameter will also ensure that you get enough decimals displayed even if your graph goes from 69.998 to 70.001.<br><strong>Note: </strong>This parameter may interfere with --alt-autoscale options."
-msgstr "L'algorithme garantit que vous avez toujours une grille, qu'il y a suffisamment mais pas trop de lignes de grille, et que la grille est métrique. Ce paramètre veillera également à ce que vous obteniez suffisamment de décimales affichées même si votre graphique passe de 69,998 à 70,001.<br><strong>Remarque&nbsp;: </strong>ce paramètre peut interférer avec les options --alt-autoscale."
+msgstr "L'algorithme garantit que vous avez toujours une grille, qu'il y a suffisamment mais pas trop de lignes de grille, et que la grille est métrique. Ce paramètre veillera également à ce que vous obteniez suffisamment de décimales affichées même si votre graphique passe de 69,998 à 70,001.<br><strong>Remarque : </strong>ce paramètre peut interférer avec les options --alt-autoscale."
+
 
 #: include/global_form.php:878
 msgid "Axis Options"
@@ -10031,7 +10041,8 @@ msgstr "Options de l'axe"
 
 #: include/global_form.php:883
 msgid "Right Axis (--right-axis &lt;scale:shift&gt;)"
-msgstr "Axe droit (-- right-axis <scale :shift>)"
+msgstr "Axe droit (-- right-axis &lt;scale :shift&gt;)"
+
 
 #: include/global_form.php:888
 msgid "A second axis will be drawn to the right of the graph. It is tied to the left axis via the scale and shift parameters."
@@ -10039,7 +10050,8 @@ msgstr "Un deuxième axe sera dessiné à droite du graphique. Il est lié à l'
 
 #: include/global_form.php:891
 msgid "Right Axis Label (--right-axis-label &lt;string&gt;)"
-msgstr "Étiquette de l'axe droit (--right-axis-label <string>)"
+msgstr "Étiquette de l'axe droit (--right-axis-label &lt;string&gt;)"
+
 
 #: include/global_form.php:896
 msgid "The label for the right axis."
@@ -10047,7 +10059,8 @@ msgstr "L'étiquette pour l'axe droit."
 
 #: include/global_form.php:899
 msgid "Right Axis Format (--right-axis-format &lt;format&gt;)"
-msgstr "Format de l'axe droit (-- format de l'axe droit <format>)"
+msgstr "Format de l'axe droit (-- format de l'axe droit &lt;format&gt;)"
+
 
 #: include/global_form.php:904 include/global_form.php:920
 #, php-format
@@ -10056,7 +10069,8 @@ msgstr "Par défaut, le format des étiquettes d'axe est déterminé automatique
 
 #: include/global_form.php:907
 msgid "Right Axis Formatter (--right-axis-formatter &lt;formatname&gt;)"
-msgstr "Formatage de l'axe droit (-- formatage de l'axe droit < formatname >)"
+msgstr "Formatage de l'axe droit (-- formatage de l'axe droit &lt; formatname &gt;)"
+
 
 #: include/global_form.php:912
 msgid "When you setup the right axis labeling, apply a rule to the data format.  Supported formats include \"numeric\" where data is treated as numeric, \"timestamp\" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is \"%Y-%m-%d %H:%M:%S\").  See also --units-length and --right-axis-format.  Finally \"duration\" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT."
@@ -10064,11 +10078,13 @@ msgstr ""
 
 #: include/global_form.php:915
 msgid "Left Axis Format (--left-axis-format &lt;format&gt;)"
-msgstr "Format de l'axe gauche (--format de l'axe gauche <format>)"
+msgstr "Format de l'axe gauche (--format de l'axe gauche &lt;format&gt;)"
+
 
 #: include/global_form.php:923
 msgid "Left Axis Formatter (--left-axis-formatter &lt;formatname&gt;)"
-msgstr "Formatteur de l'axe gauche (--left-axis-formatter <formatname>)"
+msgstr "Formatteur de l'axe gauche (--left-axis-formatter &lt;formatname&gt;)"
+
 
 #: include/global_form.php:928
 msgid "When you setup the left axis labeling, apply a rule to the data format.  Supported formats include \"numeric\" where data is treated as numeric, \"timestamp\" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is \"%Y-%m-%d %H:%M:%S\").  See also --units-length.  Finally \"duration\" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT."
@@ -10104,7 +10120,8 @@ msgstr "Forcer la génération des légendes HRULE et VRULE."
 
 #: include/global_form.php:954
 msgid "Tab Width (--tabwidth &lt;pixels&gt;)"
-msgstr "Largeur de l'onglet (--tabwidth <pixels>)"
+msgstr "Largeur de l'onglet (--tabwidth &lt;pixels&gt;)"
+
 
 #: include/global_form.php:959
 msgid "By default the tab-width is 40 pixels, use this option to change it."
@@ -10112,7 +10129,8 @@ msgstr "Par défaut, la largeur de la tabulation est de 40 pixels, utilisez cett
 
 #: include/global_form.php:962
 msgid "Legend Position (--legend-position=&lt;position&gt;)"
-msgstr "Position de la légende (--legend-position =<position>)"
+msgstr "Position de la légende (--legend-position =&lt;position&gt;)"
+
 
 #: include/global_form.php:966
 msgid "Place the legend at the given side of the graph."
@@ -10212,7 +10230,8 @@ msgstr "Décalez vos données sur l'axe des temps (axe des abscisses) de la quan
 
 #: include/global_form.php:1072
 msgid "[HRULE|VRULE]: The value of the graph item.<br/> [TICK]: The fraction for the tick line.<br/> [SHIFT]: The time offset in seconds."
-msgstr "[HRULE| VRULE]&nbsp;: La valeur de l'élément graphique.<br/> [COCHE]&nbsp;: La fraction pour la ligne de coche.<br/> [MAJ]&nbsp;: Le décalage horaire en secondes."
+msgstr "[HRULE| VRULE] : La valeur de l'élément graphique.<br/> [COCHE] : La fraction pour la ligne de coche.<br/> [MAJ] : Le décalage horaire en secondes."
+
 
 #: include/global_form.php:1075
 msgid "GPRINT Type"
@@ -10394,7 +10413,8 @@ msgstr "Si un périphérique tombe en panne, utilisez cet ensemble d'options SNM
 
 #: include/global_form.php:1344
 msgid "The type of ping packet to sent.  <br><i>NOTE: ICMP on Linux/UNIX requires root privileges.</i>  <br><i>NOTE: TCP Ping Closed - Even if the tcp ping is not successful, the device can be considered UP.</i>"
-msgstr "Le type de paquet ping à envoyer.  <br><i>REMARQUE&nbsp;: ICMP sur Linux/Unix nécessite des privilèges root.</i>  <br><i>REMARQUE&nbsp;: TCP Ping fermé - Même si le ping tcp ne réussit pas, l'appareil peut être considéré comme UP.</i>"
+msgstr "Le type de paquet ping à envoyer.  <br><i>REMARQUE : ICMP sur Linux/Unix nécessite des privilèges root.</i>  <br><i>REMARQUE : TCP Ping fermé - Même si le ping tcp ne réussit pas, l'appareil peut être considéré comme UP.</i>"
+
 
 #: include/global_form.php:1381 include/global_form.php:1931
 msgid "Additional Options"
@@ -10455,7 +10475,8 @@ msgstr "Courriel de l'auteur"
 
 #: include/global_form.php:1464
 msgid "The original author's Email address."
-msgstr "L&apos;adresse électronique des auteurs d&apos;origine."
+msgstr "L'adresse électronique des auteurs d'origine."
+
 
 #: include/global_form.php:1473
 msgid "A the author's desired copyright for this Device Template."
@@ -10902,7 +10923,8 @@ msgstr "Facultatif : article sous-arbre"
 
 #: include/global_form.php:2426
 msgid "Choose a Sub-Tree Item to hook in.<br>Make sure, that it is still there when this rule is executed!"
-msgstr "Choisissez un élément Sub-Tree à accrocher.<br>Assurez-vous qu'il est toujours là lorsque cette règle est exécutée&nbsp;!"
+msgstr "Choisissez un élément Sub-Tree à accrocher.<br>Assurez-vous qu'il est toujours là lorsque cette règle est exécutée !"
+
 
 #: include/global_form.php:2446
 msgid "Header Type"
@@ -10932,7 +10954,8 @@ msgstr "Modèle de remplacement"
 
 #: include/global_form.php:2480
 msgid "The Replacement String Pattern for use as a Tree Header.<br>Refer to a Match by e.g. <strong>\\${1}</strong> for the first match!"
-msgstr "Le modèle de chaîne de remplacement à utiliser comme en-tête d'arbre.<br>Reportez-vous à un match par exemple<strong>\\${1}</strong> pour le premier match&nbsp;!"
+msgstr "Le modèle de chaîne de remplacement à utiliser comme en-tête d'arbre.<br>Reportez-vous à un match par exemple<strong>\\${1}</strong> pour le premier match !"
+
 
 #: include/global_languages.php:971
 msgid " T"
@@ -11088,7 +11111,8 @@ msgstr "Chemin du journal Cacti"
 
 #: include/global_settings.php:225
 msgid "The path to your Cacti log file (if blank, defaults to &lt;path_cacti&gt;/log/cacti.log)"
-msgstr "Le chemin d'accès à votre fichier journal Cacti (s'il est vide, la valeur par défaut est <path_cacti>/log/cacti.log)"
+msgstr "Le chemin d'accès à votre fichier journal Cacti (s'il est vide, la valeur par défaut est &lt;path_cacti&gt;/log/cacti.log)"
+
 
 #: include/global_settings.php:234
 msgid "Poller Standard Error Log Path"
@@ -12072,7 +12096,8 @@ msgstr "À quelle fréquence souhaitez-vous que l'affichage du journal Cacti soi
 
 #: include/global_settings.php:1183
 msgid "Log Viewer Settings"
-msgstr "Paramètres d&apos; affichage"
+msgstr "Paramètres d' affichage"
+
 
 #: include/global_settings.php:1188
 msgid "Exclusion Regex"
@@ -12286,7 +12311,8 @@ msgstr "Nombre maximum de jours pour afficher les heures d'ouverture"
 
 #: include/global_settings.php:1375
 msgid "After this number of days, the business hours will not be added to the graph. <br/>Recommended: 62 days"
-msgstr "Après ce nombre de jours, les heures ouvrables ne seront plus ajoutées au graphique. <br/>Recommandé&nbsp;: 62 jours"
+msgstr "Après ce nombre de jours, les heures ouvrables ne seront plus ajoutées au graphique. <br/>Recommandé : 62 jours"
+
 
 #: include/global_settings.php:1390
 msgid "Data Collection Enabled"
@@ -12924,7 +12950,8 @@ msgstr "C'est le message qui sera envoyé au nouveau compte utilisateur. 1024 ca
 
 #: include/global_settings.php:2025
 msgid "New user created. <br>Server: <a href=\"<CACTIURL>\"><CACTIURL></a><br>Username: <USERNAME><br>To login and set a new password, use <a href=\"<PWDRESETLINK>\">the following link</a><br><br>"
-msgstr "Nouvel utilisateur créé. <br>Serveur&nbsp;: <a href=\"<CACTIURL>\"><CACTIURL><br></a>Nom d'utilisateur&nbsp;: <USERNAME><br>Pour vous connecter et définir un nouveau mot de passe, utilisez <a href=\"<PWDRESETLINK>\">le lien suivant</a><br><br>"
+msgstr "Nouvel utilisateur créé. <br>Serveur : <a href=\"<CACTIURL>\"><CACTIURL><br></a>Nom d'utilisateur : <USERNAME><br>Pour vous connecter et définir un nouveau mot de passe, utilisez <a href=\"<PWDRESETLINK>\">le lien suivant</a><br><br>"
+
 
 #: include/global_settings.php:2028
 msgid "Send email when an admin changes a user password"
@@ -12956,7 +12983,8 @@ msgstr "C'est le message qui sera envoyé lorsqu'un utilisateur demande une réi
 
 #: include/global_settings.php:2048
 msgid "User's password has been reset. <br>Server: <a href=\"<CACTIURL>\"><CACTIURL></a><br>Username: <USERNAME><br>To set a new password, use <a href=\"<PWDRESETLINK>\">the following link</a><br><br>"
-msgstr "Le mot de passe de l'utilisateur a été réinitialisé. <br>Serveur&nbsp;: <a href=\"<CACTIURL>\"><CACTIURL><br></a>Nom d'utilisateur&nbsp;: <USERNAME><br>Pour définir un nouveau mot de passe, utilisez <a href=\"<PWDRESETLINK>\">le lien suivant</a><br><br>"
+msgstr "Le mot de passe de l'utilisateur a été réinitialisé. <br>Serveur : <a href=\"<CACTIURL>\"><CACTIURL><br></a>Nom d'utilisateur : <USERNAME><br>Pour définir un nouveau mot de passe, utilisez <a href=\"<PWDRESETLINK>\">le lien suivant</a><br><br>"
+
 
 #: include/global_settings.php:2051
 msgid "Reset link validity"
@@ -13766,12 +13794,8 @@ msgstr "Filtre DS"
 
 #: include/global_settings.php:2822
 msgid "Specifies the DSes inside an RRD upon which Spikekill will operate. A string of comma-separated values that contains index numbers or names of desired DSes. If left blank, all DSes will match. An example is <i>\"5,traffic_*\"</i>, which would match DS index 5 as well as any DS whose name begins with <i>\"traffic_\"</i>. "
-msgstr ""
-"Spécifie les DS à l'intérieur d'un RRD sur lesquels Spikekill fonctionnera. "
-"Chaîne de valeurs séparées par des virgules qui contient des numéros d'index "
-"ou des noms de DS souhaités. Si laissé vide, tous les DS correspondront. Un "
-"exemple est <i>«&nbsp;5,traffic_*&nbsp;»</i>, qui correspondrait à l'indice "
-"DS 5 ainsi qu'à toute DS dont le nom commence par <i>«&nbsp;traffic_»</i>. "
+msgstr "Spécifie les DS à l'intérieur d'un RRD sur lesquels Spikekill fonctionnera. Chaîne de valeurs séparées par des virgules qui contient des numéros d'index ou des noms de DS souhaités. Si laissé vide, tous les DS correspondront. Un exemple est <i>« 5,traffic_* »</i>, qui correspondrait à l'indice DS 5 ainsi qu'à toute DS dont le nom commence par <i>« traffic_»</i>. "
+
 
 #: include/global_settings.php:2829
 msgid "RRDfile Backup Directory"
@@ -14219,7 +14243,8 @@ msgstr "FATAL : Nous ne sommes pas en mesure de poursuivre cette installation. 
 
 #: install/install.php:125
 msgid "See the PHP Manual: <a href=\"http://php.net/manual/en/book.json.php\">JavaScript Object Notation</a>."
-msgstr "Voir le manuel PHP&nbsp;: <a href=\"http://php.net/manual/en/book.json.php\">JavaScript Object Notation</a>."
+msgstr "Voir le manuel PHP : <a href=\"http://php.net/manual/en/book.json.php\">JavaScript Object Notation</a>."
+
 
 #: install/install.php:125
 msgid "The php-json module must also be installed."
@@ -14227,7 +14252,8 @@ msgstr "Le module php-json doit également être installé."
 
 #: install/install.php:130
 msgid "See the PHP Manual: <a href=\"http://php.net/manual/en/ini.core.php#ini.disable-functions\">Disable Functions</a>."
-msgstr "Voir le manuel PHP&nbsp;: <a href=\"http://php.net/manual/en/ini.core.php#ini.disable-functions\">Désactiver les fonctions</a>."
+msgstr "Voir le manuel PHP : <a href=\"http://php.net/manual/en/ini.core.php#ini.disable-functions\">Désactiver les fonctions</a>."
+
 
 #: install/install.php:130
 msgid "The shell_exec() and/or exec() functions are currently blocked."
@@ -14593,7 +14619,8 @@ msgstr "Système :"
 
 #: lib/api_device.php:1716
 msgid "Uptime:"
-msgstr "Temps d&apos;activation & #160;:"
+msgstr "Temps d'activation & #160;:"
+
 
 #: lib/api_device.php:1718
 msgid "Hostname:"
@@ -14821,7 +14848,8 @@ msgstr "%s - REMARQUE WEBUI : journal Cacti effacé de l'interface de gestion W
 
 #: lib/clog_webapi.php:224
 msgid "Click 'Continue' to purge the Log File.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog."
-msgstr "Cliquez sur 'Continuer' pour supprimer le fichier des logs.<br><br><br><br>Note : si l'enregistrement des logs a été mis en place sur Cacti et Syslog, les informations des logs dans Syslog ne sont pas altérées."
+msgstr "Cliquez sur 'Continuer' pour supprimer le fichier des logs.<br><br><br>Note : si l'enregistrement des logs a été mis en place sur Cacti et Syslog, les informations des logs dans Syslog ne sont pas altérées."
+
 
 #: lib/clog_webapi.php:230 user_log.php:389 utilities.php:342
 msgid "Purge Log"
@@ -15125,11 +15153,13 @@ msgstr "Nombre d'index trouvés : %s"
 
 #: lib/data_query.php:697
 msgid "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' not supported"
-msgstr "<arg_num_indexes> manquant dans le fichier XML, 'Index Count Changed' non pris en charge"
+msgstr "&lt;arg_num_indexes&gt; manquant dans le fichier XML, 'Index Count Changed' non pris en charge"
+
 
 #: lib/data_query.php:699
 msgid "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting arg_index entries"
-msgstr "<arg_num_indexes> manquant dans le fichier XML, 'Index Count Changed' émulé en comptant les entrées arg_index"
+msgstr "&lt;arg_num_indexes&gt; manquant dans le fichier XML, 'Index Count Changed' émulé en comptant les entrées arg_index"
+
 
 #: lib/data_query.php:710
 msgid "ERROR: Data Query returned no indexes."
@@ -15214,7 +15244,8 @@ msgstr "Exécution de SNMP get pour le nombre d'index @ '%s' Nombre d'index : %
 
 #: lib/data_query.php:937
 msgid "&lt;oid_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting oid_index entries"
-msgstr "<oid_num_indexes> manquant dans le fichier XML, 'Index Count Changed' émulé en comptant les entrées oid_index"
+msgstr "&lt;oid_num_indexes&gt; manquant dans le fichier XML, 'Index Count Changed' émulé en comptant les entrées oid_index"
+
 
 #: lib/data_query.php:940
 #, php-format
@@ -17278,7 +17309,8 @@ msgstr "Sous Linux/Unix, exécutez ce qui suit en tant que « root » dans un 
 
 #: lib/installer.php:1753
 msgid "On Windows, you must follow the instructions here <a target='_blank' href='https://dev.mysql.com/downloads/timezones.html'>Time zone description table</a>.  Once that is complete, you can issue the following command to grant the Cacti user access to the tables:"
-msgstr "Sous Windows, vous devez suivre les instructions ici <a target='_blank' href='https://dev.mysql.com/downloads/timezones.html'>Tableau de description du fuseau horaire</a>.  Une fois cela terminé, vous pouvez émettre la commande suivante pour accorder à l'utilisateur Cacti l'accès aux tables&nbsp;:"
+msgstr "Sous Windows, vous devez suivre les instructions ici <a target='_blank' href='https://dev.mysql.com/downloads/timezones.html'>Tableau de description du fuseau horaire</a>.  Une fois cela terminé, vous pouvez émettre la commande suivante pour accorder à l'utilisateur Cacti l'accès aux tables :"
+
 
 #: lib/installer.php:1756
 msgid "Then run the following within MySQL as an administrator:"
@@ -17522,7 +17554,8 @@ msgstr "Vous semblez passer à une version antérieure. Les modifications apport
 
 #: lib/installer.php:2258
 msgid "Please select the type of installation"
-msgstr "Sélectionnez le type d&apos;installation"
+msgstr "Sélectionnez le type d'installation"
+
 
 #: lib/installer.php:2259
 msgid "Installation options:"
@@ -19078,7 +19111,7 @@ msgid "If your tables have very large indexes, you must operate with the Barracu
 msgstr "Si vos tables ont de très grands index, vous devez opérer avec le Barracuda innodb_file_format et le innodb_large_prefix égal à 1.  Ne pas le faire peut entraîner des plugins qui ne peuvent pas créer correctement des tables."
 
 #: lib/utility.php:1254
-#, php-format
+#, no-php-format
 msgid "InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size.  If you database is very large or remote, you can consider increasing this size.  If remote, it can by as high as 80% of the systems memory.  However, cautions must be taken to reduce the swappiness of the system, or to remove swap to keep the system from swapping."
 msgstr ""
 
@@ -19857,7 +19890,8 @@ msgstr "La signature d'un ou plusieurs colis n'est pas approuvée.<br>"
 #: package_import.php:762
 #, php-format
 msgid "<b>Author:</b> &lt;%s&gt; %s.<br>"
-msgstr "<b>Auteur&nbsp;:</b> <%s> %s.<br>"
+msgstr "<b>Auteur :</b> &lt;%s&gt; %s.<br>"
+
 
 #: package_import.php:766
 #, php-format
@@ -21782,7 +21816,8 @@ msgstr "Requêtes de base de données"
 
 #: support.php:53
 msgid "Background Processes"
-msgstr "Processus d&apos; arrière-plan"
+msgstr "Processus d' arrière-plan"
+
 
 #: support.php:54
 msgid "Poller Stats"
@@ -22065,7 +22100,8 @@ msgstr "Paramètres de configuration"
 #: support.php:1168
 #, php-format
 msgid "ERROR: Installed RRDtool version does not exceed configured version.<br>Please visit the %s and select the correct RRDtool Utility Version."
-msgstr "ERREUR&nbsp;: la version de RRDtool installée ne dépasse pas la version configurée.<br>Veuillez visiter le %s et sélectionner la bonne version de l'utilitaire RRDtool."
+msgstr "ERREUR : la version de RRDtool installée ne dépasse pas la version configurée.<br>Veuillez visiter le %s et sélectionner la bonne version de l'utilitaire RRDtool."
+
 
 #: support.php:1174
 #, php-format
@@ -22248,7 +22284,8 @@ msgstr "PHP SNMP"
 
 #: support.php:1699
 msgid "Installed. <span class=\"deviceDown\">Note: If you are planning on using SNMPv3, you must remove php-snmp and use the Net-SNMP toolset.</span>"
-msgstr "Installé. <span class=\"deviceDown\">Remarque&nbsp;: Si vous envisagez d'utiliser SNMPv3, vous devez supprimer php-snmp et utiliser l'ensemble d'outils Net-SNMP.</span>"
+msgstr "Installé. <span class=\"deviceDown\">Remarque : Si vous envisagez d'utiliser SNMPv3, vous devez supprimer php-snmp et utiliser l'ensemble d'outils Net-SNMP.</span>"
+
 
 #: support.php:1735
 msgid "You've set memory limit to 'unlimited'."
@@ -23601,7 +23638,8 @@ msgstr "Utilisateur supprimé"
 
 #: user_log.php:383
 msgid "Click 'Continue' to purge the User Log.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog."
-msgstr "Cliquez sur «&nbsp;Continuer&nbsp;» pour purger le journal de l'utilisateur.<br><br><br>Remarque&nbsp;: si la journalisation est définie à la fois sur Cacti et Syslog, les informations du journal resteront dans Syslog."
+msgstr "Cliquez sur « Continuer » pour purger le journal de l'utilisateur.<br><br><br>Remarque : si la journalisation est définie à la fois sur Cacti et Syslog, les informations du journal resteront dans Syslog."
+
 
 #: utilities.php:47
 msgid "The Poller Cache Rebuild Operation has been started in background"
@@ -23846,7 +23884,8 @@ msgstr "Autre"
 
 #: utilities.php:1555
 msgid "Cannot open directory"
-msgstr "impossible d’ouvrir le répertoire %s"
+msgstr "Impossible d’ouvrir le répertoire"
+
 
 #: utilities.php:1559
 msgid "Directory Does NOT Exist!!"
@@ -23997,12 +24036,14 @@ msgstr "Processus : %d"
 #: utilities.php:1779
 #, php-format
 msgid "Status: <span class=\"deviceUp\"><b>Running</b></span>, Remaining: %s (dses), CurrentRuntime: %s (secs), PrevRuntime: %s (secs), PrevProcessed: %10s (ds rows)"
-msgstr "Statut&nbsp;: <span class=\"deviceUp\"><b>En cours d'exécution</b></span>, restant&nbsp;: %s (dses), CurrentRuntime&nbsp;: %s (secs), PrevRuntime&nbsp;: %s (secs), PrevProcessed&nbsp;: %10s (ds lignes)"
+msgstr "Statut : <span class=\"deviceUp\"><b>En cours d'exécution</b></span>, restant : %s (dses), CurrentRuntime : %s (secs), PrevRuntime : %s (secs), PrevProcessed : %10s (ds lignes)"
+
 
 #: utilities.php:1781
 #, php-format
 msgid "Status: <span class=\"deviceRecovering\"><b>Idle</b></span>, PrevRuntime: %s (secs), PrevProcessed: %10s (ds rows)"
-msgstr "Statut&nbsp;: <span class=\"deviceRecovering\"><b>inactif</b></span>, PrevRuntime&nbsp;: %s (secondes), PrevProcessed&nbsp;: %10s (lignes ds)"
+msgstr "Statut : <span class=\"deviceRecovering\"><b>inactif</b></span>, PrevRuntime : %s (secondes), PrevProcessed : %10s (lignes ds)"
+
 
 #: utilities.php:1787
 msgid "Run Time Configuration"

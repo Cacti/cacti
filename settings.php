@@ -260,7 +260,7 @@ function display_settings() : void {
 	var smtpPath       = '';
 	var currentTab     = '<?php print $current_tab; ?>';
 	var dataCollectors = '<?php print $data_collectors; ?>';
-	var permsTitle     = '<?php print __esc('Changing Permission Model Warning'); ?>';
+	var permsTitle     = <?php print json_encode(__('Changing Permission Model Warning')); ?>;
 	var permsHeader    = <?php print cacti_js_encode(__esc('Changing Permission Model will alter a users effective Graph ' .
 		'permissions.')); ?>;
 	var permsMessage   = <?php print cacti_js_encode(__esc('After you change the Graph Permission Model you should audit your ' .
@@ -295,7 +295,7 @@ function display_settings() : void {
 			event.preventDefault();
 
 			if (parseInt($('#cron_interval').val()) < parseInt($('#poller_interval').val())) {
-				$('#message_container').html('<div id="message" class="textError messageBox"><?php print __('Poller Interval must be less than Cron Interval'); ?></div>').show().delay(4000).slideUp('fast', function() {
+				$('#message_container').html('<div id="message" class="textError messageBox">' + <?php print json_encode(__esc('Poller Interval must be less than Cron Interval')); ?> + '</div>').show().delay(4000).slideUp('fast', function() {
 					$('#message_container').empty();
 				});
 				return false;
@@ -359,8 +359,8 @@ function display_settings() : void {
 				}
 			}).trigger('change');
 		} else if (currentTab == 'mail') {
-			$('#row_settings_email_header div.formHeaderText').append('<div id="emailtest" class="emailtest"><?php print __('Send a Test Email'); ?></div>');
-			$('#row_settings_oauth2_header div.formHeaderText').append('<div id="oauth2token" class="emailtest"><?php print __('Generate OAuth2 Refresh Token in new window'); ?></div>');
+			$('#row_settings_email_header div.formHeaderText').append('<div id="emailtest" class="emailtest">' + <?php print json_encode(__esc('Send a Test Email')); ?> + '</div>');
+			$('#row_settings_oauth2_header div.formHeaderText').append('<div id="oauth2token" class="emailtest">' + <?php print json_encode(__esc('Generate OAuth2 Refresh Token in new window')); ?> + '</div>');
 
 			initMail();
 
@@ -371,7 +371,7 @@ function display_settings() : void {
 			$('#emailtest').click(function() {
 				$.get('settings.php?action=send_test')
 					.done(function(data) {
-						$('body').append('<div id="testmail" title="<?php print __esc('Test Email Results'); ?>"></div>');
+						$('body').append($('<div id="testmail"></div>').attr('title', <?php print json_encode(__('Test Email Results')); ?>));
 						$('#testmail').html(data);
 
 						$('#testmail').dialog({

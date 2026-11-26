@@ -660,7 +660,7 @@ function update_show_current() : void {
 	$table = plugins_load_temp_table();
 
 	$uninstall_msg   = __esc('Uninstalling this Plugin and may remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click \'Uninstall\' below.  Otherwise click \'Cancel\'.');
-	$uninstall_title = __esc('Are you sure you want to Uninstall?');
+	$uninstall_title = __('Are you sure you want to Uninstall?');
 
 	/* JSON-encoded so the values are injected into JavaScript without inline
 	   PHP-in-quoted-string, and action=remove is carried in the dialog form
@@ -673,19 +673,19 @@ function update_show_current() : void {
 	]);
 
 	$rmdata_msg   = __esc('Removing Plugin Data and Settings for will remove all Plugin Data and Settings.  If you really want to Remove Data and Settings for this Plugin, click \'Remove Data\' below.  Otherwise click \'Cancel\'.');
-	$rmdata_title = __esc('Are you sure you want to Remove all Plugin Data and Settings?');
+	$rmdata_title = __('Are you sure you want to Remove all Plugin Data and Settings?');
 
 	$resarchive_msg   = __esc('Restoring this Plugin Archive will overwrite the current Plugin directory.  If you really want to Restore this Plugin Archive, click \'Restore\' below.  Otherwise click \'Cancel\'.');
-	$resarchive_title = __esc('Are you sure you want to Restore this Archive?');
+	$resarchive_title = __('Are you sure you want to Restore this Archive?');
 
 	$rmarchive_msg   = __esc('Deleting this Plugin Archive is not reversible without a table restore.  If you really want to Delete the Plugin Archive, click \'Delete\' below.  Otherwise click \'Cancel\'.');
-	$rmarchive_title = __esc('Are you sure you want to Delete this Archive?');
+	$rmarchive_title = __('Are you sure you want to Delete this Archive?');
 
 	$archive_msg   = __esc('Archiving makes a backup of the plugin that you may restore at a later date.  Before archiving, you may enter an archive note that will be stored with the Archive for later reference.  If you really want to Archive the Plugin, click \'Delete\' below.  Otherwise click \'Cancel\'.');
 
 	$archive_form  = '<form name="dialogForm" id="dialogForm"><p><b><label for="archive_note">' . __('Archive Note') . '</label></b>&nbsp;<input type="text" class="ui-state-default ui-corner-all" size="60" value="" name="archive_note" id="archive_note"></p></form>';
 
-	$archive_title = __esc('Are you sure you want to Archive this Plugin?');
+	$archive_title = __('Are you sure you want to Archive this Plugin?');
 
 	html_filter_start_box(__('Plugin Management'), '100%', false, true, 'center', '');
 
@@ -937,11 +937,11 @@ function update_show_current() : void {
 				$('.pirestore').rebind('click', function(event) {
 					event.preventDefault();
 
-					var dialogTitle    = '<?php print $resarchive_title; ?>';
-					var dialogMessage  = '<?php print $resarchive_msg; ?>';
+					var dialogTitle    = <?php print json_encode($resarchive_title); ?>;
+					var dialogMessage  = <?php print json_encode($resarchive_msg); ?>;
 					var dialogForm     = '';
-					var buttonContinue = '<?php print __('Restore Archive'); ?>';
-					var buttonCancel   = '<?php print __('Cancel'); ?>';
+					var buttonContinue = <?php print json_encode(__('Restore Archive')); ?>;
+					var buttonCancel   = <?php print json_encode(__('Cancel')); ?>;
 					var url            = $(this).attr('href');
 
 					displayDialog(url, dialogTitle, dialogMessage, dialogForm, buttonContinue, buttonCancel, 80, 400);
@@ -950,11 +950,11 @@ function update_show_current() : void {
 				$('.pirmarchive').rebind('click', function(event) {
 					event.preventDefault();
 
-					var dialogTitle    = '<?php print $rmarchive_title; ?>';
-					var dialogMessage  = '<?php print $rmarchive_msg; ?>';
+					var dialogTitle    = <?php print json_encode($rmarchive_title); ?>;
+					var dialogMessage  = <?php print json_encode($rmarchive_msg); ?>;
 					var dialogForm     = '';
-					var buttonContinue = '<?php print __('Delete Archive'); ?>';
-					var buttonCancel   = '<?php print __('Cancel'); ?>';
+					var buttonContinue = <?php print json_encode(__('Delete Archive')); ?>;
+					var buttonCancel   = <?php print json_encode(__('Cancel')); ?>;
 					var url            = $(this).attr('href');
 
 					displayDialog(url, dialogTitle, dialogMessage, dialogForm, buttonContinue, buttonCancel, 80, 400);
@@ -963,11 +963,11 @@ function update_show_current() : void {
 				$('.piarchive').rebind('click', function(event) {
 					event.preventDefault();
 
-					var dialogTitle    = '<?php print $archive_title; ?>';
-					var dialogMessage  = '<?php print $archive_msg; ?>';
+					var dialogTitle    = <?php print json_encode($archive_title); ?>;
+					var dialogMessage  = <?php print json_encode($archive_msg); ?>;
 					var dialogForm     = '<?php print $archive_form; ?>';
-					var buttonContinue = '<?php print __('Archive Plugin'); ?>';
-					var buttonCancel   = '<?php print __('Cancel'); ?>';
+					var buttonContinue = <?php print json_encode(__('Archive Plugin')); ?>;
+					var buttonCancel   = <?php print json_encode(__('Cancel')); ?>;
 					var url            = $(this).attr('href');
 
 					displayDialog(url, dialogTitle, dialogMessage, dialogForm, buttonContinue, buttonCancel, 120, 600);
@@ -976,11 +976,11 @@ function update_show_current() : void {
 				$('.pirmdata').rebind('click', function(event) {
 					event.preventDefault();
 
-					var dialogTitle    = '<?php print $rmdata_title; ?>';
-					var dialogMessage  = '<?php print $rmdata_msg; ?>';
+					var dialogTitle    = <?php print json_encode($rmdata_title); ?>;
+					var dialogMessage  = <?php print json_encode($rmdata_msg); ?>;
 					var dialogForm     = '';
-					var buttonContinue = '<?php print __('Remove Data'); ?>';
-					var buttonCancel   = '<?php print __('Cancel'); ?>';
+					var buttonContinue = <?php print json_encode(__('Remove Data')); ?>;
+					var buttonCancel   = <?php print json_encode(__('Cancel')); ?>;
 					var url            = $(this).attr('href');
 
 					displayDialog(url, dialogTitle, dialogMessage, dialogForm, buttonContinue, buttonCancel, 80, 400);
@@ -989,11 +989,11 @@ function update_show_current() : void {
 				$('.piuninstall').rebind('click', function(event) {
 					event.preventDefault();
 
-					var dialogTitle    = '<?php print $uninstall_title; ?>';
-					var dialogMessage  = '<?php print $uninstall_msg; ?>';
+					var dialogTitle    = <?php print json_encode($uninstall_title); ?>;
+					var dialogMessage  = <?php print json_encode($uninstall_msg); ?>;
 					var dialogForm     = '';
-					var buttonContinue = '<?php print __('Uninstall'); ?>';
-					var buttonCancel   = '<?php print __('Cancel'); ?>';
+					var buttonContinue = <?php print json_encode(__('Uninstall')); ?>;
+					var buttonCancel   = <?php print json_encode(__('Cancel')); ?>;
 					var url            = $(this).attr('href');
 
 					displayDialog(url, dialogTitle, dialogMessage, dialogForm, buttonContinue, buttonCancel, 80, 400);
@@ -1029,7 +1029,7 @@ function update_show_current() : void {
 				$('.pireadme').rebind('click', function(event) {
 					event.preventDefault();
 
-					var dialogTitle   = '<?php print __esc('Plugin Reame File'); ?>';
+					var dialogTitle   = <?php print json_encode(__('Plugin Reame File')); ?>;
 					var url           = $(this).attr('href');
 
 					displayFileDialog(url, dialogTitle, 400, 700);

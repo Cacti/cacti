@@ -1482,7 +1482,7 @@ function device_javascript(bool $hasHost = true) : void {
 					hostInfoHeight = $('.hostInfoHeader').height();
 				});
 			} else {
-					$('#ping_results').html('<?php print __('Device Status will appear once created'); ?>');
+					$('#ping_results').html(<?php print json_encode(__esc('Device Status will appear once created')); ?>);
 			}
 		});
 

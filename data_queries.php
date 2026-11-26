@@ -1265,7 +1265,7 @@ function data_query_edit() : void {
 					});
 
 					$('#cdialog').dialog({
-						title: '<?php print __('Delete Associated Graph'); ?>',
+						title: <?php print json_encode(__('Delete Associated Graph')); ?>,
 						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
 						minHeight: 80,
 						minWidth: 500

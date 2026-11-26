@@ -933,7 +933,8 @@ msgstr "Моля, въведете текущата си парола и нов�
 
 #: auth_changepassword.php:412 auth_resetpassword.php:263
 msgid "Please enter your new Cacti password."
-msgstr "Моля, въведете текущата си парола и новата си <br> Cacti парола."
+msgstr "Моля, въведете новата си Cacti парола."
+
 
 #: auth_changepassword.php:415 include/global_form.php:1698
 #: lib/functions.php:4080 lib/html.php:3070
@@ -1806,9 +1807,8 @@ msgstr "Импортиране на правило за откриване на 
 #: automation_networks.php:366
 #, php-format
 msgid "Can Not Restart Discovery for Discovery in Progress for Network '%s'"
-msgstr ""
-"Не може да се рестартира Discovery за откриване в процес на работа за "
-"мрежата &quot; %s&quot"
+msgstr "Не може да се рестартира Discovery за откриване в процес на работа за мрежата \" %s&quot"
+
 
 #: automation_networks.php:370
 #, php-format
@@ -2650,11 +2650,13 @@ msgstr "Импортиране на опции за SNMP"
 
 #: automation_snmp.php:409
 msgid "Click 'Continue' to Delete the following SNMP Option."
-msgstr "Натиснете &#39;Продължи&#39;, за да изтриете следните SNMP опции."
+msgstr "Натиснете 'Продължи', за да изтриете следните SNMP опции."
+
 
 #: automation_snmp.php:410
 msgid "Click 'Continue' to Delete following SNMP Options."
-msgstr "Натиснете &#39;Продължи&#39;, за да изтриете следните SNMP опции."
+msgstr "Натиснете 'Продължи', за да изтриете следните SNMP опции."
+
 
 #: automation_snmp.php:411
 msgid "Delete SNMP Option"
@@ -2710,7 +2712,8 @@ msgstr "Елементът за автоматизация не съществу
 
 #: automation_snmp.php:535
 msgid "Click 'Continue' to delete the following SNMP Option Item."
-msgstr "Кликнете върху &quot;Продължи&quot;, за да изтриете следната SNMP опция."
+msgstr "Кликнете върху \"Продължи\", за да изтриете следната SNMP опция."
+
 
 #: automation_snmp.php:536
 msgid "SNMP Option:"
@@ -5839,7 +5842,8 @@ msgstr "Име на графиката"
 
 #: graph_view.php:868 graph_view.php:906 graphs.php:3060
 msgid "The Title of this Graph.  Generally programmatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual."
-msgstr "Заглавието на тази графика. Обикновено се генерира програмно от дефиницията на графичния шаблон или от предложените правила за наименуване. Максималната дължина на заглавието се контролира от Настройки-&gt; Визуално."
+msgstr "Заглавието на тази графика. Обикновено се генерира програмно от дефиницията на графичния шаблон или от предложените правила за наименуване. Максималната дължина на заглавието се контролира от Настройки-> Визуално."
+
 
 #: graph_view.php:871 sites.php:426 sites.php:632 tree.php:885
 msgid "Site Name"
@@ -6876,7 +6880,8 @@ msgstr "Общият брой на източниците на данни, ге�
 
 #: host.php:1793
 msgid "The monitoring status of the Device based upon ping results.  If this Device is a special type Device, by using the hostname \"localhost\", or due to the setting to not perform an Availability Check, it will always remain Up.  When using cmd.php data collector, a Device with no Graphs, is not pinged by the data collector and will remain in an \"Unknown\" state."
-msgstr "Статусът на наблюдение на устройството въз основа на резултатите от ping. Ако това устройство е специален тип устройство, като използвате името на хоста &quot;localhost&quot;, или поради настройката, която не изпълнява проверка за наличност, тя винаги ще остане нагоре. Когато се използва колектор данни cmd.php, Устройство без графики не се пигира от колектора на данни и ще остане в състояние &quot;Неизвестно&quot;."
+msgstr "Статусът на наблюдение на устройството въз основа на резултатите от ping. Ако това устройство е специален тип устройство, като използвате името на хоста \"localhost\", или поради настройката, която не изпълнява проверка за наличност, тя винаги ще остане нагоре. Когато се използва колектор данни cmd.php, Устройство без графики не се пигира от колектора на данни и ще остане в състояние \"Неизвестно\"."
+
 
 #: host.php:1799
 msgid "The site associated to this Device"
@@ -7207,7 +7212,8 @@ msgstr "Осветената директория не съществува. М�
 
 #: include/global_arrays.php:174
 msgid "The Cacti log file must have the extension '.log'"
-msgstr "Дневникът на Cacti трябва да има разширение &quot;.log&quot"
+msgstr "Дневникът на Cacti трябва да има разширение \".log&quot"
+
 
 #: include/global_arrays.php:177
 msgid "Data Input for method does not appear to be whitelisted."
@@ -7447,7 +7453,8 @@ msgstr "Когато запазвате отдалечен колектор да
 
 #: include/global_arrays.php:354
 msgid "Your Remote Database Hostname must be something other than 'localhost' for each Remote Data Collector."
-msgstr "Името на хоста на отдалечената база данни трябва да е нещо различно от &quot;localhost&quot; за всеки отдалечен колектор данни."
+msgstr "Името на хоста на отдалечената база данни трябва да е нещо различно от \"localhost\" за всеки отдалечен колектор данни."
+
 
 #: include/global_arrays.php:357
 msgid "Path variables on this page were only saved locally."
@@ -7620,11 +7627,13 @@ msgstr "Център"
 
 #: include/global_arrays.php:600
 msgid "Top -> Down"
-msgstr "Горе -&gt; надолу"
+msgstr "Горе -> надолу"
+
 
 #: include/global_arrays.php:601
 msgid "Bottom -> Up"
-msgstr "Отдолу -&gt; нагоре"
+msgstr "Отдолу -> нагоре"
+
 
 #: include/global_arrays.php:605 tree.php:1686
 msgid "Numeric"
@@ -9901,7 +9910,8 @@ msgstr "Името зададено за този шаблон за данни."
 
 #: include/global_form.php:580
 msgid "Choose a name for this data source.  It can include replacement variables such as |host_description| or |query_fieldName|.  For a complete list of supported replacement tags, please see the Cacti documentation."
-msgstr "Изберете име за този източник на данни. Тя може да включва заместващи променливи, като например host_description | или | query_fieldName |. За пълен списък на поддържаните маркери за подмяна, моля вижте документацията на Cacti."
+msgstr "Изберете име за този източник на данни. Тя може да включва заместващи променливи, като например |host_description| или |query_fieldName|. За пълен списък на поддържаните маркери за подмяна, моля вижте документацията на Cacti."
+
 
 #: include/global_form.php:584
 msgid "Data Source Path"
@@ -9998,7 +10008,8 @@ msgstr "Заглавие (- заглавие)"
 
 #: include/global_form.php:717
 msgid "The name that is printed on the graph.  It can include replacement variables such as |host_description| or |query_fieldName|.  For a complete list of supported replacement tags, please see the Cacti documentation."
-msgstr "Името, което е отпечатано на графиката. Тя може да включва заместващи променливи, като например host_description | или | query_fieldName |. За пълен списък на поддържаните маркери за подмяна, моля вижте документацията на Cacti."
+msgstr "Името, което е отпечатано на графиката. Тя може да включва заместващи променливи, като например |host_description| или |query_fieldName|. За пълен списък на поддържаните маркери за подмяна, моля вижте документацията на Cacti."
+
 
 #: include/global_form.php:721
 msgid "Vertical Label (--vertical-label)"
@@ -10046,7 +10057,8 @@ msgstr "Наклонен режим (--slope-mode)"
 
 #: include/global_form.php:763
 msgid "Using Slope Mode evens out the shape of the graphs at the expense of some on screen resolution."
-msgstr "Използването на режим &quot;Наклон&quot; изравнява формата на графиките за сметка на някои разделителни способности на екрана."
+msgstr "Използването на режим \"Наклон\" изравнява формата на графиките за сметка на някои разделителни способности на екрана."
+
 
 #: include/global_form.php:766
 msgid "Scaling Options"
@@ -10142,7 +10154,8 @@ msgstr "Единична стойност на елемента (- единич�
 
 #: include/global_form.php:854
 msgid "What unit Cacti should use on the Y-axis. Use 3 to display everything in \"k\" or -6 to display everything in \"u\" (micro)."
-msgstr "Каква единица трябва да използва Cacti по Y-оста. Използвайте 3, за да покажете всичко в &quot;k&quot; или -6, за да покажете всичко в &quot;u&quot; (микро)."
+msgstr "Каква единица трябва да използва Cacti по Y-оста. Използвайте 3, за да покажете всичко в \"k\" или -6, за да покажете всичко в \"u\" (микро)."
+
 
 #: include/global_form.php:858
 msgid "Unit Length (--units-length &lt;length&gt;)"
@@ -10863,7 +10876,8 @@ msgstr "Тип на съобщението SNMP"
 
 #: include/global_form.php:1923
 msgid "SNMP traps are always unacknowledged. To send out acknowledged SNMP notifications, formally called \"INFORMS\", SNMPv2 or above will be required."
-msgstr "SNMP traps са винаги непотвърдени. За да изпратите потвърдени SNMP известия, официално наречени &quot;INFORMS&quot;, ще се изисква SNMPv2 или по-висока."
+msgstr "SNMP traps са винаги непотвърдени. За да изпратите потвърдени SNMP известия, официално наречени \"INFORMS\", ще се изисква SNMPv2 или по-висока."
+
 
 #: include/global_form.php:1956
 msgid "The new Title of the aggregated Graph."
@@ -10901,7 +10915,8 @@ msgstr "От общо"
 #: include/global_form.php:1987 include/global_form.php:2073
 #: include/global_form.php:2178
 msgid "Please check those Items that shall be totaled in the \"Total\" column, when selecting any totaling option here."
-msgstr "Моля, проверете тези елементи, които ще бъдат сумирани в графата &quot;Общо&quot;, когато избирате каквато и да е опция за сумиране."
+msgstr "Моля, проверете тези елементи, които ще бъдат сумирани в графата \"Общо\", когато избирате каквато и да е опция за сумиране."
+
 
 #: include/global_form.php:1994 include/global_form.php:2081
 #: include/global_form.php:2186
@@ -11078,7 +11093,8 @@ msgstr "Пропагандирайте Промени"
 
 #: include/global_form.php:2464
 msgid "Propagate all options on this form (except for 'Title') to all child 'Header' items."
-msgstr "Разпространете всички опции в този формуляр (с изключение на &quot;Заглавие&quot;) за всички елементи на заглавния ред."
+msgstr "Разпространете всички опции в този формуляр (с изключение на \"Заглавие\") за всички елементи на заглавния ред."
+
 
 #: include/global_form.php:2472
 msgid "The String Pattern (Regular Expression) to match against.<br>Enclosing '/' must <strong>NOT</strong> be provided!"
@@ -11256,7 +11272,8 @@ msgstr "Път на журнала за грешки в Полиращия ст�
 
 #: include/global_settings.php:235
 msgid "If you are having issues with Cacti's Data Collectors, set this file path and the Data Collectors standard error will be redirected to this file"
-msgstr "Ако имате проблеми с Cacti&#39;s Data Collectors, задайте този път на файла и стандартната грешка на Data Collectors ще бъде пренасочена към този файл"
+msgstr "Ако имате проблеми с Cacti's Data Collectors, задайте този път на файла и стандартната грешка на Data Collectors ще бъде пренасочена към този файл"
+
 
 #: include/global_settings.php:244
 msgid "Boost Debug Log"
@@ -11625,7 +11642,8 @@ msgstr "Скриване на таблото на Cacti"
 
 #: include/global_settings.php:563
 msgid "For use with Cacti's External Link Support.  Using this setting, you can hide the Cacti Dashboard, so you can display just your own page."
-msgstr "За използване с Cacti&#39;s External Link Support. С помощта на тази настройка можете да скриете таблото на Cacti, така че да можете да показвате само собствената си страница."
+msgstr "За използване с Cacti's External Link Support. С помощта на тази настройка можете да скриете таблото на Cacti, така че да можете да показвате само собствената си страница."
+
 
 #: include/global_settings.php:568
 msgid "Enable Drag-N-Drop"
@@ -12031,7 +12049,8 @@ msgstr "Тип на Ping по подразбиране за всички нов�
 
 #: include/global_settings.php:992
 msgid "Default Ping Port for all new Devices.  With TCP, Cacti will attempt to Syn the port.  With UDP, Cacti requires either a successful connection, or a 'port not reachable' error to determine if the Device is up or not."
-msgstr "По подразбиране Ping порт за всички нови устройства. С TCP, Cacti ще се опита да синхронизира порта. С UDP, Cacti изисква или успешно свързване, или грешка &quot;port not reachable&quot;, за да определи дали устройството е готово или не."
+msgstr "По подразбиране Ping порт за всички нови устройства. С TCP, Cacti ще се опита да синхронизира порта. С UDP, Cacti изисква или успешно свързване, или грешка \"port not reachable\", за да определи дали устройството е готово или не."
+
 
 #: include/global_settings.php:1000
 msgid "Default Ping Timeout value in milli-seconds for all new Devices.  The timeout values to use for Device SNMP, ICMP, UDP and TCP pinging.  ICMP Pings will be rounded up to the nearest second.  TCP and UDP connection timeouts on Windows are controlled by the operating system, and are therefore not recommended on Windows."
@@ -12202,7 +12221,8 @@ msgstr "Максимален брой редове на страница"
 
 #: include/global_settings.php:1169
 msgid "User defined number of lines for the CLOG to tail when selecting 'All lines'."
-msgstr "Потребителски зададен брой редове, които CLOG може да прекъсне при избиране на &quot;Всички линии&quot;."
+msgstr "Потребителски зададен брой редове, които CLOG може да прекъсне при избиране на \"Всички линии\"."
+
 
 #: include/global_settings.php:1176
 msgid "Log Tail Refresh"
@@ -12274,7 +12294,8 @@ msgstr "Персонализиран формат на датата"
 
 #: include/global_settings.php:1243
 msgid "To be used when formatting |date_time| on a graph"
-msgstr "Да се използва при форматиране | date_time | върху графика"
+msgstr "Да се използва при форматиране |date_time| върху графика"
+
 
 #: include/global_settings.php:1250
 msgid "Disable RRDtool Watermark"
@@ -12787,7 +12808,8 @@ msgstr "Специфични параметри за изпълнение на �
 
 #: include/global_settings.php:1741
 msgid "How would you like Spine output errors logged?  The options are: 'Detailed' which is similar to cmd.php logging; 'Summary' which provides the number of output errors per Device; and 'None', which does not provide error counts."
-msgstr "Как бихте искали грешките в изхода на гръбнака да са записани? Опциите са: &quot;Подробно&quot;, което е подобно на регистрирането в cmd.php; „Резюме“, което осигурява броя на изходните грешки за Устройство; и „Няма“, което не съдържа брой грешки."
+msgstr "Как бихте искали грешките в изхода на гръбнака да са записани? Опциите са: \"Подробно\", което е подобно на регистрирането в cmd.php; „Резюме“, което осигурява броя на изходните грешки за Устройство; и „Няма“, което не съдържа брой грешки."
+
 
 #: include/global_settings.php:1750
 msgid "Threads per Process"
@@ -13381,7 +13403,8 @@ msgstr "Максимална дължина на аргумента"
 
 #: include/global_settings.php:2356
 msgid "When boost sends update commands to RRDtool, it must not exceed the operating systems Maximum Argument Length.  This varies by operating system and kernel level.  For example: Windows 2000 <= 2048, FreeBSD <= 65535, Linux 2.6.22-- <= 131072, Linux 2.6.23++ unlimited"
-msgstr "Когато boost изпраща команди за обновяване в RRDtool, то не трябва да надвишава максималната дължина на аргумента на операционните системи. Това зависи от нивото на операционната система и ядрото. Например: Windows 2000 &lt;= 2048, FreeBSD &lt;= 65535, Linux 2.6.22-- &lt;= 131072, Linux 2.6.23 ++ неограничен"
+msgstr "Когато boost изпраща команди за обновяване в RRDtool, то не трябва да надвишава максималната дължина на аргумента на операционните системи. Това зависи от нивото на операционната система и ядрото. Например: Windows 2000 <= 2048, FreeBSD <= 65535, Linux 2.6.22-- <= 131072, Linux 2.6.23 ++ неограничен"
+
 
 #: include/global_settings.php:2363
 msgid "Memory Limit for Boost and Poller"
@@ -13724,7 +13747,8 @@ msgstr "Метод на заместване"
 
 #: include/global_settings.php:2702
 msgid "There are three replacement methods.  The first method replaces the spike with the average of the data source in question.  The second method replaces the spike with a 'NaN'.  The last replaces the spike with the last known good value found."
-msgstr "Има три метода за подмяна. Първият метод замества скока със средната стойност на въпросния източник на данни. Вторият метод замества шипа с &quot;NaN&quot;. Последният заменя скока с последната известна добра стойност."
+msgstr "Има три метода за подмяна. Първият метод замества скока със средната стойност на въпросния източник на данни. Вторият метод замества шипа с \"NaN\". Последният заменя скока с последната известна добра стойност."
+
 
 #: include/global_settings.php:2706 lib/html.php:2431 lib/html.php:2441
 #: lib/html.php:2449 lib/html.php:2766
@@ -13919,7 +13943,8 @@ msgstr "Основно време"
 
 #: include/global_settings.php:2856
 msgid "The Base Time for Spike removal to occur.  For example, if you use '12:00am' and you choose once per day, the batch removal would begin at approximately midnight every day."
-msgstr "Основното време за отстраняване на Спайк. Например, ако използвате &#39;12: 00 &#39;и избирате веднъж на ден, отстраняването на партидата започва всеки ден около полунощ."
+msgstr "Основното време за отстраняване на Спайк. Например, ако използвате '12: 00 'и избирате веднъж на ден, отстраняването на партидата започва всеки ден около полунощ."
+
 
 #: include/global_settings.php:2863
 msgid "Graph Templates to Spike Kill"
@@ -15112,7 +15137,8 @@ msgstr "Открит тип = '%s' [%s]."
 #: lib/data_query.php:135
 #, php-format
 msgid "Unknown Type = '%s'."
-msgstr "Неизвестен тип = &#39; %s&#39;."
+msgstr "Неизвестен тип = ' %s'."
+
 
 #: lib/data_query.php:172
 msgid "WARNING: Sort Field Association has Changed.  Re-mapping issues may occur!"
@@ -15263,11 +15289,13 @@ msgstr "Намерен е брой индекси: %s"
 
 #: lib/data_query.php:697
 msgid "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' not supported"
-msgstr "&lt;arg_num_indexes&gt; липсва в XML файл, &#39;Index Count Changed&#39; не се поддържа"
+msgstr "&lt;arg_num_indexes&gt; липсва в XML файл, 'Index Count Changed' не се поддържа"
+
 
 #: lib/data_query.php:699
 msgid "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting arg_index entries"
-msgstr "&lt;arg_num_indexes&gt; липсва в XML файл, &quot;индексът е променен&quot; е емулиран чрез преброяване на аргументи"
+msgstr "&lt;arg_num_indexes&gt; липсва в XML файл, \"индексът е променен\" е емулиран чрез преброяване на аргументи"
+
 
 #: lib/data_query.php:710
 msgid "ERROR: Data Query returned no indexes."
@@ -15351,7 +15379,8 @@ msgstr "Изпълнение на SNMP get за брой индекси @ '%s' �
 
 #: lib/data_query.php:937
 msgid "&lt;oid_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting oid_index entries"
-msgstr "&lt;oid_num_indexes&gt; липсва в XML файл, &quot;Промяната на индекса е променена&quot; емитирана чрез броене на записи в oid_index"
+msgstr "&lt;oid_num_indexes&gt; липсва в XML файл, \"Промяната на индекса е променена\" емитирана чрез броене на записи в oid_index"
+
 
 #: lib/data_query.php:940
 #, php-format
@@ -15468,7 +15497,8 @@ msgstr "Намиращо се поле за въвеждане „ %s“ [раз
 #: lib/data_query.php:1275
 #, php-format
 msgid "Executing SNMP walk for data @ '%s'"
-msgstr "Изпълнение на SNMP разходка за данни @ &#39; %s&#39"
+msgstr "Изпълнение на SNMP разходка за данни @ ' %s&#39"
+
 
 #: lib/data_query.php:1295 lib/data_query.php:1359 lib/data_query.php:1410
 #: lib/data_query.php:1463
@@ -16467,7 +16497,8 @@ msgstr "Открити са незапазени промени"
 
 #: lib/html_form.php:1936
 msgid "You have unsaved changes on this form.  If you press &#39;Continue&#39; these changes will be discarded.  Press &#39;Cancel&#39; to continue editing the form."
-msgstr "Имате незапазени промени в този формуляр. Ако натиснете „Напред“, тези промени ще бъдат отхвърлени. Натиснете &quot;Отказ&quot;, за да продължите редактирането на формуляра."
+msgstr "Имате незапазени промени в този формуляр. Ако натиснете „Напред“, тези промени ще бъдат отхвърлени. Натиснете \"Отказ\", за да продължите редактирането на формуляра."
+
 
 #: lib/html_form_template.php:166
 msgid "Attempted SQL Injection"
@@ -16619,7 +16650,8 @@ msgstr "Форматирайте файла за използване"
 
 #: lib/html_reports.php:67
 msgid "Choose the custom html wrapper and CSS file to use.  This file contains both html and CSS to wrap around your report.  If it contains more than simply CSS, you need to place a special <REPORT> tag inside of the file.  This format tag will be replaced by the report content.  These files are located in the 'formats' directory."
-msgstr "Изберете потребителската html обвивка и CSS файла, който да използвате. Този файл съдържа както html, така и CSS за пренасяне на отчета. Ако съдържа повече от просто CSS, трябва да поставите специален <REPORT> вътре във файла. Този етикет за формат ще бъде заменен от съдържанието на отчета. Тези файлове се намират в директорията &#39;formats&#39;."
+msgstr "Изберете потребителската html обвивка и CSS файла, който да използвате. Този файл съдържа както html, така и CSS за пренасяне на отчета. Ако съдържа повече от просто CSS, трябва да поставите специален <REPORT> вътре във файла. Този етикет за формат ще бъде заменен от съдържанието на отчета. Тези файлове се намират в директорията 'formats'."
+
 
 #: lib/html_reports.php:72
 msgid "Default Text Font Size"
@@ -16691,7 +16723,8 @@ msgstr "Дефинира честота на отчета спрямо даде�
 
 #: lib/html_reports.php:147
 msgid "e.g. 'Week(s)' represents a weekly Reporting Interval."
-msgstr "напр. &quot;Седмица (и)&quot; представлява седмичен интервал на отчитане."
+msgstr "напр. \"Седмица (и)\" представлява седмичен интервал на отчитане."
+
 
 #: lib/html_reports.php:154
 msgid "Interval Frequency"
@@ -16703,7 +16736,8 @@ msgstr "Въз основа на периода от време на интер�
 
 #: lib/html_reports.php:156
 msgid "e.g. If the Report Interval is 'Month(s)', then '2' indicates Every '2 Month(s) from the next Mailtime.' Lastly, if using the Month(s) Report Intervals, the 'Day of Week' and the 'Day of Month' are both calculated based upon the Mailtime you specify above."
-msgstr "напр. ако интервалът на отчета е &quot;Месец (и)&quot;, тогава &quot;2&quot; показва всеки &quot;2 Месец (и) от следващото Поща&quot;. И накрая, ако се използват интервалите от доклада за месец / а, „Ден от седмицата“ и „Ден на месеца“ се изчисляват въз основа на посоченото по-горе време по пощата."
+msgstr "напр. ако интервалът на отчета е \"Месец (и)\", тогава \"2\" показва всеки \"2 Месец (и) от следващото Поща\". И накрая, ако се използват интервалите от доклада за месец / а, „Ден от седмицата“ и „Ден на месеца“ се изчисляват въз основа на посоченото по-горе време по пощата."
+
 
 #: lib/html_reports.php:164
 msgid "Email Sender/Receiver Details"
@@ -17390,11 +17424,13 @@ msgstr ""
 
 #: lib/installer.php:1733
 msgid "To be able continue, you <b>MUST</b> create a new database, import \"cacti.sql\" into it:"
-msgstr "За да можете да продължите, трябва <b>да</b> създадете нова база данни, да импортирате &quot;cacti.sql&quot; в нея:"
+msgstr "За да можете да продължите, трябва <b>да</b> създадете нова база данни, да импортирате \"cacti.sql\" в нея:"
+
 
 #: lib/installer.php:1735
 msgid "You <b>MUST</b> then update \"include/config.php\" to point to the new database."
-msgstr "След това <b>трябва</b> да актуализирате &quot;include / config.php&quot;, за да сочи към новата база данни."
+msgstr "След това <b>трябва</b> да актуализирате \"include / config.php\", за да сочи към новата база данни."
+
 
 #: lib/installer.php:1736
 msgid "NOTE: Your existing data will not be modified, nor will it or any history be available to the new install"
@@ -17414,7 +17450,8 @@ msgstr "Вие също <b>трябва</b> да импортирате MySQL и
 
 #: lib/installer.php:1750
 msgid "On Linux/UNIX, run the following as 'root' in a shell:"
-msgstr "На Linux / UNIX изпълнете следното като &quot;root&quot; в черупката:"
+msgstr "На Linux / UNIX изпълнете следното като \"root\" в черупката:"
+
 
 #: lib/installer.php:1753
 msgid "On Windows, you must follow the instructions here <a target='_blank' href='https://dev.mysql.com/downloads/timezones.html'>Time zone description table</a>.  Once that is complete, you can issue the following command to grant the Cacti user access to the tables:"
@@ -17624,7 +17661,8 @@ msgstr "Вашата база данни за MySQL TimeZone не е насел�
 
 #: lib/installer.php:2190
 msgid "Your Cacti database login account does not have access to the MySQL TimeZone database.  Please provide the Cacti database account \"select\" access to the \"time_zone_name\" table in the \"mysql\" database, and populate MySQL's TimeZone information before proceeding."
-msgstr "Вашият акаунт за вход в базата данни на Cacti няма достъп до базата данни на MySQL TimeZone. Моля, предоставете на базата данни на Cacti &quot;изберете&quot; достъп до таблицата &quot;time_zone_name&quot; в базата данни &quot;mysql&quot; и попълнете информацията за TimeSone на MySQL, преди да продължите."
+msgstr "Вашият акаунт за вход в базата данни на Cacti няма достъп до базата данни на MySQL TimeZone. Моля, предоставете на базата данни на Cacti \"изберете\" достъп до таблицата \"time_zone_name\" в базата данни \"mysql\" и попълнете информацията за TimeSone на MySQL, преди да продължите."
+
 
 #: lib/installer.php:2195
 msgid "Your Cacti database account has access to the MySQL TimeZone database and that database is populated with global TimeZone information."
@@ -17698,7 +17736,8 @@ msgstr "Remote Pollers се използват за достъп до мрежи
 
 #: lib/installer.php:2321
 msgid "The following information has been determined from Cacti's configuration file. If it is not correct, please edit \"include/config.php\" before continuing."
-msgstr "Следната информация е определена от конфигурационния файл на Cacti. Ако не е правилно, моля, редактирайте &quot;include / config.php&quot;, преди да продължите."
+msgstr "Следната информация е определена от конфигурационния файл на Cacti. Ако не е правилно, моля, редактирайте \"include / config.php\", преди да продължите."
+
 
 #: lib/installer.php:2325
 msgid "Local Database Connection Information"
@@ -17771,7 +17810,8 @@ msgstr "Допълнителни стъпки след инсталацията"
 
 #: lib/installer.php:2381
 msgid "It is essential that the Central Cacti server can communicate via MySQL to each remote Cacti database server.  Once the install is complete, you must edit the Remote Data Collector and ensure the settings are correct.  You can verify using the 'Test Connection' when editing the Remote Data Collector."
-msgstr "Важно е централният Cacti сървър да комуникира чрез MySQL към всеки отдалечен Cacti сървър на база данни. След като инсталацията приключи, трябва да редактирате Remote Data Collector и да се уверите, че настройките са правилни. Можете да проверите с помощта на &quot;Test Connection&quot;, когато редактирате Remote Data Collector."
+msgstr "Важно е централният Cacti сървър да комуникира чрез MySQL към всеки отдалечен Cacti сървър на база данни. След като инсталацията приключи, трябва да редактирате Remote Data Collector и да се уверите, че настройките са правилни. Можете да проверите с помощта на \"Test Connection\", когато редактирате Remote Data Collector."
+
 
 #: lib/installer.php:2395
 msgid "Critical Binary Locations and Versions"
@@ -17791,7 +17831,8 @@ msgstr "Проверки за разрешение за директория"
 
 #: lib/installer.php:2483
 msgid "Please ensure the directory permissions below are correct before proceeding.  During the install, these directories need to be owned by the Web Server user.  These permission changes are required to allow the Installer to install Device Template packages which include XML and script files that will be placed in these directories.  If you choose not to install the packages, there is an 'install_package.php' cli script that can be used from the command line after the install is complete."
-msgstr "Моля, уверете се, че разрешенията по-долу са правилни, преди да продължите. По време на инсталирането, тези директории трябва да са собственост на потребителя на уеб сървъра. Тези промени на разрешението са необходими, за да позволят на инсталатора да инсталира пакети с шаблони на устройства, които включват XML и скриптови файлове, които ще бъдат поставени в тези директории. Ако решите да не инсталирате пакетите, има скрипт &quot;install_package.php&quot;, който може да се използва от командния ред, след като инсталацията приключи."
+msgstr "Моля, уверете се, че разрешенията по-долу са правилни, преди да продължите. По време на инсталирането, тези директории трябва да са собственост на потребителя на уеб сървъра. Тези промени на разрешението са необходими, за да позволят на инсталатора да инсталира пакети с шаблони на устройства, които включват XML и скриптови файлове, които ще бъдат поставени в тези директории. Ако решите да не инсталирате пакетите, има скрипт \"install_package.php\", който може да се използва от командния ред, след като инсталацията приключи."
+
 
 #: lib/installer.php:2486
 msgid "After the install is complete, you can make some of these directories read only to increase security."
@@ -17900,7 +17941,8 @@ msgstr "Тази опция за скрипт ще активира отново
 
 #: lib/installer.php:2628
 msgid "It is strongly suggested that you update your config.php to enable this feature by uncommenting the <b>$input_whitelist</b> variable and then running the three CLI script options above after the web based install has completed."
-msgstr "Настоятелно се препоръчва да актуализирате config.php, за да активирате тази функция, като <b>коментирате</b> променливата <b>$ input_whitelist</b> и след това стартирате трите опции за скрипт на CLI по-горе, след като уеб базираната инсталация приключи."
+msgstr "Настоятелно се препоръчва да актуализирате config.php, за да активирате тази функция, като коментирате променливата <b>$input_whitelist</b> и след това стартирате трите опции за скрипт на CLI по-горе, след като уеб базираната инсталация приключи."
+
 
 #: lib/installer.php:2630
 msgid "Check the Checkbox below to acknowledge that you have read and understand this security concern"
@@ -17986,7 +18028,8 @@ msgstr "Актуализирането на шаблони, в които веч
 
 #: lib/installer.php:2753
 msgid "Please select the Device Templates that you wish to use after the Install.  If you Operating System is Windows, you need to ensure that you select the 'Windows Device' Template.  If your Operating System is Linux/UNIX, make sure you select the 'Local Linux Machine' Device Template."
-msgstr "Моля, изберете шаблоните за устройства, които искате да използвате след инсталирането. Ако операционната система е Windows, трябва да се уверите, че сте избрали шаблона за Windows устройство. Ако вашата операционна система е Linux / UNIX, уверете се, че сте избрали &#39;Local Linux Machine&#39; Шаблон на устройството."
+msgstr "Моля, изберете шаблоните за устройства, които искате да използвате след инсталирането. Ако операционната система е Windows, трябва да се уверите, че сте избрали шаблона за Windows устройство. Ако вашата операционна система е Linux / UNIX, уверете се, че сте избрали 'Local Linux Machine' Шаблон на устройството."
+
 
 #: lib/installer.php:2759 package.php:793 package_import.php:1040
 msgid "Homepage"
@@ -18010,7 +18053,8 @@ msgstr "Съпоставянето на сървъра НЕ изглежда н�
 
 #: lib/installer.php:2807
 msgid "Under the [mysqld] section, locate the entries named 'character-set-server' and 'collation-server' and set them as follows:"
-msgstr "Под секцията [mysqld] намерете записите, наречени &#39;character-set-server&#39; и &#39;collation-server&#39; и ги задайте както следва:"
+msgstr "Под секцията [mysqld] намерете записите, наречени 'character-set-server' и 'collation-server' и ги задайте както следва:"
+
 
 #: lib/installer.php:2814
 msgid "Database Collation"
@@ -18026,11 +18070,8 @@ msgstr "По подразбиране сортирането по база да�
 
 #: lib/installer.php:2824
 msgid "Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched.   Please ensure your database is changed to 'utf8mb4_unicode_ci' by running the following: "
-msgstr ""
-"Всички таблици, създадени от приставки, могат да имат проблеми, свързани с "
-"таблици на Cacti Core, ако съпоставянето не е съвместимо. Моля, уверете се, "
-"че вашата база данни е променена на &quot;utf8mb4_unicode_ci&quot;, като "
-"изпълните следното: "
+msgstr "Всички таблици, създадени от приставки, могат да имат проблеми, свързани с таблици на Cacti Core, ако съпоставянето не е съвместимо. Моля, уверете се, че вашата база данни е променена на \"utf8mb4_unicode_ci\", като изпълните следното: "
+
 
 #: lib/installer.php:2831
 msgid "Table Setup"
@@ -18814,7 +18855,8 @@ msgstr "Плъгини"
 #: lib/plugins.php:1749 lib/plugins.php:1755
 #, php-format
 msgid "Requires: Cacti >= %s"
-msgstr "Изисква: Cacti&gt; = %s"
+msgstr "Изисква: Cacti> = %s"
+
 
 #: lib/plugins.php:1752
 msgid "Legacy Plugin"
@@ -19212,19 +19254,8 @@ msgstr "С възможностите за дистанционно проучв
 #: lib/utility.php:1212
 #, php-format
 msgid "If using the Cacti Performance Booster and choosing a memory storage engine, you have to be careful to flush your Performance Booster buffer before the system runs out of memory table space.  This is done two ways, first reducing the size of your output column to just the right size.  This column is in the tables poller_output, and poller_output_boost.  The second thing you can do is allocate more memory to memory tables.  We have arbitrarily chosen a recommended value of 10%% of system memory, but if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation or choose a different storage engine.  You may see the expected consumption of the Performance Booster tables under Console -> System Utilities -> View Boost Status."
-msgstr ""
-"Ако използвате Cacti Performance Booster и изберете механизъм за съхранение "
-"на памет, трябва да внимавате да изчистите буфера за производителност, преди "
-"системата да изчерпи пространството за памет. Това се прави по два начина, "
-"като първо се намалява размерът на изходната колона до точния размер. Тази "
-"колона е в таблиците poller_output и poller_output_boost. Второто нещо, "
-"което можете да направите, е да отделите повече памет за таблиците с памет. "
-"Ние произволно избрахме препоръчителна стойност от 10%% от системната памет, "
-"но ако използвате SSD дискове или имате по-малка система, можете да "
-"игнорирате тази препоръка или да изберете различен механизъм за съхранение. "
-"Може да видите очакваното потребление на таблиците за подсилване на "
-"производителността под Console -&gt; System Utilities -&gt; View Boost "
-"Status."
+msgstr "Ако използвате Cacti Performance Booster и изберете механизъм за съхранение на памет, трябва да внимавате да изчистите буфера за производителност, преди системата да изчерпи пространството за памет. Това се прави по два начина, като първо се намалява размерът на изходната колона до точния размер. Тази колона е в таблиците poller_output и poller_output_boost. Второто нещо, което можете да направите, е да отделите повече памет за таблиците с памет. Ние произволно избрахме препоръчителна стойност от 10%% от системната памет, но ако използвате SSD дискове или имате по-малка система, можете да игнорирате тази препоръка или да изберете различен механизъм за съхранение. Може да видите очакваното потребление на таблиците за подсилване на производителността под Console -> System Utilities -> View Boost Status."
+
 
 #: lib/utility.php:1218
 msgid "When executing subqueries, having a larger temporary table size, keep those temporary tables in memory."
@@ -19284,7 +19315,7 @@ msgid "If your tables have very large indexes, you must operate with the Barracu
 msgstr "Ако вашите таблици имат много големи индекси, трябва да оперирате с innodb_file_format на Barracuda и innodb_large_prefix, равен на 1. Ако не направите това, може да се получат приставки, които не могат да създават правилно таблици."
 
 #: lib/utility.php:1254
-#, php-format
+#, no-php-format
 msgid "InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size.  If you database is very large or remote, you can consider increasing this size.  If remote, it can by as high as 80% of the systems memory.  However, cautions must be taken to reduce the swappiness of the system, or to remove swap to keep the system from swapping."
 msgstr ""
 "InnoDB ще съхранява колкото се може повече таблици и индекси в системната "
@@ -19598,7 +19629,8 @@ msgstr "Уеб URL по-долу"
 
 #: links.php:562
 msgid "The file that contains the content for this page. This file needs to be in the Cacti 'include/content/' directory."
-msgstr "Файлът, който съдържа съдържанието на тази страница. Този файл трябва да бъде в директорията Cacti &#39;include / content /&#39;."
+msgstr "Файлът, който съдържа съдържанието на тази страница. Този файл трябва да бъде в директорията Cacti 'include / content /'."
+
 
 #: links.php:566
 msgid "Web URL Location"
@@ -21407,11 +21439,13 @@ msgstr "Активиране на колектора за данни"
 
 #: pollers.php:621
 msgid "Click 'Continue' to Synchronize the Remote Data Collector for Offline Operation."
-msgstr "Кликнете върху &quot;Продължи&quot;, за да синхронизирате отдалечения колектор данни за офлайн операция."
+msgstr "Кликнете върху \"Продължи\", за да синхронизирате отдалечения колектор данни за офлайн операция."
+
 
 #: pollers.php:622
 msgid "Click 'Continue' to Synchronize the Remote Data Collectors for Offline Operation."
-msgstr "Кликнете върху &quot;Продължи&quot;, за да синхронизирате отдалечения колектор данни за офлайн операция."
+msgstr "Кликнете върху \"Продължи\", за да синхронизирате отдалечения колектор данни за офлайн операция."
+
 
 #: pollers.php:623 pollers.php:629
 msgid "Resync Data Collector"
@@ -22473,7 +22507,7 @@ msgid "Max Total Memory Possible"
 msgstr "Максимална позволена памет"
 
 #: support.php:1594
-#, php-format
+#, no-php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr ""
 "Намалете паметта на MySQL/MariaDB до по-малко от 80% от системната памет. "
@@ -23468,7 +23502,8 @@ msgstr "Режим"
 
 #: user_domains.php:382
 msgid "Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the users Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the users Distinguished Name (DN)."
-msgstr "Режим, който кактусите ще се опитат да удостоверят срещу LDAP сървъра. <blockquote> <i>Не се извършва търсене</i> - <i>търсене на</i> различно име (DN), просто се опитайте да се свържете с предоставения формат за отличително име (DN). <br><br> <i>Анонимно търсене</i> - Опит за търсене на потребителско име срещу LDAP директория чрез анонимно свързване, за да намерите потребителите Distinguished Name (DN). <br><br> <i>Специфично търсене</i> - Опит за търсене на потребителско име срещу LDAP директория чрез Специфично отличително име (DN) и Специфична парола за свързване, за да намерите потребителите Разграничено име (DN)."
+msgstr "Режим, който кактусите ще се опитат да удостоверят срещу LDAP сървъра. <blockquote> <i>Не се извършва търсене</i> - търсене на различно име (DN), просто се опитайте да се свържете с предоставения формат за отличително име (DN). <br><br> <i>Анонимно търсене</i> - Опит за търсене на потребителско име срещу LDAP директория чрез анонимно свързване, за да намерите потребителите Distinguished Name (DN). <br><br> <i>Специфично търсене</i> - Опит за търсене на потребителско име срещу LDAP директория чрез Специфично отличително име (DN) и Специфична парола за свързване, за да намерите потребителите Разграничено име (DN)."
+
 
 #: user_domains.php:388
 msgid "Distinguished Name (DN)"
@@ -23524,7 +23559,8 @@ msgstr "Търсене на база"
 
 #: user_domains.php:432
 msgid "Search base for searching the LDAP directory, such as <i>\"dc=win2kdomain,dc=local\"</i> or <i>\"ou=people,dc=domain,dc=local\"</i>."
-msgstr "Търсете база за търсене в LDAP директорията, като <i>&quot;dc = win2kdomain, dc = local&quot;</i> или <i>&quot;ou = people, dc = domain, dc = local&quot;</i> ."
+msgstr "Търсете база за търсене в LDAP директорията, като <i>\"dc = win2kdomain, dc = local\"</i> или <i>\"ou = people, dc = domain, dc = local\"</i> ."
+
 
 #: user_domains.php:438
 msgid "Search Filter"
