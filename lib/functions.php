@@ -250,10 +250,12 @@ function title_trim(string $text, int $max_length) : string {
  * @param string $filter The search term to filter for
  * @param string $href   The href if you wish to have an anchor returned
  * @param string $title  The title of the resulting anchor
+ * @param bool   $post   Send the link as a CSRF-checked POST instead of following it, for
+ *                       a link that changes stored data
  *
  * @return string the filtered string
  */
-function filter_value(mixed $value, string $filter, string $href = '', string $title = '') : string {
+function filter_value(mixed $value, string $filter, string $href = '', string $title = '', bool $post = false) : string {
 	if ($value == '') {
 		return '';
 	}
@@ -267,7 +269,10 @@ function filter_value(mixed $value, string $filter, string $href = '', string $t
 		$value = preg_replace('#(' . preg_quote($filter) . ')#i', "<span class='filteredValue'>\\1</span>", $value) ?? $value;
 	}
 
-	if ($href != '') {
+	if ($href != '' && $post) {
+		// include/layout.js posts the data-url of a cactiPostAction link with the CSRF token
+		$value = '<a class="linkEditMain cactiPostAction" href="#" data-url="' . htmle($href) . '" title="' . htmle($title) . '">' . $value . '</a>';
+	} elseif ($href != '') {
 		$value = '<a class="linkEditMain" href="' . htmle($href) . '" title="' . htmle($title) . '">' . $value . '</a>';
 	}
 

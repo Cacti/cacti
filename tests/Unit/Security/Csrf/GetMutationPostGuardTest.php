@@ -75,6 +75,5 @@ test('the page scripts send the converted actions as POST', function () {
 
 	expect($profile)->not->toContain("\$.get('auth_profile.php?action=logout_everywhere'")
 		->and($profile)->toContain("cactiPreparePostRequest('auth_profile.php', 'action=logout_everywhere')")
-		->and($auto)->not->toContain('filter_value($exit_text')
-		->and($auto)->toContain('linkEditMain cactiPostAction');
+		->and($auto)->toContain("filter_value(\$exit_text, '', \$exit_on_url, '', true)");
 });

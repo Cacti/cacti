@@ -1303,7 +1303,7 @@ function template_edit() : void {
 				form_alternate_row($id, true);
 
 				form_selectable_ecell($rule['name'], $id);
-				form_selectable_cell('<a class="linkEditMain cactiPostAction" href="#" data-url="' . html_escape_url($exit_on_url) . '">' . htmle($exit_text) . '</a>', $id);
+				form_selectable_cell(filter_value($exit_text, '', $exit_on_url, '', true), $id);
 				form_selectable_cell($rule['sequence'], $id, '', 'right');
 
 				$action = '';
