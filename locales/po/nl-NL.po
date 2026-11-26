@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-26 05:54+0000\n"
+"PO-Revision-Date: 2026-11-26 19:34+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Dutch <https://translate.cacti.net/projects/cacti/core/nl/>\n"
 "Language: nl-NL\n"
@@ -34,8 +34,8 @@ msgstr ""
 #, php-format
 msgid "Please see the official %sCacti website%s for information on how to use Cacti, get support, and updates."
 msgstr ""
-"Raadpleeg de officiële %1$sCacti-website%2$s voor informatie over het "
-"gebruik van Cacti, ondersteuning en updates."
+"Raadpleeg de officiële %sCacti-website%s voor informatie over het gebruik "
+"van Cacti, ondersteuning en updates."
 
 #: about.php:50
 msgid "Active Developers"
@@ -3537,7 +3537,7 @@ msgstr "CDEF [nieuw]"
 
 #: cdef.php:579 include/global_arrays.php:2295
 msgid "CDEF Items"
-msgstr "CDEF Items"
+msgstr "CDEF-items"
 
 #: cdef.php:583 vdef.php:578
 msgid "Item Value"
@@ -3852,8 +3852,8 @@ msgstr "Kleurtemplate [nieuw]"
 #, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
 msgstr ""
-"Kleurensjabloon '%1$s' heeft %2$d aggregatiesjablonen en %3$d aggregaties "
-"zonder sjabloon uitgerold"
+"Kleurensjabloon '%s' heeft %d aggregatiesjablonen en %d aggregaties zonder "
+"sjabloon uitgerold"
 
 #: color_templates.php:764
 #, php-format
@@ -4150,7 +4150,7 @@ msgstr "Probleem"
 #: data_debug.php:910
 #, php-format
 msgid "For attribute '%s', issue found '%s'"
-msgstr "Voor attribuut '%1$s' probleem gevonden: '%2$s'"
+msgstr "Voor attribuut '%s' probleem gevonden: '%s'"
 
 #: data_debug.php:925
 msgid "Apply Suggested Fixes"
@@ -4223,7 +4223,7 @@ msgstr "Mislukt"
 
 #: data_debug.php:1121 data_debug.php:1124 data_debug.php:1126
 msgid "Debugging"
-msgstr "Debugging"
+msgstr "Foutopsporing"
 
 #: data_input.php:248
 msgid "Click 'Continue' to Delete the following Data Input Method."
@@ -4571,7 +4571,7 @@ msgstr "Naam grafiektemplate"
 
 #: data_queries.php:1143
 msgid "Mapping ID"
-msgstr "Mapping ID"
+msgstr "Toewijzings-ID"
 
 #: data_queries.php:1168
 msgid "Association Read Only until XML file located"
@@ -4802,7 +4802,7 @@ msgstr "%d Maanden"
 #: include/global_settings.php:1869 rrdcleaner.php:520 rrdcleaner.php:521
 #, php-format
 msgid "%d Week"
-msgstr "%d Week"
+msgstr "%d week"
 
 #: data_source_profiles.php:842 include/global_arrays.php:809
 #: include/global_arrays.php:810 include/global_arrays.php:830
@@ -5039,7 +5039,7 @@ msgstr "Voorgestelde naam voor data bron opnieuw toepassen"
 #: data_sources.php:651 data_templates.php:875
 #, php-format
 msgid "Custom Data [data input: %s]"
-msgstr "Aangepaste data [data invoer: %s]"
+msgstr "Aangepaste data [gegevensinvoer: %s]"
 
 #: data_sources.php:684
 #, php-format
@@ -5644,8 +5644,7 @@ msgstr ""
 #, php-format
 msgid "Sync of Graph Template '%s' Resulted in %s Repairs!"
 msgstr ""
-"Synchronisatie van grafieksjabloon '%1$s' heeft geresulteerd in %2$s "
-"reparaties!"
+"Synchronisatie van grafieksjabloon '%s' heeft geresulteerd in %s reparaties!"
 
 #: graph_templates.php:1165 graph_templates.php:1180
 #, php-format
@@ -6510,22 +6509,21 @@ msgstr "Selecteer alle rijen"
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id of '%s'"
 msgstr ""
 "Fout bij het parseren van het XML-bronbestand van gegevensquery voor "
-"gegevensquery '%1$s' met id '%2$s'"
+"gegevensquery '%s' met id '%s'"
 
 #: graphs_new.php:695
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'.  Field Name '%s' missing a 'direction' attribute"
 msgstr ""
 "Fout bij het parseren van het XML-bronbestand van gegevensquery voor "
-"gegevensquery '%1$s' met id '%2$s'. Veldnaam '%3$s' mist een "
-"'direction'-attribuut"
+"gegevensquery '%s' met id '%s'. Veldnaam '%s' mist een 'direction'-attribuut"
 
 #: graphs_new.php:699
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'"
 msgstr ""
 "Fout bij het parseren van het XML-bronbestand van gegevensquery voor "
-"gegevensquery '%1$s' met id '%2$s'"
+"gegevensquery '%s' met id '%s'"
 
 #: graphs_new.php:740
 #, php-format
@@ -6577,17 +6575,17 @@ msgstr "Stel in als standaard"
 #, php-format
 msgid "WARNING: Cacti Page:%s for User:%s Generated a Fatal Error %d!"
 msgstr ""
-"WAARSCHUWING: Cacti-pagina:%1$s voor gebruiker:%2$s heeft een fatale fout %3$"
-"d gegenereerd!"
+"WAARSCHUWING: Cacti-pagina:%s voor gebruiker:%s heeft een fatale fout %d "
+"gegenereerd!"
 
 #: help.php:74
 #, php-format
 msgid "The Document page '%s' count not be reached.  The Cacti Documentation site is not reachable.  The http error was '%s'.  Consider downloading an official release to obtain the latest documentation and hosting the documentation locally."
 msgstr ""
-"De documentpagina '%1$s' kon niet worden bereikt. De Cacti-"
-"documentatiewebsite is niet bereikbaar. De HTTP-fout was '%2$s'. Overweeg "
-"een officiële release te downloaden om de nieuwste documentatie te "
-"verkrijgen en de documentatie lokaal te hosten."
+"De documentpagina '%s' kon niet worden bereikt. De Cacti-documentatiewebsite "
+"is niet bereikbaar. De HTTP-fout was '%s'. Overweeg een officiële release te "
+"downloaden om de nieuwste documentatie te verkrijgen en de documentatie "
+"lokaal te hosten."
 
 #: help.php:88
 msgid "Cacti GitHub Site"
@@ -6652,7 +6650,7 @@ msgstr "FOUT: Ongeldige apparaat-ID."
 #, php-format
 msgid "Device Reindex Completed in %0.2f seconds.  There were %d items updated."
 msgstr ""
-"Herindexeren van apparaat voltooid in %1$0.2f seconden. Er zijn %2$d items "
+"Herindexeren van apparaat voltooid in %0.2f seconden. Er zijn %d items "
 "bijgewerkt."
 
 #: host.php:360
@@ -7797,7 +7795,7 @@ msgstr "Numeriek"
 
 #: include/global_arrays.php:606
 msgid "Timestamp"
-msgstr "Timestamp"
+msgstr "Tijdstempel"
 
 #: include/global_arrays.php:607
 msgid "Duration"
@@ -7909,7 +7907,7 @@ msgstr "SNMP uptime"
 
 #: include/global_arrays.php:694
 msgid "SNMP Desc"
-msgstr "SNMP Desc"
+msgstr "SNMP-beschrijving"
 
 #: include/global_arrays.php:695
 msgid "SNMP getNext"
@@ -8364,7 +8362,7 @@ msgstr "Systeem gereedschappen"
 
 #: include/global_arrays.php:1132
 msgid "RRDfile Cleaner"
-msgstr "RRDfile Cleaner"
+msgstr "RRDfile-opschoning"
 
 #: include/global_arrays.php:1133
 msgid "SNMP Managers"
@@ -8437,7 +8435,7 @@ msgstr ""
 
 #: include/global_arrays.php:1192
 msgid "ILO, IPMI, iDrac, etc."
-msgstr ""
+msgstr "ILO, IPMI, iDrac, enz."
 
 #: include/global_arrays.php:1193
 msgid "Licensing Related"
@@ -8687,7 +8685,7 @@ msgstr "CDEF"
 
 #: include/global_arrays.php:1492
 msgid "CDEF Item"
-msgstr "CDEF Item"
+msgstr "CDEF-item"
 
 #: include/global_arrays.php:1493
 msgid "GPRINT Preset"
@@ -8841,7 +8839,7 @@ msgstr "Jaar, maand naam, dag"
 
 #: include/global_arrays.php:1665 include/global_arrays.php:1696
 msgid "After Boost"
-msgstr "After Boost"
+msgstr "Na Boost"
 
 #: include/global_arrays.php:1675 include/global_arrays.php:1676
 #: include/global_arrays.php:1677 include/global_arrays.php:1678
@@ -8849,17 +8847,17 @@ msgstr "After Boost"
 #: include/global_arrays.php:1742
 #, php-format
 msgid "%d MBytes"
-msgstr "%d MBytes"
+msgstr "%d megabyte"
 
 #: include/global_arrays.php:1680
 msgid "1 GByte"
-msgstr "1 GByte"
+msgstr "1 gigabyte"
 
 #: include/global_arrays.php:1681 include/global_arrays.php:1744
 #: lib/boost.php:62
 #, php-format
 msgid "%s GBytes"
-msgstr "%s GBytes"
+msgstr "%s gigabyte"
 
 #: include/global_arrays.php:1682 include/global_arrays.php:1683
 #: include/global_arrays.php:1745 include/global_arrays.php:1746
@@ -8867,7 +8865,7 @@ msgstr "%s GBytes"
 #: include/global_arrays.php:1749 include/global_arrays.php:1750
 #, php-format
 msgid "%d GBytes"
-msgstr "%d GBytes"
+msgstr "%d gigabyte"
 
 #: include/global_arrays.php:1703
 msgid "2,000 Data Source Items"
@@ -8952,14 +8950,14 @@ msgstr "%s Minuten"
 
 #: include/global_arrays.php:1780
 msgid "1 Megabyte"
-msgstr "1 Megabyte"
+msgstr "1 megabyte"
 
 #: include/global_arrays.php:1781 include/global_arrays.php:1782
 #: include/global_arrays.php:1783 include/global_arrays.php:1784
 #: include/global_arrays.php:1785 include/global_arrays.php:1786
 #, php-format
 msgid "%d Megabytes"
-msgstr "%d Megabytes"
+msgstr "%d megabyte"
 
 #: include/global_arrays.php:1794
 msgid "Send Now"
@@ -9595,7 +9593,7 @@ msgstr "Toon SNMP agent notificatie log"
 
 #: include/global_arrays.php:2703 vdef.php:574
 msgid "VDEF Items"
-msgstr "VDEF Items"
+msgstr "VDEF-items"
 
 #: include/global_arrays.php:2709
 msgid "View SNMP Notification Receivers"
@@ -10703,7 +10701,7 @@ msgstr "De streepjesmodifier maakt een stippellijnstijl mogelijk."
 
 #: include/global_form.php:1128
 msgid "Dash Offset (dash-offset=offset)"
-msgstr "Dash Offset (dash-offset=offset)"
+msgstr "Streepjesverschuiving (dash-offset=offset)"
 
 #: include/global_form.php:1133 include/global_form.php:1141
 msgid "The dash-offset parameter specifies an offset into the pattern at which the stroke begins."
@@ -11437,7 +11435,7 @@ msgstr "Paden"
 
 #: include/global_settings.php:41 include/global_settings.php:219
 msgid "Logging"
-msgstr "Logging"
+msgstr "Logboekregistratie"
 
 #: include/global_settings.php:42
 msgid "Device Defaults"
@@ -11614,7 +11612,7 @@ msgstr ""
 
 #: include/global_settings.php:278
 msgid "RRDfile Auto Clean"
-msgstr "RRDfile Auto Clean"
+msgstr "RRDfile automatisch opschonen"
 
 #: include/global_settings.php:279
 msgid "Automatically archive or delete RRDfiles when their corresponding Data Sources are removed from Cacti"
@@ -12355,7 +12353,7 @@ msgstr "100 Gbps Ethernet"
 
 #: include/global_settings.php:851
 msgid "SNMP Defaults"
-msgstr "SNMP Defaults"
+msgstr "SNMP-standaardwaarden"
 
 #: include/global_settings.php:857
 msgid "Default SNMP version for all new Devices."
@@ -13035,7 +13033,7 @@ msgstr "Replicatie van gegevensverzamelaar"
 
 #: include/global_settings.php:1493
 msgid "Poller Sync Interval"
-msgstr "Poller Sync Interval"
+msgstr "Poller-synchronisatie-interval"
 
 #: include/global_settings.php:1494
 msgid "The default polling sync interval to use when creating a poller.  This setting will affect how often remote pollers are checked and updated."
@@ -13504,7 +13502,7 @@ msgstr ""
 
 #: include/global_settings.php:1905
 msgid "Basic Auth Mapfile"
-msgstr "Basic Auth Mapfile"
+msgstr "Basic Auth-toewijzingsbestand"
 
 #: include/global_settings.php:1906
 msgid "When using basic authentication, if the basic account needs to be translated to a different login account, you can specify a CSV file here to map the basic account to the desired login account."
@@ -13807,7 +13805,7 @@ msgstr "Het wachtwoord om in te loggen op de SMTP server. (Laat leeg indien auth
 
 #: include/global_settings.php:2178
 msgid "SMTP Security"
-msgstr "SMTP Security"
+msgstr "SMTP-beveiliging"
 
 #: include/global_settings.php:2179
 msgid "The encryption method to use for the Email."
@@ -14553,7 +14551,7 @@ msgstr ""
 
 #: include/global_settings.php:2829
 msgid "RRDfile Backup Directory"
-msgstr "RRDfile Backup Directory"
+msgstr "RRDfile-back-upmap"
 
 #: include/global_settings.php:2830
 msgid "If this directory is not empty, then your original RRDfiles will be backed up to this location."
@@ -14931,7 +14929,7 @@ msgstr "Systeeminstelling"
 
 #: include/global_settings.php:3225
 msgid "1 Week"
-msgstr "1 Week"
+msgstr "1 week"
 
 #: include/global_settings.php:3238
 msgid "Auto Log Out Time"
@@ -15242,12 +15240,12 @@ msgstr "Boomregel maken (grafiek)"
 #: lib/api_automation.php:2435
 #, php-format
 msgid "Rule Item [edit rule item for %s: %s]"
-msgstr "Regelitem [regelitem bewerken voor %1$s: %2$s]"
+msgstr "Regelitem [regelitem bewerken voor %s: %s]"
 
 #: lib/api_automation.php:2437
 #, php-format
 msgid "Rule Item [new rule item for %s: %s]"
-msgstr "Regelitem [nieuw regelitem voor %1$s: %2$s]"
+msgstr "Regelitem [nieuw regelitem voor %s: %s]"
 
 #: lib/api_automation.php:3457
 msgid "Added by Cacti Automation"
@@ -15348,7 +15346,7 @@ msgstr "Onbekend apparaatsjabloon"
 #: lib/api_automation.php:5404 lib/api_automation.php:5406
 #, php-format
 msgid "Automation Network Rule '%s' %s!"
-msgstr "Automatiseringsnetwerkregel '%1$s' %2$s!"
+msgstr "Automatiseringsnetwerkregel '%s' %s!"
 
 #: lib/api_automation.php:5410 lib/api_automation.php:5412
 #, php-format
@@ -15469,29 +15467,29 @@ msgstr "Apparaat:(Uitgeschakelde verbergen)"
 #: lib/auth.php:2355 lib/auth.php:2357 lib/auth.php:2363 lib/auth.php:2365
 #, php-format
 msgid "Graph:(%s%s)"
-msgstr "Grafiek:(%1$s%2$s)"
+msgstr "Grafiek:(%s%s)"
 
 #: lib/auth.php:2378 lib/auth.php:2384 lib/auth.php:2451 lib/auth.php:2453
 #: lib/auth.php:2457 lib/auth.php:2459
 #, php-format
 msgid "Device:(%s%s)"
-msgstr "Apparaat:(%1$s%2$s)"
+msgstr "Apparaat:(%s%s)"
 
 #: lib/auth.php:2392 lib/auth.php:2398 lib/auth.php:2467 lib/auth.php:2469
 #: lib/auth.php:2473 lib/auth.php:2475
 #, php-format
 msgid "Template:(%s%s)"
-msgstr "Sjabloon:(%1$s%2$s)"
+msgstr "Sjabloon:(%s%s)"
 
 #: lib/auth.php:2405
 #, php-format
 msgid "Graph+Device+Template:(%s%s)"
-msgstr "Grafiek+Apparaat+Sjabloon:(%1$s%2$s)"
+msgstr "Grafiek+Apparaat+Sjabloon:(%s%s)"
 
 #: lib/auth.php:2442 lib/auth.php:2444
 #, php-format
 msgid "Device+Template:(%s%s)"
-msgstr "Apparaat+Sjabloon:(%1$s%2$s)"
+msgstr "Apparaat+Sjabloon:(%s%s)"
 
 #: lib/auth.php:2488 lib/auth.php:2495 lib/auth.php:2504
 msgid "Restricted By: "
@@ -15690,12 +15688,12 @@ msgstr " - Admin bekijken"
 #: lib/clog_webapi.php:290
 #, php-format
 msgid "Log [Total Lines: %d %s - Filter active]"
-msgstr "Log [Totaal aantal regels: %1$d %2$s - Filter actief]"
+msgstr "Log [Totaal aantal regels: %d %s - Filter actief]"
 
 #: lib/clog_webapi.php:292
 #, php-format
 msgid "Log [Total Lines: %d %s - Unfiltered]"
-msgstr "Log [Totaal aantal regels: %1$d %2$s - Ongefilterd]"
+msgstr "Log [Totaal aantal regels: %d %s - Ongefilterd]"
 
 #: lib/clog_webapi.php:297 utilities.php:430 utilities.php:791
 #: utilities.php:1042 utilities.php:1045 utilities.php:1141 utilities.php:2008
@@ -15819,7 +15817,7 @@ msgstr "Lopende gegevensvraag [%s]."
 #: lib/data_query.php:113
 #, php-format
 msgid "Found Type = '%s' [%s]."
-msgstr "Type gevonden = '%1$s' [%2$s]."
+msgstr "Type gevonden = '%s' [%s]."
 
 #: lib/data_query.php:135
 #, php-format
@@ -15844,7 +15842,7 @@ msgstr "%s lokale gegevens-ID's gevonden om te verifiëren"
 #: lib/data_query.php:303
 #, php-format
 msgid "Index Change Detected! CurrentIndex: %s, PreviousIndex: %s"
-msgstr "Indexwijziging gedetecteerd! Huidige index: %1$s, vorige index: %2$s"
+msgstr "Indexwijziging gedetecteerd! Huidige index: %s, vorige index: %s"
 
 #: lib/data_query.php:323
 #, php-format
@@ -15867,8 +15865,8 @@ msgstr "Verificatie van %s lokale gegevens-ID's voltooid"
 #, php-format
 msgid "Found Changed %s and %s Orphaned Local Data ID's to Re-map."
 msgstr ""
-"%1$s gewijzigde en %2$s zwevende lokale gegevens-ID's gevonden om opnieuw "
-"toe te wijzen."
+"%s gewijzigde en %s zwevende lokale gegevens-ID's gevonden om opnieuw toe te "
+"wijzen."
 
 #: lib/data_query.php:366
 msgid "Done remapping Graphs to their new Indexes"
@@ -15890,8 +15888,8 @@ msgstr "Index Associatie met lokale gegevens compleet"
 #, php-format
 msgid "Update Re-Index Cache complete. There were %s index changes, and %s orphaned indexes."
 msgstr ""
-"Bijwerken van herindexeringscache voltooid. Er waren %1$s indexwijzigingen "
-"en %2$s verweesde indexen."
+"Bijwerken van herindexeringscache voltooid. Er waren %s indexwijzigingen en "
+"%s verweesde indexen."
 
 #: lib/data_query.php:396
 msgid "Update Poller Cache for Query complete"
@@ -15920,7 +15918,7 @@ msgstr ""
 #: lib/data_query.php:509
 #, php-format
 msgid "Detected New Sort Field: '%s' Old Sort Field '%s'"
-msgstr "Nieuw sorteerveld gedetecteerd: '%1$s' Oud sorteerveld '%2$s'"
+msgstr "Nieuw sorteerveld gedetecteerd: '%s' Oud sorteerveld '%s'"
 
 #: lib/data_query.php:526
 msgid "ERROR: New Sort Field not suitable.  Sort Field will not change."
@@ -15998,7 +15996,7 @@ msgstr "ERROR: Data Query leverde geen indexen op."
 #: lib/data_query.php:715
 #, php-format
 msgid "Executing script for list of indexes '%s', Index Count: %s"
-msgstr "Script uitvoeren voor lijst met indexen '%1$s', aantal indexen: %2$s"
+msgstr "Script uitvoeren voor lijst met indexen '%s', aantal indexen: %s"
 
 #: lib/data_query.php:717
 msgid "Click to show Data Query output for 'index'"
@@ -16034,7 +16032,7 @@ msgstr "Gevonden item [%s='%s'] index: %s"
 #: lib/data_query.php:799 lib/data_query.php:814
 #, php-format
 msgid "Total: %f, Delta: %f, %s"
-msgstr "Totaal: %1$f, Delta: %2$f, %3$s"
+msgstr "Totaal: %f, Delta: %f, %s"
 
 #: lib/data_query.php:839
 #, php-format
@@ -16052,7 +16050,7 @@ msgstr "SNMP-sessie niet geladen."
 #: lib/data_query.php:886
 #, php-format
 msgid "Tested Bulk Walk Size %d with a response of %2.4f."
-msgstr "Bulk Walk-grootte %1$d getest met een respons van %2$2.4f."
+msgstr "Bulk Walk-grootte %d getest met een respons van %2.4f."
 
 #: lib/data_query.php:898
 #, php-format
@@ -16071,7 +16069,7 @@ msgstr "Bulk Walk Size is vastgesteld op %d."
 #: lib/data_query.php:935
 #, php-format
 msgid "Executing SNMP get for num of indexes @ '%s' Index Count: %s"
-msgstr "SNMP get uitvoeren voor aantal indexen @ '%1$s' Aantal indexen: %2$s"
+msgstr "SNMP get uitvoeren voor aantal indexen @ '%s' Aantal indexen: %s"
 
 #: lib/data_query.php:937
 msgid "&lt;oid_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting oid_index entries"
@@ -16082,8 +16080,7 @@ msgstr ""
 #: lib/data_query.php:940
 #, php-format
 msgid "Executing SNMP walk for list of indexes @ '%s' Index Count: %s"
-msgstr ""
-"SNMP walk uitvoeren voor lijst met indexen @ '%1$s' Aantal indexen: %2$s"
+msgstr "SNMP walk uitvoeren voor lijst met indexen @ '%s' Aantal indexen: %s"
 
 #: lib/data_query.php:944
 msgid "No SNMP data returned"
@@ -16092,27 +16089,27 @@ msgstr "Geen SNMP data verkregen"
 #: lib/data_query.php:950
 #, php-format
 msgid "Index found at OID: '%s' value: '%s'"
-msgstr "Index gevonden op OID: '%1$s' waarde: '%2$s'"
+msgstr "Index gevonden op OID: '%s' waarde: '%s'"
 
 #: lib/data_query.php:966
 #, php-format
 msgid "List of indexes filtered by value @ '%s' Index Count: %s"
-msgstr "Lijst met indexen gefilterd op waarde @ '%1$s' Aantal indexen: %2$s"
+msgstr "Lijst met indexen gefilterd op waarde @ '%s' Aantal indexen: %s"
 
 #: lib/data_query.php:970
 #, php-format
 msgid "Filtered Index by value found at OID: '%s' value: '%s'"
-msgstr "Gefilterde index op waarde gevonden bij OID: '%1$s' waarde: '%2$s'"
+msgstr "Gefilterde index op waarde gevonden bij OID: '%s' waarde: '%s'"
 
 #: lib/data_query.php:987
 #, php-format
 msgid "Filtering list of indexes @ '%s' Index Count: %s"
-msgstr "Lijst met indexen filteren @ '%1$s' Aantal indexen: %2$s"
+msgstr "Lijst met indexen filteren @ '%s' Aantal indexen: %s"
 
 #: lib/data_query.php:991
 #, php-format
 msgid "Filtered Index found at OID: '%s' value: '%s'"
-msgstr "Gefilterde index gevonden bij OID: '%1$s' waarde: '%2$s'"
+msgstr "Gefilterde index gevonden bij OID: '%s' waarde: '%s'"
 
 #: lib/data_query.php:1011
 #, php-format
@@ -16124,7 +16121,7 @@ msgstr ""
 #: lib/data_query.php:1018
 #, php-format
 msgid "Inserting index data for field '%s' [value='%s']"
-msgstr "Indexgegevens invoegen voor veld '%1$s' [waarde='%2$s']"
+msgstr "Indexgegevens invoegen voor veld '%s' [waarde='%s']"
 
 #: lib/data_query.php:1023
 #, php-format
@@ -16134,17 +16131,17 @@ msgstr "Gelegen invoerveld '%s' [get]"
 #: lib/data_query.php:1032
 #, php-format
 msgid "Found OID rewrite rule: 's/%s/%s/'"
-msgstr "OID-herschrijfregel gevonden: 's/%1$s/%2$s/'"
+msgstr "OID-herschrijfregel gevonden: 's/%s/%s/'"
 
 #: lib/data_query.php:1043
 #, php-format
 msgid "oid_rewrite at OID: '%s' new OID: '%s'"
-msgstr "oid_rewrite op OID: '%1$s' nieuwe OID: '%2$s'"
+msgstr "oid_rewrite op OID: '%s' nieuwe OID: '%s'"
 
 #: lib/data_query.php:1064
 #, php-format
 msgid "Executing SNMP get for data @ '%s' [value='%s']"
-msgstr "SNMP get uitvoeren voor gegevens @ '%1$s' [waarde='%2$s']"
+msgstr "SNMP get uitvoeren voor gegevens @ '%s' [waarde='%s']"
 
 #: lib/data_query.php:1076
 #, php-format
@@ -16154,7 +16151,7 @@ msgstr "Veld '%s' %s"
 #: lib/data_query.php:1140
 #, php-format
 msgid "Executing SNMP get for %s oids (%s)"
-msgstr "SNMP get uitvoeren voor %1$s OID's (%2$s)"
+msgstr "SNMP get uitvoeren voor %s OID's (%s)"
 
 #: lib/data_query.php:1167 lib/data_query.php:1260 lib/data_query.php:1269
 #, php-format
@@ -16166,26 +16163,23 @@ msgstr ""
 #: lib/data_query.php:1171
 #, php-format
 msgid "Found result for data @ '%s' [value='%s']"
-msgstr "Resultaat gevonden voor gegevens @ '%1$s' [waarde='%2$s']"
+msgstr "Resultaat gevonden voor gegevens @ '%s' [waarde='%s']"
 
 #: lib/data_query.php:1179
 #, php-format
 msgid "Setting result for data @ '%s' [key='%s', value='%s']"
-msgstr ""
-"Resultaat instellen voor gegevens @ '%1$s' [sleutel='%2$s', waarde='%3$s']"
+msgstr "Resultaat instellen voor gegevens @ '%s' [sleutel='%s', waarde='%s']"
 
 #: lib/data_query.php:1183
 #, php-format
 msgid "Skipped result for data @ '%s' [key='%s', value='%s']"
-msgstr ""
-"Resultaat overgeslagen voor gegevens @ '%1$s' [sleutel='%2$s', waarde='%3$s']"
+msgstr "Resultaat overgeslagen voor gegevens @ '%s' [sleutel='%s', waarde='%s']"
 
 #: lib/data_query.php:1197
 #, php-format
 msgid "Got SNMP get result for data @ '%s' [value='%s'] (index: %s)"
 msgstr ""
-"SNMP get-resultaat ontvangen voor gegevens @ '%1$s' [waarde='%2$s'] (index: "
-"%3$s)"
+"SNMP get-resultaat ontvangen voor gegevens @ '%s' [waarde='%s'] (index: %s)"
 
 #: lib/data_query.php:1227
 #, php-format
@@ -16216,7 +16210,7 @@ msgstr "Gevonden item [%s='%s'] index: %s [van %s]"
 #: lib/data_query.php:1386
 #, php-format
 msgid "Found OCTET STRING '%s' decoded value: '%s'"
-msgstr "OCTET STRING '%1$s' gevonden, gedecodeerde waarde: '%2$s'"
+msgstr "OCTET STRING '%s' gevonden, gedecodeerde waarde: '%s'"
 
 #: lib/data_query.php:1392 lib/data_query.php:1443
 #, php-format
@@ -16226,7 +16220,7 @@ msgstr "Gevonden item [%s='%s'] index: %s [van regexp oid parse]"
 #: lib/data_query.php:1472
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid value parse]"
-msgstr "Item gevonden [%1$s='%2$s'] index: %3$s [uit regexp OID-waardeparsing]"
+msgstr "Item gevonden [%s='%s'] index: %s [uit regexp OID-waardeparsing]"
 
 #: lib/data_query.php:1710
 #, php-format
@@ -16240,7 +16234,7 @@ msgstr ""
 #: lib/data_query.php:1750
 #, php-format
 msgid "rewrite_value: '%s' => '%s'"
-msgstr "rewrite_value: '%1$s' => '%2$s'"
+msgstr "rewrite_value: '%s' => '%s'"
 
 #: lib/data_query.php:1856
 msgid "Update graph data query cache complete"
@@ -16300,15 +16294,15 @@ msgstr "Gegevensbron is niet ingesteld als Actief"
 #, php-format
 msgid "RRDfile Folder (rra) is not writable by Poller.  Folder owner: %s.  Poller runs as: %s"
 msgstr ""
-"RRD-bestandsmap (rra) is niet beschrijfbaar voor Poller.  Mapeigenaar: %1$"
-"s.  Poller draait als: %2$s"
+"RRD-bestandsmap (rra) is niet beschrijfbaar voor Poller.  Mapeigenaar: %s.  "
+"Poller draait als: %s"
 
 #: lib/dsdebug.php:282
 #, php-format
 msgid "RRDfile is not writable by Poller.  RRDfile owner: %s.  Poller runs as %s"
 msgstr ""
-"RRD-bestand is niet beschrijfbaar voor Poller.  Eigenaar RRD-bestand: %1$s.  "
-"Poller draait als %2$s"
+"RRD-bestand is niet beschrijfbaar voor Poller.  Eigenaar RRD-bestand: %s.  "
+"Poller draait als %s"
 
 #: lib/dsdebug.php:291
 msgid "RRDfile does not match Data Source"
@@ -16471,7 +16465,7 @@ msgstr "Configuratie controleren…<br>"
 
 #: lib/functions.php:5849
 msgid "PHP's Mailer Class"
-msgstr "PHP's Mailer Class"
+msgstr "Mailer-klasse van PHP"
 
 #: lib/functions.php:5855
 msgid "Method: SMTP"
@@ -16521,8 +16515,8 @@ msgstr "Sinds installatie"
 #, php-format
 msgid "Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details."
 msgstr ""
-"Cacti heeft plug-in %1$s uitgeschakeld vanwege de volgende fout: %2$s! "
-"Raadpleeg het Cacti-logbestand voor meer informatie."
+"Cacti heeft plug-in %s uitgeschakeld vanwege de volgende fout: %s! Raadpleeg "
+"het Cacti-logbestand voor meer informatie."
 
 #: lib/functions.php:6752
 #, php-format
@@ -16540,7 +16534,7 @@ msgstr ""
 #: lib/functions.php:7247
 #, php-format
 msgid "- Dev %s"
-msgstr "- Dev %s"
+msgstr "- Apparaat %s"
 
 #: lib/functions.php:7249
 #, php-format
@@ -17141,7 +17135,7 @@ msgstr ""
 #: lib/html.php:3403
 #, php-format
 msgid "Version %s | %s"
-msgstr "Versie %1$s | %2$s"
+msgstr "Versie %s | %s"
 
 #: lib/html_filter.php:89
 msgid "Apply filter to table"
@@ -17935,7 +17929,7 @@ msgstr "Geselecteerd"
 #: lib/html_utility.php:589 lib/html_utility.php:828
 #, php-format
 msgid "The regular expression \"%s\" is not valid. Error is %s"
-msgstr "De reguliere expressie \"%1$s\" is niet geldig. Fout is %2$s"
+msgstr "De reguliere expressie \"%s\" is niet geldig. Fout is %s"
 
 #: lib/html_utility.php:1040
 msgid "Cacti regular expressions are limited to 50 characters only for security reasons."
@@ -17975,8 +17969,8 @@ msgstr "Offline (Thold)"
 #, php-format
 msgid "Validation error for variable %s with a value of %s.  See backtrace below for more details."
 msgstr ""
-"Validatiefout voor variabele %1$s met waarde %2$s. Zie de backtrace "
-"hieronder voor meer details."
+"Validatiefout voor variabele %s met waarde %s. Zie de backtrace hieronder "
+"voor meer details."
 
 #: lib/html_validate.php:115
 msgid "Validation Error"
@@ -18075,7 +18069,7 @@ msgstr "Pad was niet beschrijfbaar"
 #: lib/installer.php:786
 #, php-format
 msgid "Failed to set specified %sRRDTool version: %s"
-msgstr "Kan opgegeven %1$sRRDTool-versie niet instellen: %2$s"
+msgstr "Kan opgegeven %sRRDTool-versie niet instellen: %s"
 
 #: lib/installer.php:837
 msgid "Invalid Theme Specified"
@@ -18100,7 +18094,7 @@ msgstr "Onverwachte padparameter"
 #: lib/installer.php:968
 #, php-format
 msgid "Failed to apply specified profile %s != %s"
-msgstr "Kan opgegeven profiel %1$s != %2$s niet toepassen"
+msgstr "Kan opgegeven profiel %s != %s niet toepassen"
 
 #: lib/installer.php:1015
 #, php-format
@@ -18431,8 +18425,8 @@ msgstr ""
 "problemen ondervinden door wijzigingen in de code.  Deze problemen worden "
 "veroorzaakt doordat de browser de pre-upgrade code behoudt en hoewel we "
 "stappen hebben ondernomen om de kans hierop te minimaliseren, kan dit nog "
-"steeds gebeuren.  Als je instructies nodig hebt over hoe je je browser cache "
-"te wissen, is <a href='https://www.refreshyourcache.com' "
+"steeds gebeuren.  Als je instructies nodig hebt over hoe je de browsercache "
+"kunt wissen, is <a href='https://www.refreshyourcache.com' "
 "target='_blank'>https://www.refreshyourcache.com/</a> een goed startpunt."
 
 #: lib/installer.php:2243
@@ -18990,7 +18984,7 @@ msgstr ""
 #, php-format
 msgid "Press '%s' then click '%s' to complete the installation process after selecting your Device Templates."
 msgstr ""
-"Druk op '%1$s' en klik vervolgens op '%2$s' om het installatieproces te "
+"Druk op '%s' en klik vervolgens op '%s' om het installatieproces te "
 "voltooien nadat u uw apparaatsjablonen hebt geselecteerd."
 
 #: lib/installer.php:2964
@@ -19117,7 +19111,7 @@ msgstr "Uw Cacti Server is nu aan het installeren"
 #: lib/installer.php:3165
 #, php-format
 msgid "Spawning background process: %s %s"
-msgstr "Achtergrondproces starten: %1$s %2$s"
+msgstr "Achtergrondproces starten: %s %s"
 
 #: lib/installer.php:3192
 msgid "Complete"
@@ -19150,12 +19144,12 @@ msgstr "Begin"
 #: lib/installer.php:3359
 #, php-format
 msgid "Starting %s Process for v%s"
-msgstr "%1$s-proces starten voor v%2$s"
+msgstr "%s-proces starten voor v%s"
 
 #: lib/installer.php:3388
 #, php-format
 msgid "Finished %s Process for v%s"
-msgstr "%1$s-proces voltooid voor v%2$s"
+msgstr "%s-proces voltooid voor v%s"
 
 #: lib/installer.php:3428
 #, php-format
@@ -19165,17 +19159,17 @@ msgstr "%s sjablonen gevonden om te installeren"
 #: lib/installer.php:3438
 #, php-format
 msgid "About to import Package #%s '%s'."
-msgstr "Op het punt om pakket #%1$s '%2$s' te importeren."
+msgstr "Op het punt om pakket #%s '%s' te importeren."
 
 #: lib/installer.php:3447
 #, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' succeeded"
-msgstr "Importeren van pakket #%1$s '%2$s' onder profiel '%3$s' is geslaagd"
+msgstr "Importeren van pakket #%s '%s' onder profiel '%s' is geslaagd"
 
 #: lib/installer.php:3453
 #, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' failed"
-msgstr "Importeren van pakket #%1$s '%2$s' onder profiel '%3$s' is mislukt"
+msgstr "Importeren van pakket #%s '%s' onder profiel '%s' is mislukt"
 
 #: lib/installer.php:3469
 #, php-format
@@ -19193,7 +19187,7 @@ msgstr "Extern configuratiebestand wordt bijgewerkt"
 #: lib/installer.php:3532
 #, php-format
 msgid "Setting default data source profile to %s (%s)"
-msgstr "Standaard gegevensbronprofiel instellen op %1$s (%2$s)"
+msgstr "Standaard gegevensbronprofiel instellen op %s (%s)"
 
 #: lib/installer.php:3557
 #, fuzzy, php-format
@@ -19204,8 +19198,8 @@ msgstr "Geen toepassing van gespecificeerd profiel %s != %s !"
 #, php-format
 msgid "Updating automation network (%s), mode \"%s\" => \"%s\", subnet \"%s\" => %s\""
 msgstr ""
-"Automatiseringsnetwerk (%1$s) wordt bijgewerkt, modus \"%2$s\" => \"%3$s\", "
-"subnet \"%4$s\" => %5$s\""
+"Automatiseringsnetwerk (%s) wordt bijgewerkt, modus \"%s\" => \"%s\", subnet "
+"\"%s\" => %s\""
 
 #: lib/installer.php:3583
 msgid "Failed to find automation network, no changes were made"
@@ -19312,7 +19306,7 @@ msgstr "%s tabellen gevonden om te converteren"
 #: lib/installer.php:3767
 #, php-format
 msgid "Converting Table #%s '%s'"
-msgstr "Tabel #%1$s '%2$s' converteren"
+msgstr "Tabel #%s '%s' converteren"
 
 #: lib/installer.php:3784
 #, fuzzy
@@ -19322,7 +19316,7 @@ msgstr "Geen tabellen gevonden of geselecteerd voor conversie"
 #: lib/installer.php:3795
 #, php-format
 msgid "Switched from %s to %s"
-msgstr "Overgeschakeld van %1$s naar %2$s"
+msgstr "Overgeschakeld van %s naar %s"
 
 #: lib/installer.php:3799
 #, php-format
@@ -19332,7 +19326,7 @@ msgstr "OPMERKING: een tijdelijk bestand gebruiken voor db cache:%s"
 #: lib/installer.php:3822
 #, php-format
 msgid "Upgrading from v%s (DB %s) to v%s"
-msgstr "Upgraden van v%1$s (DB %2$s) naar v%3$s"
+msgstr "Upgraden van v%s (DB %s) naar v%s"
 
 #: lib/installer.php:3831
 #, php-format
@@ -19347,17 +19341,17 @@ msgstr "Installatie afgebroken vanwege geen acceptatie door EULA"
 #, php-format
 msgid "Background was already started at %s, this attempt at %s was skipped"
 msgstr ""
-"Achtergrondproces was al gestart om %1$s, deze poging om %2$s is overgeslagen"
+"Achtergrondproces was al gestart om %s, deze poging om %s is overgeslagen"
 
 #: lib/installer.php:3946
 #, php-format
 msgid "Exception occurred during installation: #%s - %s"
-msgstr "Er is een uitzondering opgetreden tijdens de installatie: #%1$s - %2$s"
+msgstr "Er is een uitzondering opgetreden tijdens de installatie: #%s - %s"
 
 #: lib/installer.php:3956
 #, php-format
 msgid "Installation was started at %s, completed at %s"
-msgstr "Installatie is gestart om %1$s, voltooid om %2$s"
+msgstr "Installatie is gestart om %s, voltooid om %s"
 
 #: lib/installer.php:3997
 msgid "Both"
@@ -19389,12 +19383,12 @@ msgstr "CLI"
 #: lib/installer.php:4015
 #, php-format
 msgid "Setting PHP Option %s = %s"
-msgstr "PHP-optie %1$s = %2$s instellen"
+msgstr "PHP-optie %s = %s instellen"
 
 #: lib/installer.php:4023
 #, php-format
 msgid "Failed to set PHP option %s, is %s (should be %s)"
-msgstr "Kan PHP-optie %1$s niet instellen, is %2$s (moet %3$s zijn)"
+msgstr "Kan PHP-optie %s niet instellen, is %s (moet %s zijn)"
 
 #: lib/installer.php:4043
 msgid "No Remote Data Collectors found for full synchronization"
@@ -19419,18 +19413,17 @@ msgstr "Geen gebruikersnaam gedefinieerd"
 #: lib/ldap.php:412
 #, php-format
 msgid "Protocol Error, Unable to set version (%s) on Server (%s)"
-msgstr "Protocolfout, kan versie niet instellen (%1$s) op server (%2$s)"
+msgstr "Protocolfout, kan versie niet instellen (%s) op server (%s)"
 
 #: lib/ldap.php:416
 #, php-format
 msgid "Protocol Error, Unable to set referrals option (%s) on Server (%s)"
-msgstr ""
-"Protocolfout, kan verwijzingsoptie niet instellen (%1$s) op server (%2$s)"
+msgstr "Protocolfout, kan verwijzingsoptie niet instellen (%s) op server (%s)"
 
 #: lib/ldap.php:420
 #, php-format
 msgid "Protocol Error, unable to start TLS communications (%s) on Server (%s)"
-msgstr "Protocolfout, kan TLS-communicatie niet starten (%1$s) op server (%2$s)"
+msgstr "Protocolfout, kan TLS-communicatie niet starten (%s) op server (%s)"
 
 #: lib/ldap.php:424
 #, php-format
@@ -19440,7 +19433,7 @@ msgstr "Protocolfout, algemene fout (%s)"
 #: lib/ldap.php:428
 #, php-format
 msgid "Protocol Error, Unable to bind, LDAP result: (%s) on Server (%s)"
-msgstr "Protocolfout, kan niet binden, LDAP-resultaat: (%1$s) op server (%2$s)"
+msgstr "Protocolfout, kan niet binden, LDAP-resultaat: (%s) op server (%s)"
 
 #: lib/ldap.php:432
 #, php-format
@@ -19490,7 +19483,7 @@ msgstr "Ongeldig wachtwoord opgegeven. Aanmelden mislukt."
 #: lib/ldap.php:473
 #, php-format
 msgid "Unexpected error %s (Ldap Error: %s) on Server (%s)"
-msgstr "Onverwachte fout %1$s (LDAP-fout: %2$s) op server (%3$s)"
+msgstr "Onverwachte fout %s (LDAP-fout: %s) op server (%s)"
 
 #: lib/ping.php:149
 msgid "ICMP Ping timed out"
@@ -19553,7 +19546,7 @@ msgstr "TCP ping succesvol (%s ms)"
 
 #: lib/ping.php:604
 msgid "TCP ping timed out"
-msgstr "TCP ping timed out"
+msgstr "Time-out bij TCP-ping"
 
 #: lib/ping.php:631
 msgid "Ping not performed due to setting."
@@ -19563,14 +19556,13 @@ msgstr "Ping niet uitgevoerd vanwege de instelling."
 #, php-format
 msgid "'%s' versions '%s' above or in range are required to install '%s'. "
 msgstr ""
-"Versies '%2$s' of hoger (of binnen het bereik) van '%1$s' zijn vereist om "
-"'%3$s' te installeren. "
+"'%s'-versies '%s' of hoger (of binnen het bereik) zijn vereist om '%s' te "
+"installeren. "
 
 #: lib/plugins.php:685
 #, php-format
 msgid "'%s' must first be installed before '%s' is installed. "
-msgstr ""
-"'%1$s' moet eerst worden geïnstalleerd voordat '%2$s' wordt geïnstalleerd. "
+msgstr "'%s' moet eerst worden geïnstalleerd voordat '%s' wordt geïnstalleerd. "
 
 #: lib/plugins.php:708
 msgid "Plugin cannot be installed."
@@ -19748,8 +19740,8 @@ msgstr ""
 #, php-format
 msgid "Problems sending Report '%s' Problem with e-mail Subsystem Error is '%s'"
 msgstr ""
-"Problemen bij het verzenden van rapport '%1$s': probleem met e-"
-"mailsubsysteem, fout is '%2$s'"
+"Problemen bij het verzenden van rapport '%s': probleem met e-mailsubsysteem, "
+"fout is '%s'"
 
 #: lib/reports.php:634
 #, php-format
@@ -19815,23 +19807,23 @@ msgstr "RRDtool opdracht:"
 #, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
 msgstr ""
-"De vereiste stapgrootte van het RRDfile is '%1$s', maar de waargenomen stap "
-"is '%2$s'"
+"De vereiste stapgrootte van het RRDfile is '%s', maar de waargenomen stap is "
+"'%s'"
 
 #: lib/rrd.php:3359
 #, php-format
 msgid "Type for Data Source '%s' should be '%s'"
-msgstr "Type voor gegevensbron '%1$s' moet '%2$s' zijn"
+msgstr "Type voor gegevensbron '%s' moet '%s' zijn"
 
 #: lib/rrd.php:3365
 #, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
-msgstr "Heartbeat voor gegevensbron '%1$s' moet '%2$s' zijn"
+msgstr "Heartbeat voor gegevensbron '%s' moet '%s' zijn"
 
 #: lib/rrd.php:3377
 #, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
-msgstr "RRD-minimum voor gegevensbron '%1$s' moet '%2$s' zijn"
+msgstr "RRD-minimum voor gegevensbron '%s' moet '%s' zijn"
 
 #: lib/rrd.php:3386
 #, fuzzy, php-format
@@ -19841,31 +19833,31 @@ msgstr "DS \"%s\" ontbreekt in de definitie van cactussen"
 #: lib/rrd.php:3400 lib/rrd.php:3401
 #, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
-msgstr "Cacti RRA '%1$s' heeft dezelfde CF/stappen (%2$s, %3$s) als '%4$s'"
+msgstr "Cacti RRA '%s' heeft dezelfde CF/stappen (%s, %s) als '%s'"
 
 #: lib/rrd.php:3415 lib/rrd.php:3416
 #, php-format
 msgid "File RRA '%s' has same CF/steps (%s, %s) as '%s'"
-msgstr "Bestand-RRA '%1$s' heeft dezelfde CF/stappen (%2$s, %3$s) als '%4$s'"
+msgstr "Bestand-RRA '%s' heeft dezelfde CF/stappen (%s, %s) als '%s'"
 
 #: lib/rrd.php:3450
 #, php-format
 msgid "The pdp_per_row of '%s' is invalid for RRA '%s' should be '%s'.  Consider deleting and allowing Cacti to re-create RRDfile."
 msgstr ""
-"De pdp_per_row van '%1$s' is ongeldig voor RRA '%2$s'; dit moet '%3$s' zijn. "
+"De pdp_per_row van '%s' is ongeldig voor RRA '%s'; dit moet '%s' zijn. "
 "Overweeg het RRDfile te verwijderen zodat Cacti het opnieuw kan aanmaken."
 
 #: lib/rrd.php:3454
 #, php-format
 msgid "The XFF for Cacti RRA id is '%s' but should be '%s'"
-msgstr "De XFF voor de Cacti RRA-ID is '%1$s', maar moet '%2$s' zijn"
+msgstr "De XFF voor de Cacti RRA-ID is '%s', maar moet '%s' zijn"
 
 #: lib/rrd.php:3458
 #, php-format
 msgid "The number of rows for Cacti RRA id '%s' is incorrect.  The number of rows are '%s' but should be '%s'"
 msgstr ""
-"Het aantal rijen voor Cacti RRA-ID '%1$s' is onjuist. Het aantal rijen is "
-"'%2$s', maar moet '%3$s' zijn"
+"Het aantal rijen voor Cacti RRA-ID '%s' is onjuist. Het aantal rijen is "
+"'%s', maar moet '%s' zijn"
 
 #: lib/rrd.php:3476
 #, php-format
@@ -19960,15 +19952,14 @@ msgstr "Fout tijdens het parsen van de RRDtool dump XML"
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file"
 msgstr ""
-"RRA (CF=%1$s, ROWS=%2$d, PDP_PER_ROW=%3$d, XFF=%4$1.2f) verwijderd uit RRD-"
-"bestand"
+"RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) verwijderd uit RRD-bestand"
 
 #: lib/rrd.php:4199
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file"
 msgstr ""
-"RRA (CF=%1$s, ROWS=%2$d, PDP_PER_ROW=%3$d, XFF=%4$1.2f) wordt toegevoegd aan "
-"RRD-bestand"
+"RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) wordt toegevoegd aan RRD-"
+"bestand"
 
 #: lib/rrd.php:4291 lib/rrd.php:4305
 #, php-format
@@ -20177,9 +20168,9 @@ msgstr "Met moderne SSD opslag is het hebben van meerdere IO threads voordelig v
 #, php-format
 msgid "As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential"
 msgstr ""
-"Vanaf %1$s %2$s kunt u bepalen hoe vaak %3$s transacties naar schijf "
-"schrijft. De standaardwaarde is 1 seconde, maar op systemen met hoge I/O kan "
-"een waarde groter dan 1 ervoor zorgen dat schijf-I/O sequentiëler verloopt"
+"Vanaf %s %s kunt u bepalen hoe vaak %s transacties naar schijf schrijft. De "
+"standaardwaarde is 1 seconde, maar op systemen met hoge I/O kan een waarde "
+"groter dan 1 ervoor zorgen dat schijf-I/O sequentiëler verloopt"
 
 #: lib/utility.php:1303
 msgid "With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics.  Depending on your MariaDB/MySQL versions, this value can go as high as 64.  But try to keep the number less than your total SMT threads on the database server."
@@ -20252,8 +20243,8 @@ msgstr "Met moderne SSD opslag is het hebben van meerdere schrijf IO threads voo
 msgid "When using MariaDB 10.2.4 and above, this setting should be off if atomic writes are enabled.  Therefore, please enable atomic writes instead of the double write buffer as it will increase performance."
 msgstr ""
 "Bij gebruik van MariaDB 10.2.4 en hoger moet deze instelling uitgeschakeld "
-"zijn als atomaire schrijfbewerkingen zijn ingeschakeld. Schakel daarom "
-"atomaire schrijfbewerkingen in in plaats van de dubbele schrijfbuffer, omdat "
+"zijn als atomaire schrijfbewerkingen zijn ingeschakeld. Activeer daarom "
+"atomaire schrijfbewerkingen in plaats van de dubbele schrijfbuffer, omdat "
 "dit de prestaties verbetert."
 
 #: lib/utility.php:1388
@@ -20266,7 +20257,7 @@ msgstr ""
 #: lib/utility.php:1405
 #, php-format
 msgid "%s Tuning"
-msgstr "%s Tuning"
+msgstr "%s-afstemming"
 
 #: lib/utility.php:1405
 msgid "Note: Many changes below require a database restart"
@@ -21957,36 +21948,35 @@ msgstr "Plug-in lokaal inschakelen"
 #, php-format
 msgid "WARNING: %s is out of sync with the Poller Interval for Poller[%d]!  The Poller Interval is %d seconds, with a maximum of a %d seconds, but %d seconds have passed since the last poll!"
 msgstr ""
-"WAARSCHUWING: %1$s loopt niet synchroon met het Poller-interval voor Poller"
-"[%2$d]! Het Poller-interval is %3$d seconden, met een maximum van %4$d "
-"seconden, maar er zijn %5$d seconden verstreken sinds de laatste poll!"
+"WAARSCHUWING: %s loopt niet synchroon met het Poller-interval voor Poller[%d]"
+"! Het Poller-interval is %d seconden, met een maximum van %d seconden, maar "
+"er zijn %d seconden verstreken sinds de laatste poll!"
 
 #: poller.php:579
 #, php-format
 msgid "WARNING: There are %d processes detected as overrunning a polling cycle for Poller[%d], please investigate."
 msgstr ""
-"WAARSCHUWING: Er zijn %1$d processen gedetecteerd die een pollingcyclus "
-"overschrijden voor Poller[%2$d], onderzoek dit alstublieft."
+"WAARSCHUWING: Er zijn %d processen gedetecteerd die een pollingcyclus "
+"overschrijden voor Poller[%d], onderzoek dit alstublieft."
 
 #: poller.php:637
 #, php-format
 msgid "WARNING: Poller Output Table not empty for Poller[%d].  Issues: %d, %s."
 msgstr ""
-"WAARSCHUWING: Uitvoertabel van Poller is niet leeg voor Poller[%1$d]. "
-"Problemen: %2$d, %3$s."
+"WAARSCHUWING: Uitvoertabel van Poller is niet leeg voor Poller[%d]. "
+"Problemen: %d, %s."
 
 #: poller.php:671
 #, php-format
 msgid "ERROR: The spine path: %s is invalid for Poller[%d].  Poller can not continue!"
 msgstr ""
-"FOUT: Het Spine-pad %1$s is ongeldig voor Poller[%2$d]. Poller kan niet "
-"doorgaan!"
+"FOUT: Het Spine-pad %s is ongeldig voor Poller[%d]. Poller kan niet doorgaan!"
 
 #: poller.php:819
 #, php-format
 msgid "Maximum runtime of %d seconds exceeded for Poller[%d]. Exiting."
 msgstr ""
-"Maximale looptijd van %1$d seconden overschreden voor Poller[%2$d]. Wordt "
+"Maximale looptijd van %d seconden overschreden voor Poller[%d]. Wordt "
 "afgesloten."
 
 #: poller.php:944
@@ -22391,7 +22381,7 @@ msgstr "De status van deze gegevensverzamelaar."
 
 #: pollers.php:1082
 msgid "Proc/Threads"
-msgstr "Proc/Threads"
+msgstr "Processen/Threads"
 
 #: pollers.php:1085
 msgid "The Number of Poller Processes and Threads for this Data Collector."
@@ -22408,7 +22398,7 @@ msgstr ""
 
 #: pollers.php:1094
 msgid "Avg/Max"
-msgstr "Avg/Max"
+msgstr "Gem/Max"
 
 #: pollers.php:1097
 msgid "The Average and Maximum Collector timings for this Data Collector."
@@ -22630,7 +22620,7 @@ msgstr ""
 #: settings.php:138
 #, php-format
 msgid "Cacti Settings (%s)%s"
-msgstr "Cacti-instellingen (%1$s)%2$s"
+msgstr "Cacti-instellingen (%s)%s"
 
 #: settings.php:248
 msgid "Changing Permission Model Warning"
@@ -23346,12 +23336,12 @@ msgstr "PHP servers"
 #: support.php:1370 support.php:1372 support.php:1378 support.php:1380
 #, php-format
 msgid "Main Server: Current: %s, Min Required: %s"
-msgstr "Hoofdserver: Huidig: %1$s, Minimaal vereist: %2$s"
+msgstr "Hoofdserver: Huidig: %s, Minimaal vereist: %s"
 
 #: support.php:1388 support.php:1390
 #, php-format
 msgid "Local Server: Current: %s, Min Required: %s"
-msgstr "Lokale server: Huidig: %1$s, Minimaal vereist: %2$s"
+msgstr "Lokale server: Huidig: %s, Minimaal vereist: %s"
 
 #: support.php:1395
 msgid "Minimum Connections:"
@@ -23381,7 +23371,7 @@ msgstr "Script timeout"
 
 #: support.php:1408
 msgid "Max OID"
-msgstr "Max OID"
+msgstr "Max. OID"
 
 #: support.php:1413
 msgid "Last Run Statistics"
@@ -23570,6 +23560,8 @@ msgstr ""
 #: templates_import.php:333
 msgid "Some CDEF Items will not import due to an export error! Contact Template provider for an updated export."
 msgstr ""
+"Sommige CDEF-items worden niet geïmporteerd vanwege een exportfout! Neem "
+"contact op met de sjabloonprovider voor een bijgewerkte export."
 
 #: templates_import.php:374 templates_import.php:461
 msgid "Import Template"
@@ -23844,7 +23836,7 @@ msgstr "Het totale aantal site-vertakkingen in deze boom."
 
 #: tree.php:2276
 msgid "Branches"
-msgstr "Branches"
+msgstr "Vertakkingen"
 
 #: tree.php:2279
 msgid "The total number of Branches in this Tree."
@@ -25157,7 +25149,7 @@ msgstr "Huidige Boost Status"
 
 #: utilities.php:1572
 msgid "Boost On-demand Updating:"
-msgstr "Boost On-demand Updating:"
+msgstr "Boost bijwerken op aanvraag:"
 
 #: utilities.php:1576
 msgid "Running Processes:"
@@ -25189,7 +25181,7 @@ msgstr "Benaderend in proces:"
 
 #: utilities.php:1602
 msgid "Total Boost Records:"
-msgstr "Total Boost Records:"
+msgstr "Totaal aantal Boost-records:"
 
 #: utilities.php:1607
 msgid "Boost Storage Statistics"
@@ -25261,7 +25253,7 @@ msgstr "%0.2f procent van update frequentie)"
 
 #: utilities.php:1696
 msgid "RRD Updates:"
-msgstr "RRD Updates:"
+msgstr "RRD-updates:"
 
 #: utilities.php:1699
 msgid "MBytes"
