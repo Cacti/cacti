@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-25 22:34+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Polish <https://translate.cacti.net/projects/cacti/core-v1-2-x/pl/>\nLanguage: pl-PL\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-26 05:54+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Polish <https://translate.cacti.net/projects/cacti/core-v1-2-x/pl/>\nLanguage: pl-PL\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -550,10 +550,8 @@ msgid "No Aggregate Graphs Found"
 msgstr "Nie znaleziono wykresów zagregowanych"
 
 #: aggregate_templates.php
-#, fuzzy
-#| msgid "No Aggregate Templates Found"
 msgid "Aggregate Template not found."
-msgstr "Nie znaleziono zagregowanych szablonów"
+msgstr "Nie znaleziono szablonu agregacji."
 
 #: aggregate_templates.php
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -1902,11 +1900,11 @@ msgstr "Port"
 
 #: automation_snmp.php include/global_settings.php
 msgid "Timeout"
-msgstr "Upłynął limit czasu"
+msgstr "Limit czasu"
 
 #: automation_snmp.php include/global_settings.php
 msgid "Retries"
-msgstr "Powroty"
+msgstr "Ponowne próby"
 
 #: automation_snmp.php
 msgid "Max OIDS"
@@ -2559,10 +2557,8 @@ msgid "Delete Color Item"
 msgstr "Usuń element koloru"
 
 #: color_templates.php
-#, fuzzy
-#| msgid "No Color Templates Found"
 msgid "Color Template not found."
-msgstr "Nie znaleziono szablonów kolorów"
+msgstr "Nie znaleziono szablonu kolorów."
 
 #: color_templates.php
 #, php-format
@@ -4015,7 +4011,7 @@ msgstr "Liczba źródeł danych korzystających z tego szablonu danych."
 
 #: data_templates.php
 msgid "Input Method"
-msgstr "Zmiana układów klawiatury"
+msgstr "Metoda wprowadzania danych"
 
 #: data_templates.php
 msgid "The method that is used to place Data into the Data Source RRDfile."
@@ -4195,7 +4191,7 @@ msgstr "Wykres w czasie rzeczywistym"
 #: graph_realtime.php include/global_arrays.php lib/html_filter.php
 #: lib/html_graph.php lib/html_tree.php
 msgid "Presets"
-msgstr "Presets"
+msgstr "Ustawienia wstępne"
 
 #: graph_realtime.php utilities.php
 msgid "Refresh Interval"
@@ -4298,10 +4294,8 @@ msgid "No Inputs"
 msgstr "Brak danych wejściowych"
 
 #: graph_templates.php
-#, fuzzy
-#| msgid "No Graph Templates Found"
 msgid "Graph Template not found."
-msgstr "Nie znaleziono szablonów wykresów"
+msgstr "Nie znaleziono szablonu wykresu."
 
 #: graph_templates.php
 #, php-format
@@ -5299,7 +5293,7 @@ msgstr "Niezdefiniowane"
 
 #: host.php include/global_settings.php lib/html.php lib/html_reports.php
 msgid "Site"
-msgstr "Lokalizacja"
+msgstr "Obiekt"
 
 #: host.php
 msgid "Export Devices"
@@ -6187,7 +6181,7 @@ msgstr "Co godzine"
 #: include/global_arrays.php include/global_settings.php
 #, php-format
 msgid "Every %d Hours"
-msgstr "Co %d godz."
+msgstr "Co %d godzin"
 
 #: include/global_arrays.php
 #, php-format
@@ -6378,7 +6372,7 @@ msgstr "Konsola"
 
 #: include/global_arrays.php
 msgid "Console Page"
-msgstr "Góra strony konsoli"
+msgstr "Strona konsoli"
 
 #: include/global_arrays.php lib/html_form_template.php
 msgid "New Graphs"
@@ -6394,7 +6388,7 @@ msgstr "Lokalizacje"
 
 #: include/global_arrays.php tree.php user_admin.php user_group_admin.php
 msgid "Trees"
-msgstr "Trees"
+msgstr "Drzewa"
 
 #: include/global_arrays.php
 msgid "Data Collection"
@@ -6518,7 +6512,7 @@ msgstr "Związane z hiperwizorem"
 
 #: include/global_arrays.php
 msgid "ILO, IPMI, iDrac, etc."
-msgstr "MOP, IPMI, iDrac itp."
+msgstr "ILO, IPMI, iDrac itp."
 
 #: include/global_arrays.php
 msgid "Licensing Related"
@@ -6756,7 +6750,7 @@ msgstr "Zmiana dzienna"
 
 #: include/global_arrays.php
 msgid "This Day"
-msgstr "Ostatni dzień"
+msgstr "Ten dzień"
 
 #: include/global_arrays.php
 msgid "This Week"
@@ -6789,7 +6783,7 @@ msgstr "Poprzedni rok"
 #: include/global_arrays.php
 #, php-format
 msgid "%d Min"
-msgstr "%d Min."
+msgstr "%d minut"
 
 #: include/global_arrays.php
 msgid "Month Number, Day, Year"
@@ -6924,7 +6918,7 @@ msgstr "Przejmij"
 
 #: include/global_arrays.php
 msgid "Inline PNG Image"
-msgstr "Obraz PNG w linii produkcyjnej"
+msgstr "Osadzony obraz PNG"
 
 #: include/global_arrays.php
 msgid "Inline JPEG Image"
@@ -7677,7 +7671,7 @@ msgstr "Wybierz protokół SNMPv3 Privacy Protocol."
 
 #: include/global_form.php
 msgid "SNMP Privacy Passphrase (v3)"
-msgstr "Paszport prywatności SNMP (v3)"
+msgstr "Hasło prywatności SNMP (v3)"
 
 #: include/global_form.php
 msgid "Choose the SNMPv3 Privacy Passphrase."
@@ -7709,7 +7703,7 @@ msgstr "Wprowadź numer portu UDP, który ma być używany dla SNMP (domyślnie 
 
 #: include/global_form.php
 msgid "SNMP Timeout"
-msgstr "SNMP Timeout"
+msgstr "Limit czasu SNMP"
 
 #: include/global_form.php
 msgid "The maximum number of milliseconds Cacti will wait for an SNMP response (does not work with php-snmp support)."
@@ -8426,7 +8420,7 @@ msgstr "Modyfikujący kreski umożliwia zmianę stylu linii przerywanej."
 
 #: include/global_form.php
 msgid "Dash Offset (dash-offset=offset)"
-msgstr "Dash Offset (offset kreski = offset)"
+msgstr "Przesunięcie kreski (dash-offset=offset)"
 
 #: include/global_form.php
 msgid "The dash-offset parameter specifies an offset into the pattern at which the stroke begins."
@@ -9100,7 +9094,7 @@ msgstr "Droga do twojego snmpget binarne."
 
 #: include/global_settings.php
 msgid "snmpbulkwalk Binary Path"
-msgstr "snmpbulkwalk Binary Path"
+msgstr "Ścieżka do pliku binarnego snmpbulkwalk"
 
 #: include/global_settings.php
 msgid "The path to your snmpbulkwalk binary."
@@ -11091,7 +11085,7 @@ msgstr "Wprowadź drugorzędny adres IP DNS, aby wykorzystać go do wyszukiwania
 
 #: include/global_settings.php
 msgid "DNS Timeout"
-msgstr "DNS Timeout"
+msgstr "Limit czasu DNS"
 
 #: include/global_settings.php
 msgid "Please enter the DNS timeout in milliseconds.  Cacti uses a PHP based DNS resolver."
@@ -15182,7 +15176,7 @@ msgstr "Silnik"
 
 #: lib/installer.php utilities.php
 msgid "Row Format"
-msgstr "Surowy format"
+msgstr "Format wierszy"
 
 #: lib/installer.php
 msgid "One or more tables are too large to convert during the installation.  You should use the cli/convert_tables.php script to perform the conversion, then refresh this page. For example: "
@@ -16444,10 +16438,8 @@ msgid "Number of I/O threads used for read operations in InnoDB."
 msgstr ""
 
 #: lib/utility.php
-#, fuzzy
-#| msgid "default"
 msgid "1-64; default 4."
-msgstr "domyślne"
+msgstr "1-64; domyślnie 4."
 
 #: lib/utility.php
 msgid "Number of I/O threads used for write operations in InnoDB."
@@ -17070,10 +17062,8 @@ msgid "The Package %s Import Failed"
 msgstr "Importowanie pakietu %s nie powiodło się"
 
 #: package_import.php
-#, fuzzy
-#| msgid "Enter a valid file path"
 msgid "Error: Invalid file path."
-msgstr "Wprowadź prawidłową ścieżkę dostępu do pliku"
+msgstr "Błąd: Nieprawidłowa ścieżka pliku."
 
 #: package_import.php
 msgid "Error in Package"
@@ -19547,10 +19537,8 @@ msgid "PHP SNMP"
 msgstr "PZP SNMP"
 
 #: utilities.php
-#, fuzzy
-#| msgid "Installed"
 msgid "Installed."
-msgstr "Zainstalowane"
+msgstr "Zainstalowano."
 
 #: utilities.php
 msgid "You've set memory limit to 'unlimited'."
