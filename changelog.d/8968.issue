@@ -1,0 +1,1 @@
+Align audit_po.py placeholder validation with Weblate php_format checks by accepting bare in-order placeholders alongside valid all-positional placeholders
