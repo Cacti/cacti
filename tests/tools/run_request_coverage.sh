@@ -23,6 +23,8 @@ run_probe tests/e2e/queue/run.sh '^(lib/api_queue\.php|cli/queue_(admin|worker)\
 
 run_probe tests/e2e/sites-coverage.sh '^(sites\.php|lib/sites\.php|lib/Sites/|tests/e2e/(sites|tests/sites-management|definition_resolution))' 18278
 
+run_probe tests/e2e/gprint-coverage.sh '^(gprint_presets\.php|lib/gprint\.php|lib/Gprint/|tests/e2e/(gprint|tests/gprint-presets|definition_resolution))' 18279
+
 run_php_probe() {
 	local script="$1" pattern="$2"
 	shift 2
