@@ -1659,6 +1659,11 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 	/* suggested values: graph, passed from parent */
 	if (isset($suggested_vals[$graph_template_id]['graph_template'])) {
 		foreach ($suggested_vals[$graph_template_id]['graph_template'] as $field_name => $field_value) {
+			if (!template_suggested_field_is_allowed('graph_templates_graph', $field_name, $field_value)) {
+				cacti_log(sprintf('WARNING: Rejected disallowed graph_templates_graph field "%s" in create_complete_graph_from_template().', (string) $field_name), false, 'SECURITY');
+				continue;
+			}
+
 			db_execute_prepared("UPDATE graph_templates_graph
 				SET $field_name = ?
 				WHERE local_graph_id = ?",
@@ -1670,11 +1675,20 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 	if (isset($suggested_vals[$graph_template_id]['graph_template_item'])) {
 		foreach ($suggested_vals[$graph_template_id]['graph_template_item'] as $graph_template_item_id => $field_array) {
 			foreach ($field_array as $field_name => $field_value) {
+				if (!template_suggested_field_is_allowed('graph_templates_item', $field_name, $field_value)) {
+					cacti_log(sprintf('WARNING: Rejected disallowed graph_templates_item field "%s" in create_complete_graph_from_template().', (string) $field_name), false, 'SECURITY');
+					continue;
+				}
+
 				$graph_item_id = db_fetch_cell_prepared('SELECT id
 					FROM graph_templates_item
 					WHERE local_graph_template_item_id = ?
 					AND local_graph_id = ?',
 					array($graph_template_item_id, $cache_array['local_graph_id']));
+
+				if (empty($graph_item_id)) {
+					continue;
+				}
 
 				db_execute_prepared("UPDATE graph_templates_item
 					SET $field_name = ?
@@ -1843,6 +1857,11 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 				/* suggested values: data source, passed from parent */
 				if (isset($suggested_vals[$graph_template_id]['data_template'][$data_template['id']])) {
 					foreach ($suggested_vals[$graph_template_id]['data_template'][$data_template['id']] as $field_name => $field_value) {
+						if (!template_suggested_field_is_allowed('data_template_data', $field_name, $field_value)) {
+							cacti_log(sprintf('WARNING: Rejected disallowed data_template_data field "%s" in create_complete_graph_from_template().', (string) $field_name), false, 'SECURITY');
+							continue;
+						}
+
 						db_execute_prepared("UPDATE data_template_data
 							SET $field_name = ?
 							WHERE local_data_id = ?",
@@ -1854,11 +1873,20 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 				if (isset($suggested_vals[$graph_template_id]['data_template_item'])) {
 					foreach ($suggested_vals[$graph_template_id]['data_template_item'] as $data_template_item_id => $field_array) {
 						foreach ($field_array as $field_name => $field_value) {
+							if (!template_suggested_field_is_allowed('data_template_rrd', $field_name, $field_value)) {
+								cacti_log(sprintf('WARNING: Rejected disallowed data_template_rrd field "%s" in create_complete_graph_from_template().', (string) $field_name), false, 'SECURITY');
+								continue;
+							}
+
 							$data_source_item_id = db_fetch_cell_prepared('SELECT id
 								FROM data_template_rrd
 								WHERE local_data_template_rrd_id = ?
 								AND local_data_id = ?',
 								array($data_template_item_id, $cache_array['local_data_id'][$data_template['id']]));
+
+							if (empty($data_source_item_id)) {
+								continue;
+							}
 
 							db_execute_prepared("UPDATE data_template_rrd
 								SET $field_name = ?
@@ -1871,10 +1899,29 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 				/* suggested values: custom data, passed from parent */
 				if (isset($suggested_vals[$graph_template_id]['custom_data'][$data_template['id']])) {
 					foreach ($suggested_vals[$graph_template_id]['custom_data'][$data_template['id']] as $data_input_field_id => $field_value) {
+						$allowed_input_field = db_fetch_cell_prepared("SELECT dif.id
+							FROM data_template_data AS dtd_tpl
+							INNER JOIN data_input_fields AS dif
+							ON dif.data_input_id = dtd_tpl.data_input_id
+							INNER JOIN data_input_data AS did_tpl
+							ON did_tpl.data_template_data_id = dtd_tpl.id
+							AND did_tpl.data_input_field_id = dif.id
+							WHERE dtd_tpl.data_template_id = ?
+							AND dtd_tpl.local_data_id = 0
+							AND dif.id = ?
+							AND dif.input_output = 'in'
+							AND did_tpl.t_value = 'on'",
+							array($data_template['id'], (int) $data_input_field_id));
+
+						if (empty($allowed_input_field)) {
+							cacti_log(sprintf('WARNING: Rejected non-overridable custom data_input_field_id %d for data_template_id %d.', (int) $data_input_field_id, (int) $data_template['id']), false, 'SECURITY');
+							continue;
+						}
+
 						db_execute_prepared('REPLACE INTO data_input_data
 							(data_input_field_id, data_template_data_id, t_value, value)
 							VALUES (?, ?, "", ?)',
-							array($data_input_field_id, $data_template_data_id, $field_value));
+							array((int) $data_input_field_id, $data_template_data_id, $field_value));
 					}
 				}
 
@@ -2260,7 +2307,9 @@ function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $value
 			$params2 = array();
 		}
 
-		if (test_data_sources($graph_template_id, $host_id, 0, '', $params1)) {
+		if (!graph_template_whitelist_check($graph_template_id)) {
+			debug_log_insert('new_graphs', __esc('ERROR: Whitelist Validation Failed. Check Data Input Method'));
+		} elseif (test_data_sources($graph_template_id, $host_id, 0, '', $params1)) {
 			$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $params2);
 
 			if ($return_array !== false) {
@@ -2294,7 +2343,9 @@ function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $value
 		foreach ($snmp_index_array as $snmp_index => $true) {
 			$snmp_query_array['snmp_index'] = decode_data_query_index($snmp_index, $snmp_query_array['snmp_query_id'], $host_id);
 
-			if (test_data_sources($graph_template_id, $host_id, $snmp_query_array['snmp_query_id'], $snmp_query_array['snmp_index'])) {
+			if (!graph_template_whitelist_check($graph_template_id)) {
+				debug_log_insert('new_graphs', __esc('ERROR: Whitelist Validation Failed. Check Data Input Method'));
+			} elseif (test_data_sources($graph_template_id, $host_id, $snmp_query_array['snmp_query_id'], $snmp_query_array['snmp_index'])) {
 				$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $values['sg'][$snmp_query_array['snmp_query_id']]);
 
 				if ($return_array !== false) {
@@ -2486,6 +2537,108 @@ function verify_data_input_whitelist($hash, $input_string) {
  *
  * @return bool True on success, false otherwise.
  */
+/**
+ * Validates that a suggested-value field update targets an explicitly allowed
+ * non-structural column and acceptable value shape for the target template table.
+ *
+ * @param string $table Target table name.
+ * @param mixed $field_name Candidate column name.
+ * @param mixed $field_value Candidate column value.
+ *
+ * @return bool True if permitted, false otherwise.
+ */
+function template_suggested_field_is_allowed($table, $field_name, $field_value) {
+	global $config;
+
+	if (!is_string($table) || !is_string($field_name) || !is_scalar($field_value)) {
+		return false;
+	}
+
+	$value = (string) $field_value;
+	if (preg_match('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', $value)) {
+		return false;
+	}
+
+	switch ($table) {
+		case 'graph_templates_graph':
+			static $allowed_graph_columns = array(
+				'title'                => true,
+				'vertical_label'       => true,
+				'image_format_id'      => true,
+				'height'               => true,
+				'width'                => true,
+				'base_value'           => true,
+				'slope_mode'           => true,
+				'auto_scale'           => true,
+				'auto_scale_opts'      => true,
+				'auto_scale_log'       => true,
+				'scale_log_units'      => true,
+				'auto_scale_rigid'     => true,
+				'upper_limit'          => true,
+				'lower_limit'          => true,
+				'unit_value'           => true,
+				'unit_exponent_value'  => true,
+				'unit_length'          => true,
+				'no_gridfit'           => true,
+				'alt_y_grid'           => true,
+				'right_axis'           => true,
+				'right_axis_label'     => true,
+				'right_axis_format'    => true,
+				'right_axis_formatter' => true,
+				'left_axis_formatter'  => true,
+				'auto_padding'         => true,
+				'dynamic_labels'       => true,
+				'force_rules_legend'   => true,
+				'tab_width'            => true,
+				'legend_position'      => true,
+				'legend_direction'     => true,
+			);
+
+			return isset($allowed_graph_columns[$field_name]) && strlen($value) <= 255;
+
+		case 'graph_templates_item':
+			if ($field_name === 'task_item_id') {
+				return false;
+			}
+
+			if (!function_exists('graph_template_input_column_is_allowed') && isset($config['library_path'])) {
+				include_once($config['library_path'] . '/graph_template_input.php');
+			}
+
+			return function_exists('graph_template_input_value_is_allowed')
+				&& graph_template_input_value_is_allowed($field_name, $field_value);
+
+		case 'data_template_data':
+			switch ($field_name) {
+				case 'name':
+					return strlen($value) <= 250;
+				case 'active':
+					return in_array($value, array('', 'on'), true);
+				case 'data_source_profile_id':
+					return preg_match('/^[0-9]{1,10}$/D', $value) === 1;
+				case 'rrd_step':
+					return preg_match('/^[1-9][0-9]{0,9}$/D', $value) === 1;
+				default:
+					return false;
+			}
+
+		case 'data_template_rrd':
+			switch ($field_name) {
+				case 'rrd_minimum':
+				case 'rrd_maximum':
+					return $value === 'U' || is_numeric($value);
+				case 'rrd_heartbeat':
+				case 'data_source_type_id':
+					return preg_match('/^[1-9][0-9]{0,9}$/D', $value) === 1;
+				default:
+					return false;
+			}
+
+		default:
+			return false;
+	}
+}
+
 function graph_template_whitelist_check($graph_template_id) {
 	global $config;
 
@@ -2503,12 +2656,13 @@ function graph_template_whitelist_check($graph_template_id) {
 	}
 
 	// load whitelist, but only once within process execution
-	if ($data_input_whitelist == null) {
-		$data_input_whitelist = json_decode(file_get_contents($config['input_whitelist']), true);
-		if ($data_input_whitelist === null) {
+	if ($data_input_whitelist === null) {
+		$decoded = json_decode((string) file_get_contents($config['input_whitelist']), true);
+		if (!is_array($decoded)) {
 			cacti_log('ERROR: Failed to parse input whitelist file: ' . $config['input_whitelist']);
-			return true;
+			return false;
 		}
+		$data_input_whitelist = $decoded;
 	}
 
 	$valid = true;
@@ -2531,15 +2685,22 @@ function graph_template_whitelist_check($graph_template_id) {
 				WHERE id = ?',
 				array($dii['data_input_id']));
 
+			if (!cacti_sizeof($data_input)) {
+				$valid = false;
+				continue;
+			}
+
 			if (isset($data_input_whitelist[$data_input['hash']])) {
 				$found = true;
 
 				if ($data_input_whitelist[$data_input['hash']] != $data_input['input_string']) {
 					$valid = false;
 				}
+			} elseif (trim((string) $data_input['input_string']) !== '') {
+				$valid = false;
 			}
 
-			if (!$found && !isset($notified[$dii['data_input_id']])) {
+			if (!$found && trim((string) $data_input['input_string']) !== '' && !isset($notified[$dii['data_input_id']])) {
 				cacti_log('WARNING: Data input script not found in input whitelist file: ' . $config['input_whitelist']);
 				$notified[$dii['data_input_id']] = true;
 			}

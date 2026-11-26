@@ -27,7 +27,8 @@ include_once('./include/global.php');
 $page = db_fetch_row_prepared('SELECT
 	id, title, style, contentfile, enabled, refresh
 	FROM external_links AS el
-	WHERE id = ?',
+	WHERE id = ?
+	AND enabled = "on"',
 	array(get_filter_request_var('id')));
 
 if (!cacti_sizeof($page)) {

@@ -34,12 +34,21 @@ function get_vdef_item_name($vdef_item_id) 	{
 	global $vdef_functions, $vdef_item_types;
 
 	$vdef_item = db_fetch_row_prepared('SELECT type, value FROM vdef_items WHERE id = ?', array($vdef_item_id));
+	if (!cacti_sizeof($vdef_item)) {
+		return '';
+	}
+
 	$current_vdef_value = $vdef_item['value'];
 
 	switch ($vdef_item['type']) {
-		case '1': return $vdef_functions[$current_vdef_value];
-		case '4': return $current_vdef_value;
-		case '6': return $current_vdef_value;
+		case '1':
+			return isset($vdef_functions[$current_vdef_value]) ? $vdef_functions[$current_vdef_value] : '';
+		case '4':
+			return $current_vdef_value;
+		case '6':
+			return $current_vdef_value;
+		default:
+			return '';
 	}
 }
 
@@ -54,9 +63,52 @@ function get_vdef_item_name($vdef_item_id) 	{
  * @return string A text-based representation of the vdef.
  */
 function get_vdef($vdef_id, $display = false) {
+	$visited   = array();
+	$expansion = 0;
+
+	return get_vdef_recursive($vdef_id, $display, $visited, $expansion);
+}
+
+/**
+ * Resolves a VDEF with cycle detection, nesting depth limits, and an expansion cap.
+ *
+ * @param int $vdef_id The id of the vdef to resolve.
+ * @param bool $display Whether to format for display.
+ * @param array &$visited Currently active VDEF IDs on the call stack.
+ * @param int &$expansion Total recursive expansions performed.
+ *
+ * @return string A text-based representation of the vdef, or empty string on error.
+ */
+function get_vdef_recursive($vdef_id, $display, &$visited, &$expansion) {
+	$vdef_id = (int) $vdef_id;
+
+	if ($vdef_id <= 0) {
+		return '';
+	}
+
+	if (isset($visited[$vdef_id])) {
+		cacti_log(sprintf('ERROR: VDEF %d contains a recursive cycle.', $vdef_id), false, 'VDEF');
+
+		return '';
+	}
+
+	if (cacti_sizeof($visited) >= 64) {
+		cacti_log(sprintf('ERROR: VDEF %d exceeds the resolver nesting depth.', $vdef_id), false, 'VDEF');
+
+		return '';
+	}
+
+	if (++$expansion > 4096) {
+		cacti_log(sprintf('ERROR: VDEF %d exceeds the resolver expansion budget.', $vdef_id), false, 'VDEF');
+
+		return '';
+	}
+
+	$visited[$vdef_id] = true;
 	$vdef_items = db_fetch_assoc_prepared('SELECT * FROM vdef_items WHERE vdef_id = ? ORDER BY sequence', array($vdef_id));
 
-	$i = 0; $vdef_string = '';
+	$i = 0;
+	$vdef_string = '';
 
 	if (cacti_sizeof($vdef_items)) {
 		foreach ($vdef_items as $vdef_item) {
@@ -65,15 +117,24 @@ function get_vdef($vdef_id, $display = false) {
 			}
 
 			if ($vdef_item['type'] == 5) {
-				$current_vdef_id = $vdef_item['value'];
-				$vdef_string .= get_vdef($current_vdef_id, $display);
+				$current_vdef_id = (int) $vdef_item['value'];
+				$vdef_string .= get_vdef_recursive($current_vdef_id, $display, $visited, $expansion);
 			} else {
 				$vdef_string .= get_vdef_item_name($vdef_item['id']);
+			}
+
+			if (strlen($vdef_string) > 65536) {
+				cacti_log(sprintf('ERROR: VDEF %d exceeds the maximum output size.', $vdef_id), false, 'VDEF');
+				unset($visited[$vdef_id]);
+
+				return '';
 			}
 
 			$i++;
 		}
 	}
+
+	unset($visited[$vdef_id]);
 
 	return $vdef_string;
 }
