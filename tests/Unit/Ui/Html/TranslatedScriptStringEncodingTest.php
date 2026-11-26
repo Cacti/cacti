@@ -38,6 +38,47 @@ dataset('translated_script_strings', [
 		'automation_tree_rules.php',
 		'You are changing the leaf type to "Device" which does not support Graph-based object matching/creation.',
 	],
+	'data template warning title' => [
+		'data_templates.php',
+		'Custom Data Warning Message',
+	],
+	'settings permission model warning title' => [
+		'settings.php',
+		'Changing Permission Model Warning',
+	],
+	'settings test email title' => [
+		'settings.php',
+		'Test Email Results',
+	],
+	'plugin readme title' => [
+		'plugins.php',
+		'Plugin Reame File',
+	],
+	'tree alphabetic label' => [
+		'tree.php',
+		'Alphabetic',
+	],
+	'vdef delete title' => [
+		'vdef.php',
+		'Delete VDEF Item',
+	],
+	'scheduler multiselect prompt' => [
+		'lib/api_scheduler.php',
+		'Select the day(s) of the month',
+	],
+]);
+
+test('HTML root templates emit the active locale text direction', function (string $file) use ($root) {
+	$source = file_get_contents($root . '/' . $file);
+
+	expect($source)->toContain('get_locale_direction()');
+})->with([
+	'include/top_header.php',
+	'include/top_graph_header.php',
+	'include/top_general_header.php',
+	'include/auth.php',
+	'install/install.php',
+	'graph_realtime.php',
 ]);
 
 test('translated strings in inline scripts are emitted as JSON literals', function (string $file, string $msgid) use ($root) {

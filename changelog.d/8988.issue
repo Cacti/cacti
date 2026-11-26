@@ -1,0 +1,1 @@
+Fix positional printf handling, %% escaping before sprintf, number_format_i18n ICU locale and LC_NUMERIC restoration, RRDtool LANG handling, RTL dir attributes, inline JS translation encoding, and shipped PO/MO catalog defects
