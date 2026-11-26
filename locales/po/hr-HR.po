@@ -4301,21 +4301,21 @@ msgstr[2] "Sljedeći grafikoni koriste ove izvore podataka."
 #: data_sources.php
 msgid "Leave the Graph Untouched"
 msgid_plural "Leave all Graphs untouched."
-msgstr[0] "Ostavi grafikon nepromijenjen"
+msgstr[0] "Ostavi grafikon nepromijenjen."
 msgstr[1] "Ostavi sve grafikone nepromijenjene."
 msgstr[2] "Ostavi sve grafikone nepromijenjene."
 
 #: data_sources.php
 msgid "Delete all Graph Items that reference this Data Source."
 msgid_plural "Delete all Graph Items that reference these Data Sources"
-msgstr[0] "Izbriši sve stavke grafikona koje upućuju na ovaj izvor podataka."
+msgstr[0] "Izbriši sve stavke grafikona koje upućuju na ovaj izvor podataka"
 msgstr[1] "Izbriši sve stavke grafikona koje upućuju na ove izvore podataka"
 msgstr[2] "Izbriši sve stavke grafikona koje upućuju na ove izvore podataka"
 
 #: data_sources.php
 msgid "Delete all Graphs that reference this Data Source."
 msgid_plural "Delete all Graphs that reference these Data Sources"
-msgstr[0] "Izbriši sve grafikone koji upućuju na ovaj izvor podataka."
+msgstr[0] "Izbriši sve grafikone koji upućuju na ovaj izvor podataka"
 msgstr[1] "Izbriši sve grafikone koji upućuju na ove izvore podataka"
 msgstr[2] "Izbriši sve grafikone koji upućuju na ove izvore podataka"
 

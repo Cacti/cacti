@@ -12,20 +12,8 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__) . '/Helpers/IsolatedProbe.php';
-
-function bcms_locales_verdict() : array {
-	static $verdict;
-
-	if ($verdict === null) {
-		$verdict = cacti_test_isolated_probe(__DIR__ . '/fixtures/bcms_locales_probe.php');
-	}
-
-	return $verdict;
-}
-
 test('get_list_of_locales registers Bosnian, Croatian, and Serbian in alphabetical language order', function () {
-	$verdict = bcms_locales_verdict();
+	$locales = get_list_of_locales();
 
 	$expected = [
 		'bs-BA' => ['language' => 'Bosnian',  'direction' => 'ltr', 'country' => 'ba', 'filename' => 'bosnian_bosnia_herzegovina'],
@@ -34,24 +22,26 @@ test('get_list_of_locales registers Bosnian, Croatian, and Serbian in alphabetic
 	];
 
 	foreach ($expected as $code => $meta) {
-		expect($verdict['locales'])->toHaveKey($code);
-		expect($verdict['locales'][$code])->toBe($meta);
+		expect($locales)->toHaveKey($code);
+		expect($locales[$code])->toBe($meta);
 		expect(file_exists(dirname(__DIR__, 2) . '/locales/po/' . $code . '.po'))->toBeTrue();
 		expect(file_exists(dirname(__DIR__, 2) . '/locales/LC_MESSAGES/' . $code . '.mo'))->toBeTrue();
 	}
 
-	expect($verdict['sorted'])->toBeTrue();
+	$languages = array_column($locales, 'language');
+	$sorted    = $languages;
+	sort($sorted, SORT_STRING);
+	expect($languages)->toBe($sorted);
 });
 
 test('repair_locale resolves Bosnian, Croatian, and Serbian locale codes', function () {
-	$verdict = bcms_locales_verdict();
+	global $lang2locale;
+	$lang2locale = get_list_of_locales();
 
-	expect($verdict['repaired'])->toBe([
-		'bs'    => 'bs-BA',
-		'bs_BA' => 'bs-BA',
-		'hr'    => 'hr-HR',
-		'hr_HR' => 'hr-HR',
-		'sr'    => 'sr-RS',
-		'sr_RS' => 'sr-RS',
-	]);
+	expect(repair_locale('bs'))->toBe('bs-BA');
+	expect(repair_locale('bs_BA'))->toBe('bs-BA');
+	expect(repair_locale('hr'))->toBe('hr-HR');
+	expect(repair_locale('hr_HR'))->toBe('hr-HR');
+	expect(repair_locale('sr'))->toBe('sr-RS');
+	expect(repair_locale('sr_RS'))->toBe('sr-RS');
 });
