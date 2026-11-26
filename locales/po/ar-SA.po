@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-26 05:54+0000\n"
+"PO-Revision-Date: 2026-11-26 09:54+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Arabic (Saudi Arabia) <https://translate.cacti.net/projects/"
 "cacti/core/ar_SA/>\n"
@@ -35,8 +35,8 @@ msgstr ""
 #, php-format
 msgid "Please see the official %sCacti website%s for information on how to use Cacti, get support, and updates."
 msgstr ""
-"يرجى مراجعة %1$sموقع Cacti الرسمي%2$s للحصول على معلومات حول كيفية استخدام "
-"Cacti والحصول على الدعم والتحديثات."
+"يرجى مراجعة %sموقع Cacti الرسمي%s للحصول على معلومات حول كيفية استخدام Cacti "
+"والحصول على الدعم والتحديثات."
 
 #: about.php:50
 msgid "Active Developers"
@@ -72,8 +72,7 @@ msgstr "شكرًا جزيلاً"
 #, php-format
 msgid "A very special thanks to %sTobi Oetiker%s, the creator of %sRRDtool%s and the very popular %sMRTG%s."
 msgstr ""
-"شكر خاص جدًا لـ %1$sTobi Oetiker%2$s، مبتكر %3$sRRDtool%4$s وأداة %5$sMRTG%6$"
-"s الشهيرة."
+"شكر خاص جدًا لـ %sTobi Oetiker%s، مبتكر %sRRDtool%s وأداة %sMRTG%s الشهيرة."
 
 #: about.php:91
 msgid "The users of Cacti"
@@ -2818,7 +2817,7 @@ msgstr "المحاولة"
 
 #: automation_snmp.php:722
 msgid "Max OIDS"
-msgstr "Max OIDS"
+msgstr "الحد الأقصى لـ OIDS"
 
 #: automation_snmp.php:723
 msgid "Auth Username"
@@ -3809,8 +3808,7 @@ msgstr "قالب اللون [جديد]"
 #, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
 msgstr ""
-"تم دفع %2$d من قوالب التجميع و %3$d من التجميعات غير المقولبة لقالب الألوان "
-"'%1$s'"
+"شهد قالب الألوان '%s' دفع %d من قوالب التجميع و %d من التجميعات غير المقولبة"
 
 #: color_templates.php:764
 #, php-format
@@ -4097,7 +4095,7 @@ msgstr "مشكل"
 #: data_debug.php:910
 #, php-format
 msgid "For attribute '%s', issue found '%s'"
-msgstr "بالنسبة للسمة '%1$s'، تم العثور على مشكلة '%2$s'"
+msgstr "بالنسبة للسمة '%s'، تم العثور على مشكلة '%s'"
 
 #: data_debug.php:925
 msgid "Apply Suggested Fixes"
@@ -4627,7 +4625,7 @@ msgstr "(بعض العناصر للقراءة فقط)"
 #: data_source_profiles.php:524
 #, php-format
 msgid "RRA [edit: %s %s]"
-msgstr "RRA [تحرير: %1$s %2$s]"
+msgstr "RRA [تحرير: %s %s]"
 
 #: data_source_profiles.php:614
 #, php-format
@@ -4676,7 +4674,7 @@ msgstr "حذف عنصر ملف تعريف مصدر البيانات"
 #: data_source_profiles.php:799
 #, php-format
 msgid "%s KBytes per Data Sources and %s Bytes for the Header"
-msgstr "%1$s كيلوبايت لكل مصدر بيانات و %2$s بايت للترويسة"
+msgstr "%s كيلوبايت لكل مصدر بيانات و %s بايت للترويسة"
 
 #: data_source_profiles.php:808
 #, php-format
@@ -5571,7 +5569,7 @@ msgstr ""
 #: graph_templates.php:1163 graph_templates.php:1178
 #, php-format
 msgid "Sync of Graph Template '%s' Resulted in %s Repairs!"
-msgstr "أسفرت مزامنة قالب الرسم البياني '%1$s' عن %2$s من الإصلاحات!"
+msgstr "أسفرت مزامنة قالب الرسم البياني '%s' عن %s من الإصلاحات!"
 
 #: graph_templates.php:1165 graph_templates.php:1180
 #, php-format
@@ -5938,7 +5936,7 @@ msgstr "معرف المضيف"
 
 #: graph_xport.php:134 graph_xport.php:211
 msgid "Nth Percentile"
-msgstr "Nth Percentile"
+msgstr "المئين النوني"
 
 #: graph_xport.php:140 graph_xport.php:226
 msgid "Summation"
@@ -6438,22 +6436,22 @@ msgstr "حدد كل الصفوف"
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id of '%s'"
 msgstr ""
-"خطأ في تحليل ملف XML لمورد استعلام البيانات لاستعلام البيانات '%1$s' بالمعرف "
-"'%2$s'"
+"خطأ في تحليل ملف XML لمورد استعلام البيانات لاستعلام البيانات '%s' بالمعرف "
+"'%s'"
 
 #: graphs_new.php:695
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'.  Field Name '%s' missing a 'direction' attribute"
 msgstr ""
-"خطأ في تحليل ملف XML لمورد استعلام البيانات لاستعلام البيانات '%1$s' بالمعرف "
-"'%2$s'.  اسم الحقل '%3$s' يفتقد السمة 'direction'"
+"خطأ في تحليل ملف XML لمورد استعلام البيانات لاستعلام البيانات '%s' بالمعرف "
+"'%s'.  اسم الحقل '%s' يفتقد السمة 'direction'"
 
 #: graphs_new.php:699
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'"
 msgstr ""
-"خطأ في تحليل ملف XML لمورد استعلام البيانات لاستعلام البيانات '%1$s' بالمعرف "
-"'%2$s'"
+"خطأ في تحليل ملف XML لمورد استعلام البيانات لاستعلام البيانات '%s' بالمعرف "
+"'%s'"
 
 #: graphs_new.php:740
 #, php-format
@@ -6502,15 +6500,15 @@ msgstr "تعين كافتراضي"
 #: help.php:44
 #, php-format
 msgid "WARNING: Cacti Page:%s for User:%s Generated a Fatal Error %d!"
-msgstr "تحذير: صفحة Cacti:%1$s للمستخدم:%2$s أحدثت خطأً فادحاً %3$d!"
+msgstr "تحذير: صفحة Cacti:%s للمستخدم:%s أحدثت خطأً فادحاً %d!"
 
 #: help.php:74
 #, php-format
 msgid "The Document page '%s' count not be reached.  The Cacti Documentation site is not reachable.  The http error was '%s'.  Consider downloading an official release to obtain the latest documentation and hosting the documentation locally."
 msgstr ""
-"تعذر الوصول إلى صفحة المستند '%1$s'. موقع وثائق Cacti غير قابل للوصول. كان "
-"خطأ HTTP هو '%2$s'. يُنصح بتنزيل إصدار رسمي للحصول على أحدث الوثائق "
-"واستضافتها محلياً."
+"تعذر الوصول إلى صفحة المستند '%s'. موقع وثائق Cacti غير قابل للوصول. كان خطأ "
+"HTTP هو '%s'. يُنصح بتنزيل إصدار رسمي للحصول على أحدث الوثائق واستضافتها "
+"محلياً."
 
 #: help.php:88
 msgid "Cacti GitHub Site"
@@ -6573,7 +6571,7 @@ msgstr "خطأ: معرف الجهاز غير صالح."
 #: host.php:217
 #, php-format
 msgid "Device Reindex Completed in %0.2f seconds.  There were %d items updated."
-msgstr "اكتملت إعادة فهرسة الجهاز في %1$0.2f ثانية. تم تحديث %2$d عنصر."
+msgstr "اكتملت إعادة فهرسة الجهاز في %0.2f ثانية. تم تحديث %d عنصر."
 
 #: host.php:360
 #, php-format
@@ -6813,7 +6811,7 @@ msgstr "طريقة إعادة الفهرسة"
 #: host.php:982
 #, php-format
 msgid " [%d Items, %d Rows]"
-msgstr " [%1$d عناصر، %2$d صفوف]"
+msgstr " [%d عناصر، %d صفوف]"
 
 #: host.php:982
 msgid "Fail"
@@ -7787,7 +7785,7 @@ msgstr "وقت تشغيل SNMP"
 
 #: include/global_arrays.php:694
 msgid "SNMP Desc"
-msgstr "SNMP Desc"
+msgstr "وصف SNMP"
 
 #: include/global_arrays.php:695
 msgid "SNMP getNext"
@@ -9680,7 +9678,7 @@ msgstr "الحد الأقصى لعدد المللي ثانية سوف ينتظر
 
 #: include/global_form.php:144 include/global_form.php:211
 msgid "SNMP Retries"
-msgstr "SNMP Retries"
+msgstr "محاولات إعادة SNMP"
 
 #: include/global_form.php:145
 msgid "The maximum number of times SNMP will attempt to contact the remote device before giving up."
@@ -9772,7 +9770,7 @@ msgstr "كم من الوقت يمكن أن تكون البيانات مفقود�
 
 #: include/global_form.php:249 lib/rrd.php:3599
 msgid "X-Files Factor"
-msgstr "X-Files Factor"
+msgstr "معامل X-Files"
 
 #: include/global_form.php:250
 msgid "The amount of unknown data that can still be regarded as known."
@@ -9818,7 +9816,7 @@ msgstr "يتم الاحتفاظ عدد البيانات الأجيال في RRA.
 
 #: include/global_form.php:316 include/global_settings.php:2979
 msgid "Default Timespan"
-msgstr "Default Timespan"
+msgstr "النطاق الزمني الافتراضي"
 
 #: include/global_form.php:317
 msgid "When viewing a Graph based upon the RRA in question, the default Timespan to show for that Graph."
@@ -9848,7 +9846,7 @@ msgstr "اسم هذا اللون."
 
 #: include/global_form.php:375
 msgid "Hex Value"
-msgstr "Hex Value"
+msgstr "القيمة الست عشرية"
 
 #: include/global_form.php:376
 msgid "The hex value for this color; valid range: 000000-FFFFFF."
@@ -10949,7 +10947,7 @@ msgstr "أي نوع من التجميع يجب أن يتم."
 #: include/global_form.php:2002 include/global_form.php:2090
 #: include/global_form.php:2195
 msgid "Prefix for GPRINT Totals"
-msgstr "Prefix for GPRINT Totals"
+msgstr "بادئة مجاميع GPRINT"
 
 #: include/global_form.php:2003 include/global_form.php:2091
 #: include/global_form.php:2196
@@ -11213,7 +11211,7 @@ msgstr "مسارات الأدوات المطلوبة"
 
 #: include/global_settings.php:163
 msgid "snmpwalk Binary Path"
-msgstr "snmpwalk Binary Path"
+msgstr "مسار ملف snmpwalk التنفيذي"
 
 #: include/global_settings.php:164
 msgid "The path to your snmpwalk binary."
@@ -11261,7 +11259,7 @@ msgstr "الطريق إلى ثنائي rrdtool."
 
 #: include/global_settings.php:205
 msgid "PHP Binary Path"
-msgstr "PHP Binary Path"
+msgstr "مسار ملف PHP التنفيذي"
 
 #: include/global_settings.php:206
 msgid "The path to your PHP binary file (may require a php recompile to get this file)."
@@ -11920,7 +11918,7 @@ msgstr "%s مؤشرات ترابط"
 
 #: include/global_settings.php:829
 msgid "Re-index Method for Data Queries"
-msgstr "Re-index Method for Data Queries"
+msgstr "طريقة إعادة الفهرسة لاستعلامات البيانات"
 
 #: include/global_settings.php:830
 msgid "The default Re-index Method to use for all Data Queries."
@@ -12569,7 +12567,7 @@ msgstr "النسخ المتماثل لجامع البيانات"
 
 #: include/global_settings.php:1493
 msgid "Poller Sync Interval"
-msgstr "Poller Sync Interval"
+msgstr "فاصل مزامنة المستطلع"
 
 #: include/global_settings.php:1494
 msgid "The default polling sync interval to use when creating a poller.  This setting will affect how often remote pollers are checked and updated."
@@ -14601,12 +14599,12 @@ msgstr "إنشاء قاعدة شجرة (رسم بياني)"
 #: lib/api_automation.php:2435
 #, php-format
 msgid "Rule Item [edit rule item for %s: %s]"
-msgstr "عنصر القاعدة [تحرير عنصر القاعدة لـ %1$s: %2$s]"
+msgstr "عنصر القاعدة [تحرير عنصر القاعدة لـ %s: %s]"
 
 #: lib/api_automation.php:2437
 #, php-format
 msgid "Rule Item [new rule item for %s: %s]"
-msgstr "عنصر القاعدة [عنصر قاعدة جديد لـ %1$s: %2$s]"
+msgstr "عنصر القاعدة [عنصر قاعدة جديد لـ %s: %s]"
 
 #: lib/api_automation.php:3457
 msgid "Added by Cacti Automation"
@@ -14705,7 +14703,7 @@ msgstr "قالب غير معروف"
 #: lib/api_automation.php:5404 lib/api_automation.php:5406
 #, php-format
 msgid "Automation Network Rule '%s' %s!"
-msgstr "قاعدة شبكة الأتمتة '%1$s' %2$s!"
+msgstr "قاعدة شبكة الأتمتة '%s' %s!"
 
 #: lib/api_automation.php:5410 lib/api_automation.php:5412
 #, php-format
@@ -14826,29 +14824,29 @@ msgstr "الجهاز معطل"
 #: lib/auth.php:2355 lib/auth.php:2357 lib/auth.php:2363 lib/auth.php:2365
 #, php-format
 msgid "Graph:(%s%s)"
-msgstr "الرسم البياني:(%1$s%2$s)"
+msgstr "الرسم البياني:(%s%s)"
 
 #: lib/auth.php:2378 lib/auth.php:2384 lib/auth.php:2451 lib/auth.php:2453
 #: lib/auth.php:2457 lib/auth.php:2459
 #, php-format
 msgid "Device:(%s%s)"
-msgstr "الجهاز:(%1$s%2$s)"
+msgstr "الجهاز:(%s%s)"
 
 #: lib/auth.php:2392 lib/auth.php:2398 lib/auth.php:2467 lib/auth.php:2469
 #: lib/auth.php:2473 lib/auth.php:2475
 #, php-format
 msgid "Template:(%s%s)"
-msgstr "القالب:(%1$s%2$s)"
+msgstr "القالب:(%s%s)"
 
 #: lib/auth.php:2405
 #, php-format
 msgid "Graph+Device+Template:(%s%s)"
-msgstr "الرسم البياني+الجهاز+القالب:(%1$s%2$s)"
+msgstr "الرسم البياني+الجهاز+القالب:(%s%s)"
 
 #: lib/auth.php:2442 lib/auth.php:2444
 #, php-format
 msgid "Device+Template:(%s%s)"
-msgstr "الجهاز+القالب:(%1$s%2$s)"
+msgstr "الجهاز+القالب:(%s%s)"
 
 #: lib/auth.php:2488 lib/auth.php:2495 lib/auth.php:2504
 msgid "Restricted By: "
@@ -15047,12 +15045,12 @@ msgstr " - عرض المسؤول"
 #: lib/clog_webapi.php:290
 #, php-format
 msgid "Log [Total Lines: %d %s - Filter active]"
-msgstr "السجل [إجمالي الأسطر: %1$d %2$s - المرشح نشط]"
+msgstr "السجل [إجمالي الأسطر: %d %s - المرشح نشط]"
 
 #: lib/clog_webapi.php:292
 #, php-format
 msgid "Log [Total Lines: %d %s - Unfiltered]"
-msgstr "السجل [إجمالي الأسطر: %1$d %2$s - غير مرشح]"
+msgstr "السجل [إجمالي الأسطر: %d %s - غير مرشح]"
 
 #: lib/clog_webapi.php:297 utilities.php:430 utilities.php:791
 #: utilities.php:1042 utilities.php:1045 utilities.php:1141 utilities.php:2008
@@ -15122,7 +15120,7 @@ msgstr "غير إحصائي"
 
 #: lib/clog_webapi.php:590
 msgid "Boost"
-msgstr "Boost"
+msgstr "التعزيز"
 
 #: lib/clog_webapi.php:591
 msgid "Device Up/Down"
@@ -15176,7 +15174,7 @@ msgstr "جارٍ تشغيل استعلام البيانات [%s]."
 #: lib/data_query.php:113
 #, php-format
 msgid "Found Type = '%s' [%s]."
-msgstr "تم العثور على النوع = '%1$s' [%2$s]."
+msgstr "تم العثور على النوع = '%s' [%s]."
 
 #: lib/data_query.php:135
 #, php-format
@@ -15199,7 +15197,7 @@ msgstr "تم العثور على %s من معرّفات البيانات الم�
 #: lib/data_query.php:303
 #, php-format
 msgid "Index Change Detected! CurrentIndex: %s, PreviousIndex: %s"
-msgstr "تم اكتشاف تغيير في الفهرس! الفهرس الحالي: %1$s، الفهرس السابق: %2$s"
+msgstr "تم اكتشاف تغيير في الفهرس! الحالي: %s، السابق: %s"
 
 #: lib/data_query.php:323
 #, php-format
@@ -15209,19 +15207,19 @@ msgstr "تم اكتشاف إزالة فهرس مؤقت! PreviousIndex: %s. لم 
 #: lib/data_query.php:326
 #, php-format
 msgid "Index Removal Detected! PreviousIndex: %s"
-msgstr "تم اكتشاف إزالة الفهرس! الفهرس السابق: %s"
+msgstr "تم اكتشاف إزالة الفهرس! السابق: %s"
 
 #: lib/data_query.php:360
 #, php-format
 msgid "Verification of %s Local Data ID's Complete"
-msgstr "اكتمل التحقق من %s من معرفات البيانات المحلية"
+msgstr "اكتمل التحقق من عدد %s من معرفات البيانات المحلية"
 
 #: lib/data_query.php:363
 #, php-format
 msgid "Found Changed %s and %s Orphaned Local Data ID's to Re-map."
 msgstr ""
-"تم العثور على %1$s من معرّفات البيانات المحلية المتغيرة و%2$s من معرّفات "
-"البيانات المحلية اليتيمة لإعادة تعيينها."
+"تم العثور على %s من معرّفات البيانات المحلية المتغيرة و%s من معرّفات البيانات "
+"المحلية اليتيمة لإعادة تعيينها."
 
 #: lib/data_query.php:366
 msgid "Done remapping Graphs to their new Indexes"
@@ -15243,8 +15241,8 @@ msgstr "اكتمال اقتران مؤشر مع البيانات المحلية"
 #, php-format
 msgid "Update Re-Index Cache complete. There were %s index changes, and %s orphaned indexes."
 msgstr ""
-"اكتمل تحديث ذاكرة التخزين المؤقت لإعادة الفهرسة. كانت هناك %1$s تغييرات في "
-"الفهرس، و%2$s فهارس يتيمة."
+"اكتمل تحديث ذاكرة التخزين المؤقت لإعادة الفهرسة. كانت هناك %s تغييرات في "
+"الفهرس، و%s فهارس يتيمة."
 
 #: lib/data_query.php:396
 msgid "Update Poller Cache for Query complete"
@@ -15269,7 +15267,7 @@ msgstr "التحقق من تغيير حقل الفرز. لم يتم اكتشاف
 #: lib/data_query.php:509
 #, php-format
 msgid "Detected New Sort Field: '%s' Old Sort Field '%s'"
-msgstr "تم اكتشاف حقل فرز جديد: '%1$s' حقل الفرز القديم '%2$s'"
+msgstr "تم اكتشاف حقل فرز جديد: '%s' حقل الفرز القديم '%s'"
 
 #: lib/data_query.php:526
 msgid "ERROR: New Sort Field not suitable.  Sort Field will not change."
@@ -15343,7 +15341,7 @@ msgstr "خطأ: لم يُرجع استعلام البيانات أي فهارس.
 #: lib/data_query.php:715
 #, php-format
 msgid "Executing script for list of indexes '%s', Index Count: %s"
-msgstr "جارٍ تنفيذ البرنامج النصي لقائمة الفهارس '%1$s', عدد الفهارس: %2$s"
+msgstr "جارٍ تنفيذ البرنامج النصي لقائمة الفهارس '%s', عدد الفهارس: %s"
 
 #: lib/data_query.php:717
 msgid "Click to show Data Query output for 'index'"
@@ -15372,12 +15370,12 @@ msgstr "جارٍ تنفيذ استعلام البرنامج النصي '%s'"
 #: lib/data_query.php:754 lib/data_query.php:761
 #, php-format
 msgid "Found item [%s='%s'] index: %s"
-msgstr "تم العثور على العنصر [%1$s='%2$s'] الفهرس: %3$s"
+msgstr "تم العثور على العنصر [%s='%s'] الفهرس: %s"
 
 #: lib/data_query.php:799 lib/data_query.php:814
 #, php-format
 msgid "Total: %f, Delta: %f, %s"
-msgstr "الإجمالي: %1$f, الفرق: %2$f, %3$s"
+msgstr "الإجمالي: %f, الفرق: %f, %s"
 
 #: lib/data_query.php:839
 #, php-format
@@ -15414,7 +15412,7 @@ msgstr "تم إصلاح حجم الممر المجمع على %d."
 #: lib/data_query.php:935
 #, php-format
 msgid "Executing SNMP get for num of indexes @ '%s' Index Count: %s"
-msgstr "جارٍ تنفيذ SNMP get لعدد الفهارس @ '%1$s' عدد الفهارس: %2$s"
+msgstr "جارٍ تنفيذ SNMP get لعدد الفهارس @ '%s' عدد الفهارس: %s"
 
 #: lib/data_query.php:937
 msgid "&lt;oid_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting oid_index entries"
@@ -15423,7 +15421,7 @@ msgstr "&lt;oid_num_indexes&gt; مفقودة في ملف XML ، &#39;عدد ال
 #: lib/data_query.php:940
 #, php-format
 msgid "Executing SNMP walk for list of indexes @ '%s' Index Count: %s"
-msgstr "جارٍ تنفيذ SNMP walk لقائمة الفهارس @ '%1$s' عدد الفهارس: %2$s"
+msgstr "جارٍ تنفيذ SNMP walk لقائمة الفهارس @ '%s' عدد الفهارس: %s"
 
 #: lib/data_query.php:944
 msgid "No SNMP data returned"
@@ -15432,27 +15430,27 @@ msgstr "لم يتم إرجاع أي بيانات SNMP"
 #: lib/data_query.php:950
 #, php-format
 msgid "Index found at OID: '%s' value: '%s'"
-msgstr "تم العثور على الفهرس عند OID: '%1$s' القيمة: '%2$s'"
+msgstr "تم العثور على الفهرس عند OID: '%s' القيمة: '%s'"
 
 #: lib/data_query.php:966
 #, php-format
 msgid "List of indexes filtered by value @ '%s' Index Count: %s"
-msgstr "قائمة الفهارس المصفاة حسب القيمة @ '%1$s' عدد الفهارس: %2$s"
+msgstr "قائمة الفهارس المصفاة حسب القيمة @ '%s' عدد الفهارس: %s"
 
 #: lib/data_query.php:970
 #, php-format
 msgid "Filtered Index by value found at OID: '%s' value: '%s'"
-msgstr "تم العثور على فهرس مفلتر حسب القيمة عند OID: '%1$s' القيمة: '%2$s'"
+msgstr "تم العثور على فهرس مفلتر حسب القيمة عند OID: '%s' القيمة: '%s'"
 
 #: lib/data_query.php:987
 #, php-format
 msgid "Filtering list of indexes @ '%s' Index Count: %s"
-msgstr "تصفية قائمة الفهارس @ '%1$s' عدد الفهارس: %2$s"
+msgstr "تصفية قائمة الفهارس @ '%s' عدد الفهارس: %s"
 
 #: lib/data_query.php:991
 #, php-format
 msgid "Filtered Index found at OID: '%s' value: '%s'"
-msgstr "تم العثور على فهرس مفلتر عند OID: '%1$s' القيمة: '%2$s'"
+msgstr "تم العثور على فهرس مفلتر عند OID: '%s' القيمة: '%s'"
 
 #: lib/data_query.php:1011
 #, php-format
@@ -15464,7 +15462,7 @@ msgstr ""
 #: lib/data_query.php:1018
 #, php-format
 msgid "Inserting index data for field '%s' [value='%s']"
-msgstr "جارٍ إدراج بيانات الفهرس للحقل '%1$s' [القيمة='%2$s']"
+msgstr "جارٍ إدراج بيانات الفهرس للحقل '%s' [القيمة='%s']"
 
 #: lib/data_query.php:1023
 #, php-format
@@ -15474,27 +15472,27 @@ msgstr "تم تحديد موقع حقل الإدخال '%s' [get]"
 #: lib/data_query.php:1032
 #, php-format
 msgid "Found OID rewrite rule: 's/%s/%s/'"
-msgstr "تم العثور على قاعدة إعادة كتابة OID: 's/%1$s/%2$s/'"
+msgstr "تم العثور على قاعدة إعادة كتابة OID: 's/%s/%s/'"
 
 #: lib/data_query.php:1043
 #, php-format
 msgid "oid_rewrite at OID: '%s' new OID: '%s'"
-msgstr "oid_rewrite عند OID: '%1$s' وOID الجديد: '%2$s'"
+msgstr "oid_rewrite عند OID: '%s' وOID الجديد: '%s'"
 
 #: lib/data_query.php:1064
 #, php-format
 msgid "Executing SNMP get for data @ '%s' [value='%s']"
-msgstr "جارٍ تنفيذ SNMP get للبيانات @ '%1$s' [value='%2$s']"
+msgstr "جارٍ تنفيذ SNMP get للبيانات @ '%s' [value='%s']"
 
 #: lib/data_query.php:1076
 #, php-format
 msgid "Field '%s' %s"
-msgstr "الحقل '%1$s' %2$s"
+msgstr "الحقل '%s' %s"
 
 #: lib/data_query.php:1140
 #, php-format
 msgid "Executing SNMP get for %s oids (%s)"
-msgstr "جارٍ تنفيذ SNMP get لـ %1$s من معرفات OID (%2$s)"
+msgstr "جارٍ تنفيذ SNMP get لـ %s من معرفات OID (%s)"
 
 #: lib/data_query.php:1167 lib/data_query.php:1260 lib/data_query.php:1269
 #, php-format
@@ -15504,23 +15502,22 @@ msgstr "لم يُرجِع حقل الفرز أي بيانات لـ OID[%s]، ج�
 #: lib/data_query.php:1171
 #, php-format
 msgid "Found result for data @ '%s' [value='%s']"
-msgstr "تم العثور على نتيجة للبيانات @ '%1$s' [القيمة='%2$s']"
+msgstr "تم العثور على نتيجة للبيانات @ '%s' [القيمة='%s']"
 
 #: lib/data_query.php:1179
 #, php-format
 msgid "Setting result for data @ '%s' [key='%s', value='%s']"
-msgstr "جارٍ تعيين النتيجة للبيانات @ '%1$s' [المفتاح='%2$s', القيمة='%3$s']"
+msgstr "جارٍ تعيين النتيجة للبيانات @ '%s' [المفتاح='%s', القيمة='%s']"
 
 #: lib/data_query.php:1183
 #, php-format
 msgid "Skipped result for data @ '%s' [key='%s', value='%s']"
-msgstr "تم تخطي النتيجة للبيانات @ '%1$s' [المفتاح='%2$s', القيمة='%3$s']"
+msgstr "تم تخطي النتيجة للبيانات @ '%s' [المفتاح='%s', القيمة='%s']"
 
 #: lib/data_query.php:1197
 #, php-format
 msgid "Got SNMP get result for data @ '%s' [value='%s'] (index: %s)"
-msgstr ""
-"تم الحصول على نتيجة SNMP get للبيانات @ '%1$s' [القيمة='%2$s'] (الفهرس: %3$s)"
+msgstr "تم الحصول على نتيجة SNMP get للبيانات @ '%s' [القيمة='%s'] (الفهرس: %s)"
 
 #: lib/data_query.php:1227
 #, php-format
@@ -15546,24 +15543,22 @@ msgstr ""
 #: lib/data_query.php:1342
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from %s]"
-msgstr "تم العثور على العنصر [%1$s='%2$s'] الفهرس: %3$s [من %4$s]"
+msgstr "تم العثور على العنصر [%s='%s'] الفهرس: %s [من %s]"
 
 #: lib/data_query.php:1386
 #, php-format
 msgid "Found OCTET STRING '%s' decoded value: '%s'"
-msgstr "تم العثور على OCTET STRING '%1$s' القيمة بعد فك الترميز: '%2$s'"
+msgstr "تم العثور على OCTET STRING '%s' القيمة بعد فك الترميز: '%s'"
 
 #: lib/data_query.php:1392 lib/data_query.php:1443
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid parse]"
-msgstr ""
-"تم العثور على العنصر [%1$s='%2$s'] الفهرس: %3$s [من تحليل regexp لـ OID]"
+msgstr "تم العثور على العنصر [%s='%s'] الفهرس: %s [من تحليل regexp لـ OID]"
 
 #: lib/data_query.php:1472
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid value parse]"
-msgstr ""
-"تم العثور على العنصر [%1$s='%2$s'] الفهرس: %3$s [من تحليل قيمة regexp لـ OID]"
+msgstr "تم العثور على العنصر [%s='%s'] الفهرس: %s [من تحليل قيمة regexp لـ OID]"
 
 #: lib/data_query.php:1710
 #, php-format
@@ -15577,7 +15572,7 @@ msgstr ""
 #: lib/data_query.php:1750
 #, php-format
 msgid "rewrite_value: '%s' => '%s'"
-msgstr "rewrite_value: '%1$s' => '%2$s'"
+msgstr "rewrite_value: '%s' => '%s'"
 
 #: lib/data_query.php:1856
 msgid "Update graph data query cache complete"
@@ -15631,15 +15626,15 @@ msgstr "لم يتم تعيين مصدر البيانات على أنه نشط"
 #, php-format
 msgid "RRDfile Folder (rra) is not writable by Poller.  Folder owner: %s.  Poller runs as: %s"
 msgstr ""
-"مجلد RRDfile (rra) غير قابل للكتابة بواسطة Poller. مالك المجلد: %1$s. يعمل "
-"Poller بصلاحية: %2$s"
+"مجلد RRDfile (rra) غير قابل للكتابة بواسطة Poller. مالك المجلد: %s. يعمل "
+"Poller بصلاحية: %s"
 
 #: lib/dsdebug.php:282
 #, php-format
 msgid "RRDfile is not writable by Poller.  RRDfile owner: %s.  Poller runs as %s"
 msgstr ""
-"ملف RRDfile غير قابل للكتابة بواسطة Poller. مالك RRDfile: %1$s. يعمل Poller "
-"بصلاحية %2$s"
+"ملف RRDfile غير قابل للكتابة بواسطة Poller. مالك RRDfile: %s. يعمل Poller "
+"بصلاحية %s"
 
 #: lib/dsdebug.php:291
 msgid "RRDfile does not match Data Source"
@@ -15846,8 +15841,8 @@ msgstr "منذ التثبيت"
 #, php-format
 msgid "Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details."
 msgstr ""
-"قام Cacti بتعطيل الإضافة %1$s بسبب الخطأ التالي: %2$s! راجع ملف سجل Cacti "
-"لمزيد من التفاصيل."
+"قام Cacti بتعطيل الإضافة %s بسبب الخطأ التالي: %s! راجع ملف سجل Cacti لمزيد "
+"من التفاصيل."
 
 #: lib/functions.php:6752
 #, php-format
@@ -15875,7 +15870,7 @@ msgstr "- بيتا %s"
 #: lib/functions.php:7309
 #, php-format
 msgid "Version %s %s"
-msgstr "الإصدار %1$s %2$s"
+msgstr "الإصدار %s %s"
 
 #: lib/functions.php:7852
 #, php-format
@@ -15941,7 +15936,7 @@ msgstr "السابق"
 #: lib/html.php:671
 #, php-format
 msgid "%d to %d of %s [ %s ]"
-msgstr "%1$d إلى %2$d من %3$s [ %4$s ]"
+msgstr "%d إلى %d من %s [ %s ]"
 
 #: lib/html.php:674 lib/html.php:703 lib/installer.php:1778
 msgid "Next"
@@ -15950,7 +15945,7 @@ msgstr "التالي"
 #: lib/html.php:681
 #, php-format
 msgid "All %d %s"
-msgstr "جميع %1$d %2$s"
+msgstr "جميع %d %s"
 
 #: lib/html.php:700
 #, php-format
@@ -16440,7 +16435,7 @@ msgstr "تصغير"
 
 #: lib/html.php:3161
 msgid "Zoom Out Factor"
-msgstr "Zoom Out Factor"
+msgstr "معامل التصغير"
 
 #: lib/html.php:3162
 msgid "Zoom Out Positioning"
@@ -16457,7 +16452,7 @@ msgstr ""
 #: lib/html.php:3403
 #, php-format
 msgid "Version %s | %s"
-msgstr "الإصدار %1$s | %2$s"
+msgstr "الإصدار %s | %s"
 
 #: lib/html_filter.php:89
 msgid "Apply filter to table"
@@ -16621,7 +16616,7 @@ msgstr "إنشاء رسم بياني من %s"
 #: lib/html_graph.php:677
 #, php-format
 msgid "Create %s Graphs from %s"
-msgstr "إنشاء %1$s رسوم بيانية من %2$s"
+msgstr "إنشاء %s رسوم بيانية من %s"
 
 #: lib/html_graph.php:718
 #, php-format
@@ -17239,7 +17234,7 @@ msgstr "مختار"
 #: lib/html_utility.php:589 lib/html_utility.php:828
 #, php-format
 msgid "The regular expression \"%s\" is not valid. Error is %s"
-msgstr "التعبير النمطي \"%1$s\" غير صالح. الخطأ هو %2$s"
+msgstr "التعبير النمطي \"%s\" غير صالح. الخطأ هو %s"
 
 #: lib/html_utility.php:1040
 msgid "Cacti regular expressions are limited to 50 characters only for security reasons."
@@ -17277,8 +17272,8 @@ msgstr "معطل (Thold)"
 #, php-format
 msgid "Validation error for variable %s with a value of %s.  See backtrace below for more details."
 msgstr ""
-"خطأ في التحقق من صحة المتغير %1$s ذي القيمة %2$s. راجع تتبع المكدس أدناه "
-"لمزيد من التفاصيل."
+"خطأ في التحقق من صحة المتغير %s ذي القيمة %s. راجع تتبع المكدس أدناه لمزيد "
+"من التفاصيل."
 
 #: lib/html_validate.php:115
 msgid "Validation Error"
@@ -17356,7 +17351,7 @@ msgstr "معاينة"
 
 #: lib/import.php:2723
 msgid "[updated]"
-msgstr "[updated]"
+msgstr "[محدّث]"
 
 #: lib/import.php:2727
 msgid "[unchanged]"
@@ -17377,7 +17372,7 @@ msgstr "كان المسار غير قابل للكتابة"
 #: lib/installer.php:786
 #, php-format
 msgid "Failed to set specified %sRRDTool version: %s"
-msgstr "فشل تعيين إصدار %1$sRRDTool المحدد: %2$s"
+msgstr "فشل تعيين إصدار %sRRDTool المحدد: %s"
 
 #: lib/installer.php:837
 msgid "Invalid Theme Specified"
@@ -17402,7 +17397,7 @@ msgstr "معلمة مسار غير متوقعة"
 #: lib/installer.php:968
 #, php-format
 msgid "Failed to apply specified profile %s != %s"
-msgstr "فشل تطبيق ملف التعريف المحدد %1$s != %2$s"
+msgstr "فشل تطبيق ملف التعريف المحدد %s != %s"
 
 #: lib/installer.php:1015
 #, php-format
@@ -17695,7 +17690,7 @@ msgstr "نوع التثبيت"
 #: lib/installer.php:2239
 #, php-format
 msgid "Upgrade from <strong>%s</strong> to <strong>%s</strong>"
-msgstr "الترقية من <strong>%1$s</strong> إلى <strong>%2$s</strong>"
+msgstr "الترقية من <strong>%s</strong> إلى <strong>%s</strong>"
 
 #: lib/installer.php:2241
 msgid "In the event of issues, It is highly recommended that you clear your browser cache, closing then reopening your browser (not just the tab Cacti is on) and retrying, before raising an issue with The Cacti Group"
@@ -17712,7 +17707,7 @@ msgstr "إذا كنت لا تزال تواجه مشكلات بعد مسح ذاك
 #: lib/installer.php:2250
 #, php-format
 msgid "Downgrade from <strong>%s</strong> to <strong>%s</strong>"
-msgstr "تخفيض الإصدار من <strong>%1$s</strong> إلى <strong>%2$s</strong>"
+msgstr "تخفيض الإصدار من <strong>%s</strong> إلى <strong>%s</strong>"
 
 #: lib/installer.php:2251
 msgid "You appear to be downgrading to a previous version.  Database changes made for the newer version will not be reversed and <i>could</i> cause issues."
@@ -18166,8 +18161,7 @@ msgstr "خادم Cacti جاهز تقريبًا. يرجى التحقق من أن�
 #, php-format
 msgid "Press '%s' then click '%s' to complete the installation process after selecting your Device Templates."
 msgstr ""
-"اضغط على '%1$s' ثم انقر فوق '%2$s' لإكمال عملية التثبيت بعد تحديد قوالب "
-"الأجهزة."
+"اضغط على '%s' ثم انقر فوق '%s' لإكمال عملية التثبيت بعد تحديد قوالب الأجهزة."
 
 #: lib/installer.php:2964
 msgid "The following General Install Options will be applied."
@@ -18293,7 +18287,7 @@ msgstr "يتم تثبيت خادم Cacti الآن"
 #: lib/installer.php:3165
 #, php-format
 msgid "Spawning background process: %s %s"
-msgstr "جارٍ إنشاء عملية في الخلفية: %1$s %2$s"
+msgstr "جارٍ إنشاء عملية في الخلفية: %s %s"
 
 #: lib/installer.php:3192
 msgid "Complete"
@@ -18325,12 +18319,12 @@ msgstr "البدء"
 #: lib/installer.php:3359
 #, php-format
 msgid "Starting %s Process for v%s"
-msgstr "جارٍ بدء عملية %1$s للإصدار v%2$s"
+msgstr "جارٍ بدء عملية %s للإصدار v%s"
 
 #: lib/installer.php:3388
 #, php-format
 msgid "Finished %s Process for v%s"
-msgstr "اكتملت عملية %1$s للإصدار v%2$s"
+msgstr "اكتملت عملية %s للإصدار v%s"
 
 #: lib/installer.php:3428
 #, php-format
@@ -18340,17 +18334,17 @@ msgstr "تم العثور على %s من القوالب لتثبيتها"
 #: lib/installer.php:3438
 #, php-format
 msgid "About to import Package #%s '%s'."
-msgstr "على وشك استيراد الحزمة #%1$s '%2$s'."
+msgstr "على وشك استيراد الحزمة #%s '%s'."
 
 #: lib/installer.php:3447
 #, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' succeeded"
-msgstr "نجح استيراد الحزمة #%1$s '%2$s' ضمن ملف التعريف '%3$s'"
+msgstr "نجح استيراد الحزمة #%s '%s' ضمن ملف التعريف '%s'"
 
 #: lib/installer.php:3453
 #, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' failed"
-msgstr "فشل استيراد الحزمة #%1$s '%2$s' ضمن ملف التعريف '%3$s'"
+msgstr "فشل استيراد الحزمة #%s '%s' ضمن ملف التعريف '%s'"
 
 #: lib/installer.php:3469
 #, php-format
@@ -18368,7 +18362,7 @@ msgstr "جارٍ تحديث ملف التكوين البعيد"
 #: lib/installer.php:3532
 #, php-format
 msgid "Setting default data source profile to %s (%s)"
-msgstr "جارٍ تعيين ملف تعريف مصدر البيانات الافتراضي إلى %1$s (%2$s)"
+msgstr "جارٍ تعيين ملف تعريف مصدر البيانات الافتراضي إلى %s (%s)"
 
 #: lib/installer.php:3557
 #, fuzzy, php-format
@@ -18379,8 +18373,8 @@ msgstr "أخفق تطبيق الملف الشخصي المحدد٪ s! =٪ s"
 #, php-format
 msgid "Updating automation network (%s), mode \"%s\" => \"%s\", subnet \"%s\" => %s\""
 msgstr ""
-"جارٍ تحديث شبكة الأتمتة (%1$s), الوضع \"%2$s\" => \"%3$s\", الشبكة الفرعية "
-"\"%4$s\" => %5$s\""
+"جارٍ تحديث شبكة الأتمتة (%s), الوضع \"%s\" => \"%s\", الشبكة الفرعية \"%s\" "
+"=> %s\""
 
 #: lib/installer.php:3583
 msgid "Failed to find automation network, no changes were made"
@@ -18482,7 +18476,7 @@ msgstr "تم العثور على %s من الجداول لتحويلها"
 #: lib/installer.php:3767
 #, php-format
 msgid "Converting Table #%s '%s'"
-msgstr "جارٍ تحويل الجدول #%1$s '%2$s'"
+msgstr "جارٍ تحويل الجدول #%s '%s'"
 
 #: lib/installer.php:3784
 msgid "No tables where found or selected for conversion"
@@ -18491,7 +18485,7 @@ msgstr "لم يتم العثور على جداول أو تحديدها للتح�
 #: lib/installer.php:3795
 #, php-format
 msgid "Switched from %s to %s"
-msgstr "تم التبديل من %1$s إلى %2$s"
+msgstr "تم التبديل من %s إلى %s"
 
 #: lib/installer.php:3799
 #, php-format
@@ -18501,7 +18495,7 @@ msgstr "ملاحظة: يتم استخدام ملف مؤقت لذاكرة الت�
 #: lib/installer.php:3822
 #, php-format
 msgid "Upgrading from v%s (DB %s) to v%s"
-msgstr "جارٍ الترقية من v%1$s (قاعدة البيانات %2$s) إلى v%3$s"
+msgstr "جارٍ الترقية من v%s (قاعدة البيانات %s) إلى v%s"
 
 #: lib/installer.php:3831
 #, php-format
@@ -18515,18 +18509,17 @@ msgstr "تم إحباط التثبيت بسبب عدم قبول اتفاقية �
 #: lib/installer.php:3920
 #, php-format
 msgid "Background was already started at %s, this attempt at %s was skipped"
-msgstr ""
-"تم بدء التشغيل في الخلفية بالفعل عند %1$s، تم تخطي هذه المحاولة عند %2$s"
+msgstr "تم بدء التشغيل في الخلفية بالفعل عند %s، تم تخطي هذه المحاولة عند %s"
 
 #: lib/installer.php:3946
 #, php-format
 msgid "Exception occurred during installation: #%s - %s"
-msgstr "حدث استثناء أثناء التثبيت: #%1$s - %2$s"
+msgstr "حدث استثناء أثناء التثبيت: #%s - %s"
 
 #: lib/installer.php:3956
 #, php-format
 msgid "Installation was started at %s, completed at %s"
-msgstr "بدأ التثبيت في %1$s، واكتمل في %2$s"
+msgstr "بدأ التثبيت في %s، واكتمل في %s"
 
 #: lib/installer.php:3997
 msgid "Both"
@@ -18558,12 +18551,12 @@ msgstr "واجهة سطر الأوامر"
 #: lib/installer.php:4015
 #, php-format
 msgid "Setting PHP Option %s = %s"
-msgstr "جارٍ تعيين خيار PHP %1$s = %2$s"
+msgstr "جارٍ تعيين خيار PHP %s = %s"
 
 #: lib/installer.php:4023
 #, php-format
 msgid "Failed to set PHP option %s, is %s (should be %s)"
-msgstr "فشل تعيين خيار PHP %1$s، القيمة الحالية هي %2$s (يجب أن تكون %3$s)"
+msgstr "فشل تعيين خيار PHP %s، القيمة الحالية هي %s (يجب أن تكون %s)"
 
 #: lib/installer.php:4043
 msgid "No Remote Data Collectors found for full synchronization"
@@ -18588,17 +18581,17 @@ msgstr "لا يوجد اسم مستخدم محدد"
 #: lib/ldap.php:412
 #, php-format
 msgid "Protocol Error, Unable to set version (%s) on Server (%s)"
-msgstr "خطأ في البروتوكول، تعذّر تعيين الإصدار (%1$s) على الخادم (%2$s)"
+msgstr "خطأ في البروتوكول، تعذّر تعيين الإصدار (%s) على الخادم (%s)"
 
 #: lib/ldap.php:416
 #, php-format
 msgid "Protocol Error, Unable to set referrals option (%s) on Server (%s)"
-msgstr "خطأ في البروتوكول، تعذّر تعيين خيار الإحالات (%1$s) على الخادم (%2$s)"
+msgstr "خطأ في البروتوكول، تعذّر تعيين خيار الإحالات (%s) على الخادم (%s)"
 
 #: lib/ldap.php:420
 #, php-format
 msgid "Protocol Error, unable to start TLS communications (%s) on Server (%s)"
-msgstr "خطأ في البروتوكول، تعذّر بدء اتصالات TLS (%1$s) على الخادم (%2$s)"
+msgstr "خطأ في البروتوكول، تعذّر بدء اتصالات TLS (%s) على الخادم (%s)"
 
 #: lib/ldap.php:424
 #, php-format
@@ -18608,7 +18601,7 @@ msgstr "خطأ في البروتوكول، فشل عام (%s)"
 #: lib/ldap.php:428
 #, php-format
 msgid "Protocol Error, Unable to bind, LDAP result: (%s) on Server (%s)"
-msgstr "خطأ في البروتوكول، تعذّر الربط، نتيجة LDAP: (%1$s) على الخادم (%2$s)"
+msgstr "خطأ في البروتوكول، تعذّر الربط، نتيجة LDAP: (%s) على الخادم (%s)"
 
 #: lib/ldap.php:432
 #, php-format
@@ -18658,7 +18651,7 @@ msgstr "أدخلت كلمة مرور غير صالحة. فشل عملية الد
 #: lib/ldap.php:473
 #, php-format
 msgid "Unexpected error %s (Ldap Error: %s) on Server (%s)"
-msgstr "خطأ غير متوقع %1$s (خطأ LDAP: %2$s) على الخادم (%3$s)"
+msgstr "خطأ غير متوقع %s (خطأ LDAP: %s) على الخادم (%s)"
 
 #: lib/ping.php:149
 msgid "ICMP Ping timed out"
@@ -18730,12 +18723,12 @@ msgstr "لم يتم تنفيذ Ping بسبب الإعداد."
 #: lib/plugins.php:681
 #, php-format
 msgid "'%s' versions '%s' above or in range are required to install '%s'. "
-msgstr "إصدارات '%1$s' رقم '%2$s' فما فوق أو ضمن النطاق مطلوبة لتثبيت '%3$s'. "
+msgstr "إصدارات '%s' رقم '%s' فما فوق أو ضمن النطاق مطلوبة لتثبيت '%s'. "
 
 #: lib/plugins.php:685
 #, php-format
 msgid "'%s' must first be installed before '%s' is installed. "
-msgstr "يجب تثبيت '%1$s' أولاً قبل تثبيت '%2$s'. "
+msgstr "يجب تثبيت '%s' أولاً قبل تثبيت '%s'. "
 
 #: lib/plugins.php:708
 msgid "Plugin cannot be installed."
@@ -18910,8 +18903,8 @@ msgstr "لم تتم إضافة الجهاز \"%s\" إلى التقرير لأن�
 #, php-format
 msgid "Problems sending Report '%s' Problem with e-mail Subsystem Error is '%s'"
 msgstr ""
-"مشكلات في إرسال التقرير '%1$s'، مشكلة في النظام الفرعي للبريد الإلكتروني، "
-"الخطأ هو '%2$s'"
+"مشكلات في إرسال التقرير '%s'، مشكلة في النظام الفرعي للبريد الإلكتروني، "
+"الخطأ هو '%s'"
 
 #: lib/reports.php:634
 #, php-format
@@ -18974,22 +18967,22 @@ msgstr "الأمر RRDtool:"
 #: lib/rrd.php:3299
 #, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
-msgstr "حجم خطوة RRDfile المطلوب هو '%1$s' ولكن الخطوة الملاحظة هي '%2$s'"
+msgstr "حجم خطوة RRDfile المطلوب هو '%s' ولكن الخطوة الملاحظة هي '%s'"
 
 #: lib/rrd.php:3359
 #, php-format
 msgid "Type for Data Source '%s' should be '%s'"
-msgstr "يجب أن يكون نوع مصدر البيانات '%1$s' هو '%2$s'"
+msgstr "يجب أن يكون نوع مصدر البيانات '%s' هو '%s'"
 
 #: lib/rrd.php:3365
 #, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
-msgstr "يجب أن تكون قيمة نبض القلب لمصدر البيانات '%1$s' هي '%2$s'"
+msgstr "يجب أن تكون قيمة نبض القلب لمصدر البيانات '%s' هي '%s'"
 
 #: lib/rrd.php:3377
 #, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
-msgstr "يجب أن يكون الحد الأدنى لـ RRD لمصدر البيانات '%1$s' هو '%2$s'"
+msgstr "يجب أن يكون الحد الأدنى لـ RRD لمصدر البيانات '%s' هو '%s'"
 
 #: lib/rrd.php:3386
 #, fuzzy, php-format
@@ -18999,31 +18992,31 @@ msgstr "DS &#39;٪ s&#39; مفقود في تعريف Cacti"
 #: lib/rrd.php:3400 lib/rrd.php:3401
 #, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
-msgstr "يمتلك RRA الخاص بـ Cacti '%1$s' نفس CF/الخطوات (%2$s, %3$s) مثل '%4$s'"
+msgstr "يمتلك RRA الخاص بـ Cacti '%s' نفس CF/الخطوات (%s, %s) مثل '%s'"
 
 #: lib/rrd.php:3415 lib/rrd.php:3416
 #, php-format
 msgid "File RRA '%s' has same CF/steps (%s, %s) as '%s'"
-msgstr "يحتوي ملف RRA '%1$s' على نفس CF/steps (%2$s, %3$s) الموجودة في '%4$s'"
+msgstr "يحتوي ملف RRA '%s' على نفس CF/steps (%s, %s) الموجودة في '%s'"
 
 #: lib/rrd.php:3450
 #, php-format
 msgid "The pdp_per_row of '%s' is invalid for RRA '%s' should be '%s'.  Consider deleting and allowing Cacti to re-create RRDfile."
 msgstr ""
-"قيمة pdp_per_row البالغة '%1$s' غير صالحة لـ RRA '%2$s' ويجب أن تكون '%3$s'. "
-"يُرجى النظر في الحذف والسماح لـ Cacti بإعادة إنشاء ملف RRDfile."
+"قيمة pdp_per_row البالغة '%s' غير صالحة لـ RRA '%s' ويجب أن تكون '%s'. يُرجى "
+"النظر في الحذف والسماح لـ Cacti بإعادة إنشاء ملف RRDfile."
 
 #: lib/rrd.php:3454
 #, php-format
 msgid "The XFF for Cacti RRA id is '%s' but should be '%s'"
-msgstr "قيمة XFF لمعرّف RRA في Cacti هي '%1$s' ولكن يجب أن تكون '%2$s'"
+msgstr "قيمة XFF لمعرّف RRA في Cacti هي '%s' ولكن يجب أن تكون '%s'"
 
 #: lib/rrd.php:3458
 #, php-format
 msgid "The number of rows for Cacti RRA id '%s' is incorrect.  The number of rows are '%s' but should be '%s'"
 msgstr ""
-"عدد الصفوف لمعرف Cacti RRA '%1$s' غير صحيح. عدد الصفوف هو '%2$s' ولكن يجب أن "
-"يكون '%3$s'"
+"عدد الصفوف لمعرف Cacti RRA '%s' غير صحيح. عدد الصفوف هو '%s' ولكن يجب أن "
+"يكون '%s'"
 
 #: lib/rrd.php:3476
 #, php-format
@@ -19094,7 +19087,7 @@ msgstr "توصيات الضبط الاختيارية"
 #: lib/rrd.php:3700 lib/rrd.php:3703
 #, php-format
 msgid "rename %s to %s"
-msgstr "إعادة تسمية %1$s إلى %2$s"
+msgstr "إعادة تسمية %s إلى %s"
 
 #: lib/rrd.php:3770
 msgid "Error while parsing the XML of rrdtool dump"
@@ -19117,14 +19110,12 @@ msgstr "خطأ أثناء تحليل XML تفريغ RRDtool"
 #: lib/rrd.php:4159
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file"
-msgstr ""
-"تمت إزالة RRA (CF=%1$s, ROWS=%2$d, PDP_PER_ROW=%3$d, XFF=%4$1.2f) من ملف RRD"
+msgstr "تمت إزالة RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) من ملف RRD"
 
 #: lib/rrd.php:4199
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file"
-msgstr ""
-"جارٍ إضافة RRA (CF=%1$s, ROWS=%2$d, PDP_PER_ROW=%3$d, XFF=%4$1.2f) إلى ملف RRD"
+msgstr "جارٍ إضافة RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) إلى ملف RRD"
 
 #: lib/rrd.php:4291 lib/rrd.php:4305
 #, php-format
@@ -19310,10 +19301,10 @@ msgstr "مع التخزين الحديث لنوع SSD ، فإن وجود عدة 
 #, php-format
 msgid "As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential"
 msgstr ""
-"اعتبارًا من %1$s %2$s، يمكنك التحكم في عدد مرات تفريغ %3$s للمعاملات إلى "
-"القرص. القيمة الافتراضية هي ثانية واحدة، ولكن في أنظمة الإدخال والإخراج "
-"العالية يمكن أن يسمح تعيين قيمة أكبر من 1 بجعل عمليات الإدخال والإخراج للقرص "
-"أكثر تسلسلًا"
+"اعتبارًا من %s %s، يمكنك التحكم في عدد مرات تفريغ %s للمعاملات إلى القرص. "
+"القيمة الافتراضية هي ثانية واحدة، ولكن في أنظمة الإدخال والإخراج العالية "
+"يمكن أن يسمح تعيين قيمة أكبر من 1 بجعل عمليات الإدخال والإخراج للقرص أكثر "
+"تسلسلًا"
 
 #: lib/utility.php:1303
 msgid "With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics.  Depending on your MariaDB/MySQL versions, this value can go as high as 64.  But try to keep the number less than your total SMT threads on the database server."
@@ -19634,7 +19625,7 @@ msgstr "تم تسجيل خروجك من Cacti بسبب %s."
 #: logout.php:61
 #, php-format
 msgid "Please close your browser or %sLogin Again%s"
-msgstr "يرجى إغلاق المتصفح أو %1$sتسجيل الدخول مجدداً%2$s"
+msgstr "يرجى إغلاق المتصفح أو %sتسجيل الدخول مجدداً%s"
 
 #: logout.php:62
 msgid "Cookies have been cleared"
@@ -21046,7 +21037,7 @@ msgstr "لا يمكن أن تتضمن أدلة المكونات الإضافية
 #: plugins.php:1870
 #, php-format
 msgid "Plugin directory is not correct.  Should be '%s' but is '%s'"
-msgstr "مجلد الإضافة غير صحيح. يجب أن يكون '%1$s' ولكنه '%2$s'"
+msgstr "مجلد الإضافة غير صحيح. يجب أن يكون '%s' ولكنه '%s'"
 
 #: plugins.php:1881
 msgid "Plugin is integrated into Cacti core"
@@ -21064,35 +21055,32 @@ msgstr "تمكين المكون الإضافي محليًا"
 #, php-format
 msgid "WARNING: %s is out of sync with the Poller Interval for Poller[%d]!  The Poller Interval is %d seconds, with a maximum of a %d seconds, but %d seconds have passed since the last poll!"
 msgstr ""
-"تحذير: %1$s غير متزامن مع الفاصل الزمني لـ Poller لـ Poller[%2$d]! الفاصل "
-"الزمني لـ Poller هو %3$d ثانية، بحد أقصى %4$d ثانية، ولكن مضت %5$d ثانية منذ "
-"آخر عملية استطلاع!"
+"تحذير: %s غير متزامن مع الفاصل الزمني لـ Poller لـ Poller[%d]! الفاصل الزمني "
+"لـ Poller هو %d ثانية، بحد أقصى %d ثانية، ولكن مضت %d ثانية منذ آخر عملية "
+"استطلاع!"
 
 #: poller.php:579
 #, php-format
 msgid "WARNING: There are %d processes detected as overrunning a polling cycle for Poller[%d], please investigate."
 msgstr ""
-"تحذير: تم اكتشاف %1$d من العمليات التي تتجاوز دورة الاستطلاع لـ Poller[%2$d]،"
-" يرجى التحقق من ذلك."
+"تحذير: تم اكتشاف %d من العمليات التي تتجاوز دورة الاستطلاع لـ Poller[%d]، "
+"يرجى التحقق من ذلك."
 
 #: poller.php:637
 #, php-format
 msgid "WARNING: Poller Output Table not empty for Poller[%d].  Issues: %d, %s."
-msgstr ""
-"تحذير: جدول مخرجات Poller غير فارغ لـ Poller[%1$d]. المشكلات: %2$d, %3$s."
+msgstr "تحذير: جدول مخرجات Poller غير فارغ لـ Poller[%d]. المشكلات: %d, %s."
 
 #: poller.php:671
 #, php-format
 msgid "ERROR: The spine path: %s is invalid for Poller[%d].  Poller can not continue!"
-msgstr ""
-"خطأ: مسار spine: %1$s غير صالح لـ Poller[%2$d]. لا يمكن لـ Poller المتابعة!"
+msgstr "خطأ: مسار spine: %s غير صالح لـ Poller[%d]. لا يمكن لـ Poller المتابعة!"
 
 #: poller.php:819
 #, php-format
 msgid "Maximum runtime of %d seconds exceeded for Poller[%d]. Exiting."
 msgstr ""
-"تم تجاوز الحد الأقصى لوقت التشغيل البالغ %1$d ثانية لـ Poller[%2$d]. جارٍ "
-"الخروج."
+"تم تجاوز الحد الأقصى لوقت التشغيل البالغ %d ثانية لـ Poller[%d]. جارٍ الخروج."
 
 #: poller.php:944
 msgid "WARNING: Cacti Polling Cycle Exceeded Poller Interval by "
@@ -21132,7 +21120,7 @@ msgstr "تحذير: قاعدة بيانات Cacti الرئيسية %s غير م�
 
 #: poller_automation.php:1037 poller_automation.php:1091
 msgid "Cacti Primary Admin"
-msgstr "Cacti Primary Admin"
+msgstr "المسؤول الرئيسي لـ Cacti"
 
 #: poller_automation.php:1189
 msgid "Cacti Automation Report requires an html based Email client"
@@ -21437,7 +21425,7 @@ msgstr "جامعي"
 
 #: pollers.php:1048
 msgid "Pollers"
-msgstr "Pollers"
+msgstr "المستطلعات"
 
 #: pollers.php:1058
 msgid "Collector Name"
@@ -21692,7 +21680,7 @@ msgstr "ملاحظة: يتم حفظ إعدادات المسار في علامة 
 #: settings.php:138
 #, php-format
 msgid "Cacti Settings (%s)%s"
-msgstr "إعدادات Cacti (%1$s)%2$s"
+msgstr "إعدادات Cacti (%s)%s"
 
 #: settings.php:248
 msgid "Changing Permission Model Warning"
@@ -22143,7 +22131,7 @@ msgstr "لم يتم العثور على استعلامات قاعدة بيانا
 
 #: support.php:503 support.php:650
 msgid "Cacti Poller"
-msgstr "Cacti Poller"
+msgstr "مستطلع Cacti"
 
 #: support.php:504
 msgid "Cacti Process"
@@ -22400,12 +22388,12 @@ msgstr "خوادم PHP"
 #: support.php:1370 support.php:1372 support.php:1378 support.php:1380
 #, php-format
 msgid "Main Server: Current: %s, Min Required: %s"
-msgstr "الخادم الرئيسي: الحالي: %1$s، الحد الأدنى المطلوب: %2$s"
+msgstr "الخادم الرئيسي: الحالي: %s، الحد الأدنى المطلوب: %s"
 
 #: support.php:1388 support.php:1390
 #, php-format
 msgid "Local Server: Current: %s, Min Required: %s"
-msgstr "الخادم المحلي: الحالي: %1$s، الحد الأدنى المطلوب: %2$s"
+msgstr "الخادم المحلي: الحالي: %s، الحد الأدنى المطلوب: %s"
 
 #: support.php:1395
 msgid "Minimum Connections:"
@@ -24090,7 +24078,7 @@ msgstr "يتيح لك هذا الاختيار القائمة عرض آخر ال�
 
 #: utilities.php:1297
 msgid "Cacti System Utilities"
-msgstr "Cacti System Utilities"
+msgstr "أدوات نظام Cacti"
 
 #: utilities.php:1397 utilities.php:1400
 msgid "Refresh Interval"
