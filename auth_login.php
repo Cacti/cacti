@@ -24,6 +24,7 @@
 
 use Cacti\Auth\BasicAuthLoginProvider;
 use Cacti\Auth\LocalAuthLoginProvider;
+use Cacti\Auth\RememberMePolicy;
 
 // include ldap support
 require_once(__DIR__ . '/lib/ldap.php');
@@ -203,12 +204,11 @@ if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 			$error_msg = __('Access Denied! User account locked.');
 		}
 
-		// remember me support.  Not for guest of basic auth. The transition
-		// gate must pass first so a locked or missing account cannot mint a token.
-		if ($auth_method != AUTH_METHOD_BASIC && $user['id'] !== get_guest_account()) {
-			if (!$error && isrv('remember_me') && read_config_option('auth_cache_enabled') == 'on' && auth_realm_allows_cookies((int) $realm)) {
-				set_auth_cookie($user);
-			}
+		// remember me support.  Not for guest, basic auth, or accounts that must
+		// change their password. The transition gate must pass first so a locked
+		// or missing account cannot mint a token.
+		if (RememberMePolicy::canIssueToken($user, (int) $auth_method, get_guest_account(), (bool) $error, isrv('remember_me'), read_config_option('auth_cache_enabled') == 'on', auth_realm_allows_cookies((int) $realm))) {
+			set_auth_cookie($user);
 		}
 
 		if (!$error) {
