@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-25 10:18+0000\n"
+"PO-Revision-Date: 2026-11-26 05:54+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Portuguese (Brazil) <https://translate.cacti.net/projects/"
 "cacti/core/pt_BR/>\n"
@@ -1465,7 +1465,7 @@ msgstr "Exportar para um ficheiro"
 #: automation_devices.php:613 data_debug.php:1080 lib/clog_webapi.php:220
 #: lib/clog_webapi.php:566 managers.php:772
 msgid "Purge"
-msgstr "Limpar"
+msgstr "Purgar"
 
 #: automation_devices.php:613
 #, fuzzy
@@ -2613,7 +2613,7 @@ msgstr "Nenhuma rede encontrada"
 #: support.php:335 support.php:579 support.php:616 utilities.php:372
 #: utilities.php:375 utilities.php:1412
 msgid "Refresh"
-msgstr "Atualizar"
+msgstr "Recarregar"
 
 #: automation_networks.php:1542 automation_networks.php:1543
 #: automation_networks.php:1544 automation_networks.php:1545
@@ -2854,7 +2854,7 @@ msgstr "Tentativas"
 
 #: automation_snmp.php:722
 msgid "Max OIDS"
-msgstr "Max OIDS"
+msgstr "Máx. de OIDs"
 
 #: automation_snmp.php:723
 msgid "Auth Username"
@@ -6789,7 +6789,7 @@ msgstr "Clique em 'Continuar' para ativar o(s) seguinte(s) dispositivo(s)."
 
 #: host.php:502
 msgid "Enable Device"
-msgstr "Habilitar Dispositivo(s)"
+msgstr "Habilitar Dispositivo"
 
 #: host.php:503
 msgid "Enable Devices"
@@ -8434,7 +8434,7 @@ msgstr "Gerenciamento"
 #: include/global_arrays.php:1083 sites.php:521 sites.php:536 sites.php:539
 #: sites.php:622 tree.php:848 tree.php:2270
 msgid "Sites"
-msgstr "Sites"
+msgstr "Locais"
 
 #: include/global_arrays.php:1084 include/global_arrays.php:1365 tree.php:2129
 #: tree.php:2144 tree.php:2147 tree.php:2212 user_admin.php:1426
@@ -12912,7 +12912,7 @@ msgstr "Atualização da cauda do log"
 
 #: include/global_settings.php:1177
 msgid "How often do you want the Cacti log display to update."
-msgstr "Quantas vezes você quer que a exibição do log Cacti seja atualizada?."
+msgstr "Define a frequência de atualização da exibição do log do Cacti."
 
 #: include/global_settings.php:1183
 msgid "Log Viewer Settings"
@@ -16065,7 +16065,7 @@ msgstr "Problemas de Segurança"
 
 #: lib/clog_webapi.php:597
 msgid "Threshold"
-msgstr "Threshold"
+msgstr "Limiar"
 
 #: lib/clog_webapi.php:607 lib/clog_webapi.php:610 tree.php:844
 msgid "Display"
@@ -17573,7 +17573,7 @@ msgstr "Definir intervalo de turnos"
 
 #: lib/html_graph.php:422 lib/html_tree.php:1415
 msgid "Shift Time Forward"
-msgstr "Shift Time Forward"
+msgstr "Avançar tempo"
 
 #: lib/html_graph.php:427 lib/html_tree.php:1420
 #, fuzzy
@@ -18538,7 +18538,7 @@ msgstr "Inicio"
 #: lib/installer.php:1792 lib/installer.php:2238 lib/installer.php:2249
 #: lib/installer.php:2906 lib/installer.php:2972
 msgid "Upgrade"
-msgstr "Atualizar"
+msgstr "Atualizar versão"
 
 #: lib/installer.php:1794 lib/installer.php:2911 lib/installer.php:2975
 msgid "Downgrade"
@@ -20927,8 +20927,7 @@ msgstr "Atualização automática de página"
 
 #: links.php:585
 msgid "How often do you wish this page to be refreshed automatically."
-msgstr ""
-"Quantas vezes você deseja que esta página seja atualizada automaticamente?."
+msgstr "Define a frequência de atualização automática desta página."
 
 #: links.php:593
 #, php-format
