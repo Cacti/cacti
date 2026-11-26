@@ -677,6 +677,7 @@ function utilities_view_tech() {
 				form_end_row();
 				form_alternate_row();
 				print '<td></td>';
+				/* xgettext:no-php-format */
 				print '<td>' . __('Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method.') . '</td>';
 				form_end_row();
 			} else {

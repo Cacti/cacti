@@ -148,7 +148,7 @@ function form_save() {
 				}
 			}
 
-			raise_message_javascript(__('Error in Template', 'package'), __('The Template XML file "%s" validation failed', $_FILES['import_file']['name']), __('See the cacti.log for more information, and review the XML file for proper syntax.  The error details are shown below.<br><br><b>Errors:</b><br>%s', $message_text));
+			raise_message_javascript(__('Error in Template'), __('The Template XML file "%s" validation failed', $_FILES['import_file']['name']), __('See the cacti.log for more information, and review the XML file for proper syntax.  The error details are shown below.<br><br><b>Errors:</b><br>%s', $message_text));
 		}
 	}
 }
@@ -370,11 +370,11 @@ function display_template_data(&$templates) {
 				}
 
 				if (cacti_sizeof($diff_array)) {
-					$diff_details .= __('Differences', 'package') . '<br>' . implode('<br>', $diff_array);
+					$diff_details .= __('Differences') . '<br>' . implode('<br>', $diff_array);
 				}
 
 				if (cacti_sizeof($orphan_array)) {
-					$diff_details .= ($diff_details != '' ? '<br>':'') . __('Orphans', 'package') . '<br>' . implode('<br>', $orphan_array);
+					$diff_details .= ($diff_details != '' ? '<br>':'') . __('Orphans') . '<br>' . implode('<br>', $orphan_array);
 				}
 
 				form_selectable_cell($diff_details, $id, '', 'white-space:pre-wrap');

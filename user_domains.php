@@ -258,16 +258,16 @@ function form_actions() {
 		}else if (get_nfilter_request_var('drp_action') == '3') { // enable
 			print "<tr>
 				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to enable the following User Domain.', 'Click \'Continue\' to enable following User Domains.', cacti_sizeof($d_array)) . "</p>
+					<p>" . __n('Click \'Continue\' to enable the following User Domain.', 'Click \'Continue\' to enable the following User Domains.', cacti_sizeof($d_array)) . "</p>
 					<div class='itemlist'><ul>$d_list</ul></div>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Enabled User Domain', 'Enable User Domains', cacti_sizeof($d_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Enable User Domain', 'Enable User Domains', cacti_sizeof($d_array)) . "'>";
 		}else if (get_nfilter_request_var('drp_action') == '4') { // default
 			print "<tr>
 				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to make the following the following User Domain the default one.') . "</p>
+					<p>" . __('Click \'Continue\' to make the following User Domain the default one.') . "</p>
 					<div class='itemlist'><ul>$d_list</ul></div>
 				</td>
 			</tr>\n";
@@ -460,7 +460,7 @@ function domain_edit() {
 			),
 		'mode' => array(
 			'friendly_name' => __('Mode'),
-			'description' => __('Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the users Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the users Distinguished Name (DN).<br><br><i>One-Time Passwords (OTP/MFA)</i> - Cacti binds the user\'s password only once, during final authentication.  <i>No Searching</i> performs no directory lookup and binds directly using the Distinguished Name (DN) template, so it is safe for OTP when the DN template alone identifies the user.  When a directory lookup is required to resolve the DN, use <i>Specific Searching</i> with a dedicated service account (or <i>Anonymous Searching</i> where the directory permits it) so the lookup never consumes the user\'s single-use code.  For resilient OTP deployments use a single DNS load balancer name in the Server(s) field rather than a space delimited multi-server list, which would re-attempt the bind with an already-consumed one-time password.'),
+			'description' => __('Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the user\'s Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the user\'s Distinguished Name (DN).<br><br><i>One-Time Passwords (OTP/MFA)</i> - Cacti binds the user\'s password only once, during final authentication.  <i>No Searching</i> performs no directory lookup and binds directly using the Distinguished Name (DN) template, so it is safe for OTP when the DN template alone identifies the user.  When a directory lookup is required to resolve the DN, use <i>Specific Searching</i> with a dedicated service account (or <i>Anonymous Searching</i> where the directory permits it) so the lookup never consumes the user\'s single-use code.  For resilient OTP deployments use a single DNS load balancer name in the Server(s) field rather than a space delimited multi-server list, which would re-attempt the bind with an already-consumed one-time password.</blockquote>'),
 			'method' => 'drop_array',
 			'value' => '|arg1:mode|',
 			'array' => $ldap_modes

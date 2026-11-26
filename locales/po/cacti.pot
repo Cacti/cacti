@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti 1.2.32\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-11-04 11:45-0800\n"
+"POT-Creation-Date: 2026-11-23 18:35-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -288,7 +288,8 @@ msgstr ""
 msgid "Aggregate Graph does not Exist"
 msgstr ""
 
-#: aggregate_graphs.php lib/html.php lib/html_reports.php utilities.php
+#: aggregate_graphs.php graph.php lib/html.php lib/html_reports.php
+#: utilities.php
 msgid "Details"
 msgstr ""
 
@@ -757,7 +758,7 @@ msgstr ""
 msgid "You do not have access to any area of Cacti.  Contact your administrator."
 msgstr ""
 
-#: auth_login.php
+#: auth_login.php include/auth.php
 msgid "Access Denied! User account locked."
 msgstr ""
 
@@ -1463,7 +1464,7 @@ msgid "Notification Enabled"
 msgstr ""
 
 #: automation_networks.php
-msgid "If checked, when the Automation Network is scanned, a report will be sent to the Notification Email account.."
+msgid "If checked, when the Automation Network is scanned, a report will be sent to the Notification Email account."
 msgstr ""
 
 #: automation_networks.php
@@ -2954,7 +2955,7 @@ msgstr ""
 
 #: data_input.php
 msgid "Click 'Continue' to delete the following Data Input Method"
-msgid_plural "Click 'Continue' to delete the following Data Input Method"
+msgid_plural "Click 'Continue' to delete the following Data Input Methods"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -3933,7 +3934,7 @@ msgid "Data Source Item [%s]"
 msgstr ""
 
 #: data_templates.php
-msgid "This value is disabled due to it either it value being derived from the Device or special Data Query object that keeps track of critical data Data Query associations."
+msgid "This value is disabled due to its value being derived from the Device or a special Data Query object that keeps track of critical Data Query associations."
 msgstr ""
 
 #: data_templates.php
@@ -4100,8 +4101,8 @@ msgstr[1] ""
 msgid "2 Years (%s Average)"
 msgstr ""
 
-#: graph.php
-msgid "Graph Details, Zooming and Debugging Utilities"
+#: graph.php include/global_settings.php lib/html.php
+msgid "Graph Actions"
 msgstr ""
 
 #: graph.php lib/html.php
@@ -4112,8 +4113,8 @@ msgstr ""
 msgid "Edit Graph Template"
 msgstr ""
 
-#: graph.php
-msgid "Click to view just this Graph in Real-time"
+#: graph.php lib/html.php
+msgid "Realtime"
 msgstr ""
 
 #: graph.php lib/html.php
@@ -4939,7 +4940,7 @@ msgstr ""
 
 #: help.php
 #, php-format
-msgid "The Document page '%s' count not be reached.  The Cacti Documentation site is not reachable.  The http error was '%s'.  Consider downloading an official release to obtain the latest documentation and hosting the documentation locally."
+msgid "The Document page '%s' could not be reached.  The Cacti Documentation site is not reachable.  The http error was '%s'.  Consider downloading an official release to obtain the latest documentation and hosting the documentation locally."
 msgstr ""
 
 #: help.php
@@ -4957,7 +4958,7 @@ msgstr ""
 
 #: help.php
 #, php-format
-msgid "The Document page '%s' count not be reached locally."
+msgid "The Document page '%s' could not be reached locally."
 msgstr ""
 
 #: host.php
@@ -8202,7 +8203,7 @@ msgid "Right Axis Format (--right-axis-format &lt;format&gt;)"
 msgstr ""
 
 #: include/global_form.php
-#, php-format
+#, no-php-format
 msgid "By default, the format of the axis labels gets determined automatically.  If you want to do this yourself, use this option with the same %lf arguments you know from the PRINT and GPRINT commands."
 msgstr ""
 
@@ -9777,7 +9778,7 @@ msgid "Ping Type"
 msgstr ""
 
 #: include/global_settings.php
-msgid "Default Ping type for all new Devices.</i>"
+msgid "Default Ping type for all new Devices."
 msgstr ""
 
 #: include/global_settings.php
@@ -10737,8 +10738,8 @@ msgstr ""
 msgid "Mode"
 msgstr ""
 
-#: include/global_settings.php
-msgid "Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the user's Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the user's Distinguished Name (DN).<br><br><i>One-Time Passwords (OTP/MFA)</i> - Cacti binds the user's password only once, during final authentication.  <i>No Searching</i> performs no directory lookup and binds directly using the Distinguished Name (DN) template, so it is safe for OTP when the DN template alone identifies the user.  When a directory lookup is required to resolve the DN, use <i>Specific Searching</i> with a dedicated service account (or <i>Anonymous Searching</i> where the directory permits it) so the lookup never consumes the user's single-use code.  For resilient OTP deployments use a single DNS load balancer name in the Server(s) field rather than a space delimited multi-server list, which would re-attempt the bind with an already-consumed one-time password."
+#: include/global_settings.php user_domains.php
+msgid "Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the user's Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the user's Distinguished Name (DN).<br><br><i>One-Time Passwords (OTP/MFA)</i> - Cacti binds the user's password only once, during final authentication.  <i>No Searching</i> performs no directory lookup and binds directly using the Distinguished Name (DN) template, so it is safe for OTP when the DN template alone identifies the user.  When a directory lookup is required to resolve the DN, use <i>Specific Searching</i> with a dedicated service account (or <i>Anonymous Searching</i> where the directory permits it) so the lookup never consumes the user's single-use code.  For resilient OTP deployments use a single DNS load balancer name in the Server(s) field rather than a space delimited multi-server list, which would re-attempt the bind with an already-consumed one-time password.</blockquote>"
 msgstr ""
 
 #: include/global_settings.php user_domains.php
@@ -11514,6 +11515,18 @@ msgid "When SpikeKill kills spikes in graphs, it makes a backup of the RRDfile. 
 msgstr ""
 
 #: include/global_settings.php
+msgid "Show graph actions in a collapsed menu or as always-visible icons beside each graph."
+msgstr ""
+
+#: include/global_settings.php
+msgid "Collapsed Menu"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Always-visible Icons"
+msgstr ""
+
+#: include/global_settings.php
 msgid "Default View Mode"
 msgstr ""
 
@@ -11857,6 +11870,10 @@ msgstr ""
 
 #: install/functions.php
 msgid "New Poller"
+msgstr ""
+
+#: install/install.php
+msgid "Unable to initialize installer settings. Check the database and retry."
 msgstr ""
 
 #: install/install.php
@@ -12235,16 +12252,6 @@ msgstr ""
 #: lib/auth.php
 #, php-format
 msgid "%s authenticated by Web Server, but both Template and Guest Users are not defined in Cacti."
-msgstr ""
-
-#: lib/auth.php
-#, php-format
-msgid "Access Denied!  LDAP Search Error: %s"
-msgstr ""
-
-#: lib/auth.php
-#, php-format
-msgid "Access Denied!  LDAP Error: %s"
 msgstr ""
 
 #: lib/auth.php
@@ -13119,23 +13126,11 @@ msgid "Data Query:"
 msgstr ""
 
 #: lib/html.php
-msgid "Graph Actions"
-msgstr ""
-
-#: lib/html.php
 msgid "Time View"
 msgstr ""
 
 #: lib/html.php
 msgid "Edit Device"
-msgstr ""
-
-#: lib/html.php
-msgid "Realtime"
-msgstr ""
-
-#: lib/html.php
-msgid "Stop Realtime"
 msgstr ""
 
 #: lib/html.php
@@ -13252,6 +13247,10 @@ msgstr ""
 
 #: lib/html.php
 msgid "SpikeKill Results"
+msgstr ""
+
+#: lib/html.php
+msgid "Stop Realtime"
 msgstr ""
 
 #: lib/html.php
@@ -13548,6 +13547,14 @@ msgstr ""
 
 #: lib/html_filter.php
 msgid "Reset filter to default values"
+msgstr ""
+
+#: lib/html_form.php
+msgid "A value is stored. Leave the field blank to keep it."
+msgstr ""
+
+#: lib/html_form.php
+msgid "Clear the stored value"
 msgstr ""
 
 #: lib/html_form.php
@@ -14285,6 +14292,10 @@ msgstr ""
 
 #: lib/import.php
 msgid "path traversal rejected"
+msgstr ""
+
+#: lib/import.php
+msgid "kept existing"
 msgstr ""
 
 #: lib/import.php
@@ -16318,6 +16329,7 @@ msgid "Total memory InnoDB uses to cache table and index data."
 msgstr ""
 
 #: lib/utility.php
+#, no-php-format
 msgid "Bytes; commonly 25%-80% of total system memory."
 msgstr ""
 
@@ -17613,6 +17625,10 @@ msgid "Test Database Connection"
 msgstr ""
 
 #: pollers.php
+msgid "Enter the database password to test a changed connection"
+msgstr ""
+
+#: pollers.php
 msgid "Collector Name"
 msgstr ""
 
@@ -18890,16 +18906,18 @@ msgstr[1] ""
 
 #: user_domains.php
 msgid "Click 'Continue' to enable the following User Domain."
-msgstr ""
+msgid_plural "Click 'Continue' to enable the following User Domains."
+msgstr[0] ""
+msgstr[1] ""
 
 #: user_domains.php
-msgid "Enabled User Domain"
+msgid "Enable User Domain"
 msgid_plural "Enable User Domains"
 msgstr[0] ""
 msgstr[1] ""
 
 #: user_domains.php
-msgid "Click 'Continue' to make the following the following User Domain the default one."
+msgid "Click 'Continue' to make the following User Domain the default one."
 msgstr ""
 
 #: user_domains.php
@@ -18949,10 +18967,6 @@ msgstr ""
 
 #: user_domains.php
 msgid "Encryption that the server supports. TLS is only supported by Protocol Version 3."
-msgstr ""
-
-#: user_domains.php
-msgid "Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the users Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the users Distinguished Name (DN).<br><br><i>One-Time Passwords (OTP/MFA)</i> - Cacti binds the user's password only once, during final authentication.  <i>No Searching</i> performs no directory lookup and binds directly using the Distinguished Name (DN) template, so it is safe for OTP when the DN template alone identifies the user.  When a directory lookup is required to resolve the DN, use <i>Specific Searching</i> with a dedicated service account (or <i>Anonymous Searching</i> where the directory permits it) so the lookup never consumes the user's single-use code.  For resilient OTP deployments use a single DNS load balancer name in the Server(s) field rather than a space delimited multi-server list, which would re-attempt the bind with an already-consumed one-time password."
 msgstr ""
 
 #: user_domains.php
@@ -19370,6 +19384,7 @@ msgid "Max Total Memory Possible"
 msgstr ""
 
 #: utilities.php
+#, no-php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr ""
 
@@ -20111,20 +20126,4 @@ msgstr ""
 
 #: vdef.php
 msgid "No VDEFs"
-msgstr ""
-
-#: include/global_settings.php
-msgid "Show graph actions in a collapsed menu or as always-visible icons beside each graph."
-msgstr ""
-
-#: include/global_settings.php
-msgid "Collapsed Menu"
-msgstr ""
-
-#: include/global_settings.php
-msgid "Always-visible Icons"
-msgstr ""
-
-#: install/install.php
-msgid "Unable to initialize installer settings. Check the database and retry."
 msgstr ""
