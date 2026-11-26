@@ -72,10 +72,11 @@ test('combined graph presentation keeps each pool separate and temperature autom
 			$this->assertSame('on', (string)$graph->graph->auto_scale);
 			$this->assertSame('1', (string)$graph->graph->auto_scale_opts);
 			$this->assertSame('', (string)$graph->graph->lower_limit);
-			$this->assertSame('Temperature (°C)', (string)$graph->graph->vertical_label);
+			$unit = str_ends_with($name, ' - Fahrenheit') ? '°F' : '°C';
+			$this->assertSame('Temperature (' . $unit . ')', (string)$graph->graph->vertical_label);
 			foreach ($graph->items->children() as $item) {
 				if ((string)$item->graph_type_id === '9') {
-					$this->assertSame('%5.1lf °C', (string)$objects[(string)$item->gprint_id]->gprint_text);
+					$this->assertSame('%5.1lf ' . $unit, (string)$objects[(string)$item->gprint_id]->gprint_text);
 				}
 			}
 		}
@@ -109,7 +110,7 @@ test('combined graph presentation keeps each pool separate and temperature autom
 		}
 	}
 	$this->assertSame(16, $memory);
-	$this->assertSame(8, $temperature);
+	$this->assertSame(16, $temperature);
 });
 
 

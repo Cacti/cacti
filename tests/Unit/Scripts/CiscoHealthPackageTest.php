@@ -189,3 +189,38 @@ test('fahrenheit variants share Celsius data and convert every displayed value',
 		$this->assertXmlStringEqualsXmlString($associations[$name]->rrd->asXML(), $associations[$name . ' - Fahrenheit']->rrd->asXML());
 	}
 });
+
+// Snapshot of the stock develop package: health additions must not replace it.
+test('health package preserves native develop stock templates and associations', function () {
+	$expected = json_decode(file_get_contents(dirname(__DIR__, 2) . '/fixtures/cisco-develop-stock.json'), true, 512, JSON_THROW_ON_ERROR);
+	$doc = new DOMDocument();
+	$doc->preserveWhiteSpace = false;
+	$doc->load(dirname(__DIR__, 3) . '/install/templates/Cisco_Router.xml');
+	$objects = [];
+	foreach ($doc->documentElement->childNodes as $node) {
+		if ($node instanceof DOMElement) {
+			$objects[$node->tagName] = $node;
+		}
+	}
+	foreach ($expected['objects'] as $hash => $digest) {
+		$this->assertArrayHasKey($hash, $objects);
+		$this->assertSame($digest, hash('sha256', $objects[$hash]->C14N()), $hash);
+	}
+	$defaults = [];
+	foreach ($objects as $hash => $object) {
+		if (str_starts_with($hash, 'hash_20') && $object->getElementsByTagName('default')->item(0)->textContent === 'on') {
+			$defaults[] = $object->getElementsByTagName('name')->item(0)->textContent;
+		}
+	}
+	$this->assertSame(['1 Minute Collection (Long Retention)'], $defaults);
+	$host = $objects[$expected['host']];
+	$this->assertSame($expected['graph_templates'], $host->getElementsByTagName('graph_templates')->item(0)->textContent);
+	$queries = explode('|', $host->getElementsByTagName('data_queries')->item(0)->textContent);
+	foreach ($expected['data_queries'] as $query) {
+		$this->assertContains($query, $queries);
+	}
+	$this->assertCount(count($expected['data_queries']) + 5, $queries);
+	$package = simplexml_load_string(gzdecode(file_get_contents(dirname(__DIR__, 3) . '/install/templates/Cisco_Router.xml.gz')));
+	$this->assertSame('The Cacti Group', (string)$package->info->author);
+	$this->assertSame('developers@cacti.net', (string)$package->info->email);
+});
