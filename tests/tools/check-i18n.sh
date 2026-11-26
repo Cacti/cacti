@@ -26,6 +26,7 @@ set -euo pipefail
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 AUDIT_SCRIPT="$REPO_ROOT/tests/tools/audit_po.py"
+MSGCHECK_SCRIPT="$REPO_ROOT/tests/tools/run_msgcheck.py"
 ERRORS=0
 
 # Collect staged .po files only, including renamed ones.
@@ -66,7 +67,11 @@ done
 
 # 2. msgcheck fuzzy/whitespace/punctuation lint (mirrors CI step)
 if command -v msgcheck &>/dev/null; then
-    if ! msgcheck --error-on-fuzzy --no-lines "${STAGED_PO[@]}"; then
+    if [ -f "$MSGCHECK_SCRIPT" ] && command -v python3 &>/dev/null; then
+        if ! python3 "$MSGCHECK_SCRIPT" --error-on-fuzzy --no-lines "${STAGED_PO[@]}"; then
+            ERRORS=1
+        fi
+    elif ! msgcheck --error-on-fuzzy --no-lines "${STAGED_PO[@]}"; then
         ERRORS=1
     fi
 else
