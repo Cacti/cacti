@@ -181,6 +181,13 @@ function form_save_button($u = '') {
 function api_device_save_noop() {
 }
 
+function api_device_quick_save($save) {
+	return 0;
+}
+
+function db_fetch_row_noop() {
+}
+
 function cacti_php_version_noop() {
 }
 
@@ -359,6 +366,7 @@ function extension_loaded($ext) {
 \cacti_fixture_source_function($root . '/lib/snmp.php', 'cacti_snmp_walk', __NAMESPACE__);
 \cacti_fixture_source_function($root . '/lib/database.php', '_db_replace', __NAMESPACE__);
 \cacti_fixture_source_function($root . '/lib/database.php', 'sql_save', __NAMESPACE__);
+\cacti_fixture_source_function($root . '/lib/api_device.php', 'api_device_save', __NAMESPACE__);
 \cacti_fixture_source_function($root . '/host_templates.php', 'form_actions', __NAMESPACE__);
 \cacti_fixture_source_function($root . '/managers.php', 'form_save', __NAMESPACE__);
 \cacti_fixture_source_function($root . '/install/functions.php', 'install_setup_get_templates', __NAMESPACE__);
@@ -383,9 +391,13 @@ if ($mode === 'host_templates_delete') {
 }
 
 $tmpDir = sys_get_temp_dir() . '/cacti-dev-probe-' . bin2hex(random_bytes(6));
+mkdir($tmpDir . '/lib', 0700, true);
 mkdir($tmpDir . '/plugins/sample', 0700, true);
 mkdir($tmpDir . '/install/templates', 0700, true);
 file_put_contents($tmpDir . '/poller.php', "<?php\n");
+file_put_contents($tmpDir . '/lib/utility.php', "<?php\n");
+file_put_contents($tmpDir . '/lib/variables.php', "<?php\n");
+file_put_contents($tmpDir . '/lib/data_query.php', "<?php\n");
 file_put_contents($tmpDir . '/plugins/sample/setup.php', "<?php\n");
 file_put_contents($tmpDir . '/plugins/sample/INFO', "[info]\nname=sample\n");
 file_put_contents($tmpDir . '/install/templates/test_pkg.xml.gz', 'pkg');
@@ -436,7 +448,11 @@ try {
 	$GLOBALS['bulk_db_exec_ret'] = true;
 	sql_save(array('id' => 1, 'snmp_password' => 'secret'), 'host');
 
-	// 5. managers.php form_save hostname guard
+	// 5. managers.php form_save + lib/api_device.php api_device_save hostname guard
+	$_SESSION['sess_error_fields'] = array();
+	api_device_save(0, 0, 'Dev', '-badhost', 'pub', 2, '', '', 161, 500, '', 2, 1, 23, 400, 1, '', '', '', '', '', '');
+	$dev_hostname_err = isset($_SESSION['sess_error_fields']['hostname']);
+
 	$_SESSION['sess_error_fields'] = array();
 	$GLOBALS['bulk_req'] = array(
 		'save_component_manager' => 1,
@@ -459,10 +475,15 @@ try {
 		'bg_calls'         => $GLOBALS['bulk_bg_calls'],
 		'exec_calls_count' => count($GLOBALS['bulk_exec_calls']),
 		'logs'             => $GLOBALS['bulk_logs'],
+		'dev_hostname_err' => $dev_hostname_err,
 		'mgr_hostname_err' => $mgr_hostname_err,
 		'templates_count'  => count($templates),
 	), JSON_THROW_ON_ERROR);
 } finally {
+	@unlink($tmpDir . '/lib/utility.php');
+	@unlink($tmpDir . '/lib/variables.php');
+	@unlink($tmpDir . '/lib/data_query.php');
+	@rmdir($tmpDir . '/lib');
 	@unlink($tmpDir . '/install/templates/test_pkg.xml.gz');
 	@rmdir($tmpDir . '/install/templates');
 	@rmdir($tmpDir . '/install');

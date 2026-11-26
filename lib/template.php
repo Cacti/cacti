@@ -2561,38 +2561,7 @@ function template_suggested_field_is_allowed($table, $field_name, $field_value) 
 
 	switch ($table) {
 		case 'graph_templates_graph':
-			$allowed_graph_columns = array(
-				'title'                => true,
-				'vertical_label'       => true,
-				'image_format_id'      => true,
-				'height'               => true,
-				'width'                => true,
-				'base_value'           => true,
-				'slope_mode'           => true,
-				'auto_scale'           => true,
-				'auto_scale_opts'      => true,
-				'auto_scale_log'       => true,
-				'scale_log_units'      => true,
-				'auto_scale_rigid'     => true,
-				'upper_limit'          => true,
-				'lower_limit'          => true,
-				'unit_value'           => true,
-				'unit_exponent_value'  => true,
-				'unit_length'          => true,
-				'no_gridfit'           => true,
-				'alt_y_grid'           => true,
-				'right_axis'           => true,
-				'right_axis_label'     => true,
-				'right_axis_format'    => true,
-				'right_axis_formatter' => true,
-				'left_axis_formatter'  => true,
-				'auto_padding'         => true,
-				'dynamic_labels'       => true,
-				'force_rules_legend'   => true,
-				'tab_width'            => true,
-				'legend_position'      => true,
-				'legend_direction'     => true,
-			);
+			$allowed_graph_columns = array_flip(explode(',', 'title,vertical_label,image_format_id,height,width,base_value,slope_mode,auto_scale,auto_scale_opts,auto_scale_log,scale_log_units,auto_scale_rigid,upper_limit,lower_limit,unit_value,unit_exponent_value,unit_length,no_gridfit,alt_y_grid,right_axis,right_axis_label,right_axis_format,right_axis_formatter,left_axis_formatter,auto_padding,dynamic_labels,force_rules_legend,tab_width,legend_position,legend_direction'));
 
 			return isset($allowed_graph_columns[$field_name]) && strlen($value) <= 255;
 

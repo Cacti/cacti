@@ -314,7 +314,7 @@ try {
 	// Also exercise remove_spikes() guard on invalid xmlfile path
 	$prErr->setValue($sk, array());
 	$prRrd->setValue($sk, $okRrd);
-	foreach (array('dryrun' => true, 'method' => 1, 'username' => 'admin', 'outliers' => 5) as $k => $v) {
+	foreach (array('dryrun' => true, 'method' => 'stddev', 'avgnan' => 'last', 'numspike' => 10, 'stddev' => 10, 'percent' => 500, 'outliers' => 5, 'username' => 'admin') as $k => $v) {
 		if ($src->hasProperty($k)) {
 			$pr = $src->getProperty($k);
 			$pr->setAccessible(true);
@@ -322,6 +322,7 @@ try {
 		}
 	}
 	$skRemoveBadXml = $sk->remove_spikes();
+	$skRemoveErr    = $sk->get_errors();
 
 	print json_encode(array(
 		'err_non_php'     => !empty($errNonPhp),
@@ -336,6 +337,7 @@ try {
 		'sk_create_dash'  => $skCreateDash,
 		'sk_create_win'   => $skCreateWin,
 		'sk_remove_badxml'=> $skRemoveBadXml,
+		'sk_remove_err'   => strpos($skRemoveErr, 'Invalid RRDfile or temporary XML path') !== false,
 	), JSON_THROW_ON_ERROR);
 } finally {
 	@unlink($okRrd);

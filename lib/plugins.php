@@ -68,10 +68,7 @@ function api_user_realm_auth($filename = '') {
  * @return bool True if the callback is permitted, false otherwise.
  */
 function api_plugin_callback_is_allowed($plugin_name, $function_name) {
-	$internal_callbacks = array(
-		'plugin_config_arrays'        => true,
-		'plugin_draw_navigation_text' => true,
-	);
+	$internal_callbacks = array('plugin_config_arrays' => true, 'plugin_draw_navigation_text' => true);
 
 	if (!is_string($plugin_name) || !is_string($function_name) || $function_name === '') {
 		return false;
