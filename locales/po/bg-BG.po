@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: Cacti\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-25 22:34+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Bulgarian <https://translate.cacti.net/projects/cacti/core-v1-2-x/bg/>\nLanguage: bg-BG\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: Cacti\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-26 05:53+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Bulgarian <https://translate.cacti.net/projects/cacti/core-v1-2-x/bg/>\nLanguage: bg-BG\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -512,7 +512,7 @@ msgstr "Шаблон"
 #: lib/api_automation.php lib/auth.php lib/html.php lib/html_reports.php
 #: managers.php user_admin.php user_group_admin.php utilities.php
 msgid "Any"
-msgstr "Всички"
+msgstr "Всеки"
 
 #: aggregate_graphs.php automation_graph_rules.php automation_networks.php
 #: automation_tree_rules.php data_debug.php data_sources.php data_templates.php
@@ -545,10 +545,8 @@ msgid "No Aggregate Graphs Found"
 msgstr "Не са намерени общи графики"
 
 #: aggregate_templates.php
-#, fuzzy
-#| msgid "No Aggregate Templates Found"
 msgid "Aggregate Template not found."
-msgstr "Не са намерени общи шаблони"
+msgstr "Агрегираният шаблон не е намерен."
 
 #: aggregate_templates.php
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -1039,7 +1037,7 @@ msgstr "Прочистване на откритите устройства"
 #: lib/html.php lib/html_reports.php lib/spikekill.php lib/utility.php
 #: plugins.php pollers.php user_admin.php utilities.php
 msgid "N/A"
-msgstr "Няма"
+msgstr "Неприложимо"
 
 #: automation_graph_rules.php automation_snmp.php automation_tree_rules.php
 #: cdef.php color_templates.php data_input.php data_queries.php
@@ -1783,7 +1781,7 @@ msgstr "Не са намерени мрежи"
 #: automation_networks.php data_debug.php lib/clog_webapi.php
 #: lib/html_graph.php lib/html_tree.php pollers.php utilities.php
 msgid "Refresh"
-msgstr "Обновяване"
+msgstr "Опресняване"
 
 #: automation_networks.php data_sources.php include/global_arrays.php
 #: include/global_settings.php pollers.php
@@ -2541,10 +2539,8 @@ msgid "Delete Color Item"
 msgstr "Изтриване на цвят"
 
 #: color_templates.php
-#, fuzzy
-#| msgid "No Color Templates Found"
 msgid "Color Template not found."
-msgstr "Няма намерени шаблони за цвят"
+msgstr "Шаблонът за цвят не е намерен."
 
 #: color_templates.php
 #, php-format
@@ -2578,10 +2574,8 @@ msgid "No Color Templates Found"
 msgstr "Няма намерени шаблони за цвят"
 
 #: color_templates_items.php
-#, fuzzy
-#| msgid "Color Template Items"
 msgid "Color Template or Item not found."
-msgstr "Елементи на цветни шаблони"
+msgstr "Шаблонът за цвят или елементът не е намерен."
 
 #: color_templates_items.php
 msgid "Click 'Continue' to delete the following Color Template Color."
@@ -3024,7 +3018,7 @@ msgstr "Заявка за скрипт"
 
 #: data_input.php include/global_arrays.php
 msgid "Script Server Query"
-msgstr "Сървър за скриптове"
+msgstr "Заявка към сървър за скриптове"
 
 #: data_input.php
 msgid "White List Verification Succeeded."
@@ -4257,10 +4251,8 @@ msgid "No Inputs"
 msgstr "Няма входни данни"
 
 #: graph_templates.php
-#, fuzzy
-#| msgid "No Graph Templates Found"
 msgid "Graph Template not found."
-msgstr "Не са намерени шаблони на графиките"
+msgstr "Шаблонът за графика не е намерен."
 
 #: graph_templates.php
 #, php-format
@@ -5198,7 +5190,7 @@ msgstr "Скъсан"
 
 #: host.php lib/functions.php
 msgid "Success"
-msgstr "Готово"
+msgstr "Успех"
 
 #: host.php
 msgid "Reload Query"
@@ -5234,7 +5226,7 @@ msgstr "Ping и SNMP Uptime"
 
 #: host.php include/global_arrays.php
 msgid "SNMP Uptime"
-msgstr "SNMP Uptime"
+msgstr "SNMP време на работа"
 
 #: host.php include/global_arrays.php
 msgid "Ping or SNMP Uptime"
@@ -5271,7 +5263,7 @@ msgstr "Не е активен"
 #: host.php lib/api_automation.php lib/html.php lib/html_utility.php
 #: pollers.php
 msgid "Recovering"
-msgstr "Възстановяване"
+msgstr "Възстановява се"
 
 #: host.php lib/api_automation.php tree.php utilities.php
 msgid "Device Description"
@@ -6459,7 +6451,7 @@ msgstr "Свързани с Cacti"
 
 #: include/global_arrays.php
 msgid "Database Related"
-msgstr "Бази данни"
+msgstr "Свързани с базата данни"
 
 #: include/global_arrays.php
 msgid "Facilities Related"
@@ -7590,7 +7582,7 @@ msgstr "Изберете SNMP версията за този хост."
 
 #: include/global_form.php
 msgid "SNMP Community String"
-msgstr "SNMP Community String"
+msgstr "SNMP низ на общността"
 
 #: include/global_form.php
 msgid "Fill in the SNMP read community for this device."
@@ -7638,7 +7630,7 @@ msgstr "Изберете протокола за поверителност на
 
 #: include/global_form.php
 msgid "SNMP Privacy Passphrase (v3)"
-msgstr "Декларация за поверителност на SNMP (v3)"
+msgstr "Паролна фраза за поверителност на SNMP (v3)"
 
 #: include/global_form.php
 msgid "Choose the SNMPv3 Privacy Passphrase."
@@ -7722,7 +7714,7 @@ msgstr "%d повторения"
 
 #: include/global_form.php
 msgid "SNMP Retries"
-msgstr "SNMP Retries"
+msgstr "Повторни опити за SNMP"
 
 #: include/global_form.php
 msgid "The maximum number of attempts to reach a device via an SNMP readstring prior to giving up."
@@ -7794,7 +7786,7 @@ msgstr "Колко поколения данни се съхраняват в RR
 
 #: include/global_form.php include/global_settings.php
 msgid "Default Timespan"
-msgstr "По подразбиране"
+msgstr "Времеви интервал по подразбиране"
 
 #: include/global_form.php
 msgid "When viewing a Graph based upon the RRA in question, the default Timespan to show for that Graph."
@@ -8379,7 +8371,7 @@ msgstr "В случай, че е избрана LINE, укажете тук ши
 
 #: include/global_form.php
 msgid "Dashes (dashes[=on_s[,off_s[,on_s,off_s]...]])"
-msgstr "Тирета (тирета [= on_s [, off_s [, on_s, off_s] ...]])"
+msgstr "Тирета (dashes[=on_s[,off_s[,on_s,off_s]...]])"
 
 #: include/global_form.php
 msgid "The dashes modifier enables dashed line style."
@@ -8387,7 +8379,7 @@ msgstr "Модификаторът за тирета позволява стил
 
 #: include/global_form.php
 msgid "Dash Offset (dash-offset=offset)"
-msgstr "Отместване на тире (тире-отместване = отместване)"
+msgstr "Отместване на тире (dash-offset=offset)"
 
 #: include/global_form.php
 msgid "The dash-offset parameter specifies an offset into the pattern at which the stroke begins."
@@ -11579,7 +11571,7 @@ msgstr "Скрива деактивираните устройства и гра
 
 #: include/global_settings.php
 msgid "Show Device Aggregates"
-msgstr "агрегати"
+msgstr "Показване на агрегати на устройства"
 
 #: include/global_settings.php
 msgid "If a Device Data Source is included in an Aggregate Graph, show that Graph along with other Device Graphs"
@@ -17043,10 +17035,8 @@ msgid "The Package %s Import Failed"
 msgstr "Неуспешно импортиране на пакет %s"
 
 #: package_import.php
-#, fuzzy
-#| msgid "Enter a valid file path"
 msgid "Error: Invalid file path."
-msgstr "Въведете валиден път на файла"
+msgstr "Грешка: Невалиден път до файл."
 
 #: package_import.php
 msgid "Error in Package"
@@ -17194,10 +17184,8 @@ msgid "Are you sure you want to Force Uninstall the plugin"
 msgstr "Наистина ли искате да деинсталирате?"
 
 #: plugins.php
-#, fuzzy
-#| msgid "Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click 'Uninstall' below.  Otherwise click 'Cancel'"
 msgid "This permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone.  If you really want to Force Uninstall the Plugin, click 'Force Uninstall' below.  Otherwise click 'Cancel'."
-msgstr "Деинсталирането на този Plugin ще премахне всички данни и настройки на Plugin. Ако наистина искате да деинсталирате приставката, кликнете върху „Деинсталиране“ по-долу. В противен случай кликнете върху „Отказ“"
+msgstr "Това премахва за постоянно всички негови записи от таблиците на приставките на Cacti (конфигурация, куки, права и всички таблици или колони, които е създала). Това действие е необратимо. Ако наистина искате да деинсталирате принудително приставката, щракнете върху 'Принудително деинсталиране' по-долу. В противен случай щракнете върху 'Отказ'."
 
 #: plugins.php
 #, fuzzy
@@ -18816,10 +18804,8 @@ msgid "Tree Perms"
 msgstr "Дървесни перми"
 
 #: user_admin.php
-#, fuzzy
-#| msgid "File not found"
 msgid "User not found."
-msgstr "Файлът не е открит"
+msgstr "Потребителят не е намерен."
 
 #: user_admin.php
 #, php-format
@@ -18888,7 +18874,7 @@ msgstr "Правила за шаблоните"
 
 #: user_admin.php
 msgid "Unavailable"
-msgstr "Изтекла"
+msgstr "Недостъпно"
 
 #: user_admin.php
 msgid "No Users Found"
@@ -19278,7 +19264,7 @@ msgstr "Настройки на база данни"
 
 #: utilities.php
 msgid "Database Status"
-msgstr "Бази данни"
+msgstr "Състояние на базата данни"
 
 #: utilities.php
 msgid "PHP Info"
@@ -19482,10 +19468,8 @@ msgid "PHP SNMP"
 msgstr "PHP SNMP"
 
 #: utilities.php
-#, fuzzy
-#| msgid "Installed"
 msgid "Installed."
-msgstr "Инсталирано"
+msgstr "Инсталирано."
 
 #: utilities.php
 msgid "You've set memory limit to 'unlimited'."
@@ -20072,10 +20056,8 @@ msgid "Severity Level: %s"
 msgstr "Ниво на сериозност: %s"
 
 #: vdef.php
-#, fuzzy
-#| msgid "File not found"
 msgid "VDEF not found."
-msgstr "Файлът не е открит"
+msgstr "VDEF не е намерен."
 
 #: vdef.php
 msgid "Click 'Continue' to delete the following VDEF."
