@@ -136,11 +136,11 @@ function db_fetch_row_prepared($sql, $params = array()) {
 }
 
 function db_fetch_cell_prepared($sql, $params = array()) {
-	if (strpos($sql, 'FROM graph_templates') !== false) {
-		return $params[0];
-	}
 	if (strpos($sql, 'FROM graph_templates_item') !== false) {
 		return ((int) $params[0] === 999) ? false : 77;
+	}
+	if (strpos($sql, 'FROM graph_templates') !== false) {
+		return $params[0];
 	}
 	if (strpos($sql, 'FROM data_template_rrd') !== false) {
 		return ((int) $params[0] === 999) ? false : 88;
@@ -547,6 +547,10 @@ try {
 	$snmp_q = array();
 	create_complete_graph_from_template(7, 1, $snmp_q, $suggested);
 
+	// Also exercise create_save_graph when whitelist passes (falls through to test_data_sources)
+	create_save_graph(1, 'cg', 1, array(), array());
+	create_save_graph(1, 'sg', 1, array(2 => array('1' => true)), array('sg' => array(1 => array())));
+
 	// 3. lib/vdef.php full coverage (item types, cycles, depth >= 64, expansion > 4096, output > 65536)
 	$GLOBALS['vdef_functions'] = $GLOBALS['bulk_vdef_functions'];
 	$GLOBALS['bulk_vdef_items'] = array(
@@ -620,7 +624,7 @@ try {
 	// Exercise dsstats_obtain_data_source_avgpeak_values
 	$rrdfile = $tmpDir . '/sample.rrd';
 	file_put_contents($rrdfile, 'rrd');
-	$GLOBALS['bulk_xport_data'] = "0x0\nERROR: bad line\n12.5\nnan\nOK u:0.01 s:0.00 r:0.01\n";
+	$GLOBALS['bulk_xport_data'] = "0x0\nERROR: bad line\n12.5\n-nan\nOK u:0.01 s:0.00 r:0.01\n";
 	$pipes = array();
 	$avgpeak = dsstats_obtain_data_source_avgpeak_values(101, $rrdfile, 'daily', $pipes);
 

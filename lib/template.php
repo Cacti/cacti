@@ -2561,7 +2561,7 @@ function template_suggested_field_is_allowed($table, $field_name, $field_value) 
 
 	switch ($table) {
 		case 'graph_templates_graph':
-			static $allowed_graph_columns = array(
+			$allowed_graph_columns = array(
 				'title'                => true,
 				'vertical_label'       => true,
 				'image_format_id'      => true,

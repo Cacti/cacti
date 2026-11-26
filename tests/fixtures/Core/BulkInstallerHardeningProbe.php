@@ -82,6 +82,9 @@ function read_config_option($name, $force = false) {
 	if ($name === 'path_rrdtool') {
 		return '/usr/bin/rrdtool';
 	}
+	if ($name === 'spikekill_backupdir') {
+		return $GLOBALS['inst_sk_backupdir'];
+	}
 	return '';
 }
 
@@ -195,7 +198,10 @@ $tmpBase = sys_get_temp_dir() . '/cacti-inst-probe-' . bin2hex(random_bytes(6));
 mkdir($tmpBase . '/rra', 0700, true);
 $notPhpBin = $tmpBase . '/evil_bin';
 file_put_contents($notPhpBin, "#!/bin/sh\necho 1\n");
-chmod($notPhpBin, 0755);
+chmod($notPhpBin, 0700);
+$okRrd = $tmpBase . '/rra/ok.rrd';
+file_put_contents($okRrd, 'rrd');
+$GLOBALS['inst_sk_backupdir'] = '-badbackup';
 
 $GLOBALS['config'] = array(
 	'base_path'       => $tmpBase,
@@ -305,6 +311,18 @@ try {
 	$skCreateWin  = $mCreate->invoke($sk, $tmpBase . '/rra/a&b.xml', $tmpBase . '/rra/a.rrd');
 	$GLOBALS['config']['cacti_server_os'] = 'unix';
 
+	// Also exercise remove_spikes() guard on invalid xmlfile path
+	$prErr->setValue($sk, array());
+	$prRrd->setValue($sk, $okRrd);
+	foreach (array('dryrun' => true, 'method' => 1, 'username' => 'admin', 'outliers' => 5) as $k => $v) {
+		if ($src->hasProperty($k)) {
+			$pr = $src->getProperty($k);
+			$pr->setAccessible(true);
+			$pr->setValue($sk, $v);
+		}
+	}
+	$skRemoveBadXml = $sk->remove_spikes();
+
 	print json_encode(array(
 		'err_non_php'     => !empty($errNonPhp),
 		'err_bad_cli'     => !empty($errBadCli),
@@ -317,8 +335,10 @@ try {
 		'sk_outside_err'  => strpos($skOutsideErr, 'outside the RRA directory') !== false,
 		'sk_create_dash'  => $skCreateDash,
 		'sk_create_win'   => $skCreateWin,
+		'sk_remove_badxml'=> $skRemoveBadXml,
 	), JSON_THROW_ON_ERROR);
 } finally {
+	@unlink($okRrd);
 	@unlink($notPhpBin);
 	@rmdir($tmpBase . '/rra');
 	@rmdir($tmpBase);

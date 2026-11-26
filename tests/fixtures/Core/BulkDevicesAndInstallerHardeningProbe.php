@@ -27,6 +27,9 @@ require_once $root . '/include/global_constants.php';
 require_once $root . '/lib/functions.php';
 require_once $root . '/lib/ping.php';
 
+if (!defined('SNMP_METHOD_PHP')) {
+	define('SNMP_METHOD_PHP', 1);
+}
 if (!defined('SNMP_METHOD_BINARY')) {
 	define('SNMP_METHOD_BINARY', 2);
 }
@@ -326,6 +329,14 @@ function snmp_escape_string($str) {
 }
 
 function cacti_snmp_options_sanitize($version, $community, $port, $timeout, $retries, $max_oids, $auth_proto = '', $auth_user = '', $auth_pass = '', $priv_proto = '', $priv_pass = '', $context = '', $engineid = '') {
+	return true;
+}
+
+function cacti_safe_column_name($col) {
+	return $col;
+}
+
+function db_fetch_cell_prepared_noop() {
 }
 
 function clean_up_lines($str) {
@@ -415,8 +426,13 @@ try {
 	cacti_snmp_walk('192.0.2.1', 'public', '.1.3.6.1.2.1.1', 2, '', '', '', '', '', '', 161, 500, 0, 10);
 
 	// 4. lib/database.php (_db_replace failure + sql_save redaction)
+	$fakeConn = new \stdClass();
+	$GLOBALS['database_hostname'] = 'localhost';
+	$GLOBALS['database_port']     = '3306';
+	$GLOBALS['database_default']  = 'cacti';
+	$GLOBALS['database_sessions'] = array('localhost:3306:cacti' => $fakeConn);
 	$GLOBALS['bulk_db_exec_ret'] = false;
-	_db_replace(false, 'host', array('id' => 1, 'snmp_password' => 'secret'), 'id');
+	_db_replace($fakeConn, 'host', array('id' => 1, 'snmp_password' => "'secret'"), 'id');
 	$GLOBALS['bulk_db_exec_ret'] = true;
 	sql_save(array('id' => 1, 'snmp_password' => 'secret'), 'host');
 

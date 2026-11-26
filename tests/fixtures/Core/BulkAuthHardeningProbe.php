@@ -74,6 +74,12 @@ $GLOBALS['bulk_session_rows']['active-sid'] = array(
 $active_read = cacti_db_session_read('active-sid');
 $active_refreshed = $GLOBALS['bulk_session_rows']['active-sid']['access'] >= $old_access;
 
+$GLOBALS['bulk_session_rows']['empty-sid'] = array(
+	'data'   => '',
+	'access' => $old_access,
+);
+cacti_db_session_read('empty-sid');
+
 $maxlifetime = max(1, (int) ini_get('session.gc_maxlifetime'));
 $GLOBALS['bulk_session_rows']['expired-sid'] = array(
 	'data'   => 'sess_user_id|i:1;',

@@ -87,9 +87,11 @@ mkdir($tmpBase . '/cacti_outside', 0700, true);
 
 $target  = $tmpBase . '/rra/real.txt';
 $subfile = $tmpBase . '/rra/sub/child.txt';
+$sublink = $tmpBase . '/rra/sub/nested_link.txt';
 $symlink = $tmpBase . '/rra/link.txt';
 file_put_contents($target, 'data');
 file_put_contents($subfile, 'child');
+symlink($target, $sublink);
 symlink($target, $symlink);
 
 file_put_contents($tmpBase . '/cacti/ok.txt', 'hello');
@@ -109,6 +111,8 @@ try {
 	$chgrp_sym = sp_recursive_chgrp($symlink, $gid);
 	$chown_dir = sp_recursive_chown($tmpBase . '/rra', getmyuid());
 	$chgrp_dir = sp_recursive_chgrp($tmpBase . '/rra', $gid);
+	@sp_recursive_chown($tmpBase . '/rra', 0);
+	@sp_recursive_chgrp($tmpBase . '/rra', 0);
 
 	// 2. dirToArray traversal & symlink guard
 	$GLOBALS['debug'] = false;
@@ -142,6 +146,7 @@ try {
 		'float_win32'   => $float_win32,
 	), JSON_THROW_ON_ERROR);
 } finally {
+	@unlink($sublink);
 	@unlink($symlink);
 	@unlink($target);
 	@unlink($subfile);
