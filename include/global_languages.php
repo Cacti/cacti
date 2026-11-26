@@ -61,15 +61,16 @@ function __() : string {
 	/* only the last argument is allowed to initiate
 	   the use of a different textdomain */
 
-	// get gettext string
+	// get gettext string without unescaping %% before sprintf()
 	if (isset($i18n[(string) $args[$num - 1]]) && $args[$num - 1] != 'cacti') {
-		$args[0] = __gettext($args[0], $args[$num - 1]);
+		$args[0] = __gettext($args[0], $args[$num - 1], false);
 	} else {
-		$args[0] = __gettext($args[0]);
+		$args[0] = __gettext($args[0], 'cacti', false);
 	}
 
-	$regex_num = '%([-]{0,1}[0-9]+([.][0-9]+){0,1}){0,1}';
-	$regex_str = '%([-]{0,1}[0-9]+){0,1}';
+	$regex_pos = '(?:[0-9]+\$)?';
+	$regex_num = '%' . $regex_pos . '([-+]{0,1}[0-9]*([.][0-9]+){0,1}){0,1}';
+	$regex_str = '%' . $regex_pos . '([-]{0,1}[0-9]*([.][0-9]+){0,1}){0,1}';
 
 	$array_str = [
 		'b', // Binary
@@ -93,19 +94,18 @@ function __() : string {
 	];
 
 	$valid_args = [
-		'%%', // Escaped percentage (literal)
-		'%c', // Single Character
+		'%' . $regex_pos . 'c', // Single Character
 		$regex_num . '[' . implode('', $array_num) . ']',
 		$regex_str . '[' . implode('', $array_str) . ']',
 	];
 
 	$valid_regexp = '/(' . implode(')|(', $valid_args) . ')/';
 
-	if (preg_match($valid_regexp, $args[0])) {
+	if (preg_match($valid_regexp, str_replace('%%', '', $args[0]))) {
 		// process return string against input arguments
-		return __uf(call_user_func_array('sprintf', $args));
+		return call_user_func_array('sprintf', $args);
 	} else {
-		return $args[0];
+		return __uf($args[0]);
 	}
 }
 
@@ -160,7 +160,7 @@ $catalogue      = $path2catalogue;
 $path2timepicker  = '';
 $path2calendar    = '';
 $path2ms          = '';
-$path2msfiler     = '';
+$path2msfilter    = '';
 $path2colorpicker = '';
 
 if ($cacti_locale != '') {
@@ -743,11 +743,12 @@ function set_language_constants(array $constants) : void {
 /**
  * Translates a given text string using the specified domain.
  *
- * @param  string|null $text   The text string to be translated. If null, an empty string is used.
- * @param  string      $domain The domain to use for translation. Defaults to 'cacti'.
+ * @param  string|null $text     The text string to be translated. If null, an empty string is used.
+ * @param  string      $domain   The domain to use for translation. Defaults to 'cacti'.
+ * @param  bool        $unescape Whether to unescape %% to % before returning.
  * @return string      The translated text, or the original text if translation is not available.
  */
-function __gettext(string|null $text, string $domain = 'cacti') : string {
+function __gettext(string|null $text, string $domain = 'cacti', bool $unescape = true) : string {
 	global $i18n;
 
 	$text ??= '';
@@ -772,7 +773,7 @@ function __gettext(string|null $text, string $domain = 'cacti') : string {
 		i18n_text_debug("__gettext($domain):\n	Original: $text\n	Translated: $translated", FILE_APPEND);
 	}
 
-	return __uf($translated);
+	return $unescape ? __uf($translated) : $translated;
 }
 
 /**
@@ -859,18 +860,31 @@ function __x() : false|string {
 
 		if ($num == 1) {
 			// pure text string without placeholders and a change of the default textdomain
-			$msgstr = __gettext($args[0]);
+			$msgstr = __gettext($args[0], 'cacti', false);
 		} else {
-			// get gettext string
+			// get gettext string without unescaping %% before sprintf()
 			$msgstr = isset($i18n[(string) $args[$num - 1]]) && $args[$num - 1] != 'cacti' ?
-			__gettext($args[0], $args[$num - 1]) : __gettext($args[0]);
+			__gettext($args[0], $args[$num - 1], false) : __gettext($args[0], 'cacti', false);
 		}
 
 		// use the raw message id if language catalogue does not contain a context specific message string
 		$args[0] = ($msgstr == $xmsgid) ? $msgid : $msgstr;
 
-		// process return string against input arguments
-		return __uf(call_user_func_array('sprintf', $args));
+		if ($num == 1) {
+			return __uf($args[0]);
+		}
+
+		$regex_pos    = '(?:[0-9]+\$)?';
+		$regex_num    = '%' . $regex_pos . '([-+]{0,1}[0-9]*([.][0-9]+){0,1}){0,1}';
+		$regex_str    = '%' . $regex_pos . '([-]{0,1}[0-9]*([.][0-9]+){0,1}){0,1}';
+		$valid_regexp = '/(%' . $regex_pos . 'c)|(' . $regex_num . '[deEfFgGhH])|(' . $regex_str . '[bosuxX])/';
+
+		if (preg_match($valid_regexp, str_replace('%%', '', $args[0]))) {
+			// process return string against input arguments
+			return call_user_func_array('sprintf', $args);
+		} else {
+			return __uf($args[0]);
+		}
 	}
 }
 
@@ -1163,47 +1177,61 @@ function number_format_i18n(mixed $number, mixed $decimals = null, mixed $baseu 
 	}
 
 	$country = cacti_strtoupper($cacti_country);
+	$suffix  = '';
+
+	if ($decimals == -1 || $decimals == null) {
+		$fmt_decimals = 0;
+	} else {
+		$fmt_decimals = (int) $decimals;
+
+		if ($baseu > 0) {
+			if ($number >= $baseu ** 4) {
+				$number /= $baseu ** 4;
+				$suffix = __(' T');
+			} elseif ($number >= $baseu ** 3) {
+				$number /= $baseu ** 3;
+				$suffix = __(' G');
+			} elseif ($number >= $baseu ** 2) {
+				$number /= $baseu ** 2;
+				$suffix = __(' M');
+			} elseif ($number >= $baseu) {
+				$number /= $baseu;
+				$suffix = __(' K');
+			}
+		}
+	}
 
 	if (function_exists('numfmt_create')) {
-		$fmt_key = $cacti_locale . '_' . $country;
-		$fmt     = numfmt_create($fmt_key, NumberFormatter::DECIMAL);
+		$locale_key = (string) ($cacti_locale ?? '');
 
-		if ($decimals == null) {
-			$decimals = 0;
+		if ($locale_key !== '' && !str_contains($locale_key, '-') && !str_contains($locale_key, '_') && $country !== '') {
+			$fmt_key = $locale_key . '_' . $country;
+		} else {
+			$fmt_key = str_replace('-', '_', $locale_key);
 		}
 
-		if ($fmt !== null) {
-			numfmt_set_attribute($fmt, NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
+		$fmt = numfmt_create($fmt_key, NumberFormatter::DECIMAL);
 
-			return numfmt_format($fmt, $number);
+		if ($fmt !== null) {
+			numfmt_set_attribute($fmt, NumberFormatter::MAX_FRACTION_DIGITS, $fmt_decimals);
+
+			return numfmt_format($fmt, (float) $number) . $suffix;
 		}
 
 		cacti_log('DEBUG: Number format \'' . $fmt_key . '\' was unavailable, using older methods', false, 'i18n', POLLER_VERBOSITY_HIGH);
 	}
 
-	$origlocales = explode(';', (string) setlocale(LC_ALL, null));
+	$origlocales = explode(';', (string) setlocale(LC_ALL, '0'));
 	setlocale(LC_ALL, $cacti_locale);
 	$locale = localeconv();
 
-	if ($decimals == -1 || $decimals == null) {
-		$number = number_format($number, 0, $locale['decimal_point'], $locale['thousands_sep']);
-	} elseif ($number >= $baseu ** 4) {
-		$number = number_format($number / $baseu ** 4, $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' T');
-	} elseif ($number >= $baseu ** 3) {
-		$number = number_format($number / $baseu ** 3, $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' G');
-	} elseif ($number >= $baseu ** 2) {
-		$number = number_format($number / $baseu ** 2, $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' M');
-	} elseif ($number >= $baseu) {
-		$number = number_format($number / $baseu, $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' K');
-	} else {
-		$number = number_format($number, $decimals, $locale['decimal_point'], $locale['thousands_sep']);
-	}
+	$number = number_format((float) $number, $fmt_decimals, $locale['decimal_point'], $locale['thousands_sep']) . $suffix;
 
 	foreach ($origlocales as $locale_setting) {
 		if (str_contains($locale_setting, '=')) {
 			[$category, $locale] = explode('=', $locale_setting);
 		} else {
-			$category = LC_ALL;
+			$category = 'LC_ALL';
 			$locale   = $locale_setting;
 		}
 
@@ -1267,7 +1295,7 @@ function i18n_debug(string $text, int $mode = FILE_APPEND, string $eol = PHP_EOL
 function i18n_text_debug(string $text, int $mode = FILE_APPEND, string $eol = PHP_EOL) : void {
 	global $config;
 
-	if (!empty($config['i18n_text_log']) && is_writable($config['i18n_log'])) {
+	if (!empty($config['i18n_text_log']) && is_writable($config['i18n_text_log'])) {
 		file_put_contents($config['i18n_text_log'], $text . $eol, $mode);
 	}
 }
