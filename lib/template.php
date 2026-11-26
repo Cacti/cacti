@@ -2601,8 +2601,8 @@ function template_suggested_field_is_allowed($table, $field_name, $field_value) 
 				return false;
 			}
 
-			if (!function_exists('graph_template_input_column_is_allowed') && isset($config['library_path'])) {
-				include_once($config['library_path'] . '/graph_template_input.php');
+			if (!function_exists('graph_template_input_column_is_allowed')) {
+				include_once(__DIR__ . '/graph_template_input.php');
 			}
 
 			return function_exists('graph_template_input_value_is_allowed')

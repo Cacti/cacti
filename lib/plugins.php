@@ -162,7 +162,9 @@ function api_plugin_hook($name) {
 						continue;
 					}
 
-					include_once($full_path);
+					if (is_file($full_path)) {
+						include_once($full_path);
+					}
 				}
 
 				if (function_exists($plugin_func)) {
@@ -240,7 +242,9 @@ function api_plugin_hook_function($name, $parm = NULL) {
 						continue;
 					}
 
-					include_once($plugin_include);
+					if (is_file($plugin_include)) {
+						include_once($plugin_include);
+					}
 				}
 
 				$function = $hdata['function'];

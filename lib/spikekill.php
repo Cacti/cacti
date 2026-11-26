@@ -229,9 +229,16 @@ class spikekill {
 	 * @return bool True on success, false otherwise.
 	 */
 	private function initialize_spikekill() {
+		global $config;
+
 		/* additional error check */
 		if ($this->rrdfile == '') {
 			$this->set_error(__("FATAL: You must specify an RRDfile!"));
+		} elseif ($this->rrdfile[0] === '-' || strpos($this->rrdfile, "\0") !== false || preg_match('/[\r\n]/', $this->rrdfile)) {
+			$this->set_error(__esc("FATAL: File '%s' is not a valid RRDfile path.", $this->rrdfile));
+		} elseif (!empty($config['rra_path']) && function_exists('data_source_path_within_rra') &&
+			(!data_source_path_within_rra($this->rrdfile) || strtolower(substr($this->rrdfile, -4)) !== '.rrd')) {
+			$this->set_error(__esc("FATAL: File '%s' is outside the RRA directory.", $this->rrdfile));
 		}
 
 		if (!file_exists($this->rrdfile)) {
@@ -502,6 +509,13 @@ class spikekill {
 			}
 
 			cacti_log($mes, false, 'SPIKEKILL');
+		}
+
+		if ($this->rrdfile === '' || $this->rrdfile[0] === '-' || $xmlfile === '' || $xmlfile[0] === '-' ||
+			(isset($config['cacti_server_os']) && $config['cacti_server_os'] == 'win32' &&
+			(preg_match('/["&|^<>()%]/', $this->rrdfile) || preg_match('/["&|^<>()%]/', $xmlfile)))) {
+			$this->set_error(__('FATAL: Invalid RRDfile or temporary XML path.'));
+			return false;
 		}
 
 		$dump_output = [];
@@ -839,6 +853,15 @@ class spikekill {
 	 * @return bool True when RRDtool restored the file successfully.
 	 */
 	private function createRRDFileFromXML($xmlfile, $rrdfile) {
+		global $config;
+
+		if ($xmlfile === '' || $xmlfile[0] === '-' || $rrdfile === '' || $rrdfile[0] === '-' ||
+			(isset($config['cacti_server_os']) && $config['cacti_server_os'] == 'win32' &&
+			(preg_match('/["&|^<>()%]/', $xmlfile) || preg_match('/["&|^<>()%]/', $rrdfile)))) {
+			$this->set_error(__('FATAL: Invalid XML or RRDfile path.'));
+			return false;
+		}
+
 		/* execute the dump command */
 		$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
 			__esc("NOTE: Re-Importing '%s' to '%s'", $xmlfile, $rrdfile) . ($this->html ? "</p>\n":"\n");

@@ -35,6 +35,7 @@ define_exit('EXIT_MD5WRI',  4, "ERROR: Failed to write to MD5 file '%s'\n");
 define_exit('EXIT_MD5MIS',  5, "ERROR: MD5 file '%s' is missing, cannot verify\n");
 define_exit('EXIT_MD5CON',  6, "ERROR: Failed to read from MD5 file '%s'\n");
 define_exit('EXIT_MD5LIN',  7, "ERROR: Failed to parse line %d:\n      %s\n");
+define_exit('EXIT_MD5ERR',  8, "ERROR: File integrity verification failed\n");
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -204,6 +205,7 @@ if ($create) {
 	}
 
 	$all_keys = array_unique(array_merge(array_keys($file_array),array_keys($verify_array)));
+	$verify_failed = false;
 
 	foreach ($all_keys as $filename) {
 		$hash_read = sprintf("%32s","Missing");
@@ -216,7 +218,8 @@ if ($create) {
 			$hash_file = $verify_array[$filename];
 		}
 
-		if ($hash_read != $hash_file) {
+		if (!hash_equals((string) $hash_file, (string) $hash_read)) {
+			$verify_failed = true;
 			if ($quiet) {
 				fail(EXIT_MD5ERR);
 			}
@@ -227,6 +230,10 @@ if ($create) {
 				print "  File: [$hash_file]\n";
 			}
 		}
+	}
+
+	if ($verify_failed) {
+		exit(EXIT_MD5ERR);
 	}
 }
 
@@ -249,7 +256,7 @@ function dirToArray($dir,$base,$ignore) {
 		$fulldir .= DIRECTORY_SEPARATOR.$dir;
 	}
 	$fulldir = realpath($fulldir);
-	if (strpos($fulldir,$base) !== false) {
+	if ($fulldir !== false && cacti_path_is_within($fulldir, $base)) {
 		if (is_dir($fulldir)) {
 			$cdir = scandir($fulldir);
 		} else {
@@ -263,6 +270,9 @@ function dirToArray($dir,$base,$ignore) {
 		$dir_list = array();
 		foreach ($cdir as $key => $value) {
 			$fullpath = $fulldir.DIRECTORY_SEPARATOR.$value;
+			if (is_link($fullpath)) {
+				continue;
+			}
 			$partpath = substr($fullpath,strlen($base));
 
 			if (preg_match($ignore,$partpath)==0) {
