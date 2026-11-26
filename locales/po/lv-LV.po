@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-25 22:34+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Latvian <https://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-26 05:54+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Latvian <https://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -29,7 +29,7 @@ msgstr "Izstrādātāji, kas strādā pie Cacti izveides, tās arhitektūras, do
 
 #: about.php
 msgid "Honorable Mentions"
-msgstr "Īpašas atzinības"
+msgstr "Godājami pieminēt"
 
 #: about.php
 #, fuzzy
@@ -43,7 +43,7 @@ msgstr "Emeritētie dalībnieki"
 
 #: about.php
 msgid "Members of the original Cacti Group that have since moved on in their careers.  We continue to wish them the best."
-msgstr "Sākotnējās Cacti Group dalībnieki, kuri kopš tā laika ir devušies tālāk savā karjerā.  Mēs arī turpmāk novēlam viņiem visu to labāko."
+msgstr "Sākotnējie Cacti grupas dalībnieki, kuri devušies citos savas profesionālas karjeras izaugsmes virzienos.  Mēs novēlam viņiem visu to labāko savas karjeras attīstībā."
 
 #: about.php
 msgid "Thanks"
@@ -554,10 +554,8 @@ msgid "No Aggregate Graphs Found"
 msgstr "Nav atrasts neviens apkopots grafiks"
 
 #: aggregate_templates.php
-#, fuzzy
-#| msgid "No Aggregate Templates Found"
 msgid "Aggregate Template not found."
-msgstr "Nav atrasta neviena apkopotā veidne"
+msgstr "Apkopotā veidne nav atrasta."
 
 #: aggregate_templates.php
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -1281,10 +1279,8 @@ msgid "Monthly on Day"
 msgstr "Katru mēnesi dienā"
 
 #: automation_networks.php
-#, fuzzy
-#| msgid "File not found"
 msgid "Network not found."
-msgstr "Fails nav atrasts"
+msgstr "Tīkls nav atrasts."
 
 #: automation_networks.php
 #, php-format
@@ -2564,10 +2560,8 @@ msgid "Delete Color Item"
 msgstr "Dzēst krāsu elementu"
 
 #: color_templates.php
-#, fuzzy
-#| msgid "No Color Templates Found"
 msgid "Color Template not found."
-msgstr "Netika atrasta neviena krāsu veidne"
+msgstr "Krāsu veidne nav atrasta."
 
 #: color_templates.php
 #, php-format
@@ -3367,8 +3361,8 @@ msgstr[2] "Dzēst datu avota profilus"
 #: data_source_profiles.php
 msgid "Click 'Continue' to duplicate the following Data Source Profile. You can optionally change the title format for the new Data Source Profile"
 msgid_plural "Click 'Continue' to duplicate following Data Source Profiles. You can optionally change the title format for the new Data Source Profiles."
-msgstr[0] "Noklikšķiniet uz 'Turpināt', lai dublētu tālāk norādītos datu avota profilus. Jaunajiem datu avota profiliem varat pēc izvēles mainīt nosaukuma formātu"
-msgstr[1] "Noklikšķiniet uz 'Turpināt', lai dublētu tālāk norādīto datu avota profilu. Jaunajam datu avota profilam varat pēc izvēles mainīt nosaukuma formātu."
+msgstr[0] "Noklikšķiniet uz 'Turpināt', lai dublētu tālāk norādītos datu avota profilus. Jaunajiem datu avota profiliem varat pēc izvēles mainīt nosaukuma formātu."
+msgstr[1] "Noklikšķiniet uz 'Turpināt', lai dublētu tālāk norādīto datu avota profilu. Jaunajam datu avota profilam varat pēc izvēles mainīt nosaukuma formātu"
 msgstr[2] "Noklikšķiniet uz 'Turpināt', lai dublētu tālāk norādītos datu avota profilus. Jaunajiem datu avota profiliem varat pēc izvēles mainīt nosaukuma formātu."
 
 #: data_source_profiles.php
@@ -3619,8 +3613,8 @@ msgstr[2] "Dzēst datu avotus"
 #: data_sources.php
 msgid "Choose a new Device for this Data Source and click 'Continue'."
 msgid_plural "Choose a new Device for these Data Sources and click 'Continue'"
-msgstr[0] "Izvēlieties jaunu ierīci šiem datu avotiem un noklikšķiniet uz 'Turpināt'."
-msgstr[1] "Izvēlieties jaunu ierīci šim datu avotam un noklikšķiniet uz 'Turpināt'"
+msgstr[0] "Izvēlieties jaunu ierīci šiem datu avotiem un noklikšķiniet uz 'Turpināt'"
+msgstr[1] "Izvēlieties jaunu ierīci šim datu avotam un noklikšķiniet uz 'Turpināt'."
 msgstr[2] "Izvēlieties jaunu ierīci šiem datu avotiem un noklikšķiniet uz 'Turpināt'"
 
 #: data_sources.php
@@ -4052,10 +4046,8 @@ msgid "Delete GPRINT Preset(s)"
 msgstr "Dzēst GPRINT sākotnējo(-s)"
 
 #: gprint_presets.php
-#, fuzzy
-#| msgid "GPRINT Preset"
 msgid "GPRINT Preset not found."
-msgstr "GPRINT iepriekš iestatīts"
+msgstr "GPRINT sagatave nav atrasta."
 
 #: gprint_presets.php
 #, php-format
@@ -4519,7 +4511,7 @@ msgstr "Pievienojiet pārskatam atlasītos grafikus"
 
 #: graph_view.php lib/html.php
 msgid "Ok"
-msgstr "Labi"
+msgstr "Kārtībā"
 
 #: graph_xport.php include/global_form.php lib/html.php links.php
 msgid "Title"
@@ -5303,7 +5295,7 @@ msgstr "Nav noteikts"
 
 #: host.php include/global_settings.php lib/html.php lib/html_reports.php
 msgid "Site"
-msgstr "Atrašanās vieta"
+msgstr "Objekts"
 
 #: host.php
 msgid "Export Devices"
@@ -8426,7 +8418,7 @@ msgstr "Ja tika izvēlēta LĪNIJA, šeit norādiet līnijas platumu. Ir jāiek�
 
 #: include/global_form.php
 msgid "Dashes (dashes[=on_s[,off_s[,on_s,off_s]...]])"
-msgstr "Svītras (domuzīmes[=on_s[,off_s[,on_s,off_s]...]])"
+msgstr "Svītras (dashes[=on_s[,off_s[,on_s,off_s]...]])"
 
 #: include/global_form.php
 msgid "The dashes modifier enables dashed line style."
@@ -8434,7 +8426,7 @@ msgstr "Domuzīmju modifikators iespējo pārtraukto līniju stilu."
 
 #: include/global_form.php
 msgid "Dash Offset (dash-offset=offset)"
-msgstr "Domuzīmes nobīde (dash-offset=nobīde)"
+msgstr "Domuzīmes nobīde (dash-offset=offset)"
 
 #: include/global_form.php
 msgid "The dash-offset parameter specifies an offset into the pattern at which the stroke begins."
@@ -13681,10 +13673,8 @@ msgid "Invalid Graph Template Input"
 msgstr "Nederīga grafika veidnes ievade"
 
 #: lib/html_form_template.php
-#, fuzzy
-#| msgid "Graph Template not found."
 msgid "The graph template cannot be rendered"
-msgstr "Grafika veidne nav atrasta."
+msgstr "Grafika veidni nevar attēlot"
 
 #: lib/html_form_template.php
 msgid "A Graph Item Input contains an invalid Field Type."
@@ -15918,7 +15908,7 @@ msgstr "Min"
 
 #: lib/rrd.php
 msgid "Max"
-msgstr "Maks"
+msgstr "Maks."
 
 #: lib/rrd.php
 msgid "Last DS"
@@ -16208,10 +16198,8 @@ msgid "FATAL: Unable to write XML file '%s'"
 msgstr ""
 
 #: lib/spikekill.php
-#, fuzzy
-#| msgid "No Sites Found"
 msgid "NOTE: No Spikes Found."
-msgstr "Nav atrasta neviena vietne"
+msgstr "PIEZĪME: pīķi nav atrasti."
 
 #: lib/spikekill.php
 #, php-format
@@ -16479,10 +16467,8 @@ msgid "Number of I/O threads used for read operations in InnoDB."
 msgstr ""
 
 #: lib/utility.php
-#, fuzzy
-#| msgid "default"
 msgid "1-64; default 4."
-msgstr "Noklusējuma"
+msgstr "1-64; noklusējums 4."
 
 #: lib/utility.php
 msgid "Number of I/O threads used for write operations in InnoDB."
@@ -16992,7 +16978,7 @@ msgstr "OID"
 
 #: managers.php
 msgid "Kind"
-msgstr "Laipni"
+msgstr "Veids"
 
 #: managers.php utilities.php
 msgid "Max-Access"
@@ -17256,10 +17242,8 @@ msgid "Are you sure you want to Force Uninstall the plugin"
 msgstr "Vai tiešām vēlaties atinstalēt?"
 
 #: plugins.php
-#, fuzzy
-#| msgid "Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click 'Uninstall' below.  Otherwise click 'Cancel'"
 msgid "This permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone.  If you really want to Force Uninstall the Plugin, click 'Force Uninstall' below.  Otherwise click 'Cancel'."
-msgstr "Atinstalējot šo spraudni, tiks noņemti visi spraudņa dati un iestatījumi. Ja tiešām vēlaties atinstalēt spraudni, tālāk noklikšķiniet uz Atinstalēt. Pretējā gadījumā noklikšķiniet uz \"Atcelt\""
+msgstr "Tas neatgriezeniski noņem visus tā ierakstus no Cacti spraudņu tabulām (konfigurāciju, āķus, atļaujas un visas tā izveidotās tabulas vai kolonnas). To nevar atsaukt. Ja tiešām vēlaties piespiedu kārtā atinstalēt spraudni, tālāk noklikšķiniet uz 'Piespiedu atinstalēšana'. Pretējā gadījumā noklikšķiniet uz 'Atcelt'."
 
 #: plugins.php
 #, fuzzy
@@ -17529,7 +17513,7 @@ msgstr "Datu apkopotāja saimniekdatora nosaukums. Tam, iespējams, ir jābūt p
 
 #: pollers.php sites.php
 msgid "TimeZone"
-msgstr "Laika zona"
+msgstr "Laika josla"
 
 #: pollers.php
 msgid "The TimeZone for the Data Collector."
@@ -17852,7 +17836,7 @@ msgstr "RRD pārbaude ir atspējota, lūdzu, iespējojiet sadaļā Konfigurācij
 
 #: rrdcheck.php utilities.php
 msgid "RRDfile Checker"
-msgstr "RRDfile tīrītājs"
+msgstr "RRDfile pārbaudītājs"
 
 #: rrdcheck.php
 msgid "RRDcheck Problems"
@@ -17864,7 +17848,7 @@ msgstr "Resursdatora apraksts"
 
 #: rrdcheck.php
 msgid "Local Data ID"
-msgstr "Lokālo datu ID"
+msgstr "Lokālais datu ID"
 
 #: rrdcheck.php
 msgid "Message"
@@ -18213,10 +18197,8 @@ msgstr[1] "Dublēt vietni"
 msgstr[2] "Dublēt vietnes"
 
 #: sites.php
-#, fuzzy
-#| msgid "File not found"
 msgid "Site not found."
-msgstr "Fails nav atrasts"
+msgstr "Vietne nav atrasta."
 
 #: sites.php tree.php
 msgid "Site Name"
@@ -19580,10 +19562,8 @@ msgid "PHP SNMP"
 msgstr "PHP SNMP"
 
 #: utilities.php
-#, fuzzy
-#| msgid "Installed"
 msgid "Installed."
-msgstr "Uzstādīts"
+msgstr "Instalēts."
 
 #: utilities.php
 msgid "You've set memory limit to 'unlimited'."
