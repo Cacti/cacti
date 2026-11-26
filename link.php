@@ -24,10 +24,11 @@
 
 require_once('./include/global.php');
 
-$page = db_fetch_row_prepared('SELECT
+$page = db_fetch_row_prepared("SELECT
 	id, title, style, contentfile, enabled, refresh
 	FROM external_links AS el
-	WHERE id = ?',
+	WHERE id = ?
+	AND enabled = 'on'",
 	[gfrv('id')]);
 
 // Prevent redirect loops
@@ -47,7 +48,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 	$referer = 'index.php';
 }
 
-if (!cacti_sizeof($page)) {
+if (!cacti_sizeof($page) || ($page['enabled'] ?? '') !== 'on') {
 	raise_message('page_not_defined');
 	header('Location: ' . $referer);
 

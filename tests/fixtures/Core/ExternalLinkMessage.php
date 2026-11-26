@@ -33,11 +33,11 @@ function gfrv(string $name) : int {
 }
 
 function db_fetch_row_prepared(string $query, array $params) : array {
-	if ($params !== [8]) {
-		throw new RuntimeException('Wrong link ID');
+	if ($params !== [8] || !str_contains($query, "enabled = 'on'")) {
+		throw new RuntimeException('Wrong link query or ID');
 	}
 
-	return ['id' => 8, 'title' => 'North & South', 'style' => 'TAB', 'refresh' => 0, 'contentfile' => $GLOBALS['url']];
+	return ['id' => 8, 'title' => 'North & South', 'style' => 'TAB', 'enabled' => 'on', 'refresh' => 0, 'contentfile' => $GLOBALS['url']];
 }
 
 function is_realm_allowed(int $realm) : bool {
