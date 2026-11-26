@@ -4,7 +4,7 @@
 # Rostyslav Haitkulov <info@ubilling.net.ua>, 2022.
 #
 msgid ""
-msgstr "Project-Id-Version: Cacti 1.3.0.-1\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-25 22:34+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Ukrainian <https://translate.cacti.net/projects/cacti/core-v1-2-x/uk/>\nLanguage: uk-UA\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: Cacti 1.3.0.-1\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-26 05:54+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Ukrainian <https://translate.cacti.net/projects/cacti/core-v1-2-x/uk/>\nLanguage: uk-UA\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -552,10 +552,8 @@ msgid "No Aggregate Graphs Found"
 msgstr "Не знайдено Агрегованих Графіків"
 
 #: aggregate_templates.php
-#, fuzzy
-#| msgid "No Aggregate Templates Found"
 msgid "Aggregate Template not found."
-msgstr "Не знайдено Шаблонів Агрегування"
+msgstr "Шаблон агрегування не знайдено."
 
 #: aggregate_templates.php
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -750,10 +748,8 @@ msgid "You do not have access to any area of Cacti.  Contact your administrator.
 msgstr "Ви не маєте доступу до жодної частини Cacti. Зверніться до вашого адміністратора."
 
 #: auth_login.php
-#, fuzzy
-#| msgid "Access Denied!  User account disabled."
 msgid "Access Denied! User account locked."
-msgstr "Обліковий запис користувача Вимкнено"
+msgstr "Доступ заборонено! Обліковий запис користувача заблоковано."
 
 #: auth_login.php lib/html_tree.php
 msgid "Login to Cacti"
@@ -1280,10 +1276,8 @@ msgid "Monthly on Day"
 msgstr "Щомісяця вдень"
 
 #: automation_networks.php
-#, fuzzy
-#| msgid "No Networks Found"
 msgid "Network not found."
-msgstr "Мереж не знайдено"
+msgstr "Мережу не знайдено."
 
 #: automation_networks.php
 #, php-format
@@ -2561,10 +2555,8 @@ msgid "Delete Color Item"
 msgstr "Видалити Елемент Кольору"
 
 #: color_templates.php
-#, fuzzy
-#| msgid "No Color Templates Found"
 msgid "Color Template not found."
-msgstr "Не знайдено Шаблонів Кольору"
+msgstr "Шаблон кольору не знайдено."
 
 #: color_templates.php
 #, php-format
@@ -3794,10 +3786,9 @@ msgid "Data Source Debug"
 msgstr "Відлагодження Джерела Даних"
 
 #: data_sources.php
-#, fuzzy, php-format
-#| msgid "RRDtool Tune Info"
+#, php-format
 msgid "RRDtool Tune Info [ %s ]"
-msgstr "Інформація налаштувань RRDtool"
+msgstr "Інформація налаштувань RRDtool [ %s ]"
 
 #: data_sources.php
 #, fuzzy
@@ -4050,10 +4041,8 @@ msgid "Delete GPRINT Preset(s)"
 msgstr "Видалити Пресети GPRINT"
 
 #: gprint_presets.php
-#, fuzzy
-#| msgid "GPRINT Presets"
 msgid "GPRINT Preset not found."
-msgstr "Пресети GPRINT"
+msgstr "Пресет GPRINT не знайдено."
 
 #: gprint_presets.php
 #, php-format
@@ -4113,10 +4102,8 @@ msgid "Viewing Graph"
 msgstr "Перегляд Графіка"
 
 #: graph.php
-#, fuzzy
-#| msgid "Aggregate Graphs Accessed does not Exist"
 msgid "The Graph you requested does not exist."
-msgstr "Доступні Агреговані Графіки не існують"
+msgstr "Запитаний вами графік не існує."
 
 #: graph.php
 msgid "Day"
@@ -4306,10 +4293,8 @@ msgid "No Inputs"
 msgstr "Немає Введень"
 
 #: graph_templates.php
-#, fuzzy
-#| msgid "No Graph Templates Found"
 msgid "Graph Template not found."
-msgstr "Не знайдено Шаблонів Графіків"
+msgstr "Шаблон графіка не знайдено."
 
 #: graph_templates.php
 #, php-format
@@ -4981,7 +4966,7 @@ msgstr "Встановити за замовчуванням"
 #: help.php
 #, php-format
 msgid "WARNING: Cacti Page:%s for User:%s Generated a Fatal Error %d!"
-msgstr ""
+msgstr "ПОПЕРЕДЖЕННЯ: Сторінка Cacti:%1$s для користувача:%2$s спричинила фатальну помилку %3$d!"
 
 #: help.php
 #, php-format
@@ -5569,10 +5554,9 @@ msgid "The browser did not return the Cacti session cookie. Ensure cookies are e
 msgstr ""
 
 #: include/csrf.php
-#, fuzzy, php-format
-#| msgid "Login to Cacti"
+#, php-format
 msgid "Return to Cacti: %s"
-msgstr "Вхід в Cacti"
+msgstr "Повернутися до Cacti: %s"
 
 #: include/csrf.php
 #, fuzzy
@@ -12562,7 +12546,7 @@ msgstr ""
 #: lib/data_query.php
 #, php-format
 msgid "Update Re-Index Cache complete. There were %s index changes, and %s orphaned indexes."
-msgstr ""
+msgstr "Оновлення кешу повторного індексування завершено. Змін індексів: %1$s, осиротілих індексів: %2$s."
 
 #: lib/data_query.php
 msgid "Update Poller Cache for Query complete"
@@ -15824,7 +15808,7 @@ msgstr ""
 #: lib/rrd.php
 #, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
-msgstr ""
+msgstr "Необхідний розмір кроку файлу RRD — '%1$s', але зафіксовано крок '%2$s'"
 
 #: lib/rrd.php
 #, php-format
@@ -15938,10 +15922,8 @@ msgid "Optional Tuning Recommendations"
 msgstr "Поради що до Ремонту Джерела Даних"
 
 #: lib/rrd.php
-#, fuzzy
-#| msgid "ERROR: Invalid Device ID."
 msgid "ERROR: Invalid RRDfile path"
-msgstr "ERROR: Невірний ID Пристрою."
+msgstr "ПОМИЛКА: Недійсний шлях до RRD-файлу"
 
 #: lib/rrd.php
 msgid "Error while parsing the XML of rrdtool dump"
@@ -16272,7 +16254,7 @@ msgstr ""
 #: lib/template.php
 #, php-format
 msgid "Graph Not created for %s due to bad data"
-msgstr ""
+msgstr "Графік не створено для %s через некоректні дані"
 
 #: lib/template.php
 #, php-format
@@ -17435,7 +17417,7 @@ msgstr ""
 #: poller_automation.php
 #, php-format
 msgid "WARNING: Main Cacti database %s offline or in recovery"
-msgstr ""
+msgstr "ПОПЕРЕДЖЕННЯ: Основна база даних Cacti %s вимкнена або перебуває в режимі відновлення"
 
 #: poller_automation.php
 msgid "Cacti Primary Admin"
@@ -19748,7 +19730,7 @@ msgstr ""
 
 #: utilities.php
 msgid "The Poller Cache will be re-generated if you select this option. Use this option only in the event of a database crash if you are experiencing issues after the crash and have already run the database repair tools.  Alternatively, if you are having problems with a specific Device, simply re-save that Device to rebuild its Poller Cache.  There is also a command line interface equivalent to this command that is recommended for large systems."
-msgstr ""
+msgstr "Кеш Poller буде створено повторно, якщо вибрати цей параметр. Використовуйте цей параметр лише у разі збою бази даних, якщо у вас виникли проблеми після збою та ви вже запустили інструменти відновлення бази даних. Крім того, якщо у вас виникли проблеми з певним пристроєм, просто повторно збережіть цей пристрій, щоб відновити його кеш Poller. Існує також інтерфейс командного рядка, еквівалентний цій команді, рекомендований для великих систем."
 
 #: utilities.php
 msgid "NOTE: On large systems, this command may take several minutes to hours to complete and therefore should not be run from the Cacti UI.  You can simply run 'php -q cli/rebuild_poller_cache.php --help' at the command line for more information."
