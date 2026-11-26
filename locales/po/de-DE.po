@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Cacti German Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-26 09:54+0000\n"
+"PO-Revision-Date: 2026-11-26 19:34+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: German <https://translate.cacti.net/projects/cacti/core/de/>\n"
 "Language: de-DE\n"
@@ -5478,7 +5478,7 @@ msgstr "Schnelle Synchronisierung von Diagrammen"
 
 #: graph_templates.php:339 graph_templates.php:365 graphs.php:568
 msgid "Cur:"
-msgstr "Aktuell:"
+msgstr "Akt.:"
 
 #: graph_templates.php:346 graph_templates.php:372 graphs.php:575
 msgid "Avg:"
@@ -6366,8 +6366,8 @@ msgstr "Als Standard"
 #, php-format
 msgid "WARNING: Cacti Page:%s for User:%s Generated a Fatal Error %d!"
 msgstr ""
-"WARNUNG: Cacti-Seite:%1$s für Benutzer:%2$s hat einen schwerwiegenden Fehler "
-"%3$d verursacht!"
+"WARNUNG: Cacti-Seite:%s für Benutzer:%s hat einen schwerwiegenden Fehler %d "
+"verursacht!"
 
 #: help.php:74
 #, php-format
@@ -6803,7 +6803,7 @@ msgstr "Die Zeit, die sich dieses Gerät in seinem aktuellen Zustand befunden ha
 
 #: host.php:1817
 msgid "The current amount of time that the host has been up."
-msgstr "Die aktuelle Zeit, die der Host aktiv war."
+msgstr "Die aktuelle Zeitspanne, in welcher der Host hochgefahren ist."
 
 #: host.php:1820
 msgid "Poll Time"
@@ -8062,7 +8062,7 @@ msgstr "Pakete erstellen"
 
 #: include/global_arrays.php:1121 package_keys.php:183 package_repos.php:462
 msgid "Repositories"
-msgstr "Repositories"
+msgstr "Repositorys"
 
 #: include/global_arrays.php:1122
 msgid "Public Keys"
@@ -8600,7 +8600,7 @@ msgstr "1 Gigabyte"
 #: lib/boost.php:62
 #, php-format
 msgid "%s GBytes"
-msgstr "%s GByte"
+msgstr "%s Gigabyte"
 
 #: include/global_arrays.php:1682 include/global_arrays.php:1683
 #: include/global_arrays.php:1745 include/global_arrays.php:1746
@@ -10404,7 +10404,7 @@ msgstr "Der physische Standort des Geräts. Dieser Freitext kann ein Raum, ein R
 
 #: include/global_form.php:1274
 msgid "Poller Association"
-msgstr "Poller-Vereinigung"
+msgstr "Poller-Zuordnung"
 
 #: include/global_form.php:1282
 msgid "Device Site Association"
@@ -11044,7 +11044,7 @@ msgstr "Ausreißer"
 
 #: include/global_settings.php:49
 msgid "Mail/Reporting/DNS/Proxy"
-msgstr "Mail/Reporting/DNS/Proxy"
+msgstr "E-Mail/Berichtswesen/DNS/Proxy"
 
 #: include/global_settings.php:54
 msgid "Time Spanning/Shifting"
@@ -11876,7 +11876,7 @@ msgstr "Standard-SNMP v3-Autorisierungsbenutzer für alle neuen Geräte."
 
 #: include/global_settings.php:892
 msgid "Auth Passphrase (v3)"
-msgstr "Authentifizierungspassphrase (v3)"
+msgstr "Authentifizierungs-Passphrase (v3)"
 
 #: include/global_settings.php:893
 msgid "Default SNMP v3 Authorization Passphrase for all new Devices."
@@ -12393,10 +12393,10 @@ msgstr "Cron/Daemon-Intervall"
 #: include/global_settings.php:1418
 msgid "The frequency that the Cacti data collector will be started.  You can use either crontab, a scheduled task (for windows), or the cactid systemd service to control launching the Cacti data collector.  For instructions on using the cactid daemon, review the README.md file in the service directory."
 msgstr ""
-"Die Häufigkeit, mit welcher der Cacti-Datensammler gestartet wird. Sie "
-"können entweder crontab, eine geplante Aufgabe (für Windows) oder den Cactid-"
-"Systemd-Dienst verwenden, um den Start des Cacti-Datensammlers zu steuern. "
-"Anweisungen zur Verwendung des Cactid-Daemons finden Sie in der Datei "
+"Die Häufigkeit, mit welcher der Cacti-Datenkollektor gestartet wird. Sie "
+"können entweder crontab, eine geplante Aufgabe (für Windows) oder den cactid "
+"systemd-Dienst verwenden, um den Start des Cacti-Datenkollektors zu steuern. "
+"Anweisungen zur Verwendung des cactid-Daemons finden Sie in der Datei "
 "README.md im Serviceverzeichnis."
 
 #: include/global_settings.php:1424
@@ -12414,9 +12414,9 @@ msgstr "Breite der Debug-Ausgabe"
 #: include/global_settings.php:1431
 msgid "If you choose this option, Cacti will check for output that exceeds Cacti's ability to store it and issue a warning when it finds it."
 msgstr ""
-"Wenn Sie diese Option wählen, sucht Cacti nach Ausgaben, welche die "
-"Speicherkapazität von Cacti überschreiten, und gibt eine Warnung aus, wenn "
-"es welche findet."
+"Wenn Sie diese Option wählen, prüft Cacti, ob die Ausgabe die Fähigkeit von "
+"Cacti, diese zu speichern, übersteigt, und gibt eine Warnung aus, wenn es "
+"diese findet."
 
 #: include/global_settings.php:1436
 msgid "Disable increasing OID Check"
@@ -12424,7 +12424,9 @@ msgstr "Deaktivieren Sie die Überprüfung der zunehmenden OID"
 
 #: include/global_settings.php:1437
 msgid "Controls disabling check for increasing OID while walking OID tree."
-msgstr "Steuert die Deaktivierung der Prüfung auf zunehmende OID beim Durchlaufen des OID-Baums."
+msgstr ""
+"Steuerelemente, welche die Überprüfung auf Erhöhung der OID beim Durchlaufen "
+"der OID-Struktur deaktivieren."
 
 #: include/global_settings.php:1442
 msgid "Remote Agent Timeout"
@@ -12879,7 +12881,7 @@ msgstr "Wenn bei der Standardauthentifizierung Probleme bei der Zuordnung des Be
 
 #: include/global_settings.php:1905
 msgid "Basic Auth Mapfile"
-msgstr "Grundlegende Authentifizierungs-Mapdatei"
+msgstr "Basic-Auth-Zuordnungsdatei"
 
 #: include/global_settings.php:1906
 msgid "When using basic authentication, if the basic account needs to be translated to a different login account, you can specify a CSV file here to map the basic account to the desired login account."
@@ -14493,7 +14495,7 @@ msgstr "Baumregel erstellen (Diagramm)"
 #: lib/api_automation.php:2435
 #, php-format
 msgid "Rule Item [edit rule item for %s: %s]"
-msgstr "Regelelement [Eintrag für %s bearbeiten: %s]"
+msgstr "Regelposition [Eintrag bearbeiten für %s: %s]"
 
 #: lib/api_automation.php:2437
 #, php-format
@@ -15746,8 +15748,8 @@ msgstr "Cacti hat das Plugin %s aufgrund des folgenden Fehlers deaktiviert: %s! 
 #, php-format
 msgid "WARNING: PollerID:%s has an invalid hostname:%s.  Is it not reachable via DNS!"
 msgstr ""
-"WARNUNG: PollerID:%1$s hat einen ungültigen Hostnamen:%2$s. Er ist nicht "
-"über DNS erreichbar!"
+"WARNUNG: PollerID:%s hat einen ungültigen Hostnamen:%s. Er ist nicht über "
+"DNS erreichbar!"
 
 #: lib/functions.php:6781
 #, php-format
@@ -15864,7 +15866,7 @@ msgstr "Keine %s gefunden"
 
 #: lib/html.php:1400
 msgid "Seq#"
-msgstr "Seq#"
+msgstr "Seq.#"
 
 #: lib/html.php:1408
 msgid "Consolidation"
@@ -18627,7 +18629,7 @@ msgstr "TCP-Ping erfolgreich (%s ms)"
 
 #: lib/ping.php:604
 msgid "TCP ping timed out"
-msgstr "TCP-Ping-Zeitüberschreitung"
+msgstr "Zeitüberschreitung beim TCP-Ping"
 
 #: lib/ping.php:631
 msgid "Ping not performed due to setting."
@@ -18637,8 +18639,8 @@ msgstr "Ping aufgrund der Einstellung nicht ausgeführt."
 #, php-format
 msgid "'%s' versions '%s' above or in range are required to install '%s'. "
 msgstr ""
-"Für die Installation von '%3$s' sind '%1$s'-Versionen '%2$s' oder höher bzw. "
-"innerhalb des Bereichs erforderlich. "
+"'%s'-Versionen '%s' oder höher bzw. innerhalb des Bereichs sind für die "
+"Installation von '%s' erforderlich. "
 
 #: lib/plugins.php:685
 #, php-format
@@ -18694,15 +18696,14 @@ msgstr "Wiederherstellung fehlgeschlagen! Das Laden des verfügbaren Plug-Ins �
 msgid "Restore failed!  The archived Plugin '%s' Restore failed. Unable to create directory %s"
 msgstr ""
 "Wiederherstellung fehlgeschlagen! Die Wiederherstellung des archivierten "
-"Plug-Ins „%1$s“ ist fehlgeschlagen. Verzeichnis %2$s konnte nicht erstellt "
-"werden"
+"Plug-Ins „%s“ ist fehlgeschlagen. Verzeichnis %s konnte nicht erstellt werden"
 
 #: lib/plugins.php:1594
 #, php-format
 msgid "Load failed!  The available Plugin '%s' Load failed. Unable to create directory %s"
 msgstr ""
-"Laden fehlgeschlagen! Das Laden des verfügbaren Plugins „%1$s“ ist "
-"fehlgeschlagen. Verzeichnis %2$s konnte nicht erstellt werden"
+"Laden fehlgeschlagen! Das Laden des verfügbaren Plugins „%s“ ist "
+"fehlgeschlagen. Verzeichnis %s konnte nicht erstellt werden"
 
 #: lib/plugins.php:1614
 #, php-format
@@ -18761,7 +18762,7 @@ msgstr "Erfordert: Cacti >= %s"
 
 #: lib/plugins.php:1752
 msgid "Legacy Plugin"
-msgstr "Legacy-Plugin"
+msgstr "Veraltetes Plugin"
 
 #: lib/plugins.php:1857
 msgid "Not Stated"
@@ -19267,7 +19268,7 @@ msgstr "Wenn Sie MariaDB 10.2.4 und höher verwenden, können Sie atomare Schrei
 #: lib/utility.php:1405
 #, php-format
 msgid "%s Tuning"
-msgstr "%s Abstimmung"
+msgstr "%s-Optimierung"
 
 #: lib/utility.php:1405
 msgid "Note: Many changes below require a database restart"
@@ -19524,7 +19525,7 @@ msgstr "Abmelden von Cacti"
 #: logout.php:60
 #, php-format
 msgid "You have been logged out of Cacti due to %s."
-msgstr "Sie wurden aufgrund von %s von Cacti abgemeldet."
+msgstr "Sie wurden wegen %s von Cacti abgemeldet."
 
 #: logout.php:61
 #, php-format
@@ -20965,7 +20966,7 @@ msgstr "WARNUNG: Cacti-Hauptdatenbank %s offline oder in Wiederherstellung"
 
 #: poller_automation.php:1037 poller_automation.php:1091
 msgid "Cacti Primary Admin"
-msgstr "Cacti Primäradministrator"
+msgstr "Primärer Cacti-Administrator"
 
 #: poller_automation.php:1189
 msgid "Cacti Automation Report requires an html based Email client"
@@ -21288,7 +21289,7 @@ msgstr "Der Status dieses Datensammlers."
 
 #: pollers.php:1082
 msgid "Proc/Threads"
-msgstr "Prozesse/Threads"
+msgstr "Proz./Threads"
 
 #: pollers.php:1085
 msgid "The Number of Poller Processes and Threads for this Data Collector."
@@ -23023,7 +23024,7 @@ msgstr "Geräteberechtigungen"
 
 #: user_admin.php:1814 user_group_admin.php:1669
 msgid "Template Perms"
-msgstr "Vorlagen-Perms"
+msgstr "Vorlagenberechtigungen"
 
 #: user_admin.php:1815 user_group_admin.php:1670
 msgid "Tree Perms"
