@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2026-03-10 10:57-0400\n"
-"PO-Revision-Date: 2026-11-26 05:54+0000\n"
+"PO-Revision-Date: 2026-11-26 19:34+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Polish <https://translate.cacti.net/projects/cacti/core/pl/>\n"
 "Language: pl-PL\n"
@@ -2534,7 +2534,7 @@ msgstr "Maks. liczba OID"
 
 #: automation_snmp.php:750
 msgid "Auth Username"
-msgstr "Auth Username"
+msgstr "Nazwa użytkownika uwierzytelniania"
 
 #: automation_snmp.php:754
 msgid "Auth Password"
@@ -2825,7 +2825,7 @@ msgstr ""
 
 #: automation_templates.php:1073 automation_templates.php:1628
 msgid "System OID Match"
-msgstr "System OID Match"
+msgstr "Dopasowanie OID systemu"
 
 #: automation_templates.php:1074
 msgid "This is a unique string that will be matched to a device's sysOid string to pair it to this Device Rule.  Any Perl regular expression can be used in addition to any SQL Where expression."
@@ -3396,7 +3396,7 @@ msgstr "<strong>nazwa</strong> - Nazwa koloru"
 
 #: color.php:371
 msgid "<strong>hex</strong> - The Hex Value"
-msgstr "<strong>hex</strong> - The Hex Value"
+msgstr "<strong>hex</strong> - wartość szesnastkowa"
 
 #: color.php:392
 #, php-format
@@ -3580,7 +3580,7 @@ msgstr "Szablon kolorowy [nowy]"
 #, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
 msgstr ""
-"Szablon kolorów '%1$s' rozpropagowano do %2$d szablonów agregatów oraz %3$d "
+"Szablon kolorów '%s' rozpropagowano do %d szablonów agregatów oraz %d "
 "agregatów bez szablonu"
 
 #: color_templates.php:761
@@ -3698,7 +3698,7 @@ msgstr "Określa, czy źródło danych jest włączone."
 
 #: data_debug.php:428
 msgid "RRD Match"
-msgstr "RRD Match"
+msgstr "Dopasowanie RRD"
 
 #: data_debug.php:431
 msgid "Determines if the RRDfile matches the Data Source Template."
@@ -4424,7 +4424,7 @@ msgstr ""
 #: data_source_profiles.php:350 data_source_profiles.php:352
 #, php-format
 msgid "Data Source Profile '%s' %s!"
-msgstr "Profil źródła danych '%1$s' — %2$s!"
+msgstr "Profil źródła danych '%s' — %s!"
 
 #: data_source_profiles.php:350 data_source_profiles.php:352
 #: lib/api_automation.php:5488 lib/api_automation.php:5490
@@ -4474,7 +4474,7 @@ msgstr "Zaktualizowano"
 #: data_source_profiles.php:356 data_source_profiles.php:358
 #, php-format
 msgid "Data Source Profile '%s' %s Failed!"
-msgstr "Profil źródła danych '%1$s' — %2$s nie powiodło się!"
+msgstr "Profil źródła danych '%s' — %s nie powiodło się!"
 
 #: data_source_profiles.php:356 data_source_profiles.php:358
 #: lib/api_automation.php:5494 lib/api_automation.php:5496
@@ -5104,7 +5104,7 @@ msgstr "Źródło danych Debug"
 
 #: data_sources.php:1354
 msgid "RRDtool Tune Info"
-msgstr "RRDtool Tune Info"
+msgstr "Informacje o dostrajaniu RRDtool"
 
 #: data_sources.php:1380 data_templates.php:1182 include/global_form.php:621
 msgid "External"
@@ -5451,7 +5451,7 @@ msgstr "GPRINTs"
 
 #: gprint_presets.php:227
 msgid "GPRINT Preset Name"
-msgstr "GPRINT Preset Name"
+msgstr "Nazwa ustawienia wstępnego GPRINT"
 
 #: gprint_presets.php:230
 msgid "The name of this GPRINT Preset."
@@ -5530,7 +5530,7 @@ msgstr "Wykresy synchronizacji"
 
 #: graph_templates.php:347 graph_templates.php:391 graphs.php:592
 msgid "Cur:"
-msgstr "Cur:"
+msgstr "Bież.:"
 
 #: graph_templates.php:360 graph_templates.php:404 graphs.php:602
 msgid "Avg:"
@@ -6266,7 +6266,7 @@ msgstr "Utwórz nowe urządzenie"
 #: graphs_new.php:472
 #, php-format
 msgid "New Graphs [ %s - %s ] [ %s ]"
-msgstr "Nowe wykresy [ %1$s - %2$s ] [ %3$s ]"
+msgstr "Nowe wykresy [ %s - %s ] [ %s ]"
 
 #: graphs_new.php:474
 msgid "New Graphs [ Search for a Device First ]"
@@ -7784,7 +7784,7 @@ msgstr "Czas sprawności SNMP"
 
 #: include/global_arrays.php:704
 msgid "SNMP Desc"
-msgstr "SNMP Desc"
+msgstr "Opis SNMP"
 
 #: include/global_arrays.php:705
 msgid "SNMP getNext"
@@ -7946,7 +7946,7 @@ msgstr "Trudny"
 
 #: include/global_arrays.php:983
 msgid "Demand"
-msgstr "Demand"
+msgstr "Na żądanie"
 
 #: include/global_arrays.php:984 user_admin.php:747 user_group_admin.php:728
 msgid "Allow"
@@ -8565,7 +8565,7 @@ msgstr "Pozycja CDEF"
 
 #: include/global_arrays.php:1503
 msgid "GPRINT Preset"
-msgstr "GPRINT Preset"
+msgstr "Ustawienie wstępne GPRINT"
 
 #: include/global_arrays.php:1506
 msgid "Data Input Field"
@@ -8727,13 +8727,13 @@ msgstr "%d MBajty"
 
 #: include/global_arrays.php:1690
 msgid "1 GByte"
-msgstr "1 GByte"
+msgstr "1 GB"
 
 #: include/global_arrays.php:1691 include/global_arrays.php:1754
 #: lib/boost.php:80
 #, php-format
 msgid "%s GBytes"
-msgstr "%s GBytes"
+msgstr "%s GB"
 
 #: include/global_arrays.php:1692 include/global_arrays.php:1693
 #: include/global_arrays.php:1755 include/global_arrays.php:1756
@@ -8741,7 +8741,7 @@ msgstr "%s GBytes"
 #: include/global_arrays.php:1759 include/global_arrays.php:1760
 #, php-format
 msgid "%d GBytes"
-msgstr "%d GBytes"
+msgstr "%d GB"
 
 #: include/global_arrays.php:1713
 msgid "2,000 Data Source Items"
@@ -11340,7 +11340,7 @@ msgstr "Droga do twojego snmpbulkwalk binarne."
 
 #: include/global_settings.php:204
 msgid "snmpgetnext Binary Path"
-msgstr "snmpgetnext Binary Path"
+msgstr "Ścieżka do pliku binarnego snmpgetnext"
 
 #: include/global_settings.php:205
 msgid "The path to your snmpgetnext binary."
@@ -11388,7 +11388,7 @@ msgstr "Ścieżka do pliku logu Cacti (jeśli pusty, domyślnie do &lt;path_cact
 
 #: include/global_settings.php:254
 msgid "Poller Standard Error Log Path"
-msgstr "Poller Standard Error Log Path"
+msgstr "Ścieżka dziennika standardowych błędów pollera"
 
 #: include/global_settings.php:255
 msgid "If you are having issues with Cacti's Data Collectors, set this file path and the Data Collectors standard error will be redirected to this file"
@@ -11396,7 +11396,7 @@ msgstr "Jeśli masz problemy z programem Cacti Data Collectors, ustaw tę ście�
 
 #: include/global_settings.php:264
 msgid "Boost Debug Log"
-msgstr "Boost Debug Log"
+msgstr "Dziennik debugowania Boost"
 
 #: include/global_settings.php:265
 msgid "This is the Log file where Boost will write its information to.  It much be located in the same directory as the Cacti Log file."
@@ -11426,7 +11426,7 @@ msgstr ""
 
 #: include/global_settings.php:298
 msgid "RRDfile Auto Clean"
-msgstr "RRDfile Auto Clean"
+msgstr "Automatyczne czyszczenie RRDfile"
 
 #: include/global_settings.php:299
 msgid "Automatically archive or delete RRDfiles when their corresponding Data Sources are removed from Cacti"
@@ -11955,7 +11955,7 @@ msgstr "Gdy jest wyłączona, Cacti Automation nie będzie aktywnie tworzyć ża
 
 #: include/global_settings.php:781
 msgid "Automation Notification To Email"
-msgstr "Automation Notification To Email"
+msgstr "Adres e-mail odbiorcy powiadomień automatyzacji"
 
 #: include/global_settings.php:782
 msgid "The Email Address to send Automation Notification Emails to if not specified at the Automation Network level.  If either this field, or the Automation Network value are left blank, Cacti will use the Primary Cacti Admins Email account."
@@ -11963,7 +11963,7 @@ msgstr "Adres e-mail do wysyłania powiadomień automatycznych (Automation Notif
 
 #: include/global_settings.php:788
 msgid "Automation Notification From Name"
-msgstr "Automation Notification From Name"
+msgstr "Nazwa nadawcy powiadomień automatyzacji"
 
 #: include/global_settings.php:789
 msgid "The Email Name to use for Automation Notification Emails to if not specified at the Automation Network level.  If either this field, or the Automation Network value are left blank, Cacti will use the system default From Name."
@@ -11971,7 +11971,7 @@ msgstr "Nazwa poczty elektronicznej, której należy używać dla wiadomości e-
 
 #: include/global_settings.php:796
 msgid "Automation Notification From Email"
-msgstr "Automation Notification From Email"
+msgstr "Adres e-mail nadawcy powiadomień automatyzacji"
 
 #: include/global_settings.php:797
 msgid "The Email Address to use for Automation Notification Emails to if not specified at the Automation Network level.  If either this field, or the Automation Network value are left blank, Cacti will use the system default From Email Address."
@@ -12122,7 +12122,7 @@ msgstr "Domyślnie SNMP v3 Authorization User dla wszystkich nowych urządzeń."
 
 #: include/global_settings.php:950
 msgid "Auth Passphrase (v3)"
-msgstr "Auth Passphrase (v3)"
+msgstr "Hasło uwierzytelniania (v3)"
 
 #: include/global_settings.php:951
 msgid "Default SNMP v3 Authorization Passphrase for all new Devices."
@@ -12740,7 +12740,7 @@ msgstr "Replikacja kolektora danych"
 
 #: include/global_settings.php:1582
 msgid "Poller Sync Interval"
-msgstr "Poller Sync Interval"
+msgstr "Interwał synchronizacji pollera"
 
 #: include/global_settings.php:1583
 msgid "The default polling sync interval to use when creating a poller.  This setting will affect how often remote pollers are checked and updated."
@@ -13213,7 +13213,7 @@ msgstr "Podczas korzystania z uwierzytelniania podstawowego, jeśli wystąpią p
 
 #: include/global_settings.php:2020
 msgid "Basic Auth Mapfile"
-msgstr "Basic Auth Mapfile"
+msgstr "Plik mapowania uwierzytelniania Basic"
 
 #: include/global_settings.php:2021
 msgid "When using basic authentication, if the basic account needs to be translated to a different login account, you can specify a CSV file here to map the basic account to the desired login account."
@@ -13389,7 +13389,7 @@ msgstr "Czas ważności linku resetującego w minutach"
 
 #: include/global_settings.php:2181
 msgid "URL Linking"
-msgstr "URL Linking"
+msgstr "Linkowanie URL"
 
 #: include/global_settings.php:2186
 msgid "Server Base URL"
@@ -13531,7 +13531,7 @@ msgstr "TLS"
 
 #: include/global_settings.php:2304 include/global_settings.php:2392
 msgid "SMTP Timeout"
-msgstr "SMTP Timeout"
+msgstr "Limit czasu SMTP"
 
 #: include/global_settings.php:2305 include/global_settings.php:2393
 msgid "Please enter the SMTP timeout in seconds."
@@ -13691,7 +13691,7 @@ msgstr "Czy Boost powinien umożliwiać na żądanie aktualizację RRD w Cacti? 
 
 #: include/global_settings.php:2496
 msgid "System Level RRD Updater"
-msgstr "System Level RRD Updater"
+msgstr "Aktualizator RRD na poziomie systemu"
 
 #: include/global_settings.php:2497
 msgid "Before RRD On-demand Update Can be Cleared, a poller run must always pass"
@@ -14210,7 +14210,7 @@ msgstr ""
 
 #: include/global_settings.php:2980
 msgid "RRDfile Backup Directory"
-msgstr "RRDfile Backup Directory"
+msgstr "Katalog kopii zapasowych RRDfile"
 
 #: include/global_settings.php:2981
 msgid "If this directory is not empty, then your original RRDfiles will be backed up to this location."
@@ -14853,7 +14853,7 @@ msgstr "Utwórz regułę drzewa (wykres)"
 #: lib/api_automation.php:2547
 #, php-format
 msgid "Rule Item [edit rule item for %s: %s]"
-msgstr "Reguła Pozycja [edytuj regułę dla %1$s: %2$s]"
+msgstr "Reguła Pozycja [edytuj regułę dla %s: %s]"
 
 #: lib/api_automation.php:2549
 #, php-format
@@ -14937,39 +14937,38 @@ msgstr ""
 #: lib/api_automation.php:6086 lib/api_automation.php:6088
 #, php-format
 msgid "Automation Graph Rule '%s' %s!"
-msgstr "Reguła automatyzacji wykresów '%1$s' %2$s!"
+msgstr "Reguła automatyzacji wykresów '%s' %s!"
 
 #: lib/api_automation.php:5731 lib/api_automation.php:5733
 #: lib/api_automation.php:6092 lib/api_automation.php:6094
 #, php-format
 msgid "Automation Graph Rule '%s' %s Failed!"
-msgstr "Reguła automatyzacji wykresów '%1$s': %2$s nie powiodło się!"
+msgstr "Reguła automatyzacji wykresów '%s': %s nie powiodło się!"
 
 #: lib/api_automation.php:5752 lib/api_automation.php:5754
 #: lib/api_automation.php:6113 lib/api_automation.php:6115
 #, php-format
 msgid "Automation Graph Rule Item '%s' %s!"
-msgstr "Element reguły automatyzacji wykresów '%1$s' %2$s!"
+msgstr "Element reguły automatyzacji wykresów '%s' %s!"
 
 #: lib/api_automation.php:5758 lib/api_automation.php:5760
 #: lib/api_automation.php:6119 lib/api_automation.php:6121
 #, php-format
 msgid "Automation Graph Rule Item '%s' %s Failed!"
-msgstr "Element reguły automatyzacji wykresów '%1$s': %2$s nie powiodło się!"
+msgstr "Element reguły automatyzacji wykresów '%s': %s nie powiodło się!"
 
 #: lib/api_automation.php:5781 lib/api_automation.php:5783
 #: lib/api_automation.php:6142 lib/api_automation.php:6144
 #, php-format
 msgid "Automation Graph Rule Match Item '%s' %s!"
-msgstr "Element dopasowania reguły automatyzacji wykresów '%1$s' %2$s!"
+msgstr "Element dopasowania reguły automatyzacji wykresów '%s' %s!"
 
 #: lib/api_automation.php:5787 lib/api_automation.php:5789
 #: lib/api_automation.php:6148 lib/api_automation.php:6150
 #, php-format
 msgid "Automation Graph Rule Match Item '%s' %s Failed!"
 msgstr ""
-"Element dopasowania reguły automatyzacji wykresów '%1$s': %2$s nie powiodło "
-"się!"
+"Element dopasowania reguły automatyzacji wykresów '%s': %s nie powiodło się!"
 
 #: lib/api_automation.php:5797
 msgid "Automation Graph Rule Import data is either for another object type or not JSON formatted."
@@ -14981,39 +14980,38 @@ msgstr ""
 #: lib/api_automation.php:6195 lib/api_automation.php:6197
 #, php-format
 msgid "Automation Tree Rule '%s' %s!"
-msgstr "Reguła automatyzacji drzewa '%1$s' %2$s!"
+msgstr "Reguła automatyzacji drzewa '%s' %s!"
 
 #: lib/api_automation.php:5865 lib/api_automation.php:5867
 #: lib/api_automation.php:6201 lib/api_automation.php:6203
 #, php-format
 msgid "Automation Tree Device Rule '%s' %s Failed!"
-msgstr "Reguła automatyzacji urządzeń drzewa '%1$s': %2$s nie powiodło się!"
+msgstr "Reguła automatyzacji urządzeń drzewa '%s': %s nie powiodło się!"
 
 #: lib/api_automation.php:5884 lib/api_automation.php:5886
 #: lib/api_automation.php:6220 lib/api_automation.php:6222
 #, php-format
 msgid "Automation Tree Rule Item '%s' %s!"
-msgstr "Element reguły automatyzacji drzewa '%1$s' %2$s!"
+msgstr "Element reguły automatyzacji drzewa '%s' %s!"
 
 #: lib/api_automation.php:5890 lib/api_automation.php:5892
 #: lib/api_automation.php:6226 lib/api_automation.php:6228
 #, php-format
 msgid "Automation Tree Device Rule Item '%s' %s Failed!"
-msgstr ""
-"Element reguły automatyzacji urządzeń drzewa '%1$s': %2$s nie powiodło się!"
+msgstr "Element reguły automatyzacji urządzeń drzewa '%s': %s nie powiodło się!"
 
 #: lib/api_automation.php:5915 lib/api_automation.php:5917
 #: lib/api_automation.php:6251 lib/api_automation.php:6253
 #, php-format
 msgid "Automation Tree Rule Match Item '%s' %s!"
-msgstr "Element dopasowania reguły automatyzacji drzewa '%1$s' %2$s!"
+msgstr "Element dopasowania reguły automatyzacji drzewa '%s' %s!"
 
 #: lib/api_automation.php:5921 lib/api_automation.php:5923
 #: lib/api_automation.php:6257 lib/api_automation.php:6259
 #, php-format
 msgid "Automation Tree Device Rule Match Item '%s' %s Failed!"
 msgstr ""
-"Element dopasowania reguły automatyzacji urządzeń drzewa '%1$s': %2$s nie "
+"Element dopasowania reguły automatyzacji urządzeń drzewa '%s': %s nie "
 "powiodło się!"
 
 #: lib/api_automation.php:5930
@@ -15030,22 +15028,22 @@ msgstr ""
 #: lib/api_automation.php:6028 lib/api_automation.php:6030
 #, php-format
 msgid "Automation Device Rule '%s' %s!"
-msgstr "Reguła automatyzacji urządzeń '%1$s' %2$s!"
+msgstr "Reguła automatyzacji urządzeń '%s' %s!"
 
 #: lib/api_automation.php:6034 lib/api_automation.php:6036
 #, php-format
 msgid "Automation Device Rule '%s' %s Failed!"
-msgstr "Reguła automatyzacji urządzeń '%1$s': %2$s nie powiodło się!"
+msgstr "Reguła automatyzacji urządzeń '%s': %s nie powiodło się!"
 
 #: lib/api_automation.php:6307 lib/api_automation.php:6309
 #, php-format
 msgid "Automation Device Rule Item '%s' %s!"
-msgstr "Element reguły automatyzacji urządzeń '%1$s' %2$s!"
+msgstr "Element reguły automatyzacji urządzeń '%s' %s!"
 
 #: lib/api_automation.php:6313 lib/api_automation.php:6315
 #, php-format
 msgid "Automation Device Rule Item '%s' %s Failed!"
-msgstr "Element reguły automatyzacji urządzeń '%1$s': %2$s nie powiodło się!"
+msgstr "Element reguły automatyzacji urządzeń '%s': %s nie powiodło się!"
 
 #: lib/api_automation.php:6324
 msgid "The Thold Plugin is not Installed on this system.  So, Thresholds will not be imported."
@@ -15054,12 +15052,12 @@ msgstr ""
 #: lib/api_automation.php:6359 lib/api_automation.php:6361
 #, php-format
 msgid "Automation Threshold Template '%s' %s!"
-msgstr "Szablon progu automatyzacji '%1$s' %2$s!"
+msgstr "Szablon progu automatyzacji '%s' %s!"
 
 #: lib/api_automation.php:6365 lib/api_automation.php:6367
 #, php-format
 msgid "Automation Threshold Template Device '%s' %s Failed!"
-msgstr "Urządzenie szablonu progu automatyzacji '%1$s': %2$s nie powiodło się!"
+msgstr "Urządzenie szablonu progu automatyzacji '%s': %s nie powiodło się!"
 
 #: lib/api_automation.php:6383
 msgid "Automation Device Rule Import data is either for another object type or not JSON formatted."
@@ -15606,12 +15604,12 @@ msgstr " - Widok administratora"
 #: lib/clog_webapi.php:358
 #, php-format
 msgid "Log [Total Lines: %d %s - Filter active]"
-msgstr "Log [Linie całkowite: %1$d %2$s - filtr aktywny]"
+msgstr "Log [Linie całkowite: %d %s - filtr aktywny]"
 
 #: lib/clog_webapi.php:360
 #, php-format
 msgid "Log [Total Lines: %d %s - Unfiltered]"
-msgstr "Kłoda [Linie ogółem: %1$d %2$s - niefiltrowane]"
+msgstr "Kłoda [Linie ogółem: %d %s - niefiltrowane]"
 
 #: lib/clog_webapi.php:365 managers.php:323 managers.php:515 managers.php:550
 #: utilities.php:336 utilities.php:375 utilities.php:466 utilities.php:607
@@ -15729,7 +15727,7 @@ msgstr "Bieżące zapytanie o dane [%s]."
 #: lib/data_query.php:132
 #, php-format
 msgid "Found Type = '%s' [%s]."
-msgstr "Znaleziono typ = '%1$s' [%2$s]."
+msgstr "Znaleziono typ = '%s' [%s]."
 
 #: lib/data_query.php:154
 #, php-format
@@ -15807,7 +15805,7 @@ msgstr ""
 
 #: lib/data_query.php:488
 msgid "Automation Executing for Data Query complete"
-msgstr "Automation Executing for Data Query complete"
+msgstr "Zakończono wykonywanie automatyzacji dla zapytania o dane"
 
 #: lib/data_query.php:491
 msgid "Plugin hooks complete"
@@ -15851,7 +15849,7 @@ msgstr "Plik XML sparametryzowany ok."
 #: lib/data_query.php:774 lib/data_query.php:992
 #, php-format
 msgid "Invalid field &lt;index_order&gt;%s&lt;/index_order&gt;"
-msgstr "Invalid field &lt;index_order&gt;%s&lt;/index_order&gt;"
+msgstr "Nieprawidłowe pole &lt;index_order&gt;%s&lt;/index_order&gt;"
 
 #: lib/data_query.php:775 lib/data_query.php:993
 msgid "Must contain &lt;direction&gt;input&lt;/direction&gt; or &lt;direction&gt;input-output&lt;/direction&gt; fields only"
@@ -15892,7 +15890,7 @@ msgstr "ERROR: Zapytanie o dane nie zwracało żadnych indeksów."
 #: lib/data_query.php:822
 #, php-format
 msgid "Executing script for list of indexes '%s', Index Count: %s"
-msgstr "Wykonywanie skryptu dla listy indeksów '%1$s', Liczba indeksów: %2$s"
+msgstr "Wykonywanie skryptu dla listy indeksów '%s', Liczba indeksów: %s"
 
 #: lib/data_query.php:824
 msgid "Click to show Data Query output for 'index'"
@@ -15931,7 +15929,7 @@ msgstr "Ogółem: %f, Delta: %f, %s"
 #: lib/data_query.php:977
 #, php-format
 msgid "Invalid host_id: %s"
-msgstr "Invalid host_id: %s"
+msgstr "Nieprawidłowe host_id: %s"
 
 #: lib/data_query.php:1007
 msgid "Auto Bulk Walk Size Selected."
@@ -15964,8 +15962,7 @@ msgstr "Rozmiar spaceru zbiorczego jest ustalony na %d."
 #, php-format
 msgid "Executing SNMP get for num of indexes @ '%s' Index Count: %s"
 msgstr ""
-"Wykonywanie operacji SNMP get dla liczby indeksów @ '%1$s' Liczba indeksów: "
-"%2$s"
+"Wykonywanie operacji SNMP get dla liczby indeksów @ '%s' Liczba indeksów: %s"
 
 #: lib/data_query.php:1078
 msgid "&lt;oid_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting oid_index entries"
@@ -15975,8 +15972,7 @@ msgstr "&lt;oid_num_indexes&gt; brak w pliku XML, \"Index Count Changed\" emulow
 #, php-format
 msgid "Executing SNMP walk for list of indexes @ '%s' Index Count: %s"
 msgstr ""
-"Wykonywanie operacji SNMP walk dla listy indeksów @ '%1$s' Liczba indeksów: "
-"%2$s"
+"Wykonywanie operacji SNMP walk dla listy indeksów @ '%s' Liczba indeksów: %s"
 
 #: lib/data_query.php:1085
 msgid "No SNMP data returned"
@@ -15991,7 +15987,7 @@ msgstr "Indeks znaleziony na OID: wartość \"%s\": \"%s"
 #, php-format
 msgid "List of indexes filtered by value @ '%s' Index Count: %s"
 msgstr ""
-"Lista indeksów przefiltrowana według wartości @ '%1$s' Liczba indeksów: %2$s"
+"Lista indeksów przefiltrowana według wartości @ '%s' Liczba indeksów: %s"
 
 #: lib/data_query.php:1112
 #, php-format
@@ -16001,7 +15997,7 @@ msgstr "Indeks filtrowany na OID: wartość \"%s\": \"%s"
 #: lib/data_query.php:1129
 #, php-format
 msgid "Filtering list of indexes @ '%s' Index Count: %s"
-msgstr "Filtrowanie listy indeksów @ '%1$s' Liczba indeksów: %2$s"
+msgstr "Filtrowanie listy indeksów @ '%s' Liczba indeksów: %s"
 
 #: lib/data_query.php:1133
 #, php-format
@@ -16016,7 +16012,7 @@ msgstr "Naprawiono błędne pole \"metoda\" dla \"%s\", ponieważ \"rewrite_inde
 #: lib/data_query.php:1160
 #, php-format
 msgid "Inserting index data for field '%s' [value='%s']"
-msgstr "Wprowadzanie danych indeksu dla pola \"%1$s\" [wartość=\"%2$s\"]"
+msgstr "Wprowadzanie danych indeksu dla pola \"%s\" [wartość=\"%s\"]"
 
 #: lib/data_query.php:1165
 #, php-format
@@ -16026,17 +16022,17 @@ msgstr "Położone pole wejściowe \"%s\" [get]"
 #: lib/data_query.php:1174
 #, php-format
 msgid "Found OID rewrite rule: 's/%s/%s/'"
-msgstr "Znaleziono zasadę przepisywania OID: 's/%1$s/%2$s/s/'"
+msgstr "Znaleziono zasadę przepisywania OID: 's/%s/%s/s/'"
 
 #: lib/data_query.php:1185
 #, php-format
 msgid "oid_rewrite at OID: '%s' new OID: '%s'"
-msgstr "oid_rewrite dla OID: '%1$s' nowy OID: '%2$s'"
+msgstr "oid_rewrite dla OID: '%s' nowy OID: '%s'"
 
 #: lib/data_query.php:1206
 #, php-format
 msgid "Executing SNMP get for data @ '%s' [value='%s']"
-msgstr "Wykonywanie operacji SNMP get dla danych @ '%1$s' [wartość='%2$s']"
+msgstr "Wykonywanie operacji SNMP get dla danych @ '%s' [wartość='%s']"
 
 #: lib/data_query.php:1220
 #, php-format
@@ -16051,12 +16047,12 @@ msgstr ""
 #: lib/data_query.php:1310
 #, php-format
 msgid "Sort field returned no data for Host[%s] DQ[%s], skipping."
-msgstr "Pole sortowania nie zwróciło danych dla Host[%1$s] DQ[%2$s], pomijanie."
+msgstr "Pole sortowania nie zwróciło danych dla Host[%s] DQ[%s], pomijanie."
 
 #: lib/data_query.php:1314
 #, php-format
 msgid "Found result for data @ '%s' [value='%s']"
-msgstr "Znaleziono wynik dla danych @ \"%1$s\" [wartość=\"%2$s\"]"
+msgstr "Znaleziono wynik dla danych @ \"%s\" [wartość=\"%s\"]"
 
 #: lib/data_query.php:1322
 #, php-format
@@ -16066,7 +16062,7 @@ msgstr "Ustawianie wyniku dla danych @ '%s' [key='%s', value='%s']"
 #: lib/data_query.php:1326
 #, php-format
 msgid "Skipped result for data @ '%s' [key='%s', value='%s']"
-msgstr "Pominięty wynik dla danych @ '%1$s' [key='%2$s', value='%3$s']"
+msgstr "Pominięty wynik dla danych @ '%s' [key='%s', value='%s']"
 
 #: lib/data_query.php:1340
 #, php-format
@@ -16131,7 +16127,7 @@ msgstr "Nie można przeanalizować mapy tłumaczenia (rewrite_value)"
 #: lib/data_query.php:1945
 #, php-format
 msgid "rewrite_value: '%s' => '%s'"
-msgstr "rewrite_value: '%1$s' => '%2$s'"
+msgstr "rewrite_value: '%s' => '%s'"
 
 #: lib/data_query.php:2068
 msgid "Update graph data query cache complete"
@@ -16404,7 +16400,7 @@ msgstr "Od instalacji"
 #, php-format
 msgid "Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details."
 msgstr ""
-"Cacti wyłączyło wtyczkę %1$s z powodu następującego błędu: %2$s! Więcej "
+"Cacti wyłączyło wtyczkę %s z powodu następującego błędu: %s! Więcej "
 "szczegółów znajduje się w pliku dziennika Cacti."
 
 #: lib/functions.php:7016
@@ -16419,8 +16415,8 @@ msgid ""
 "Reason: %s.\n"
 "See Cacti Log for details."
 msgstr ""
-"Nie udało się połączyć ze zdalnym agentem %1$s\n"
-"Przyczyna: %2$s.\n"
+"Nie udało się połączyć ze zdalnym agentem %s\n"
+"Przyczyna: %s.\n"
 "Szczegóły znajdują się w dzienniku Cacti."
 
 #: lib/functions.php:7524
@@ -17557,7 +17553,7 @@ msgstr "Wybierz drzewo, którego chcesz użyć."
 
 #: lib/html_reports.php:1055
 msgid "Graph Tree Branch"
-msgstr "Graph Tree Branch"
+msgstr "Gałąź drzewa wykresów"
 
 #: lib/html_reports.php:1059
 msgid "Select a Tree Branch to use for Graphs and Devices.  Devices will be considered as Branches."
@@ -19340,7 +19336,7 @@ msgstr "Brak krytycznego pliku szablonu '%s'.  Zlokalizuj ten plik przed pakowan
 
 #: lib/ping.php:130
 msgid "ICMP Ping timed out"
-msgstr "ICMP Ping timed out"
+msgstr "Upłynął limit czasu ICMP Ping"
 
 #: lib/ping.php:232
 #, php-format
@@ -19363,11 +19359,11 @@ msgstr "Upłynął limit czasu ping ICMP (ping.exe) ("
 #: lib/ping.php:284
 #, php-format
 msgid "ICMP Ping Success (%s ms)"
-msgstr "ICMP Ping Success (%s ms)"
+msgstr "Ping ICMP zakończony powodzeniem (%s ms)"
 
 #: lib/ping.php:289
 msgid "ICMP ping Timed out"
-msgstr "ICMP ping Timed out"
+msgstr "Upłynął limit czasu ICMP ping"
 
 #: lib/ping.php:296 lib/ping.php:516 lib/ping.php:648
 msgid "Destination address not specified"
@@ -19389,7 +19385,7 @@ msgstr "Błąd UDP ping: %s"
 #: lib/ping.php:494
 #, php-format
 msgid "UDP Ping Success (%s ms)"
-msgstr "UDP Ping Success (%s ms)"
+msgstr "Udany ping UDP (%s ms)"
 
 #: lib/ping.php:560
 msgid "IPv6 support appears to be missing!"
@@ -19427,8 +19423,8 @@ msgstr "Ping nie został wykonany z powodu ustawienia."
 #, php-format
 msgid "'%s' versions '%s' above or in range are required to install '%s'. "
 msgstr ""
-"Do zainstalowania '%3$s' wymagane są wersje '%2$s' lub nowsze (bądź z "
-"zakresu) dla '%1$s'. "
+"Dla '%s' wymagane są wersje '%s' lub nowsze (bądź z zakresu), aby "
+"zainstalować '%s'. "
 
 #: lib/plugins.php:676
 #, php-format
@@ -19550,7 +19546,7 @@ msgstr "Wymaga: Cacti >= %s"
 
 #: lib/plugins.php:1763
 msgid "Legacy Plugin"
-msgstr "Legacy Plugin"
+msgstr "Starsza wtyczka"
 
 #: lib/plugins.php:1867
 msgid "Not Stated"
@@ -19710,7 +19706,7 @@ msgstr ""
 #: lib/rrd.php:3475
 #, php-format
 msgid "Type for Data Source '%s' should be '%s'"
-msgstr "Typ źródła danych '%1$s' powinien wynosić '%2$s'"
+msgstr "Typ źródła danych '%s' powinien wynosić '%s'"
 
 #: lib/rrd.php:3481
 #, php-format
@@ -20263,8 +20259,8 @@ msgstr "Dzięki nowoczesnej pamięci masowej typu SSD, posiadanie wielu gwintów
 #, php-format
 msgid "As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential"
 msgstr ""
-"W %1$s %2$s, można kontrolować, jak często %3$s przepłukuje transakcje na "
-"dysk.  Domyślnie jest to 1 sekunda, ale w systemach o wysokim poziomie We/Wy "
+"W %s %s, można kontrolować, jak często %s przepłukuje transakcje na dysk.  "
+"Domyślnie jest to 1 sekunda, ale w systemach o wysokim poziomie We/Wy "
 "ustawienie wartości większej niż 1 może pozwolić na to, aby we/wy dysku były "
 "bardziej sekwencyjne"
 
@@ -20317,7 +20313,7 @@ msgstr "Korzystając z MariaDB 10.2.4 i nowszych, można użyć zapisów atomowy
 #: lib/utility.php:1378
 #, php-format
 msgid "%s Tuning"
-msgstr "%s Tuning"
+msgstr "Dostrajanie %s"
 
 #: lib/utility.php:1378
 msgid "Note: Many changes below require a database restart"
@@ -20568,7 +20564,7 @@ msgstr ""
 #: logout.php:71
 #, php-format
 msgid "Please close your browser or %sLogin Again%s"
-msgstr "Zamknij przeglądarkę lub %1$szaloguj się ponownie%2$s"
+msgstr "Zamknij przeglądarkę lub %szaloguj się ponownie%s"
 
 #: logout.php:72
 msgid "Cookies have been cleared"
@@ -21529,7 +21525,7 @@ msgstr "Brak urządzenia"
 
 #: plugins.php:647
 msgid "Develop"
-msgstr "Develop"
+msgstr "Rozwojowa"
 
 #: plugins.php:648
 msgid "Newer Than Installed"
@@ -21977,14 +21973,14 @@ msgstr "Ankieta w trybie tętna"
 msgid "WARNING: 24 Hour Poller[%d] Average run time threshold breached.  It is %f seconds (more than %d &#37; of threshold.)"
 msgstr ""
 "OSTRZEŻENIE: Przekroczono 24-godzinny próg średniego czasu działania Poller"
-"[%1$d].  Wynosi on %2$f sekund (ponad %3$d &#37; progu.)"
+"[%d].  Wynosi on %f sekund (ponad %d &#37; progu.)"
 
 #: poller.php:1399
 #, php-format
 msgid "WARNING: In last hour Poller[%d] run time exceeded the threshold %d times (limit %d) by %d percent of the time limit."
 msgstr ""
-"OSTRZEŻENIE: W ciągu ostatniej godziny czas działania Poller[%1$d] "
-"przekroczył próg %2$d razy (limit %3$d) o %4$d procent limitu czasu."
+"OSTRZEŻENIE: W ciągu ostatniej godziny czas działania Poller[%d] przekroczył "
+"próg %d razy (limit %d) o %d procent limitu czasu."
 
 #: poller.php:1423
 msgid "Cacti System Notification"
@@ -22375,7 +22371,7 @@ msgstr "Status tego zbieracza danych."
 
 #: pollers.php:982
 msgid "Proc/Threads"
-msgstr "Proc/Threads"
+msgstr "Procesy/Wątki"
 
 #: pollers.php:985
 msgid "The Number of Poller Processes and Threads for this Data Collector."
@@ -22391,7 +22387,7 @@ msgstr "Ostatni czas zbierania danych dla tego zbieracza danych."
 
 #: pollers.php:994
 msgid "Avg/Max"
-msgstr "Avg/Max"
+msgstr "Średnia/Maksimum"
 
 #: pollers.php:997
 msgid "The Average and Maximum Collector timings for this Data Collector."
@@ -22601,7 +22597,7 @@ msgstr "UWAGA: Ustawienia ścieżki na tej karcie są zapisywane tylko lokalnie!
 #: settings.php:140
 #, php-format
 msgid "Cacti Settings (%s)%s"
-msgstr "Ustawienia Cacti (%1$s)%2$s"
+msgstr "Ustawienia Cacti (%s)%s"
 
 #: settings.php:264
 msgid "Changing Permission Model Warning"
@@ -23210,7 +23206,7 @@ msgstr "Średni rząd Długość"
 
 #: support.php:968
 msgid "Data Length"
-msgstr "Data Length"
+msgstr "Długość danych"
 
 #: support.php:969
 msgid "Index Length"
@@ -23381,7 +23377,7 @@ msgstr "Czas trwania skryptu"
 
 #: support.php:1412
 msgid "Max OID"
-msgstr "Max OID"
+msgstr "Maks. OID"
 
 #: support.php:1417
 msgid "Last Run Statistics"
@@ -24521,7 +24517,9 @@ msgstr "Wyszukaj nazwę odróżniającą (DN)"
 
 #: user_domains.php:482
 msgid "Distinguished Name for Specific Searching binding to the LDAP directory."
-msgstr "Distinguished Name for Specific Searching binding to the LDAP directory."
+msgstr ""
+"Nazwa wyróżniająca (DN) dla określonego wyszukiwania przy wiązaniu z "
+"katalogiem LDAP."
 
 #: user_domains.php:488
 msgid "Search Password"
@@ -24942,7 +24940,9 @@ msgstr ""
 
 #: utilities.php:851
 msgid "Poller Cache Items [ Rebuild Crashed without Unregistering ]"
-msgstr "Poller Cache Items [ Rebuild Crashed without Unregistering ]"
+msgstr ""
+"Elementy pamięci podręcznej pollera "
+"[ Odbudowa uległa awarii bez wyrejestrowania ]"
 
 #: utilities.php:855
 msgid "Poller Cache Items [ Rebuild Timed out but is Running ]"
@@ -25115,7 +25115,7 @@ msgstr "Przybliżony w procesie:"
 
 #: utilities.php:1265
 msgid "Total Boost Records:"
-msgstr "Total Boost Records:"
+msgstr "Łączna liczba rekordów Boost:"
 
 #: utilities.php:1270
 msgid "Boost Storage Statistics"
@@ -25199,7 +25199,7 @@ msgstr "Pamięć Pollera Szczytowego:"
 
 #: utilities.php:1383
 msgid "Max Poller Memory Allowed:"
-msgstr "Max Poller Memory Allowed:"
+msgstr "Maksymalna dozwolona pamięć pollera:"
 
 #: utilities.php:1386
 msgid "Detailed Runtime Statistics"
@@ -25222,7 +25222,10 @@ msgstr "Proces: %d"
 #: utilities.php:1449
 #, php-format
 msgid "Status: <span class=\"deviceUp\"><b>Running</b></span>, Remaining: %s (dses), CurrentRuntime: %s (secs), PrevRuntime: %s (secs), PrevProcessed: %10s (ds rows)"
-msgstr "Status: <span class=\"deviceUp\"><b>Running</b></span>, Remaining: %s (dses), CurrentRuntime: %s (secs), PrevRuntime: %s (secs), PrevProcessed: %10s (ds rows)"
+msgstr ""
+"Status: <span class=\"deviceUp\"><b>Działa</b></span>, Pozostało: %s (źr. "
+"danych), Bieżący czas działania: %s (sek.), Poprzedni czas działania: %s "
+"(sek.), Poprzednio przetworzono: %10s (wierszy DS)"
 
 #: utilities.php:1451
 #, php-format
