@@ -1,8 +1,8 @@
 import { test, expect, type Page } from '@playwright/test';
 
 /* Run against the standard disposable Cacti 1.2 compose installation.
- * Every theme with a navigation menu takes its host filter and menu section handling from
- * include/layout.js; these tests drive both in a real browser, theme by theme. */
+ * Every theme with a navigation menu takes its host filter, menu section and file import
+ * handling from include/layout.js; these tests drive them in a real browser, theme by theme. */
 
 const menuThemes = ['modern', 'dark', 'paw', 'deepness', 'paper-plane', 'sunrise', 'midwinter'];
 
@@ -120,6 +120,25 @@ for (const theme of menuThemes) {
 
 		await page.locator('#host_wrapper').dblclick();
 		await expect(page.locator('ul.ui-autocomplete')).toBeHidden();
+
+		expect(errors).toEqual([]);
+	});
+
+	test(`${theme}: a file import field shows the name of the chosen file`, async ({ page }) => {
+		const errors = themeErrors(page);
+
+		await selectTheme(page, theme);
+		await page.goto('/color.php?action=import');
+		await expect(page.locator(`script[src*="themes/${theme}/main.js"]`)).toHaveCount(1);
+
+		const text = page.locator('.import_text');
+		await expect(text).toHaveCount(1);
+		const empty = await page.evaluate(() => (window as any).noFileSelected);
+		await expect(text).toHaveText(empty);
+		await expect(page.locator('.import_label')).toHaveClass(/ui-button/);
+
+		await page.locator('.import_button').setInputFiles({ name: 'colors.csv', mimeType: 'text/csv', buffer: Buffer.from('hex,name\n') });
+		await expect(text).toContainText('colors.csv');
 
 		expect(errors).toEqual([]);
 	});

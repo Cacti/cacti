@@ -115,7 +115,7 @@ function layoutFunction(name) {
 
 // What the themes with a navigation menu call in include/layout.js. A theme is evaluated
 // after these, as on a page, so a theme that defines one of them still replaces it.
-const SHARED = ['setHostAutocomplete', 'setMenuVisibility'].map(layoutFunction).join('\n');
+const SHARED = ['setHostAutocomplete', 'setImportFields', 'setMenuVisibility'].map(layoutFunction).join('\n');
 
 const builtins = new Set(Object.getOwnPropertyNames(globalThis));
 

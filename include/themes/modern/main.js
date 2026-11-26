@@ -42,17 +42,7 @@ function themeReady() {
 	$('.checkboxgroup').children('br').remove();
 	$('.checkboxgroup').buttonset();
 
-	// Turn file buttons into jQueryUI buttons
-	$('.import_label').button();
-	$('.import_button').change(function() {
-		var text = this.value;
-		setImportFile(text);
-	});
-	setImportFile(noFileSelected);
-
-	function setImportFile(fileText) {
-		$('.import_text').text(fileText);
-	}
+	setImportFields();
 
 	var maxWidth = 480;
 

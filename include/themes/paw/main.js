@@ -118,17 +118,7 @@ function themeReady() {
 		}
 	);
 
-	// Turn file buttons into jQueryUI buttons
-	$('.import_label').button();
-	$('.import_button').change(function() {
-		var text = this.value;
-		setImportFile(text);
-	});
-	setImportFile(noFileSelected);
-
-	function setImportFile(fileText) {
-		$('.import_text').text(fileText);
-	}
+	setImportFields();
 
 	$('select.colordropdown').dropcolor();
 

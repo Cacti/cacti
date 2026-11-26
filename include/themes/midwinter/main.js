@@ -573,18 +573,7 @@ function setupDefaultElements() {
 		$(this).find('.formCheckboxLabel').attr('for', '');
 	});
 
-	// Turn file buttons into jQueryUI buttons
-	$('.import_label').button();
-	$('.import_button').change(function() {
-		let text = this.value;
-		setImportFile(text);
-	});
-
-	setImportFile(noFileSelected);
-
-	function setImportFile(fileText) {
-		$('.import_text').text(fileText);
-	}
+	setImportFields();
 
 	$('select.colordropdown').dropcolor();
 

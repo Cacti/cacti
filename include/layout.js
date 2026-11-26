@@ -2835,8 +2835,23 @@ function loadPage(href, force) {
 	return false;
 }
 
-/* Host filter and menu section handling that the themes with a navigation menu share.
- * A theme calls these from its own setup. */
+/* Host filter, menu section and file import handling that the themes with a navigation
+ * menu share. A theme calls these from its own setup. */
+function setImportFields() {
+	// Turn file buttons into jQueryUI buttons
+	$('.import_label').button();
+	$('.import_button').change(function() {
+		var text = this.value;
+		setImportFile(text);
+	});
+
+	setImportFile(noFileSelected);
+
+	function setImportFile(fileText) {
+		$('.import_text').text(fileText);
+	}
+}
+
 function setHostAutocomplete() {
 	var page = basename($(location).attr('pathname'));
 	var hostTimer = false;
