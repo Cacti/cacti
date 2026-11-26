@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-25 22:34+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Portuguese (Portugal) <https://translate.cacti.net/projects/cacti/core-v1-2-x/pt_PT/>\nLanguage: pt-PT\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n != 1);\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-26 05:54+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Portuguese (Portugal) <https://translate.cacti.net/projects/cacti/core-v1-2-x/pt_PT/>\nLanguage: pt-PT\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n != 1);\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -552,10 +552,8 @@ msgid "No Aggregate Graphs Found"
 msgstr "Nenhum Gráfico Agregado Encontrado"
 
 #: aggregate_templates.php
-#, fuzzy
-#| msgid "No Aggregate Templates Found"
 msgid "Aggregate Template not found."
-msgstr "Nenhum modelo agregado encontrado"
+msgstr "Modelo agregado não encontrado."
 
 #: aggregate_templates.php
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -1903,7 +1901,7 @@ msgstr "Porta"
 
 #: automation_snmp.php include/global_settings.php
 msgid "Timeout"
-msgstr "Timeout"
+msgstr "Tempo limite"
 
 #: automation_snmp.php include/global_settings.php
 msgid "Retries"
@@ -2548,10 +2546,8 @@ msgid "Delete Color Item"
 msgstr "Excluir item de cor"
 
 #: color_templates.php
-#, fuzzy
-#| msgid "No Color Templates Found"
 msgid "Color Template not found."
-msgstr "Nenhum modelo de cor encontrado"
+msgstr "Modelo de cor não encontrado."
 
 #: color_templates.php
 #, php-format
@@ -4160,7 +4156,7 @@ msgstr "Cacti Gráfico em Tempo Real"
 #: graph_realtime.php include/global_arrays.php lib/html_filter.php
 #: lib/html_graph.php lib/html_tree.php
 msgid "Presets"
-msgstr "Presets"
+msgstr "Predefinições"
 
 #: graph_realtime.php utilities.php
 msgid "Refresh Interval"
@@ -4263,10 +4259,8 @@ msgid "No Inputs"
 msgstr "Sem entradas"
 
 #: graph_templates.php
-#, fuzzy
-#| msgid "No Graph Templates Found"
 msgid "Graph Template not found."
-msgstr "Nenhum modelo de gráfico encontrado"
+msgstr "Modelo de gráfico não encontrado."
 
 #: graph_templates.php
 #, php-format
@@ -6929,7 +6923,7 @@ msgstr "Texto"
 
 #: include/global_arrays.php include/global_form.php
 msgid "Tree"
-msgstr "Tree"
+msgstr "Árvore"
 
 #: include/global_arrays.php
 msgid "Horizontal Rule"
@@ -9985,7 +9979,7 @@ msgstr "Atualização da cauda do log"
 
 #: include/global_settings.php
 msgid "How often do you want the Cacti log display to update."
-msgstr "Quantas vezes você quer que a exibição do log Cacti seja atualizada?."
+msgstr "Define a frequência de atualização da visualização do registo do Cacti."
 
 #: include/global_settings.php
 msgid "Log Viewer Settings"
@@ -13691,7 +13685,7 @@ msgstr "Definir intervalo de turnos"
 
 #: lib/html_graph.php lib/html_tree.php
 msgid "Shift Time Forward"
-msgstr "Shift Time Forward"
+msgstr "Avançar Tempo"
 
 #: lib/html_graph.php lib/html_tree.php
 msgid "Refresh selected time span"
@@ -16427,10 +16421,8 @@ msgid "Number of I/O threads used for read operations in InnoDB."
 msgstr ""
 
 #: lib/utility.php
-#, fuzzy
-#| msgid "default"
 msgid "1-64; default 4."
-msgstr "padrão"
+msgstr "1-64; predefinição 4."
 
 #: lib/utility.php
 msgid "Number of I/O threads used for write operations in InnoDB."
@@ -16860,7 +16852,7 @@ msgstr "Atualização automática de página"
 
 #: links.php
 msgid "How often do you wish this page to be refreshed automatically."
-msgstr "Quantas vezes você deseja que esta página seja atualizada automaticamente?."
+msgstr "Define com que frequência esta página é atualizada automaticamente."
 
 #: links.php
 #, php-format
@@ -18145,10 +18137,8 @@ msgstr[0] "Duplicar Site"
 msgstr[1] "Duplicar"
 
 #: sites.php
-#, fuzzy
-#| msgid "File not found"
 msgid "Site not found."
-msgstr "Arquivo não encontrado"
+msgstr "Site não encontrado."
 
 #: sites.php tree.php
 msgid "Site Name"
@@ -19490,10 +19480,8 @@ msgid "PHP SNMP"
 msgstr "PHP SNMP"
 
 #: utilities.php
-#, fuzzy
-#| msgid "Installed"
 msgid "Installed."
-msgstr "Instaladas"
+msgstr "Instalado."
 
 #: utilities.php
 msgid "You've set memory limit to 'unlimited'."
@@ -19593,7 +19581,7 @@ msgstr "Endereço de IP"
 
 #: utilities.php
 msgid "(User Removed)"
-msgstr "(Usuário Removido)"
+msgstr "(Utilizador Removido)"
 
 #: utilities.php
 msgid "Display Order"
