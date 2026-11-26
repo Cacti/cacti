@@ -928,6 +928,7 @@ function get_list_of_locales() : array {
 		'ar-MA' => ['language' => 'Arabic (Morocco)',    'direction' => 'rtl', 'country' => 'ma', 'filename' => 'arabic_morocco'],
 		'hy-AM' => ['language' => 'Armenian',            'direction' => 'ltr', 'country' => 'am', 'filename' => 'armenian_armenia'],
 		'be-BY' => ['language' => 'Belarusian',          'direction' => 'ltr', 'country' => 'by', 'filename' => 'belarusian_belarus'],
+		'bs-BA' => ['language' => 'Bosnian',             'direction' => 'ltr', 'country' => 'ba', 'filename' => 'bosnian_bosnia_herzegovina'],
 		'bg-BG' => ['language' => 'Bulgarian',           'direction' => 'ltr', 'country' => 'bg', 'filename' => 'bulgarian_bulgaria'],
 		'zh-CN' => ['language' => 'Chinese (China)',     'direction' => 'ltr', 'country' => 'cn', 'filename' => 'chinese_china_simplified'],
 		'zh-HK' => ['language' => 'Chinese (Hong Kong)', 'direction' => 'ltr', 'country' => 'hk', 'filename' => 'chinese_hong_kong'],
