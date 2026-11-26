@@ -364,10 +364,11 @@ $walk_retries = [];
 ss_fortigate_ipsec(7);
 check('ss_fortigate_ipsec walks with the SNMP retries, not the ping retries', $walk_retries === [2]);
 
-// MikroTik value lookups: a missing row is unknown, a stored row is returned as is.
+// MikroTik value lookups: a missing row reads as zero so the poller does not log it,
+// a stored row is returned as is.
 foreach ([['interfaces', 'RxBytes'], ['queues', 'qsInOctets'], ['qusers', 'curBytesIn'], ['qtrees', 'qtBytes']] as [$table, $column]) {
 	$getvalue = __NAMESPACE__ . '\\ss_mikrotik_' . $table . '_getvalue';
-	check("ss_mikrotik_$table without a row", $getvalue(7, 'gone', $column) === 'U');
+	check("ss_mikrotik_$table without a row", $getvalue(7, 'gone', $column) === '0');
 	check("ss_mikrotik_$table with a row", $getvalue(7, 'known.example', $column) == 7);
 }
 check('ss_mikrotik_interfaces refuses an unsafe column', ss_mikrotik_interfaces_getvalue(7, 'known.example', 'x`y') === 'U');
