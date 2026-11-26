@@ -38,7 +38,6 @@ _OPTIONS_WITH_VALUE = frozenset({
 
 _PO_STRING_RE = re.compile(r'^(msgctxt|msgid|msgid_plural|msgstr(?:\[\d+\])?)\s+"(.*)"$')
 _PO_CONT_RE = re.compile(r'^"(.*)"$')
-_FUZZY_FLAG_RE = re.compile(r'(^#,\s*|,\s*)fuzzy\b')
 
 
 def _parse_block_entry(block_lines: list[str]) -> tuple[tuple[str, str, str], tuple[bool, dict[str, str]]] | None:

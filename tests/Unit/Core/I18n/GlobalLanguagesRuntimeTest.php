@@ -14,6 +14,7 @@
 
 require_once CACTI_PATH_LIBRARY . '/rrd.php';
 require_once CACTI_PATH_LIBRARY . '/api_scheduler.php';
+require_once CACTI_PATH_LIBRARY . '/package.php';
 
 test('__() formats positional specifiers including reordered arguments', function () {
 	expect(__('Version %1$s | %2$s', '1.3.0', '2026'))->toBe('Version 1.3.0 | 2026')
@@ -186,4 +187,20 @@ test('api_scheduler_javascript() emits JSON-encoded translated JS strings', func
 	expect($output)->toContain('noneSelectedText: "Select the days(s) of the week"')
 		->and($output)->toContain('html.replace("every X Weeks", "every X Days")')
 		->and($output)->toContain('html.replace("Rerun Every", "Rerun Every X Weeks")');
+});
+
+test('check_get_author_info() emits JSON-encoded key prompts when package.info is absent', function () {
+	if (file_exists(CACTI_PATH_PKI . '/package.info')) {
+		expect(check_get_author_info())->toBeArray();
+
+		return;
+	}
+
+	ob_start();
+	$result = check_get_author_info();
+	$output = (string) ob_get_clean();
+
+	expect($result)->toBeFalse()
+		->and($output)->toContain('var mixedReasonTitle = "Key Generation Required to Use Tool";')
+		->and($output)->toContain('var mixedOnPage      = "Packaging Key Information Not Found";');
 });
