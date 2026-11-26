@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-26 05:54+0000\n"
+"PO-Revision-Date: 2026-11-26 19:34+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://translate.cacti.net/"
 "projects/cacti/core/zh_Hans/>\n"
@@ -31,7 +31,7 @@ msgstr "Cacti 被设计成基于RRDtool 框架的完整的画图解决方案. "
 #: about.php:46
 #, php-format
 msgid "Please see the official %sCacti website%s for information on how to use Cacti, get support, and updates."
-msgstr "请访问官方 %1$sCacti 网站%2$s，了解如何使用 Cacti、获取支持以及获取更新。"
+msgstr "请访问官方 %sCacti 网站%s，了解如何使用 Cacti、获取支持以及获取更新。"
 
 #: about.php:50
 msgid "Active Developers"
@@ -64,9 +64,8 @@ msgstr "致谢"
 #: about.php:88
 #, php-format
 msgid "A very special thanks to %sTobi Oetiker%s, the creator of %sRRDtool%s and the very popular %sMRTG%s."
-msgstr ""
-"非常特别感谢 %1$sTobi Oetiker%2$s, %3$sRRDtool%4$s 的创建者以及非常受欢迎的 "
-"%5$sMRTG%6$s 的作者。"
+msgstr "非常特别感谢 %sTobi Oetiker%s, %sRRDtool%s 的创建者以及非常受欢迎的 %sMRTG%s "
+"的作者。"
 
 #: about.php:91
 msgid "The users of Cacti"
@@ -4045,7 +4044,7 @@ msgstr "问题"
 #: data_debug.php:910
 #, php-format
 msgid "For attribute '%s', issue found '%s'"
-msgstr "对于属性 '%1$s'，发现问题 '%2$s'"
+msgstr "对于属性 '%s'，发现问题 '%s'"
 
 #: data_debug.php:925
 msgid "Apply Suggested Fixes"
@@ -4624,7 +4623,7 @@ msgstr "删除数据源配置文件项目"
 #: data_source_profiles.php:799
 #, php-format
 msgid "%s KBytes per Data Sources and %s Bytes for the Header"
-msgstr "每个数据源 %1$s KB，标头 %2$s 字节"
+msgstr "每个数据源 %s KB，标头 %s 字节"
 
 #: data_source_profiles.php:808
 #, php-format
@@ -5488,7 +5487,7 @@ msgstr "此过滤器将限制数据源下拉列表中可见的数据源。"
 #: graph_templates.php:1163 graph_templates.php:1178
 #, php-format
 msgid "Sync of Graph Template '%s' Resulted in %s Repairs!"
-msgstr "同步图形模板 '%1$s' 共进行了 %2$s 次修复！"
+msgstr "同步图形模板 '%s' 共进行了 %s 次修复！"
 
 #: graph_templates.php:1165 graph_templates.php:1180
 #, php-format
@@ -6298,7 +6297,7 @@ msgstr "选择所有行"
 #: graphs_new.php:678
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id of '%s'"
-msgstr "解析数据查询 '%1$s' (ID 为 '%2$s') 的数据查询资源 XML 文件时出错"
+msgstr "解析数据查询 '%s' (ID 为 '%s') 的数据查询资源 XML 文件时出错"
 
 #: graphs_new.php:695
 #, php-format
@@ -6308,7 +6307,7 @@ msgstr "分析数据查询'%s'（id为'%s'）的数据查询资源XML文件时�
 #: graphs_new.php:699
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'"
-msgstr "解析数据查询 '%1$s' (ID 为 '%2$s') 的数据查询资源 XML 文件时出错"
+msgstr "解析数据查询 '%s' (ID 为 '%s') 的数据查询资源 XML 文件时出错"
 
 #: graphs_new.php:740
 #, php-format
@@ -6355,7 +6354,7 @@ msgstr "默认设置"
 #: help.php:44
 #, php-format
 msgid "WARNING: Cacti Page:%s for User:%s Generated a Fatal Error %d!"
-msgstr "警告: 用户:%2$s 的 Cacti 页面:%1$s 产生致命错误 %3$d！"
+msgstr "警告: Cacti 页面:%s (用户:%s) 产生致命错误 %d！"
 
 #: help.php:74
 #, php-format
@@ -14636,7 +14635,7 @@ msgstr "未知设备模板"
 #: lib/api_automation.php:5404 lib/api_automation.php:5406
 #, php-format
 msgid "Automation Network Rule '%s' %s!"
-msgstr "自动化网络规则 '%1$s' %2$s！"
+msgstr "自动化网络规则 '%s' %s！"
 
 #: lib/api_automation.php:5410 lib/api_automation.php:5412
 #, php-format
@@ -14977,7 +14976,7 @@ msgstr " - 管理员视图"
 #: lib/clog_webapi.php:290
 #, php-format
 msgid "Log [Total Lines: %d %s - Filter active]"
-msgstr "日志 [总行数：%1$d %2$s - 筛选器已激活]"
+msgstr "日志 [总行数：%d %s - 筛选器已激活]"
 
 #: lib/clog_webapi.php:292
 #, php-format
@@ -15106,7 +15105,7 @@ msgstr "正在运行数据查询 [%s]。"
 #: lib/data_query.php:113
 #, php-format
 msgid "Found Type = '%s' [%s]."
-msgstr "找到Type = '%1$s' [%2$s]。"
+msgstr "找到Type = '%s' [%s]。"
 
 #: lib/data_query.php:135
 #, php-format
@@ -15195,7 +15194,7 @@ msgstr "检查排序字段更改.未检测到任何更改."
 #: lib/data_query.php:509
 #, php-format
 msgid "Detected New Sort Field: '%s' Old Sort Field '%s'"
-msgstr "检测到新排序字段: '%1$s'，旧排序字段 '%2$s'"
+msgstr "检测到新排序字段: '%s'，旧排序字段 '%s'"
 
 #: lib/data_query.php:526
 msgid "ERROR: New Sort Field not suitable.  Sort Field will not change."
@@ -15318,7 +15317,7 @@ msgstr "无法加载SNMP 会话。"
 #: lib/data_query.php:886
 #, php-format
 msgid "Tested Bulk Walk Size %d with a response of %2.4f."
-msgstr "已测试 Bulk Walk 大小 %1$d，响应为 %2$2.4f。"
+msgstr "已测试 Bulk Walk 大小 %d，响应为 %2.4f。"
 
 #: lib/data_query.php:898
 #, php-format
@@ -15360,12 +15359,12 @@ msgstr "在OID 中找到的索引: '%s' 值: '%s'"
 #: lib/data_query.php:966
 #, php-format
 msgid "List of indexes filtered by value @ '%s' Index Count: %s"
-msgstr "按值筛选的索引列表 @ '%1$s' 索引计数：%2$s"
+msgstr "按值筛选的索引列表 @ '%s' 索引计数：%s"
 
 #: lib/data_query.php:970
 #, php-format
 msgid "Filtered Index by value found at OID: '%s' value: '%s'"
-msgstr "按在 OID: '%1$s' 找到的值: '%2$s' 过滤索引"
+msgstr "按在 OID: '%s' 找到的值: '%s' 过滤索引"
 
 #: lib/data_query.php:987
 #, php-format
@@ -15400,7 +15399,7 @@ msgstr "找到OID 重写规则: 's/%s/%s/'"
 #: lib/data_query.php:1043
 #, php-format
 msgid "oid_rewrite at OID: '%s' new OID: '%s'"
-msgstr "oid_rewrite 位于 OID: '%1$s' 新 OID: '%2$s'"
+msgstr "oid_rewrite 位于 OID: '%s' 新 OID: '%s'"
 
 #: lib/data_query.php:1064
 #, php-format
@@ -15495,7 +15494,7 @@ msgstr ""
 #: lib/data_query.php:1750
 #, php-format
 msgid "rewrite_value: '%s' => '%s'"
-msgstr "rewrite_value: '%1$s' => '%2$s'"
+msgstr "rewrite_value: '%s' => '%s'"
 
 #: lib/data_query.php:1856
 msgid "Update graph data query cache complete"
@@ -15546,13 +15545,13 @@ msgstr "数据源未设置为活跃"
 #: lib/dsdebug.php:277
 #, php-format
 msgid "RRDfile Folder (rra) is not writable by Poller.  Folder owner: %s.  Poller runs as: %s"
-msgstr "Poller 对 RRDfile 文件夹 (rra) 没有写入权限。文件夹所有者: %1$s。Poller "
-"运行身份: %2$s"
+msgstr "Poller 对 RRDfile 文件夹 (rra) 没有写入权限。文件夹所有者: %s。Poller "
+"运行身份: %s"
 
 #: lib/dsdebug.php:282
 #, php-format
 msgid "RRDfile is not writable by Poller.  RRDfile owner: %s.  Poller runs as %s"
-msgstr "Poller 对 RRDfile 没有写入权限。RRDfile 所有者: %1$s。Poller 运行身份为 %2$s"
+msgstr "Poller 对 RRDfile 没有写入权限。RRDfile 所有者: %s。Poller 运行身份为 %s"
 
 #: lib/dsdebug.php:291
 msgid "RRDfile does not match Data Source"
@@ -15759,8 +15758,7 @@ msgstr "自安装以来"
 #: lib/functions.php:6565 lib/functions.php:6660
 #, php-format
 msgid "Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details."
-msgstr "由于以下错误，Cacti 已禁用插件 %1$s：%2$s！有关详细信息，请查看 Cacti "
-"日志文件。"
+msgstr "由于以下错误，Cacti 已禁用插件 %s：%s！有关详细信息，请查看 Cacti 日志文件。"
 
 #: lib/functions.php:6752
 #, php-format
@@ -16370,7 +16368,7 @@ msgstr ""
 #: lib/html.php:3403
 #, php-format
 msgid "Version %s | %s"
-msgstr "版本 %1$s | %2$s"
+msgstr "版本 %s | %s"
 
 #: lib/html_filter.php:89
 msgid "Apply filter to table"
@@ -17147,7 +17145,7 @@ msgstr "选"
 #: lib/html_utility.php:589 lib/html_utility.php:828
 #, php-format
 msgid "The regular expression \"%s\" is not valid. Error is %s"
-msgstr "正则表达式 \"%1$s\" 无效。错误为 %2$s"
+msgstr "正则表达式 \"%s\" 无效。错误为 %s"
 
 #: lib/html_utility.php:1040
 msgid "Cacti regular expressions are limited to 50 characters only for security reasons."
@@ -17184,7 +17182,7 @@ msgstr "宕机 (Thold)"
 #: lib/html_validate.php:97
 #, php-format
 msgid "Validation error for variable %s with a value of %s.  See backtrace below for more details."
-msgstr "变量 %1$s 的验证错误值为 %2$s. 有关更多详细信息,请参考下面的回溯。"
+msgstr "变量 %s 的验证错误值为 %s. 有关更多详细信息,请参考下面的回溯。"
 
 #: lib/html_validate.php:115
 msgid "Validation Error"
@@ -18678,12 +18676,12 @@ msgstr "由于设置原因, Ping 不能执行。"
 #: lib/plugins.php:681
 #, php-format
 msgid "'%s' versions '%s' above or in range are required to install '%s'. "
-msgstr "安装“%3$s”需要“%1$s”的“%2$s”及以上或范围内的版本。 "
+msgstr "需要“%s”的“%s”及以上或范围内的版本才能安装“%s”。 "
 
 #: lib/plugins.php:685
 #, php-format
 msgid "'%s' must first be installed before '%s' is installed. "
-msgstr "必须先安装“%1$s”，然后才能安装“%2$s”。 "
+msgstr "必须先安装“%s”，然后才能安装“%s”。 "
 
 #: lib/plugins.php:708
 msgid "Plugin cannot be installed."
@@ -18944,7 +18942,7 @@ msgstr "DS'%s' 在Cacti 定义中缺失"
 #: lib/rrd.php:3400 lib/rrd.php:3401
 #, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
-msgstr "Cacti RRA '%1$s' 与 '%4$s' 具有相同的 CF/步长 (%2$s, %3$s)"
+msgstr "Cacti RRA '%s' 的 CF/步长 (%s, %s) 与 '%s' 相同"
 
 #: lib/rrd.php:3415 lib/rrd.php:3416
 #, php-format
@@ -18959,7 +18957,7 @@ msgstr ""
 #: lib/rrd.php:3454
 #, php-format
 msgid "The XFF for Cacti RRA id is '%s' but should be '%s'"
-msgstr "Cacti RRA ID 的 XFF 为 '%1$s'，但应为 '%2$s'"
+msgstr "Cacti RRA ID 的 XFF 为 '%s'，但应为 '%s'"
 
 #: lib/rrd.php:3458
 #, php-format
@@ -19058,13 +19056,12 @@ msgstr "解析RRDtool 转储的XML 时出错"
 #: lib/rrd.php:4159
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file"
-msgstr "已从 RRD 文件移除 RRA (CF=%1$s, ROWS=%2$d, PDP_PER_ROW=%3$d, XFF=%4$1.2f)"
+msgstr "已从 RRD 文件移除 RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f)"
 
 #: lib/rrd.php:4199
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file"
-msgstr "正在将 RRA (CF=%1$s, ROWS=%2$d, PDP_PER_ROW=%3$d, XFF=%4$1.2f) 添加到 RRD "
-"文件"
+msgstr "正在将 RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) 添加到 RRD 文件"
 
 #: lib/rrd.php:4291 lib/rrd.php:4305
 #, php-format
@@ -20962,28 +20959,28 @@ msgstr "在本地启用插件"
 #, php-format
 msgid "WARNING: %s is out of sync with the Poller Interval for Poller[%d]!  The Poller Interval is %d seconds, with a maximum of a %d seconds, but %d seconds have passed since the last poll!"
 msgstr ""
-"警告: %1$s 与 Poller[%2$d] 的 Poller 间隔不同步！Poller 间隔为 %3$d 秒，"
-"最大为 %4$d 秒，但自上次轮询以来已过去 %5$d 秒！"
+"警告: %s 与 Poller[%d] 的 Poller 间隔不同步！Poller 间隔为 %d 秒，最大为 %d "
+"秒，但自上次轮询以来已过去 %d 秒！"
 
 #: poller.php:579
 #, php-format
 msgid "WARNING: There are %d processes detected as overrunning a polling cycle for Poller[%d], please investigate."
-msgstr "警告: 检测到 Poller[%2$d] 有 %1$d 个进程超出轮询周期，请进行调查。"
+msgstr "警告: 检测到有 %d 个进程超出轮询周期 (Poller[%d])，请进行调查。"
 
 #: poller.php:637
 #, php-format
 msgid "WARNING: Poller Output Table not empty for Poller[%d].  Issues: %d, %s."
-msgstr "警告: Poller[%1$d] 的 Poller 输出表不为空。问题数: %2$d，%3$s。"
+msgstr "警告: Poller[%d] 的 Poller 输出表不为空。问题数: %d，%s。"
 
 #: poller.php:671
 #, php-format
 msgid "ERROR: The spine path: %s is invalid for Poller[%d].  Poller can not continue!"
-msgstr "错误: Poller[%2$d] 的 Spine 路径: %1$s 无效。Poller 无法继续!"
+msgstr "错误: Spine 路径 %s 对 Poller[%d] 无效。Poller 无法继续！"
 
 #: poller.php:819
 #, php-format
 msgid "Maximum runtime of %d seconds exceeded for Poller[%d]. Exiting."
-msgstr "Poller[%2$d] 已超过最大运行时间 %1$d 秒。正在退出。"
+msgstr "已超过 %d 秒的最大运行时间 (Poller[%d])。正在退出。"
 
 #: poller.php:944
 msgid "WARNING: Cacti Polling Cycle Exceeded Poller Interval by "
@@ -22033,7 +22030,7 @@ msgstr "未找到数据库查询"
 
 #: support.php:503 support.php:650
 msgid "Cacti Poller"
-msgstr "Cacti Poller"
+msgstr "Cacti 轮询器"
 
 #: support.php:504
 msgid "Cacti Process"
@@ -22289,12 +22286,12 @@ msgstr "PHP服务器"
 #: support.php:1370 support.php:1372 support.php:1378 support.php:1380
 #, php-format
 msgid "Main Server: Current: %s, Min Required: %s"
-msgstr "主服务器：当前：%1$s，最低要求：%2$s"
+msgstr "主服务器：当前：%s，最低要求：%s"
 
 #: support.php:1388 support.php:1390
 #, php-format
 msgid "Local Server: Current: %s, Min Required: %s"
-msgstr "本地服务器：当前：%1$s，最低要求：%2$s"
+msgstr "本地服务器：当前：%s，最低要求：%s"
 
 #: support.php:1395
 msgid "Minimum Connections:"
