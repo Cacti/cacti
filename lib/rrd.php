@@ -57,14 +57,16 @@ function escape_command($command) {
  * @return void Null.
  */
 function rrdtool_set_language($lang = -1) {
-	global $prev_lang;
+	global $prev_lang, $prev_lc_numeric;
 
-	$prev_lang = getenv('LANG');
+	$prev_lang       = getenv('LANG');
+	$prev_lc_numeric = getenv('LC_NUMERIC');
 
 	if ($lang == -1) {
 		putenv('LANG=' . str_replace('-', '_', CACTI_LOCALE) . '.UTF-8');
 	} else {
-		putenv('LANG=en_EN.UTF-8');
+		putenv('LANG=C.UTF-8');
+		putenv('LC_NUMERIC=C');
 	}
 }
 
@@ -75,9 +77,19 @@ function rrdtool_set_language($lang = -1) {
  * @return void Null.
  */
 function rrdtool_reset_language() {
-	global $prev_lang;
+	global $prev_lang, $prev_lc_numeric;
 
-	putenv('LANG=' . $prev_lang);
+	if ($prev_lang === false || $prev_lang === null) {
+		putenv('LANG');
+	} else {
+		putenv('LANG=' . $prev_lang);
+	}
+
+	if ($prev_lc_numeric === false || $prev_lc_numeric === null) {
+		putenv('LC_NUMERIC');
+	} else {
+		putenv('LC_NUMERIC=' . $prev_lc_numeric);
+	}
 }
 
 /**
