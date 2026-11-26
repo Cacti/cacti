@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-26 09:54+0000\n"
+"PO-Revision-Date: 2026-11-26 19:34+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: French <https://translate.cacti.net/projects/cacti/core/fr/>\n"
 "Language: fr-FR\n"
@@ -2020,7 +2020,7 @@ msgstr "Entrez les IP ou les FQDN des serveurs DNS"
 
 #: automation_networks.php:803
 msgid "Discovery Threads"
-msgstr "Discovery Threads"
+msgstr "Threads de découverte"
 
 #: automation_networks.php:804
 msgid "Define the number of threads to use for discovering this Network Range."
@@ -3418,7 +3418,7 @@ msgstr "Type de l'article"
 
 #: cdef.php:437
 msgid "Choose what type of CDEF item this is."
-msgstr "Choisissez de quel type d'article CDEF il s'agit."
+msgstr "Choisissez de quel type d'élément CDEF il s'agit."
 
 #: cdef.php:443
 msgid "CDEF Item Value"
@@ -3750,8 +3750,8 @@ msgstr "Modèle de couleur [nouveau]"
 #, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
 msgstr ""
-"Le modèle de couleurs « %1$s » a propagé %2$d modèles d'agrégats et %3$d "
-"agrégats sans modèle"
+"Le modèle de couleurs « %s » a propagé %d modèles d'agrégats et %d agrégats "
+"sans modèle"
 
 #: color_templates.php:764
 #, php-format
@@ -4037,7 +4037,7 @@ msgstr "Problème"
 #: data_debug.php:910
 #, php-format
 msgid "For attribute '%s', issue found '%s'"
-msgstr "Pour l'attribut '%1$s', problème détecté '%2$s'"
+msgstr "Pour l'attribut '%s', problème détecté '%s'"
 
 #: data_debug.php:925
 msgid "Apply Suggested Fixes"
@@ -5029,7 +5029,7 @@ msgstr "Débogage des sources de données"
 
 #: data_sources.php:1189
 msgid "RRDtool Tune Info"
-msgstr "Info de réglage de l'outil RRD"
+msgstr "Informations de réglage RRDtool"
 
 #: data_sources.php:1217 data_templates.php:1329 include/global_form.php:605
 msgid "External"
@@ -5901,7 +5901,7 @@ msgstr "Modèle de données"
 #: graphs.php:889
 #, php-format
 msgid "Graph Items [graph: %s]"
-msgstr "Éléments du graphique[graphique : %s]"
+msgstr "Éléments du graphique [graphe : %s]"
 
 #: graphs.php:933
 msgid "Choose the Data Source to associate with this Graph Item."
@@ -6338,8 +6338,8 @@ msgstr "Définir par défaut"
 #, php-format
 msgid "WARNING: Cacti Page:%s for User:%s Generated a Fatal Error %d!"
 msgstr ""
-"AVERTISSEMENT : la page Cacti : %1$s pour l'utilisateur : %2$s a généré une "
-"erreur fatale %3$d !"
+"AVERTISSEMENT : la page Cacti : %s pour l'utilisateur : %s a généré une "
+"erreur fatale %d !"
 
 #: help.php:74
 #, php-format
@@ -7309,7 +7309,9 @@ msgstr "La synchronisation n'inclut pas le serveur Central Cacti Database."
 
 #: include/global_arrays.php:351
 msgid "When saving a Remote Data Collector, the Database Hostname must be unique from all others."
-msgstr "Lors de l'enregistrement d'un collecteur de données à distance, le nom d'hôte de la base de données doit être unique par rapport à tous les autres."
+msgstr ""
+"Lors de l'enregistrement d'un collecteur de données distant, le nom d'hôte "
+"de la base de données doit être unique par rapport à tous les autres."
 
 #: include/global_arrays.php:354
 msgid "Your Remote Database Hostname must be something other than 'localhost' for each Remote Data Collector."
@@ -7609,7 +7611,7 @@ msgstr "Temps de fonctionnement SNMP"
 
 #: include/global_arrays.php:694
 msgid "SNMP Desc"
-msgstr "SNMP Desc"
+msgstr "Description SNMP"
 
 #: include/global_arrays.php:695
 msgid "SNMP getNext"
@@ -7621,7 +7623,7 @@ msgstr "Ping"
 
 #: include/global_arrays.php:697
 msgid "Stream Device"
-msgstr "Stream Device"
+msgstr "Flux du périphérique"
 
 #: include/global_arrays.php:701
 msgid "ICMP Ping"
@@ -8096,7 +8098,7 @@ msgstr "Informations techniques"
 
 #: include/global_arrays.php:1141 include/global_arrays.php:3015
 msgid "Change Log"
-msgstr "Change Log"
+msgstr "Journal des modifications"
 
 #: include/global_arrays.php:1179
 msgid "Support"
@@ -8224,7 +8226,7 @@ msgstr "Statistiques du serveur Web"
 
 #: include/global_arrays.php:1218
 msgid "Kafka Stats"
-msgstr "Kafka Stats"
+msgstr "Statistiques Kafka"
 
 #: include/global_arrays.php:1219
 msgid "Kernel Stats"
@@ -8552,7 +8554,7 @@ msgstr "%d Mo"
 
 #: include/global_arrays.php:1680
 msgid "1 GByte"
-msgstr "Giga-octet"
+msgstr "1 Go"
 
 #: include/global_arrays.php:1681 include/global_arrays.php:1744
 #: lib/boost.php:62
@@ -9380,7 +9382,7 @@ msgstr "jours"
 
 #: include/global_arrays.php:3050
 msgid "hrs"
-msgstr "hrs"
+msgstr "h"
 
 #: include/global_arrays.php:3051
 msgid "mins"
@@ -9388,7 +9390,7 @@ msgstr "minutes"
 
 #: include/global_arrays.php:3052
 msgid "secs"
-msgstr "secs"
+msgstr "s"
 
 #: include/global_arrays.php:3068 lib/api_device.php:1717
 msgid "hours"
@@ -10214,7 +10216,7 @@ msgstr "[HRULE| VRULE]&nbsp;: La valeur de l'élément graphique.<br/> [COCHE]&n
 
 #: include/global_form.php:1075
 msgid "GPRINT Type"
-msgstr "Type GPRINT"
+msgstr "Type de GPRINT"
 
 #: include/global_form.php:1079
 msgid "If this graph item is a GPRINT, you can optionally choose another format here. You can define additional types under \"GPRINT Presets\"."
@@ -10252,7 +10254,7 @@ msgstr "Une légende s'affiche au survol du graphique et est également utilisé
 
 #: include/global_form.php:1106
 msgid "Insert Hard Return"
-msgstr "Insérer un retour dur"
+msgstr "Insérer un retour à la ligne"
 
 #: include/global_form.php:1109
 msgid "Forces the legend to the next line after this item."
@@ -10843,7 +10845,7 @@ msgstr "Opérateur."
 #: include/global_form.php:2286 include/global_form.php:2328
 #: include/global_form.php:2471
 msgid "Matching Pattern"
-msgstr "MOTIF DE CORRESPONDANCE"
+msgstr "Motif correspondant"
 
 #: include/global_form.php:2287 include/global_form.php:2329
 msgid "The Pattern to be matched against."
@@ -10982,7 +10984,7 @@ msgstr "Pointes"
 
 #: include/global_settings.php:49
 msgid "Mail/Reporting/DNS/Proxy"
-msgstr "Mail/Reporting/DNS/Proxy"
+msgstr "Messagerie/Rapports/DNS/Proxy"
 
 #: include/global_settings.php:54
 msgid "Time Spanning/Shifting"
@@ -11131,7 +11133,7 @@ msgstr ""
 
 #: include/global_settings.php:278
 msgid "RRDfile Auto Clean"
-msgstr "Nettoyage automatique du fichier RRD"
+msgstr "Nettoyage automatique des fichiers RRD"
 
 #: include/global_settings.php:279
 msgid "Automatically archive or delete RRDfiles when their corresponding Data Sources are removed from Cacti"
@@ -11149,7 +11151,7 @@ msgstr "La méthode utilisée pour nettoyer les fichiers RRD de Cacti après la 
 
 #: include/global_settings.php:289 plugins.php:52
 msgid "Archive"
-msgstr "Archive"
+msgstr "Archiver"
 
 #: include/global_settings.php:294
 msgid "Archive directory"
@@ -11193,7 +11195,7 @@ msgstr ""
 
 #: include/global_settings.php:330
 msgid "Log Input Validation Issues"
-msgstr "Problèmes de validation des entrées du journal"
+msgstr "Journaliser les problèmes de validation des entrées"
 
 #: include/global_settings.php:331
 msgid "Record when request fields are accessed without going through proper input validation"
@@ -11801,7 +11803,7 @@ msgstr "Utilisateur d'autorisation SNMP v3 par défaut pour tous les nouveaux ap
 
 #: include/global_settings.php:892
 msgid "Auth Passphrase (v3)"
-msgstr "Auth Passphrase (v3)"
+msgstr "Phrase secrète d'authentification (v3)"
 
 #: include/global_settings.php:893
 msgid "Default SNMP v3 Authorization Passphrase for all new Devices."
@@ -12074,7 +12076,7 @@ msgstr "Paramètres d&apos; affichage"
 
 #: include/global_settings.php:1188
 msgid "Exclusion Regex"
-msgstr "Exclusion Regex"
+msgstr "Expression régulière d'exclusion"
 
 #: include/global_settings.php:1189
 msgid "Any strings that match this regex will be excluded from the user display.  <strong>For example, if you want to exclude all log lines that include the words 'Admin' or 'Login' you would type '(Admin || Login)'</strong>"
@@ -12776,7 +12778,7 @@ msgstr "Vérifications de compromission (en ligne)"
 
 #: include/global_settings.php:1878
 msgid "Pwned Check"
-msgstr "Pwned Check"
+msgstr "Vérification Pwned"
 
 #: include/global_settings.php:1879
 msgid "Check password against haveibeenpwned.com"
@@ -13493,7 +13495,7 @@ msgstr "Serveur proxy RRDtool"
 
 #: include/global_settings.php:2594
 msgid "Structure RRDfile Paths"
-msgstr "Chemins de fichier RRD de structure"
+msgstr "Structurer les chemins de fichiers RRD"
 
 #: include/global_settings.php:2599
 msgid "Enable Structured Paths"
@@ -13598,7 +13600,7 @@ msgstr ""
 
 #: include/global_settings.php:2696
 msgid "Standard Deviation"
-msgstr "Standard Deviation"
+msgstr "Écart type"
 
 #: include/global_settings.php:2697
 msgid "Variance Based w/Outliers Removed"
@@ -13724,7 +13726,7 @@ msgstr "7,5 millions (60 mégabits)"
 
 #: include/global_settings.php:2809
 msgid "10 Million"
-msgstr "10 Million"
+msgstr "10 millions"
 
 #: include/global_settings.php:2810
 msgid "12.5 Million (100 Megabits)"
@@ -13740,7 +13742,7 @@ msgstr "75 millions (600 mégabits)"
 
 #: include/global_settings.php:2813
 msgid "100 Million"
-msgstr "100 Million"
+msgstr "100 millions"
 
 #: include/global_settings.php:2814
 msgid "125 Million (1 Gigabit)"
@@ -14189,7 +14191,7 @@ msgstr "Aide à l'installation de Cacti"
 #: install/install.php:99
 #, php-format
 msgid "Cacti Server v%s - Maintenance"
-msgstr "Cacti Server v %s - Maintenance"
+msgstr "Serveur Cacti v%s - Maintenance"
 
 #: install/install.php:110
 #, php-format
@@ -14409,7 +14411,7 @@ msgstr "Élément de règle [modifier l'élément de règle pour %s : %s]"
 #: lib/api_automation.php:2437
 #, php-format
 msgid "Rule Item [new rule item for %s: %s]"
-msgstr "Élément de règle [nouvel élément de règle pour %1$s : %2$s]"
+msgstr "Élément de règle [nouvel élément de règle pour %s : %s]"
 
 #: lib/api_automation.php:3457
 msgid "Added by Cacti Automation"
@@ -14620,7 +14622,7 @@ msgstr "Nouvelle branche"
 
 #: lib/auth.php:575
 msgid "Web Basic"
-msgstr "Web Basic"
+msgstr "Web basique"
 
 #: lib/auth.php:2336
 msgid "Device:(Hide Disabled)"
@@ -14823,7 +14825,7 @@ msgstr "Cliquez sur 'Continuer' pour supprimer le fichier des logs.<br><br><br><
 
 #: lib/clog_webapi.php:230 user_log.php:389 utilities.php:342
 msgid "Purge Log"
-msgstr "Journal de purge"
+msgstr "Purger le journal"
 
 #: lib/clog_webapi.php:254 utilities.php:287
 msgid "Log Filters"
@@ -15136,8 +15138,7 @@ msgstr "ERREUR : la requête de données n'a renvoyé aucun index."
 #: lib/data_query.php:715
 #, php-format
 msgid "Executing script for list of indexes '%s', Index Count: %s"
-msgstr ""
-"Exécution du script pour la liste des index '%1$s', nombre d'index : %2$s"
+msgstr "Exécution du script pour la liste des index '%s', nombre d'index : %s"
 
 #: lib/data_query.php:717
 msgid "Click to show Data Query output for 'index'"
@@ -15209,8 +15210,7 @@ msgstr "La taille de la marche en vrac est fixée à %d."
 #: lib/data_query.php:935
 #, php-format
 msgid "Executing SNMP get for num of indexes @ '%s' Index Count: %s"
-msgstr ""
-"Exécution de SNMP get pour le nombre d'index @ '%1$s' Nombre d'index : %2$s"
+msgstr "Exécution de SNMP get pour le nombre d'index @ '%s' Nombre d'index : %s"
 
 #: lib/data_query.php:937
 msgid "&lt;oid_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting oid_index entries"
@@ -15220,7 +15220,7 @@ msgstr "<oid_num_indexes> manquant dans le fichier XML, 'Index Count Changed' é
 #, php-format
 msgid "Executing SNMP walk for list of indexes @ '%s' Index Count: %s"
 msgstr ""
-"Exécution de SNMP walk pour la liste des index @ '%1$s' Nombre d'index : %2$s"
+"Exécution de SNMP walk pour la liste des index @ '%s' Nombre d'index : %s"
 
 #: lib/data_query.php:944
 msgid "No SNMP data returned"
@@ -15234,7 +15234,7 @@ msgstr "Index trouvé à l'OID : '%s' valeur : '%s'"
 #: lib/data_query.php:966
 #, php-format
 msgid "List of indexes filtered by value @ '%s' Index Count: %s"
-msgstr "Liste des index filtrés par valeur @ '%1$s' Nombre d'index : %2$s"
+msgstr "Liste des index filtrés par valeur @ '%s' Nombre d'index : %s"
 
 #: lib/data_query.php:970
 #, php-format
@@ -15244,7 +15244,7 @@ msgstr "Index filtré par valeur trouvé à l'OID : '%s' valeur : '%s'"
 #: lib/data_query.php:987
 #, php-format
 msgid "Filtering list of indexes @ '%s' Index Count: %s"
-msgstr "Filtrage de la liste des index @ '%1$s' Nombre d'index : %2$s"
+msgstr "Filtrage de la liste des index @ '%s' Nombre d'index : %s"
 
 #: lib/data_query.php:991
 #, php-format
@@ -15291,7 +15291,7 @@ msgstr "Champ '%s' %s"
 #: lib/data_query.php:1140
 #, php-format
 msgid "Executing SNMP get for %s oids (%s)"
-msgstr "Exécution de SNMP get pour %1$s OID (%2$s)"
+msgstr "Exécution de SNMP get pour %s OID (%s)"
 
 #: lib/data_query.php:1167 lib/data_query.php:1260 lib/data_query.php:1269
 #, php-format
@@ -15317,8 +15317,7 @@ msgstr "Résultat sauté pour les données @'%s'[key='%s', value='%s']]"
 #, php-format
 msgid "Got SNMP get result for data @ '%s' [value='%s'] (index: %s)"
 msgstr ""
-"Résultat SNMP get obtenu pour les données @ '%1$s' [valeur='%2$s'] (index : "
-"%3$s)"
+"Résultat SNMP get obtenu pour les données @ '%s' [valeur='%s'] (index : %s)"
 
 #: lib/data_query.php:1227
 #, php-format
@@ -15344,7 +15343,7 @@ msgstr "Aucun index[%s] dans value_index_parse, saut."
 #: lib/data_query.php:1342
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from %s]"
-msgstr "Élément trouvé [%1$s='%2$s'] index : %3$s [depuis %4$s]"
+msgstr "Élément trouvé [%s='%s'] index : %s [depuis %s]"
 
 #: lib/data_query.php:1386
 #, php-format
@@ -15354,14 +15353,13 @@ msgstr "Chaîne OCTET trouvée Valeur décodée'%s':'%s'"
 #: lib/data_query.php:1392 lib/data_query.php:1443
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid parse]"
-msgstr ""
-"Élément trouvé [%1$s='%2$s'] index : %3$s [depuis l'analyse regexp de l'OID]"
+msgstr "Élément trouvé [%s='%s'] index : %s [depuis l'analyse regexp de l'OID]"
 
 #: lib/data_query.php:1472
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid value parse]"
 msgstr ""
-"Élément trouvé [%1$s='%2$s'] index : %3$s "
+"Élément trouvé [%s='%s'] index : %s "
 "[depuis l'analyse regexp de la valeur de l'OID]"
 
 #: lib/data_query.php:1710
@@ -15559,7 +15557,10 @@ msgstr "Lien %s"
 
 #: lib/functions.php:5465
 msgid "Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting."
-msgstr "Erreur de l'expéditeur&nbsp;: Aucune adresse de destinataire définie&nbsp;!&nbsp;!<br>Si vous utilisez le lien <i>E-mail test</i>, veuillez définir le paramètre <b>E-mail d'alerte</b>."
+msgstr ""
+"Erreur de l'expéditeur : Aucune adresse de destinataire définie !!<br>Si "
+"vous utilisez le lien <i>E-mail test</i>, veuillez définir le paramètre <b>E-"
+"mail d'alerte</b>."
 
 #: lib/functions.php:5812
 #, php-format
@@ -15895,7 +15896,7 @@ msgstr "Maximum absolu"
 
 #: lib/html.php:2817
 msgid "Dry Run StdDev"
-msgstr "Dry Run StdDev"
+msgstr "Écart-type (simulation)"
 
 #: lib/html.php:2818
 msgid "Dry Run Variance"
@@ -16199,7 +16200,7 @@ msgstr "Rapide"
 
 #: lib/html.php:3151
 msgid "Save graph"
-msgstr "Save graph"
+msgstr "Enregistrer le graphique"
 
 #: lib/html.php:3153
 msgid "Timestamps"
@@ -17721,7 +17722,12 @@ msgstr "Les méthodes d'entrée de données Cacti qui appellent un script peuven
 
 #: lib/installer.php:2616
 msgid "Therefore, several versions ago, Cacti was enhanced to provide Whitelist capabilities on the these types of Data Input Methods.  Though this does secure Cacti more thoroughly, it does increase the amount of work required by the Cacti administrator to import and manage Templates and Packages."
-msgstr "Par conséquent, il y a plusieurs versions, Cacti a été amélioré pour fournir des fonctionnalités de liste blanche sur ces types de méthodes d'entrée de données.  Bien que cela sécurise Cacti de manière plus approfondie, cela augmente la quantité de travail requise par l'administrateur Cacti pour importer et gérer les modèles et les packages."
+msgstr ""
+"Par conséquent, il y a plusieurs versions, Cacti a été amélioré pour fournir "
+"des fonctionnalités de liste blanche sur ces types de méthodes d'entrée de "
+"données. Bien que cela sécurise Cacti de manière plus approfondie, cela "
+"augmente la quantité de travail requise par l'administrateur Cacti pour "
+"importer et gérer les modèles et les packages."
 
 #: lib/installer.php:2617
 msgid "The way that the Whitelisting works is that when you first import a Data Input Method, or you re-import a Data Input Method, and the script and or arguments change in any way, the Data Input Method, and all the corresponding Data Sources will be immediately disabled until the administrator validates that the Data Input Method is valid."
@@ -18473,7 +18479,7 @@ msgstr "Délai d'attente du ping ICMP dépassé"
 #: lib/ping.php:232 lib/ping.php:250
 #, php-format
 msgid "ICMP Ping Success (%s ms)"
-msgstr "Réussite du ping ICMP (%s ms)"
+msgstr "Ping ICMP réussi (%s ms)"
 
 #: lib/ping.php:237 lib/ping.php:255
 msgid "ICMP ping Timed out"
@@ -18527,7 +18533,7 @@ msgstr "Succès du ping TCP (%s ms)"
 
 #: lib/ping.php:604
 msgid "TCP ping timed out"
-msgstr "Le ping TCP a expiré"
+msgstr "Délai du ping TCP dépassé"
 
 #: lib/ping.php:631
 msgid "Ping not performed due to setting."
@@ -19055,7 +19061,13 @@ msgstr ""
 #: lib/utility.php:1236
 #, php-format
 msgid "When using InnoDB storage it is important to keep your table spaces separate.  This makes managing the tables simpler for long time users of %s.  If you are running with this currently off, you can migrate to the per file storage by enabling the feature, and then running an alter statement on all InnoDB tables."
-msgstr "Lorsque vous utilisez le stockage InnoDB, il est important de garder vos espaces de table séparés.  Cela simplifie la gestion des tables pour les utilisateurs de longue date de %s.  Si cette option est actuellement désactivée, vous pouvez migrer vers le stockage par fichier en activant la fonctionnalité, puis en exécutant une instruction alter sur toutes les tables InnoDB."
+msgstr ""
+"Lors de l'utilisation du stockage InnoDB, il est important de garder vos "
+"espaces de table séparés.  Cela simplifie la gestion des tables pour les "
+"utilisateurs de longue date de %s.  Si cette option est actuellement "
+"désactivée, vous pouvez migrer vers le stockage par fichier en activant la "
+"fonctionnalité, puis en exécutant une instruction de modification sur toutes "
+"les tables InnoDB."
 
 #: lib/utility.php:1242
 msgid "When using innodb_file_per_table, it is important to set the innodb_file_format to Barracuda.  This setting will allow longer indexes important for certain Cacti tables."
@@ -19197,7 +19209,7 @@ msgstr "PHP %s est la version minimale"
 #: lib/utility.php:2005
 #, php-format
 msgid "A minimum of %s memory limit"
-msgstr "Un minimum de %s limite de mémoire"
+msgstr "Une limite de mémoire minimale de %s"
 
 #: lib/utility.php:2007
 #, php-format
@@ -19428,7 +19440,7 @@ msgstr "Vous avez été déconnecté de Cacti en raison de %s."
 #: logout.php:61
 #, php-format
 msgid "Please close your browser or %sLogin Again%s"
-msgstr "Veuillez fermer votre navigateur ou %1$svous reconnecter%2$s"
+msgstr "Veuillez fermer votre navigateur ou %svous reconnecter%s"
 
 #: logout.php:62
 msgid "Cookies have been cleared"
@@ -19479,7 +19491,7 @@ msgstr "Genre"
 
 #: managers.php:587 utilities.php:2014
 msgid "Max-Access"
-msgstr "Max-Access"
+msgstr "Accès maximal"
 
 #: managers.php:588
 msgid "Monitored"
@@ -20532,7 +20544,7 @@ msgstr "L'état de ce plugin."
 
 #: plugins.php:1162
 msgid "Cacti Releases"
-msgstr "Cacti Releases"
+msgstr "Versions de Cacti"
 
 #: plugins.php:1165
 msgid "The Cacti Releases that are eligible to use this Plugin.  The format of the allowed versions follows common naming."
@@ -20872,7 +20884,7 @@ msgstr ""
 
 #: poller_automation.php:1037 poller_automation.php:1091
 msgid "Cacti Primary Admin"
-msgstr "Administrateur principal de Cacti"
+msgstr "Administrateur principal Cacti"
 
 #: poller_automation.php:1189
 msgid "Cacti Automation Report requires an html based Email client"
@@ -21193,7 +21205,7 @@ msgstr "Le statut de ce collecteur de données."
 
 #: pollers.php:1082
 msgid "Proc/Threads"
-msgstr "Proc/Threads"
+msgstr "Processus/Threads"
 
 #: pollers.php:1085
 msgid "The Number of Poller Processes and Threads for this Data Collector."
@@ -21346,7 +21358,7 @@ msgstr "Supprimer"
 #: rrdcleaner.php:31
 msgctxt "dropdown action"
 msgid "Archive"
-msgstr "Archive"
+msgstr "Archiver"
 
 #: rrdcleaner.php:373
 msgid "RRD Files"
@@ -21425,7 +21437,7 @@ msgstr ""
 #: settings.php:138
 #, php-format
 msgid "Cacti Settings (%s)%s"
-msgstr "Paramètres de Cacti (%1$s)%2$s"
+msgstr "Paramètres de Cacti (%s)%s"
 
 #: settings.php:248
 msgid "Changing Permission Model Warning"
@@ -21873,7 +21885,7 @@ msgstr "Aucune requête de base de données trouvée"
 
 #: support.php:503 support.php:650
 msgid "Cacti Poller"
-msgstr "Cacti Poller"
+msgstr "Sondeur Cacti"
 
 #: support.php:504
 msgid "Cacti Process"
@@ -22058,7 +22070,9 @@ msgstr "ERREUR&nbsp;: la version de RRDtool installée ne dépasse pas la versio
 #: support.php:1174
 #, php-format
 msgid "ERROR: RRDtool 1.2.x+ does not support the GIF images format, but %d\" graph(s) and/or templates have GIF set as the image format."
-msgstr "ERREUR : RRDtool 1.2.x+ ne prend pas en charge le format d'images GIF, mais les graphiques et/ou modèles %d\"ont le format GIF défini comme format d'image."
+msgstr ""
+"ERREUR : RRDtool 1.2.x+ ne prend pas en charge le format d'images GIF, mais %"
+"d\" graphique(s) et/ou modèles ont le format GIF défini comme format d'image."
 
 #: support.php:1189
 msgid "General Information"
@@ -22158,7 +22172,7 @@ msgstr "Temps d'exécution du script"
 
 #: support.php:1408
 msgid "Max OID"
-msgstr "OID max"
+msgstr "OID maximum"
 
 #: support.php:1413
 msgid "Last Run Statistics"
@@ -22915,7 +22929,7 @@ msgstr "Adhésion au groupe"
 
 #: user_admin.php:1812 user_group_admin.php:1667
 msgid "Graph Perms"
-msgstr "Graph Perms"
+msgstr "Permissions des graphiques"
 
 #: user_admin.php:1813 user_group_admin.php:1668
 msgid "Device Perms"
@@ -22923,7 +22937,7 @@ msgstr "Permes de l'appareil"
 
 #: user_admin.php:1814 user_group_admin.php:1669
 msgid "Template Perms"
-msgstr "Template Perms"
+msgstr "Permissions de modèle"
 
 #: user_admin.php:1815 user_group_admin.php:1670
 msgid "Tree Perms"
@@ -23180,7 +23194,7 @@ msgstr ""
 
 #: user_domains.php:388
 msgid "Distinguished Name (DN)"
-msgstr "Distinguished Name (DN)"
+msgstr "Nom distinctif (DN)"
 
 #: user_domains.php:389
 msgid "The \"Distinguished Name\" syntax, applicable for both OpenLDAP and Windows AD configurations, offers flexibility in defining user identity. For OpenLDAP, the format follows this structure: <i>\"uid=&lt;username&gt;,ou=people,dc=domain,dc=local\"</i>. Windows AD provides an alternative syntax: <i>\"&lt;username&gt;@win2kdomain.local\"</i>, commonly known as \"userPrincipalName (UPN)\". In this context, \"&lt;username&gt;\" represents the specific username provided during the login prompt. This is particularly pertinent when operating in \"No Searching\" mode, or \"Require Group Membership\" enabled."
@@ -23713,7 +23727,10 @@ msgstr "Page support technique Cacti.  Utilisé par les développeurs et les per
 
 #: utilities.php:1227
 msgid "The Cacti Log stores statistic, error and other message depending on system settings.  This information can be used to identify problems with the poller and application."
-msgstr "Le journal Cacti stocke les statistiques, les erreurs et d'autres messages en fonction des paramètres du système.  Ces informations peuvent être utilisées pour identifier les problèmes avec le sondeur et l'application."
+msgstr ""
+"Le journal Cacti enregistre les statistiques, les erreurs et autres messages "
+"en fonction des paramètres du système.  Cette information peut être utilisée "
+"pour identifier les problèmes avec le scrutateur et l'application."
 
 #: utilities.php:1231
 msgid "Allows Administrators to browse the user log.  Administrators can filter and export the log as well."
