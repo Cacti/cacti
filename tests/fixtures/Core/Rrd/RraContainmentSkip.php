@@ -12,68 +12,89 @@ if (PHP_SAPI !== 'cli') {
 $root                              = dirname(__DIR__, 4);
 $GLOBALS['cacti_fixture_contract'] = [
 	'name'      => 'rra-containment-skip', 'complete' => false, 'assertions' => 0,
-	'producers' => ['tests/fixtures/Core/Rrd/RraContainmentSkip.php', 'tests/Helpers/FixtureCoverage.php', 'tests/Helpers/RequestCoverage.php'],
+	'producers' => ['tests/fixtures/Core/Rrd/RraContainmentSkip.php', 'tests/Helpers/SourceSlice.php', 'tests/Helpers/FixtureCoverage.php', 'tests/Helpers/RequestCoverage.php'],
 ];
 require $root . '/tests/Helpers/FixtureCoverage.php';
 
-/*
- * Collaborators the migration loop's RRA-containment guard calls.  Confining
- * them to this fixture namespace lets the unchanged guard statement run outside
- * cli/structure_rra_paths.php's database- and poller-driven main loop.  The
- * stub reports the path as outside the RRA tree so the guard takes its skip
- * branch, which is the behaviour under test.
- */
-function data_source_path_within_rra(string $path) : bool {
-	return false;
+require $root . '/include/vendor/autoload.php';
+require $root . '/tests/Helpers/SourceSlice.php';
+
+function db_fetch_cell(string $sql) : int {
+	$GLOBALS['lock_queries'][] = $sql;
+
+	return 1;
 }
 
-function db_fetch_cell_prepared(string $sql, array $params = []) {
-	return '1';
+function db_fetch_cell_prepared(string $sql, array $params) : int {
+	$GLOBALS['lock_queries'][] = $params[0];
+
+	return 1;
 }
 
-// Slice the unchanged guard statement out of the CLI script, preserving line
-// numbers so Xdebug results map back, and wrap it in a one-iteration loop so
-// its `continue` is valid in isolation.
-$file   = $root . '/cli/structure_rra_paths.php';
-$source = (string) file_get_contents($file);
+$directory = sys_get_temp_dir() . '/cacti-rra-' . bin2hex(random_bytes(8));
+mkdir($directory . '/rra', 0700, true);
+define('CACTI_PATH_RRA', $directory . '/rra');
 
-if (!preg_match('/^\tif \(file_exists\(\$old_rrd_path\).*?^\t\}/ms', $source, $match, PREG_OFFSET_CAPTURE)) {
-	throw new \RuntimeException('Cannot locate the RRA-containment guard');
+foreach (['cacti_normalize_windows_path', 'cacti_path_is_within', 'data_source_path_within_rra'] as $function) {
+	cacti_fixture_source_function($root . '/lib/functions.php', $function, __NAMESPACE__);
 }
-$line      = substr_count(substr($source, 0, $match[0][1]), "\n") + 1;
-$temporary = tempnam(sys_get_temp_dir(), 'cacti-rra-guard-');
-file_put_contents(
-	$temporary,
-	'<?php namespace ' . __NAMESPACE__ . ';' . str_repeat("\n", $line - 2)
-		. "foreach (\$__rows as \$_) {\n" . $match[0][0] . "\n}\n"
-);
-$GLOBALS['cacti_fixture_source_map'][$temporary] = realpath($file);
 
-$old_rrd_path = tempnam(sys_get_temp_dir(), 'cacti-not-an-rrd-');
-file_put_contents($old_rrd_path, 'not an rrd');
-$local_data_id = 42;
-$warn_count    = 0;
-$__rows        = [0];
-
-ob_start();
+$external = $directory . '/manual.rrd';
+$missing  = $directory . '/offline.rrd';
+$managed  = CACTI_PATH_RRA . '/managed.rrd';
+$invalid  = CACTI_PATH_RRA . '/notes.txt';
+file_put_contents($external, 'external sample');
+file_put_contents($managed, 'managed sample');
+file_put_contents($invalid, 'notes');
+$GLOBALS['lock_queries'] = [];
 
 try {
-	require $temporary;
+	$rows = [];
+
+	foreach ([$external, $missing, $managed, $invalid] as $index => $path) {
+		$rows[] = [
+			'local_data_id'    => $index + 1,
+			'data_source_path' => $path,
+			'rrd_path'         => $path,
+			'new_rrd_path'     => $index < 2 ? CACTI_PATH_RRA . '/device/new.rrd' : $path,
+		];
+	}
+
+	ob_start();
+
+	try {
+		$result = cacti_fixture_source_block($root . '/cli/structure_rra_paths.php', __NAMESPACE__,
+			'/^(foreach \(\$data_sources as \$info\) \{.*?^\})/ms',
+			['data_sources' => $rows, 'done_count' => 0, 'warn_count' => 0, 'skip_count' => 0, 'started' => false]);
+	} finally {
+		$output = (string) ob_get_clean();
+	}
+
+	if ($result['skip_count'] !== 3 || $result['warn_count'] !== 1 || $result['done_count'] !== 0) {
+		throw new \RuntimeException('Expected both external RRDs and the correctly placed managed RRD to be skipped');
+	}
+
+	if ($output !== "WARNING: RRD Path '$invalid' is not an RRD file inside the RRA directory, Skipping" . PHP_EOL) {
+		throw new \RuntimeException('Only the managed non-RRD file should generate a warning');
+	}
+
+	if (file_get_contents($external) !== 'external sample' || file_exists($missing) || is_dir(CACTI_PATH_RRA . '/device')) {
+		throw new \RuntimeException('Manual files and their proposed destinations must stay untouched');
+	}
+
+	if ($GLOBALS['lock_queries'] !== ["SELECT GET_LOCK('boost.single_ds.3', 1)", "SELECT RELEASE_LOCK('boost.single_ds.3')",
+		"SELECT GET_LOCK('boost.single_ds.4', 1)", 'boost.single_ds.4']) {
+		throw new \RuntimeException('Only managed files should acquire and release a migration lock');
+	}
 } finally {
-	unlink($temporary);
-	$printed = (string) ob_get_clean();
-	@unlink($old_rrd_path);
+	unlink($invalid);
+	unlink($managed);
+	unlink($external);
+	rmdir(CACTI_PATH_RRA);
+	rmdir($directory);
 }
 
-if ($warn_count !== 1) {
-	throw new \RuntimeException('The guard must increment the warning count when skipping a non-RRA path');
-}
-
-if (strpos($printed, 'not an RRD file inside the RRA directory') === false) {
-	throw new \RuntimeException('The guard must warn about the skipped path');
-}
-
-$GLOBALS['cacti_fixture_contract']['assertions'] = 2;
+$GLOBALS['cacti_fixture_contract']['assertions'] = 4;
 $GLOBALS['cacti_fixture_contract']['complete']   = true;
 
-print "PASS: RRA-containment guard skips a stored path outside the RRA directory\n";
+print "PASS: RRA-containment guard skips external RRDs quietly and warns for managed non-RRD files\n";

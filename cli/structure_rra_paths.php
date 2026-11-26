@@ -211,6 +211,15 @@ foreach ($data_sources as $info) {
 	$old_rrd_path  = $info['rrd_path'];
 	$local_data_id = $info['local_data_id'];
 
+	// A manual RRD can live outside the managed tree, even when its storage is offline.
+	if (\Symfony\Component\Filesystem\Path::isAbsolute((string) $info['data_source_path'])
+		&& str_ends_with(strtolower($old_rrd_path), '.rrd')
+		&& !data_source_path_within_rra($old_rrd_path)) {
+		$skip_count++;
+
+		continue;
+	}
+
 	// acquire lock in order to prevent race conditions
 	while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds.$local_data_id', 1)")) {
 		usleep(50000);
