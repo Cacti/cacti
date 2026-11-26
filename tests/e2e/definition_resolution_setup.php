@@ -55,3 +55,12 @@ foreach ($definitions as $kind => $definition) {
 		$item->execute([...$row, bin2hex(random_bytes(16))]);
 	}
 }
+
+if (getenv('CACTI_DEFINITION_KIND') === 'sites') {
+	$site = $conn->prepare('INSERT INTO sites (id, name, address1, city, latitude, longitude, zoom, notes, disabled) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
+
+	foreach ([9100 => 'E2E Base Site', 9101 => 'E2E Toggle Site', 9102 => 'E2E Delete Site', 9103 => 'E2E Stale Site'] as $id => $name) {
+		$site->execute([$id, $name, '42 Example Street', 'Denver', 39.7, -104.9, 12, 'Preserve site notes', '']);
+	}
+	$conn->exec("INSERT INTO host (id, hostname, description, site_id, deleted) VALUES (9100, '127.0.0.1', 'E2E Active Site Device', 9102, ''), (9101, '127.0.0.2', 'E2E Deleted Site Device', 9102, 'on')");
+}

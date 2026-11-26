@@ -1,0 +1,88 @@
+name: Sites Coverage
+
+on:
+  pull_request:
+    paths:
+      - 'sites.php'
+      - 'lib/sites.php'
+      - 'lib/Sites/**'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'tests/phpunit-sites.xml'
+      - 'tests/Unit/Core/Sites/**'
+      - 'tests/e2e/definition_resolution*'
+      - 'tests/e2e/sites*'
+      - 'tests/e2e/tests/sites-management.spec.ts'
+      - '.github/workflows/sites-coverage.yml'
+  push:
+    branches: [develop]
+    paths:
+      - 'sites.php'
+      - 'lib/sites.php'
+      - 'lib/Sites/**'
+      - 'tests/phpunit-sites.xml'
+      - 'tests/Unit/Core/Sites/**'
+      - 'tests/e2e/definition_resolution*'
+      - 'tests/e2e/sites*'
+      - 'tests/e2e/tests/sites-management.spec.ts'
+      - '.github/workflows/sites-coverage.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sites-coverage-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  coverage:
+    name: Sites 100% PHP coverage and browser contracts
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: '8.4'
+          coverage: xdebug
+          extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
+          dependency-mode: locked-coverage
+          install-args: --prefer-dist --no-progress --no-interaction
+      - name: Enforce 100 percent Sites service line coverage
+        env:
+          XDEBUG_MODE: coverage
+        run: include/vendor/bin/pest --configuration=tests/phpunit-sites.xml --coverage --min=100
+      - uses: jdx/mise-action@9b200bcecbfd6303e69a4a261b2e09e3757440a7
+        with:
+          tool_versions: node 22.22.2
+          install_args: node
+      - name: Exercise authenticated browser and MariaDB contracts
+        env:
+          CACTI_PR_COVERAGE_OUTPUT: ${{ runner.temp }}/sites-coverage
+        run: bash tests/e2e/sites-coverage.sh
+      - name: Include controller changes in the coverage gate
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_COMMIT: ${{ github.event.pull_request.base.sha }}
+          XDEBUG_MODE: coverage
+        run: |
+          set -euo pipefail
+          python3 tests/tools/check_changed_php_coverage.py --base "$BASE_COMMIT" \
+            --prepare-config tests/phpunit-sites.xml --output-config phpunit-sites-changed.xml
+          include/vendor/bin/pest --configuration=phpunit-sites-changed.xml tests/Unit/Core/Sites/SiteServiceTest.php --coverage-clover=coverage-sites.xml
+          python3 tests/tools/check_changed_php_coverage.py --base "$BASE_COMMIT" \
+            --report coverage-sites.xml --request-reports "${{ runner.temp }}/sites-coverage" --minimum 100
+      - name: Preserve browser, database, and PHP coverage evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: sites-coverage
+          path: |
+            coverage-sites.xml
+            ${{ runner.temp }}/sites-coverage
+          if-no-files-found: warn
