@@ -2,7 +2,7 @@
 'use strict';
 
 // Shared support for the theme tests: a recording stand-in for jQuery and a loader that
-// evaluates a theme's main.js in a fresh context. It defines no tests; the .test.js name
+// evaluates a theme's main.js, after the layout.js functions the themes share, in a fresh context. It defines no tests; the .test.js name
 // marks it as test code for the tools that tell test files from shipped code by name.
 
 const fs = require('node:fs');
@@ -14,6 +14,7 @@ const root = path.join(__dirname, '..', '..');
 // The loader only evaluates the theme scripts shipped in include/themes. They are read here,
 // from fixed paths, so that no caller-supplied value reaches the file name or the script.
 const THEMES = Object.freeze(['classic', 'dark', 'deepness', 'midwinter', 'modern', 'paper-plane', 'paw', 'sunrise']);
+const layout = fs.readFileSync(path.join(root, 'include', 'layout.js'), 'utf8');
 const SOURCES = new Map(THEMES.map((name) => [name, fs.readFileSync(path.join(root, 'include', 'themes', name, 'main.js'), 'utf8')]));
 
 const GETTERS = new Set(['attr', 'data', 'prop', 'css']);
@@ -99,6 +100,23 @@ function fakeJQuery(options = {}) {
 	return $;
 }
 
+/* The source of one top-level function of include/layout.js. */
+function layoutFunction(name) {
+	const start = layout.indexOf('function ' + name + '(');
+	let depth = 0;
+
+	for (let offset = layout.indexOf('{', start); start !== -1 && offset < layout.length; offset++) {
+		if (layout[offset] === '{') depth++;
+		if (layout[offset] === '}' && --depth === 0) return layout.slice(start, offset + 1);
+	}
+
+	throw new Error('include/layout.js does not define ' + name + '()');
+}
+
+// What the themes with a navigation menu call in include/layout.js. A theme is evaluated
+// after these, as on a page, so a theme that defines one of them still replaces it.
+const SHARED = ['setHostAutocomplete', 'setMenuVisibility'].map(layoutFunction).join('\n');
+
 const builtins = new Set(Object.getOwnPropertyNames(globalThis));
 
 function placeholder(name) {
@@ -129,7 +147,7 @@ function loadTheme(theme, globals = {}) {
 		}
 	}));
 
-	vm.runInContext(source, context);
+	vm.runInContext(SHARED + '\n' + source, context);
 
 	return context;
 }
