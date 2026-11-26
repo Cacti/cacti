@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: Cacti Russian Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-25 10:19+0000\n"
+"PO-Revision-Date: 2026-11-26 05:54+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Russian <https://translate.cacti.net/projects/cacti/core/ru/>"
 "\n"
@@ -348,9 +348,11 @@ msgstr ""
 "дереве %s."
 
 #: aggregate_graphs.php:971
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Duplicate following Aggregate Graphs on Tree %s."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы поместить следующий график(и) агрегирования под ветвь дерева."
+msgstr ""
+"Нажмите \"Продолжить\", чтобы дублировать следующие агрегированные графики в "
+"дереве %s."
 
 #: aggregate_graphs.php:972
 #, fuzzy
@@ -1491,7 +1493,7 @@ msgstr "Экспорт в файл"
 #: automation_devices.php:613 data_debug.php:1080 lib/clog_webapi.php:220
 #: lib/clog_webapi.php:566 managers.php:772
 msgid "Purge"
-msgstr "Очистить"
+msgstr "Вычистить"
 
 #: automation_devices.php:613
 msgid "Purge Discovered Devices"
@@ -1806,7 +1808,7 @@ msgstr "Ежемесячно"
 
 #: automation_networks.php:46
 msgid "Monthly on Day"
-msgstr "Ежемесячно в день недели"
+msgstr "Ежемесячно в день месяца"
 
 #: automation_networks.php:123
 msgid "Import Network Discovery Rule from Local File"
@@ -3243,9 +3245,8 @@ msgid "Exit On Match"
 msgstr "Выход при совпадении"
 
 #: automation_templates.php:1176
-#, fuzzy
 msgid "No Associated Tree Rules"
-msgstr "Нет запросов на ассоциированные данные."
+msgstr "Нет связанных правил дерева"
 
 #: automation_templates.php:1185
 #, fuzzy
@@ -3647,9 +3648,9 @@ msgid "Full"
 msgstr "Полное Имя"
 
 #: changelog.php:99
-#, fuzzy, php-format
+#, php-format
 msgid "Change Log [%s]"
-msgstr "Список изменений"
+msgstr "Журнал изменений [%s]"
 
 #: changelog.php:160 support.php:1018
 #, php-format
@@ -3661,14 +3662,12 @@ msgid "Unnamed Color"
 msgstr "Безымянный Цвет"
 
 #: color.php:182
-#, fuzzy
 msgid "Click 'Continue' to Delete the following Color."
-msgstr "Нажмите \"Продолжить\", чтобы удалить следующий цвет"
+msgstr "Нажмите \"Продолжить\", чтобы удалить следующий цвет."
 
 #: color.php:183
-#, fuzzy
 msgid "Click 'Continue' to Delete following Colors."
-msgstr "Нажмите \"Продолжить\", чтобы удалить следующий цвет"
+msgstr "Нажмите \"Продолжить\", чтобы удалить следующие цвета."
 
 #: color.php:184
 #, fuzzy
@@ -3810,14 +3809,12 @@ msgid "No Items"
 msgstr "Нет элементов"
 
 #: color_templates.php:319
-#, fuzzy
 msgid "Click 'Continue' to Delete the following Color Template."
-msgstr "Нажмите \"Продолжить\", чтобы удалить следующий Цветовой Шаблон"
+msgstr "Нажмите \"Продолжить\", чтобы удалить следующий цветовой шаблон."
 
 #: color_templates.php:320
-#, fuzzy
 msgid "Click 'Continue' to Delete following Color Templates."
-msgstr "Нажмите \"Продолжить\", чтобы удалить следующий Цветовой Шаблон"
+msgstr "Нажмите \"Продолжить\", чтобы удалить следующие цветовые шаблоны."
 
 #: color_templates.php:321
 #, fuzzy
@@ -4284,14 +4281,12 @@ msgid "Debugging"
 msgstr "Отладка"
 
 #: data_input.php:248
-#, fuzzy
 msgid "Click 'Continue' to Delete the following Data Input Method."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы удалить следующий метод ввода данных"
+msgstr "Нажмите \"Продолжить\", чтобы удалить следующий метод ввода данных."
 
 #: data_input.php:249
-#, fuzzy
 msgid "Click 'Continue' to Delete following Data Input Methods."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы удалить следующий метод ввода данных"
+msgstr "Нажмите \"Продолжить\", чтобы удалить следующие методы ввода данных."
 
 #: data_input.php:250
 #, fuzzy
@@ -4724,14 +4719,14 @@ msgid "Changing the Heartbeat from this page, does not change the Heartbeat for 
 msgstr "Изменение частоты Heartbeat на этой странице не приводит к изменению частоты Heartbeat для существующих источников данных. Используйте функцию RRDtool 'tune', чтобы внести это изменение в ваши существующие файлы RRD, или запустите CLI утилиту update_heartbeat.php чтобы изменить.<br>"
 
 #: data_source_profiles.php:300
-#, fuzzy
 msgid "Click 'Continue' to Delete the following Data Source Profile."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы удалить следующий Профиль источника данных"
+msgstr ""
+"Нажмите \"Продолжить\", чтобы удалить следующий профиль источника данных."
 
 #: data_source_profiles.php:301
-#, fuzzy
 msgid "Click 'Continue' to Delete following Data Source Profiles."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы удалить следующий Профиль источника данных"
+msgstr ""
+"Нажмите \"Продолжить\", чтобы удалить следующие профили источников данных."
 
 #: data_source_profiles.php:302
 #, fuzzy
@@ -4902,7 +4897,7 @@ msgstr "%d Месяц"
 #: rrdcleaner.php:527
 #, php-format
 msgid "%d Months"
-msgstr "%d мес."
+msgstr "%d месяцев"
 
 #: data_source_profiles.php:842 include/global_arrays.php:752
 #: include/global_arrays.php:808 include/global_arrays.php:829
@@ -4920,7 +4915,7 @@ msgstr "%d Неделя"
 #: include/global_settings.php:3228 rrdcleaner.php:522 rrdcleaner.php:523
 #, php-format
 msgid "%d Weeks"
-msgstr "%d нед."
+msgstr "%d недель"
 
 #: data_source_profiles.php:851 include/global_arrays.php:751
 #: include/global_arrays.php:795 include/global_arrays.php:805
@@ -5034,9 +5029,8 @@ msgid "Reapply Suggested Names"
 msgstr "Применить Предлагаемые Имена"
 
 #: data_sources.php:538
-#, fuzzy
 msgid "Click 'Continue' to Delete the following Data Source."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы удалить следующий Источник данных"
+msgstr "Нажмите \"Продолжить\", чтобы удалить следующий источник данных."
 
 #: data_sources.php:539
 msgid "Click 'Continue' to Delete following Data Sources."
@@ -5415,9 +5409,8 @@ msgid "The Poller Cache operation has been launched in background for Data Templ
 msgstr ""
 
 #: data_templates.php:490
-#, fuzzy
 msgid "Click 'Continue' to Delete the following Data Template."
-msgstr "Нажмите \"Продолжить\", чтобы удалить следующий Цветовой Шаблон"
+msgstr "Нажмите «Продолжить», чтобы удалить следующий шаблон данных."
 
 #: data_templates.php:491
 #, fuzzy
@@ -5544,9 +5537,11 @@ msgid "WARNING: Data Loss can Occur"
 msgstr "ВНИМАНИЕ! Возможна потеря данных"
 
 #: data_templates.php:1009
-#, fuzzy
 msgid "After you uncheck this checkbox and then Save the Data Template, any existing Data Sources based on this Data Template will lose their Custom Data.  This can result in broken Data Collection and Graphs"
-msgstr "После того, как вы снимите этот флажок, а затем сохраните шаблон данных, любые существующие источники данных, основанные на этом шаблоне данных, потеряют свои пользовательские данные. Это может привести к нарушению сбора данных и графиков."
+msgstr ""
+"После снятия этого флажка и сохранения шаблона данных все существующие "
+"источники данных на основе этого шаблона потеряют свои пользовательские "
+"данные. Это может привести к нарушению сбора данных и построения графиков"
 
 #: data_templates.php:1076 data_templates.php:1141 data_templates.php:1144
 #: data_templates.php:1298 include/global_arrays.php:1372
@@ -5702,9 +5697,9 @@ msgid "GRAPH DOES NOT EXIST"
 msgstr "ГРАФИК НЕ СУЩЕСТВУЕТ"
 
 #: graph.php:115 graph.php:409
-#, fuzzy, php-format
+#, php-format
 msgid "Graph Utility View for Graph: %s"
-msgstr "Графическая утилита Вид графической утилиты"
+msgstr "Просмотр утилиты графика для графика: %s"
 
 #: graph.php:160 lib/html.php:585
 #, fuzzy
@@ -5830,9 +5825,8 @@ msgid "Sync of Graph Template '%s' Resulted in no Repairs."
 msgstr "Синхронизация шаблона графика \"%s\" не привела к восстановлению."
 
 #: graph_templates.php:1215
-#, fuzzy
 msgid "Click 'Continue' to Delete the following Graph Template."
-msgstr "Нажмите \"Продолжить\", чтобы удалить следующий Цветовой Шаблон"
+msgstr "Нажмите «Продолжить», чтобы удалить следующий шаблон графика."
 
 #: graph_templates.php:1216
 #, fuzzy
@@ -5994,9 +5988,8 @@ msgid "The name of this Graph Template."
 msgstr "Название этого шаблона графика."
 
 #: graph_templates.php:1799
-#, fuzzy
 msgid "The Class of this Graph Template"
-msgstr "Название этого шаблона графика."
+msgstr "Класс этого шаблона графика"
 
 #: graph_templates.php:1805
 msgid "The Version of this Graph Template"
@@ -6298,9 +6291,8 @@ msgid "Choose the Data Source to associate with this Graph Item."
 msgstr "Выберите Источник данных для связи с этим графическим элементом."
 
 #: graphs.php:1724
-#, fuzzy
 msgid "There were not Aggregate Templates found for the selected Graphs"
-msgstr "В настоящее время для выбранных старых агрегаций не определены шаблоны агрегирования."
+msgstr "Для выбранных графиков не найдены шаблоны агрегирования"
 
 #: graphs.php:1758
 #, fuzzy
@@ -6443,14 +6435,12 @@ msgid "Click 'Continue' to Reapply Suggested Names for the following Graphs."
 msgstr "Нажмите кнопку \"Продолжить\", чтобы повторно применить предложенное имя к следующему графику (графикам)."
 
 #: graphs.php:1843
-#, fuzzy
 msgid "Reapply Suggested Names for Graph"
-msgstr "Повторно примените предложенные имена к графику(ам)."
+msgstr "Повторно применить предложенные имена для графика"
 
 #: graphs.php:1844
-#, fuzzy
 msgid "Reapply Suggested Names for Graphs"
-msgstr "Повторно примените предложенные имена к графику(ам)."
+msgstr "Повторно применить предложенные имена для графиков"
 
 #: graphs.php:1847
 #, fuzzy
@@ -6601,9 +6591,12 @@ msgid "Selected Graph Template"
 msgstr "Выбранный шаблон графика"
 
 #: graphs.php:2320
-#, fuzzy, php-format
+#, php-format
 msgid "Choose a Graph Template to apply to this Graph. Please note that you may only change Graph Templates to a 100%% compatible Graph Template, which means that it includes identical Data Sources."
-msgstr "Выберите шаблон графика, который будет применяться к данному графику. Обратите внимание, что вы можете изменить шаблоны только на 100% совместимые шаблоны, что означает, что они включают в себя идентичные источники данных."
+msgstr ""
+"Выберите шаблон графика, который будет применяться к данному графику. "
+"Обратите внимание, что вы можете изменить шаблон графика только на 100%% "
+"совместимый шаблон, то есть включающий идентичные источники данных."
 
 #: graphs.php:2328
 #, fuzzy
@@ -6803,9 +6796,11 @@ msgid "Set Default"
 msgstr "Установить по умолчанию"
 
 #: help.php:44
-#, fuzzy, php-format
+#, php-format
 msgid "WARNING: Cacti Page:%s for User:%s Generated a Fatal Error %d!"
-msgstr "ПРЕДУПРЕЖДЕНИЕ: Страница Cacti: %s сгенерировала фатальную ошибку %d!"
+msgstr ""
+"ПРЕДУПРЕЖДЕНИЕ: Страница Cacti: %1$s для пользователя: %2$s вызвала "
+"фатальную ошибку %3$d!"
 
 #: help.php:74
 #, php-format
@@ -7158,7 +7153,7 @@ msgstr "Неудача"
 
 #: host.php:982 lib/functions.php:5879 lib/functions.php:5884
 msgid "Success"
-msgstr "Готово"
+msgstr "Успешно"
 
 #: host.php:985
 #, fuzzy
@@ -9250,9 +9245,9 @@ msgid "Previous Year"
 msgstr "Предыдущий Год"
 
 #: include/global_arrays.php:1595
-#, fuzzy, php-format
+#, php-format
 msgid "%d Min"
-msgstr "d Разум"
+msgstr "%d мин"
 
 #: include/global_arrays.php:1650
 #, fuzzy
@@ -10347,9 +10342,8 @@ msgid "The maximum number of milliseconds Cacti will wait for an SNMP response (
 msgstr "Максимальное количество миллисекунд Cacti будет ждать ответа SNMP (не работает с поддержкой php-snmp)."
 
 #: include/global_form.php:144 include/global_form.php:211
-#, fuzzy
 msgid "SNMP Retries"
-msgstr "SNMP Retries"
+msgstr "Повторы SNMP"
 
 #: include/global_form.php:145
 msgid "The maximum number of times SNMP will attempt to contact the remote device before giving up."
@@ -10405,9 +10399,9 @@ msgid "Auto Detect/Set on first Re-Index"
 msgstr "Автоматическое определение / установка при первом повторном индексировании"
 
 #: include/global_form.php:188
-#, fuzzy, php-format
+#, php-format
 msgid "%d Repetition"
-msgstr "Параметры сетки"
+msgstr "%d повторение"
 
 #: include/global_form.php:189 include/global_form.php:190
 #: include/global_form.php:191 include/global_form.php:192
@@ -11120,9 +11114,8 @@ msgid "Primary Color"
 msgstr "Основной цвет"
 
 #: include/global_form.php:1006
-#, fuzzy
 msgid "The color to use for the canvas item and legend."
-msgstr "Цвет используемый для легенды"
+msgstr "Цвет, используемый для элемента холста и легенды."
 
 #: include/global_form.php:1009
 msgid "Primary Opacity"
@@ -11262,9 +11255,8 @@ msgid "In case LINE was chosen, specify width of line here.  You must include a 
 msgstr "Если была выбрана опция LINE, укажите ширину линии здесь.  Вы должны указать десятичную точность, например, 2.00"
 
 #: include/global_form.php:1120
-#, fuzzy
 msgid "Dashes (dashes[=on_s[,off_s[,on_s,off_s]...]])"
-msgstr "Тире (тире [=on_s[,off_s[,on_s,off_s]...]]))))"
+msgstr "Тире (dashes[=on_s[,off_s[,on_s,off_s]...]])"
 
 #: include/global_form.php:1125
 #, fuzzy
@@ -11272,9 +11264,8 @@ msgid "The dashes modifier enables dashed line style."
 msgstr "Модификатор пунктирной линии позволяет использовать стиль пунктирной линии."
 
 #: include/global_form.php:1128
-#, fuzzy
 msgid "Dash Offset (dash-offset=offset)"
-msgstr "Смещение тире (смещение тире = смещение тире)"
+msgstr "Смещение штриха (dash-offset=offset)"
 
 #: include/global_form.php:1133 include/global_form.php:1141
 #, fuzzy
@@ -11343,9 +11334,10 @@ msgid "Give this host a meaningful description."
 msgstr "Дайте этому хосту содержательное описание."
 
 #: include/global_form.php:1257
-#, fuzzy
 msgid "Fully qualified hostname or IP address for this device. IPv6 address insert into brackets (example: [2001:abcd:1234::1])"
-msgstr "Полностью квалифицированное имя хоста или IP-адрес для данного устройства."
+msgstr ""
+"Полное доменное имя хоста (FQDN) или IP-адрес для данного устройства. Адрес "
+"IPv6 указывайте в квадратных скобках (например: [2001:abcd:1234::1])"
 
 #: include/global_form.php:1265
 #, fuzzy
@@ -14272,9 +14264,9 @@ msgstr "1 Изменение"
 #: include/global_settings.php:1992 include/global_settings.php:1993
 #: include/global_settings.php:1994 include/global_settings.php:1995
 #: include/global_settings.php:1996
-#, fuzzy, php-format
+#, php-format
 msgid "%d Changes"
-msgstr "d Изменения"
+msgstr "%d изменений"
 
 #: include/global_settings.php:2000
 msgid "Account Email Notification"
@@ -14681,10 +14673,10 @@ msgstr "Максимальная длина аргументов"
 #: include/global_settings.php:2356
 msgid "When boost sends update commands to RRDtool, it must not exceed the operating systems Maximum Argument Length.  This varies by operating system and kernel level.  For example: Windows 2000 <= 2048, FreeBSD <= 65535, Linux 2.6.22-- <= 131072, Linux 2.6.23++ unlimited"
 msgstr ""
-"Когда boost посылает команды обновления в RRDtool, он не должен превышать "
-"максимальную длину аргументов операционной системы.  Это зависит от "
-"операционной системы и уровня ядра.  Например Windows 2000 <= 2048, FreeBSD "
-"<= 65535, Linux 2.6.22-- <= 131072, Linux 2.6.23+++ неограниченное число"
+"Когда boost отправляет команды обновления в RRDtool, они не должны превышать "
+"максимальную длину аргументов операционной системы. Это зависит от "
+"операционной системы и версии ядра. Например: Windows 2000 <= 2048, FreeBSD "
+"<= 65535, Linux 2.6.22-- <= 131072, Linux 2.6.23++ без ограничений"
 
 #: include/global_settings.php:2363
 msgid "Memory Limit for Boost and Poller"
@@ -15667,9 +15659,8 @@ msgid "There was some error in MySQL/MariaDB.  Can not continue."
 msgstr ""
 
 #: lib/api_aggregate.php:1674
-#, fuzzy
 msgid "You must pass at least a single Graph to this function"
-msgstr "Вы должны выбрать хотя бы один график для добавления в Отчет."
+msgstr "Вы должны передать этой функции хотя бы один график"
 
 #: lib/api_aggregate.php:1779
 msgid "Graph Item"
@@ -15850,9 +15841,8 @@ msgid "Incomplete file transfer."
 msgstr ""
 
 #: lib/api_automation.php:5222 lib/api_automation.php:5250
-#, fuzzy
 msgid "No file uploaded."
-msgstr "Файл не выбран"
+msgstr "Файл не загружен."
 
 #: lib/api_automation.php:5225
 msgid "Temporary folder missing."
@@ -15905,9 +15895,9 @@ msgid "Update"
 msgstr "Обновить"
 
 #: lib/api_automation.php:5309 lib/api_automation.php:5311
-#, fuzzy, php-format
+#, php-format
 msgid "Automation Network SNMP Option %s!"
-msgstr "Опции SNMP автоматизации"
+msgstr "Параметр SNMP сети автоматизации %s!"
 
 #: lib/api_automation.php:5315 lib/api_automation.php:5317
 #, php-format
@@ -15932,9 +15922,9 @@ msgid "Unknown Device Template"
 msgstr "Неизвестный шаблон"
 
 #: lib/api_automation.php:5404 lib/api_automation.php:5406
-#, fuzzy, php-format
+#, php-format
 msgid "Automation Network Rule '%s' %s!"
-msgstr "Сеть автоматизации по умолчанию"
+msgstr "Правило сети автоматизации '%1$s' %2$s!"
 
 #: lib/api_automation.php:5410 lib/api_automation.php:5412
 #, php-format
@@ -16245,9 +16235,9 @@ msgid "2FA has been enabled and verified"
 msgstr ""
 
 #: lib/boost.php:64 utilities.php:1708
-#, fuzzy, php-format
+#, php-format
 msgid "%s MBytes"
-msgstr "%d Мбайт"
+msgstr "%s Мбайт"
 
 #: lib/boost.php:67
 #, php-format
@@ -16478,9 +16468,9 @@ msgid "Index Removal Detected! PreviousIndex: %s"
 msgstr "Удаление индекса Обнаружено! Предыдущий Индекс: %s"
 
 #: lib/data_query.php:360
-#, fuzzy, php-format
+#, php-format
 msgid "Verification of %s Local Data ID's Complete"
-msgstr "Индекс Ассоциации с локальными данными завершен"
+msgstr "Проверка %s идентификаторов локальных данных завершена"
 
 #: lib/data_query.php:363
 #, fuzzy, php-format
@@ -16903,7 +16893,7 @@ msgstr "Не удалось изменить длину поля пароля, �
 #: lib/dsdebug.php:175
 #, php-format
 msgid "Data Source ID %s does not exist"
-msgstr "Источник данных %s не существует"
+msgstr "Источник данных с ID %s не существует"
 
 #: lib/dsdebug.php:259
 msgid "Debug not completed after 5 pollings"
@@ -18492,9 +18482,9 @@ msgid "Details %s"
 msgstr "Подробности %s"
 
 #: lib/html_reports.php:1618
-#, fuzzy, php-format
+#, php-format
 msgid "Report Items %s"
-msgstr "Отчетные позиции отсутствуют"
+msgstr "Элементы отчета %s"
 
 #: lib/html_reports.php:1664
 #, php-format
@@ -18862,9 +18852,9 @@ msgid "Unexpected path parameter"
 msgstr "Параметр Неожиданный путь"
 
 #: lib/installer.php:968
-#, fuzzy, php-format
+#, php-format
 msgid "Failed to apply specified profile %s != %s"
-msgstr "Не удалось применить указанный профиль %s != %s != %s"
+msgstr "Не удалось применить указанный профиль %1$s != %2$s"
 
 #: lib/installer.php:1015
 #, fuzzy, php-format
@@ -18882,9 +18872,9 @@ msgid "Failed to apply specified cron interval"
 msgstr "Не удалось применить заданный интервал между кронами"
 
 #: lib/installer.php:1107
-#, fuzzy, php-format
+#, php-format
 msgid "Failed to apply '%s' as Automation Range"
-msgstr "Неприменение указанного диапазона автоматизации"
+msgstr "Не удалось применить '%s' в качестве диапазона автоматизации"
 
 #: lib/installer.php:1190
 #, fuzzy
@@ -18974,7 +18964,7 @@ msgstr "Начало"
 #: lib/installer.php:1792 lib/installer.php:2238 lib/installer.php:2249
 #: lib/installer.php:2906 lib/installer.php:2972
 msgid "Upgrade"
-msgstr "Обновить"
+msgstr "Обновить версию"
 
 #: lib/installer.php:1794 lib/installer.php:2911 lib/installer.php:2975
 msgid "Downgrade"
@@ -19063,9 +19053,9 @@ msgid "Your Cacti configuration has the relative correct path (url_path) in conf
 msgstr "Ваша конфигурация Cacti имеет относительный правильный путь (url_path) в config.php."
 
 #: lib/installer.php:2037
-#, fuzzy, php-format
+#, php-format
 msgid "PHP - Recommendations (%s)"
-msgstr "PHP - Рекомендации"
+msgstr "PHP - Рекомендации (%s)"
 
 #: lib/installer.php:2041
 #, fuzzy
@@ -19857,9 +19847,9 @@ msgid "Table:"
 msgstr "Таблица:"
 
 #: lib/installer.php:3075
-#, fuzzy, php-format
+#, php-format
 msgid "Installing Cacti Server v%s"
-msgstr "Установка Cacti Server vs vs"
+msgstr "Установка Cacti Server v%s"
 
 #: lib/installer.php:3076
 #, fuzzy
@@ -19873,17 +19863,19 @@ msgstr "Нерестовый фоновый процесс:%s%s"
 
 #: lib/installer.php:3192
 msgid "Complete"
-msgstr "Готово"
+msgstr "Завершено"
 
 #: lib/installer.php:3193
-#, fuzzy, php-format
+#, php-format
 msgid "Your Cacti Server v%s has been installed/updated.  You may now start using the software."
-msgstr "Ваш Cacti Server vs был установлен/обновлен.  Теперь вы можете начать использовать программное обеспечение."
+msgstr ""
+"Ваш Cacti Server v%s был установлен/обновлен. Теперь вы можете начать "
+"использовать программное обеспечение."
 
 #: lib/installer.php:3198
-#, fuzzy, php-format
+#, php-format
 msgid "Your Cacti Server v%s has been installed/updated with errors"
-msgstr "Ваш Cacti Server vs был установлен/обновлен с ошибками."
+msgstr "Ваш Cacti Server v%s был установлен/обновлен с ошибками"
 
 #: lib/installer.php:3318
 msgid "Get Help"
@@ -19928,9 +19920,9 @@ msgid "Import of Package #%s '%s' under Profile '%s' failed"
 msgstr "Ошибка импорта пакета #%s '%s' в профиле '%s'"
 
 #: lib/installer.php:3469
-#, fuzzy, php-format
+#, php-format
 msgid "Mapping Automation Template for Device Template '%s'"
-msgstr "Шаблоны автоматизации для [Удаленный шаблон]"
+msgstr "Сопоставление шаблона автоматизации для шаблона устройства '%s'"
 
 #: lib/installer.php:3490
 #, fuzzy
@@ -19942,9 +19934,9 @@ msgid "Updating remote configuration file"
 msgstr "Обновление удаленного файла конфигурации"
 
 #: lib/installer.php:3532
-#, fuzzy, php-format
+#, php-format
 msgid "Setting default data source profile to %s (%s)"
-msgstr "Профиль источника данных по умолчанию для данного Шаблона данных."
+msgstr "Установка профиля источника данных по умолчанию в %1$s (%2$s)"
 
 #: lib/installer.php:3557
 #, fuzzy, php-format
@@ -19972,9 +19964,9 @@ msgid "Selecting Automation Option Set %s"
 msgstr "Выбор набора параметров автоматизации %s"
 
 #: lib/installer.php:3607
-#, fuzzy, php-format
+#, php-format
 msgid "Updating Automation Option Set %s"
-msgstr "Опции SNMP автоматизации"
+msgstr "Обновление набора параметров автоматизации %s"
 
 #: lib/installer.php:3611
 #, fuzzy, php-format
@@ -19982,9 +19974,9 @@ msgid "Successfully updated Automation Option Set %s"
 msgstr "Успешно обновленный набор параметров автоматизации%s"
 
 #: lib/installer.php:3613
-#, fuzzy, php-format
+#, php-format
 msgid "Resequencing Automation Option Set %s"
-msgstr "Запуск автоматизации на устройстве(ах)"
+msgstr "Перенумерация набора параметров автоматизации %s"
 
 #: lib/installer.php:3620
 #, php-format
@@ -20010,14 +20002,13 @@ msgid "WARNING: Default Device Failed to be Added error to follow."
 msgstr ""
 
 #: lib/installer.php:3675
-#, fuzzy
 msgid "Default Device Added to Cacti."
-msgstr "Добавлено %s в Cacti"
+msgstr "Устройство по умолчанию добавлено в Cacti."
 
 #: lib/installer.php:3680
-#, fuzzy, php-format
+#, php-format
 msgid "Output: %s."
-msgstr "Поля вывода"
+msgstr "Вывод: %s."
 
 #: lib/installer.php:3700
 #, fuzzy
@@ -20109,9 +20100,9 @@ msgid "Exception occurred during installation: #%s - %s"
 msgstr "Во время установки произошло исключение: #%s - %s"
 
 #: lib/installer.php:3956
-#, fuzzy, php-format
+#, php-format
 msgid "Installation was started at %s, completed at %s"
-msgstr "Монтаж начат в %s, монтаж завершен в %s, монтаж завершен в %s"
+msgstr "Установка начата в %1$s, завершена в %2$s"
 
 #: lib/installer.php:3997
 msgid "Both"
@@ -20178,19 +20169,23 @@ msgid "No username defined"
 msgstr "Имя пользователя не определено"
 
 #: lib/ldap.php:412
-#, fuzzy, php-format
+#, php-format
 msgid "Protocol Error, Unable to set version (%s) on Server (%s)"
-msgstr "Ошибка протокола, Невозможно установить версию."
+msgstr "Ошибка протокола: не удалось установить версию (%1$s) на сервере (%2$s)"
 
 #: lib/ldap.php:416
-#, fuzzy, php-format
+#, php-format
 msgid "Protocol Error, Unable to set referrals option (%s) on Server (%s)"
-msgstr "Ошибка протокола, Невозможно установить опцию перенаправления"
+msgstr ""
+"Ошибка протокола: не удалось установить параметр перенаправления (%1$s) на "
+"сервере (%2$s)"
 
 #: lib/ldap.php:420
-#, fuzzy, php-format
+#, php-format
 msgid "Protocol Error, unable to start TLS communications (%s) on Server (%s)"
-msgstr "Ошибка протокола, неспособность запустить TLS-коммуникации"
+msgstr ""
+"Ошибка протокола: не удалось запустить обмен данными TLS (%1$s) на сервере "
+"(%2$s)"
 
 #: lib/ldap.php:424
 #, fuzzy, php-format
@@ -20198,9 +20193,11 @@ msgid "Protocol Error, General failure (%s)"
 msgstr "Ошибка протокола, Общий сбой (%s)"
 
 #: lib/ldap.php:428
-#, fuzzy, php-format
+#, php-format
 msgid "Protocol Error, Unable to bind, LDAP result: (%s) on Server (%s)"
-msgstr "Ошибка протокола, Невозможно связать, результат LDAP: %s"
+msgstr ""
+"Ошибка протокола: не удалось выполнить привязку, результат LDAP: (%1$s) на "
+"сервере (%2$s)"
 
 #: lib/ldap.php:432
 #, php-format
@@ -20208,19 +20205,19 @@ msgid "Unable to Connect to Server (%s)"
 msgstr "Невозможно подключиться к серверу (%s)"
 
 #: lib/ldap.php:436
-#, fuzzy, php-format
+#, php-format
 msgid "Connection Timeout to Server (%s)"
-msgstr "Таймаут соединения"
+msgstr "Тайм-аут подключения к серверу (%s)"
 
 #: lib/ldap.php:440
-#, fuzzy, php-format
+#, php-format
 msgid "Insufficient Access to Server (%s)"
-msgstr "Недостаточный доступ"
+msgstr "Недостаточно прав доступа к серверу (%s)"
 
 #: lib/ldap.php:444
-#, fuzzy, php-format
+#, php-format
 msgid "Group DN could not be found to compare on Server (%s)"
-msgstr "Не удалось найти группу DN для сравнения"
+msgstr "Не удалось найти DN группы для сравнения на сервере (%s)"
 
 #: lib/ldap.php:448
 #, fuzzy
@@ -20238,9 +20235,9 @@ msgid "Unable to find users DN"
 msgstr "Невозможно найти пользователей DN"
 
 #: lib/ldap.php:460
-#, fuzzy, php-format
+#, php-format
 msgid "Unable to create LDAP connection object to Server (%s)"
-msgstr "Невозможно создать объект LDAP-соединения"
+msgstr "Не удалось создать объект подключения LDAP к серверу (%s)"
 
 #: lib/ldap.php:464
 #, fuzzy
@@ -20253,9 +20250,9 @@ msgid "Invalid Password provided.  Login failed."
 msgstr "Введен неверный пароль. Авторизация не удалась."
 
 #: lib/ldap.php:473
-#, fuzzy, php-format
+#, php-format
 msgid "Unexpected error %s (Ldap Error: %s) on Server (%s)"
-msgstr "Неожиданная ошибка %s (Ldap Ошибка: %s)"
+msgstr "Непредвиденная ошибка %1$s (ошибка LDAP: %2$s) на сервере (%3$s)"
 
 #: lib/ping.php:149
 #, fuzzy
@@ -20498,9 +20495,9 @@ msgid "Unable to reach The Cacti Groups GitHub site.  No plugin data retrieved i
 msgstr ""
 
 #: lib/reports.php:144
-#, fuzzy, php-format
+#, php-format
 msgid "Device '%s' successfully added to Report."
-msgstr "Добавлено в Кактусы"
+msgstr "Устройство '%s' успешно добавлено в отчет."
 
 #: lib/reports.php:147
 #, fuzzy
@@ -20580,9 +20577,9 @@ msgid "RRDtool Command Crashed"
 msgstr "RRDtool команда:"
 
 #: lib/rrd.php:3299
-#, fuzzy, php-format
+#, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
-msgstr "Требуемый размер шага RRD - \"%s\"."
+msgstr "Требуемый размер шага файла RRD — '%1$s', но обнаруженный шаг — '%2$s'"
 
 #: lib/rrd.php:3359
 #, php-format
@@ -20852,9 +20849,20 @@ msgid "With Remote polling capabilities, large amounts of data will be synced fr
 msgstr "Благодаря возможностям удаленного опроса, большие объемы данных будут синхронизироваться с главного сервера на удаленные опросы.  Поэтому держите это значение на уровне 16M или выше."
 
 #: lib/utility.php:1212
-#, fuzzy, php-format
+#, php-format
 msgid "If using the Cacti Performance Booster and choosing a memory storage engine, you have to be careful to flush your Performance Booster buffer before the system runs out of memory table space.  This is done two ways, first reducing the size of your output column to just the right size.  This column is in the tables poller_output, and poller_output_boost.  The second thing you can do is allocate more memory to memory tables.  We have arbitrarily chosen a recommended value of 10%% of system memory, but if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation or choose a different storage engine.  You may see the expected consumption of the Performance Booster tables under Console -> System Utilities -> View Boost Status."
-msgstr "При использовании Cacti Performance Booster и выборе движка памяти необходимо тщательно промывать буфер Performance Booster до того, как в системе закончится место в таблице памяти.  Это делается двумя способами, сначала уменьшая размер выходного столбца до нужного размера.  Эта колонка находится в таблицах poler_output и poler_output_boost.  Второе, что вы можете сделать, это выделить больше памяти для таблиц памяти.  Мы произвольно выбрали рекомендованное значение в 10% системной памяти, но если вы используете SSD-накопители или систему меньшего размера, вы можете проигнорировать эту рекомендацию или выбрать другой механизм хранения.  Вы можете увидеть ожидаемое потребление таблиц Performance Booster в разделе Console -> System Utilities -> View Boost Status."
+msgstr ""
+"При использовании Cacti Performance Booster и выборе механизма хранения в "
+"памяти необходимо своевременно сбрасывать буфер Performance Booster до того, "
+"как в системе закончится место для таблиц в памяти. Это делается двумя "
+"способами: во-первых, уменьшением размера выходного столбца до нужного "
+"значения. Этот столбец находится в таблицах poller_output и "
+"poller_output_boost. Во-вторых, вы можете выделить больше памяти для таблиц "
+"в памяти. Мы выбрали рекомендуемое значение в 10%% системной памяти, но если "
+"вы используете SSD-накопители или систему меньшего размера, вы можете "
+"проигнорировать эту рекомендацию или выбрать другой механизм хранения. "
+"Ожидаемое потребление памяти таблицами Performance Booster можно посмотреть "
+"в разделе Console -> System Utilities -> View Boost Status."
 
 #: lib/utility.php:1218
 #, fuzzy
@@ -20885,9 +20893,19 @@ msgid "If your tables have very large indexes, you must operate with the Barracu
 msgstr "Если ваши таблицы имеют очень большие индексы, вы должны работать с Barracuda innodb_file_format и innodb_large_prefix, равным 1. Невыполнение этого может привести к плагинам, которые не могут должным образом создавать таблицы."
 
 #: lib/utility.php:1254
-#, fuzzy, php-format
+#, php-format
 msgid "InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size.  If you database is very large or remote, you can consider increasing this size.  If remote, it can by as high as 80% of the systems memory.  However, cautions must be taken to reduce the swappiness of the system, or to remove swap to keep the system from swapping."
-msgstr "InnoDB будет хранить в памяти системы как можно больше таблиц и индексов.  Поэтому пул innodb_buffer_pool должен быть достаточно большим, чтобы в памяти оставалось столько же таблиц и индексов.  Проверка размера каталога /var/lib/mysql/cacti поможет определить это значение.  Мы рекомендуем 25% от общего объема памяти системы, но ваши требования могут варьироваться в зависимости от размера вашей системы."
+msgstr ""
+"InnoDB будет хранить в системной памяти как можно больше таблиц и индексов. "
+"Поэтому следует сделать innodb_buffer_pool достаточно большим, чтобы "
+"вместить как можно больше таблиц и индексов в памяти. Проверка размера "
+"каталога /var/lib/mysql/cacti поможет определить это значение. Мы "
+"рекомендуем 25%% от общего объёма памяти вашей системы, но требования "
+"зависят от размера системы. Если ваша база данных очень большая или "
+"удалённая, рассмотрите возможность увеличения этого размера. Для удалённой "
+"базы данных он может достигать 80% памяти системы. Однако необходимо принять "
+"меры для снижения параметра swappiness системы или отключения подкачки, "
+"чтобы избежать свопинга."
 
 #: lib/utility.php:1260
 #, fuzzy
@@ -21259,9 +21277,8 @@ msgid "an Account Suspension"
 msgstr "приостановка учетной записи"
 
 #: logout.php:57
-#, fuzzy
 msgid "a change in state of the Remote Data Collector"
-msgstr "Статус этого сборщика данных."
+msgstr "изменения состояния удалённого сборщика данных"
 
 #: logout.php:60
 #, fuzzy
@@ -21274,9 +21291,9 @@ msgid "Logout of Cacti"
 msgstr "Выход из системы Cacti"
 
 #: logout.php:60
-#, fuzzy, php-format
+#, php-format
 msgid "You have been logged out of Cacti due to %s."
-msgstr "Вы вышли из Какти из-за таймаута сеанса."
+msgstr "Вы вышли из Cacti из-за %s."
 
 #: logout.php:61
 #, php-format
@@ -21284,9 +21301,8 @@ msgid "Please close your browser or %sLogin Again%s"
 msgstr "Закройте браузер или %sвойдите снова%s"
 
 #: logout.php:62
-#, fuzzy
 msgid "Cookies have been cleared"
-msgstr "Все ваши сеансы входа в систему были очищены."
+msgstr "Файлы cookie очищены"
 
 #: managers.php:40 managers.php:228 managers.php:592
 msgid "Notifications"
@@ -21380,14 +21396,14 @@ msgid "No SNMP Notification Log Entries"
 msgstr "Отсутствие записей в журнале уведомлений SNMP"
 
 #: managers.php:1027
-#, fuzzy
 msgid "Click 'Continue' to Delete the following Notification Receiver."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы удалить следующего получателя уведомления"
+msgstr ""
+"Нажмите кнопку «Продолжить», чтобы удалить следующего получателя уведомлений."
 
 #: managers.php:1028
-#, fuzzy
 msgid "Click 'Continue' to Delete following Notification Receivers."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы удалить следующего получателя уведомления"
+msgstr ""
+"Нажмите кнопку «Продолжить», чтобы удалить следующих получателей уведомлений."
 
 #: managers.php:1029
 msgid "Delete Notification Receiver"
@@ -21398,14 +21414,16 @@ msgid "Delete Notification Receivers"
 msgstr "Удалить получателей уведомлений"
 
 #: managers.php:1033
-#, fuzzy
 msgid "Click 'Continue' to Disable the following Notification Receiver."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы отключить приемник уведомлений следующего содержания"
+msgstr ""
+"Нажмите кнопку «Продолжить», чтобы отключить следующего получателя "
+"уведомлений."
 
 #: managers.php:1034
-#, fuzzy
 msgid "Click 'Continue' to Disable following Notification Receivers."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы отключить приемник уведомлений следующего содержания"
+msgstr ""
+"Нажмите кнопку «Продолжить», чтобы отключить следующих получателей "
+"уведомлений."
 
 #: managers.php:1035
 #, fuzzy
@@ -21418,14 +21436,16 @@ msgid "Disable Notification Receivers"
 msgstr "Отключить приемник уведомления SNMP Notification Receiver"
 
 #: managers.php:1039
-#, fuzzy
 msgid "Click 'Continue' to Enable the following Notification Receiver."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы включить следующий Приемник уведомлений"
+msgstr ""
+"Нажмите кнопку «Продолжить», чтобы включить следующего получателя "
+"уведомлений."
 
 #: managers.php:1040
-#, fuzzy
 msgid "Click 'Continue' to Enable following Notification Receivers."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы включить следующий Приемник уведомлений"
+msgstr ""
+"Нажмите кнопку «Продолжить», чтобы включить следующих получателей "
+"уведомлений."
 
 #: managers.php:1041
 msgid "Enable Notification Receiver"
@@ -21501,19 +21521,19 @@ msgid "What would you like to Package?"
 msgstr "Что бы вы хотели экспортировать?"
 
 #: package.php:667
-#, fuzzy, php-format
+#, php-format
 msgid "%s Device Package"
-msgstr "Имя устройства"
+msgstr "Пакет устройства %s"
 
 #: package.php:670
-#, fuzzy, php-format
+#, php-format
 msgid "%s Graph Template Package"
-msgstr "Имя шаблона графика"
+msgstr "Пакет шаблона графика %s"
 
 #: package.php:673
-#, fuzzy, php-format
+#, php-format
 msgid "%s Data Query Package"
-msgstr "Название запроса данных"
+msgstr "Пакет запроса данных %s"
 
 #: package.php:700 templates_export.php:168
 #, fuzzy, php-format
@@ -21526,9 +21546,9 @@ msgid "Available Templates"
 msgstr "Доступные шаблоны [%s]"
 
 #: package.php:709
-#, fuzzy, php-format
+#, php-format
 msgid "%s to Export"
-msgstr "Экспорт"
+msgstr "%s для экспорта"
 
 #: package.php:710
 msgid "Choose the exact items to export in the Package."
@@ -21549,9 +21569,8 @@ msgid "Package Information"
 msgstr "Информация о пакете"
 
 #: package.php:728
-#, fuzzy
 msgid "The Package Description."
-msgstr "Описание устройства"
+msgstr "Описание пакета."
 
 #: package.php:736
 msgid "The license type for this package."
@@ -21660,9 +21679,9 @@ msgid "The Package %s Import Failed"
 msgstr ""
 
 #: package_import.php:298
-#, fuzzy, php-format
+#, php-format
 msgid "Package %s"
-msgstr "Файлы пакетов"
+msgstr "Пакет %s"
 
 #: package_import.php:305
 msgid "Click 'Continue' to Import the following Package."
@@ -22788,29 +22807,39 @@ msgid "Enable Plugin Locally"
 msgstr "Включить плагин"
 
 #: poller.php:405
-#, fuzzy, php-format
+#, php-format
 msgid "WARNING: %s is out of sync with the Poller Interval for Poller[%d]!  The Poller Interval is %d seconds, with a maximum of a %d seconds, but %d seconds have passed since the last poll!"
-msgstr "ПРЕДУПРЕЖДЕНИЕ: %s не синхронизированы с Интервалом Поллера!  Интервал опроса составляет \"%d\" секунд, с максимальным значением \"%d\" секунд, но %d секунд прошло с момента последнего опроса!"
+msgstr ""
+"ПРЕДУПРЕЖДЕНИЕ: %1$s не синхронизирован с интервалом опроса для Poller[%2$d]"
+"! Интервал опроса составляет %3$d секунд при максимуме %4$d секунд, но с "
+"момента последнего опроса прошло %5$d секунд!"
 
 #: poller.php:579
-#, fuzzy, php-format
+#, php-format
 msgid "WARNING: There are %d processes detected as overrunning a polling cycle for Poller[%d], please investigate."
-msgstr "ПРЕДУПРЕЖДЕНИЕ: Есть \"%d\", которые указывают на превышение цикла голосования, пожалуйста, проведите расследование."
+msgstr ""
+"ПРЕДУПРЕЖДЕНИЕ: Обнаружено %1$d процессов, превышающих цикл опроса для Poller"
+"[%2$d], пожалуйста, проверьте."
 
 #: poller.php:637
-#, fuzzy, php-format
+#, php-format
 msgid "WARNING: Poller Output Table not empty for Poller[%d].  Issues: %d, %s."
-msgstr "ПРЕДУПРЕЖДЕНИЕ: Таблица выходов полюса не пуста.  Вопросы: %d, %s."
+msgstr ""
+"ПРЕДУПРЕЖДЕНИЕ: Таблица вывода поллера не пуста для Poller[%1$d]. Проблемы: "
+"%2$d, %3$s."
 
 #: poller.php:671
-#, fuzzy, php-format
+#, php-format
 msgid "ERROR: The spine path: %s is invalid for Poller[%d].  Poller can not continue!"
-msgstr "Путь позвоночника: %s недействителен.  Поллер не может продолжать!"
+msgstr ""
+"ОШИБКА: Путь к spine: %1$s недопустим для Poller[%2$d]. Поллер не может "
+"продолжить работу!"
 
 #: poller.php:819
-#, fuzzy, php-format
+#, php-format
 msgid "Maximum runtime of %d seconds exceeded for Poller[%d]. Exiting."
-msgstr "Превышено максимальное время работы в %d секунд. Выход."
+msgstr ""
+"Превышено максимальное время работы в %1$d секунд для Poller[%2$d]. Выход."
 
 #: poller.php:944
 msgid "WARNING: Cacti Polling Cycle Exceeded Poller Interval by "
@@ -22846,9 +22875,11 @@ msgid "NOTE: A second Cacti data collector has been added.  Therefore, enabling 
 msgstr "ПРИМЕЧАНИЕ. Добавлен второй сборщик данных Cacti. Therfore, включающий повышение автоматически!"
 
 #: poller_automation.php:54
-#, fuzzy, php-format
+#, php-format
 msgid "WARNING: Main Cacti database %s offline or in recovery"
-msgstr "ВНИМАНИЕ: основная база данных Cacti в автономном режиме или в процессе восстановления"
+msgstr ""
+"ВНИМАНИЕ: основная база данных Cacti %s в автономном режиме или в процессе "
+"восстановления"
 
 #: poller_automation.php:1037 poller_automation.php:1091
 #, fuzzy
@@ -23498,9 +23529,9 @@ msgid "NOTE: Path Settings on this Tab are only saved locally!"
 msgstr "ПРИМЕЧАНИЕ. Настройки пути на этой вкладке сохраняются только локально!"
 
 #: settings.php:138
-#, fuzzy, php-format
+#, php-format
 msgid "Cacti Settings (%s)%s"
-msgstr "Настройки кактусов (%s)"
+msgstr "Настройки Cacti (%1$s)%2$s"
 
 #: settings.php:248
 msgid "Changing Permission Model Warning"
@@ -23626,7 +23657,7 @@ msgstr "Введите город или населенный пункт"
 
 #: sites.php:92 sites.php:662
 msgid "State"
-msgstr "Область"
+msgstr "Состояние"
 
 #: sites.php:93
 #, fuzzy
@@ -23868,7 +23899,7 @@ msgstr "Нет найденных сайтов"
 #: spikekill.php:40
 #, php-format
 msgid "FATAL: Spike Kill method '%s' is Invalid"
-msgstr "ФАТАЛЬНО: Spike метод завершения '%s'\" недействителен"
+msgstr "ФАТАЛЬНО: Метод Spike Kill '%s' недопустим"
 
 #: spikekill.php:117
 msgid "FATAL: Spike Kill Not Allowed"
@@ -25748,9 +25779,9 @@ msgid "What to do when a User from this User Group logs in."
 msgstr "Что делать при входе в систему пользователя из этой группы пользователей."
 
 #: user_group_admin.php:455
-#, fuzzy
 msgid "Click 'Continue' to Delete the following User Group."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы удалить следующую группу пользователей"
+msgstr ""
+"Нажмите кнопку «Продолжить», чтобы удалить следующую группу пользователей."
 
 #: user_group_admin.php:456
 msgid "Click 'Continue' to Delete following User Groups."
@@ -26362,9 +26393,9 @@ msgid "%d seconds"
 msgstr "%d секунд"
 
 #: utilities.php:1688
-#, fuzzy, php-format
+#, php-format
 msgid "%0.2f percent of update frequency)"
-msgstr "%0,2 процента от частоты обновления)"
+msgstr "%0.2f процента от частоты обновления)"
 
 #: utilities.php:1696
 #, fuzzy
