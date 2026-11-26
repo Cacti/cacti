@@ -32,6 +32,7 @@ if (function_exists('pcntl_async_signals')) {
 ini_set('output_buffering', 'Off');
 
 require(__DIR__ . '/../include/cli_check.php');
+require_once(CACTI_PATH_LIBRARY . '/float_rrd_temp.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/rrd.php');
 
@@ -339,21 +340,39 @@ exit(0);
  * @return bool - True if successful otherwise false
  */
 function float_rrdfile(string $rrd_path, int $local_data_id, mixed $step, int $start_time, int $end_time) : bool {
-	global $seebug;
+	global $seebug, $float_tmp_dir;
 
 	static $rrdtool_bin = false;
 	static $tmp_dir     = false;
+
+	if (!data_source_path_within_rra($rrd_path)) {
+		cacti_log(sprintf('WARNING: Refusing to float RRDfile outside RRA directory: %s', $rrd_path), false, 'RFLOAT');
+
+		return false;
+	}
 
 	if ($rrdtool_bin === false) {
 		$rrdtool_bin = (string) read_config_option('path_rrdtool');
 	}
 
 	if ($tmp_dir === false) {
-		$tmp_dir = sys_get_temp_dir();
+		$tmp_dir = float_rrd_create_private_temp_dir();
+
+		if ($tmp_dir === false) {
+			cacti_log('WARNING: Unable to create private working directory for RRD float', false, 'RFLOAT');
+
+			return false;
+		}
+
+		$float_tmp_dir = $tmp_dir;
+		register_shutdown_function(static function () use ($tmp_dir) : void {
+			global $seebug;
+			float_rrd_cleanup_temp_dir($tmp_dir, (bool) $seebug);
+		});
 	}
 
 	$delta_time = $end_time - $start_time;
-	$tmp_file   = $tmp_dir . '/' . $local_data_id . '.xml';
+	$tmp_file   = float_rrd_build_xml_path($tmp_dir, $local_data_id);
 
 	$return     = 0;
 	$output     = [];
@@ -370,12 +389,12 @@ function float_rrdfile(string $rrd_path, int $local_data_id, mixed $step, int $s
 				return false;
 			}
 
-			$fp = fopen($tmp_file, 'w');
+			$fp = float_rrd_open_private_file($tmp_file, 'wb');
 
 			$lf = false;
 
 			if ($seebug) {
-				$lf = fopen(sys_get_temp_dir() . '/cacti_float_rrdfiles.log', 'a');
+				$lf = float_rrd_open_private_file($tmp_dir . '/cacti_float_rrdfiles.log', 'ab');
 			}
 
 			if (is_resource($fp)) {
@@ -757,12 +776,16 @@ function float_debug(string $message) : void {
  * @return void
  */
 function sig_handler(int $signo) : void {
-	global $type, $thread_id;
+	global $type, $thread_id, $float_tmp_dir, $seebug;
 
 	switch ($signo) {
 		case SIGTERM:
 		case SIGINT:
 			cacti_log('WARNING: RRDfile Data Float Tool terminated by user', false, 'RFLOAT');
+
+			if (!empty($float_tmp_dir)) {
+				float_rrd_cleanup_temp_dir((string) $float_tmp_dir, (bool) $seebug);
+			}
 
 			if (str_contains($type, 'rmaster')) {
 				float_kill_running_processes();
