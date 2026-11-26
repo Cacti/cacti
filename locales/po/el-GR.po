@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-25 22:34+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Greek <https://translate.cacti.net/projects/cacti/core-v1-2-x/el/>\nLanguage: el-GR\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-26 05:53+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Greek <https://translate.cacti.net/projects/cacti/core-v1-2-x/el/>\nLanguage: el-GR\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -550,10 +550,8 @@ msgid "No Aggregate Graphs Found"
 msgstr "Δεν βρέθηκαν συγκεντρωτικά γραφήματα"
 
 #: aggregate_templates.php
-#, fuzzy
-#| msgid "No Aggregate Templates Found"
 msgid "Aggregate Template not found."
-msgstr "Δεν βρέθηκαν σύνολα προτύπων"
+msgstr "Το συγκεντρωτικό πρότυπο δεν βρέθηκε."
 
 #: aggregate_templates.php
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -1033,7 +1031,7 @@ msgstr "Εξαγωγή σε αρχείο"
 
 #: automation_devices.php data_debug.php lib/clog_webapi.php managers.php
 msgid "Purge"
-msgstr "Διαγραφή"
+msgstr "Εκκαθάριση"
 
 #: automation_devices.php
 msgid "Purge Discovered Devices"
@@ -1044,7 +1042,7 @@ msgstr "Εκκαθάριση εντοπισμένων συσκευών"
 #: lib/html.php lib/html_reports.php lib/spikekill.php lib/utility.php
 #: plugins.php pollers.php user_admin.php utilities.php
 msgid "N/A"
-msgstr "Μη Διαθέσιμο"
+msgstr "Μη Εφαρμόσιμο"
 
 #: automation_graph_rules.php automation_snmp.php automation_tree_rules.php
 #: cdef.php color_templates.php data_input.php data_queries.php
@@ -2546,10 +2544,8 @@ msgid "Delete Color Item"
 msgstr "Διαγραφή στοιχείου χρώματος"
 
 #: color_templates.php
-#, fuzzy
-#| msgid "No Color Templates Found"
 msgid "Color Template not found."
-msgstr "Δεν βρέθηκαν πρότυπα χρώματος"
+msgstr "Το πρότυπο χρώματος δεν βρέθηκε."
 
 #: color_templates.php
 #, php-format
@@ -2648,7 +2644,7 @@ msgstr "Η επιδιόρθωση της προέλευσης δεδομένων
 #: graphs_items.php include/global_arrays.php include/global_form.php
 #: lib/api_aggregate.php lib/html.php rrdcheck.php
 msgid "Data Source"
-msgstr "Ανεπεξέργαστη πηγή"
+msgstr "Πηγή δεδομένων"
 
 #: data_debug.php
 msgid "The Data Source to Debug"
@@ -2737,7 +2733,7 @@ msgstr "Οποιαδήποτε τυχόν περιληπτικά ζητήματ�
 #: data_debug.php data_sources.php host.php include/global_arrays.php
 #: lib/api_automation.php user_admin.php user_group_admin.php utilities.php
 msgid "Data Sources"
-msgstr "Data Sources"
+msgstr "Πηγές δεδομένων"
 
 #: data_debug.php
 msgid "Not Debugging"
@@ -3806,7 +3802,7 @@ msgstr "Ορφανά"
 
 #: data_sources.php utilities.php
 msgid "Data Source Name"
-msgstr "Πηγή δεδομένων"
+msgstr "Όνομα πηγής δεδομένων"
 
 #: data_sources.php
 msgid "The name of this Data Source. Generally programmatically generated from the Data Template definition."
@@ -4263,10 +4259,8 @@ msgid "No Inputs"
 msgstr "Δεν υπάρχουν είσοδοι"
 
 #: graph_templates.php
-#, fuzzy
-#| msgid "No Graph Templates Found"
 msgid "Graph Template not found."
-msgstr "Δεν βρέθηκαν πρότυπα γραφήματος"
+msgstr "Το πρότυπο γραφήματος δεν βρέθηκε."
 
 #: graph_templates.php
 #, php-format
@@ -7594,7 +7588,7 @@ msgstr "Επιλέξτε την έκδοση SNMP για αυτόν τον κε�
 
 #: include/global_form.php
 msgid "SNMP Community String"
-msgstr "SNMP Community String"
+msgstr "Συμβολοσειρά κοινότητας SNMP"
 
 #: include/global_form.php
 msgid "Fill in the SNMP read community for this device."
@@ -7674,7 +7668,7 @@ msgstr "Καταχωρίστε τον αριθμό θύρας UDP που θέλ�
 
 #: include/global_form.php
 msgid "SNMP Timeout"
-msgstr "SNMP Timeout"
+msgstr "Χρονικό όριο SNMP"
 
 #: include/global_form.php
 msgid "The maximum number of milliseconds Cacti will wait for an SNMP response (does not work with php-snmp support)."
@@ -11058,7 +11052,7 @@ msgstr "Καταχωρίστε τη δευτερεύουσα διεύθυνση 
 
 #: include/global_settings.php
 msgid "DNS Timeout"
-msgstr "DNS Timeout"
+msgstr "Χρονικό όριο DNS"
 
 #: include/global_settings.php
 msgid "Please enter the DNS timeout in milliseconds.  Cacti uses a PHP based DNS resolver."
@@ -16417,10 +16411,8 @@ msgid "Number of I/O threads used for read operations in InnoDB."
 msgstr ""
 
 #: lib/utility.php
-#, fuzzy
-#| msgid "default"
 msgid "1-64; default 4."
-msgstr "προεπιλογή"
+msgstr "1-64· προεπιλογή 4."
 
 #: lib/utility.php
 msgid "Number of I/O threads used for write operations in InnoDB."
@@ -17042,10 +17034,8 @@ msgid "The Package %s Import Failed"
 msgstr "Η εισαγωγή του πακέτου %s απέτυχε"
 
 #: package_import.php
-#, fuzzy
-#| msgid "Enter a valid file path"
 msgid "Error: Invalid file path."
-msgstr "Εισαγάγετε μια έγκυρη διαδρομή αρχείου"
+msgstr "Σφάλμα: Μη έγκυρη διαδρομή αρχείου."
 
 #: package_import.php
 msgid "Error in Package"
@@ -17191,10 +17181,8 @@ msgid "Are you sure you want to Force Uninstall the plugin"
 msgstr "Είστε βέβαιοι ότι θέλετε να επιβάλετε την κατάργηση εγκατάστασης του πρόσθετου"
 
 #: plugins.php
-#, fuzzy
-#| msgid "Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click 'Uninstall' below.  Otherwise click 'Cancel'"
 msgid "This permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone.  If you really want to Force Uninstall the Plugin, click 'Force Uninstall' below.  Otherwise click 'Cancel'."
-msgstr "Η κατάργηση της εγκατάστασης αυτής της προσθήκης θα καταργήσει όλα τα δεδομένα και τις ρυθμίσεις πρόσθετων στοιχείων. Εάν θέλετε πραγματικά να καταργήσετε την εγκατάσταση της προσθήκης, κάντε κλικ στο κουμπί &quot;Κατάργηση εγκατάστασης&quot; παρακάτω. Διαφορετικά κάντε κλικ στην επιλογή &#39;Ακύρωση&#39;"
+msgstr "Αυτό καταργεί μόνιμα όλες τις καταχωρίσεις της από τους πίνακες προσθέτων του Cacti (ρύθμιση παραμέτρων, άγκιστρα, δικαιώματα και τυχόν πίνακες ή στήλες που δημιούργησε). Αυτή η ενέργεια δεν μπορεί να αναιρεθεί. Εάν θέλετε πραγματικά να επιβάλετε την κατάργηση εγκατάστασης του προσθέτου, κάντε κλικ στο 'Επιβολή κατάργησης εγκατάστασης' παρακάτω. Διαφορετικά, κάντε κλικ στο 'Ακύρωση'."
 
 #: plugins.php
 #, fuzzy
@@ -18813,10 +18801,8 @@ msgid "Tree Perms"
 msgstr "Δικαιώματα δέντρου"
 
 #: user_admin.php
-#, fuzzy
-#| msgid "File not found"
 msgid "User not found."
-msgstr "Το αρχείο δε βρέθηκε"
+msgstr "Ο χρήστης δεν βρέθηκε."
 
 #: user_admin.php
 #, php-format
@@ -19285,7 +19271,7 @@ msgstr "Πληροφορίες PHP"
 
 #: utilities.php
 msgid "ChangeLog"
-msgstr "ChangeLog"
+msgstr "Αρχείο αλλαγών"
 
 #: utilities.php
 #, php-format
@@ -19481,10 +19467,8 @@ msgid "PHP SNMP"
 msgstr "PHP SNMP"
 
 #: utilities.php
-#, fuzzy
-#| msgid "Installed"
 msgid "Installed."
-msgstr "Εγκατεστημένο"
+msgstr "Εγκατεστημένο."
 
 #: utilities.php
 msgid "You've set memory limit to 'unlimited'."
@@ -20071,10 +20055,8 @@ msgid "Severity Level: %s"
 msgstr "Επίπεδο σοβαρότητας: %s"
 
 #: vdef.php
-#, fuzzy
-#| msgid "File not found"
 msgid "VDEF not found."
-msgstr "Το αρχείο δε βρέθηκε"
+msgstr "Το VDEF δεν βρέθηκε."
 
 #: vdef.php
 msgid "Click 'Continue' to delete the following VDEF."
