@@ -1071,7 +1071,7 @@ function boost_display_run_status() : void {
 						<label for='refresh'><?php print __('Refresh Interval'); ?></label>
 					</td>
 					<td>
-						<select id='refresh' name='refresh' onChange='applyFilter()' data-defaultLabel='<?php print __('Refresh Interval'); ?>'>
+						<select id='refresh' name='refresh' onChange='applyFilter()' data-defaultLabel='<?php print __esc('Refresh Interval'); ?>'>
 						<?php
 						foreach ($boost_utilities_interval as $key => $interval) {
 							print '<option value="' . $key . '"';

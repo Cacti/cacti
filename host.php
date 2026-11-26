@@ -1041,8 +1041,8 @@ function host_edit() : void {
 					</div>
 					<div class='cactiTableButton'>
 						<span>
-							<a class='linkCopyDark cactiTableCopy ti ti-copy' id='copyToClipboard<?php print $dbg_copy_uid; ?>' title='<?php print __('Copy All Data to Clipboard'); ?>'></a>
-							<a id='dbghide' class='ti ti-trash' href='#' title='<?php print __('Remove Debug Output'); ?>'></a>
+							<a class='linkCopyDark cactiTableCopy ti ti-copy' id='copyToClipboard<?php print $dbg_copy_uid; ?>' title='<?php print __esc('Copy All Data to Clipboard'); ?>'></a>
+							<a id='dbghide' class='ti ti-trash' href='#' title='<?php print __esc('Remove Debug Output'); ?>'></a>
 						</span>
 					</div>
 				</div>

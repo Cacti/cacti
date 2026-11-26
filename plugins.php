@@ -705,7 +705,7 @@ function update_show_current() : void {
 							<label for='state'><?php print __('Status'); ?></label>
 						</td>
 						<td>
-							<select id='state' name='state' onChange='applyFilter()' data-defaultLabel='<?php print __('Status'); ?>'>
+							<select id='state' name='state' onChange='applyFilter()' data-defaultLabel='<?php print __esc('Status'); ?>'>
 								<option value='-99'<?php if (grv('state') == '-99') {?> selected<?php }?>><?php print __('Loaded on Disk'); ?></option>
 								<option value='0'<?php if (grv('state') == '0') {?> selected<?php }?>><?php print __('Loaded and Not Installed'); ?></option>
 								<option value='1'<?php if (grv('state') == '1') {?> selected<?php }?>><?php print __('Installed and Active'); ?></option>
@@ -722,7 +722,7 @@ function update_show_current() : void {
 							<?php print __('Tag Type'); ?>
 						</td>
 						<td>
-							<select id='type' name='type' onChange='applyFilter()' data-defaultLabel='<?php print __('All'); ?>'>
+							<select id='type' name='type' onChange='applyFilter()' data-defaultLabel='<?php print __esc('All'); ?>'>
 								<option value='-1'<?php if (grv('type') == '-1') {?> selected<?php }?>><?php print __('All'); ?></option>
 								<option value='1'<?php if (grv('type') == '1') {?> selected<?php }?>><?php print __('Non Develop'); ?></option>
 								<option value='2'<?php if (grv('type') == '2') {?> selected<?php }?>><?php print __('Develop'); ?></option>
@@ -736,7 +736,7 @@ function update_show_current() : void {
 							<label for='rows'><?php print __('Plugins'); ?></label>
 						</td>
 						<td>
-							<select id='rows' name='rows' onChange='applyFilter()' data-defaultLabel='<?php print __('Plugins'); ?>'>
+							<select id='rows' name='rows' onChange='applyFilter()' data-defaultLabel='<?php print __esc('Plugins'); ?>'>
 								<option value='-1'<?php print (grv('rows') == '-1' ? ' selected>' : '>') . __('Default'); ?></option>
 								<?php
 								if (cacti_sizeof($item_rows) > 0) {
