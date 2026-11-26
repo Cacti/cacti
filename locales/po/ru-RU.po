@@ -8140,7 +8140,8 @@ msgstr "Параметры автоматического масштабиров
 
 #: include/global_form.php
 msgid "Use <br> --alt-autoscale to scale to the absolute minimum and maximum <br> --alt-autoscale-max to scale to the maximum value, using a given lower limit <br> --alt-autoscale-min to scale to the minimum value, using a given upper limit <br> --alt-autoscale (with limits) to scale using both lower and upper limits (RRDtool default) <br>"
-msgstr "Используйте <br> --alt-autoscale для масштабирования до абсолютного минимума и максимума <br> --alt-autoscale-max для масштабирования до максимального значения, используя данный нижний предел <br> --alt-autoscale-min - до минимального значения, используя данный верхний предел <br> --alt-autoscale (с ограничениями) - до масштаба, используя нижний и верхний пределы (RRDtool default)"
+msgstr "Используйте <br> --alt-autoscale для масштабирования до абсолютного минимума и максимума <br> --alt-autoscale-max для масштабирования до максимального значения, используя данный нижний предел <br> --alt-autoscale-min - до минимального значения, используя данный верхний предел <br> --alt-autoscale (с ограничениями) - до масштаба, используя нижний и верхний пределы (RRDtool default) <br>"
+
 
 #: include/global_form.php
 msgid "Use --alt-autoscale (ignoring given limits)"
@@ -8172,7 +8173,8 @@ msgstr "Единицы СИ для логарифмического масшта
 
 #: include/global_form.php
 msgid "Use SI Units for Logarithmic Scaling instead of using exponential notation.<br> Note: Linear graphs use SI notation by default."
-msgstr "Примечание: Линейные графики по умолчанию используют обозначение SI."
+msgstr "Используйте единицы СИ для логарифмического масштабирования вместо экспоненциальной записи.<br> Примечание: Линейные графики по умолчанию используют обозначение СИ."
+
 
 #: include/global_form.php
 msgid "Rigid Boundaries Mode (--rigid)"
@@ -10109,7 +10111,8 @@ msgstr "Свой Формат даты"
 
 #: include/global_settings.php
 msgid "To be used when formatting |date_time| on a graph"
-msgstr "Используется при форматировании | date_time | на графике"
+msgstr "Используется при форматировании |date_time| на графике"
+
 
 #: include/global_settings.php
 msgid "Disable RRDtool Watermark"
@@ -12392,7 +12395,8 @@ msgstr "%s - WEBUI NOTE: Журнал кактусов очищен от веб-
 
 #: lib/clog_webapi.php
 msgid "Click 'Continue' to purge the Log File.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы очистить файл журнала.<br><br><br><br>Примечание: Если журнализация настроена на Cacti и Syslog, информация журнала останется в Syslog."
+msgstr "Нажмите кнопку \"Продолжить\", чтобы очистить файл журнала.<br><br><br>Примечание: Если журнализация настроена на Cacti и Syslog, информация журнала останется в Syslog."
+
 
 #: lib/clog_webapi.php utilities.php
 msgid "Purge Log"
@@ -12434,7 +12438,8 @@ msgstr "Файл"
 
 #: lib/clog_webapi.php
 msgid "Head Lines"
-msgstr "%d Линий"
+msgstr "Начальные строки"
+
 
 #: lib/clog_webapi.php utilities.php
 msgid "Tail Lines"
@@ -13064,7 +13069,8 @@ msgstr "Ссылка %s"
 
 #: lib/functions.php
 msgid "Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting."
-msgstr "Почтовая ошибка: Нет <b>TO</b> Адрес установлен!!<br>Если используется ссылка <i>Test Mail</i>, пожалуйста, установите параметр <b>Alert e-mail</b>."
+msgstr "Почтовая ошибка: Нет TO Адрес установлен!!<br>Если используется ссылка <i>Test Mail</i>, пожалуйста, установите параметр <b>Alert e-mail</b>."
+
 
 #: lib/functions.php
 #, php-format
@@ -19831,7 +19837,8 @@ msgstr "Восстановление кэша Поллера"
 
 #: utilities.php
 msgid "The Poller Cache will be re-generated if you select this option. Use this option only in the event of a database crash if you are experiencing issues after the crash and have already run the database repair tools.  Alternatively, if you are having problems with a specific Device, simply re-save that Device to rebuild its Poller Cache.  There is also a command line interface equivalent to this command that is recommended for large systems."
-msgstr "Кэш Poller Cache будет сгенерирован заново, если вы выберете эту опцию. Используйте эту опцию только в случае сбоя базы данных, если у вас возникли проблемы после сбоя и вы уже запустили инструменты для восстановления базы данных.  В качестве альтернативы, если у вас возникли проблемы с конкретным устройством, просто сохраните это устройство для восстановления кэша Poller.  Существует также интерфейс командной строки, эквивалентный этой команде, который рекомендуется для больших систем.  <i class=\"deviceDown\">NOTE: На больших системах выполнение этой команды может занять от нескольких минут до нескольких часов и поэтому ее не следует запускать из интерфейса Cacti UI.  Вы можете просто запустить 'php -q cli/rebuild_poller_cache.php --help' в командной строке для получения дополнительной информации.</i>."
+msgstr "Кэш Poller Cache будет сгенерирован заново, если вы выберете эту опцию. Используйте эту опцию только в случае сбоя базы данных, если у вас возникли проблемы после сбоя и вы уже запустили инструменты для восстановления базы данных.  В качестве альтернативы, если у вас возникли проблемы с конкретным устройством, просто сохраните это устройство для восстановления кэша Poller.  Существует также интерфейс командной строки, эквивалентный этой команде, который рекомендуется для больших систем."
+
 
 #: utilities.php
 msgid "NOTE: On large systems, this command may take several minutes to hours to complete and therefore should not be run from the Cacti UI.  You can simply run 'php -q cli/rebuild_poller_cache.php --help' at the command line for more information."

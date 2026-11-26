@@ -10863,7 +10863,8 @@ msgstr "Meklēšanas filtrs"
 
 #: include/global_settings.php
 msgid "Search filter to use to locate the user in the LDAP directory, such as for windows: <i>'(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))'</i> or for OpenLDAP: <i>'(&(objectClass=account)(uid=&lt;username&gt))'</i>.  '&lt;username&gt' is replaced with the username that was supplied at the login prompt. "
-msgstr "Meklēšanas filtrs, ko izmantot, lai atrastu lietotāju LDAP direktorijā, piemēram, logiem: <i>&#39;(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;lietotājvārds&gt;*))&#39;</i> vai OpenLDAP: <i>&#39;(&amp;(objectClass =konts)(uid=&lt;lietotājvārds&gt;))&#39;</i> . “&lt;lietotājvārds&gt;” tiek aizstāts ar lietotājvārdu, kas tika norādīts pieteikšanās uzvednē. "
+msgstr "Meklēšanas filtrs, ko izmantot, lai atrastu lietotāju LDAP direktorijā, piemēram, logiem: <i>'(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;lietotājvārds&gt;*))'</i> vai OpenLDAP: <i>'(&amp;(objectClass =konts)(uid=&lt;lietotājvārds&gt;))'</i> . “&lt;lietotājvārds&gt;” tiek aizstāts ar lietotājvārdu, kas tika norādīts pieteikšanās uzvednē. "
+
 
 #: include/global_settings.php user_domains.php
 msgid "Search Distinguished Name (DN)"
@@ -13814,7 +13815,8 @@ msgstr "Izmantotais faila formāts"
 
 #: lib/html_reports.php
 msgid "Choose the custom html wrapper and CSS file to use.  This file contains both html and CSS to wrap around your report.  If it contains more than simply CSS, you need to place a special <REPORT> tag inside of the file.  This format tag will be replaced by the report content.  These files are located in the 'formats' directory."
-msgstr "Izvēlieties pielāgotu HTML noformējuma un CSS failu.  Šis fails satur gan HTML, gan CSS kodu, kas noformē jūsu atskaites izskatu.  Ja tas satur kaut ko vairāk par CSS kodu, tad failā jāievieto īpašs tags <REPORT>.  Šis <REPORT> tags tiks aizstāts ar atskaites saturu.   Šie faili atrodas 'formats' mapē."
+msgstr "Izvēlieties pielāgotu HTML noformējuma un CSS failu.  Šis fails satur gan HTML, gan CSS kodu, kas noformē jūsu atskaites izskatu.  Ja tas satur kaut ko vairāk par CSS kodu, tad failā jāievieto īpašs tags <REPORT>.  Šis formāta tags tiks aizstāts ar atskaites saturu.   Šie faili atrodas 'formats' mapē."
+
 
 #: lib/html_reports.php
 msgid "Default Text Font Size"
@@ -19097,7 +19099,8 @@ msgstr "Meklēšanas bāze meklēšanai LDAP direktorijā, piemēram, <i>\"dc=wi
 
 #: user_domains.php
 msgid "Search filter to use to locate the user in the LDAP directory, such as for windows: <i>\"(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))\"</i> or for OpenLDAP: <i>\"(&(objectClass=account)(uid=&lt;username&gt))\"</i>.  \"&lt;username&gt\" is replaced with the username that was supplied at the login prompt."
-msgstr "Meklēšanas filtrs, ko izmantot, lai atrastu lietotāju LDAP direktorijā, piemēram, logiem: <i>&quot;(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;lietotājvārds&gt;*))&quot;</i> vai OpenLDAP: <i>&quot;(&amp;(objectClass =konts)(uid=&lt;lietotājvārds&gt;))&quot;</i> . &quot;&lt;lietotājvārds&gt;&quot; tiek aizstāts ar lietotājvārdu, kas tika norādīts pieteikšanās uzvednē."
+msgstr "Meklēšanas filtrs, ko izmantot, lai atrastu lietotāju LDAP direktorijā, piemēram, logiem: <i>\"(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;lietotājvārds&gt;*))\"</i> vai OpenLDAP: <i>\"(&amp;(objectClass =konts)(uid=&lt;lietotājvārds&gt;))\"</i> . \"&lt;lietotājvārds&gt;\" tiek aizstāts ar lietotājvārdu, kas tika norādīts pieteikšanās uzvednē."
+
 
 #: user_domains.php
 msgid "eMail"

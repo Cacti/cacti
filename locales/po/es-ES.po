@@ -10041,7 +10041,8 @@ msgstr "Formato de fecha personalizado"
 
 #: include/global_settings.php
 msgid "To be used when formatting |date_time| on a graph"
-msgstr "Para ser utilizado al formatear | date_time | en un gráfico"
+msgstr "Para ser utilizado al formatear |date_time| en un gráfico"
+
 
 #: include/global_settings.php
 msgid "Disable RRDtool Watermark"

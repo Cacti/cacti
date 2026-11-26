@@ -675,7 +675,8 @@ msgstr "Proszę podać aktualne hasło i nowe<br> hasło."
 
 #: auth_changepassword.php
 msgid "Please enter your new Cacti password."
-msgstr "Proszę podać aktualne hasło i nowe<br> hasło."
+msgstr "Proszę podać nowe hasło Cacti."
+
 
 #: auth_changepassword.php auth_login.php include/global_settings.php
 #: lib/functions.php
@@ -4660,7 +4661,8 @@ msgstr "Kliknij 'Kontynuuj', aby skopiować poniższy wykres (wykresy). Opcjonal
 
 #: graphs.php
 msgid "<graph_title> (1)"
-msgstr "<graf_title> (1)"
+msgstr "<graph_title> (1)"
+
 
 #: graphs.php
 msgid "Duplicate Graph(s)"
@@ -4672,7 +4674,8 @@ msgstr "Kliknij 'Kontynuuj', aby przekonwertować poniższy wykres(y) na szablon
 
 #: graphs.php
 msgid "<graph_title> Template"
-msgstr "<graf_title> Szablon"
+msgstr "<graph_title> Szablon"
+
 
 #: graphs.php
 msgid "Click 'Continue' to place the following Graph(s) under the Tree Branch selected below."
@@ -12353,7 +12356,8 @@ msgstr "%s - UWAGA WEBUI: dziennik Cacti wyczyszczony z interfejsu zarządzania 
 
 #: lib/clog_webapi.php
 msgid "Click 'Continue' to purge the Log File.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog."
-msgstr "Kliknij 'Kontynuuj', aby oczyścić plik dziennika.<br><br><br><br>Note: Jeśli logowanie jest ustawione zarówno na Cacti jak i Syslog, informacja o dzienniku pozostanie w Syslog."
+msgstr "Kliknij 'Kontynuuj', aby oczyścić plik dziennika.<br><br><br>Note: Jeśli logowanie jest ustawione zarówno na Cacti jak i Syslog, informacja o dzienniku pozostanie w Syslog."
+
 
 #: lib/clog_webapi.php utilities.php
 msgid "Purge Log"
@@ -13025,7 +13029,8 @@ msgstr "Łącze %s"
 
 #: lib/functions.php
 msgid "Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting."
-msgstr "Błąd mailingowy: Nie <b>TO</b> adres ustawiony! <br>Jeśli korzystasz z linku <i>Test Mail</i>, ustaw ustawienie <b>Alert e-mail</b>."
+msgstr "Błąd mailingowy: Nie TO adres ustawiony! <br>Jeśli korzystasz z linku <i>Test Mail</i>, ustaw ustawienie <b>Alert e-mail</b>."
+
 
 #: lib/functions.php
 #, php-format
@@ -19071,7 +19076,8 @@ msgstr "Wyszukaj bazę do przeszukiwania katalogów LDAP, takich jak <i>\"dc=win
 
 #: user_domains.php
 msgid "Search filter to use to locate the user in the LDAP directory, such as for windows: <i>\"(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))\"</i> or for OpenLDAP: <i>\"(&(objectClass=account)(uid=&lt;username&gt))\"</i>.  \"&lt;username&gt\" is replaced with the username that was supplied at the login prompt."
-msgstr "Wyszukaj filtr, za pomocą którego można zlokalizować użytkownika w katalogu LDAP, np. dla okien: <i>\"(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))\"</i>\" lub dla OpenLDAP: <i>\"(&(objectClass=account)(uid=&lt;username&gt)))</i>\"</i>.  \"Nazwa użytkownika\" zostaje zastąpiona nazwą użytkownika, która została podana w oknie logowania."
+msgstr "Wyszukaj filtr, za pomocą którego można zlokalizować użytkownika w katalogu LDAP, np. dla okien: <i>\"(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))\"</i>\" lub dla OpenLDAP: <i>\"(&(objectClass=account)(uid=&lt;username&gt)))</i>\".  \"Nazwa użytkownika\" zostaje zastąpiona nazwą użytkownika, która została podana w oknie logowania."
+
 
 #: user_domains.php
 msgid "eMail"

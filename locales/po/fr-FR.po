@@ -672,7 +672,8 @@ msgstr "Veuillez entrer votre mot de passe courant et votre nouveau<br>mot de pa
 
 #: auth_changepassword.php
 msgid "Please enter your new Cacti password."
-msgstr "Veuillez entrer votre mot de passe actuel et votre nouveau mot de passe <br>Cacti."
+msgstr "Veuillez entrer votre nouveau mot de passe Cacti."
+
 
 #: auth_changepassword.php auth_login.php include/global_settings.php
 #: lib/functions.php
@@ -1004,7 +1005,8 @@ msgstr "Pas enregistré"
 
 #: automation_devices.php host.php
 msgid "No Devices Found"
-msgstr "Aucun périphérique n&apos;a été trouvé"
+msgstr "Aucun périphérique n'a été trouvé"
+
 
 #: automation_devices.php
 msgid "Discovery Filters"
@@ -7101,7 +7103,8 @@ msgstr "n'est pas vide"
 
 #: include/global_arrays.php
 msgid "matches regular expression"
-msgstr "correspond à l&apos;expression rationnelle"
+msgstr "correspond à l'expression rationnelle"
+
 
 #: include/global_arrays.php
 msgid "does not match regular expression"
@@ -10185,7 +10188,8 @@ msgstr "Nombre maximal de jours pour afficher les heures ouvrées"
 
 #: include/global_settings.php
 msgid "After this number of days, the business hours will not be added to the graph. <br/>Recommended: 62 days"
-msgstr "Après ce nombre de jours, les heures ouvrables ne seront plus ajoutées au graphique. <br/>Recommandé&nbsp;: 62 jours"
+msgstr "Après ce nombre de jours, les heures ouvrables ne seront plus ajoutées au graphique. <br/>Recommandé : 62 jours"
+
 
 #: include/global_settings.php
 msgid "Data Collection Enabled"
@@ -12140,7 +12144,8 @@ msgstr "Système :"
 
 #: lib/api_device.php
 msgid "Uptime:"
-msgstr "Temps d&apos;activation & #160;:"
+msgstr "Temps d'activation & #160;:"
+
 
 #: lib/api_device.php
 msgid "Hostname:"
@@ -12318,7 +12323,8 @@ msgstr "%s - REMARQUE WEBUI : journal Cacti effacé de l'interface de gestion W
 
 #: lib/clog_webapi.php
 msgid "Click 'Continue' to purge the Log File.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog."
-msgstr "Cliquez sur 'Continuer' pour supprimer le fichier des logs.<br><br><br><br>Note : si l'enregistrement des logs a été mis en place sur Cacti et Syslog, les informations des logs dans Syslog ne sont pas altérées."
+msgstr "Cliquez sur 'Continuer' pour supprimer le fichier des logs.<br><br><br>Note : si l'enregistrement des logs a été mis en place sur Cacti et Syslog, les informations des logs dans Syslog ne sont pas altérées."
+
 
 #: lib/clog_webapi.php utilities.php
 msgid "Purge Log"
@@ -12990,7 +12996,8 @@ msgstr "Lien %s"
 
 #: lib/functions.php
 msgid "Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting."
-msgstr "Erreur d'expéditeur : Si vous utilisez le lien <i>Test Mail</i>, réglez le paramètre <b>Alerter e-mail</b>."
+msgstr "Erreur d'expéditeur : aucune adresse de destinataire définie !!<br>Si vous utilisez le lien <i>Test Mail</i>, réglez le paramètre <b>Alerter e-mail</b>."
+
 
 #: lib/functions.php
 #, php-format
@@ -19791,7 +19798,8 @@ msgstr "Autre"
 
 #: utilities.php
 msgid "Cannot open directory"
-msgstr "Impossible d'ouvrir le répertoire"
+msgstr "Impossible d’ouvrir le répertoire"
+
 
 #: utilities.php
 msgid "Directory Does NOT Exist!!"
@@ -19979,12 +19987,14 @@ msgstr "Processus : %d"
 #: utilities.php
 #, php-format
 msgid "Status: <span class=\"deviceUp\"><b>Running</b></span>, Remaining: %s (dses), CurrentRuntime: %s (secs), PrevRuntime: %s (secs), PrevProcessed: %10s (ds rows)"
-msgstr "Statut&nbsp;: <span class=\"deviceUp\"><b>En cours d'exécution</b></span>, restant&nbsp;: %s (dses), CurrentRuntime&nbsp;: %s (secs), PrevRuntime&nbsp;: %s (secs), PrevProcessed&nbsp;: %10s (ds lignes)"
+msgstr "Statut : <span class=\"deviceUp\"><b>En cours d'exécution</b></span>, restant : %s (dses), CurrentRuntime : %s (secs), PrevRuntime : %s (secs), PrevProcessed : %10s (ds lignes)"
+
 
 #: utilities.php
 #, php-format
 msgid "Status: <span class=\"deviceRecovering\"><b>Idle</b></span>, PrevRuntime: %s (secs), PrevProcessed: %10s (ds rows)"
-msgstr "Statut&nbsp;: <span class=\"deviceRecovering\"><b>inactif</b></span>, PrevRuntime&nbsp;: %s (secondes), PrevProcessed&nbsp;: %10s (lignes ds)"
+msgstr "Statut : <span class=\"deviceRecovering\"><b>inactif</b></span>, PrevRuntime : %s (secondes), PrevProcessed : %10s (lignes ds)"
+
 
 #: utilities.php
 msgid "Run Time Configuration"

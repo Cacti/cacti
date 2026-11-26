@@ -3316,8 +3316,9 @@ msgstr "Om du ändrar hjärtslagsintervallet här påverkas inte befintliga data
 #: data_source_profiles.php
 msgid "Click 'Continue' to delete the following Data Source Profile"
 msgid_plural "Click 'Continue' to delete following Data Source Profiles"
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att radera följande datakällaprofil"
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att radera följande datakällaprofiler"
+msgstr[0] "Klicka på \"Fortsätt\" för att radera följande datakällaprofil"
+msgstr[1] "Klicka på \"Fortsätt\" för att radera följande datakällaprofiler"
+
 
 #: data_source_profiles.php
 msgid "Delete Data Source Profile"
@@ -3328,8 +3329,9 @@ msgstr[1] "Ta bort datakällaprofiler"
 #: data_source_profiles.php
 msgid "Click 'Continue' to duplicate the following Data Source Profile. You can optionally change the title format for the new Data Source Profile"
 msgid_plural "Click 'Continue' to duplicate following Data Source Profiles. You can optionally change the title format for the new Data Source Profiles."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att duplicera följande datakällaprofil. Du kan valfritt ändra titelformat för den nya datakällaprofilen"
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att duplicera följande datakällaprofiler. Du kan valfritt ändra titelformat för de nya datakällaprofilerna."
+msgstr[0] "Klicka på \"Fortsätt\" för att duplicera följande datakällaprofil. Du kan valfritt ändra titelformat för den nya datakällaprofilen"
+msgstr[1] "Klicka på \"Fortsätt\" för att duplicera följande datakällaprofiler. Du kan valfritt ändra titelformat för de nya datakällaprofilerna."
+
 
 #: data_source_profiles.php
 msgid "Duplicate Data Source Profile"
@@ -3536,8 +3538,9 @@ msgstr "Använd föreslagna namn igen"
 #: data_sources.php
 msgid "Click 'Continue' to delete the following Data Source"
 msgid_plural "Click 'Continue' to delete following Data Sources"
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att radera följande datakälla"
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att radera följande datakällor"
+msgstr[0] "Klicka på \"Fortsätt\" för att radera följande datakälla"
+msgstr[1] "Klicka på \"Fortsätt\" för att radera följande datakällor"
+
 
 #: data_sources.php
 msgid "The following graph is using these data sources:"
@@ -3572,8 +3575,9 @@ msgstr[1] "Ta bort datakällor"
 #: data_sources.php
 msgid "Choose a new Device for this Data Source and click 'Continue'."
 msgid_plural "Choose a new Device for these Data Sources and click 'Continue'"
-msgstr[0] "Välj en ny enhet för den här datakällan och klicka på &quot;Fortsätt&quot;."
-msgstr[1] "Välj en ny enhet för dessa datakällor och klicka på &quot;Fortsätt&quot;"
+msgstr[0] "Välj en ny enhet för den här datakällan och klicka på \"Fortsätt\"."
+msgstr[1] "Välj en ny enhet för dessa datakällor och klicka på \"Fortsätt\""
+
 
 #: data_sources.php
 msgid "New Device:"
@@ -3582,8 +3586,9 @@ msgstr "Ny enhet:"
 #: data_sources.php
 msgid "Click 'Continue' to enable the following Data Source."
 msgid_plural "Click 'Continue' to enable all following Data Sources."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att aktivera följande datakälla."
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att aktivera alla följande datakällor."
+msgstr[0] "Klicka på \"Fortsätt\" för att aktivera följande datakälla."
+msgstr[1] "Klicka på \"Fortsätt\" för att aktivera alla följande datakällor."
+
 
 #: data_sources.php
 msgid "Enable Data Source"
@@ -3594,8 +3599,9 @@ msgstr[1] "Aktivera datakällor"
 #: data_sources.php
 msgid "Click 'Continue' to disable the following Data Source."
 msgid_plural "Click 'Continue' to disable all following Data Sources."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att inaktivera följande datakälla."
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att inaktivera alla följande datakällor."
+msgstr[0] "Klicka på \"Fortsätt\" för att inaktivera följande datakälla."
+msgstr[1] "Klicka på \"Fortsätt\" för att inaktivera alla följande datakällor."
+
 
 #: data_sources.php
 msgid "Disable Data Source"
@@ -3606,8 +3612,9 @@ msgstr[1] "Inaktivera datakällor"
 #: data_sources.php
 msgid "Click 'Continue' to re-apply the suggested name to the following Data Source."
 msgid_plural "Click 'Continue' to re-apply the suggested names to all following Data Sources."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att tillämpa det föreslagna namnet på följande datakälla."
+msgstr[0] "Klicka på \"Fortsätt\" för att tillämpa det föreslagna namnet på följande datakälla."
 msgstr[1] "Klicka på Fortsätt för att tillämpa de föreslagna namnen på alla följande datakällor."
+
 
 #: data_sources.php
 msgid "Reapply Suggested Naming to Data Source"
@@ -7934,7 +7941,8 @@ msgstr "Välj ett unikt namn för denna datadel i RRD-filen."
 
 #: include/global_form.php
 msgid "Minimum Value (\"U\" for No Minimum)"
-msgstr "Minsta värde (&quot;U&quot; för inget minimum)"
+msgstr "Minsta värde (\"U\" för inget minimum)"
+
 
 #: include/global_form.php
 msgid "The minimum value of data that is allowed to be collected."
@@ -7942,7 +7950,8 @@ msgstr "Minsta värdet på data som får samlas in."
 
 #: include/global_form.php
 msgid "Maximum Value (\"U\" for No Maximum)"
-msgstr "Högsta värde (&quot;U&quot; för ingen övre gräns)"
+msgstr "Högsta värde (\"U\" för ingen övre gräns)"
+
 
 #: include/global_form.php
 msgid "The maximum value of data that is allowed to be collected."
@@ -7958,7 +7967,8 @@ msgstr "Hur data representeras i RRA."
 
 #: include/global_form.php
 msgid "The maximum amount of time that can pass before data is entered as 'unknown'. (Usually 2x300=600)"
-msgstr "Den längsta tid som får gå innan data registreras som &quot;okända&quot;. (Vanligen 2 × 300 = 600)"
+msgstr "Den längsta tid som får gå innan data registreras som \"okända\". (Vanligen 2 × 300 = 600)"
+
 
 #: include/global_form.php lib/html_utility.php
 msgid "Not Selected"
@@ -8134,7 +8144,8 @@ msgstr "Enhetsexponent (--units-exponent)"
 
 #: include/global_form.php
 msgid "What unit Cacti should use on the Y-axis. Use 3 to display everything in \"k\" or -6 to display everything in \"u\" (micro)."
-msgstr "Vilken enhet Cacti ska använda på Y-axeln. Använd 3 för att visa allt i &quot;k&quot; eller -6 för att visa allt i &quot;u&quot; (mikro)."
+msgstr "Vilken enhet Cacti ska använda på Y-axeln. Använd 3 för att visa allt i \"k\" eller -6 för att visa allt i \"u\" (mikro)."
+
 
 #: include/global_form.php
 msgid "Unit Length (--units-length &lt;length&gt;)"
@@ -17156,7 +17167,8 @@ msgstr "Konfigurationsproblem"
 
 #: plugins.php
 msgid "Actions available include 'Install', 'Activate', 'Disable', 'Enable', 'Uninstall'."
-msgstr "Tillgängliga åtgärder inkluderar &quot;Installera&quot;, &quot;Aktivera&quot;, &quot;Inaktivera&quot;, &quot;Aktivera&quot;, &quot;Avinstallera&quot;."
+msgstr "Tillgängliga åtgärder inkluderar \"Installera\", \"Aktivera\", \"Inaktivera\", \"Aktivera\", \"Avinstallera\"."
+
 
 #: plugins.php
 msgid "Plugin Name"

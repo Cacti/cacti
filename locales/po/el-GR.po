@@ -70,7 +70,8 @@ msgstr "Το Cacti διαθέτει άδεια χρήσης του GNU GPL:"
 
 #: about.php lib/installer.php
 msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
-msgstr "Το πρόγραμμα αυτό είναι ελεύθερο λογισμικό. Επιτρέπεται η αναδιανομή ή/και τροποποίησή του υπό τους όρους της Γενικής Άδειας Δημόσιας Χρήσης GNU (GNU General Public License), όπως αυτή έχει δημοσιευτεί από το Ίδρυμα Ελεύθερου Λογισμικού (Free Software Foundation) – είτε της έκδοσης 2 της Άδειας, είτε (κατ&apos; επιλογήν) οποιασδήποτε μεταγενέστερης έκδοσης."
+msgstr "Το πρόγραμμα αυτό είναι ελεύθερο λογισμικό. Επιτρέπεται η αναδιανομή ή/και τροποποίησή του υπό τους όρους της Γενικής Άδειας Δημόσιας Χρήσης GNU (GNU General Public License), όπως αυτή έχει δημοσιευτεί από το Ίδρυμα Ελεύθερου Λογισμικού (Free Software Foundation) – είτε της έκδοσης 2 της Άδειας, είτε (κατ' επιλογήν) οποιασδήποτε μεταγενέστερης έκδοσης."
+
 
 #: about.php
 msgid "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."
@@ -120,7 +121,8 @@ msgstr "Τοποθετήστε σε ένα δέντρο ( %s)"
 
 #: aggregate_graphs.php
 msgid "Click 'Continue' to delete the following Aggregate Graph(s)."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε τους ακόλουθους συνδυασμούς."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε τους ακόλουθους συνδυασμούς."
+
 
 #: aggregate_graphs.php aggregate_templates.php automation_devices.php
 #: automation_graph_rules.php automation_networks.php automation_snmp.php
@@ -157,7 +159,8 @@ msgstr "Τα επιλεγμένα σύνολα γραφημάτων αντιπρ
 
 #: aggregate_graphs.php
 msgid "In order to migrate the Aggregate Graphs below to a Template based Aggregate, they must only be using one Graph Template.  Please press 'Return' and then select only Aggregate Graph that utilize the same Graph Template."
-msgstr "Προκειμένου να μεταφερθούν οι συγκεντρωτικοί γραφήτες παρακάτω σε ένα συσσωρευμένο με βάση πρότυπα, πρέπει να χρησιμοποιούν μόνο ένα πρότυπο γραφήματος. Πατήστε &#39;Επιστροφή&#39; και, στη συνέχεια, επιλέξτε μόνο Aggregate Graph που χρησιμοποιεί το ίδιο πρότυπο γραφήματος."
+msgstr "Προκειμένου να μεταφερθούν οι συγκεντρωτικοί γραφήτες παρακάτω σε ένα συσσωρευμένο με βάση πρότυπα, πρέπει να χρησιμοποιούν μόνο ένα πρότυπο γραφήματος. Πατήστε 'Επιστροφή' και, στη συνέχεια, επιλέξτε μόνο Aggregate Graph που χρησιμοποιεί το ίδιο πρότυπο γραφήματος."
+
 
 #: aggregate_graphs.php auth_changepassword.php auth_profile.php
 #: automation_networks.php automation_snmp.php graphs.php host.php
@@ -176,7 +179,8 @@ msgstr "Για να μετεγκαταστήσετε τα παρακάτω συ�
 
 #: aggregate_graphs.php
 msgid "Click 'Continue' and the following Aggregate Graph(s) will be migrated to use the Aggregate Template that you choose below."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; και θα μεταφερθούν οι ακόλουθοι συγκεντρωτικοί γραφοί για να χρησιμοποιήσετε το Πρότυπο συγκεντρωτικού που επιλέγετε παρακάτω."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" και θα μεταφερθούν οι ακόλουθοι συγκεντρωτικοί γραφοί για να χρησιμοποιήσετε το Πρότυπο συγκεντρωτικού που επιλέγετε παρακάτω."
+
 
 #: aggregate_graphs.php
 msgid "Aggregate Template:"
@@ -193,11 +197,13 @@ msgstr "Για να μετεγκαταστήσετε τα παρακάτω συ�
 
 #: aggregate_graphs.php
 msgid "Please press 'Return' to continue."
-msgstr "Πατήστε &quot;Επιστροφή&quot; για να συνεχίσετε."
+msgstr "Πατήστε \"Επιστροφή\" για να συνεχίσετε."
+
 
 #: aggregate_graphs.php
 msgid "Click 'Continue' to combine the following Aggregate Graph(s) into a single Aggregate Graph."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να συνδυάσετε τους ακόλουθους συνδυασμούς γραφικών σε έναν ενιαίο συνολικό κύκλο."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να συνδυάσετε τους ακόλουθους συνδυασμούς γραφικών σε έναν ενιαίο συνολικό κύκλο."
+
 
 #: aggregate_graphs.php
 msgid "Aggregate Name:"
@@ -209,7 +215,8 @@ msgstr "Νέο συγκεντρωτικό"
 
 #: aggregate_graphs.php graphs.php host.php
 msgid "Click 'Continue' to add the selected Graphs to the Report below."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να προσθέσετε τα επιλεγμένα Γραφήματα στην παρακάτω αναφορά."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να προσθέσετε τα επιλεγμένα Γραφήματα στην παρακάτω αναφορά."
+
 
 #: aggregate_graphs.php graph_view.php graphs.php host.php lib/html_reports.php
 msgid "Report Name"
@@ -241,7 +248,8 @@ msgstr "Μετατροπή σε γράφημα LINE1"
 
 #: aggregate_graphs.php
 msgid "Click 'Continue' to associate the following Graph(s) with the Aggregate Graph."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να συσχετίσετε τους ακόλουθους γραμματιστές με το συνολικό γράφημα."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να συσχετίσετε τους ακόλουθους γραμματιστές με το συνολικό γράφημα."
+
 
 #: aggregate_graphs.php
 msgid "Associate Graph(s)"
@@ -249,7 +257,8 @@ msgstr "Συνεργάτης Γράφημα"
 
 #: aggregate_graphs.php
 msgid "Click 'Continue' to disassociate the following Graph(s) from the Aggregate."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαχωρίσετε τους ακόλουθους Γράμματα από το Σύνολο."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαχωρίσετε τους ακόλουθους Γράμματα από το Σύνολο."
+
 
 #: aggregate_graphs.php
 msgid "Dis-Associate Graph(s)"
@@ -257,7 +266,8 @@ msgstr "Αποσυνδεδεμένος Γράφος (ες)"
 
 #: aggregate_graphs.php
 msgid "Click 'Continue' to place the following Aggregate Graph(s) under the Tree Branch."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να τοποθετήσετε τον ακόλουθο συγκεντρωτικό γραφή (α) κάτω από τον κλάδο δέντρων."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να τοποθετήσετε τον ακόλουθο συγκεντρωτικό γραφή (α) κάτω από τον κλάδο δέντρων."
+
 
 #: aggregate_graphs.php host.php
 msgid "Destination Branch:"
@@ -555,7 +565,8 @@ msgstr "Το συγκεντρωτικό πρότυπο δεν βρέθηκε."
 
 #: aggregate_templates.php
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε τα ακόλουθα πρότυπα ή σύνολα αθροιστικών γραφημάτων."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε τα ακόλουθα πρότυπα ή σύνολα αθροιστικών γραφημάτων."
+
 
 #: aggregate_templates.php
 msgid "Delete Color Template(s)"
@@ -919,7 +930,8 @@ msgstr "Οι συσκευές αφαιρέθηκαν από τη βάση δεδ
 
 #: automation_devices.php
 msgid "Click 'Continue' to add the following Discovered device(s)."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να προσθέσετε τις ακόλουθες συσκευές που έχουν ανακαλυφθεί."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να προσθέσετε τις ακόλουθες συσκευές που έχουν ανακαλυφθεί."
+
 
 #: automation_devices.php pollers.php
 msgid "Pollers"
@@ -1070,11 +1082,13 @@ msgstr ""
 
 #: automation_graph_rules.php
 msgid "Press 'Continue' to delete the following Graph Rules."
-msgstr "Πατήστε &#39;Συνέχεια&#39; για να διαγράψετε τους ακόλουθους κανόνες γραφήματος."
+msgstr "Πατήστε 'Συνέχεια' για να διαγράψετε τους ακόλουθους κανόνες γραφήματος."
+
 
 #: automation_graph_rules.php
 msgid "Click 'Continue' to duplicate the following Rule(s). You can optionally change the title format for the new Graph Rules."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να αντιγράψετε τους ακόλουθους Κανόνες. Μπορείτε να αλλάξετε προαιρετικά τη μορφή τίτλου για τους νέους κανόνες γραφήματος."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να αντιγράψετε τους ακόλουθους Κανόνες. Μπορείτε να αλλάξετε προαιρετικά τη μορφή τίτλου για τους νέους κανόνες γραφήματος."
+
 
 #: automation_graph_rules.php automation_tree_rules.php graphs.php
 msgid "Title Format"
@@ -1086,7 +1100,8 @@ msgstr "Όνομα Κανόνα"
 
 #: automation_graph_rules.php automation_tree_rules.php
 msgid "Click 'Continue' to enable the following Rule(s)."
-msgstr "Κάντε κλικ στην επιλογή &#39;Συνέχεια&#39; για να ενεργοποιήσετε τους ακόλουθους Κανόνες."
+msgstr "Κάντε κλικ στην επιλογή 'Συνέχεια' για να ενεργοποιήσετε τους ακόλουθους Κανόνες."
+
 
 #: automation_graph_rules.php automation_tree_rules.php
 msgid "Make sure, that those rules have successfully been tested!"
@@ -1094,7 +1109,8 @@ msgstr "Βεβαιωθείτε ότι αυτοί οι κανόνες έχουν 
 
 #: automation_graph_rules.php automation_tree_rules.php
 msgid "Click 'Continue' to disable the following Rule(s)."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να απενεργοποιήσετε τους ακόλουθους Κανόνες."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να απενεργοποιήσετε τους ακόλουθους Κανόνες."
+
 
 #: automation_graph_rules.php automation_tree_rules.php
 msgid "Apply requested action"
@@ -1228,19 +1244,23 @@ msgstr "ΣΦΑΛΜΑ: Το δίκτυο '%s' είναι μη έγκυρο."
 
 #: automation_networks.php
 msgid "Click 'Continue' to delete the following Network(s)."
-msgstr "Πατήστε &#39;Συνέχεια&#39; για να διαγράψετε τα παρακάτω Δίκτυα."
+msgstr "Πατήστε 'Συνέχεια' για να διαγράψετε τα παρακάτω Δίκτυα."
+
 
 #: automation_networks.php
 msgid "Click 'Continue' to enable the following Network(s)."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να ενεργοποιήσετε τα παρακάτω Δίκτυα."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να ενεργοποιήσετε τα παρακάτω Δίκτυα."
+
 
 #: automation_networks.php
 msgid "Click 'Continue' to disable the following Network(s)."
-msgstr "Κάντε κλικ στο κουμπί &#39;Συνέχεια&#39; για να απενεργοποιήσετε τα παρακάτω Δίκτυα."
+msgstr "Κάντε κλικ στο κουμπί 'Συνέχεια' για να απενεργοποιήσετε τα παρακάτω Δίκτυα."
+
 
 #: automation_networks.php
 msgid "Click 'Continue' to discover the following Network(s)."
-msgstr "Πατήστε &#39;Συνέχεια&#39; για να ανακαλύψετε τα παρακάτω Δίκτυα."
+msgstr "Πατήστε 'Συνέχεια' για να ανακαλύψετε τα παρακάτω Δίκτυα."
+
 
 #: automation_networks.php
 msgid "Run discover in debug mode"
@@ -1248,7 +1268,8 @@ msgstr "Εκτελέστε εντοπισμό στη λειτουργία εντ
 
 #: automation_networks.php
 msgid "Click 'Continue' to cancel on going Network Discovery(s)."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να ακυρώσετε τη λειτουργία Ανακάλυψης Δικτύου (Network Discovery)."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να ακυρώσετε τη λειτουργία Ανακάλυψης Δικτύου (Network Discovery)."
+
 
 #: automation_networks.php data_input.php include/global_arrays.php
 msgid "SNMP Get"
@@ -1800,11 +1821,13 @@ msgstr "Διαγραφή φίλτρου"
 
 #: automation_snmp.php
 msgid "Click 'Continue' to delete the following SNMP Option(s)."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε τις ακόλουθες επιλογές SNMP."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε τις ακόλουθες επιλογές SNMP."
+
 
 #: automation_snmp.php
 msgid "Click 'Continue' to duplicate the following SNMP Options. You can optionally change the title format for the new SNMP Options."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να αντιγράψετε τις ακόλουθες επιλογές SNMP. Μπορείτε να αλλάξετε προαιρετικά τη μορφή τίτλου για τις νέες επιλογές SNMP."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να αντιγράψετε τις ακόλουθες επιλογές SNMP. Μπορείτε να αλλάξετε προαιρετικά τη μορφή τίτλου για τις νέες επιλογές SNMP."
+
 
 #: automation_snmp.php
 msgid "Name Format"
@@ -1824,7 +1847,8 @@ msgstr "Το στοιχείο αυτοματισμού δεν υπάρχει. Δ
 
 #: automation_snmp.php
 msgid "Click 'Continue' to delete the following SNMP Option Item."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε το παρακάτω στοιχείο επιλογής SNMP."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε το παρακάτω στοιχείο επιλογής SNMP."
+
 
 #: automation_snmp.php
 msgid "SNMP Option:"
@@ -2000,7 +2024,8 @@ msgstr "Δεν βρέθηκαν σύνολα επιλογών SNMP"
 
 #: automation_templates.php
 msgid "Click 'Continue' to delete the following Automation Template(s)."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε τα πρότυπα αυτοματοποίησης που ακολουθούν."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε τα πρότυπα αυτοματοποίησης που ακολουθούν."
+
 
 #: automation_templates.php
 msgid "Delete Automation Template(s)"
@@ -2091,11 +2116,13 @@ msgstr "Ορίστηκε μη έγκυρο όνομα πεδίου για το �
 
 #: automation_tree_rules.php
 msgid "Click 'Continue' to delete the following Rule(s)."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε τους ακόλουθους Κανόνες."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε τους ακόλουθους Κανόνες."
+
 
 #: automation_tree_rules.php
 msgid "Click 'Continue' to duplicate the following Rule(s). You can optionally change the title format for the new Rules."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να αντιγράψετε τους ακόλουθους Κανόνες. Μπορείτε να αλλάξετε προαιρετικά τη μορφή τίτλου για τους νέους κανόνες."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να αντιγράψετε τους ακόλουθους Κανόνες. Μπορείτε να αλλάξετε προαιρετικά τη μορφή τίτλου για τους νέους κανόνες."
+
 
 #: automation_tree_rules.php
 msgid "Created Trees"
@@ -2137,7 +2164,8 @@ msgstr "ΠΡΟΕΙΔΟΠΟΙΗΣΗ:"
 
 #: automation_tree_rules.php
 msgid "You are changing the leaf type to \"Device\" which does not support Graph-based object matching/creation."
-msgstr "Αλλάζετε τον τύπο φύλλου στη &quot;Συσκευή&quot;, η οποία δεν υποστηρίζει αντιστοίχιση / δημιουργία αντικειμένων βασισμένη σε γραφήματα."
+msgstr "Αλλάζετε τον τύπο φύλλου στη \"Συσκευή\", η οποία δεν υποστηρίζει αντιστοίχιση / δημιουργία αντικειμένων βασισμένη σε γραφήματα."
+
 
 #: automation_tree_rules.php
 msgid "By changing the leaf type, all invalid rules will be automatically removed and will not be recoverable."
@@ -2205,8 +2233,9 @@ msgstr ""
 #: cdef.php
 msgid "Click 'Continue' to delete the following CDEF."
 msgid_plural "Click 'Continue' to delete all following CDEFs."
-msgstr[0] "Κάντε κλικ στο κουμπί &#39;Συνέχεια&#39; για να διαγράψετε το ακόλουθο CDEF."
-msgstr[1] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε όλα τα ακόλουθα CDEF."
+msgstr[0] "Κάντε κλικ στο κουμπί 'Συνέχεια' για να διαγράψετε το ακόλουθο CDEF."
+msgstr[1] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε όλα τα ακόλουθα CDEF."
+
 
 #: cdef.php
 msgid "Delete CDEF"
@@ -2217,8 +2246,9 @@ msgstr[1] "Διαγράψτε τα CDEF"
 #: cdef.php
 msgid "Click 'Continue' to duplicate the following CDEF. You can optionally change the title format for the new CDEF."
 msgid_plural "Click 'Continue' to duplicate the following CDEFs. You can optionally change the title format for the new CDEFs."
-msgstr[0] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να αντιγράψετε το ακόλουθο CDEF. Μπορείτε να αλλάξετε προαιρετικά τη μορφή τίτλου για το νέο CDEF."
-msgstr[1] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να αντιγράψετε τα ακόλουθα CDEF. Μπορείτε να αλλάξετε προαιρετικά τη μορφή τίτλου για τα νέα CDEF."
+msgstr[0] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να αντιγράψετε το ακόλουθο CDEF. Μπορείτε να αλλάξετε προαιρετικά τη μορφή τίτλου για το νέο CDEF."
+msgstr[1] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να αντιγράψετε τα ακόλουθα CDEF. Μπορείτε να αλλάξετε προαιρετικά τη μορφή τίτλου για τα νέα CDEF."
+
 
 #: cdef.php color_templates.php data_source_profiles.php data_templates.php
 #: graph_templates.php host_templates.php vdef.php
@@ -2233,7 +2263,8 @@ msgstr[1] "Διπλά CDEF"
 
 #: cdef.php
 msgid "Click 'Continue' to delete the following CDEF Item."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε το παρακάτω στοιχείο CDEF."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε το παρακάτω στοιχείο CDEF."
+
 
 #: cdef.php
 #, php-format
@@ -2345,8 +2376,9 @@ msgstr "Ανώνυμο χρώμα"
 #: color.php
 msgid "Click 'Continue' to delete the following Color"
 msgid_plural "Click 'Continue' to delete the following Colors"
-msgstr[0] "Κάντε κλικ στο κουμπί &#39;Συνέχεια&#39; για να διαγράψετε το παρακάτω χρώμα"
-msgstr[1] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε τα παρακάτω χρώματα"
+msgstr[0] "Κάντε κλικ στο κουμπί 'Συνέχεια' για να διαγράψετε το παρακάτω χρώμα"
+msgstr[1] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε τα παρακάτω χρώματα"
+
 
 #: color.php
 msgid "Delete Color"
@@ -2497,8 +2529,9 @@ msgstr "Κανένα στοιχείο"
 #: color_templates.php
 msgid "Click 'Continue' to delete the following Color Template"
 msgid_plural "Click 'Continue' to delete following Color Templates"
-msgstr[0] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε το ακόλουθο Πρότυπο Χρώματος"
-msgstr[1] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε τα παρακάτω πρότυπα χρωμάτων"
+msgstr[0] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε το ακόλουθο Πρότυπο Χρώματος"
+msgstr[1] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε τα παρακάτω πρότυπα χρωμάτων"
+
 
 #: color_templates.php
 msgid "Delete Color Template"
@@ -2509,8 +2542,9 @@ msgstr[1] "Διαγραφή προτύπων χρώματος"
 #: color_templates.php
 msgid "Click 'Continue' to duplicate the following Color Template. You can optionally change the title format for the new color template."
 msgid_plural "Click 'Continue' to duplicate following Color Templates. You can optionally change the title format for the new color templates."
-msgstr[0] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να αντιγράψετε το ακόλουθο Πρότυπο χρώματος. Μπορείτε να αλλάξετε προαιρετικά τη μορφή τίτλου για το νέο πρότυπο χρώματος."
-msgstr[1] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να αντιγράψετε τα ακόλουθα πρότυπα χρώματος. Μπορείτε να αλλάξετε προαιρετικά τη μορφή τίτλου για τα νέα πρότυπα χρώματος."
+msgstr[0] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να αντιγράψετε το ακόλουθο Πρότυπο χρώματος. Μπορείτε να αλλάξετε προαιρετικά τη μορφή τίτλου για το νέο πρότυπο χρώματος."
+msgstr[1] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να αντιγράψετε τα ακόλουθα πρότυπα χρώματος. Μπορείτε να αλλάξετε προαιρετικά τη μορφή τίτλου για τα νέα πρότυπα χρώματος."
+
 
 #: color_templates.php
 msgid "Duplicate Color Template"
@@ -2584,7 +2618,8 @@ msgstr "Το πρότυπο χρωμάτων ή το στοιχείο δεν β�
 
 #: color_templates_items.php
 msgid "Click 'Continue' to delete the following Color Template Color."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε το παρακάτω χρώμα προτύπου χρώματος."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε το παρακάτω χρώμα προτύπου χρώματος."
+
 
 #: color_templates_items.php
 msgid "Color Name:"
@@ -2953,7 +2988,8 @@ msgstr[1] "Κάντε κλικ στο κουμπί 'Συνέχεια' για ν�
 
 #: data_input.php
 msgid "Click 'Continue' to duplicate the following Data Input Method(s). You can optionally change the title format for the new Data Input Method(s)."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να αντιγράψετε τις ακόλουθες μεθόδους εισαγωγής δεδομένων. Μπορείτε να αλλάξετε προαιρετικά τη μορφή τίτλου για τις νέες μεθόδους εισαγωγής δεδομένων."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να αντιγράψετε τις ακόλουθες μεθόδους εισαγωγής δεδομένων. Μπορείτε να αλλάξετε προαιρετικά τη μορφή τίτλου για τις νέες μεθόδους εισαγωγής δεδομένων."
+
 
 #: data_input.php
 msgid "Input Name:"
@@ -2967,7 +3003,8 @@ msgstr[1] "Διαγραφή μεθόδων εισαγωγής δεδομένων
 
 #: data_input.php
 msgid "Click 'Continue' to delete the following Data Input Field."
-msgstr "Κάντε κλικ στο κουμπί &#39;Συνέχεια&#39; για να διαγράψετε το παρακάτω πεδίο εισαγωγής δεδομένων."
+msgstr "Κάντε κλικ στο κουμπί 'Συνέχεια' για να διαγράψετε το παρακάτω πεδίο εισαγωγής δεδομένων."
+
 
 #: data_input.php
 #, php-format
@@ -3134,8 +3171,9 @@ msgstr "Δεν βρέθηκαν μέθοδοι εισαγωγής δεδομέν
 #: data_queries.php
 msgid "Click 'Continue' to Delete the following Data Query."
 msgid_plural "Click 'Continue' to Delete following Data Queries."
-msgstr[0] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε το ακόλουθο ερώτημα δεδομένων."
-msgstr[1] "Κάντε κλικ στο κουμπί &#39;Συνέχεια&#39; για να διαγράψετε τα ακόλουθα ερωτήματα δεδομένων."
+msgstr[0] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε το ακόλουθο ερώτημα δεδομένων."
+msgstr[1] "Κάντε κλικ στο κουμπί 'Συνέχεια' για να διαγράψετε τα ακόλουθα ερωτήματα δεδομένων."
+
 
 #: data_queries.php
 msgid "Delete Data Query"
@@ -3161,7 +3199,8 @@ msgstr[1] "Διπλασιασμός ερωτημάτων δεδομένων"
 
 #: data_queries.php
 msgid "Click 'Continue' to delete the following Data Query Graph Association."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε την ακόλουθη Σύνδεση του ερωτήματος δεδομένων."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε την ακόλουθη Σύνδεση του ερωτήματος δεδομένων."
+
 
 #: data_queries.php
 #, php-format
@@ -3326,8 +3365,9 @@ msgstr "Η αλλαγή του καρδιακού παλμού από αυτήν
 #: data_source_profiles.php
 msgid "Click 'Continue' to delete the following Data Source Profile"
 msgid_plural "Click 'Continue' to delete following Data Source Profiles"
-msgstr[0] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε το ακόλουθο προφίλ προέλευσης δεδομένων"
-msgstr[1] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε τα παρακάτω προφίλ πηγών δεδομένων"
+msgstr[0] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε το ακόλουθο προφίλ προέλευσης δεδομένων"
+msgstr[1] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε τα παρακάτω προφίλ πηγών δεδομένων"
+
 
 #: data_source_profiles.php
 msgid "Delete Data Source Profile"
@@ -3338,8 +3378,9 @@ msgstr[1] "Διαγραφή προφίλ πηγής δεδομένων"
 #: data_source_profiles.php
 msgid "Click 'Continue' to duplicate the following Data Source Profile. You can optionally change the title format for the new Data Source Profile"
 msgid_plural "Click 'Continue' to duplicate following Data Source Profiles. You can optionally change the title format for the new Data Source Profiles."
-msgstr[0] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να αντιγράψετε το ακόλουθο προφίλ προέλευσης δεδομένων. Μπορείτε να αλλάξετε προαιρετικά τη μορφή τίτλου για το νέο προφίλ προέλευσης δεδομένων"
-msgstr[1] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να αντιγράψετε τα ακόλουθα προφίλ προέλευσης δεδομένων. Μπορείτε να αλλάξετε προαιρετικά τη μορφή τίτλου για τα νέα προφίλ προέλευσης δεδομένων."
+msgstr[0] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να αντιγράψετε το ακόλουθο προφίλ προέλευσης δεδομένων. Μπορείτε να αλλάξετε προαιρετικά τη μορφή τίτλου για το νέο προφίλ προέλευσης δεδομένων"
+msgstr[1] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να αντιγράψετε τα ακόλουθα προφίλ προέλευσης δεδομένων. Μπορείτε να αλλάξετε προαιρετικά τη μορφή τίτλου για τα νέα προφίλ προέλευσης δεδομένων."
+
 
 #: data_source_profiles.php
 msgid "Duplicate Data Source Profile"
@@ -3353,7 +3394,8 @@ msgstr "Αδυναμία αντιγραφής προφίλ πηγής δεδομ
 
 #: data_source_profiles.php
 msgid "Click 'Continue' to delete the following Data Source Profile RRA."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε το παρακάτω προφίλ προέλευσης δεδομένων προέλευσης RRA."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε το παρακάτω προφίλ προέλευσης δεδομένων προέλευσης RRA."
+
 
 #: data_source_profiles.php
 #, php-format
@@ -3546,8 +3588,9 @@ msgstr "Επαναπροσδιορισμός προτεινόμενων ονομ
 #: data_sources.php
 msgid "Click 'Continue' to delete the following Data Source"
 msgid_plural "Click 'Continue' to delete following Data Sources"
-msgstr[0] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε την ακόλουθη Πηγή δεδομένων"
-msgstr[1] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε τις ακόλουθες Πηγές δεδομένων"
+msgstr[0] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε την ακόλουθη Πηγή δεδομένων"
+msgstr[1] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε τις ακόλουθες Πηγές δεδομένων"
+
 
 #: data_sources.php
 msgid "The following graph is using these data sources:"
@@ -3582,8 +3625,9 @@ msgstr[1] "Διαγραφή πηγών δεδομένων"
 #: data_sources.php
 msgid "Choose a new Device for this Data Source and click 'Continue'."
 msgid_plural "Choose a new Device for these Data Sources and click 'Continue'"
-msgstr[0] "Επιλέξτε μια νέα συσκευή για αυτήν την προέλευση δεδομένων και κάντε κλικ στο κουμπί &quot;Συνέχεια&quot;."
-msgstr[1] "Επιλέξτε μια νέα Συσκευή για αυτές τις Πηγές Δεδομένων και κάντε κλικ στο &#39;Συνέχεια&#39;"
+msgstr[0] "Επιλέξτε μια νέα συσκευή για αυτήν την προέλευση δεδομένων και κάντε κλικ στο κουμπί \"Συνέχεια\"."
+msgstr[1] "Επιλέξτε μια νέα Συσκευή για αυτές τις Πηγές Δεδομένων και κάντε κλικ στο 'Συνέχεια'"
+
 
 #: data_sources.php
 msgid "New Device:"
@@ -3592,8 +3636,9 @@ msgstr "Νέα συσκευή:"
 #: data_sources.php
 msgid "Click 'Continue' to enable the following Data Source."
 msgid_plural "Click 'Continue' to enable all following Data Sources."
-msgstr[0] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να ενεργοποιήσετε την ακόλουθη Πηγή δεδομένων."
-msgstr[1] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να ενεργοποιήσετε όλες τις ακόλουθες Πηγές δεδομένων."
+msgstr[0] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να ενεργοποιήσετε την ακόλουθη Πηγή δεδομένων."
+msgstr[1] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να ενεργοποιήσετε όλες τις ακόλουθες Πηγές δεδομένων."
+
 
 #: data_sources.php
 msgid "Enable Data Source"
@@ -3604,8 +3649,9 @@ msgstr[1] "Ενεργοποιήστε τις Πηγές δεδομένων"
 #: data_sources.php
 msgid "Click 'Continue' to disable the following Data Source."
 msgid_plural "Click 'Continue' to disable all following Data Sources."
-msgstr[0] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να απενεργοποιήσετε την ακόλουθη Πηγή δεδομένων."
-msgstr[1] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να απενεργοποιήσετε όλες τις ακόλουθες Πηγές δεδομένων."
+msgstr[0] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να απενεργοποιήσετε την ακόλουθη Πηγή δεδομένων."
+msgstr[1] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να απενεργοποιήσετε όλες τις ακόλουθες Πηγές δεδομένων."
+
 
 #: data_sources.php
 msgid "Disable Data Source"
@@ -3616,8 +3662,9 @@ msgstr[1] "Απενεργοποιήστε τις Πηγές Δεδομένων"
 #: data_sources.php
 msgid "Click 'Continue' to re-apply the suggested name to the following Data Source."
 msgid_plural "Click 'Continue' to re-apply the suggested names to all following Data Sources."
-msgstr[0] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να εφαρμόσετε ξανά το προτεινόμενο όνομα στην ακόλουθη Πηγή δεδομένων."
-msgstr[1] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να εφαρμόσετε ξανά τα προτεινόμενα ονόματα σε όλες τις ακόλουθες Πηγές δεδομένων."
+msgstr[0] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να εφαρμόσετε ξανά το προτεινόμενο όνομα στην ακόλουθη Πηγή δεδομένων."
+msgstr[1] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να εφαρμόσετε ξανά τα προτεινόμενα ονόματα σε όλες τις ακόλουθες Πηγές δεδομένων."
+
 
 #: data_sources.php
 msgid "Reapply Suggested Naming to Data Source"
@@ -3863,7 +3910,8 @@ msgstr "Στο πεδίο \"%s\" λείπει πεδίο εξόδου"
 
 #: data_templates.php
 msgid "Click 'Continue' to delete the following Data Template(s).  Any data sources attached to these templates will become individual Data Source(s) and all Templating benefits will be removed."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε τα παρακάτω πρότυπα δεδομένων. Οποιεσδήποτε πηγές δεδομένων που επισυνάπτονται σε αυτά τα πρότυπα θα γίνουν μεμονωμένες πηγές δεδομένων και όλα τα πλεονεκτήματα του Templating θα αφαιρεθούν."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε τα παρακάτω πρότυπα δεδομένων. Οποιεσδήποτε πηγές δεδομένων που επισυνάπτονται σε αυτά τα πρότυπα θα γίνουν μεμονωμένες πηγές δεδομένων και όλα τα πλεονεκτήματα του Templating θα αφαιρεθούν."
+
 
 #: data_templates.php
 msgid "Delete Data Template(s)"
@@ -3871,7 +3919,8 @@ msgstr "Διαγραφή προτύπου δεδομένων"
 
 #: data_templates.php
 msgid "Click 'Continue' to duplicate the following Data Template(s). You can optionally change the title format for the new Data Template(s)."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να αντιγράψετε τα παρακάτω πρότυπα δεδομένων. Μπορείτε να αλλάξετε προαιρετικά τη μορφή τίτλου για τα νέα πρότυπα δεδομένων."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να αντιγράψετε τα παρακάτω πρότυπα δεδομένων. Μπορείτε να αλλάξετε προαιρετικά τη μορφή τίτλου για τα νέα πρότυπα δεδομένων."
+
 
 #: data_templates.php
 msgid "template_title"
@@ -3883,7 +3932,8 @@ msgstr "Διπλότυπο πρότυπο δεδομένων"
 
 #: data_templates.php
 msgid "Click 'Continue' to change the default Data Source Profile for the following Data Template(s)."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να αλλάξετε το προεπιλεγμένο προφίλ προέλευσης δεδομένων για τα ακόλουθα πρότυπα δεδομένων."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να αλλάξετε το προεπιλεγμένο προφίλ προέλευσης δεδομένων για τα ακόλουθα πρότυπα δεδομένων."
+
 
 #: data_templates.php
 msgid "New Data Source Profile"
@@ -4001,7 +4051,8 @@ msgstr "Δεν βρέθηκαν πρότυπα δεδομένων"
 
 #: gprint_presets.php
 msgid "Click 'Continue' to delete the following GPRINT Preset(s)."
-msgstr "Κάντε κλικ στο κουμπί &#39;Συνέχεια&#39; για να διαγράψετε τις προεπιλεγμένες ρυθμίσεις GPRINT."
+msgstr "Κάντε κλικ στο κουμπί 'Συνέχεια' για να διαγράψετε τις προεπιλεγμένες ρυθμίσεις GPRINT."
+
 
 #: gprint_presets.php
 msgid "Delete GPRINT Preset(s)"
@@ -4199,7 +4250,8 @@ msgstr "Ο συγχρονισμός του προτύπου γραφήματος
 
 #: graph_templates.php
 msgid "Click 'Continue' to delete the following Graph Template(s).  Any Graph(s) associated with the Template(s) will become individual Graph(s)."
-msgstr "Κάντε κλικ στο κουμπί &#39;Συνέχεια&#39; για να διαγράψετε τα παρακάτω πρότυπα ή πρότυπα γραφήματος. Τυχόν γράμματα που σχετίζονται με τα πρότυπα θα γίνουν μεμονωμένα γράμματα."
+msgstr "Κάντε κλικ στο κουμπί 'Συνέχεια' για να διαγράψετε τα παρακάτω πρότυπα ή πρότυπα γραφήματος. Τυχόν γράμματα που σχετίζονται με τα πρότυπα θα γίνουν μεμονωμένα γράμματα."
+
 
 #: graph_templates.php
 msgid "Delete Graph Template(s)"
@@ -4207,7 +4259,8 @@ msgstr "Διαγραφή προτύπου γραφήματος"
 
 #: graph_templates.php
 msgid "Click 'Continue' to duplicate the following Graph Template(s). You can optionally change the title format for the new Graph Template(s)."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να αντιγράψετε τα παρακάτω πρότυπα γραφήματος. Μπορείτε να αλλάξετε προαιρετικά τη μορφή τίτλου για τα νέα πρότυπα γραφήματος."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να αντιγράψετε τα παρακάτω πρότυπα γραφήματος. Μπορείτε να αλλάξετε προαιρετικά τη μορφή τίτλου για τα νέα πρότυπα γραφήματος."
+
 
 #: graph_templates.php
 msgid "Duplicate Graph Template(s)"
@@ -4215,7 +4268,8 @@ msgstr "Διπλότυπο πρότυπο γραφήματος"
 
 #: graph_templates.php
 msgid "Click 'Continue' to resize the following Graph Template(s) and Graph(s) to the Height and Width below.  The defaults below are maintained in Settings."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να αλλάξετε το μέγεθος των ακόλουθων προτύπων γραφήματος και γραφήματος στο Ύψος και το πλάτος παρακάτω. Οι προεπιλογές παρακάτω διατηρούνται στις Ρυθμίσεις."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να αλλάξετε το μέγεθος των ακόλουθων προτύπων γραφήματος και γραφήματος στο Ύψος και το πλάτος παρακάτω. Οι προεπιλογές παρακάτω διατηρούνται στις Ρυθμίσεις."
+
 
 #: graph_templates.php lib/html_reports.php
 msgid "Graph Height"
@@ -4235,7 +4289,8 @@ msgstr "Αλλαγή μεγέθους επιλεγμένων προτύπων γ
 
 #: graph_templates.php
 msgid "Click 'Continue' to perform a Full Synchronization between your Graphs and the chosen Graph Templates(s). If you simply have a situation where the Graph Items don't match the Graph Template, try the Quick Sync Graphs option first as it will take much less time.  This function is important if you have Graphs that exist with multiple versions of a Graph Template and wish to make them all common in appearance."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να συγχρονίσετε τα γραφήματα σας με τα ακόλουθα πρότυπα γραφήματος. Αυτή η συνάρτηση είναι σημαντική αν έχετε γραφήματα που υπάρχουν σε πολλαπλές εκδόσεις ενός προτύπου γραφήματος και θέλετε να τα κάνετε όλοι κοινά στην εμφάνιση."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να συγχρονίσετε τα γραφήματα σας με τα ακόλουθα πρότυπα γραφήματος. Αυτή η συνάρτηση είναι σημαντική αν έχετε γραφήματα που υπάρχουν σε πολλαπλές εκδόσεις ενός προτύπου γραφήματος και θέλετε να τα κάνετε όλοι κοινά στην εμφάνιση."
+
 
 #: graph_templates.php
 msgid "Synchronize Graphs to Graph Template(s)"
@@ -4243,7 +4298,8 @@ msgstr "Συγχρονισμός γραφημάτων με πρότυπα γρα
 
 #: graph_templates.php
 msgid "Click 'Continue' to perform a Quick Synchronization of your Graphs for the following Graph Template(s). Use this option if your Graphs have Graph Items that do not match your Graph Template.  If this option does not work, use the Full Sync Graphs option, which will take more time to complete."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να συγχρονίσετε τα γραφήματα σας με τα ακόλουθα πρότυπα γραφήματος. Αυτή η συνάρτηση είναι σημαντική αν έχετε γραφήματα που υπάρχουν σε πολλαπλές εκδόσεις ενός προτύπου γραφήματος και θέλετε να τα κάνετε όλοι κοινά στην εμφάνιση."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να συγχρονίσετε τα γραφήματα σας με τα ακόλουθα πρότυπα γραφήματος. Αυτή η συνάρτηση είναι σημαντική αν έχετε γραφήματα που υπάρχουν σε πολλαπλές εκδόσεις ενός προτύπου γραφήματος και θέλετε να τα κάνετε όλοι κοινά στην εμφάνιση."
+
 
 #: graph_templates.php
 #, php-format
@@ -4432,7 +4488,8 @@ msgstr "Όνομα γραφήματος"
 
 #: graph_view.php graphs.php
 msgid "The Title of this Graph.  Generally programmatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual."
-msgstr "Ο τίτλος αυτού του γραφήματος. Γενικά δημιουργείται προγραμματικά από τον ορισμό του προτύπου γραφικών ή τους προτεινόμενους κανόνες ονοματοδοσίας. Το μέγιστο μήκος του Τίτλου ελέγχεται από το Settings-&gt; Visual."
+msgstr "Ο τίτλος αυτού του γραφήματος. Γενικά δημιουργείται προγραμματικά από τον ορισμό του προτύπου γραφικών ή τους προτεινόμενους κανόνες ονοματοδοσίας. Το μέγιστο μήκος του Τίτλου ελέγχεται από το Settings-> Visual."
+
 
 #: graph_view.php
 msgid "The device for this Graph."
@@ -4597,7 +4654,8 @@ msgstr "Αδυναμία οριστικοποίησης της ενημέρωσ�
 
 #: graphs.php
 msgid "Click 'Continue' to delete the following Graph(s).  Note that if you choose to Delete Data Sources, only those Data Sources not in use elsewhere will also be Deleted."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε τους παρακάτω γραφοί. Λάβετε υπόψη ότι αν επιλέξετε Διαγραφή πηγών δεδομένων, θα διαγραφούν μόνο αυτές οι Πηγές δεδομένων που δεν χρησιμοποιούνται αλλού."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε τους παρακάτω γραφοί. Λάβετε υπόψη ότι αν επιλέξετε Διαγραφή πηγών δεδομένων, θα διαγραφούν μόνο αυτές οι Πηγές δεδομένων που δεν χρησιμοποιούνται αλλού."
+
 
 #: graphs.php
 msgid "The following Data Source(s) are in use by these Graph(s)."
@@ -4613,7 +4671,8 @@ msgstr "Αφήστε την πηγή δεδομένων (ες) ανέπαφη."
 
 #: graphs.php
 msgid "Choose a Graph Template and click 'Continue' to change the Graph Template for the following Graph(s). Please note, that only compatible Graph Templates will be displayed.  Compatible is identified by those having identical Data Sources."
-msgstr "Επιλέξτε ένα πρότυπο γραφήματος και κάντε κλικ στο κουμπί &#39;Συνέχεια&#39; για να αλλάξετε το πρότυπο γραφήματος για τους ακόλουθους γραφήμους. Σημειώστε ότι θα εμφανίζονται μόνο συμβατά πρότυπα γραφημάτων. Συμβατό αναγνωρίζεται από εκείνους που έχουν πανομοιότυπες πηγές δεδομένων."
+msgstr "Επιλέξτε ένα πρότυπο γραφήματος και κάντε κλικ στο κουμπί 'Συνέχεια' για να αλλάξετε το πρότυπο γραφήματος για τους ακόλουθους γραφήμους. Σημειώστε ότι θα εμφανίζονται μόνο συμβατά πρότυπα γραφημάτων. Συμβατό αναγνωρίζεται από εκείνους που έχουν πανομοιότυπες πηγές δεδομένων."
+
 
 #: graphs.php graphs_new.php
 msgid "New Graph Template"
@@ -4621,7 +4680,8 @@ msgstr "Νέο πρότυπο γραφήματος"
 
 #: graphs.php
 msgid "Click 'Continue' to duplicate the following Graph(s). You can optionally change the title format for the new Graph(s)."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να αντιγράψετε τα παρακάτω γράμματα. Μπορείτε να αλλάξετε προαιρετικά τη μορφή τίτλου για τα νέα γραφήματα."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να αντιγράψετε τα παρακάτω γράμματα. Μπορείτε να αλλάξετε προαιρετικά τη μορφή τίτλου για τα νέα γραφήματα."
+
 
 #: graphs.php
 msgid "<graph_title> (1)"
@@ -4633,7 +4693,8 @@ msgstr "Διπλότυπο γράφημα"
 
 #: graphs.php
 msgid "Click 'Continue' to convert the following Graph(s) into Graph Template(s).  You can optionally change the title format for the new Graph Template(s)."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να μετατρέψετε τους ακόλουθους γραμματιστές σε πρότυπα γραφήματος. Μπορείτε να αλλάξετε προαιρετικά τη μορφή τίτλου για τα νέα πρότυπα γραφήματος."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να μετατρέψετε τους ακόλουθους γραμματιστές σε πρότυπα γραφήματος. Μπορείτε να αλλάξετε προαιρετικά τη μορφή τίτλου για τα νέα πρότυπα γραφήματος."
+
 
 #: graphs.php
 msgid "<graph_title> Template"
@@ -4641,7 +4702,8 @@ msgstr "<graph_title> Πρότυπο"
 
 #: graphs.php
 msgid "Click 'Continue' to place the following Graph(s) under the Tree Branch selected below."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να τοποθετήσετε τα παρακάτω γραφήματα κάτω από τον κλάδο δέντρου που έχετε επιλέξει παρακάτω."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να τοποθετήσετε τα παρακάτω γραφήματα κάτω από τον κλάδο δέντρου που έχετε επιλέξει παρακάτω."
+
 
 #: graphs.php
 msgid "Destination Branch"
@@ -4649,7 +4711,8 @@ msgstr "Υποκατάστημα προορισμού"
 
 #: graphs.php
 msgid "Choose a new Device for these Graph(s) and click 'Continue'."
-msgstr "Επιλέξτε μια νέα συσκευή για αυτά τα γραφήματα και κάντε κλικ στο κουμπί &quot;Συνέχεια&quot;."
+msgstr "Επιλέξτε μια νέα συσκευή για αυτά τα γραφήματα και κάντε κλικ στο κουμπί \"Συνέχεια\"."
+
 
 #: graphs.php include/global_arrays.php
 msgid "New Device"
@@ -4661,7 +4724,8 @@ msgstr "Αλλαγή σχετικής συσκευής γραφικών"
 
 #: graphs.php
 msgid "Click 'Continue' to re-apply suggested naming to the following Graph(s)."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να εφαρμόσετε ξανά την προτεινόμενη ονομασία στους ακόλουθους Γράφους."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να εφαρμόσετε ξανά την προτεινόμενη ονομασία στους ακόλουθους Γράφους."
+
 
 #: graphs.php
 msgid "Reapply Suggested Naming to Graph(s)"
@@ -4669,7 +4733,8 @@ msgstr "Επαναπροσδιορισμός Προτεινόμενου Ονομ
 
 #: graphs.php
 msgid "Click 'Continue' to create an Aggregate Graph from the selected Graph(s)."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να δημιουργήσετε ένα συγκεντρωτικό γράφημα από τα επιλεγμένα γραφήματα."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να δημιουργήσετε ένα συγκεντρωτικό γράφημα από τα επιλεγμένα γραφήματα."
+
 
 #: graphs.php
 msgid "The following Data Sources are in use by these Graphs:"
@@ -4681,7 +4746,8 @@ msgstr "Επιβεβαίωση"
 
 #: graphs.php
 msgid "Select the Aggregate Template to use and press 'Continue' to create your Aggregate Graph.  Otherwise press 'Cancel' to return."
-msgstr "Επιλέξτε το πρότυπο συγκεντρωτικού στοιχείου που θέλετε να χρησιμοποιήσετε και πατήστε &#39;Συνέχεια&#39; για να δημιουργήσετε το συνολικό σας γράφημα. Διαφορετικά πατήστε &#39;Ακύρωση&#39; για επιστροφή."
+msgstr "Επιλέξτε το πρότυπο συγκεντρωτικού στοιχείου που θέλετε να χρησιμοποιήσετε και πατήστε 'Συνέχεια' για να δημιουργήσετε το συνολικό σας γράφημα. Διαφορετικά πατήστε 'Ακύρωση' για επιστροφή."
+
 
 #: graphs.php
 msgid "There are presently no Aggregate Templates defined for this Graph Template.  Please either first create an Aggregate Template for the selected Graphs Graph Template and try again, or simply crease an un-templated Aggregate Graph."
@@ -4689,11 +4755,13 @@ msgstr "Προς το παρόν δεν υπάρχουν πρότυπα συσσ
 
 #: graphs.php
 msgid "Press 'Return' to return and select different Graphs."
-msgstr "Πατήστε &quot;Επιστροφή&quot; για να επιστρέψετε και να επιλέξετε διαφορετικά γραφήματα."
+msgstr "Πατήστε \"Επιστροφή\" για να επιστρέψετε και να επιλέξετε διαφορετικά γραφήματα."
+
 
 #: graphs.php
 msgid "Click 'Continue' to apply Automation Rules to the following Graphs."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να εφαρμόσετε τους Κανόνες αυτοματισμού στα παρακάτω γραφήματα."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να εφαρμόσετε τους Κανόνες αυτοματισμού στα παρακάτω γραφήματα."
+
 
 #: graphs.php
 msgid "Graph Items [new]"
@@ -5027,7 +5095,8 @@ msgstr "Απενεργοποίηση συσκευών"
 
 #: host.php
 msgid "Click 'Continue' to change the Device options below for multiple Device(s).  Please check the box next to the fields you want to update, and then fill in the new value."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να αλλάξετε τις παρακάτω επιλογές συσκευής για πολλαπλές συσκευές. Επιλέξτε το πλαίσιο δίπλα στα πεδία που θέλετε να ενημερώσετε και, στη συνέχεια, συμπληρώστε τη νέα τιμή."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να αλλάξετε τις παρακάτω επιλογές συσκευής για πολλαπλές συσκευές. Επιλέξτε το πλαίσιο δίπλα στα πεδία που θέλετε να ενημερώσετε και, στη συνέχεια, συμπληρώστε τη νέα τιμή."
+
 
 #: host.php
 msgid "Update this Field"
@@ -5039,7 +5108,8 @@ msgstr "Αλλαγή συσκευών SNMP Επιλογές"
 
 #: host.php
 msgid "Click 'Continue' to clear the counters for the following Device(s)."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να καταργήσετε τους μετρητές για τις ακόλουθες συσκευές."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να καταργήσετε τους μετρητές για τις ακόλουθες συσκευές."
+
 
 #: host.php
 msgid "Clear Statistics on Device(s)"
@@ -5047,7 +5117,8 @@ msgstr "Διαγραφή στατιστικών στοιχείων για συσ
 
 #: host.php
 msgid "Click 'Continue' to Synchronize the following Device(s) to their Device Template."
-msgstr "Κάντε κλικ στην επιλογή &#39;Συνέχεια&#39; για να συγχρονίσετε τις ακόλουθες συσκευές με το πρότυπο συσκευής τους."
+msgstr "Κάντε κλικ στην επιλογή 'Συνέχεια' για να συγχρονίσετε τις ακόλουθες συσκευές με το πρότυπο συσκευής τους."
+
 
 #: host.php
 msgid "Synchronize Device(s)"
@@ -5067,7 +5138,8 @@ msgstr "Διαγράψτε όλους τους σχετικούς διαύλου
 
 #: host.php
 msgid "Click 'Continue' to place the following Device(s) under the branch selected below."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να τοποθετήσετε τις παρακάτω συσκευές κάτω από τον κλάδο που επιλέξατε παρακάτω."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να τοποθετήσετε τις παρακάτω συσκευές κάτω από τον κλάδο που επιλέξατε παρακάτω."
+
 
 #: host.php
 msgid "Place Device(s) on Tree"
@@ -5075,7 +5147,8 @@ msgstr "Τοποθετήστε συσκευή (ες) στο δέντρο"
 
 #: host.php
 msgid "Click 'Continue' to apply Automation Rules to the following Devices(s)."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να εφαρμόσετε τους Κανόνες αυτοματισμού στις ακόλουθες συσκευές."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να εφαρμόσετε τους Κανόνες αυτοματισμού στις ακόλουθες συσκευές."
+
 
 #: host.php
 msgid "Run Automation on Device(s)"
@@ -5304,7 +5377,8 @@ msgstr "Ο συνολικός αριθμός πηγών δεδομένων πο�
 
 #: host.php
 msgid "The monitoring status of the Device based upon ping results.  If this Device is a special type Device, by using the hostname \"localhost\", or due to the setting to not perform an Availability Check, it will always remain Up.  When using cmd.php data collector, a Device with no Graphs, is not pinged by the data collector and will remain in an \"Unknown\" state."
-msgstr "Η κατάσταση παρακολούθησης της Συσκευής με βάση τα αποτελέσματα ping. Εάν αυτή η συσκευή είναι συσκευή ειδικού τύπου, χρησιμοποιώντας το όνομα κεντρικού υπολογιστή &quot;localhost&quot; ή λόγω της μη εκτέλεσης ελέγχου διαθεσιμότητας, θα παραμείνει πάντοτε επάνω. Όταν χρησιμοποιείτε συλλέκτη δεδομένων cmd.php, μια συσκευή χωρίς γραφήματα, δεν είναι pinged από τον συλλέκτη δεδομένων και θα παραμείνει σε κατάσταση &quot;Άγνωστη&quot;."
+msgstr "Η κατάσταση παρακολούθησης της Συσκευής με βάση τα αποτελέσματα ping. Εάν αυτή η συσκευή είναι συσκευή ειδικού τύπου, χρησιμοποιώντας το όνομα κεντρικού υπολογιστή \"localhost\" ή λόγω της μη εκτέλεσης ελέγχου διαθεσιμότητας, θα παραμείνει πάντοτε επάνω. Όταν χρησιμοποιείτε συλλέκτη δεδομένων cmd.php, μια συσκευή χωρίς γραφήματα, δεν είναι pinged από τον συλλέκτη δεδομένων και θα παραμείνει σε κατάσταση \"Άγνωστη\"."
+
 
 #: host.php
 msgid "In State"
@@ -5356,7 +5430,8 @@ msgstr "Συγχρονισμός συσκευών"
 
 #: host_templates.php
 msgid "Click 'Continue' to delete the following Device Template(s)."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε τα ακόλουθα πρότυπα συσκευών."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε τα ακόλουθα πρότυπα συσκευών."
+
 
 #: host_templates.php
 msgid "Delete Device Template(s)"
@@ -5364,7 +5439,8 @@ msgstr "Διαγραφή προτύπου συσκευής"
 
 #: host_templates.php
 msgid "Click 'Continue' to duplicate the following Device Template(s).  Optionally change the title for the new Device Template(s)."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να αντιγράψετε τα ακόλουθα πρότυπα συσκευών. Προαιρετικά, αλλάξτε τον τίτλο για το νέο πρότυπο συσκευής."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να αντιγράψετε τα ακόλουθα πρότυπα συσκευών. Προαιρετικά, αλλάξτε τον τίτλο για το νέο πρότυπο συσκευής."
+
 
 #: host_templates.php
 msgid "Duplicate Device Template(s)"
@@ -5372,7 +5448,8 @@ msgstr "Διπλότυπο πρότυπο συσκευής"
 
 #: host_templates.php
 msgid "Click 'Continue' to Synchronize Devices associated with the selected Device Template(s).  Note that this action may take some time depending on the number of Devices mapped to the Device Template."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να Συγχρονισμός συσκευών που σχετίζονται με τα επιλεγμένα πρότυπα συσκευών. Σημειώστε ότι αυτή η ενέργεια ενδέχεται να διαρκέσει αρκετό χρόνο, ανάλογα με τον αριθμό των συσκευών που έχουν αντιστοιχιστεί στο πρότυπο συσκευής."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να Συγχρονισμός συσκευών που σχετίζονται με τα επιλεγμένα πρότυπα συσκευών. Σημειώστε ότι αυτή η ενέργεια ενδέχεται να διαρκέσει αρκετό χρόνο, ανάλογα με τον αριθμό των συσκευών που έχουν αντιστοιχιστεί στο πρότυπο συσκευής."
+
 
 #: host_templates.php
 msgid "Sync Devices to Device Template(s)"
@@ -5380,7 +5457,8 @@ msgstr "Συγχρονισμός προτύπων συσκευών σε συσκ
 
 #: host_templates.php
 msgid "Click 'Continue' to delete the following Graph Template will be disassociated from the Device Template."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε το ακόλουθο Πρότυπο γραφήματος θα διαχωριστεί από το Πρότυπο συσκευής."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε το ακόλουθο Πρότυπο γραφήματος θα διαχωριστεί από το Πρότυπο συσκευής."
+
 
 #: host_templates.php
 #, php-format
@@ -5389,7 +5467,8 @@ msgstr "Όνομα προτύπου γραφήματος: %s"
 
 #: host_templates.php
 msgid "Click 'Continue' to delete the following Data Queries will be disassociated from the Device Template."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε τα ακόλουθα ερωτήματα δεδομένων που θα διαχωριστούν από το Πρότυπο συσκευής."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε τα ακόλουθα ερωτήματα δεδομένων που θα διαχωριστούν από το Πρότυπο συσκευής."
+
 
 #: host_templates.php
 #, php-format
@@ -5576,7 +5655,8 @@ msgstr "Ο επιλεγμένος κατάλογος δεν υπάρχει. Ει
 
 #: include/global_arrays.php
 msgid "The Cacti log file must have the extension '.log'"
-msgstr "Το αρχείο καταγραφής Cacti πρέπει να έχει την επέκταση &#39;.log&#39;"
+msgstr "Το αρχείο καταγραφής Cacti πρέπει να έχει την επέκταση '.log'"
+
 
 #: include/global_arrays.php
 msgid "Data Input for method does not appear to be whitelisted."
@@ -5816,7 +5896,8 @@ msgstr "Κατά την αποθήκευση ενός απομακρυσμένο
 
 #: include/global_arrays.php
 msgid "Your Remote Database Hostname must be something other than 'localhost' for each Remote Data Collector."
-msgstr "Το όνομα κεντρικού υπολογιστή βάσης δεδομένων απομακρυσμένης βάσης δεδομένων πρέπει να είναι κάτι διαφορετικό από το &quot;localhost&quot; για κάθε απομακρυσμένο συλλέκτη δεδομένων."
+msgstr "Το όνομα κεντρικού υπολογιστή βάσης δεδομένων απομακρυσμένης βάσης δεδομένων πρέπει να είναι κάτι διαφορετικό από το \"localhost\" για κάθε απομακρυσμένο συλλέκτη δεδομένων."
+
 
 #: include/global_arrays.php
 msgid "Path variables on this page were only saved locally."
@@ -5980,11 +6061,13 @@ msgstr "Κέντρο"
 
 #: include/global_arrays.php
 msgid "Top -> Down"
-msgstr "Αρχή -&gt; Κάτω"
+msgstr "Αρχή -> Κάτω"
+
 
 #: include/global_arrays.php
 msgid "Bottom -> Up"
-msgstr "Κάτω -&gt; επάνω"
+msgstr "Κάτω -> επάνω"
+
 
 #: include/global_arrays.php tree.php
 msgid "Numeric"
@@ -7912,7 +7995,8 @@ msgstr "Το όνομα που δίνεται σε αυτό το πρότυπο 
 
 #: include/global_form.php
 msgid "Choose a name for this data source.  It can include replacement variables such as |host_description| or |query_fieldName|.  For a complete list of supported replacement tags, please see the Cacti documentation."
-msgstr "Επιλέξτε ένα όνομα για αυτήν την πηγή δεδομένων. Μπορεί να περιλαμβάνει μεταβλητές αντικατάστασης όπως | host_description | ή | query_fieldName |. Για μια πλήρη λίστα των υποστηριζόμενων ετικετών αντικατάστασης, ανατρέξτε στην τεκμηρίωση του Cacti."
+msgstr "Επιλέξτε ένα όνομα για αυτήν την πηγή δεδομένων. Μπορεί να περιλαμβάνει μεταβλητές αντικατάστασης όπως |host_description| ή |query_fieldName|. Για μια πλήρη λίστα των υποστηριζόμενων ετικετών αντικατάστασης, ανατρέξτε στην τεκμηρίωση του Cacti."
+
 
 #: include/global_form.php
 msgid "Data Source Path"
@@ -7952,7 +8036,8 @@ msgstr "Επιλέξτε ένα μοναδικό όνομα για να αναπ
 
 #: include/global_form.php
 msgid "Minimum Value (\"U\" for No Minimum)"
-msgstr "Ελάχιστη τιμή (&quot;U&quot; για μη ελάχιστο)"
+msgstr "Ελάχιστη τιμή (\"U\" για μη ελάχιστο)"
+
 
 #: include/global_form.php
 msgid "The minimum value of data that is allowed to be collected."
@@ -7960,7 +8045,8 @@ msgstr "Η ελάχιστη τιμή των δεδομένων που επιτρ
 
 #: include/global_form.php
 msgid "Maximum Value (\"U\" for No Maximum)"
-msgstr "Μέγιστη τιμή (&quot;U&quot; για μηδενική μέγιστη τιμή)"
+msgstr "Μέγιστη τιμή (\"U\" για μηδενική μέγιστη τιμή)"
+
 
 #: include/global_form.php
 msgid "The maximum value of data that is allowed to be collected."
@@ -7976,7 +8062,8 @@ msgstr "Πώς τα δεδομένα αντιπροσωπεύονται στο R
 
 #: include/global_form.php
 msgid "The maximum amount of time that can pass before data is entered as 'unknown'. (Usually 2x300=600)"
-msgstr "Ο μέγιστος χρόνος που μπορεί να περάσει πριν τα δεδομένα εισαχθούν ως &quot;άγνωστα&quot;. (Συνήθως 2x300 = 600)"
+msgstr "Ο μέγιστος χρόνος που μπορεί να περάσει πριν τα δεδομένα εισαχθούν ως \"άγνωστα\". (Συνήθως 2x300 = 600)"
+
 
 #: include/global_form.php lib/html_utility.php
 msgid "Not Selected"
@@ -8008,7 +8095,8 @@ msgstr "Τίτλος (--title)"
 
 #: include/global_form.php
 msgid "The name that is printed on the graph.  It can include replacement variables such as |host_description| or |query_fieldName|.  For a complete list of supported replacement tags, please see the Cacti documentation."
-msgstr "Το όνομα που έχει εκτυπωθεί στο γράφημα. Μπορεί να περιλαμβάνει μεταβλητές αντικατάστασης όπως | host_description | ή | query_fieldName |. Για μια πλήρη λίστα των υποστηριζόμενων ετικετών αντικατάστασης, ανατρέξτε στην τεκμηρίωση του Cacti."
+msgstr "Το όνομα που έχει εκτυπωθεί στο γράφημα. Μπορεί να περιλαμβάνει μεταβλητές αντικατάστασης όπως |host_description| ή |query_fieldName|. Για μια πλήρη λίστα των υποστηριζόμενων ετικετών αντικατάστασης, ανατρέξτε στην τεκμηρίωση του Cacti."
+
 
 #: include/global_form.php
 msgid "Vertical Label (--vertical-label)"
@@ -8213,7 +8301,8 @@ msgstr "Διαμορφωτής σωστών αξόνων (μορφοποιητή
 
 #: include/global_form.php
 msgid "When you setup the right axis labeling, apply a rule to the data format.  Supported formats include \"numeric\" where data is treated as numeric, \"timestamp\" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is \"%Y-%m-%d %H:%M:%S\").  See also --units-length and --right-axis-format.  Finally \"duration\" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT."
-msgstr "Όταν ρυθμίζετε την επισήμανση του δεξιού άξονα, εφαρμόστε έναν κανόνα στη μορφή δεδομένων. Οι υποστηριζόμενες μορφές περιλαμβάνουν &quot;αριθμητική&quot; όπου τα δεδομένα αντιμετωπίζονται ως αριθμητικά, &quot;timestamp&quot; όπου οι τιμές ερμηνεύονται ως timestamps UNIX (αριθμός δευτερολέπτων από τον Ιανουάριο του 1970) και εκφράζονται με χρήση μορφής strftime (προεπιλογή είναι &quot;% Y-% m-% d% H&quot; :%ΚΥΡΙΑ&quot;). Δείτε επίσης - μορφοποίηση μήκους και άξονα-άξονα. Τέλος, &quot;διάρκεια&quot; όπου οι τιμές ερμηνεύονται ως διάρκεια σε χιλιοστά του δευτερολέπτου. Η μορφοποίηση ακολουθεί τους κανόνες της υψηλής ποιότητας PRINT / GPRINT."
+msgstr "Όταν ρυθμίζετε την επισήμανση του δεξιού άξονα, εφαρμόστε έναν κανόνα στη μορφή δεδομένων. Οι υποστηριζόμενες μορφές περιλαμβάνουν \"αριθμητική\" όπου τα δεδομένα αντιμετωπίζονται ως αριθμητικά, \"timestamp\" όπου οι τιμές ερμηνεύονται ως timestamps UNIX (αριθμός δευτερολέπτων από τον Ιανουάριο του 1970) και εκφράζονται με χρήση μορφής strftime (προεπιλογή είναι \"%Y-%m-%d %H:%M:%S). Δείτε επίσης - μορφοποίηση μήκους και άξονα-άξονα. Τέλος, \"διάρκεια\" όπου οι τιμές ερμηνεύονται ως διάρκεια σε χιλιοστά του δευτερολέπτου. Η μορφοποίηση ακολουθεί τους κανόνες της υψηλής ποιότητας PRINT / GPRINT."
+
 
 #: include/global_form.php
 msgid "Left Axis Formatter (--left-axis-formatter &lt;formatname&gt;)"
@@ -8221,7 +8310,8 @@ msgstr "Διαμορφωτής αριστερού άξονα (μορφοποιη
 
 #: include/global_form.php
 msgid "When you setup the left axis labeling, apply a rule to the data format.  Supported formats include \"numeric\" where data is treated as numeric, \"timestamp\" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is \"%Y-%m-%d %H:%M:%S\").  See also --units-length.  Finally \"duration\" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT."
-msgstr "Όταν ρυθμίζετε την επισήμανση του αριστερού άξονα, εφαρμόστε έναν κανόνα στη μορφή δεδομένων. Οι υποστηριζόμενες μορφές περιλαμβάνουν &quot;αριθμητική&quot; όπου τα δεδομένα αντιμετωπίζονται ως αριθμητικά, &quot;timestamp&quot; όπου οι τιμές ερμηνεύονται ως timestamps UNIX (αριθμός δευτερολέπτων από τον Ιανουάριο του 1970) και εκφράζονται με χρήση μορφής strftime (προεπιλογή είναι &quot;% Y-% m-% d% H&quot; :%ΚΥΡΙΑ&quot;). Δείτε επίσης - μήκους μονάδων. Τέλος, &quot;διάρκεια&quot; όπου οι τιμές ερμηνεύονται ως διάρκεια σε χιλιοστά του δευτερολέπτου. Η μορφοποίηση ακολουθεί τους κανόνες της υψηλής ποιότητας PRINT / GPRINT."
+msgstr "Όταν ρυθμίζετε την επισήμανση του αριστερού άξονα, εφαρμόστε έναν κανόνα στη μορφή δεδομένων. Οι υποστηριζόμενες μορφές περιλαμβάνουν \"αριθμητική\" όπου τα δεδομένα αντιμετωπίζονται ως αριθμητικά, \"timestamp\" όπου οι τιμές ερμηνεύονται ως timestamps UNIX (αριθμός δευτερολέπτων από τον Ιανουάριο του 1970) και εκφράζονται με χρήση μορφής strftime (προεπιλογή είναι \"%Y-%m-%d %H:%M:%S). Δείτε επίσης - μήκους μονάδων. Τέλος, \"διάρκεια\" όπου οι τιμές ερμηνεύονται ως διάρκεια σε χιλιοστά του δευτερολέπτου. Η μορφοποίηση ακολουθεί τους κανόνες της υψηλής ποιότητας PRINT / GPRINT."
+
 
 #: include/global_form.php
 msgid "Legend Options"
@@ -8329,7 +8419,8 @@ msgstr "Μετατόπιση δεδομένων"
 
 #: include/global_form.php
 msgid "Offset your data on the time axis (x-axis) by the amount specified in the 'value' field."
-msgstr "Μετατοπίστε τα δεδομένα σας στον άξονα του χρόνου (άξονας x) κατά το ποσό που καθορίζεται στο πεδίο &#39;value&#39;."
+msgstr "Μετατοπίστε τα δεδομένα σας στον άξονα του χρόνου (άξονας x) κατά το ποσό που καθορίζεται στο πεδίο 'value'."
+
 
 #: include/global_form.php
 msgid "[HRULE|VRULE]: The value of the graph item.<br/> [TICK]: The fraction for the tick line.<br/> [SHIFT]: The time offset in seconds."
@@ -8341,7 +8432,8 @@ msgstr "Τύπος GPRINT"
 
 #: include/global_form.php
 msgid "If this graph item is a GPRINT, you can optionally choose another format here. You can define additional types under \"GPRINT Presets\"."
-msgstr "Εάν αυτό το στοιχείο γραφήματος είναι GPRINT, μπορείτε να επιλέξετε διαφορετικά άλλη μορφή εδώ. Μπορείτε να ορίσετε επιπλέον τύπους κάτω από &quot;Προεπιλογές GPRINT&quot;."
+msgstr "Εάν αυτό το στοιχείο γραφήματος είναι GPRINT, μπορείτε να επιλέξετε διαφορετικά άλλη μορφή εδώ. Μπορείτε να ορίσετε επιπλέον τύπους κάτω από \"Προεπιλογές GPRINT\"."
+
 
 #: include/global_form.php
 msgid "Text Alignment (TEXTALIGN)"
@@ -8743,7 +8835,8 @@ msgstr "Τύπος μηνύματος SNMP"
 
 #: include/global_form.php
 msgid "SNMP traps are always unacknowledged. To send out acknowledged SNMP notifications, formally called \"INFORMS\", SNMPv2 or above will be required."
-msgstr "Οι παγίδες SNMP είναι πάντα μη αναγνωρισμένες. Για να στείλετε αναγνωρισμένες ειδοποιήσεις SNMP, ονομαζόμενες τυπικά &quot;INFORMS&quot;, απαιτείται SNMPv2 ή παραπάνω."
+msgstr "Οι παγίδες SNMP είναι πάντα μη αναγνωρισμένες. Για να στείλετε αναγνωρισμένες ειδοποιήσεις SNMP, ονομαζόμενες τυπικά \"INFORMS\", απαιτείται SNMPv2 ή παραπάνω."
+
 
 #: include/global_form.php
 msgid "The new Title of the aggregated Graph."
@@ -8775,7 +8868,8 @@ msgstr "Σύνολο"
 
 #: include/global_form.php
 msgid "Please check those Items that shall be totaled in the \"Total\" column, when selecting any totaling option here."
-msgstr "Ελέγξτε τα στοιχεία που θα ανέλθουν στη στήλη &quot;Σύνολο&quot;, όταν επιλέγετε οποιεσδήποτε συνολικές επιλογές εδώ."
+msgstr "Ελέγξτε τα στοιχεία που θα ανέλθουν στη στήλη \"Σύνολο\", όταν επιλέγετε οποιεσδήποτε συνολικές επιλογές εδώ."
+
 
 #: include/global_form.php
 msgid "Total Type"
@@ -9387,7 +9481,8 @@ msgstr "Μέθοδος αδειών γραφήματος"
 
 #: include/global_settings.php
 msgid "There are four methods for determining a User's Graph Permissions.  The first is 'Permissive'.  Under the 'Permissive' setting, a User only needs access to either the Graph, Device or Graph Template to gain access to the Graphs that apply to them.  Under 'Restrictive', the User must have access to the Graph, the Device, and the Graph Template to gain access to the Graph.  These first two methods have scalability problems for very large installs.  So, two additional options are available.  They are 'Device Based', which means if you have access to the Device, you get access to it's Graphs.  And lastly 'Graph Template Based', which means if you have access to the 'Graph Template' you get access to all Device Graphs of that Template."
-msgstr "Υπάρχουν δύο μέθοδοι για τον καθορισμό των δικαιωμάτων άδειας γραφήματος χρήστη. Το πρώτο είναι «Επιτρεπτικό». Στο πλαίσιο της ρύθμισης &quot;Επιτρεπτό&quot;, ένας χρήστης χρειάζεται μόνο πρόσβαση στο πρότυπο γραφήματος, συσκευής ή γραφήματος για να αποκτήσει πρόσβαση στα γραφήματα που ισχύουν γι &#39;αυτά. Στην ενότητα «Περιοριστική», ο χρήστης πρέπει να έχει πρόσβαση στο Graph, τη συσκευή και το πρότυπο γραφήματος για να αποκτήσει πρόσβαση στο γράφημα."
+msgstr "Υπάρχουν δύο μέθοδοι για τον καθορισμό των δικαιωμάτων άδειας γραφήματος χρήστη. Το πρώτο είναι «Επιτρεπτικό». Στο πλαίσιο της ρύθμισης \"Επιτρεπτό\", ένας χρήστης χρειάζεται μόνο πρόσβαση στο πρότυπο γραφήματος, συσκευής ή γραφήματος για να αποκτήσει πρόσβαση στα γραφήματα που ισχύουν γι 'αυτά. Στην ενότητα «Περιοριστική», ο χρήστης πρέπει να έχει πρόσβαση στο Graph, τη συσκευή και το πρότυπο γραφήματος για να αποκτήσει πρόσβαση στο γράφημα."
+
 
 #: include/global_settings.php
 msgid "Permissive"
@@ -9785,7 +9880,8 @@ msgstr "Προεπιλεγμένος τύπος Ping για όλες τις νέ
 
 #: include/global_settings.php
 msgid "Default Ping Port for all new Devices.  With TCP, Cacti will attempt to Syn the port.  With UDP, Cacti requires either a successful connection, or a 'port not reachable' error to determine if the Device is up or not."
-msgstr "Προεπιλεγμένη θύρα Ping για όλες τις νέες συσκευές. Με το TCP, ο Cacti θα προσπαθήσει να συγχρονίσει τη θύρα. Με το UDP, ο Cacti απαιτεί είτε μια επιτυχημένη σύνδεση είτε ένα σφάλμα &quot;μη προσβάσιμο από τη θύρα&quot; για να καθορίσει εάν η συσκευή είναι επάνω ή όχι."
+msgstr "Προεπιλεγμένη θύρα Ping για όλες τις νέες συσκευές. Με το TCP, ο Cacti θα προσπαθήσει να συγχρονίσει τη θύρα. Με το UDP, ο Cacti απαιτεί είτε μια επιτυχημένη σύνδεση είτε ένα σφάλμα \"μη προσβάσιμο από τη θύρα\" για να καθορίσει εάν η συσκευή είναι επάνω ή όχι."
+
 
 #: include/global_settings.php
 msgid "Default Ping Timeout value in milli-seconds for all new Devices.  The timeout values to use for Device SNMP, ICMP, UDP and TCP pinging.  ICMP Pings will be rounded up to the nearest second.  TCP and UDP connection timeouts on Windows are controlled by the operating system, and are therefore not recommended on Windows."
@@ -9969,7 +10065,8 @@ msgstr "Μέγιστος αριθμός σειρών ανά σελίδα"
 
 #: include/global_settings.php
 msgid "User defined number of lines for the CLOG to tail when selecting 'All lines'."
-msgstr "Αριθμός καθορισμένων από τον χρήστη γραμμών για το CLOG στην ουρά όταν επιλέγετε &quot;Όλες οι γραμμές&quot;."
+msgstr "Αριθμός καθορισμένων από τον χρήστη γραμμών για το CLOG στην ουρά όταν επιλέγετε \"Όλες οι γραμμές\"."
+
 
 #: include/global_settings.php
 msgid "Log Tail Refresh"
@@ -9989,7 +10086,8 @@ msgstr "Αποκλεισμός Regex"
 
 #: include/global_settings.php
 msgid "Any strings that match this regex will be excluded from the user display.  <strong>For example, if you want to exclude all log lines that include the words 'Admin' or 'Login' you would type '(Admin || Login)'</strong>"
-msgstr "Οποιεσδήποτε συμβολοσειρές που ταιριάζουν με αυτό το regex θα αποκλειστούν από την οθόνη του χρήστη. <strong>Για παράδειγμα, εάν θέλετε να εξαιρέσετε όλες τις γραμμές καταγραφής που περιέχουν τις λέξεις &#39;Admin&#39; ή &#39;Login&#39;, πληκτρολογήστε &#39;(Admin || Login)&#39;</strong>"
+msgstr "Οποιεσδήποτε συμβολοσειρές που ταιριάζουν με αυτό το regex θα αποκλειστούν από την οθόνη του χρήστη. <strong>Για παράδειγμα, εάν θέλετε να εξαιρέσετε όλες τις γραμμές καταγραφής που περιέχουν τις λέξεις 'Admin' ή 'Login', πληκτρολογήστε '(Admin || Login)'</strong>"
+
 
 #: include/global_settings.php
 msgid "Real-time Graphs"
@@ -10486,7 +10584,8 @@ msgstr "Μέθοδος ταυτοποίησης"
 
 #: include/global_settings.php
 msgid "<blockquote><i>Built-in Authentication</i> - Cacti handles user authentication, which allows you to create users and give them rights to different areas within Cacti.<br><br><i>Web Basic Authentication</i> - Authentication is handled by the web server. Users can be added or created automatically on first login if the Template User is defined, otherwise the defined guest permissions will be used.<br><br><i>LDAP Authentication</i> - Allows for authentication against a LDAP server. Users will be created automatically on first login if the Template User is defined, otherwise the defined guest permissions will be used.  If PHPs LDAP module is not enabled, LDAP Authentication will not appear as a selectable option.<br><br><i>Multiple LDAP/AD Domain Authentication</i> - Allows administrators to support multiple disparate groups from different LDAP/AD directories to access Cacti resources.  Just as LDAP Authentication, the PHP LDAP module is required to utilize this method.</blockquote>"
-msgstr "<blockquote> <i>Ενσωματωμένος έλεγχος ταυτότητας</i> - ο Cacti χειρίζεται τον έλεγχο ταυτότητας χρήστη, ο οποίος σας επιτρέπει να δημιουργείτε χρήστες και να τους παρέχετε δικαιώματα σε διαφορετικές περιοχές εντός του Cacti. <br><br> <i>Βασικός έλεγχος</i> ταυτότητας <i>ιστού</i> - Ο έλεγχος ταυτότητας γίνεται από τον διακομιστή ιστού. Οι χρήστες μπορούν να προστεθούν ή να δημιουργηθούν αυτόματα κατά την πρώτη είσοδο, αν ο χρήστης του προτύπου έχει οριστεί, διαφορετικά θα χρησιμοποιηθούν τα καθορισμένα δικαιώματα επισκέπτη. <br><br> <i>Έλεγχος ταυτότητας LDAP</i> - Επιτρέπει τον έλεγχο ταυτότητας σε έναν διακομιστή LDAP. Οι χρήστες θα δημιουργηθούν αυτόματα κατά την πρώτη σύνδεσή τους, εάν ο χρήστης του προτύπου έχει οριστεί, διαφορετικά θα χρησιμοποιηθούν τα καθορισμένα δικαιώματα επισκέπτη. Εάν η λειτουργική μονάδα LDAP της PHP δεν είναι ενεργοποιημένη, ο έλεγχος ταυτότητας LDAP δεν θα εμφανιστεί ως επιλογή επιλογής. <br><br> <i>Πολλαπλή επαλήθευση τομέα LDAP / AD</i> - Επιτρέπει στους διαχειριστές να υποστηρίζουν πολλαπλές διαφορετικές ομάδες από διαφορετικούς καταλόγους LDAP / AD για πρόσβαση σε πόρους του Cacti. Ακριβώς όπως ο έλεγχος ταυτότητας LDAP, η μονάδα LDAP της PHP απαιτείται για να χρησιμοποιήσει αυτή τη μέθοδο. </blockquote>"
+msgstr "<blockquote> <i>Ενσωματωμένος έλεγχος ταυτότητας</i> - ο Cacti χειρίζεται τον έλεγχο ταυτότητας χρήστη, ο οποίος σας επιτρέπει να δημιουργείτε χρήστες και να τους παρέχετε δικαιώματα σε διαφορετικές περιοχές εντός του Cacti. <br><br> <i>Βασικός έλεγχος ταυτότητας ιστού</i> - Ο έλεγχος ταυτότητας γίνεται από τον διακομιστή ιστού. Οι χρήστες μπορούν να προστεθούν ή να δημιουργηθούν αυτόματα κατά την πρώτη είσοδο, αν ο χρήστης του προτύπου έχει οριστεί, διαφορετικά θα χρησιμοποιηθούν τα καθορισμένα δικαιώματα επισκέπτη. <br><br> <i>Έλεγχος ταυτότητας LDAP</i> - Επιτρέπει τον έλεγχο ταυτότητας σε έναν διακομιστή LDAP. Οι χρήστες θα δημιουργηθούν αυτόματα κατά την πρώτη σύνδεσή τους, εάν ο χρήστης του προτύπου έχει οριστεί, διαφορετικά θα χρησιμοποιηθούν τα καθορισμένα δικαιώματα επισκέπτη. Εάν η λειτουργική μονάδα LDAP της PHP δεν είναι ενεργοποιημένη, ο έλεγχος ταυτότητας LDAP δεν θα εμφανιστεί ως επιλογή επιλογής. <br><br> <i>Πολλαπλή επαλήθευση τομέα LDAP / AD</i> - Επιτρέπει στους διαχειριστές να υποστηρίζουν πολλαπλές διαφορετικές ομάδες από διαφορετικούς καταλόγους LDAP / AD για πρόσβαση σε πόρους του Cacti. Ακριβώς όπως ο έλεγχος ταυτότητας LDAP, η μονάδα LDAP της PHP απαιτείται για να χρησιμοποιήσει αυτή τη μέθοδο. </blockquote>"
+
 
 #: include/global_settings.php
 msgid "Support Authentication Cookies"
@@ -10494,7 +10593,8 @@ msgstr "Υποστήριξη ελέγχου ταυτότητας cookies"
 
 #: include/global_settings.php
 msgid "If a user authenticates and selects 'Keep me signed in', an authentication cookie will be created on the user's computer allowing that user to stay logged in.  The authentication cookie expires after 90 days of non-use."
-msgstr "Εάν ένας χρήστης επαληθεύσει και επιλέξει το στοιχείο &quot;Διατήρηση της σύνδεσής μου&quot;, θα δημιουργηθεί ένα cookie ελέγχου ταυτότητας στον υπολογιστή του χρήστη, επιτρέποντας στον χρήστη να παραμείνει συνδεδεμένος. Το cookie εξακρίβωσης ταυτότητας λήγει μετά από 90 ημέρες μη χρήσης."
+msgstr "Εάν ένας χρήστης επαληθεύσει και επιλέξει το στοιχείο \"Διατήρηση της σύνδεσής μου\", θα δημιουργηθεί ένα cookie ελέγχου ταυτότητας στον υπολογιστή του χρήστη, επιτρέποντας στον χρήστη να παραμείνει συνδεδεμένος. Το cookie εξακρίβωσης ταυτότητας λήγει μετά από 90 ημέρες μη χρήσης."
+
 
 #: include/global_settings.php
 msgid "Special Users"
@@ -10518,7 +10618,8 @@ msgstr "Επισκέπτης"
 
 #: include/global_settings.php
 msgid "The name of the guest user for viewing graphs; is 'No User' by default."
-msgstr "Το όνομα του χρήστη του επισκέπτη για την προβολή γραφημάτων. είναι από προεπιλογή &quot;Δεν υπάρχει χρήστης&quot;."
+msgstr "Το όνομα του χρήστη του επισκέπτη για την προβολή γραφημάτων. είναι από προεπιλογή \"Δεν υπάρχει χρήστης\"."
+
 
 #: include/global_settings.php user_domains.php
 msgid "User Template"
@@ -10526,7 +10627,8 @@ msgstr "Πρότυπο χρήστη"
 
 #: include/global_settings.php
 msgid "The name of the user that Cacti will use as a template for new Web Basic and LDAP users; is 'guest' by default.  This user account will be disabled from logging in upon being selected."
-msgstr "Το όνομα του χρήστη που θα χρησιμοποιήσει το Cacti ως πρότυπο για τους νέους χρήστες Web Basic και LDAP. είναι &quot;επισκέπτης&quot; από προεπιλογή. Αυτός ο λογαριασμός χρήστη θα απενεργοποιηθεί από τη σύνδεση κατά την επιλογή."
+msgstr "Το όνομα του χρήστη που θα χρησιμοποιήσει το Cacti ως πρότυπο για τους νέους χρήστες Web Basic και LDAP. είναι \"επισκέπτης\" από προεπιλογή. Αυτός ο λογαριασμός χρήστη θα απενεργοποιηθεί από τη σύνδεση κατά την επιλογή."
+
 
 #: include/global_settings.php
 msgid "Basic Authentication Settings"
@@ -10808,7 +10910,8 @@ msgstr "Βάση αναζήτησης"
 
 #: include/global_settings.php
 msgid "Search base for searching the LDAP directory, such as <i>'dc=win2kdomain,dc=local'</i> or <i>'ou=people,dc=domain,dc=local'</i>."
-msgstr "Βάση αναζήτησης για αναζήτηση στον κατάλογο LDAP, όπως <i>&#39;dc = win2kdomain, dc = local&#39;</i> ή <i>&#39;ou = people, dc = domain, dc = local&#39;</i> ."
+msgstr "Βάση αναζήτησης για αναζήτηση στον κατάλογο LDAP, όπως <i>'dc = win2kdomain, dc = local'</i> ή <i>'ou = people, dc = domain, dc = local'</i> ."
+
 
 #: include/global_settings.php user_domains.php
 msgid "Search Filter"
@@ -10872,7 +10975,8 @@ msgstr "Ειδοποιήστε τον κύριο διαχειριστή ζητη
 
 #: include/global_settings.php
 msgid "In cases where the Cacti server is experiencing problems, should the Primary Administrator be notified by Email?  The Primary Administrator's Cacti user account is specified under the Authentication tab on Cacti's settings page. It defaults to the 'admin' account."
-msgstr "Σε περιπτώσεις όπου ο διακομιστής Cacti αντιμετωπίζει προβλήματα, πρέπει να ενημερωθεί ο Κύριος Διαχειριστής μέσω ηλεκτρονικού ταχυδρομείου; Ο λογαριασμός χρήστη Cacti του πρωτεύοντος διαχειριστή καθορίζεται στην καρτέλα &quot;Έλεγχος ταυτότητας&quot; στη σελίδα ρυθμίσεων του Cacti. Είναι προεπιλεγμένο στο λογαριασμό &quot;admin&quot;."
+msgstr "Σε περιπτώσεις όπου ο διακομιστής Cacti αντιμετωπίζει προβλήματα, πρέπει να ενημερωθεί ο Κύριος Διαχειριστής μέσω ηλεκτρονικού ταχυδρομείου; Ο λογαριασμός χρήστη Cacti του πρωτεύοντος διαχειριστή καθορίζεται στην καρτέλα \"Έλεγχος ταυτότητας\" στη σελίδα ρυθμίσεων του Cacti. Είναι προεπιλεγμένο στο λογαριασμό \"admin\"."
+
 
 #: include/global_settings.php
 msgid "Test Email"
@@ -11116,7 +11220,8 @@ msgstr "Μέγιστο μήκος επιχείρησης"
 
 #: include/global_settings.php
 msgid "When boost sends update commands to RRDtool, it must not exceed the operating systems Maximum Argument Length.  This varies by operating system and kernel level.  For example: Windows 2000 <= 2048, FreeBSD <= 65535, Linux 2.6.22-- <= 131072, Linux 2.6.23++ unlimited"
-msgstr "Όταν η ώθηση αποστέλλει εντολές ενημέρωσης στο RRDtool, δεν πρέπει να υπερβαίνει τα μέγιστα λειτουργικά συστήματα. Αυτό ποικίλλει ανάλογα με το λειτουργικό σύστημα και το επίπεδο του πυρήνα. Για παράδειγμα: Windows 2000 &lt;= 2048, FreeBSD &lt;= 65535, Linux 2.6.22-- &lt;= 131072, Linux 2.6.23 ++ απεριόριστο"
+msgstr "Όταν η ώθηση αποστέλλει εντολές ενημέρωσης στο RRDtool, δεν πρέπει να υπερβαίνει τα μέγιστα λειτουργικά συστήματα. Αυτό ποικίλλει ανάλογα με το λειτουργικό σύστημα και το επίπεδο του πυρήνα. Για παράδειγμα: Windows 2000 <= 2048, FreeBSD <= 65535, Linux 2.6.22-- <= 131072, Linux 2.6.23 ++ απεριόριστο"
+
 
 #: include/global_settings.php
 msgid "Memory Limit for Boost and Poller"
@@ -11404,7 +11509,8 @@ msgstr "Μέθοδος αντικατάστασης"
 
 #: include/global_settings.php
 msgid "There are three replacement methods.  The first method replaces the spike with the average of the data source in question.  The second method replaces the spike with a 'NaN'.  The last replaces the spike with the last known good value found."
-msgstr "Υπάρχουν τρεις μέθοδοι αντικατάστασης. Η πρώτη μέθοδος αντικαθιστά την ακίδα με τον μέσο όρο της εν λόγω πηγής δεδομένων. Η δεύτερη μέθοδος αντικαθιστά την ακίδα με ένα &#39;NaN&#39;. Το τελευταίο αντικαθιστά την ακίδα με την τελευταία γνωστή καλή τιμή που βρέθηκε."
+msgstr "Υπάρχουν τρεις μέθοδοι αντικατάστασης. Η πρώτη μέθοδος αντικαθιστά την ακίδα με τον μέσο όρο της εν λόγω πηγής δεδομένων. Η δεύτερη μέθοδος αντικαθιστά την ακίδα με ένα 'NaN'. Το τελευταίο αντικαθιστά την ακίδα με την τελευταία γνωστή καλή τιμή που βρέθηκε."
+
 
 #: include/global_settings.php lib/html.php
 msgid "Average"
@@ -11500,7 +11606,8 @@ msgstr "Ώρα βάσης"
 
 #: include/global_settings.php
 msgid "The Base Time for Spike removal to occur.  For example, if you use '12:00am' and you choose once per day, the batch removal would begin at approximately midnight every day."
-msgstr "Ο χρόνος βάσης για την αφαίρεση Spike να συμβεί. Για παράδειγμα, αν χρησιμοποιείτε &#39;12: 00πμ &#39;και επιλέγετε μία φορά την ημέρα, η κατάργηση παρτίδας θα αρχίσει περίπου τα μεσάνυχτα κάθε μέρα."
+msgstr "Ο χρόνος βάσης για την αφαίρεση Spike να συμβεί. Για παράδειγμα, αν χρησιμοποιείτε '12: 00πμ 'και επιλέγετε μία φορά την ημέρα, η κατάργηση παρτίδας θα αρχίσει περίπου τα μεσάνυχτα κάθε μέρα."
+
 
 #: include/global_settings.php
 msgid "Graph Templates to Spike Kill"
@@ -11636,7 +11743,8 @@ msgstr "Επιτρέψτε στο γράφημα να επεκταθεί στο 
 
 #: include/global_settings.php
 msgid "When displaying Graphs, allow Graph Dates to extend 'to future'"
-msgstr "Κατά την εμφάνιση των γραφημάτων, επιτρέψτε στις Ημερομηνίες Γραφήματος να επεκταθούν &#39;στο μέλλον&#39;"
+msgstr "Κατά την εμφάνιση των γραφημάτων, επιτρέψτε στις Ημερομηνίες Γραφήματος να επεκταθούν 'στο μέλλον'"
+
 
 #: include/global_settings.php
 msgid "First Day of the Week"
@@ -11693,7 +11801,8 @@ msgstr "Στήλες προβολής δέντρων μικρογραφιών"
 
 #: include/global_settings.php
 msgid "The number of columns to use when displaying Thumbnail graphs in Tree mode."
-msgstr "Ο αριθμός των στηλών που θα χρησιμοποιηθούν κατά την εμφάνιση των γραφικών μικρογραφιών στη λειτουργία &quot;Δέντρο&quot;."
+msgstr "Ο αριθμός των στηλών που θα χρησιμοποιηθούν κατά την εμφάνιση των γραφικών μικρογραφιών στη λειτουργία \"Δέντρο\"."
+
 
 #: include/global_settings.php
 msgid "Thumbnail Height"
@@ -11857,7 +11966,8 @@ msgstr "<strong>ΣΗΜΕΙΩΣΗ:</strong> Έχετε συνδεθεί σε απ
 
 #: index.php
 msgid "<strong>NOTE:</strong> None of the Core Cacti Plugins, to date, have been re-designed to work with Remote Data Collectors.  Therefore, Plugins such as MacTrack, and HMIB, which require direct access to devices will not work with Remote Data Collectors at this time.  However, plugins such as Thold will work so long as the Remote Data Collector is in <b>'online'</b> mode."
-msgstr "<strong>ΣΗΜΕΙΩΣΗ:</strong> Καμία από τις προσθήκες Core Cacti, μέχρι σήμερα, δεν έχει ξανασχεδιαστεί για να λειτουργήσει με απομακρυσμένους συλλέκτες δεδομένων. Επομένως, προσθήκες όπως το MacTrack και το HMIB, οι οποίες απαιτούν άμεση πρόσβαση σε συσκευές, δεν θα λειτουργούν με τους συλλέκτες απομακρυσμένων δεδομένων αυτή τη στιγμή. Ωστόσο, plugins όπως το Thold θα λειτουργούν όσο ο απομακρυσμένος συλλέκτης δεδομένων βρίσκεται σε λειτουργία <b>&quot;σε απευθείας σύνδεση&quot;</b> ."
+msgstr "<strong>ΣΗΜΕΙΩΣΗ:</strong> Καμία από τις προσθήκες Core Cacti, μέχρι σήμερα, δεν έχει ξανασχεδιαστεί για να λειτουργήσει με απομακρυσμένους συλλέκτες δεδομένων. Επομένως, προσθήκες όπως το MacTrack και το HMIB, οι οποίες απαιτούν άμεση πρόσβαση σε συσκευές, δεν θα λειτουργούν με τους συλλέκτες απομακρυσμένων δεδομένων αυτή τη στιγμή. Ωστόσο, plugins όπως το Thold θα λειτουργούν όσο ο απομακρυσμένος συλλέκτης δεδομένων βρίσκεται σε λειτουργία <b>\"σε απευθείας σύνδεση\"</b> ."
+
 
 #: install/functions.php
 #, php-format
@@ -11929,7 +12039,8 @@ msgstr "Τα διαγράμματα που επιλέγονται για το σ
 
 #: lib/api_aggregate.php
 msgid "Press 'Return' to return and select different Graphs"
-msgstr "Πατήστε &quot;Επιστροφή&quot; για να επιστρέψετε και να επιλέξετε διαφορετικά γραφήματα"
+msgstr "Πατήστε \"Επιστροφή\" για να επιστρέψετε και να επιλέξετε διαφορετικά γραφήματα"
+
 
 #: lib/api_aggregate.php
 msgid "The Graphs chosen for the Aggregate Graph do not use Graph Templates.  Aggregate does not support creating Aggregate Graphs from non-templated graphs."
@@ -12320,7 +12431,8 @@ msgstr "%s - ΣΗΜΕΙΩΣΗ WEBUI: Το αρχείο καταγραφής Cact
 
 #: lib/clog_webapi.php
 msgid "Click 'Continue' to purge the Log File.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να καθαρίσετε το αρχείο καταγραφής. <br><br><br> Σημείωση: Εάν η καταγραφή έχει οριστεί σε Cacti και Syslog, οι πληροφορίες καταγραφής θα παραμείνουν στο Syslog."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να καθαρίσετε το αρχείο καταγραφής. <br><br><br> Σημείωση: Εάν η καταγραφή έχει οριστεί σε Cacti και Syslog, οι πληροφορίες καταγραφής θα παραμείνουν στο Syslog."
+
 
 #: lib/clog_webapi.php utilities.php
 msgid "Purge Log"
@@ -12457,7 +12569,8 @@ msgstr "Βρέθηκε Τύπος = '%s' [%s]."
 #: lib/data_query.php
 #, php-format
 msgid "Unknown Type = '%s'."
-msgstr "Άγνωστος τύπος = &#39; %s&#39;."
+msgstr "Άγνωστος τύπος = ' %s'."
+
 
 #: lib/data_query.php
 msgid "WARNING: Sort Field Association has Changed.  Re-mapping issues may occur!"
@@ -12598,7 +12711,8 @@ msgstr "Βρέθηκε αριθμός δεικτών: %s"
 
 #: lib/data_query.php
 msgid "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' not supported"
-msgstr "&lt;arg_num_indexes&gt; που λείπουν σε αρχείο XML, το &#39;Count Count Changed&#39; δεν υποστηρίζεται"
+msgstr "&lt;arg_num_indexes&gt; που λείπουν σε αρχείο XML, το 'Count Count Changed' δεν υποστηρίζεται"
+
 
 #: lib/data_query.php
 msgid "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting arg_index entries"
@@ -12611,11 +12725,13 @@ msgstr "Σφάλμα: Το ερώτημα δεδομένων δεν επέστρ
 #: lib/data_query.php
 #, php-format
 msgid "Executing script for list of indexes '%s', Index Count: %s"
-msgstr "Εκτέλεση δέσμης ενεργειών για τη λίστα ευρετηρίων &#39; %s&#39;, Index Count: %s"
+msgstr "Εκτέλεση δέσμης ενεργειών για τη λίστα ευρετηρίων ' %s', Index Count: %s"
+
 
 #: lib/data_query.php
 msgid "Click to show Data Query output for 'index'"
-msgstr "Κάντε κλικ για να εμφανίσετε την έξοδο δεδομένων Query για &#39;index&#39;"
+msgstr "Κάντε κλικ για να εμφανίσετε την έξοδο δεδομένων Query για 'index'"
+
 
 #: lib/data_query.php
 #, php-format
@@ -12740,7 +12856,8 @@ msgstr "Εντοπίστηκε πεδίο εισόδου '%s' [get]"
 #: lib/data_query.php
 #, php-format
 msgid "Found OID rewrite rule: 's/%s/%s/'"
-msgstr "Βρήκε τον κανόνα επανεγγραφής OID: &#39;s / %s / %s /&#39;"
+msgstr "Βρήκε τον κανόνα επανεγγραφής OID: 's / %s / %s /'"
+
 
 #: lib/data_query.php
 #, php-format
@@ -13836,7 +13953,8 @@ msgstr "Ορίζει μια συχνότητα αναφοράς σχετικά �
 
 #: lib/html_reports.php
 msgid "e.g. 'Week(s)' represents a weekly Reporting Interval."
-msgstr "π.χ. &quot;εβδομάδα (ες)&quot; αντιπροσωπεύει ένα εβδομαδιαίο διάστημα αναφοράς."
+msgstr "π.χ. \"εβδομάδα (ες)\" αντιπροσωπεύει ένα εβδομαδιαίο διάστημα αναφοράς."
+
 
 #: lib/html_reports.php
 msgid "Interval Frequency"
@@ -13848,7 +13966,8 @@ msgstr "Με βάση το χρονικό διάστημα του διαστήμ
 
 #: lib/html_reports.php
 msgid "e.g. If the Report Interval is 'Month(s)', then '2' indicates Every '2 Month(s) from the next Mailtime.' Lastly, if using the Month(s) Report Intervals, the 'Day of Week' and the 'Day of Month' are both calculated based upon the Mailtime you specify above."
-msgstr "π.χ. Αν το διάστημα αναφοράς είναι &#39;Μήνας (s)&#39;, τότε το &#39;2&#39; δηλώνει κάθε &#39;2 Μήνες από το επόμενο Mailtime.&#39; Τέλος, αν χρησιμοποιείτε τα ημερολόγια μηνυμάτων (Months), η «Ημέρα της Εβδομάδας» και η «Ημέρα του Μήνα» υπολογίζονται και οι δύο βάσει του χρόνου αλληλογραφίας που καθορίζετε παραπάνω."
+msgstr "π.χ. Αν το διάστημα αναφοράς είναι 'Μήνας (s)', τότε το '2' δηλώνει κάθε '2 Μήνες από το επόμενο Mailtime.' Τέλος, αν χρησιμοποιείτε τα ημερολόγια μηνυμάτων (Months), η «Ημέρα της Εβδομάδας» και η «Ημέρα του Μήνα» υπολογίζονται και οι δύο βάσει του χρόνου αλληλογραφίας που καθορίζετε παραπάνω."
+
 
 #: lib/html_reports.php
 msgid "Email Sender/Receiver Details"
@@ -13904,19 +14023,23 @@ msgstr "Η ημερομηνία / ώρα μεταφέρθηκε την ίδια 
 
 #: lib/html_reports.php
 msgid "Click 'Continue' to delete the following Report(s)."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε τις ακόλουθες Αναφορές."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε τις ακόλουθες Αναφορές."
+
 
 #: lib/html_reports.php
 msgid "Click 'Continue' to take ownership of the following Report(s)."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να αναλάβετε την κυριότητα των παρακάτω Αναφορών."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να αναλάβετε την κυριότητα των παρακάτω Αναφορών."
+
 
 #: lib/html_reports.php
 msgid "Click 'Continue' to duplicate the following Report(s).  You may optionally change the title for the new Reports"
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να αντιγράψετε την παρακάτω αναφορά (-ες). Μπορείτε να αλλάξετε προαιρετικά τον τίτλο για τις νέες αναφορές"
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να αντιγράψετε την παρακάτω αναφορά (-ες). Μπορείτε να αλλάξετε προαιρετικά τον τίτλο για τις νέες αναφορές"
+
 
 #: lib/html_reports.php
 msgid "Click 'Continue' to enable the following Report(s)."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να ενεργοποιήσετε την παρακάτω αναφορά (-ες)."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να ενεργοποιήσετε την παρακάτω αναφορά (-ες)."
+
 
 #: lib/html_reports.php
 msgid "Please be certain that those Report(s) have successfully been tested first!"
@@ -13924,31 +14047,37 @@ msgstr "Βεβαιωθείτε ότι αυτές οι Αναφορές έχου�
 
 #: lib/html_reports.php
 msgid "Click 'Continue' to disable the following Reports."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να απενεργοποιήσετε τις ακόλουθες Αναφορές."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να απενεργοποιήσετε τις ακόλουθες Αναφορές."
+
 
 #: lib/html_reports.php
 msgid "Click 'Continue' to send the following Report(s) now."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να στείλετε τώρα τις ακόλουθες Αναφορές."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να στείλετε τώρα τις ακόλουθες Αναφορές."
+
 
 #: lib/html_reports.php
 #, php-format
 msgid "Unable to send Report '%s'.  Please set destination e-mail addresses"
-msgstr "Δεν είναι δυνατή η αποστολή αναφοράς &#39; %s&#39;. Ορίστε τις διευθύνσεις ηλεκτρονικού ταχυδρομείου προορισμού"
+msgstr "Δεν είναι δυνατή η αποστολή αναφοράς ' %s'. Ορίστε τις διευθύνσεις ηλεκτρονικού ταχυδρομείου προορισμού"
+
 
 #: lib/html_reports.php
 #, php-format
 msgid "Unable to send Report '%s'.  Please set an e-mail subject"
-msgstr "Δεν είναι δυνατή η αποστολή αναφοράς &#39; %s&#39;. Ορίστε ένα θέμα ηλεκτρονικού ταχυδρομείου"
+msgstr "Δεν είναι δυνατή η αποστολή αναφοράς ' %s'. Ορίστε ένα θέμα ηλεκτρονικού ταχυδρομείου"
+
 
 #: lib/html_reports.php
 #, php-format
 msgid "Unable to send Report '%s'.  Please set an e-mail From Name"
-msgstr "Δεν είναι δυνατή η αποστολή αναφοράς &#39; %s&#39;. Ορίστε ένα μήνυμα ηλεκτρονικού ταχυδρομείου από το όνομα"
+msgstr "Δεν είναι δυνατή η αποστολή αναφοράς ' %s'. Ορίστε ένα μήνυμα ηλεκτρονικού ταχυδρομείου από το όνομα"
+
 
 #: lib/html_reports.php
 #, php-format
 msgid "Unable to send Report '%s'.  Please set an e-mail from address"
-msgstr "Δεν είναι δυνατή η αποστολή αναφοράς &#39; %s&#39;. Ορίστε ένα μήνυμα ηλεκτρονικού ταχυδρομείου από τη διεύθυνση"
+msgstr "Δεν είναι δυνατή η αποστολή αναφοράς ' %s'. Ορίστε ένα μήνυμα ηλεκτρονικού ταχυδρομείου από τη διεύθυνση"
+
 
 #: lib/html_reports.php
 msgid "Item Type to be added."
@@ -14505,11 +14634,13 @@ msgstr "Προσπαθείτε να εγκαταστήσετε το Cacti %s σ�
 
 #: lib/installer.php
 msgid "To be able continue, you <b>MUST</b> create a new database, import \"cacti.sql\" into it:"
-msgstr "Για να μπορέσετε να συνεχίσετε, <b>ΠΡΕΠΕΙ να</b> δημιουργήσετε μια νέα βάση δεδομένων, εισάγοντας &quot;cacti.sql&quot; σε αυτήν:"
+msgstr "Για να μπορέσετε να συνεχίσετε, <b>ΠΡΕΠΕΙ να</b> δημιουργήσετε μια νέα βάση δεδομένων, εισάγοντας \"cacti.sql\" σε αυτήν:"
+
 
 #: lib/installer.php
 msgid "You <b>MUST</b> then update \"include/config.php\" to point to the new database."
-msgstr "Τότε <b>πρέπει</b> να ενημερώσετε την &quot;include / config.php&quot; για να δείξετε τη νέα βάση δεδομένων."
+msgstr "Τότε <b>πρέπει</b> να ενημερώσετε την \"include / config.php\" για να δείξετε τη νέα βάση δεδομένων."
+
 
 #: lib/installer.php
 msgid "NOTE: Your existing data will not be modified, nor will it or any history be available to the new install"
@@ -14517,7 +14648,8 @@ msgstr "ΣΗΜΕΙΩΣΗ: Τα υπάρχοντα δεδομένα σας δεν
 
 #: lib/installer.php
 msgid "You have created a new database, but have not yet imported the 'cacti.sql' file. At the command line, execute the following to continue:"
-msgstr "Δημιουργήσατε μια νέα βάση δεδομένων, αλλά δεν έχετε εισάγει ακόμα το αρχείο &quot;cacti.sql&quot;. Στη γραμμή εντολών, εκτελέστε τα παρακάτω για να συνεχίσετε:"
+msgstr "Δημιουργήσατε μια νέα βάση δεδομένων, αλλά δεν έχετε εισάγει ακόμα το αρχείο \"cacti.sql\". Στη γραμμή εντολών, εκτελέστε τα παρακάτω για να συνεχίσετε:"
+
 
 #: lib/installer.php
 msgid "This error may also be generated if the cacti database user does not have correct permissions on the Cacti database. Please ensure that the Cacti database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX on the Cacti database."
@@ -14529,7 +14661,8 @@ msgstr "<b>ΠΡΕΠΕΙ</b> επίσης να εισάγετε πληροφορ�
 
 #: lib/installer.php
 msgid "On Linux/UNIX, run the following as 'root' in a shell:"
-msgstr "Στο Linux / UNIX, εκτελέστε το ακόλουθο ως &#39;root&#39; σε ένα κέλυφος:"
+msgstr "Στο Linux / UNIX, εκτελέστε το ακόλουθο ως 'root' σε ένα κέλυφος:"
+
 
 #: lib/installer.php
 msgid "On Windows, you must follow the instructions here <a target='_blank' href='https://dev.mysql.com/downloads/timezones.html'>Time zone description table</a>.  Once that is complete, you can issue the following command to grant the Cacti user access to the tables:"
@@ -14580,7 +14713,8 @@ msgstr "Βεβαιωθείτε ότι έχετε διαβάσει και ακο�
 #: lib/installer.php
 #, php-format
 msgid "This process will guide you through the steps for upgrading from version '%s'. "
-msgstr "Αυτή η διαδικασία θα σας καθοδηγήσει στα βήματα αναβάθμισης από την έκδοση &#39; %s&#39;. "
+msgstr "Αυτή η διαδικασία θα σας καθοδηγήσει στα βήματα αναβάθμισης από την έκδοση ' %s'. "
+
 
 #: lib/installer.php
 #, php-format
@@ -14724,7 +14858,8 @@ msgstr "Η βάση δεδομένων MyZQL TimeZone δεν συμπληρών�
 
 #: lib/installer.php
 msgid "Your Cacti database login account does not have access to the MySQL TimeZone database.  Please provide the Cacti database account \"select\" access to the \"time_zone_name\" table in the \"mysql\" database, and populate MySQL's TimeZone information before proceeding."
-msgstr "Ο λογαριασμός σύνδεσης της βάσης δεδομένων Cacti δεν έχει πρόσβαση στη βάση δεδομένων MySQL TimeZone. Καταχωρίστε το λογαριασμό βάσης δεδομένων Cacti &quot;select&quot; για την πρόσβαση στον πίνακα &quot;time_zone_name&quot; στη βάση δεδομένων &quot;mysql&quot; και συμπληρώστε τις πληροφορίες του TimeZone της MySQL προτού προχωρήσετε."
+msgstr "Ο λογαριασμός σύνδεσης της βάσης δεδομένων Cacti δεν έχει πρόσβαση στη βάση δεδομένων MySQL TimeZone. Καταχωρίστε το λογαριασμό βάσης δεδομένων Cacti \"select\" για την πρόσβαση στον πίνακα \"time_zone_name\" στη βάση δεδομένων \"mysql\" και συμπληρώστε τις πληροφορίες του TimeZone της MySQL προτού προχωρήσετε."
+
 
 #: lib/installer.php
 msgid "Your Cacti database account has access to the MySQL TimeZone database and that database is populated with global TimeZone information."
@@ -14798,7 +14933,8 @@ msgstr "Οι απομακρυσμένοι Pollers χρησιμοποιούντα
 
 #: lib/installer.php
 msgid "The following information has been determined from Cacti's configuration file. If it is not correct, please edit \"include/config.php\" before continuing."
-msgstr "Οι ακόλουθες πληροφορίες έχουν καθοριστεί από το αρχείο ρυθμίσεων του Cacti. Αν δεν είναι σωστό, επεξεργαστείτε το &quot;include / config.php&quot; πριν συνεχίσετε."
+msgstr "Οι ακόλουθες πληροφορίες έχουν καθοριστεί από το αρχείο ρυθμίσεων του Cacti. Αν δεν είναι σωστό, επεξεργαστείτε το \"include / config.php\" πριν συνεχίσετε."
+
 
 #: lib/installer.php
 msgid "Local Database Connection Information"
@@ -14863,7 +14999,8 @@ msgstr "Ο εγκαταστάτης εκχωρεί αυτόματα ένα $ pol
 
 #: lib/installer.php
 msgid "Once the variables are all set in the config.php file, you must also grant the $rdatabase_username access to the main Cacti database server.  Follow the same procedure you would with any other Cacti install.  You may then press the 'Test Connection' button.  If the test is successful you will be able to proceed and complete the install."
-msgstr "Μόλις οι μεταβλητές έχουν οριστεί στο αρχείο config.php, πρέπει επίσης να παραχωρήσετε πρόσβαση στο $ rdatabase_username στον κύριο διακομιστή βάσης δεδομένων Cacti. Ακολουθήστε την ίδια διαδικασία που θα κάνατε με οποιαδήποτε άλλη εγκατάσταση του Cacti. Στη συνέχεια, μπορείτε να πατήσετε το πλήκτρο &#39;Δοκιμή σύνδεσης&#39;. Εάν η δοκιμή είναι επιτυχής, θα μπορέσετε να προχωρήσετε και να ολοκληρώσετε την εγκατάσταση."
+msgstr "Μόλις οι μεταβλητές έχουν οριστεί στο αρχείο config.php, πρέπει επίσης να παραχωρήσετε πρόσβαση στο $ rdatabase_username στον κύριο διακομιστή βάσης δεδομένων Cacti. Ακολουθήστε την ίδια διαδικασία που θα κάνατε με οποιαδήποτε άλλη εγκατάσταση του Cacti. Στη συνέχεια, μπορείτε να πατήσετε το πλήκτρο 'Δοκιμή σύνδεσης'. Εάν η δοκιμή είναι επιτυχής, θα μπορέσετε να προχωρήσετε και να ολοκληρώσετε την εγκατάσταση."
+
 
 #: lib/installer.php
 msgid "Additional Steps After Installation"
@@ -15074,7 +15211,8 @@ msgstr "Η ενημέρωση προτύπων στα οποία έχετε ήδ
 
 #: lib/installer.php
 msgid "Please select the Device Templates that you wish to use after the Install.  If you Operating System is Windows, you need to ensure that you select the 'Windows Device' Template.  If your Operating System is Linux/UNIX, make sure you select the 'Local Linux Machine' Device Template."
-msgstr "Επιλέξτε τα Πρότυπα συσκευών που θέλετε να χρησιμοποιήσετε μετά την εγκατάσταση. Εάν το Λειτουργικό Σύστημα είναι Windows, πρέπει να βεβαιωθείτε ότι έχετε επιλέξει το Πρότυπο Συσκευής των Windows. Εάν το λειτουργικό σας σύστημα είναι Linux / UNIX, βεβαιωθείτε ότι έχετε επιλέξει το πρότυπο συσκευής &quot;Τοπικό μηχάνημα Linux&quot;."
+msgstr "Επιλέξτε τα Πρότυπα συσκευών που θέλετε να χρησιμοποιήσετε μετά την εγκατάσταση. Εάν το Λειτουργικό Σύστημα είναι Windows, πρέπει να βεβαιωθείτε ότι έχετε επιλέξει το Πρότυπο Συσκευής των Windows. Εάν το λειτουργικό σας σύστημα είναι Linux / UNIX, βεβαιωθείτε ότι έχετε επιλέξει το πρότυπο συσκευής \"Τοπικό μηχάνημα Linux\"."
+
 
 #: lib/installer.php package_import.php plugins.php
 msgid "Author"
@@ -15086,7 +15224,8 @@ msgstr "Αρχική σελίδα"
 
 #: lib/installer.php
 msgid "Device Templates allow you to monitor and graph a vast assortment of data within Cacti.  After you select the desired Device Templates, press 'Next' and the installation will complete.  Please be patient on this step, as the importation of the Device Templates can take a few minutes."
-msgstr "Τα πρότυπα συσκευών σάς επιτρέπουν να παρακολουθείτε και να γράφετε μια τεράστια ποικιλία δεδομένων μέσα στο Cacti. Αφού επιλέξετε τα επιθυμητά πρότυπα συσκευής, πατήστε &#39;Τέλος&#39; και η εγκατάσταση θα ολοκληρωθεί. Παρακαλούμε να είστε υπομονετικοί σε αυτό το βήμα, καθώς η εισαγωγή των προτύπων συσκευών μπορεί να διαρκέσει μερικά λεπτά."
+msgstr "Τα πρότυπα συσκευών σάς επιτρέπουν να παρακολουθείτε και να γράφετε μια τεράστια ποικιλία δεδομένων μέσα στο Cacti. Αφού επιλέξετε τα επιθυμητά πρότυπα συσκευής, πατήστε 'Τέλος' και η εγκατάσταση θα ολοκληρωθεί. Παρακαλούμε να είστε υπομονετικοί σε αυτό το βήμα, καθώς η εισαγωγή των προτύπων συσκευών μπορεί να διαρκέσει μερικά λεπτά."
+
 
 #: lib/installer.php
 msgid "Server Collation"
@@ -15118,7 +15257,8 @@ msgstr "Η προεπιλεγμένη ταξινόμηση της βάσης δ�
 
 #: lib/installer.php
 msgid "Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched.   Please ensure your database is changed to 'utf8mb4_unicode_ci' by running the following: "
-msgstr "Οι πίνακες που δημιουργούνται από τα πρόσθετα ενδέχεται να έχουν ζητήματα που συνδέονται με τους πίνακες Cacti Core, εάν η αντιστοίχιση δεν συμφωνεί. Βεβαιωθείτε ότι η βάση δεδομένων σας έχει αλλάξει σε &#39;utf8mb4_unicode_ci&#39; εκτελώντας τα εξής: "
+msgstr "Οι πίνακες που δημιουργούνται από τα πρόσθετα ενδέχεται να έχουν ζητήματα που συνδέονται με τους πίνακες Cacti Core, εάν η αντιστοίχιση δεν συμφωνεί. Βεβαιωθείτε ότι η βάση δεδομένων σας έχει αλλάξει σε 'utf8mb4_unicode_ci' εκτελώντας τα εξής: "
+
 
 #: lib/installer.php
 msgid "Table Setup"
@@ -15743,17 +15883,20 @@ msgstr "Ευθυγράμμιση γραφήματος:"
 #: lib/reports.php
 #, php-format
 msgid "Created Report Graph Item '<i>%s</i>'"
-msgstr "Δημιουργήθηκε παράθυρο αναφοράς &#39; <i> %s</i> &#39;"
+msgstr "Δημιουργήθηκε παράθυρο αναφοράς ' <i> %s</i> '"
+
 
 #: lib/reports.php
 #, php-format
 msgid "Failed Adding Report Graph Item '<i>%s</i>' Already Exists"
-msgstr "Αποτυχία προσθήκης στοιχείου γραφήματος αναφοράς &#39; <i> %s</i> &#39; υπάρχει ήδη"
+msgstr "Αποτυχία προσθήκης στοιχείου γραφήματος αναφοράς ' <i> %s</i> ' υπάρχει ήδη"
+
 
 #: lib/reports.php
 #, php-format
 msgid "Skipped Report Graph Item '<i>%s</i>' Already Exists"
-msgstr "Παράλειψη του στοιχείου γραφήματος αναφοράς &#39; <i> %s</i> &#39; υπάρχει ήδη"
+msgstr "Παράλειψη του στοιχείου γραφήματος αναφοράς ' <i> %s</i> ' υπάρχει ήδη"
+
 
 #: lib/rrd.php
 #, php-format
@@ -16543,7 +16686,8 @@ msgstr "Με τις δυνατότητες απομακρυσμένου polling,
 #: lib/utility.php
 #, php-format
 msgid "If using the Cacti Performance Booster and choosing a memory storage engine, you have to be careful to flush your Performance Booster buffer before the system runs out of memory table space.  This is done two ways, first reducing the size of your output column to just the right size.  This column is in the tables poller_output, and poller_output_boost.  The second thing you can do is allocate more memory to memory tables.  We have arbitrarily chosen a recommended value of 10%% of system memory, but if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation or choose a different storage engine.  You may see the expected consumption of the Performance Booster tables under Console -> System Utilities -> View Boost Status."
-msgstr "Εάν χρησιμοποιείτε το Cacti Performance Booster και επιλέγετε μια μηχανή αποθήκευσης μνήμης, θα πρέπει να είστε προσεκτικοί για να ξεπλύνετε το ρυθμιστή απόδοσης Booster πριν το σύστημα ξεπεράσει το χώρο μνήμης. Αυτό γίνεται με δύο τρόπους, αρχικά μειώνοντας το μέγεθος της στήλης εξόδου σας στο σωστό μέγεθος. Αυτή η στήλη βρίσκεται στους πίνακες poller_output και poller_output_boost. Το δεύτερο πράγμα που μπορείτε να κάνετε είναι να διαθέσετε περισσότερη μνήμη στους πίνακες μνήμης. Έχουμε επιλέξει αυθαίρετα μια συνιστώμενη τιμή 10 %% μνήμης συστήματος, αλλά αν χρησιμοποιείτε SSD δίσκους ή έχετε μικρότερο σύστημα, μπορείτε να αγνοήσετε αυτή τη σύσταση ή να επιλέξετε διαφορετική μηχανή αποθήκευσης. Ενδέχεται να δείτε την αναμενόμενη κατανάλωση των πινάκων Performance Booster κάτω από την Κονσόλα -&gt; Συστήματα Utilities -&gt; View Boost Status."
+msgstr "Εάν χρησιμοποιείτε το Cacti Performance Booster και επιλέγετε μια μηχανή αποθήκευσης μνήμης, θα πρέπει να είστε προσεκτικοί για να ξεπλύνετε το ρυθμιστή απόδοσης Booster πριν το σύστημα ξεπεράσει το χώρο μνήμης. Αυτό γίνεται με δύο τρόπους, αρχικά μειώνοντας το μέγεθος της στήλης εξόδου σας στο σωστό μέγεθος. Αυτή η στήλη βρίσκεται στους πίνακες poller_output και poller_output_boost. Το δεύτερο πράγμα που μπορείτε να κάνετε είναι να διαθέσετε περισσότερη μνήμη στους πίνακες μνήμης. Έχουμε επιλέξει αυθαίρετα μια συνιστώμενη τιμή 10 %% μνήμης συστήματος, αλλά αν χρησιμοποιείτε SSD δίσκους ή έχετε μικρότερο σύστημα, μπορείτε να αγνοήσετε αυτή τη σύσταση ή να επιλέξετε διαφορετική μηχανή αποθήκευσης. Ενδέχεται να δείτε την αναμενόμενη κατανάλωση των πινάκων Performance Booster κάτω από την Κονσόλα -> Συστήματα Utilities -> View Boost Status."
+
 
 #: lib/utility.php
 msgid "When executing subqueries, having a larger temporary table size, keep those temporary tables in memory."
@@ -16706,7 +16850,8 @@ msgstr ""
 
 #: links.php
 msgid "Click 'Continue' to Enable the following Page(s)."
-msgstr "Κάντε κλικ στο &#39;Συνέχεια&#39; για να Ενεργοποιήσετε τις ακόλουθες σελίδες."
+msgstr "Κάντε κλικ στο 'Συνέχεια' για να Ενεργοποιήσετε τις ακόλουθες σελίδες."
+
 
 #: links.php
 msgid "Enable Page(s)"
@@ -16714,7 +16859,8 @@ msgstr "Ενεργοποίηση σελίδας (ών)"
 
 #: links.php
 msgid "Click 'Continue' to Disable the following Page(s)."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να απενεργοποιήσετε τις ακόλουθες σελίδες."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να απενεργοποιήσετε τις ακόλουθες σελίδες."
+
 
 #: links.php
 msgid "Disable Page(s)"
@@ -16722,7 +16868,8 @@ msgstr "Απενεργοποίηση σελίδας (ών)"
 
 #: links.php
 msgid "Click 'Continue' to Delete the following Page(s)."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε τις ακόλουθες σελίδες."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε τις ακόλουθες σελίδες."
+
 
 #: links.php
 msgid "Delete Page(s)"
@@ -16822,7 +16969,8 @@ msgstr "Διεύθυνση URL ιστού παρακάτω"
 
 #: links.php
 msgid "The file that contains the content for this page. This file needs to be in the Cacti 'include/content/' directory."
-msgstr "Το αρχείο που περιέχει το περιεχόμενο αυτής της σελίδας. Αυτό το αρχείο πρέπει να βρίσκεται στον κατάλογο Cacti &#39;include / content /&#39;."
+msgstr "Το αρχείο που περιέχει το περιεχόμενο αυτής της σελίδας. Αυτό το αρχείο πρέπει να βρίσκεται στον κατάλογο Cacti 'include / content /'."
+
 
 #: links.php
 msgid "Web URL Location"
@@ -16967,20 +17115,23 @@ msgstr "Δεν υπάρχουν καταχωρήσεις καταγραφής ε
 #: managers.php
 msgid "Click 'Continue' to delete the following Notification Receiver"
 msgid_plural "Click 'Continue' to delete following Notification Receiver"
-msgstr[0] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε τον ακόλουθο δέκτη ειδοποίησης"
-msgstr[1] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε τον ακόλουθο παραλήπτη ειδοποιήσεων"
+msgstr[0] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε τον ακόλουθο δέκτη ειδοποίησης"
+msgstr[1] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε τον ακόλουθο παραλήπτη ειδοποιήσεων"
+
 
 #: managers.php
 msgid "Click 'Continue' to enable the following Notification Receiver"
 msgid_plural "Click 'Continue' to enable following Notification Receiver"
-msgstr[0] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να ενεργοποιήσετε τον ακόλουθο δέκτη ειδοποίησης"
-msgstr[1] "Κάντε κλικ στο κουμπί &#39;Συνέχεια&#39; για να ενεργοποιήσετε τον παρακάτω Δέκτη ειδοποίησης"
+msgstr[0] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να ενεργοποιήσετε τον ακόλουθο δέκτη ειδοποίησης"
+msgstr[1] "Κάντε κλικ στο κουμπί 'Συνέχεια' για να ενεργοποιήσετε τον παρακάτω Δέκτη ειδοποίησης"
+
 
 #: managers.php
 msgid "Click 'Continue' to disable the following Notification Receiver"
 msgid_plural "Click 'Continue' to disable following Notification Receiver"
-msgstr[0] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να απενεργοποιήσετε τον ακόλουθο δέκτη ειδοποίησης"
-msgstr[1] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να απενεργοποιήσετε τον ακόλουθο παραλήπτη ειδοποιήσεων"
+msgstr[0] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να απενεργοποιήσετε τον ακόλουθο δέκτη ειδοποίησης"
+msgstr[1] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να απενεργοποιήσετε τον ακόλουθο παραλήπτη ειδοποιήσεων"
+
 
 #: managers.php
 #, php-format
@@ -16989,11 +17140,13 @@ msgstr "%s Δέκτες ειδοποίησης"
 
 #: managers.php
 msgid "Click 'Continue' to forward the following Notification Objects to this Notification Receiver."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να προωθήσετε τα παρακάτω αντικείμενα ειδοποίησης σε αυτόν τον δέκτη ειδοποιήσεων."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να προωθήσετε τα παρακάτω αντικείμενα ειδοποίησης σε αυτόν τον δέκτη ειδοποιήσεων."
+
 
 #: managers.php
 msgid "Click 'Continue' to disable forwarding the following Notification Objects to this Notification Receiver."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να απενεργοποιήσετε την προώθηση των ακόλουθων αντικειμένων ειδοποίησης σε αυτόν τον δέκτη ειδοποιήσεων."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να απενεργοποιήσετε την προώθηση των ακόλουθων αντικειμένων ειδοποίησης σε αυτόν τον δέκτη ειδοποιήσεων."
+
 
 #: managers.php
 msgid "Disable Notification Objects"
@@ -17214,7 +17367,8 @@ msgstr "Θέματα ρύθμισης παραμέτρων"
 
 #: plugins.php
 msgid "Actions available include 'Install', 'Activate', 'Disable', 'Enable', 'Uninstall'."
-msgstr "Οι διαθέσιμες ενέργειες περιλαμβάνουν &quot;Εγκατάσταση&quot;, &quot;Ενεργοποίηση&quot;, &quot;Απενεργοποίηση&quot;, &quot;Ενεργοποίηση&quot;, &quot;Κατάργηση εγκατάστασης&quot;."
+msgstr "Οι διαθέσιμες ενέργειες περιλαμβάνουν \"Εγκατάσταση\", \"Ενεργοποίηση\", \"Απενεργοποίηση\", \"Ενεργοποίηση\", \"Κατάργηση εγκατάστασης\"."
+
 
 #: plugins.php
 msgid "Plugin Name"
@@ -17270,7 +17424,8 @@ msgstr "Δεν βρέθηκαν προσθήκες"
 
 #: plugins.php
 msgid "Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click 'Uninstall' below.  Otherwise click 'Cancel'"
-msgstr "Η κατάργηση της εγκατάστασης αυτής της προσθήκης θα καταργήσει όλα τα δεδομένα και τις ρυθμίσεις πρόσθετων στοιχείων. Εάν θέλετε πραγματικά να καταργήσετε την εγκατάσταση της προσθήκης, κάντε κλικ στο κουμπί &quot;Κατάργηση εγκατάστασης&quot; παρακάτω. Διαφορετικά κάντε κλικ στην επιλογή &#39;Ακύρωση&#39;"
+msgstr "Η κατάργηση της εγκατάστασης αυτής της προσθήκης θα καταργήσει όλα τα δεδομένα και τις ρυθμίσεις πρόσθετων στοιχείων. Εάν θέλετε πραγματικά να καταργήσετε την εγκατάσταση της προσθήκης, κάντε κλικ στο κουμπί \"Κατάργηση εγκατάστασης\" παρακάτω. Διαφορετικά κάντε κλικ στην επιλογή 'Ακύρωση'"
+
 
 #: plugins.php
 msgid "Are you sure you want to Uninstall?"
@@ -17588,8 +17743,9 @@ msgstr "Τα στατιστικά στοιχεία του συλλέκτη δε�
 #: pollers.php
 msgid "Click 'Continue' to delete the following Data Collector.  Note, all devices will be disassociated from this Data Collector and mapped back to the Main Cacti Data Collector."
 msgid_plural "Click 'Continue' to delete all following Data Collectors.  Note, all devices will be disassociated from these Data Collectors and mapped back to the Main Cacti Data Collector."
-msgstr[0] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε τον ακόλουθο συλλέκτη δεδομένων. Σημειώστε ότι όλες οι συσκευές θα διαχωριστούν από αυτόν τον συλλέκτη δεδομένων και θα αντιστοιχιστούν ξανά στον συλλέκτη δεδομένων Main Cacti Data Collector."
-msgstr[1] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε όλους τους ακόλουθους συλλέκτες δεδομένων. Σημειώστε ότι όλες οι συσκευές θα διαχωριστούν από αυτούς τους Συλλέκτες Δεδομένων και θα αντιστοιχιστούν πίσω στον συλλέκτη δεδομένων Κύρια κάκεια."
+msgstr[0] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε τον ακόλουθο συλλέκτη δεδομένων. Σημειώστε ότι όλες οι συσκευές θα διαχωριστούν από αυτόν τον συλλέκτη δεδομένων και θα αντιστοιχιστούν ξανά στον συλλέκτη δεδομένων Main Cacti Data Collector."
+msgstr[1] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε όλους τους ακόλουθους συλλέκτες δεδομένων. Σημειώστε ότι όλες οι συσκευές θα διαχωριστούν από αυτούς τους Συλλέκτες Δεδομένων και θα αντιστοιχιστούν πίσω στον συλλέκτη δεδομένων Κύρια κάκεια."
+
 
 #: pollers.php
 msgid "Delete Data Collector"
@@ -17600,8 +17756,9 @@ msgstr[1] "Διαγραφή συλλεκτών δεδομένων"
 #: pollers.php
 msgid "Click 'Continue' to disable the following Data Collector."
 msgid_plural "Click 'Continue' to disable the following Data Collectors."
-msgstr[0] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να απενεργοποιήσετε τον ακόλουθο συλλέκτη δεδομένων."
-msgstr[1] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να απενεργοποιήσετε τους ακόλουθους συλλέκτες δεδομένων."
+msgstr[0] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να απενεργοποιήσετε τον ακόλουθο συλλέκτη δεδομένων."
+msgstr[1] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να απενεργοποιήσετε τους ακόλουθους συλλέκτες δεδομένων."
+
 
 #: pollers.php
 msgid "Disable Data Collector"
@@ -17612,8 +17769,9 @@ msgstr[1] "Απενεργοποιήστε τους συλλέκτες δεδομ
 #: pollers.php
 msgid "Click 'Continue' to enable the following Data Collector."
 msgid_plural "Click 'Continue' to enable the following Data Collectors."
-msgstr[0] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να ενεργοποιήσετε τον ακόλουθο συλλέκτη δεδομένων."
-msgstr[1] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να ενεργοποιήσετε τους ακόλουθους συλλέκτες δεδομένων."
+msgstr[0] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να ενεργοποιήσετε τον ακόλουθο συλλέκτη δεδομένων."
+msgstr[1] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να ενεργοποιήσετε τους ακόλουθους συλλέκτες δεδομένων."
+
 
 #: pollers.php
 msgid "Enable Data Collector"
@@ -17624,8 +17782,9 @@ msgstr[1] "Ενεργοποίηση συλλεκτών δεδομένων"
 #: pollers.php
 msgid "Click 'Continue' to Synchronize the Remote Data Collector for Offline Operation."
 msgid_plural "Click 'Continue' to Synchronize the Remote Data Collectors for Offline Operation."
-msgstr[0] "Κάντε κλικ στο κουμπί &#39;Συνέχεια&#39; για να συγχρονίσετε τον συλλέκτη απομακρυσμένων δεδομένων για λειτουργία εκτός σύνδεσης."
-msgstr[1] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να συγχρονίσετε τους συλλέκτες απομακρυσμένων δεδομένων για λειτουργία εκτός σύνδεσης."
+msgstr[0] "Κάντε κλικ στο κουμπί 'Συνέχεια' για να συγχρονίσετε τον συλλέκτη απομακρυσμένων δεδομένων για λειτουργία εκτός σύνδεσης."
+msgstr[1] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να συγχρονίσετε τους συλλέκτες απομακρυσμένων δεδομένων για λειτουργία εκτός σύνδεσης."
+
 
 #: pollers.php
 msgid "Click 'Continue' to Clear Data Collector Statistics for the Data Collector."
@@ -18096,8 +18255,9 @@ msgstr "Ο ιστότοπος προτύπου δεν βρέθηκε! Δεν ε�
 #: sites.php
 msgid "Click 'Continue' to Delete the following Site.  Note, all Devices will be disassociated from this site."
 msgid_plural "Click 'Continue' to delete all following Sites.  Note, all devices will be disassociated from this site."
-msgstr[0] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε τον ακόλουθο ιστότοπο. Σημειώστε ότι όλες οι συσκευές θα αποσυνδεθούν από αυτόν τον ιστότοπο."
-msgstr[1] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε όλους τους παρακάτω ιστότοπους. Σημειώστε ότι όλες οι συσκευές θα αποσυνδεθούν από αυτόν τον ιστότοπο."
+msgstr[0] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε τον ακόλουθο ιστότοπο. Σημειώστε ότι όλες οι συσκευές θα αποσυνδεθούν από αυτόν τον ιστότοπο."
+msgstr[1] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε όλους τους παρακάτω ιστότοπους. Σημειώστε ότι όλες οι συσκευές θα αποσυνδεθούν από αυτόν τον ιστότοπο."
+
 
 #: sites.php
 msgid "Delete Site"
@@ -18336,8 +18496,9 @@ msgstr "αριθμητικός"
 #: tree.php
 msgid "Click 'Continue' to delete the following Tree."
 msgid_plural "Click 'Continue' to delete following Trees."
-msgstr[0] "Κάντε κλικ στο κουμπί &#39;Συνέχεια&#39; για να διαγράψετε το παρακάτω δέντρο."
-msgstr[1] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε τα παρακάτω δέντρα."
+msgstr[0] "Κάντε κλικ στο κουμπί 'Συνέχεια' για να διαγράψετε το παρακάτω δέντρο."
+msgstr[1] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε τα παρακάτω δέντρα."
+
 
 #: tree.php
 msgid "Delete Tree"
@@ -18348,8 +18509,9 @@ msgstr[1] "Διαγραφή των δέντρων"
 #: tree.php
 msgid "Click 'Continue' to publish the following Tree."
 msgid_plural "Click 'Continue' to publish following Trees."
-msgstr[0] "Κάντε κλικ στο κουμπί &#39;Συνέχεια&#39; για να δημοσιεύσετε το ακόλουθο δέντρο."
-msgstr[1] "Κάντε κλικ στο κουμπί &#39;Συνέχεια&#39; για να δημοσιεύσετε τα παρακάτω δέντρα."
+msgstr[0] "Κάντε κλικ στο κουμπί 'Συνέχεια' για να δημοσιεύσετε το ακόλουθο δέντρο."
+msgstr[1] "Κάντε κλικ στο κουμπί 'Συνέχεια' για να δημοσιεύσετε τα παρακάτω δέντρα."
+
 
 #: tree.php
 msgid "Publish Tree"
@@ -18360,8 +18522,9 @@ msgstr[1] "Δημοσιεύστε δέντρα"
 #: tree.php
 msgid "Click 'Continue' to un-publish the following Tree."
 msgid_plural "Click 'Continue' to un-publish following Trees."
-msgstr[0] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να απενεργοποιήσετε την ακόλουθη δέντρο."
-msgstr[1] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να καταργήσετε τη δημοσίευση των ακόλουθων Δέντρων."
+msgstr[0] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να απενεργοποιήσετε την ακόλουθη δέντρο."
+msgstr[1] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να καταργήσετε τη δημοσίευση των ακόλουθων Δέντρων."
+
 
 #: tree.php
 msgid "Un-publish Tree"
@@ -18561,7 +18724,8 @@ msgstr "Δεν επιτρέπεται να απενεργοποιήσετε το
 
 #: user_admin.php
 msgid "Click 'Continue' to delete the selected User(s)."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε τους επιλεγμένους χρήστες."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε τους επιλεγμένους χρήστες."
+
 
 #: user_admin.php
 msgid "Delete User(s)"
@@ -18569,7 +18733,8 @@ msgstr "Διαγραφή χρηστών"
 
 #: user_admin.php
 msgid "Click 'Continue' to copy the selected User to a new User below."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να αντιγράψετε τον επιλεγμένο χρήστη σε έναν νέο χρήστη παρακάτω."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να αντιγράψετε τον επιλεγμένο χρήστη σε έναν νέο χρήστη παρακάτω."
+
 
 #: user_admin.php
 msgid "Template Username:"
@@ -18593,7 +18758,8 @@ msgstr "Αντιγραφή χρήστη"
 
 #: user_admin.php
 msgid "Click 'Continue' to enable the selected User(s)."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να ενεργοποιήσετε τους επιλεγμένους χρήστες."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να ενεργοποιήσετε τους επιλεγμένους χρήστες."
+
 
 #: user_admin.php
 msgid "Enable User(s)"
@@ -18601,7 +18767,8 @@ msgstr "Ενεργοποίηση χρηστών"
 
 #: user_admin.php
 msgid "Click 'Continue' to disable the selected User(s)."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να απενεργοποιήσετε τους επιλεγμένους χρήστες."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να απενεργοποιήσετε τους επιλεγμένους χρήστες."
+
 
 #: user_admin.php
 msgid "Disable User(s)"
@@ -18609,7 +18776,8 @@ msgstr "Απενεργοποίηση χρήστη (ες)"
 
 #: user_admin.php
 msgid "Click 'Continue' to overwrite the User(s) settings with the selected template User settings and permissions.  The original users Full Name, Password, Realm and Enable status will be retained, all other fields will be overwritten from Template User."
-msgstr "Κάντε κλικ στο κουμπί &#39;Συνέχεια&#39; για να αντικαταστήσετε τις ρυθμίσεις χρήστη με τα επιλεγμένα πρότυπα Ρυθμίσεις χρήστη και δικαιώματα. Οι αρχικοί χρήστες πλήρους ονόματος, κωδικού πρόσβασης, πραγματικού και ενεργοποιημένου καθεστώτος θα διατηρηθούν, όλα τα άλλα πεδία θα αντικατασταθούν από τον χρήστη προτύπου."
+msgstr "Κάντε κλικ στο κουμπί 'Συνέχεια' για να αντικαταστήσετε τις ρυθμίσεις χρήστη με τα επιλεγμένα πρότυπα Ρυθμίσεις χρήστη και δικαιώματα. Οι αρχικοί χρήστες πλήρους ονόματος, κωδικού πρόσβασης, πραγματικού και ενεργοποιημένου καθεστώτος θα διατηρηθούν, όλα τα άλλα πεδία θα αντικατασταθούν από τον χρήστη προτύπου."
+
 
 #: user_admin.php
 msgid "Template User:"
@@ -18633,7 +18801,8 @@ msgstr "<b>Σημείωση:</b> Η Πολιτική Γράφημα Συστήμ
 
 #: user_admin.php user_group_admin.php
 msgid "<b>Note:</b> System Graph Policy is 'Restrictive' meaning the User must have access to either the Graph or the Device and Graph Template to gain access to the Graph"
-msgstr "<b>Σημείωση:</b> Η Πολιτική Γράφημα Συστήματος είναι &#39;Περιοριστική&#39; που σημαίνει ότι ο Χρήστης πρέπει να έχει πρόσβαση είτε στο Γράφημα είτε στο Πρότυπο Συσκευής και Γράφου για να αποκτήσει πρόσβαση στο Γράφημα"
+msgstr "<b>Σημείωση:</b> Η Πολιτική Γράφημα Συστήματος είναι 'Περιοριστική' που σημαίνει ότι ο Χρήστης πρέπει να έχει πρόσβαση είτε στο Γράφημα είτε στο Πρότυπο Συσκευής και Γράφου για να αποκτήσει πρόσβαση στο Γράφημα"
+
 
 #: user_admin.php user_group_admin.php
 msgid "<b>Note:</b> System Graph Policy is 'Device' meaning the User must have access to the Graph or Device to gain access to the Graph"
@@ -18915,8 +19084,9 @@ msgstr "Άδεια δέντρου %s"
 #: user_domains.php
 msgid "Click 'Continue' to delete the following User Domain."
 msgid_plural "Click 'Continue' to delete following User Domains."
-msgstr[0] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε τον ακόλουθο τομέα χρήστη."
-msgstr[1] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε τους ακόλουθους τομείς χρηστών."
+msgstr[0] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε τον ακόλουθο τομέα χρήστη."
+msgstr[1] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε τους ακόλουθους τομείς χρηστών."
+
 
 #: user_domains.php
 msgid "Delete User Domain"
@@ -18927,8 +19097,9 @@ msgstr[1] "Διαγραφή τομέων χρηστών"
 #: user_domains.php
 msgid "Click 'Continue' to disable the following User Domain."
 msgid_plural "Click 'Continue' to disable following User Domains."
-msgstr[0] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να απενεργοποιήσετε τον ακόλουθο τομέα χρήστη."
-msgstr[1] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να απενεργοποιήσετε τους ακόλουθους τομείς χρηστών."
+msgstr[0] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να απενεργοποιήσετε τον ακόλουθο τομέα χρήστη."
+msgstr[1] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να απενεργοποιήσετε τους ακόλουθους τομείς χρηστών."
+
 
 #: user_domains.php
 msgid "Disable User Domain"
@@ -18938,7 +19109,8 @@ msgstr[1] "Απενεργοποίηση τομέων χρηστών"
 
 #: user_domains.php
 msgid "Click 'Continue' to enable the following User Domain."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να ενεργοποιήσετε τον ακόλουθο τομέα χρήστη."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να ενεργοποιήσετε τον ακόλουθο τομέα χρήστη."
+
 
 #: user_domains.php
 msgid "Enabled User Domain"
@@ -18948,7 +19120,8 @@ msgstr[1] "Ενεργοποίηση τομέων χρηστών"
 
 #: user_domains.php
 msgid "Click 'Continue' to make the following the following User Domain the default one."
-msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να κάνετε το ακόλουθο τον ακόλουθο τομέα χρήστη ως προεπιλεγμένο."
+msgstr "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να κάνετε το ακόλουθο τον ακόλουθο τομέα χρήστη ως προεπιλεγμένο."
+
 
 #: user_domains.php
 msgid "Make Selected Domain Default"
@@ -19005,7 +19178,8 @@ msgstr "Λειτουργία με την οποία το Cacti θα επιχει
 
 #: user_domains.php
 msgid "Search base for searching the LDAP directory, such as <i>\"dc=win2kdomain,dc=local\"</i> or <i>\"ou=people,dc=domain,dc=local\"</i>."
-msgstr "Βάση αναζήτησης για αναζήτηση στον κατάλογο LDAP, όπως <i>&quot;dc = win2kdomain, dc = local&quot;</i> ή <i>&quot;ou = people, dc = domain, dc = local&quot;</i> ."
+msgstr "Βάση αναζήτησης για αναζήτηση στον κατάλογο LDAP, όπως <i>\"dc = win2kdomain, dc = local\"</i> ή <i>\"ou = people, dc = domain, dc = local\"</i> ."
+
 
 #: user_domains.php
 msgid "Search filter to use to locate the user in the LDAP directory, such as for windows: <i>\"(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))\"</i> or for OpenLDAP: <i>\"(&(objectClass=account)(uid=&lt;username&gt))\"</i>.  \"&lt;username&gt\" is replaced with the username that was supplied at the login prompt."
@@ -19130,8 +19304,9 @@ msgstr "Τι πρέπει να κάνετε όταν ένας χρήστης α�
 #: user_group_admin.php
 msgid "Click 'Continue' to delete the following User Group"
 msgid_plural "Click 'Continue' to delete following User Groups"
-msgstr[0] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε την ακόλουθη ομάδα χρηστών"
-msgstr[1] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε τις ακόλουθες ομάδες χρηστών"
+msgstr[0] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε την ακόλουθη ομάδα χρηστών"
+msgstr[1] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε τις ακόλουθες ομάδες χρηστών"
+
 
 #: user_group_admin.php
 msgid "Delete User Group"
@@ -19142,8 +19317,9 @@ msgstr[1] "Διαγραφή ομάδων χρηστών"
 #: user_group_admin.php
 msgid "Click 'Continue' to Copy the following User Group to a new User Group."
 msgid_plural "Click 'Continue' to Copy following User Groups to new User Groups."
-msgstr[0] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να αντιγράψετε την ακόλουθη ομάδα χρηστών σε μια νέα ομάδα χρηστών."
-msgstr[1] "Κάντε κλικ στην επιλογή &#39;Συνέχεια&#39; για να αντιγράψετε τις ακόλουθες ομάδες χρηστών σε νέες ομάδες χρηστών."
+msgstr[0] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να αντιγράψετε την ακόλουθη ομάδα χρηστών σε μια νέα ομάδα χρηστών."
+msgstr[1] "Κάντε κλικ στην επιλογή 'Συνέχεια' για να αντιγράψετε τις ακόλουθες ομάδες χρηστών σε νέες ομάδες χρηστών."
+
 
 #: user_group_admin.php
 msgid "Group Prefix:"
@@ -19162,8 +19338,9 @@ msgstr[1] "Αντιγραφή ομάδων χρηστών"
 #: user_group_admin.php
 msgid "Click 'Continue' to enable the following User Group."
 msgid_plural "Click 'Continue' to enable following User Groups."
-msgstr[0] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να ενεργοποιήσετε την ακόλουθη Ομάδα χρηστών."
-msgstr[1] "Κάντε κλικ στο κουμπί &#39;Συνέχεια&#39; για να ενεργοποιήσετε τις ακόλουθες ομάδες χρηστών."
+msgstr[0] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να ενεργοποιήσετε την ακόλουθη Ομάδα χρηστών."
+msgstr[1] "Κάντε κλικ στο κουμπί 'Συνέχεια' για να ενεργοποιήσετε τις ακόλουθες ομάδες χρηστών."
+
 
 #: user_group_admin.php
 msgid "Enable User Group"
@@ -19174,8 +19351,9 @@ msgstr[1] "Ενεργοποιήστε τις ομάδες χρηστών"
 #: user_group_admin.php
 msgid "Click 'Continue' to disable the following User Group."
 msgid_plural "Click 'Continue' to disable following User Groups."
-msgstr[0] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να απενεργοποιήσετε την ακόλουθη Ομάδα χρηστών."
-msgstr[1] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να απενεργοποιήσετε τις ακόλουθες ομάδες χρηστών."
+msgstr[0] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να απενεργοποιήσετε την ακόλουθη Ομάδα χρηστών."
+msgstr[1] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να απενεργοποιήσετε τις ακόλουθες ομάδες χρηστών."
+
 
 #: user_group_admin.php
 msgid "Disable User Group"
@@ -19472,7 +19650,8 @@ msgstr "Εγκατεστημένο."
 
 #: utilities.php
 msgid "You've set memory limit to 'unlimited'."
-msgstr "Έχετε ορίσει το όριο μνήμης σε &#39;απεριόριστο&#39;."
+msgstr "Έχετε ορίσει το όριο μνήμης σε 'απεριόριστο'."
+
 
 #: utilities.php
 #, php-format
@@ -19798,7 +19977,8 @@ msgstr "Κατάσταση τρέχουσας ώθησης"
 
 #: utilities.php
 msgid "Boost On-demand Updating:"
-msgstr "Ενίσχυση Ενημέρωση κατ &#39;απαίτηση:"
+msgstr "Ενίσχυση Ενημέρωση κατ 'απαίτηση:"
+
 
 #: utilities.php
 msgid "Boost Lifecycle Status:"
@@ -20061,8 +20241,9 @@ msgstr "Το VDEF δεν βρέθηκε."
 #: vdef.php
 msgid "Click 'Continue' to delete the following VDEF."
 msgid_plural "Click 'Continue' to delete following VDEFs."
-msgstr[0] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε το παρακάτω VDEF."
-msgstr[1] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να διαγράψετε τα ακόλουθα VDEF."
+msgstr[0] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε το παρακάτω VDEF."
+msgstr[1] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να διαγράψετε τα ακόλουθα VDEF."
+
 
 #: vdef.php
 msgid "Delete VDEF"
@@ -20073,8 +20254,9 @@ msgstr[1] "Διαγράψτε τα VDEF"
 #: vdef.php
 msgid "Click 'Continue' to duplicate the following VDEF. You can optionally change the title format for the new VDEF."
 msgid_plural "Click 'Continue' to duplicate following VDEFs. You can optionally change the title format for the new VDEFs."
-msgstr[0] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να αντιγράψετε το παρακάτω VDEF. Μπορείτε να αλλάξετε προαιρετικά τη μορφή τίτλου για το νέο VDEF."
-msgstr[1] "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να αντιγράψετε τα ακόλουθα VDEF. Μπορείτε να αλλάξετε προαιρετικά τη μορφή τίτλου για τα νέα VDEF."
+msgstr[0] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να αντιγράψετε το παρακάτω VDEF. Μπορείτε να αλλάξετε προαιρετικά τη μορφή τίτλου για το νέο VDEF."
+msgstr[1] "Κάντε κλικ στο κουμπί \"Συνέχεια\" για να αντιγράψετε τα ακόλουθα VDEF. Μπορείτε να αλλάξετε προαιρετικά τη μορφή τίτλου για τα νέα VDEF."
+
 
 #: vdef.php
 msgid "Duplicate VDEF"
@@ -20088,7 +20270,8 @@ msgstr ""
 
 #: vdef.php
 msgid "Click 'Continue' to delete the following VDEF's."
-msgstr "Πατήστε &#39;Συνέχεια&#39; για να διαγράψετε τα παρακάτω VDEF."
+msgstr "Πατήστε 'Συνέχεια' για να διαγράψετε τα παρακάτω VDEF."
+
 
 #: vdef.php
 #, php-format

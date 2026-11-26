@@ -120,7 +120,8 @@ msgstr "Đặt trên cây ( %s)"
 
 #: aggregate_graphs.php
 msgid "Click 'Continue' to delete the following Aggregate Graph(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để xóa (các) Biểu đồ Tổng hợp sau."
+msgstr "Nhấp vào 'Tiếp tục' để xóa (các) Biểu đồ Tổng hợp sau."
+
 
 #: aggregate_graphs.php aggregate_templates.php automation_devices.php
 #: automation_graph_rules.php automation_networks.php automation_snmp.php
@@ -157,7 +158,8 @@ msgstr "Các đồ thị tổng hợp được chọn đại diện cho các y�
 
 #: aggregate_graphs.php
 msgid "In order to migrate the Aggregate Graphs below to a Template based Aggregate, they must only be using one Graph Template.  Please press 'Return' and then select only Aggregate Graph that utilize the same Graph Template."
-msgstr "Để di chuyển Biểu đồ tổng hợp bên dưới sang Tập hợp dựa trên mẫu, họ chỉ phải sử dụng một Mẫu biểu đồ. Vui lòng nhấn &#39;Trở về&#39; và sau đó chỉ chọn Biểu đồ tổng hợp sử dụng cùng một Mẫu biểu đồ."
+msgstr "Để di chuyển Biểu đồ tổng hợp bên dưới sang Tập hợp dựa trên mẫu, họ chỉ phải sử dụng một Mẫu biểu đồ. Vui lòng nhấn 'Trở về' và sau đó chỉ chọn Biểu đồ tổng hợp sử dụng cùng một Mẫu biểu đồ."
+
 
 #: aggregate_graphs.php auth_changepassword.php auth_profile.php
 #: automation_networks.php automation_snmp.php graphs.php host.php
@@ -176,7 +178,8 @@ msgstr "Để chuyển đổi các Đồ thị tổng hợp bên dưới sang s�
 
 #: aggregate_graphs.php
 msgid "Click 'Continue' and the following Aggregate Graph(s) will be migrated to use the Aggregate Template that you choose below."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; và (các) Biểu đồ Tổng hợp sau đây sẽ được di chuyển để sử dụng Mẫu Tổng hợp mà bạn chọn bên dưới."
+msgstr "Nhấp vào 'Tiếp tục' và (các) Biểu đồ Tổng hợp sau đây sẽ được di chuyển để sử dụng Mẫu Tổng hợp mà bạn chọn bên dưới."
+
 
 #: aggregate_graphs.php
 msgid "Aggregate Template:"
@@ -189,15 +192,18 @@ msgstr "Hiện tại không có Mẫu tổng hợp nào được xác định ch
 #: aggregate_graphs.php
 #, php-format
 msgid "In order to migrate the Aggregate Graphs below to a Template based Aggregate, first create an Aggregate Template for the Graph Template '%s'."
-msgstr "Để di chuyển Biểu đồ tổng hợp bên dưới sang Tập hợp dựa trên mẫu, trước tiên hãy tạo Mẫu tổng hợp cho Mẫu biểu đồ &#39; %s&#39;."
+msgstr "Để di chuyển Biểu đồ tổng hợp bên dưới sang Tập hợp dựa trên mẫu, trước tiên hãy tạo Mẫu tổng hợp cho Mẫu biểu đồ ' %s'."
+
 
 #: aggregate_graphs.php
 msgid "Please press 'Return' to continue."
-msgstr "Vui lòng nhấn &#39;Quay lại&#39; để tiếp tục."
+msgstr "Vui lòng nhấn 'Quay lại' để tiếp tục."
+
 
 #: aggregate_graphs.php
 msgid "Click 'Continue' to combine the following Aggregate Graph(s) into a single Aggregate Graph."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để kết hợp (các) Biểu đồ Tổng hợp sau vào một Biểu đồ Tổng hợp duy nhất."
+msgstr "Nhấp vào 'Tiếp tục' để kết hợp (các) Biểu đồ Tổng hợp sau vào một Biểu đồ Tổng hợp duy nhất."
+
 
 #: aggregate_graphs.php
 msgid "Aggregate Name:"
@@ -209,7 +215,8 @@ msgstr "Tập hợp mới"
 
 #: aggregate_graphs.php graphs.php host.php
 msgid "Click 'Continue' to add the selected Graphs to the Report below."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để thêm Đồ thị đã chọn vào Báo cáo bên dưới."
+msgstr "Nhấp vào 'Tiếp tục' để thêm Đồ thị đã chọn vào Báo cáo bên dưới."
+
 
 #: aggregate_graphs.php graph_view.php graphs.php host.php lib/html_reports.php
 msgid "Report Name"
@@ -241,7 +248,8 @@ msgstr "Chuyển đổi sang đồ thị LINE1"
 
 #: aggregate_graphs.php
 msgid "Click 'Continue' to associate the following Graph(s) with the Aggregate Graph."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để liên kết (các) Biểu đồ sau với Biểu đồ Tổng hợp."
+msgstr "Nhấp vào 'Tiếp tục' để liên kết (các) Biểu đồ sau với Biểu đồ Tổng hợp."
+
 
 #: aggregate_graphs.php
 msgid "Associate Graph(s)"
@@ -249,7 +257,8 @@ msgstr "Đồ thị liên kết"
 
 #: aggregate_graphs.php
 msgid "Click 'Continue' to disassociate the following Graph(s) from the Aggregate."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để tách liên kết (các) Biểu đồ sau khỏi Tổng hợp."
+msgstr "Nhấp vào 'Tiếp tục' để tách liên kết (các) Biểu đồ sau khỏi Tổng hợp."
+
 
 #: aggregate_graphs.php
 msgid "Dis-Associate Graph(s)"
@@ -257,7 +266,8 @@ msgstr "Hủy liên kết đồ thị"
 
 #: aggregate_graphs.php
 msgid "Click 'Continue' to place the following Aggregate Graph(s) under the Tree Branch."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để đặt (các) Biểu đồ Tổng hợp sau dưới nhánh Cây."
+msgstr "Nhấp vào 'Tiếp tục' để đặt (các) Biểu đồ Tổng hợp sau dưới nhánh Cây."
+
 
 #: aggregate_graphs.php host.php
 msgid "Destination Branch:"
@@ -555,7 +565,8 @@ msgstr "Không tìm thấy mẫu tổng hợp."
 
 #: aggregate_templates.php
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để xóa (các) Mẫu biểu đồ tổng hợp sau."
+msgstr "Nhấp vào 'Tiếp tục' để xóa (các) Mẫu biểu đồ tổng hợp sau."
+
 
 #: aggregate_templates.php
 msgid "Delete Color Template(s)"
@@ -919,7 +930,8 @@ msgstr "Đã xóa thiết bị khỏi cơ sở dữ liệu Tự động hóa Cac
 
 #: automation_devices.php
 msgid "Click 'Continue' to add the following Discovered device(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để thêm (các) thiết bị được phát hiện sau đây."
+msgstr "Nhấp vào 'Tiếp tục' để thêm (các) thiết bị được phát hiện sau đây."
+
 
 #: automation_devices.php pollers.php
 msgid "Pollers"
@@ -1070,11 +1082,13 @@ msgstr ""
 
 #: automation_graph_rules.php
 msgid "Press 'Continue' to delete the following Graph Rules."
-msgstr "Nhấn &#39;Tiếp tục&#39; để xóa Quy tắc đồ thị sau."
+msgstr "Nhấn 'Tiếp tục' để xóa Quy tắc đồ thị sau."
+
 
 #: automation_graph_rules.php
 msgid "Click 'Continue' to duplicate the following Rule(s). You can optionally change the title format for the new Graph Rules."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để nhân đôi (các) Quy tắc sau. Bạn có thể tùy ý thay đổi định dạng tiêu đề cho Quy tắc biểu đồ mới."
+msgstr "Nhấp vào 'Tiếp tục' để nhân đôi (các) Quy tắc sau. Bạn có thể tùy ý thay đổi định dạng tiêu đề cho Quy tắc biểu đồ mới."
+
 
 #: automation_graph_rules.php automation_tree_rules.php graphs.php
 msgid "Title Format"
@@ -1086,7 +1100,8 @@ msgstr "Tên quy tắc"
 
 #: automation_graph_rules.php automation_tree_rules.php
 msgid "Click 'Continue' to enable the following Rule(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để bật (các) Quy tắc sau."
+msgstr "Nhấp vào 'Tiếp tục' để bật (các) Quy tắc sau."
+
 
 #: automation_graph_rules.php automation_tree_rules.php
 msgid "Make sure, that those rules have successfully been tested!"
@@ -1094,7 +1109,8 @@ msgstr "Hãy chắc chắn rằng những quy tắc đó đã được thử ngh
 
 #: automation_graph_rules.php automation_tree_rules.php
 msgid "Click 'Continue' to disable the following Rule(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để tắt (các) Quy tắc sau."
+msgstr "Nhấp vào 'Tiếp tục' để tắt (các) Quy tắc sau."
+
 
 #: automation_graph_rules.php automation_tree_rules.php
 msgid "Apply requested action"
@@ -1199,12 +1215,14 @@ msgstr "Hủy khám phá"
 #: automation_networks.php
 #, php-format
 msgid "Can Not Restart Discovery for Discovery in Progress for Network '%s'"
-msgstr "Không thể khởi động lại Discovery để khám phá trong tiến trình cho mạng &#39; %s&#39"
+msgstr "Không thể khởi động lại Discovery để khám phá trong tiến trình cho mạng ' %s&#39"
+
 
 #: automation_networks.php
 #, php-format
 msgid "Can Not Perform Discovery for Disabled Network '%s'"
-msgstr "Không thể thực hiện khám phá cho mạng bị vô hiệu hóa &#39; %s&#39"
+msgstr "Không thể thực hiện khám phá cho mạng bị vô hiệu hóa ' %s&#39"
+
 
 #: automation_networks.php
 #, php-format
@@ -1228,19 +1246,23 @@ msgstr "LỖI: Mạng '%s' không hợp lệ."
 
 #: automation_networks.php
 msgid "Click 'Continue' to delete the following Network(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để xóa (các) Mạng sau."
+msgstr "Nhấp vào 'Tiếp tục' để xóa (các) Mạng sau."
+
 
 #: automation_networks.php
 msgid "Click 'Continue' to enable the following Network(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để bật (các) Mạng sau."
+msgstr "Nhấp vào 'Tiếp tục' để bật (các) Mạng sau."
+
 
 #: automation_networks.php
 msgid "Click 'Continue' to disable the following Network(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để tắt (các) Mạng sau."
+msgstr "Nhấp vào 'Tiếp tục' để tắt (các) Mạng sau."
+
 
 #: automation_networks.php
 msgid "Click 'Continue' to discover the following Network(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để khám phá (các) Mạng sau."
+msgstr "Nhấp vào 'Tiếp tục' để khám phá (các) Mạng sau."
+
 
 #: automation_networks.php
 msgid "Run discover in debug mode"
@@ -1248,7 +1270,8 @@ msgstr "Chạy khám phá trong chế độ gỡ lỗi"
 
 #: automation_networks.php
 msgid "Click 'Continue' to cancel on going Network Discovery(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để hủy khi đi khám phá mạng."
+msgstr "Nhấp vào 'Tiếp tục' để hủy khi đi khám phá mạng."
+
 
 #: automation_networks.php data_input.php include/global_arrays.php
 msgid "SNMP Get"
@@ -1801,11 +1824,13 @@ msgstr "Xóa mục đã lọc"
 
 #: automation_snmp.php
 msgid "Click 'Continue' to delete the following SNMP Option(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để xóa (các) Tùy chọn SNMP sau."
+msgstr "Nhấp vào 'Tiếp tục' để xóa (các) Tùy chọn SNMP sau."
+
 
 #: automation_snmp.php
 msgid "Click 'Continue' to duplicate the following SNMP Options. You can optionally change the title format for the new SNMP Options."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để nhân đôi Tùy chọn SNMP sau. Bạn có thể tùy ý thay đổi định dạng tiêu đề cho Tùy chọn SNMP mới."
+msgstr "Nhấp vào 'Tiếp tục' để nhân đôi Tùy chọn SNMP sau. Bạn có thể tùy ý thay đổi định dạng tiêu đề cho Tùy chọn SNMP mới."
+
 
 #: automation_snmp.php
 msgid "Name Format"
@@ -1825,7 +1850,8 @@ msgstr "Mục Tự động hóa không tồn tại. Không thể trùng lặp."
 
 #: automation_snmp.php
 msgid "Click 'Continue' to delete the following SNMP Option Item."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để xóa Mục tùy chọn SNMP sau."
+msgstr "Nhấp vào 'Tiếp tục' để xóa Mục tùy chọn SNMP sau."
+
 
 #: automation_snmp.php
 msgid "SNMP Option:"
@@ -2001,7 +2027,8 @@ msgstr "Không tìm thấy bộ tùy chọn SNMP"
 
 #: automation_templates.php
 msgid "Click 'Continue' to delete the following Automation Template(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để xóa (các) Mẫu tự động theo dõi."
+msgstr "Nhấp vào 'Tiếp tục' để xóa (các) Mẫu tự động theo dõi."
+
 
 #: automation_templates.php
 msgid "Delete Automation Template(s)"
@@ -2092,11 +2119,13 @@ msgstr "Tên trường được chỉ định cho mục quy tắc cây không h�
 
 #: automation_tree_rules.php
 msgid "Click 'Continue' to delete the following Rule(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để xóa (các) Quy tắc sau."
+msgstr "Nhấp vào 'Tiếp tục' để xóa (các) Quy tắc sau."
+
 
 #: automation_tree_rules.php
 msgid "Click 'Continue' to duplicate the following Rule(s). You can optionally change the title format for the new Rules."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để nhân đôi (các) Quy tắc sau. Bạn có thể tùy ý thay đổi định dạng tiêu đề cho Quy tắc mới."
+msgstr "Nhấp vào 'Tiếp tục' để nhân đôi (các) Quy tắc sau. Bạn có thể tùy ý thay đổi định dạng tiêu đề cho Quy tắc mới."
+
 
 #: automation_tree_rules.php
 msgid "Created Trees"
@@ -2138,7 +2167,8 @@ msgstr "LƯU Ý:"
 
 #: automation_tree_rules.php
 msgid "You are changing the leaf type to \"Device\" which does not support Graph-based object matching/creation."
-msgstr "Bạn đang thay đổi loại lá thành &quot;Thiết bị&quot; không hỗ trợ khớp / tạo đối tượng dựa trên đồ thị."
+msgstr "Bạn đang thay đổi loại lá thành \"Thiết bị\" không hỗ trợ khớp / tạo đối tượng dựa trên đồ thị."
+
 
 #: automation_tree_rules.php
 msgid "By changing the leaf type, all invalid rules will be automatically removed and will not be recoverable."
@@ -2206,7 +2236,8 @@ msgstr ""
 #: cdef.php
 msgid "Click 'Continue' to delete the following CDEF."
 msgid_plural "Click 'Continue' to delete all following CDEFs."
-msgstr[0] "Nhấp vào &#39;Tiếp tục&#39; để xóa CDEF sau."
+msgstr[0] "Nhấp vào 'Tiếp tục' để xóa CDEF sau."
+
 
 #: cdef.php
 msgid "Delete CDEF"
@@ -2216,7 +2247,8 @@ msgstr[0] "Xóa CDEF"
 #: cdef.php
 msgid "Click 'Continue' to duplicate the following CDEF. You can optionally change the title format for the new CDEF."
 msgid_plural "Click 'Continue' to duplicate the following CDEFs. You can optionally change the title format for the new CDEFs."
-msgstr[0] "Nhấp vào &#39;Tiếp tục&#39; để sao chép CDEF sau. Bạn có thể tùy ý thay đổi định dạng tiêu đề cho CDEF mới."
+msgstr[0] "Nhấp vào 'Tiếp tục' để sao chép CDEF sau. Bạn có thể tùy ý thay đổi định dạng tiêu đề cho CDEF mới."
+
 
 #: cdef.php color_templates.php data_source_profiles.php data_templates.php
 #: graph_templates.php host_templates.php vdef.php
@@ -2230,7 +2262,8 @@ msgstr[0] "Sao chép CDEF"
 
 #: cdef.php
 msgid "Click 'Continue' to delete the following CDEF Item."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để xóa Mục CDEF sau."
+msgstr "Nhấp vào 'Tiếp tục' để xóa Mục CDEF sau."
+
 
 #: cdef.php
 #, php-format
@@ -2342,7 +2375,8 @@ msgstr "Màu không tên"
 #: color.php
 msgid "Click 'Continue' to delete the following Color"
 msgid_plural "Click 'Continue' to delete the following Colors"
-msgstr[0] "Nhấp vào &#39;Tiếp tục&#39; để xóa Màu sau"
+msgstr[0] "Nhấp vào 'Tiếp tục' để xóa Màu sau"
+
 
 #: color.php
 msgid "Delete Color"
@@ -2492,7 +2526,8 @@ msgstr "Không có mục nào"
 #: color_templates.php
 msgid "Click 'Continue' to delete the following Color Template"
 msgid_plural "Click 'Continue' to delete following Color Templates"
-msgstr[0] "Nhấp vào &#39;Tiếp tục&#39; để xóa Mẫu màu sau"
+msgstr[0] "Nhấp vào 'Tiếp tục' để xóa Mẫu màu sau"
+
 
 #: color_templates.php
 msgid "Delete Color Template"
@@ -2502,7 +2537,8 @@ msgstr[0] "Xóa mẫu màu"
 #: color_templates.php
 msgid "Click 'Continue' to duplicate the following Color Template. You can optionally change the title format for the new color template."
 msgid_plural "Click 'Continue' to duplicate following Color Templates. You can optionally change the title format for the new color templates."
-msgstr[0] "Nhấp vào &#39;Tiếp tục&#39; để nhân đôi Mẫu màu sau. Bạn có thể tùy ý thay đổi định dạng tiêu đề cho mẫu màu mới."
+msgstr[0] "Nhấp vào 'Tiếp tục' để nhân đôi Mẫu màu sau. Bạn có thể tùy ý thay đổi định dạng tiêu đề cho mẫu màu mới."
+
 
 #: color_templates.php
 msgid "Duplicate Color Template"
@@ -2573,7 +2609,8 @@ msgstr "Không tìm thấy Mẫu màu hoặc Mục."
 
 #: color_templates_items.php
 msgid "Click 'Continue' to delete the following Color Template Color."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để xóa Màu mẫu Màu sau."
+msgstr "Nhấp vào 'Tiếp tục' để xóa Màu mẫu Màu sau."
+
 
 #: color_templates_items.php
 msgid "Color Name:"
@@ -2936,11 +2973,13 @@ msgstr ""
 #: data_input.php
 msgid "Click 'Continue' to delete the following Data Input Method"
 msgid_plural "Click 'Continue' to delete the following Data Input Method"
-msgstr[0] "Nhấp vào &#39;Tiếp tục&#39; để xóa Phương thức nhập dữ liệu sau"
+msgstr[0] "Nhấp vào 'Tiếp tục' để xóa Phương thức nhập dữ liệu sau"
+
 
 #: data_input.php
 msgid "Click 'Continue' to duplicate the following Data Input Method(s). You can optionally change the title format for the new Data Input Method(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để nhân đôi (các) Phương thức nhập dữ liệu sau. Bạn có thể tùy ý thay đổi định dạng tiêu đề cho (các) Phương thức nhập dữ liệu mới."
+msgstr "Nhấp vào 'Tiếp tục' để nhân đôi (các) Phương thức nhập dữ liệu sau. Bạn có thể tùy ý thay đổi định dạng tiêu đề cho (các) Phương thức nhập dữ liệu mới."
+
 
 #: data_input.php
 msgid "Input Name:"
@@ -2953,7 +2992,8 @@ msgstr[0] "Xóa phương thức nhập dữ liệu"
 
 #: data_input.php
 msgid "Click 'Continue' to delete the following Data Input Field."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để xóa Trường nhập dữ liệu sau."
+msgstr "Nhấp vào 'Tiếp tục' để xóa Trường nhập dữ liệu sau."
+
 
 #: data_input.php
 #, php-format
@@ -3120,7 +3160,8 @@ msgstr "Không tìm thấy phương thức nhập dữ liệu"
 #: data_queries.php
 msgid "Click 'Continue' to Delete the following Data Query."
 msgid_plural "Click 'Continue' to Delete following Data Queries."
-msgstr[0] "Nhấp vào &#39;Tiếp tục&#39; để xóa Truy vấn dữ liệu sau."
+msgstr[0] "Nhấp vào 'Tiếp tục' để xóa Truy vấn dữ liệu sau."
+
 
 #: data_queries.php
 msgid "Delete Data Query"
@@ -3143,7 +3184,8 @@ msgstr[0] "Sao chép Truy vấn dữ liệu"
 
 #: data_queries.php
 msgid "Click 'Continue' to delete the following Data Query Graph Association."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để xóa Hiệp hội đồ thị truy vấn dữ liệu sau đây."
+msgstr "Nhấp vào 'Tiếp tục' để xóa Hiệp hội đồ thị truy vấn dữ liệu sau đây."
+
 
 #: data_queries.php
 #, php-format
@@ -3308,7 +3350,8 @@ msgstr ""
 #: data_source_profiles.php
 msgid "Click 'Continue' to delete the following Data Source Profile"
 msgid_plural "Click 'Continue' to delete following Data Source Profiles"
-msgstr[0] "Nhấp vào &#39;Tiếp tục&#39; để xóa Hồ sơ nguồn dữ liệu sau"
+msgstr[0] "Nhấp vào 'Tiếp tục' để xóa Hồ sơ nguồn dữ liệu sau"
+
 
 #: data_source_profiles.php
 msgid "Delete Data Source Profile"
@@ -3331,7 +3374,8 @@ msgstr "Không thể nhân bản Hồ sơ Nguồn Dữ liệu. Hãy kiểm tra N
 
 #: data_source_profiles.php
 msgid "Click 'Continue' to delete the following Data Source Profile RRA."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để xóa RRA Hồ sơ nguồn dữ liệu sau đây."
+msgstr "Nhấp vào 'Tiếp tục' để xóa RRA Hồ sơ nguồn dữ liệu sau đây."
+
 
 #: data_source_profiles.php
 #, php-format
@@ -3524,7 +3568,8 @@ msgstr "Tên được đề xuất lại"
 #: data_sources.php
 msgid "Click 'Continue' to delete the following Data Source"
 msgid_plural "Click 'Continue' to delete following Data Sources"
-msgstr[0] "Nhấp vào &#39;Tiếp tục&#39; để xóa Nguồn dữ liệu sau"
+msgstr[0] "Nhấp vào 'Tiếp tục' để xóa Nguồn dữ liệu sau"
+
 
 #: data_sources.php
 msgid "The following graph is using these data sources:"
@@ -3563,7 +3608,8 @@ msgstr "Thiết bị mới:"
 #: data_sources.php
 msgid "Click 'Continue' to enable the following Data Source."
 msgid_plural "Click 'Continue' to enable all following Data Sources."
-msgstr[0] "Nhấp vào &#39;Tiếp tục&#39; để bật Nguồn dữ liệu sau."
+msgstr[0] "Nhấp vào 'Tiếp tục' để bật Nguồn dữ liệu sau."
+
 
 #: data_sources.php
 msgid "Enable Data Source"
@@ -3573,7 +3619,8 @@ msgstr[0] "Kích hoạt nguồn dữ liệu"
 #: data_sources.php
 msgid "Click 'Continue' to disable the following Data Source."
 msgid_plural "Click 'Continue' to disable all following Data Sources."
-msgstr[0] "Nhấp vào &#39;Tiếp tục&#39; để tắt Nguồn dữ liệu sau."
+msgstr[0] "Nhấp vào 'Tiếp tục' để tắt Nguồn dữ liệu sau."
+
 
 #: data_sources.php
 msgid "Disable Data Source"
@@ -3583,7 +3630,8 @@ msgstr[0] "Vô hiệu hóa nguồn dữ liệu"
 #: data_sources.php
 msgid "Click 'Continue' to re-apply the suggested name to the following Data Source."
 msgid_plural "Click 'Continue' to re-apply the suggested names to all following Data Sources."
-msgstr[0] "Nhấp vào &#39;Tiếp tục&#39; để áp dụng lại tên được đề xuất cho Nguồn dữ liệu sau."
+msgstr[0] "Nhấp vào 'Tiếp tục' để áp dụng lại tên được đề xuất cho Nguồn dữ liệu sau."
+
 
 #: data_sources.php
 msgid "Reapply Suggested Naming to Data Source"
@@ -3828,7 +3876,8 @@ msgstr "Trường \"%s\" thiếu Trường đầu ra"
 
 #: data_templates.php
 msgid "Click 'Continue' to delete the following Data Template(s).  Any data sources attached to these templates will become individual Data Source(s) and all Templating benefits will be removed."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để xóa (các) Mẫu dữ liệu sau. Bất kỳ nguồn dữ liệu nào được đính kèm với các mẫu này sẽ trở thành (các) Nguồn dữ liệu riêng lẻ và tất cả các lợi ích Tạo khuôn sẽ bị xóa."
+msgstr "Nhấp vào 'Tiếp tục' để xóa (các) Mẫu dữ liệu sau. Bất kỳ nguồn dữ liệu nào được đính kèm với các mẫu này sẽ trở thành (các) Nguồn dữ liệu riêng lẻ và tất cả các lợi ích Tạo khuôn sẽ bị xóa."
+
 
 #: data_templates.php
 msgid "Delete Data Template(s)"
@@ -3836,7 +3885,8 @@ msgstr "Xóa (các) mẫu dữ liệu"
 
 #: data_templates.php
 msgid "Click 'Continue' to duplicate the following Data Template(s). You can optionally change the title format for the new Data Template(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để nhân đôi (các) Mẫu dữ liệu sau. Bạn có thể tùy ý thay đổi định dạng tiêu đề cho (các) Mẫu dữ liệu mới."
+msgstr "Nhấp vào 'Tiếp tục' để nhân đôi (các) Mẫu dữ liệu sau. Bạn có thể tùy ý thay đổi định dạng tiêu đề cho (các) Mẫu dữ liệu mới."
+
 
 #: data_templates.php
 msgid "template_title"
@@ -3848,7 +3898,8 @@ msgstr "Mẫu dữ liệu trùng lặp"
 
 #: data_templates.php
 msgid "Click 'Continue' to change the default Data Source Profile for the following Data Template(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để thay đổi Cấu hình nguồn dữ liệu mặc định cho (các) Mẫu dữ liệu sau."
+msgstr "Nhấp vào 'Tiếp tục' để thay đổi Cấu hình nguồn dữ liệu mặc định cho (các) Mẫu dữ liệu sau."
+
 
 #: data_templates.php
 msgid "New Data Source Profile"
@@ -3966,7 +4017,8 @@ msgstr "Không tìm thấy mẫu dữ liệu"
 
 #: gprint_presets.php
 msgid "Click 'Continue' to delete the following GPRINT Preset(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để xóa (các) cài đặt GPRINT theo dõi."
+msgstr "Nhấp vào 'Tiếp tục' để xóa (các) cài đặt GPRINT theo dõi."
+
 
 #: gprint_presets.php
 msgid "Delete GPRINT Preset(s)"
@@ -4165,7 +4217,8 @@ msgstr "Đồng bộ hóa Mẫu Đồ thị '%s' Không có Kết quả Sửa ch
 
 #: graph_templates.php
 msgid "Click 'Continue' to delete the following Graph Template(s).  Any Graph(s) associated with the Template(s) will become individual Graph(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để xóa (các) Mẫu biểu đồ sau. Bất kỳ Biểu đồ nào được liên kết với (các) Mẫu sẽ trở thành (các) Biểu đồ riêng lẻ."
+msgstr "Nhấp vào 'Tiếp tục' để xóa (các) Mẫu biểu đồ sau. Bất kỳ Biểu đồ nào được liên kết với (các) Mẫu sẽ trở thành (các) Biểu đồ riêng lẻ."
+
 
 #: graph_templates.php
 msgid "Delete Graph Template(s)"
@@ -4173,7 +4226,8 @@ msgstr "Xóa (các) mẫu đồ thị"
 
 #: graph_templates.php
 msgid "Click 'Continue' to duplicate the following Graph Template(s). You can optionally change the title format for the new Graph Template(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để nhân đôi (các) Mẫu biểu đồ sau. Bạn có thể tùy ý thay đổi định dạng tiêu đề cho (các) Mẫu biểu đồ mới."
+msgstr "Nhấp vào 'Tiếp tục' để nhân đôi (các) Mẫu biểu đồ sau. Bạn có thể tùy ý thay đổi định dạng tiêu đề cho (các) Mẫu biểu đồ mới."
+
 
 #: graph_templates.php
 msgid "Duplicate Graph Template(s)"
@@ -4181,7 +4235,8 @@ msgstr "Mẫu đồ thị trùng lặp"
 
 #: graph_templates.php
 msgid "Click 'Continue' to resize the following Graph Template(s) and Graph(s) to the Height and Width below.  The defaults below are maintained in Settings."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để thay đổi kích thước (các) Mẫu đồ thị và (các) Đồ thị sau thành Chiều cao và Chiều rộng bên dưới. Mặc định bên dưới được duy trì trong Cài đặt."
+msgstr "Nhấp vào 'Tiếp tục' để thay đổi kích thước (các) Mẫu đồ thị và (các) Đồ thị sau thành Chiều cao và Chiều rộng bên dưới. Mặc định bên dưới được duy trì trong Cài đặt."
+
 
 #: graph_templates.php lib/html_reports.php
 msgid "Graph Height"
@@ -4201,7 +4256,8 @@ msgstr "Thay đổi kích thước (các) mẫu đồ thị đã chọn"
 
 #: graph_templates.php
 msgid "Click 'Continue' to perform a Full Synchronization between your Graphs and the chosen Graph Templates(s). If you simply have a situation where the Graph Items don't match the Graph Template, try the Quick Sync Graphs option first as it will take much less time.  This function is important if you have Graphs that exist with multiple versions of a Graph Template and wish to make them all common in appearance."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để đồng bộ hóa biểu đồ của bạn với (các) Mẫu biểu đồ sau. Chức năng này rất quan trọng nếu bạn có các Biểu đồ tồn tại với nhiều phiên bản của Mẫu biểu đồ và muốn làm cho tất cả chúng xuất hiện chung."
+msgstr "Nhấp vào 'Tiếp tục' để đồng bộ hóa biểu đồ của bạn với (các) Mẫu biểu đồ sau. Chức năng này rất quan trọng nếu bạn có các Biểu đồ tồn tại với nhiều phiên bản của Mẫu biểu đồ và muốn làm cho tất cả chúng xuất hiện chung."
+
 
 #: graph_templates.php
 msgid "Synchronize Graphs to Graph Template(s)"
@@ -4209,7 +4265,8 @@ msgstr "Đồng bộ hóa biểu đồ thành (các) biểu đồ"
 
 #: graph_templates.php
 msgid "Click 'Continue' to perform a Quick Synchronization of your Graphs for the following Graph Template(s). Use this option if your Graphs have Graph Items that do not match your Graph Template.  If this option does not work, use the Full Sync Graphs option, which will take more time to complete."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để đồng bộ hóa biểu đồ của bạn với (các) Mẫu biểu đồ sau. Chức năng này rất quan trọng nếu bạn có các Biểu đồ tồn tại với nhiều phiên bản của Mẫu biểu đồ và muốn làm cho tất cả chúng xuất hiện chung."
+msgstr "Nhấp vào 'Tiếp tục' để đồng bộ hóa biểu đồ của bạn với (các) Mẫu biểu đồ sau. Chức năng này rất quan trọng nếu bạn có các Biểu đồ tồn tại với nhiều phiên bản của Mẫu biểu đồ và muốn làm cho tất cả chúng xuất hiện chung."
+
 
 #: graph_templates.php
 #, php-format
@@ -4398,7 +4455,8 @@ msgstr "Tên đồ thị"
 
 #: graph_view.php graphs.php
 msgid "The Title of this Graph.  Generally programmatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual."
-msgstr "Tiêu đề của đồ thị này. Thường được lập trình tạo từ định nghĩa Mẫu biểu đồ hoặc quy tắc Đặt tên được đề xuất. Độ dài tối đa của Tiêu đề được kiểm soát trong Cài đặt-&gt; Trực quan."
+msgstr "Tiêu đề của đồ thị này. Thường được lập trình tạo từ định nghĩa Mẫu biểu đồ hoặc quy tắc Đặt tên được đề xuất. Độ dài tối đa của Tiêu đề được kiểm soát trong Cài đặt-> Trực quan."
+
 
 #: graph_view.php
 msgid "The device for this Graph."
@@ -4561,7 +4619,8 @@ msgstr "Không thể hoàn tất cập nhật biểu đồ tổng hợp."
 
 #: graphs.php
 msgid "Click 'Continue' to delete the following Graph(s).  Note that if you choose to Delete Data Sources, only those Data Sources not in use elsewhere will also be Deleted."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để xóa (các) Biểu đồ sau. Lưu ý rằng nếu bạn chọn Xóa Nguồn dữ liệu, chỉ những Nguồn dữ liệu không sử dụng ở nơi khác cũng sẽ bị xóa."
+msgstr "Nhấp vào 'Tiếp tục' để xóa (các) Biểu đồ sau. Lưu ý rằng nếu bạn chọn Xóa Nguồn dữ liệu, chỉ những Nguồn dữ liệu không sử dụng ở nơi khác cũng sẽ bị xóa."
+
 
 #: graphs.php
 msgid "The following Data Source(s) are in use by these Graph(s)."
@@ -4577,7 +4636,8 @@ msgstr "Giữ nguyên (các) Nguồn dữ liệu."
 
 #: graphs.php
 msgid "Choose a Graph Template and click 'Continue' to change the Graph Template for the following Graph(s). Please note, that only compatible Graph Templates will be displayed.  Compatible is identified by those having identical Data Sources."
-msgstr "Chọn Mẫu biểu đồ và nhấp vào &#39;Tiếp tục&#39; để thay đổi Mẫu biểu đồ cho (các) biểu đồ sau. Xin lưu ý rằng chỉ các Mẫu biểu đồ tương thích sẽ được hiển thị. Tương thích được xác định bởi những người có Nguồn dữ liệu giống hệt nhau."
+msgstr "Chọn Mẫu biểu đồ và nhấp vào 'Tiếp tục' để thay đổi Mẫu biểu đồ cho (các) biểu đồ sau. Xin lưu ý rằng chỉ các Mẫu biểu đồ tương thích sẽ được hiển thị. Tương thích được xác định bởi những người có Nguồn dữ liệu giống hệt nhau."
+
 
 #: graphs.php graphs_new.php
 msgid "New Graph Template"
@@ -4585,7 +4645,8 @@ msgstr "Mẫu biểu đồ mới"
 
 #: graphs.php
 msgid "Click 'Continue' to duplicate the following Graph(s). You can optionally change the title format for the new Graph(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để nhân đôi (các) Biểu đồ sau. Bạn có thể tùy ý thay đổi định dạng tiêu đề cho (các) Biểu đồ mới."
+msgstr "Nhấp vào 'Tiếp tục' để nhân đôi (các) Biểu đồ sau. Bạn có thể tùy ý thay đổi định dạng tiêu đề cho (các) Biểu đồ mới."
+
 
 #: graphs.php
 msgid "<graph_title> (1)"
@@ -4597,7 +4658,8 @@ msgstr "Đồ thị trùng lặp"
 
 #: graphs.php
 msgid "Click 'Continue' to convert the following Graph(s) into Graph Template(s).  You can optionally change the title format for the new Graph Template(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để chuyển đổi (các) Biểu đồ sau thành (các) Biểu đồ. Bạn có thể tùy ý thay đổi định dạng tiêu đề cho (các) Mẫu biểu đồ mới."
+msgstr "Nhấp vào 'Tiếp tục' để chuyển đổi (các) Biểu đồ sau thành (các) Biểu đồ. Bạn có thể tùy ý thay đổi định dạng tiêu đề cho (các) Mẫu biểu đồ mới."
+
 
 #: graphs.php
 msgid "<graph_title> Template"
@@ -4605,7 +4667,8 @@ msgstr "<graph_title> Bản mẫu"
 
 #: graphs.php
 msgid "Click 'Continue' to place the following Graph(s) under the Tree Branch selected below."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để đặt (các) Biểu đồ sau bên dưới Nhánh cây được chọn bên dưới."
+msgstr "Nhấp vào 'Tiếp tục' để đặt (các) Biểu đồ sau bên dưới Nhánh cây được chọn bên dưới."
+
 
 #: graphs.php
 msgid "Destination Branch"
@@ -4613,7 +4676,8 @@ msgstr "Chi nhánh đích"
 
 #: graphs.php
 msgid "Choose a new Device for these Graph(s) and click 'Continue'."
-msgstr "Chọn một Thiết bị mới cho (các) Đồ thị này và nhấp vào &#39;Tiếp tục&#39;."
+msgstr "Chọn một Thiết bị mới cho (các) Đồ thị này và nhấp vào 'Tiếp tục'."
+
 
 #: graphs.php include/global_arrays.php
 msgid "New Device"
@@ -4625,7 +4689,8 @@ msgstr "Thay đổi đồ thị liên kết"
 
 #: graphs.php
 msgid "Click 'Continue' to re-apply suggested naming to the following Graph(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để áp dụng lại cách đặt tên được đề xuất cho (các) Biểu đồ sau."
+msgstr "Nhấp vào 'Tiếp tục' để áp dụng lại cách đặt tên được đề xuất cho (các) Biểu đồ sau."
+
 
 #: graphs.php
 msgid "Reapply Suggested Naming to Graph(s)"
@@ -4633,7 +4698,8 @@ msgstr "Đặt lại đề xuất Đặt tên cho đồ thị"
 
 #: graphs.php
 msgid "Click 'Continue' to create an Aggregate Graph from the selected Graph(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để tạo Biểu đồ Tổng hợp từ (các) Biểu đồ đã chọn."
+msgstr "Nhấp vào 'Tiếp tục' để tạo Biểu đồ Tổng hợp từ (các) Biểu đồ đã chọn."
+
 
 #: graphs.php
 msgid "The following Data Sources are in use by these Graphs:"
@@ -4645,7 +4711,8 @@ msgstr "Vui lòng xác nhận"
 
 #: graphs.php
 msgid "Select the Aggregate Template to use and press 'Continue' to create your Aggregate Graph.  Otherwise press 'Cancel' to return."
-msgstr "Chọn Mẫu tổng hợp để sử dụng và nhấn &#39;Tiếp tục&#39; để tạo Biểu đồ tổng hợp của bạn. Nếu không, nhấn &#39;Hủy&#39; để quay lại."
+msgstr "Chọn Mẫu tổng hợp để sử dụng và nhấn 'Tiếp tục' để tạo Biểu đồ tổng hợp của bạn. Nếu không, nhấn 'Hủy' để quay lại."
+
 
 #: graphs.php
 msgid "There are presently no Aggregate Templates defined for this Graph Template.  Please either first create an Aggregate Template for the selected Graphs Graph Template and try again, or simply crease an un-templated Aggregate Graph."
@@ -4653,11 +4720,13 @@ msgstr "Hiện tại không có Mẫu tổng hợp nào được xác định ch
 
 #: graphs.php
 msgid "Press 'Return' to return and select different Graphs."
-msgstr "Nhấn &#39;Return&#39; để quay lại và chọn các Đồ thị khác nhau."
+msgstr "Nhấn 'Return' để quay lại và chọn các Đồ thị khác nhau."
+
 
 #: graphs.php
 msgid "Click 'Continue' to apply Automation Rules to the following Graphs."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để áp dụng Quy tắc tự động hóa cho các biểu đồ sau."
+msgstr "Nhấp vào 'Tiếp tục' để áp dụng Quy tắc tự động hóa cho các biểu đồ sau."
+
 
 #: graphs.php
 msgid "Graph Items [new]"
@@ -4991,7 +5060,8 @@ msgstr "Vô hiệu hóa thiết bị"
 
 #: host.php
 msgid "Click 'Continue' to change the Device options below for multiple Device(s).  Please check the box next to the fields you want to update, and then fill in the new value."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để thay đổi các tùy chọn Thiết bị bên dưới cho nhiều Thiết bị. Vui lòng chọn hộp bên cạnh các trường bạn muốn cập nhật, sau đó điền giá trị mới."
+msgstr "Nhấp vào 'Tiếp tục' để thay đổi các tùy chọn Thiết bị bên dưới cho nhiều Thiết bị. Vui lòng chọn hộp bên cạnh các trường bạn muốn cập nhật, sau đó điền giá trị mới."
+
 
 #: host.php
 msgid "Update this Field"
@@ -5003,7 +5073,8 @@ msgstr "Thay đổi tùy chọn thiết bị SNMP"
 
 #: host.php
 msgid "Click 'Continue' to clear the counters for the following Device(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để xóa bộ đếm cho (các) Thiết bị sau."
+msgstr "Nhấp vào 'Tiếp tục' để xóa bộ đếm cho (các) Thiết bị sau."
+
 
 #: host.php
 msgid "Clear Statistics on Device(s)"
@@ -5011,7 +5082,8 @@ msgstr "Xóa thống kê trên (các) thiết bị"
 
 #: host.php
 msgid "Click 'Continue' to Synchronize the following Device(s) to their Device Template."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để đồng bộ hóa (các) thiết bị sau với Mẫu thiết bị của họ."
+msgstr "Nhấp vào 'Tiếp tục' để đồng bộ hóa (các) thiết bị sau với Mẫu thiết bị của họ."
+
 
 #: host.php
 msgid "Synchronize Device(s)"
@@ -5031,7 +5103,8 @@ msgstr "Xóa tất cả các đồ thị liên quan và (các) nguồn dữ li�
 
 #: host.php
 msgid "Click 'Continue' to place the following Device(s) under the branch selected below."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để đặt (các) Thiết bị sau dưới nhánh được chọn bên dưới."
+msgstr "Nhấp vào 'Tiếp tục' để đặt (các) Thiết bị sau dưới nhánh được chọn bên dưới."
+
 
 #: host.php
 msgid "Place Device(s) on Tree"
@@ -5039,7 +5112,8 @@ msgstr "Đặt thiết bị trên cây"
 
 #: host.php
 msgid "Click 'Continue' to apply Automation Rules to the following Devices(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để áp dụng Quy tắc tự động hóa cho (các) Thiết bị sau."
+msgstr "Nhấp vào 'Tiếp tục' để áp dụng Quy tắc tự động hóa cho (các) Thiết bị sau."
+
 
 #: host.php
 msgid "Run Automation on Device(s)"
@@ -5320,7 +5394,8 @@ msgstr "Thiết bị đồng bộ hóa"
 
 #: host_templates.php
 msgid "Click 'Continue' to delete the following Device Template(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để xóa (các) Mẫu thiết bị sau."
+msgstr "Nhấp vào 'Tiếp tục' để xóa (các) Mẫu thiết bị sau."
+
 
 #: host_templates.php
 msgid "Delete Device Template(s)"
@@ -5328,7 +5403,8 @@ msgstr "Xóa (các) mẫu thiết bị"
 
 #: host_templates.php
 msgid "Click 'Continue' to duplicate the following Device Template(s).  Optionally change the title for the new Device Template(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để nhân đôi (các) Mẫu thiết bị sau. Tùy chọn thay đổi tiêu đề cho (các) Mẫu thiết bị mới."
+msgstr "Nhấp vào 'Tiếp tục' để nhân đôi (các) Mẫu thiết bị sau. Tùy chọn thay đổi tiêu đề cho (các) Mẫu thiết bị mới."
+
 
 #: host_templates.php
 msgid "Duplicate Device Template(s)"
@@ -5336,7 +5412,8 @@ msgstr "Mẫu thiết bị trùng lặp"
 
 #: host_templates.php
 msgid "Click 'Continue' to Synchronize Devices associated with the selected Device Template(s).  Note that this action may take some time depending on the number of Devices mapped to the Device Template."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để đồng bộ hóa các thiết bị được liên kết với (các) Mẫu thiết bị đã chọn. Lưu ý rằng hành động này có thể mất một chút thời gian tùy thuộc vào số lượng Thiết bị được ánh xạ vào Mẫu thiết bị."
+msgstr "Nhấp vào 'Tiếp tục' để đồng bộ hóa các thiết bị được liên kết với (các) Mẫu thiết bị đã chọn. Lưu ý rằng hành động này có thể mất một chút thời gian tùy thuộc vào số lượng Thiết bị được ánh xạ vào Mẫu thiết bị."
+
 
 #: host_templates.php
 msgid "Sync Devices to Device Template(s)"
@@ -5344,7 +5421,8 @@ msgstr "Đồng bộ hóa thiết bị với (các) mẫu thiết bị"
 
 #: host_templates.php
 msgid "Click 'Continue' to delete the following Graph Template will be disassociated from the Device Template."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để xóa Mẫu biểu đồ sau sẽ bị tách khỏi Mẫu thiết bị."
+msgstr "Nhấp vào 'Tiếp tục' để xóa Mẫu biểu đồ sau sẽ bị tách khỏi Mẫu thiết bị."
+
 
 #: host_templates.php
 #, php-format
@@ -5353,7 +5431,8 @@ msgstr "Tên mẫu biểu đồ: %s"
 
 #: host_templates.php
 msgid "Click 'Continue' to delete the following Data Queries will be disassociated from the Device Template."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để xóa các Truy vấn dữ liệu sau đây sẽ bị tách khỏi Mẫu thiết bị."
+msgstr "Nhấp vào 'Tiếp tục' để xóa các Truy vấn dữ liệu sau đây sẽ bị tách khỏi Mẫu thiết bị."
+
 
 #: host_templates.php
 #, php-format
@@ -5540,7 +5619,8 @@ msgstr "Các thư mục được tô sáng không tồn tại. Vui lòng nhập 
 
 #: include/global_arrays.php
 msgid "The Cacti log file must have the extension '.log'"
-msgstr "Tệp nhật ký Cacti phải có phần mở rộng &#39;.log&#39"
+msgstr "Tệp nhật ký Cacti phải có phần mở rộng '.log&#39"
+
 
 #: include/global_arrays.php
 msgid "Data Input for method does not appear to be whitelisted."
@@ -5782,7 +5862,8 @@ msgstr "Khi lưu Bộ thu thập dữ liệu từ xa, Tên máy chủ cơ sở d
 
 #: include/global_arrays.php
 msgid "Your Remote Database Hostname must be something other than 'localhost' for each Remote Data Collector."
-msgstr "Tên máy chủ cơ sở dữ liệu từ xa của bạn phải là một cái gì đó ngoài &#39;localhost&#39; cho mỗi Trình thu thập dữ liệu từ xa."
+msgstr "Tên máy chủ cơ sở dữ liệu từ xa của bạn phải là một cái gì đó ngoài 'localhost' cho mỗi Trình thu thập dữ liệu từ xa."
+
 
 #: include/global_arrays.php
 msgid "Path variables on this page were only saved locally."
@@ -5946,11 +6027,13 @@ msgstr "Giữa"
 
 #: include/global_arrays.php
 msgid "Top -> Down"
-msgstr "Trên cùng -&gt; Xuống"
+msgstr "Trên cùng -> Xuống"
+
 
 #: include/global_arrays.php
 msgid "Bottom -> Up"
-msgstr "Dưới cùng -&gt; Lên"
+msgstr "Dưới cùng -> Lên"
+
 
 #: include/global_arrays.php tree.php
 msgid "Numeric"
@@ -7916,7 +7999,8 @@ msgstr "Chọn tên duy nhất để thể hiện đoạn dữ liệu này bên 
 
 #: include/global_form.php
 msgid "Minimum Value (\"U\" for No Minimum)"
-msgstr "Giá trị tối thiểu (&quot;U&quot; không có tối thiểu)"
+msgstr "Giá trị tối thiểu (\"U\" không có tối thiểu)"
+
 
 #: include/global_form.php
 msgid "The minimum value of data that is allowed to be collected."
@@ -7924,7 +8008,8 @@ msgstr "Giá trị tối thiểu của dữ liệu được phép thu thập."
 
 #: include/global_form.php
 msgid "Maximum Value (\"U\" for No Maximum)"
-msgstr "Giá trị tối đa (&quot;U&quot; cho Không tối đa)"
+msgstr "Giá trị tối đa (\"U\" cho Không tối đa)"
+
 
 #: include/global_form.php
 msgid "The maximum value of data that is allowed to be collected."
@@ -7940,7 +8025,8 @@ msgstr "Làm thế nào dữ liệu được trình bày trong RRA."
 
 #: include/global_form.php
 msgid "The maximum amount of time that can pass before data is entered as 'unknown'. (Usually 2x300=600)"
-msgstr "Lượng thời gian tối đa có thể vượt qua trước khi dữ liệu được nhập là &#39;không xác định&#39;. (Thường là 2x300 = 600)"
+msgstr "Lượng thời gian tối đa có thể vượt qua trước khi dữ liệu được nhập là 'không xác định'. (Thường là 2x300 = 600)"
+
 
 #: include/global_form.php lib/html_utility.php
 msgid "Not Selected"
@@ -7972,7 +8058,8 @@ msgstr "Tiêu đề (--title)"
 
 #: include/global_form.php
 msgid "The name that is printed on the graph.  It can include replacement variables such as |host_description| or |query_fieldName|.  For a complete list of supported replacement tags, please see the Cacti documentation."
-msgstr "Tên được in trên biểu đồ. Nó có thể bao gồm các biến thay thế, chẳng hạn như | host_description | hoặc | query_fieldName |. Để biết danh sách đầy đủ các thẻ thay thế được hỗ trợ, vui lòng xem tài liệu Cacti."
+msgstr "Tên được in trên biểu đồ. Nó có thể bao gồm các biến thay thế, chẳng hạn như |host_description| hoặc |query_fieldName|. Để biết danh sách đầy đủ các thẻ thay thế được hỗ trợ, vui lòng xem tài liệu Cacti."
+
 
 #: include/global_form.php
 msgid "Vertical Label (--vertical-label)"
@@ -8116,7 +8203,8 @@ msgstr "Giá trị số mũ đơn vị (--units-exponent)"
 
 #: include/global_form.php
 msgid "What unit Cacti should use on the Y-axis. Use 3 to display everything in \"k\" or -6 to display everything in \"u\" (micro)."
-msgstr "Cacti nên sử dụng đơn vị nào trên trục Y. Sử dụng 3 để hiển thị mọi thứ trong &quot;k&quot; hoặc -6 để hiển thị mọi thứ trong &quot;u&quot; (micro)."
+msgstr "Cacti nên sử dụng đơn vị nào trên trục Y. Sử dụng 3 để hiển thị mọi thứ trong \"k\" hoặc -6 để hiển thị mọi thứ trong \"u\" (micro)."
+
 
 #: include/global_form.php
 msgid "Unit Length (--units-length &lt;length&gt;)"
@@ -8293,7 +8381,8 @@ msgstr "Dữ liệu thay đổi"
 
 #: include/global_form.php
 msgid "Offset your data on the time axis (x-axis) by the amount specified in the 'value' field."
-msgstr "Bù đắp dữ liệu của bạn trên trục thời gian (trục x) theo số lượng được chỉ định trong trường &#39;giá trị&#39;."
+msgstr "Bù đắp dữ liệu của bạn trên trục thời gian (trục x) theo số lượng được chỉ định trong trường 'giá trị'."
+
 
 #: include/global_form.php
 msgid "[HRULE|VRULE]: The value of the graph item.<br/> [TICK]: The fraction for the tick line.<br/> [SHIFT]: The time offset in seconds."
@@ -8705,7 +8794,8 @@ msgstr "Loại tin nhắn SNMP"
 
 #: include/global_form.php
 msgid "SNMP traps are always unacknowledged. To send out acknowledged SNMP notifications, formally called \"INFORMS\", SNMPv2 or above will be required."
-msgstr "Bẫy SNMP luôn không được kiểm chứng. Để gửi thông báo SNMP được thừa nhận, chính thức được gọi là &quot;INFORMS&quot;, SNMPv2 trở lên sẽ được yêu cầu."
+msgstr "Bẫy SNMP luôn không được kiểm chứng. Để gửi thông báo SNMP được thừa nhận, chính thức được gọi là \"INFORMS\", SNMPv2 trở lên sẽ được yêu cầu."
+
 
 #: include/global_form.php
 msgid "The new Title of the aggregated Graph."
@@ -8737,7 +8827,8 @@ msgstr "Tổng cộng"
 
 #: include/global_form.php
 msgid "Please check those Items that shall be totaled in the \"Total\" column, when selecting any totaling option here."
-msgstr "Vui lòng kiểm tra các Mục sẽ được tính tổng trong cột &quot;Tổng&quot; khi chọn bất kỳ tùy chọn tổng nào tại đây."
+msgstr "Vui lòng kiểm tra các Mục sẽ được tính tổng trong cột \"Tổng\" khi chọn bất kỳ tùy chọn tổng nào tại đây."
+
 
 #: include/global_form.php
 msgid "Total Type"
@@ -9257,7 +9348,8 @@ msgstr "Hỗ trợ ngôn ngữ"
 
 #: include/global_settings.php
 msgid "Choose 'enabled' to allow the localization of Cacti. The strict mode requires that the requested language will also be supported by all plugins being installed at your system. If that's not the fact everything will be displayed in English."
-msgstr "Chọn &#39;được bật&#39; để cho phép bản địa hóa Cacti. Chế độ nghiêm ngặt yêu cầu ngôn ngữ được yêu cầu cũng sẽ được hỗ trợ bởi tất cả các plugin đang được cài đặt tại hệ thống của bạn. Nếu đó không phải là thực tế, mọi thứ sẽ được hiển thị bằng tiếng Anh."
+msgstr "Chọn 'được bật' để cho phép bản địa hóa Cacti. Chế độ nghiêm ngặt yêu cầu ngôn ngữ được yêu cầu cũng sẽ được hỗ trợ bởi tất cả các plugin đang được cài đặt tại hệ thống của bạn. Nếu đó không phải là thực tế, mọi thứ sẽ được hiển thị bằng tiếng Anh."
+
 
 #: include/global_settings.php
 msgid "Language"
@@ -9273,7 +9365,8 @@ msgstr "Tự động phát hiện ngôn ngữ"
 
 #: include/global_settings.php
 msgid "Allow to automatically determine the 'default' language of the user and provide it at login time if that language is supported by Cacti. If disabled, the default language will be in force until the user elects another language."
-msgstr "Cho phép tự động xác định ngôn ngữ &#39;mặc định&#39; của người dùng và cung cấp ngôn ngữ đó khi đăng nhập nếu ngôn ngữ đó được Cacti hỗ trợ. Nếu bị tắt, ngôn ngữ mặc định sẽ có hiệu lực cho đến khi người dùng chọn ngôn ngữ khác."
+msgstr "Cho phép tự động xác định ngôn ngữ 'mặc định' của người dùng và cung cấp ngôn ngữ đó khi đăng nhập nếu ngôn ngữ đó được Cacti hỗ trợ. Nếu bị tắt, ngôn ngữ mặc định sẽ có hiệu lực cho đến khi người dùng chọn ngôn ngữ khác."
+
 
 #: include/global_settings.php
 msgid "Preferred Language Processor"
@@ -9749,7 +9842,8 @@ msgstr "Loại Ping mặc định cho tất cả thiết bị mới.</i>"
 
 #: include/global_settings.php
 msgid "Default Ping Port for all new Devices.  With TCP, Cacti will attempt to Syn the port.  With UDP, Cacti requires either a successful connection, or a 'port not reachable' error to determine if the Device is up or not."
-msgstr "Cổng Ping mặc định cho tất cả các thiết bị mới. Với TCP, Cacti sẽ cố gắng đồng bộ cổng. Với UDP, Cacti yêu cầu kết nối thành công hoặc lỗi &#39;cổng không thể truy cập&#39; để xác định xem Thiết bị có hoạt động hay không."
+msgstr "Cổng Ping mặc định cho tất cả các thiết bị mới. Với TCP, Cacti sẽ cố gắng đồng bộ cổng. Với UDP, Cacti yêu cầu kết nối thành công hoặc lỗi 'cổng không thể truy cập' để xác định xem Thiết bị có hoạt động hay không."
+
 
 #: include/global_settings.php
 msgid "Default Ping Timeout value in milli-seconds for all new Devices.  The timeout values to use for Device SNMP, ICMP, UDP and TCP pinging.  ICMP Pings will be rounded up to the nearest second.  TCP and UDP connection timeouts on Windows are controlled by the operating system, and are therefore not recommended on Windows."
@@ -9935,7 +10029,8 @@ msgstr "Số lượng hàng tối đa trên mỗi trang"
 
 #: include/global_settings.php
 msgid "User defined number of lines for the CLOG to tail when selecting 'All lines'."
-msgstr "Số lượng dòng do người dùng xác định cho CLOG theo đuôi khi chọn &#39;Tất cả các dòng&#39;."
+msgstr "Số lượng dòng do người dùng xác định cho CLOG theo đuôi khi chọn 'Tất cả các dòng'."
+
 
 #: include/global_settings.php
 msgid "Log Tail Refresh"
@@ -10460,7 +10555,8 @@ msgstr "Hỗ trợ cookie xác thực"
 
 #: include/global_settings.php
 msgid "If a user authenticates and selects 'Keep me signed in', an authentication cookie will be created on the user's computer allowing that user to stay logged in.  The authentication cookie expires after 90 days of non-use."
-msgstr "Nếu người dùng xác thực và chọn &#39;Giữ tôi đăng nhập&#39;, cookie xác thực sẽ được tạo trên máy tính của người dùng cho phép người dùng đó đăng nhập. Cookie xác thực hết hạn sau 90 ngày không sử dụng."
+msgstr "Nếu người dùng xác thực và chọn 'Giữ tôi đăng nhập', cookie xác thực sẽ được tạo trên máy tính của người dùng cho phép người dùng đó đăng nhập. Cookie xác thực hết hạn sau 90 ngày không sử dụng."
+
 
 #: include/global_settings.php
 msgid "Special Users"
@@ -10484,7 +10580,8 @@ msgstr "Tài khoản khách"
 
 #: include/global_settings.php
 msgid "The name of the guest user for viewing graphs; is 'No User' by default."
-msgstr "Tên của người dùng khách để xem biểu đồ; là &#39;Không có người dùng&#39; theo mặc định."
+msgstr "Tên của người dùng khách để xem biểu đồ; là 'Không có người dùng' theo mặc định."
+
 
 #: include/global_settings.php user_domains.php
 msgid "User Template"
@@ -10492,7 +10589,8 @@ msgstr "Mẫu người dùng"
 
 #: include/global_settings.php
 msgid "The name of the user that Cacti will use as a template for new Web Basic and LDAP users; is 'guest' by default.  This user account will be disabled from logging in upon being selected."
-msgstr "Tên người dùng mà Cacti sẽ sử dụng làm mẫu cho người dùng Web Basic và LDAP mới; là &#39;khách&#39; theo mặc định. Tài khoản người dùng này sẽ bị vô hiệu hóa khi đăng nhập khi được chọn."
+msgstr "Tên người dùng mà Cacti sẽ sử dụng làm mẫu cho người dùng Web Basic và LDAP mới; là 'khách' theo mặc định. Tài khoản người dùng này sẽ bị vô hiệu hóa khi đăng nhập khi được chọn."
+
 
 #: include/global_settings.php
 msgid "Basic Authentication Settings"
@@ -10776,7 +10874,8 @@ msgstr "Cơ sở tìm kiếm"
 
 #: include/global_settings.php
 msgid "Search base for searching the LDAP directory, such as <i>'dc=win2kdomain,dc=local'</i> or <i>'ou=people,dc=domain,dc=local'</i>."
-msgstr "Cơ sở tìm kiếm để tìm kiếm thư mục LDAP, chẳng hạn như <i>&#39;dc = win2kdomain, dc = local&#39;</i> hoặc <i>&#39;ou = people, dc = domain, dc = local&#39;</i> ."
+msgstr "Cơ sở tìm kiếm để tìm kiếm thư mục LDAP, chẳng hạn như <i>'dc = win2kdomain, dc = local'</i> hoặc <i>'ou = people, dc = domain, dc = local'</i> ."
+
 
 #: include/global_settings.php user_domains.php
 msgid "Search Filter"
@@ -10840,7 +10939,8 @@ msgstr "Thông báo cho quản trị viên chính các vấn đề"
 
 #: include/global_settings.php
 msgid "In cases where the Cacti server is experiencing problems, should the Primary Administrator be notified by Email?  The Primary Administrator's Cacti user account is specified under the Authentication tab on Cacti's settings page. It defaults to the 'admin' account."
-msgstr "Trong trường hợp máy chủ Cacti gặp sự cố, Quản trị viên chính có nên được thông báo qua Email không? Tài khoản người dùng Cacti của Quản trị viên chính được chỉ định trong tab Xác thực trên trang cài đặt của Cacti. Nó mặc định là tài khoản &#39;admin&#39;."
+msgstr "Trong trường hợp máy chủ Cacti gặp sự cố, Quản trị viên chính có nên được thông báo qua Email không? Tài khoản người dùng Cacti của Quản trị viên chính được chỉ định trong tab Xác thực trên trang cài đặt của Cacti. Nó mặc định là tài khoản 'admin'."
+
 
 #: include/global_settings.php
 msgid "Test Email"
@@ -11084,7 +11184,8 @@ msgstr "Độ dài đối số tối đa"
 
 #: include/global_settings.php
 msgid "When boost sends update commands to RRDtool, it must not exceed the operating systems Maximum Argument Length.  This varies by operating system and kernel level.  For example: Windows 2000 <= 2048, FreeBSD <= 65535, Linux 2.6.22-- <= 131072, Linux 2.6.23++ unlimited"
-msgstr "Khi boost gửi các lệnh cập nhật tới RRDtool, nó không được vượt quá Độ dài đối số tối đa của hệ điều hành. Điều này thay đổi tùy theo hệ điều hành và cấp độ kernel. Ví dụ: Windows 2000 &lt;= 2048, FreeBSD &lt;= 65535, Linux 2.6.22-- &lt;= 131072, Linux 2.6.23 ++ không giới hạn"
+msgstr "Khi boost gửi các lệnh cập nhật tới RRDtool, nó không được vượt quá Độ dài đối số tối đa của hệ điều hành. Điều này thay đổi tùy theo hệ điều hành và cấp độ kernel. Ví dụ: Windows 2000 <= 2048, FreeBSD <= 65535, Linux 2.6.22-- <= 131072, Linux 2.6.23 ++ không giới hạn"
+
 
 #: include/global_settings.php
 msgid "Memory Limit for Boost and Poller"
@@ -11372,7 +11473,8 @@ msgstr "Phương pháp thay thế"
 
 #: include/global_settings.php
 msgid "There are three replacement methods.  The first method replaces the spike with the average of the data source in question.  The second method replaces the spike with a 'NaN'.  The last replaces the spike with the last known good value found."
-msgstr "Có ba phương pháp thay thế. Phương pháp đầu tiên thay thế mức tăng đột biến bằng mức trung bình của nguồn dữ liệu được đề cập. Phương pháp thứ hai thay thế mũi nhọn bằng &#39;NaN&#39;. Cái cuối cùng thay thế cho sự tăng đột biến với giá trị tốt được biết đến cuối cùng được tìm thấy."
+msgstr "Có ba phương pháp thay thế. Phương pháp đầu tiên thay thế mức tăng đột biến bằng mức trung bình của nguồn dữ liệu được đề cập. Phương pháp thứ hai thay thế mũi nhọn bằng 'NaN'. Cái cuối cùng thay thế cho sự tăng đột biến với giá trị tốt được biết đến cuối cùng được tìm thấy."
+
 
 #: include/global_settings.php lib/html.php
 msgid "Average"
@@ -11468,7 +11570,8 @@ msgstr "Giờ cơ sở"
 
 #: include/global_settings.php
 msgid "The Base Time for Spike removal to occur.  For example, if you use '12:00am' and you choose once per day, the batch removal would begin at approximately midnight every day."
-msgstr "Thời gian cơ sở để loại bỏ Spike xảy ra. Ví dụ: nếu bạn sử dụng &#39;12: 00:00 và bạn chọn một lần mỗi ngày, việc xóa hàng loạt sẽ bắt đầu vào khoảng nửa đêm mỗi ngày."
+msgstr "Thời gian cơ sở để loại bỏ Spike xảy ra. Ví dụ: nếu bạn sử dụng '12: 00:00 và bạn chọn một lần mỗi ngày, việc xóa hàng loạt sẽ bắt đầu vào khoảng nửa đêm mỗi ngày."
+
 
 #: include/global_settings.php
 msgid "Graph Templates to Spike Kill"
@@ -11604,7 +11707,8 @@ msgstr "Cho phép đồ thị mở rộng đến tương lai"
 
 #: include/global_settings.php
 msgid "When displaying Graphs, allow Graph Dates to extend 'to future'"
-msgstr "Khi hiển thị Biểu đồ, cho phép Ngày biểu đồ mở rộng &#39;đến tương lai&#39"
+msgstr "Khi hiển thị Biểu đồ, cho phép Ngày biểu đồ mở rộng 'đến tương lai&#39"
+
 
 #: include/global_settings.php
 msgid "First Day of the Week"
@@ -11821,11 +11925,13 @@ msgstr "Số lượng bản ghi ngoại tuyến:"
 
 #: index.php
 msgid "<strong>NOTE:</strong> You are logged into a Remote Data Collector.  When <b>'online'</b>, you will be able to view and control much of the Main Cacti Web Site just as if you were logged into it.  Also, it's important to note that Remote Data Collectors are required to use the Cacti's Performance Boosting Services <b>'On Demand Updating'</b> feature, and we always recommend using Spine.  When the Remote Data Collector is <b>'offline'</b>, the Remote Data Collectors Web Site will contain much less information.  However, it will cache all updates until the Main Cacti Database and Web Server are reachable.  Then it will dump it's Boost table output back to the Main Cacti Database for updating."
-msgstr "<strong>LƯU Ý:</strong> Bạn đã đăng nhập vào Bộ thu thập dữ liệu từ xa. Khi <b>&#39;trực tuyến&#39;</b> , bạn sẽ có thể xem và kiểm soát phần lớn Trang web chính của Cacti giống như khi bạn đăng nhập vào nó. Ngoài ra, điều quan trọng cần lưu ý là Bộ thu thập dữ liệu từ xa được yêu cầu sử dụng tính năng <b>&#39;Cập nhật theo yêu cầu&#39; của</b> Dịch vụ Cacti và chúng tôi luôn khuyên bạn nên sử dụng Spine. Khi Trình thu thập dữ liệu từ xa <b>&#39;ngoại tuyến&#39;</b> , Trang web của Trình thu thập dữ liệu từ xa sẽ chứa ít thông tin hơn. Tuy nhiên, nó sẽ lưu trữ tất cả các bản cập nhật cho đến khi Cơ sở dữ liệu chính và Máy chủ web có thể truy cập được. Sau đó, nó sẽ chuyển đầu ra bảng Boost của nó trở lại Cơ sở dữ liệu Cacti chính để cập nhật."
+msgstr "<strong>LƯU Ý:</strong> Bạn đã đăng nhập vào Bộ thu thập dữ liệu từ xa. Khi <b>'trực tuyến'</b> , bạn sẽ có thể xem và kiểm soát phần lớn Trang web chính của Cacti giống như khi bạn đăng nhập vào nó. Ngoài ra, điều quan trọng cần lưu ý là Bộ thu thập dữ liệu từ xa được yêu cầu sử dụng tính năng <b>'Cập nhật theo yêu cầu' của</b> Dịch vụ Cacti và chúng tôi luôn khuyên bạn nên sử dụng Spine. Khi Trình thu thập dữ liệu từ xa <b>'ngoại tuyến'</b> , Trang web của Trình thu thập dữ liệu từ xa sẽ chứa ít thông tin hơn. Tuy nhiên, nó sẽ lưu trữ tất cả các bản cập nhật cho đến khi Cơ sở dữ liệu chính và Máy chủ web có thể truy cập được. Sau đó, nó sẽ chuyển đầu ra bảng Boost của nó trở lại Cơ sở dữ liệu Cacti chính để cập nhật."
+
 
 #: index.php
 msgid "<strong>NOTE:</strong> None of the Core Cacti Plugins, to date, have been re-designed to work with Remote Data Collectors.  Therefore, Plugins such as MacTrack, and HMIB, which require direct access to devices will not work with Remote Data Collectors at this time.  However, plugins such as Thold will work so long as the Remote Data Collector is in <b>'online'</b> mode."
-msgstr "<strong>LƯU Ý: Cho</strong> đến nay, không có Plugin Cacti lõi nào được thiết kế lại để hoạt động với Bộ thu thập dữ liệu từ xa. Do đó, các Plugin như MacTrack và HMIB, yêu cầu truy cập trực tiếp vào thiết bị sẽ không hoạt động với Bộ thu thập dữ liệu từ xa tại thời điểm này. Tuy nhiên, các plugin như Thold sẽ hoạt động miễn là Trình thu thập dữ liệu từ xa ở chế độ <b>&#39;trực tuyến&#39;</b> ."
+msgstr "<strong>LƯU Ý: Cho</strong> đến nay, không có Plugin Cacti lõi nào được thiết kế lại để hoạt động với Bộ thu thập dữ liệu từ xa. Do đó, các Plugin như MacTrack và HMIB, yêu cầu truy cập trực tiếp vào thiết bị sẽ không hoạt động với Bộ thu thập dữ liệu từ xa tại thời điểm này. Tuy nhiên, các plugin như Thold sẽ hoạt động miễn là Trình thu thập dữ liệu từ xa ở chế độ <b>'trực tuyến'</b> ."
+
 
 #: install/functions.php
 #, php-format
@@ -11897,7 +12003,8 @@ msgstr "Các biểu đồ được chọn cho Biểu đồ tổng hợp bên dư
 
 #: lib/api_aggregate.php
 msgid "Press 'Return' to return and select different Graphs"
-msgstr "Nhấn &#39;Return&#39; để quay lại và chọn các biểu đồ khác nhau"
+msgstr "Nhấn 'Return' để quay lại và chọn các biểu đồ khác nhau"
+
 
 #: lib/api_aggregate.php
 msgid "The Graphs chosen for the Aggregate Graph do not use Graph Templates.  Aggregate does not support creating Aggregate Graphs from non-templated graphs."
@@ -12427,7 +12534,8 @@ msgstr "Đã tìm thấy Loại = '%1$s' [%2$s]."
 #: lib/data_query.php
 #, php-format
 msgid "Unknown Type = '%s'."
-msgstr "Loại không xác định = &#39; %s&#39;."
+msgstr "Loại không xác định = ' %s'."
+
 
 #: lib/data_query.php
 msgid "WARNING: Sort Field Association has Changed.  Re-mapping issues may occur!"
@@ -12524,12 +12632,14 @@ msgstr "Trường sắp xếp mới được xác thực. Trường sắp xếp 
 #: lib/data_query.php
 #, php-format
 msgid "Could not find data query XML file at '%s'"
-msgstr "Không thể tìm thấy tệp XML truy vấn dữ liệu tại &#39; %s&#39"
+msgstr "Không thể tìm thấy tệp XML truy vấn dữ liệu tại ' %s&#39"
+
 
 #: lib/data_query.php
 #, php-format
 msgid "Found data query XML file at '%s'"
-msgstr "Tìm thấy tệp XML truy vấn dữ liệu tại &#39; %s&#39"
+msgstr "Tìm thấy tệp XML truy vấn dữ liệu tại ' %s&#39"
+
 
 #: lib/data_query.php
 msgid "Error parsing XML file into an array."
@@ -12559,7 +12669,8 @@ msgstr "&lt;arg_num_indexes&gt; tồn tại trong tệp XML nhưng không có d�
 #: lib/data_query.php
 #, php-format
 msgid "Executing script for num of indexes '%s'"
-msgstr "Tập lệnh thực thi cho số chỉ mục &#39; %s&#39"
+msgstr "Tập lệnh thực thi cho số chỉ mục ' %s&#39"
+
 
 #: lib/data_query.php
 #, php-format
@@ -12568,11 +12679,13 @@ msgstr "Đã tìm thấy số chỉ mục: %s"
 
 #: lib/data_query.php
 msgid "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' not supported"
-msgstr "&lt;arg_num_indexes&gt; bị thiếu trong tệp XML, &#39;Số lượng chỉ mục đã thay đổi&#39; không được hỗ trợ"
+msgstr "&lt;arg_num_indexes&gt; bị thiếu trong tệp XML, 'Số lượng chỉ mục đã thay đổi' không được hỗ trợ"
+
 
 #: lib/data_query.php
 msgid "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting arg_index entries"
-msgstr "&lt;arg_num_indexes&gt; bị thiếu trong tệp XML, &#39;Chỉ số được thay đổi&#39; được mô phỏng bằng cách đếm các mục nhập arg_index"
+msgstr "&lt;arg_num_indexes&gt; bị thiếu trong tệp XML, 'Chỉ số được thay đổi' được mô phỏng bằng cách đếm các mục nhập arg_index"
+
 
 #: lib/data_query.php
 msgid "ERROR: Data Query returned no indexes."
@@ -12585,7 +12698,8 @@ msgstr "Đang thực thi tập lệnh cho danh sách chỉ mục '%1$s', Số ch
 
 #: lib/data_query.php
 msgid "Click to show Data Query output for 'index'"
-msgstr "Nhấp để hiển thị đầu ra Truy vấn Dữ liệu cho &#39;chỉ mục&#39"
+msgstr "Nhấp để hiển thị đầu ra Truy vấn Dữ liệu cho 'chỉ mục&#39"
+
 
 #: lib/data_query.php
 #, php-format
@@ -12595,7 +12709,8 @@ msgstr "Chỉ mục tìm thấy: %s"
 #: lib/data_query.php
 #, php-format
 msgid "Click to show Data Query output for field '%s'"
-msgstr "Bấm để hiển thị đầu ra Truy vấn Dữ liệu cho trường &#39; %s&#39"
+msgstr "Bấm để hiển thị đầu ra Truy vấn Dữ liệu cho trường ' %s&#39"
+
 
 #: lib/data_query.php
 #, php-format
@@ -12605,7 +12720,8 @@ msgstr "Trường sắp xếp không trả về dữ liệu nào cho tên trư�
 #: lib/data_query.php
 #, php-format
 msgid "Executing script query '%s'"
-msgstr "Thực hiện truy vấn tập lệnh &#39; %s&#39"
+msgstr "Thực hiện truy vấn tập lệnh ' %s&#39"
+
 
 #: lib/data_query.php
 #, php-format
@@ -12656,7 +12772,8 @@ msgstr "Đang thực thi SNMP get cho số lượng chỉ mục tại '%1$s' S�
 
 #: lib/data_query.php
 msgid "&lt;oid_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting oid_index entries"
-msgstr "&lt;oid_num_indexes&gt; bị thiếu trong tệp XML, &#39;Chỉ số được thay đổi&#39; được mô phỏng bằng cách đếm các mục nhập oid_index"
+msgstr "&lt;oid_num_indexes&gt; bị thiếu trong tệp XML, 'Chỉ số được thay đổi' được mô phỏng bằng cách đếm các mục nhập oid_index"
+
 
 #: lib/data_query.php
 #, php-format
@@ -13738,7 +13855,8 @@ msgstr "Định dạng tệp để sử dụng"
 
 #: lib/html_reports.php
 msgid "Choose the custom html wrapper and CSS file to use.  This file contains both html and CSS to wrap around your report.  If it contains more than simply CSS, you need to place a special <REPORT> tag inside of the file.  This format tag will be replaced by the report content.  These files are located in the 'formats' directory."
-msgstr "Chọn trình bao bọc html và tệp CSS tùy chỉnh để sử dụng. Tệp này chứa cả html và CSS để bao quanh báo cáo của bạn. Nếu nó chứa nhiều hơn chỉ đơn giản là CSS, bạn cần đặt một đặc biệt <REPORT> thẻ bên trong của tập tin. Thẻ định dạng này sẽ được thay thế bởi nội dung báo cáo. Các tệp này được đặt trong thư mục &#39;định dạng&#39;."
+msgstr "Chọn trình bao bọc html và tệp CSS tùy chỉnh để sử dụng. Tệp này chứa cả html và CSS để bao quanh báo cáo của bạn. Nếu nó chứa nhiều hơn chỉ đơn giản là CSS, bạn cần đặt một đặc biệt <REPORT> thẻ bên trong của tập tin. Thẻ định dạng này sẽ được thay thế bởi nội dung báo cáo. Các tệp này được đặt trong thư mục 'định dạng'."
+
 
 #: lib/html_reports.php
 msgid "Default Text Font Size"
@@ -13810,7 +13928,8 @@ msgstr "Xác định Tần suất Báo cáo liên quan đến Thời gian gửi 
 
 #: lib/html_reports.php
 msgid "e.g. 'Week(s)' represents a weekly Reporting Interval."
-msgstr "ví dụ: &#39;Tuần (s)&#39; đại diện cho Khoảng thời gian báo cáo hàng tuần."
+msgstr "ví dụ: 'Tuần (s)' đại diện cho Khoảng thời gian báo cáo hàng tuần."
+
 
 #: lib/html_reports.php
 msgid "Interval Frequency"
@@ -13822,7 +13941,8 @@ msgstr "Dựa trên Thời gian của Khoảng thời gian báo cáo ở trên, 
 
 #: lib/html_reports.php
 msgid "e.g. If the Report Interval is 'Month(s)', then '2' indicates Every '2 Month(s) from the next Mailtime.' Lastly, if using the Month(s) Report Intervals, the 'Day of Week' and the 'Day of Month' are both calculated based upon the Mailtime you specify above."
-msgstr "ví dụ: Nếu Khoảng thời gian báo cáo là &#39;Tháng (s)&#39;, thì &#39;2&#39; biểu thị mỗi &#39;2 tháng từ lần gửi thư tiếp theo.&#39; Cuối cùng, nếu sử dụng Khoảng thời gian báo cáo của tháng, &#39;Ngày trong tuần&#39; và &#39;Ngày của tháng&#39; đều được tính dựa trên Thời gian gửi thư bạn chỉ định ở trên."
+msgstr "ví dụ: Nếu Khoảng thời gian báo cáo là 'Tháng (s)', thì '2' biểu thị mỗi '2 tháng từ lần gửi thư tiếp theo.' Cuối cùng, nếu sử dụng Khoảng thời gian báo cáo của tháng, 'Ngày trong tuần' và 'Ngày của tháng' đều được tính dựa trên Thời gian gửi thư bạn chỉ định ở trên."
+
 
 #: lib/html_reports.php
 msgid "Email Sender/Receiver Details"
@@ -13878,19 +13998,23 @@ msgstr "Ngày / Thời gian chuyển sang cùng thời điểm Ngày mai"
 
 #: lib/html_reports.php
 msgid "Click 'Continue' to delete the following Report(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để xóa (các) Báo cáo sau."
+msgstr "Nhấp vào 'Tiếp tục' để xóa (các) Báo cáo sau."
+
 
 #: lib/html_reports.php
 msgid "Click 'Continue' to take ownership of the following Report(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để sở hữu (các) Báo cáo sau."
+msgstr "Nhấp vào 'Tiếp tục' để sở hữu (các) Báo cáo sau."
+
 
 #: lib/html_reports.php
 msgid "Click 'Continue' to duplicate the following Report(s).  You may optionally change the title for the new Reports"
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để sao chép (các) Báo cáo sau. Bạn có thể tùy ý thay đổi tiêu đề cho các Báo cáo mới"
+msgstr "Nhấp vào 'Tiếp tục' để sao chép (các) Báo cáo sau. Bạn có thể tùy ý thay đổi tiêu đề cho các Báo cáo mới"
+
 
 #: lib/html_reports.php
 msgid "Click 'Continue' to enable the following Report(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để bật (các) Báo cáo sau."
+msgstr "Nhấp vào 'Tiếp tục' để bật (các) Báo cáo sau."
+
 
 #: lib/html_reports.php
 msgid "Please be certain that those Report(s) have successfully been tested first!"
@@ -13898,31 +14022,37 @@ msgstr "Hãy chắc chắn rằng những Báo cáo đó đã được thử ngh
 
 #: lib/html_reports.php
 msgid "Click 'Continue' to disable the following Reports."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để tắt các Báo cáo sau."
+msgstr "Nhấp vào 'Tiếp tục' để tắt các Báo cáo sau."
+
 
 #: lib/html_reports.php
 msgid "Click 'Continue' to send the following Report(s) now."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để gửi (các) Báo cáo sau đây ngay bây giờ."
+msgstr "Nhấp vào 'Tiếp tục' để gửi (các) Báo cáo sau đây ngay bây giờ."
+
 
 #: lib/html_reports.php
 #, php-format
 msgid "Unable to send Report '%s'.  Please set destination e-mail addresses"
-msgstr "Không thể gửi Báo cáo &#39; %s&#39;. Vui lòng đặt địa chỉ email đích"
+msgstr "Không thể gửi Báo cáo ' %s'. Vui lòng đặt địa chỉ email đích"
+
 
 #: lib/html_reports.php
 #, php-format
 msgid "Unable to send Report '%s'.  Please set an e-mail subject"
-msgstr "Không thể gửi Báo cáo &#39; %s&#39;. Vui lòng đặt một chủ đề e-mail"
+msgstr "Không thể gửi Báo cáo ' %s'. Vui lòng đặt một chủ đề e-mail"
+
 
 #: lib/html_reports.php
 #, php-format
 msgid "Unable to send Report '%s'.  Please set an e-mail From Name"
-msgstr "Không thể gửi Báo cáo &#39; %s&#39;. Vui lòng đặt e-mail từ Tên"
+msgstr "Không thể gửi Báo cáo ' %s'. Vui lòng đặt e-mail từ Tên"
+
 
 #: lib/html_reports.php
 #, php-format
 msgid "Unable to send Report '%s'.  Please set an e-mail from address"
-msgstr "Không thể gửi Báo cáo &#39; %s&#39;. Vui lòng đặt e-mail từ địa chỉ"
+msgstr "Không thể gửi Báo cáo ' %s'. Vui lòng đặt e-mail từ địa chỉ"
+
 
 #: lib/html_reports.php
 msgid "Item Type to be added."
@@ -14479,11 +14609,13 @@ msgstr "Bạn đang cố gắng cài đặt Cacti %s vào cơ sở dữ liệu 0
 
 #: lib/installer.php
 msgid "To be able continue, you <b>MUST</b> create a new database, import \"cacti.sql\" into it:"
-msgstr "Để có thể tiếp tục, bạn <b>PHẢI</b> tạo một cơ sở dữ liệu mới, nhập &quot;cacti.sql&quot; vào đó:"
+msgstr "Để có thể tiếp tục, bạn <b>PHẢI</b> tạo một cơ sở dữ liệu mới, nhập \"cacti.sql\" vào đó:"
+
 
 #: lib/installer.php
 msgid "You <b>MUST</b> then update \"include/config.php\" to point to the new database."
-msgstr "Sau đó, bạn <b>PHẢI</b> cập nhật &quot;include / config.php&quot; để trỏ đến cơ sở dữ liệu mới."
+msgstr "Sau đó, bạn <b>PHẢI</b> cập nhật \"include / config.php\" để trỏ đến cơ sở dữ liệu mới."
+
 
 #: lib/installer.php
 msgid "NOTE: Your existing data will not be modified, nor will it or any history be available to the new install"
@@ -14491,7 +14623,8 @@ msgstr "LƯU Ý: Dữ liệu hiện tại của bạn sẽ không được sửa
 
 #: lib/installer.php
 msgid "You have created a new database, but have not yet imported the 'cacti.sql' file. At the command line, execute the following to continue:"
-msgstr "Bạn đã tạo một cơ sở dữ liệu mới, nhưng chưa nhập tệp &#39;cacti.sql&#39;. Tại dòng lệnh, thực hiện như sau để tiếp tục:"
+msgstr "Bạn đã tạo một cơ sở dữ liệu mới, nhưng chưa nhập tệp 'cacti.sql'. Tại dòng lệnh, thực hiện như sau để tiếp tục:"
+
 
 #: lib/installer.php
 msgid "This error may also be generated if the cacti database user does not have correct permissions on the Cacti database. Please ensure that the Cacti database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX on the Cacti database."
@@ -14503,7 +14636,8 @@ msgstr "Bạn cũng <b>phải</b> nhập thông tin TimeZone của MySQL vào My
 
 #: lib/installer.php
 msgid "On Linux/UNIX, run the following as 'root' in a shell:"
-msgstr "Trên Linux / UNIX, hãy chạy phần sau dưới dạng &#39;root&#39; trong shell:"
+msgstr "Trên Linux / UNIX, hãy chạy phần sau dưới dạng 'root' trong shell:"
+
 
 #: lib/installer.php
 msgid "On Windows, you must follow the instructions here <a target='_blank' href='https://dev.mysql.com/downloads/timezones.html'>Time zone description table</a>.  Once that is complete, you can issue the following command to grant the Cacti user access to the tables:"
@@ -14554,7 +14688,8 @@ msgstr "Hãy đảm bảo bạn đã đọc và làm theo các bước bắt bu�
 #: lib/installer.php
 #, php-format
 msgid "This process will guide you through the steps for upgrading from version '%s'. "
-msgstr "Quá trình này sẽ hướng dẫn bạn các bước để nâng cấp từ phiên bản &#39; %s&#39;. "
+msgstr "Quá trình này sẽ hướng dẫn bạn các bước để nâng cấp từ phiên bản ' %s'. "
+
 
 #: lib/installer.php
 #, php-format
@@ -14696,7 +14831,8 @@ msgstr "Cơ sở dữ liệu TimeZone MySQL của bạn không được điền.
 
 #: lib/installer.php
 msgid "Your Cacti database login account does not have access to the MySQL TimeZone database.  Please provide the Cacti database account \"select\" access to the \"time_zone_name\" table in the \"mysql\" database, and populate MySQL's TimeZone information before proceeding."
-msgstr "Tài khoản đăng nhập cơ sở dữ liệu Cacti của bạn không có quyền truy cập vào cơ sở dữ liệu MySQL TimeZone. Vui lòng cung cấp quyền truy cập &quot;chọn&quot; tài khoản cơ sở dữ liệu Cacti vào bảng &quot;time_zone_name&quot; trong cơ sở dữ liệu &quot;mysql&quot; và điền thông tin TimeZone của MySQL trước khi tiếp tục."
+msgstr "Tài khoản đăng nhập cơ sở dữ liệu Cacti của bạn không có quyền truy cập vào cơ sở dữ liệu MySQL TimeZone. Vui lòng cung cấp quyền truy cập \"chọn\" tài khoản cơ sở dữ liệu Cacti vào bảng \"time_zone_name\" trong cơ sở dữ liệu \"mysql\" và điền thông tin TimeZone của MySQL trước khi tiếp tục."
+
 
 #: lib/installer.php
 msgid "Your Cacti database account has access to the MySQL TimeZone database and that database is populated with global TimeZone information."
@@ -14770,7 +14906,8 @@ msgstr "Pollers từ xa được sử dụng để truy cập các mạng không
 
 #: lib/installer.php
 msgid "The following information has been determined from Cacti's configuration file. If it is not correct, please edit \"include/config.php\" before continuing."
-msgstr "Thông tin sau đây đã được xác định từ tệp cấu hình của Cacti. Nếu nó không đúng, vui lòng chỉnh sửa &quot;include / config.php&quot; trước khi tiếp tục."
+msgstr "Thông tin sau đây đã được xác định từ tệp cấu hình của Cacti. Nếu nó không đúng, vui lòng chỉnh sửa \"include / config.php\" trước khi tiếp tục."
+
 
 #: lib/installer.php
 msgid "Local Database Connection Information"
@@ -14835,7 +14972,8 @@ msgstr "Trình cài đặt tự động gán một $ poller_id và thêm nó và
 
 #: lib/installer.php
 msgid "Once the variables are all set in the config.php file, you must also grant the $rdatabase_username access to the main Cacti database server.  Follow the same procedure you would with any other Cacti install.  You may then press the 'Test Connection' button.  If the test is successful you will be able to proceed and complete the install."
-msgstr "Khi tất cả các biến được đặt trong tệp config.php, bạn cũng phải cấp quyền truy cập $ rdatabase_username cho máy chủ cơ sở dữ liệu Cacti chính. Thực hiện theo cùng một quy trình bạn sẽ làm với bất kỳ cài đặt Cacti nào khác. Sau đó, bạn có thể nhấn nút &#39;Kiểm tra kết nối&#39;. Nếu thử nghiệm thành công, bạn sẽ có thể tiến hành và hoàn tất cài đặt."
+msgstr "Khi tất cả các biến được đặt trong tệp config.php, bạn cũng phải cấp quyền truy cập $ rdatabase_username cho máy chủ cơ sở dữ liệu Cacti chính. Thực hiện theo cùng một quy trình bạn sẽ làm với bất kỳ cài đặt Cacti nào khác. Sau đó, bạn có thể nhấn nút 'Kiểm tra kết nối'. Nếu thử nghiệm thành công, bạn sẽ có thể tiến hành và hoàn tất cài đặt."
+
 
 #: lib/installer.php
 msgid "Additional Steps After Installation"
@@ -14843,7 +14981,8 @@ msgstr "Các bước bổ sung sau khi cài đặt"
 
 #: lib/installer.php
 msgid "It is essential that the Central Cacti server can communicate via MySQL to each remote Cacti database server.  Once the install is complete, you must edit the Remote Data Collector and ensure the settings are correct.  You can verify using the 'Test Connection' when editing the Remote Data Collector."
-msgstr "Điều cần thiết là máy chủ Cacti trung tâm có thể giao tiếp qua MySQL đến từng máy chủ cơ sở dữ liệu Cacti từ xa. Sau khi cài đặt hoàn tất, bạn phải chỉnh sửa Trình thu thập dữ liệu từ xa và đảm bảo các cài đặt là chính xác. Bạn có thể xác minh bằng cách sử dụng &#39;Kiểm tra kết nối&#39; khi chỉnh sửa Trình thu thập dữ liệu từ xa."
+msgstr "Điều cần thiết là máy chủ Cacti trung tâm có thể giao tiếp qua MySQL đến từng máy chủ cơ sở dữ liệu Cacti từ xa. Sau khi cài đặt hoàn tất, bạn phải chỉnh sửa Trình thu thập dữ liệu từ xa và đảm bảo các cài đặt là chính xác. Bạn có thể xác minh bằng cách sử dụng 'Kiểm tra kết nối' khi chỉnh sửa Trình thu thập dữ liệu từ xa."
+
 
 #: lib/installer.php
 msgid "Critical Binary Locations and Versions"
@@ -14863,7 +15002,8 @@ msgstr "Kiểm tra quyền hạn thư mục"
 
 #: lib/installer.php
 msgid "Please ensure the directory permissions below are correct before proceeding.  During the install, these directories need to be owned by the Web Server user.  These permission changes are required to allow the Installer to install Device Template packages which include XML and script files that will be placed in these directories.  If you choose not to install the packages, there is an 'install_package.php' cli script that can be used from the command line after the install is complete."
-msgstr "Vui lòng đảm bảo các quyền của thư mục bên dưới là chính xác trước khi tiếp tục. Trong quá trình cài đặt, các thư mục này cần được sở hữu bởi người dùng Máy chủ Web. Những thay đổi quyền này được yêu cầu để cho phép Trình cài đặt cài đặt các gói Mẫu thiết bị bao gồm các tệp XML và tập lệnh sẽ được đặt trong các thư mục này. Nếu bạn chọn không cài đặt các gói, có một tập lệnh cli &#39;install_package.php&#39; có thể được sử dụng từ dòng lệnh sau khi cài đặt hoàn tất."
+msgstr "Vui lòng đảm bảo các quyền của thư mục bên dưới là chính xác trước khi tiếp tục. Trong quá trình cài đặt, các thư mục này cần được sở hữu bởi người dùng Máy chủ Web. Những thay đổi quyền này được yêu cầu để cho phép Trình cài đặt cài đặt các gói Mẫu thiết bị bao gồm các tệp XML và tập lệnh sẽ được đặt trong các thư mục này. Nếu bạn chọn không cài đặt các gói, có một tập lệnh cli 'install_package.php' có thể được sử dụng từ dòng lệnh sau khi cài đặt hoàn tất."
+
 
 #: lib/installer.php
 msgid "After the install is complete, you can make some of these directories read only to increase security."
@@ -14988,7 +15128,8 @@ msgstr "Mạng tự động mặc định"
 
 #: lib/installer.php
 msgid "Cacti can automatically scan the network once installation has completed. This will utilise the network range below to work out the range of IPs that can be scanned.  A predefined set of options are defined for scanning which include using both 'public' and 'private' communities."
-msgstr "Cacti có thể tự động quét mạng sau khi cài đặt hoàn tất. Điều này sẽ sử dụng phạm vi mạng bên dưới để tìm ra dải IP có thể được quét. Một bộ tùy chọn được xác định trước được xác định để quét bao gồm sử dụng cả cộng đồng &#39;công khai&#39; và &#39;riêng tư&#39;."
+msgstr "Cacti có thể tự động quét mạng sau khi cài đặt hoàn tất. Điều này sẽ sử dụng phạm vi mạng bên dưới để tìm ra dải IP có thể được quét. Một bộ tùy chọn được xác định trước được xác định để quét bao gồm sử dụng cả cộng đồng 'công khai' và 'riêng tư'."
+
 
 #: lib/installer.php
 msgid "If your devices require a different set of options to be used first, you may define them below and they will be utilized before the defaults"
@@ -15044,7 +15185,8 @@ msgstr "Không nên cập nhật các Mẫu mà bạn đã thực hiện sửa �
 
 #: lib/installer.php
 msgid "Please select the Device Templates that you wish to use after the Install.  If you Operating System is Windows, you need to ensure that you select the 'Windows Device' Template.  If your Operating System is Linux/UNIX, make sure you select the 'Local Linux Machine' Device Template."
-msgstr "Vui lòng chọn Mẫu thiết bị bạn muốn sử dụng sau khi cài đặt. Nếu Hệ điều hành của bạn là Windows, bạn cần đảm bảo rằng bạn chọn Mẫu &#39;Thiết bị Windows&#39;. Nếu Hệ điều hành của bạn là Linux / UNIX, hãy đảm bảo bạn chọn Mẫu thiết bị &#39;Máy Linux cục bộ&#39;."
+msgstr "Vui lòng chọn Mẫu thiết bị bạn muốn sử dụng sau khi cài đặt. Nếu Hệ điều hành của bạn là Windows, bạn cần đảm bảo rằng bạn chọn Mẫu 'Thiết bị Windows'. Nếu Hệ điều hành của bạn là Linux / UNIX, hãy đảm bảo bạn chọn Mẫu thiết bị 'Máy Linux cục bộ'."
+
 
 #: lib/installer.php package_import.php plugins.php
 msgid "Author"
@@ -15088,7 +15230,8 @@ msgstr "Đối chiếu cơ sở dữ liệu của bạn dường như KHÔNG tu�
 
 #: lib/installer.php
 msgid "Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched.   Please ensure your database is changed to 'utf8mb4_unicode_ci' by running the following: "
-msgstr "Bất kỳ bảng nào được tạo bởi các plugin đều có thể có các vấn đề được liên kết với các bảng Cacti Core nếu đối chiếu không khớp. Vui lòng đảm bảo cơ sở dữ liệu của bạn được thay đổi thành &#39;utf8mb4_unicode_ci&#39; bằng cách chạy như sau: "
+msgstr "Bất kỳ bảng nào được tạo bởi các plugin đều có thể có các vấn đề được liên kết với các bảng Cacti Core nếu đối chiếu không khớp. Vui lòng đảm bảo cơ sở dữ liệu của bạn được thay đổi thành 'utf8mb4_unicode_ci' bằng cách chạy như sau: "
+
 
 #: lib/installer.php
 msgid "Table Setup"
@@ -15646,7 +15789,8 @@ msgstr "Gói mở rộng"
 #: lib/plugins.php
 #, php-format
 msgid "Requires: Cacti >= %s"
-msgstr "Yêu cầu: Cacti&gt; = %s"
+msgstr "Yêu cầu: Cacti> = %s"
+
 
 #: lib/plugins.php
 msgid "Legacy Plugin"
@@ -15716,12 +15860,14 @@ msgstr "Đã tạo mục đồ thị báo cáo '<i>%s</i>'"
 #: lib/reports.php
 #, php-format
 msgid "Failed Adding Report Graph Item '<i>%s</i>' Already Exists"
-msgstr "Không thể thêm mục biểu đồ báo cáo &#39; <i> %s</i> &#39; đã tồn tại"
+msgstr "Không thể thêm mục biểu đồ báo cáo ' <i> %s</i> ' đã tồn tại"
+
 
 #: lib/reports.php
 #, php-format
 msgid "Skipped Report Graph Item '<i>%s</i>' Already Exists"
-msgstr "Mục biểu đồ bị bỏ qua &#39; <i> %s</i> &#39; đã tồn tại"
+msgstr "Mục biểu đồ bị bỏ qua ' <i> %s</i> ' đã tồn tại"
+
 
 #: lib/rrd.php
 #, php-format
@@ -16679,7 +16825,8 @@ msgstr ""
 
 #: links.php
 msgid "Click 'Continue' to Enable the following Page(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để bật (các) trang sau."
+msgstr "Nhấp vào 'Tiếp tục' để bật (các) trang sau."
+
 
 #: links.php
 msgid "Enable Page(s)"
@@ -16687,7 +16834,8 @@ msgstr "Kích hoạt trang"
 
 #: links.php
 msgid "Click 'Continue' to Disable the following Page(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để vô hiệu hóa (các) trang sau."
+msgstr "Nhấp vào 'Tiếp tục' để vô hiệu hóa (các) trang sau."
+
 
 #: links.php
 msgid "Disable Page(s)"
@@ -16695,7 +16843,8 @@ msgstr "Vô hiệu hóa trang"
 
 #: links.php
 msgid "Click 'Continue' to Delete the following Page(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để xóa (các) trang sau."
+msgstr "Nhấp vào 'Tiếp tục' để xóa (các) trang sau."
+
 
 #: links.php
 msgid "Delete Page(s)"
@@ -16795,7 +16944,8 @@ msgstr "URL web bên dưới"
 
 #: links.php
 msgid "The file that contains the content for this page. This file needs to be in the Cacti 'include/content/' directory."
-msgstr "Các tập tin có chứa nội dung cho trang này. Tập tin này cần phải nằm trong thư mục Cacti &#39;include / content /&#39;."
+msgstr "Các tập tin có chứa nội dung cho trang này. Tập tin này cần phải nằm trong thư mục Cacti 'include / content /'."
+
 
 #: links.php
 msgid "Web URL Location"
@@ -16940,17 +17090,20 @@ msgstr "Không có mục nhật ký thông báo SNMP"
 #: managers.php
 msgid "Click 'Continue' to delete the following Notification Receiver"
 msgid_plural "Click 'Continue' to delete following Notification Receiver"
-msgstr[0] "Nhấp vào &#39;Tiếp tục&#39; để xóa Trình nhận thông báo sau"
+msgstr[0] "Nhấp vào 'Tiếp tục' để xóa Trình nhận thông báo sau"
+
 
 #: managers.php
 msgid "Click 'Continue' to enable the following Notification Receiver"
 msgid_plural "Click 'Continue' to enable following Notification Receiver"
-msgstr[0] "Nhấp vào &#39;Tiếp tục&#39; để bật Trình nhận thông báo sau"
+msgstr[0] "Nhấp vào 'Tiếp tục' để bật Trình nhận thông báo sau"
+
 
 #: managers.php
 msgid "Click 'Continue' to disable the following Notification Receiver"
 msgid_plural "Click 'Continue' to disable following Notification Receiver"
-msgstr[0] "Nhấp vào &#39;Tiếp tục&#39; để tắt Trình nhận thông báo sau"
+msgstr[0] "Nhấp vào 'Tiếp tục' để tắt Trình nhận thông báo sau"
+
 
 #: managers.php
 #, php-format
@@ -16959,11 +17112,13 @@ msgstr "%s Người nhận thông báo"
 
 #: managers.php
 msgid "Click 'Continue' to forward the following Notification Objects to this Notification Receiver."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để chuyển tiếp các Đối tượng thông báo sau đến Trình nhận thông báo này."
+msgstr "Nhấp vào 'Tiếp tục' để chuyển tiếp các Đối tượng thông báo sau đến Trình nhận thông báo này."
+
 
 #: managers.php
 msgid "Click 'Continue' to disable forwarding the following Notification Objects to this Notification Receiver."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để tắt chuyển tiếp các Đối tượng thông báo sau tới Trình nhận thông báo này."
+msgstr "Nhấp vào 'Tiếp tục' để tắt chuyển tiếp các Đối tượng thông báo sau tới Trình nhận thông báo này."
+
 
 #: managers.php
 msgid "Disable Notification Objects"
@@ -17186,7 +17341,8 @@ msgstr "Các vấn đề cấu hình"
 
 #: plugins.php
 msgid "Actions available include 'Install', 'Activate', 'Disable', 'Enable', 'Uninstall'."
-msgstr "Các hành động khả dụng bao gồm &#39;Cài đặt&#39;, &#39;Kích hoạt&#39;, &#39;Vô hiệu hóa&#39;, &#39;Kích hoạt&#39;, &#39;Gỡ cài đặt&#39;."
+msgstr "Các hành động khả dụng bao gồm 'Cài đặt', 'Kích hoạt', 'Vô hiệu hóa', 'Kích hoạt', 'Gỡ cài đặt'."
+
 
 #: plugins.php
 msgid "Plugin Name"
@@ -17242,7 +17398,8 @@ msgstr "Không tìm thấy plugin"
 
 #: plugins.php
 msgid "Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click 'Uninstall' below.  Otherwise click 'Cancel'"
-msgstr "Gỡ cài đặt Plugin này sẽ xóa tất cả Dữ liệu và Cài đặt của Plugin. Nếu bạn thực sự muốn Gỡ cài đặt Plugin, nhấp vào &#39;Gỡ cài đặt&#39; bên dưới. Nếu không, nhấp vào &#39;Hủy&#39;"
+msgstr "Gỡ cài đặt Plugin này sẽ xóa tất cả Dữ liệu và Cài đặt của Plugin. Nếu bạn thực sự muốn Gỡ cài đặt Plugin, nhấp vào 'Gỡ cài đặt' bên dưới. Nếu không, nhấp vào 'Hủy'"
+
 
 #: plugins.php
 msgid "Are you sure you want to Uninstall?"
@@ -17560,7 +17717,8 @@ msgstr "Đã xóa thống kê của trình thu thập dữ liệu."
 #: pollers.php
 msgid "Click 'Continue' to delete the following Data Collector.  Note, all devices will be disassociated from this Data Collector and mapped back to the Main Cacti Data Collector."
 msgid_plural "Click 'Continue' to delete all following Data Collectors.  Note, all devices will be disassociated from these Data Collectors and mapped back to the Main Cacti Data Collector."
-msgstr[0] "Nhấp vào &#39;Tiếp tục&#39; để xóa Trình thu thập dữ liệu sau. Lưu ý, tất cả các thiết bị sẽ được tách ra khỏi Trình thu thập dữ liệu này và được ánh xạ trở lại Trình thu thập dữ liệu chính."
+msgstr[0] "Nhấp vào 'Tiếp tục' để xóa Trình thu thập dữ liệu sau. Lưu ý, tất cả các thiết bị sẽ được tách ra khỏi Trình thu thập dữ liệu này và được ánh xạ trở lại Trình thu thập dữ liệu chính."
+
 
 #: pollers.php
 msgid "Delete Data Collector"
@@ -17570,7 +17728,8 @@ msgstr[0] "Xóa bộ thu thập dữ liệu"
 #: pollers.php
 msgid "Click 'Continue' to disable the following Data Collector."
 msgid_plural "Click 'Continue' to disable the following Data Collectors."
-msgstr[0] "Nhấp vào &#39;Tiếp tục&#39; để tắt Trình thu thập dữ liệu sau."
+msgstr[0] "Nhấp vào 'Tiếp tục' để tắt Trình thu thập dữ liệu sau."
+
 
 #: pollers.php
 msgid "Disable Data Collector"
@@ -17580,7 +17739,8 @@ msgstr[0] "Vô hiệu hóa Trình thu thập dữ liệu"
 #: pollers.php
 msgid "Click 'Continue' to enable the following Data Collector."
 msgid_plural "Click 'Continue' to enable the following Data Collectors."
-msgstr[0] "Nhấp vào &#39;Tiếp tục&#39; để bật Trình thu thập dữ liệu sau."
+msgstr[0] "Nhấp vào 'Tiếp tục' để bật Trình thu thập dữ liệu sau."
+
 
 #: pollers.php
 msgid "Enable Data Collector"
@@ -17590,7 +17750,8 @@ msgstr[0] "Cho phép thu thập dữ liệu"
 #: pollers.php
 msgid "Click 'Continue' to Synchronize the Remote Data Collector for Offline Operation."
 msgid_plural "Click 'Continue' to Synchronize the Remote Data Collectors for Offline Operation."
-msgstr[0] "Nhấp vào &#39;Tiếp tục&#39; để đồng bộ hóa Trình thu thập dữ liệu từ xa cho hoạt động ngoại tuyến."
+msgstr[0] "Nhấp vào 'Tiếp tục' để đồng bộ hóa Trình thu thập dữ liệu từ xa cho hoạt động ngoại tuyến."
+
 
 #: pollers.php
 msgid "Click 'Continue' to Clear Data Collector Statistics for the Data Collector."
@@ -18059,7 +18220,8 @@ msgstr "Trang web mẫu không được tìm thấy! Không thể nhân đôi."
 #: sites.php
 msgid "Click 'Continue' to Delete the following Site.  Note, all Devices will be disassociated from this site."
 msgid_plural "Click 'Continue' to delete all following Sites.  Note, all devices will be disassociated from this site."
-msgstr[0] "Nhấp vào &#39;Tiếp tục&#39; để xóa Trang web sau. Lưu ý, tất cả các thiết bị sẽ được tách ra khỏi trang web này."
+msgstr[0] "Nhấp vào 'Tiếp tục' để xóa Trang web sau. Lưu ý, tất cả các thiết bị sẽ được tách ra khỏi trang web này."
+
 
 #: sites.php
 msgid "Delete Site"
@@ -18295,7 +18457,8 @@ msgstr "Số"
 #: tree.php
 msgid "Click 'Continue' to delete the following Tree."
 msgid_plural "Click 'Continue' to delete following Trees."
-msgstr[0] "Nhấp vào &#39;Tiếp tục&#39; để xóa Cây sau."
+msgstr[0] "Nhấp vào 'Tiếp tục' để xóa Cây sau."
+
 
 #: tree.php
 msgid "Delete Tree"
@@ -18305,7 +18468,8 @@ msgstr[0] "Xóa cây"
 #: tree.php
 msgid "Click 'Continue' to publish the following Tree."
 msgid_plural "Click 'Continue' to publish following Trees."
-msgstr[0] "Nhấp vào &#39;Tiếp tục&#39; để xuất bản Cây sau."
+msgstr[0] "Nhấp vào 'Tiếp tục' để xuất bản Cây sau."
+
 
 #: tree.php
 msgid "Publish Tree"
@@ -18315,7 +18479,8 @@ msgstr[0] "Cây xuất bản"
 #: tree.php
 msgid "Click 'Continue' to un-publish the following Tree."
 msgid_plural "Click 'Continue' to un-publish following Trees."
-msgstr[0] "Nhấp vào &#39;Tiếp tục&#39; để hủy xuất bản Cây sau."
+msgstr[0] "Nhấp vào 'Tiếp tục' để hủy xuất bản Cây sau."
+
 
 #: tree.php
 msgid "Un-publish Tree"
@@ -18512,7 +18677,8 @@ msgstr "Bạn không được phép vô hiệu hóa tài khoản đang đăng nh
 
 #: user_admin.php
 msgid "Click 'Continue' to delete the selected User(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để xóa (các) Người dùng đã chọn."
+msgstr "Nhấp vào 'Tiếp tục' để xóa (các) Người dùng đã chọn."
+
 
 #: user_admin.php
 msgid "Delete User(s)"
@@ -18520,7 +18686,8 @@ msgstr "Xóa người dùng"
 
 #: user_admin.php
 msgid "Click 'Continue' to copy the selected User to a new User below."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để sao chép Người dùng đã chọn sang Người dùng mới bên dưới."
+msgstr "Nhấp vào 'Tiếp tục' để sao chép Người dùng đã chọn sang Người dùng mới bên dưới."
+
 
 #: user_admin.php
 msgid "Template Username:"
@@ -18544,7 +18711,8 @@ msgstr "Sao chép người dùng"
 
 #: user_admin.php
 msgid "Click 'Continue' to enable the selected User(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để bật (các) Người dùng đã chọn."
+msgstr "Nhấp vào 'Tiếp tục' để bật (các) Người dùng đã chọn."
+
 
 #: user_admin.php
 msgid "Enable User(s)"
@@ -18552,7 +18720,8 @@ msgstr "Cho phép người dùng"
 
 #: user_admin.php
 msgid "Click 'Continue' to disable the selected User(s)."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để tắt (các) Người dùng đã chọn."
+msgstr "Nhấp vào 'Tiếp tục' để tắt (các) Người dùng đã chọn."
+
 
 #: user_admin.php
 msgid "Disable User(s)"
@@ -18560,7 +18729,8 @@ msgstr "Vô hiệu hóa người dùng"
 
 #: user_admin.php
 msgid "Click 'Continue' to overwrite the User(s) settings with the selected template User settings and permissions.  The original users Full Name, Password, Realm and Enable status will be retained, all other fields will be overwritten from Template User."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để ghi đè cài đặt Người dùng bằng mẫu đã chọn Cài đặt và quyền của Người dùng. Người dùng ban đầu Tên đầy đủ, Mật khẩu, Địa hạt và trạng thái Bật sẽ được giữ lại, tất cả các trường khác sẽ được ghi đè từ Người dùng Mẫu."
+msgstr "Nhấp vào 'Tiếp tục' để ghi đè cài đặt Người dùng bằng mẫu đã chọn Cài đặt và quyền của Người dùng. Người dùng ban đầu Tên đầy đủ, Mật khẩu, Địa hạt và trạng thái Bật sẽ được giữ lại, tất cả các trường khác sẽ được ghi đè từ Người dùng Mẫu."
+
 
 #: user_admin.php
 msgid "Template User:"
@@ -18580,7 +18750,8 @@ msgstr "Từ chối"
 
 #: user_admin.php user_group_admin.php
 msgid "<b>Note:</b> System Graph Policy is 'Permissive' meaning the User must have access to at least one of Graph, Device, or Graph Template to gain access to the Graph"
-msgstr "<b>Lưu ý:</b> Chính sách biểu đồ hệ thống là &#39;Cho phép&#39; nghĩa là Người dùng phải có quyền truy cập vào ít nhất một Biểu đồ, Thiết bị hoặc Mẫu biểu đồ để có quyền truy cập vào Biểu đồ"
+msgstr "<b>Lưu ý:</b> Chính sách biểu đồ hệ thống là 'Cho phép' nghĩa là Người dùng phải có quyền truy cập vào ít nhất một Biểu đồ, Thiết bị hoặc Mẫu biểu đồ để có quyền truy cập vào Biểu đồ"
+
 
 #: user_admin.php user_group_admin.php
 msgid "<b>Note:</b> System Graph Policy is 'Restrictive' meaning the User must have access to either the Graph or the Device and Graph Template to gain access to the Graph"
@@ -18864,7 +19035,8 @@ msgstr "Giấy phép cây %s"
 #: user_domains.php
 msgid "Click 'Continue' to delete the following User Domain."
 msgid_plural "Click 'Continue' to delete following User Domains."
-msgstr[0] "Nhấp vào &#39;Tiếp tục&#39; để xóa Miền người dùng sau."
+msgstr[0] "Nhấp vào 'Tiếp tục' để xóa Miền người dùng sau."
+
 
 #: user_domains.php
 msgid "Delete User Domain"
@@ -18874,7 +19046,8 @@ msgstr[0] "Xóa miền người dùng"
 #: user_domains.php
 msgid "Click 'Continue' to disable the following User Domain."
 msgid_plural "Click 'Continue' to disable following User Domains."
-msgstr[0] "Nhấp vào &#39;Tiếp tục&#39; để tắt Miền người dùng sau."
+msgstr[0] "Nhấp vào 'Tiếp tục' để tắt Miền người dùng sau."
+
 
 #: user_domains.php
 msgid "Disable User Domain"
@@ -18883,7 +19056,8 @@ msgstr[0] "Vô hiệu hóa miền người dùng"
 
 #: user_domains.php
 msgid "Click 'Continue' to enable the following User Domain."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để bật Miền người dùng sau."
+msgstr "Nhấp vào 'Tiếp tục' để bật Miền người dùng sau."
+
 
 #: user_domains.php
 msgid "Enabled User Domain"
@@ -18892,7 +19066,8 @@ msgstr[0] "Tên miền người dùng được kích hoạt"
 
 #: user_domains.php
 msgid "Click 'Continue' to make the following the following User Domain the default one."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để biến Miền người dùng sau thành tên mặc định sau."
+msgstr "Nhấp vào 'Tiếp tục' để biến Miền người dùng sau thành tên mặc định sau."
+
 
 #: user_domains.php
 msgid "Make Selected Domain Default"
@@ -18949,7 +19124,8 @@ msgstr "Chế độ mà Cacti sẽ dùng để thử xác thực với máy ch�
 
 #: user_domains.php
 msgid "Search base for searching the LDAP directory, such as <i>\"dc=win2kdomain,dc=local\"</i> or <i>\"ou=people,dc=domain,dc=local\"</i>."
-msgstr "Cơ sở tìm kiếm để tìm kiếm thư mục LDAP, chẳng hạn như <i>&quot;dc = win2kdomain, dc = local&quot;</i> hoặc <i>&quot;ou = people, dc = domain, dc = local&quot;</i> ."
+msgstr "Cơ sở tìm kiếm để tìm kiếm thư mục LDAP, chẳng hạn như <i>\"dc = win2kdomain, dc = local\"</i> hoặc <i>\"ou = people, dc = domain, dc = local\"</i> ."
+
 
 #: user_domains.php
 msgid "Search filter to use to locate the user in the LDAP directory, such as for windows: <i>\"(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))\"</i> or for OpenLDAP: <i>\"(&(objectClass=account)(uid=&lt;username&gt))\"</i>.  \"&lt;username&gt\" is replaced with the username that was supplied at the login prompt."
@@ -19074,7 +19250,8 @@ msgstr "Phải làm gì khi Người dùng trong Nhóm Người dùng này đăn
 #: user_group_admin.php
 msgid "Click 'Continue' to delete the following User Group"
 msgid_plural "Click 'Continue' to delete following User Groups"
-msgstr[0] "Nhấp vào &#39;Tiếp tục&#39; để xóa Nhóm người dùng sau"
+msgstr[0] "Nhấp vào 'Tiếp tục' để xóa Nhóm người dùng sau"
+
 
 #: user_group_admin.php
 msgid "Delete User Group"
@@ -19084,7 +19261,8 @@ msgstr[0] "Xóa nhóm người dùng"
 #: user_group_admin.php
 msgid "Click 'Continue' to Copy the following User Group to a new User Group."
 msgid_plural "Click 'Continue' to Copy following User Groups to new User Groups."
-msgstr[0] "Nhấp vào &#39;Tiếp tục&#39; để Sao chép Nhóm người dùng sau vào Nhóm người dùng mới."
+msgstr[0] "Nhấp vào 'Tiếp tục' để Sao chép Nhóm người dùng sau vào Nhóm người dùng mới."
+
 
 #: user_group_admin.php
 msgid "Group Prefix:"
@@ -19102,7 +19280,8 @@ msgstr[0] "Sao chép nhóm người dùng"
 #: user_group_admin.php
 msgid "Click 'Continue' to enable the following User Group."
 msgid_plural "Click 'Continue' to enable following User Groups."
-msgstr[0] "Nhấp vào &#39;Tiếp tục&#39; để bật Nhóm người dùng sau."
+msgstr[0] "Nhấp vào 'Tiếp tục' để bật Nhóm người dùng sau."
+
 
 #: user_group_admin.php
 msgid "Enable User Group"
@@ -19112,7 +19291,8 @@ msgstr[0] "Kích hoạt nhóm người dùng"
 #: user_group_admin.php
 msgid "Click 'Continue' to disable the following User Group."
 msgid_plural "Click 'Continue' to disable following User Groups."
-msgstr[0] "Nhấp vào &#39;Tiếp tục&#39; để tắt Nhóm người dùng sau."
+msgstr[0] "Nhấp vào 'Tiếp tục' để tắt Nhóm người dùng sau."
+
 
 #: user_group_admin.php
 msgid "Disable User Group"
@@ -19407,7 +19587,8 @@ msgstr "Đã cài đặt."
 
 #: utilities.php
 msgid "You've set memory limit to 'unlimited'."
-msgstr "Bạn đã đặt giới hạn bộ nhớ thành &#39;không giới hạn&#39;."
+msgstr "Bạn đã đặt giới hạn bộ nhớ thành 'không giới hạn'."
+
 
 #: utilities.php
 #, php-format
@@ -19996,7 +20177,8 @@ msgstr "Không tìm thấy VDEF."
 #: vdef.php
 msgid "Click 'Continue' to delete the following VDEF."
 msgid_plural "Click 'Continue' to delete following VDEFs."
-msgstr[0] "Nhấp vào &#39;Tiếp tục&#39; để xóa VDEF sau."
+msgstr[0] "Nhấp vào 'Tiếp tục' để xóa VDEF sau."
+
 
 #: vdef.php
 msgid "Delete VDEF"
@@ -20006,7 +20188,8 @@ msgstr[0] "Xóa VDEF"
 #: vdef.php
 msgid "Click 'Continue' to duplicate the following VDEF. You can optionally change the title format for the new VDEF."
 msgid_plural "Click 'Continue' to duplicate following VDEFs. You can optionally change the title format for the new VDEFs."
-msgstr[0] "Nhấp vào &#39;Tiếp tục&#39; để nhân đôi VDEF sau. Bạn có thể tùy ý thay đổi định dạng tiêu đề cho VDEF mới."
+msgstr[0] "Nhấp vào 'Tiếp tục' để nhân đôi VDEF sau. Bạn có thể tùy ý thay đổi định dạng tiêu đề cho VDEF mới."
+
 
 #: vdef.php
 msgid "Duplicate VDEF"
@@ -20019,7 +20202,8 @@ msgstr ""
 
 #: vdef.php
 msgid "Click 'Continue' to delete the following VDEF's."
-msgstr "Nhấp vào &#39;Tiếp tục&#39; để xóa các VDEF sau."
+msgstr "Nhấp vào 'Tiếp tục' để xóa các VDEF sau."
+
 
 #: vdef.php
 #, php-format

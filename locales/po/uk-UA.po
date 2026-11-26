@@ -6205,7 +6205,8 @@ msgstr "Кожен день"
 
 #: include/global_arrays.php
 msgid "1 Thread"
-msgstr "%d Потік"
+msgstr "1 Потік"
+
 
 #: include/global_arrays.php
 msgid "Builtin Authentication"
@@ -11829,7 +11830,8 @@ msgstr "Системне налаштування"
 
 #: include/global_settings.php
 msgid "1 Week"
-msgstr "%d Тиждень"
+msgstr "1 Тиждень"
+
 
 #: include/global_settings.php
 msgid "Auto Log Out Time"
