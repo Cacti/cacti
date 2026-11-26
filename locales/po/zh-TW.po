@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-25 22:35+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Chinese (Traditional Han script) <https://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hant/>\nLanguage: zh-TW\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-26 05:54+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Chinese (Traditional Han script) <https://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hant/>\nLanguage: zh-TW\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -550,9 +550,8 @@ msgid "No Aggregate Graphs Found"
 msgstr "找不到聚合圖"
 
 #: aggregate_templates.php
-#, fuzzy
 msgid "Aggregate Template not found."
-msgstr "找不到聚合模板"
+msgstr "找不到彙總範本。"
 
 #: aggregate_templates.php
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -2532,9 +2531,8 @@ msgid "Delete Color Item"
 msgstr "刪除顏色項目"
 
 #: color_templates.php
-#, fuzzy
 msgid "Color Template not found."
-msgstr "找不到顏色模板"
+msgstr "找不到色彩範本。"
 
 #: color_templates.php
 #, php-format
@@ -3554,7 +3552,7 @@ msgstr[0] "刪除數據源"
 #: data_sources.php
 msgid "Choose a new Device for this Data Source and click 'Continue'."
 msgid_plural "Choose a new Device for these Data Sources and click 'Continue'"
-msgstr[0] "為此資料來源選擇一個新裝置，然後點擊「繼續」。"
+msgstr[0] "為此資料來源選擇一個新裝置，然後點選「繼續」。"
 
 #: data_sources.php
 msgid "New Device:"
@@ -4222,9 +4220,8 @@ msgid "No Inputs"
 msgstr "沒有輸入"
 
 #: graph_templates.php
-#, fuzzy
 msgid "Graph Template not found."
-msgstr "找不到圖表模板"
+msgstr "找不到圖表範本。"
 
 #: graph_templates.php
 #, php-format
@@ -14212,9 +14209,8 @@ msgid "Cacti regular expressions can not includes the semi-color character."
 msgstr ""
 
 #: lib/html_utility.php
-#, fuzzy
 msgid "Invalid regular expression."
-msgstr "輸入正則表達式"
+msgstr "無效的正規表示式。"
 
 #: lib/html_utility.php
 msgid "There was an internal error!"
@@ -17127,10 +17123,8 @@ msgid "Are you sure you want to Force Uninstall the plugin"
 msgstr "您確定要卸載嗎？"
 
 #: plugins.php
-#, fuzzy
-#| msgid "Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click 'Uninstall' below.  Otherwise click 'Cancel'"
 msgid "This permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone.  If you really want to Force Uninstall the Plugin, click 'Force Uninstall' below.  Otherwise click 'Cancel'."
-msgstr "卸載此插件將刪除所有插件數據和設置。如果您確實要卸載插件，請單擊下面的“卸載”。否則點擊“取消”"
+msgstr "這將永久移除 Cacti 外掛程式資料表中的所有相關項目（設定、掛鉤、權限，以及它所建立的任何資料表或欄位）。此操作無法復原。如果您確實要強制解除安裝此外掛程式，請點選下方的「強制解除安裝」。否則請點選「取消」。"
 
 #: plugins.php
 #, fuzzy
@@ -18054,9 +18048,8 @@ msgid_plural "Duplicate Sites"
 msgstr[0] "複製"
 
 #: sites.php
-#, fuzzy
 msgid "Site not found."
-msgstr "找不到檔案"
+msgstr "找不到站點。"
 
 #: sites.php tree.php
 msgid "Site Name"
@@ -19377,9 +19370,8 @@ msgid "PHP SNMP"
 msgstr "PHP SNMP"
 
 #: utilities.php
-#, fuzzy
 msgid "Installed."
-msgstr "已安裝"
+msgstr "已安裝。"
 
 #: utilities.php
 msgid "You've set memory limit to 'unlimited'."
