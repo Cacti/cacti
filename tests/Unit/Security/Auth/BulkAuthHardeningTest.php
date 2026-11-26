@@ -12,75 +12,19 @@
  +-------------------------------------------------------------------------+
 */
 
-namespace CactiBulkAuthHardeningTest;
-
-require_once dirname(__DIR__, 3) . '/Helpers/SourceSlice.php';
+require_once dirname(__DIR__, 3) . '/Helpers/IsolatedProbe.php';
 
 $root = dirname(__DIR__, 4);
 
-$GLOBALS['bulk_session_rows'] = array();
-$GLOBALS['bulk_session_sql']  = array();
+test('cacti_db_session_read enforces gc_maxlifetime and cacti_db_session_write uses sess_user_id', function () {
+	$res = cacti_test_isolated_probe(dirname(__DIR__, 3) . '/fixtures/Core/BulkAuthHardeningProbe.php');
 
-function cacti_sizeof($value) {
-	return is_array($value) ? count($value) : 0;
-}
-
-function db_fetch_row_prepared($sql, $params = array()) {
-	$GLOBALS['bulk_session_sql'][] = array($sql, $params);
-	$id = isset($params[0]) ? $params[0] : '';
-
-	return isset($GLOBALS['bulk_session_rows'][$id]) ? $GLOBALS['bulk_session_rows'][$id] : array();
-}
-
-function db_execute_prepared($sql, $params = array()) {
-	$GLOBALS['bulk_session_sql'][] = array($sql, $params);
-
-	if (stripos($sql, 'DELETE FROM sessions') !== false && isset($params[0])) {
-		unset($GLOBALS['bulk_session_rows'][$params[0]]);
-	} elseif (stripos($sql, 'UPDATE IGNORE sessions') !== false && isset($params[1]) && isset($GLOBALS['bulk_session_rows'][$params[1]])) {
-		$GLOBALS['bulk_session_rows'][$params[1]]['access'] = $params[0];
-	}
-
-	return true;
-}
-
-if (!function_exists(__NAMESPACE__ . '\\cacti_db_session_read')) {
-	\cacti_fixture_source_function($root . '/include/session.php', 'cacti_db_session_read', __NAMESPACE__);
-}
-
-beforeEach(function () {
-	$GLOBALS['bulk_session_rows'] = array();
-	$GLOBALS['bulk_session_sql']  = array();
-});
-
-test('cacti_db_session_read returns active session data and refreshes access timestamp', function () {
-	$old_access = time() - 30;
-	$GLOBALS['bulk_session_rows']['active-sid'] = array(
-		'data'   => 'sess_user_id|i:1;',
-		'access' => $old_access,
-	);
-
-	$result = cacti_db_session_read('active-sid');
-
-	expect($result)->toBe('sess_user_id|i:1;')
-		->and($GLOBALS['bulk_session_rows']['active-sid']['access'])->toBeGreaterThanOrEqual($old_access);
-});
-
-test('cacti_db_session_read deletes and rejects expired sessions past session.gc_maxlifetime', function () {
-	$maxlifetime = max(1, (int) ini_get('session.gc_maxlifetime'));
-	$GLOBALS['bulk_session_rows']['expired-sid'] = array(
-		'data'   => 'sess_user_id|i:1;',
-		'access' => time() - $maxlifetime - 120,
-	);
-
-	$result = cacti_db_session_read('expired-sid');
-
-	expect($result)->toBe('')
-		->and(isset($GLOBALS['bulk_session_rows']['expired-sid']))->toBeFalse();
-});
-
-test('cacti_db_session_read returns empty string for unknown session IDs', function () {
-	expect(cacti_db_session_read('missing-sid'))->toBe('');
+	expect($res['active_read'])->toBe('sess_user_id|i:1;')
+		->and($res['active_refreshed'])->toBeTrue()
+		->and($res['expired_read'])->toBe('')
+		->and($res['expired_deleted'])->toBeTrue()
+		->and($res['missing_read'])->toBe('')
+		->and($res['write_saved'])->toBeTrue();
 });
 
 test('include/session.php checks sess_user_id spelling on write fallback', function () use ($root) {

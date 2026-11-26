@@ -33,6 +33,11 @@
             <file>Unit/Security/Session/LogoutEverywhereSessionsTest.php</file>
             <file>Unit/Security/Import/ImportPackageLimitsTest.php</file>
             <file>Unit/Security/PathTraversal/ReportImageConversionTest.php</file>
+            <file>Unit/Security/Auth/BulkAuthHardeningTest.php</file>
+            <file>Unit/Security/Auth/BulkPluginsHardeningTest.php</file>
+            <file>Unit/Security/InputValidation/BulkGraphingHardeningTest.php</file>
+            <file>Unit/Security/Misc/BulkDevicesAndInstallerHardeningTest.php</file>
+            <file>Unit/Security/PathTraversal/BulkCliHardeningTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>

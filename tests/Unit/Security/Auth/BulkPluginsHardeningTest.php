@@ -12,132 +12,38 @@
  +-------------------------------------------------------------------------+
 */
 
-namespace CactiBulkPluginsHardeningTest;
-
-require_once dirname(__DIR__, 3) . '/Helpers/SourceSlice.php';
+require_once dirname(__DIR__, 3) . '/Helpers/IsolatedProbe.php';
 
 $root = dirname(__DIR__, 4);
 
-$GLOBALS['bulk_plugin_realms_db'] = array();
-$GLOBALS['bulk_plugin_logs']      = array();
+test('plugin hook callback validation, realm loading, and raw INFO parsing enforce security invariants', function () {
+	$res = cacti_test_isolated_probe(dirname(__DIR__, 3) . '/fixtures/Core/BulkPluginsHardeningProbe.php');
 
-function cacti_sizeof($value) {
-	return is_array($value) ? count($value) : 0;
-}
-
-function cacti_log($message, $output = false, $facility = '') {
-	$GLOBALS['bulk_plugin_logs'][] = $facility . ': ' . $message;
-}
-
-function cacti_plugin_path($plugin, $relative = '') {
-	return \cacti_plugin_path($plugin, $relative);
-}
-
-function cacti_path_is_within($path, $base) {
-	return \cacti_path_is_within($path, $base);
-}
-
-function db_fetch_assoc($sql) {
-	return $GLOBALS['bulk_plugin_realms_db'];
-}
-
-if (!function_exists(__NAMESPACE__ . '\\api_plugin_callback_is_allowed')) {
-	\cacti_fixture_source_function($root . '/lib/plugins.php', 'api_plugin_callback_is_allowed', __NAMESPACE__);
-	\cacti_fixture_source_function($root . '/lib/plugins.php', 'api_plugin_load_realms', __NAMESPACE__);
-	\cacti_fixture_source_function($root . '/lib/plugins.php', 'api_plugin_get_dependencies', __NAMESPACE__);
-}
-
-beforeEach(function () {
-	$GLOBALS['bulk_plugin_realms_db'] = array();
-	$GLOBALS['bulk_plugin_logs']      = array();
-});
-
-test('api_plugin_callback_is_allowed permits only allowlisted internal hooks and plugin-owned functions', function () {
-	$tmpBase = sys_get_temp_dir() . '/cacti-plugin-cb-' . bin2hex(random_bytes(6));
-	mkdir($tmpBase . '/plugins/sample', 0700, true);
-	$pluginFile = $tmpBase . '/plugins/sample/setup.php';
-	$funcName   = 'cacti_sample_plugin_hook_' . bin2hex(random_bytes(4));
-	file_put_contents($pluginFile, "<?php\nfunction {$funcName}(\$x) { return \$x; }\n");
-	require_once $pluginFile;
-
-	$prevBase = isset($GLOBALS['config']['base_path']) ? $GLOBALS['config']['base_path'] : null;
-	$GLOBALS['config']['base_path'] = $tmpBase;
-
-	try {
-		expect(api_plugin_callback_is_allowed('internal', 'plugin_config_arrays'))->toBeTrue()
-			->and(api_plugin_callback_is_allowed('internal', 'plugin_draw_navigation_text'))->toBeTrue()
-			->and(api_plugin_callback_is_allowed('internal', 'phpinfo'))->toBeFalse()
-			->and(api_plugin_callback_is_allowed('internal', 'system'))->toBeFalse()
-			->and(api_plugin_callback_is_allowed('demo', 'system'))->toBeFalse()
-			->and(api_plugin_callback_is_allowed('../escape', 'strlen'))->toBeFalse()
-			->and(api_plugin_callback_is_allowed('sample', $funcName))->toBeTrue()
-			->and(api_plugin_callback_is_allowed('sample', 'cacti_sizeof'))->toBeFalse()
-			->and(api_plugin_callback_is_allowed('sample', 'strlen'))->toBeFalse();
-	} finally {
-		if ($prevBase === null) {
-			unset($GLOBALS['config']['base_path']);
-		} else {
-			$GLOBALS['config']['base_path'] = $prevBase;
-		}
-		@unlink($pluginFile);
-		@rmdir($tmpBase . '/plugins/sample');
-		@rmdir($tmpBase . '/plugins');
-		@rmdir($tmpBase);
-	}
-});
-
-test('api_plugin_load_realms ignores disabled plugins and blocks core or cross-plugin filename collisions', function () {
-	$GLOBALS['user_auth_realms'] = array();
-	$GLOBALS['user_auth_realm_filenames'] = array(
-		'host.php'    => 3,
-		'plugins.php' => 101,
-	);
-	$GLOBALS['bulk_plugin_realms_db'] = array(
-		array('id' => 1, 'plugin' => 'internal', 'file' => 'plugins.php', 'display' => 'Plugin Management', 'plugin_status' => null),
-		array('id' => 10, 'plugin' => 'disabled_plug', 'file' => 'disabled_page.php', 'display' => 'Disabled Plugin', 'plugin_status' => 0),
-		array('id' => 11, 'plugin' => 'enabled_a', 'file' => 'enabled_a.php,host.php', 'display' => 'Enabled A', 'plugin_status' => 1),
-		array('id' => 12, 'plugin' => 'enabled_b', 'file' => 'enabled_a.php,enabled_b.php', 'display' => 'Enabled B', 'plugin_status' => 1),
-	);
-
-	api_plugin_load_realms();
-	$logsAfterFirst = count($GLOBALS['bulk_plugin_logs']);
-	api_plugin_load_realms();
-
-	expect($GLOBALS['user_auth_realm_filenames']['host.php'])->toBe(3)
-		->and($GLOBALS['user_auth_realm_filenames']['plugins.php'])->toBe(101)
-		->and(isset($GLOBALS['user_auth_realm_filenames']['disabled_page.php']))->toBeFalse()
-		->and($GLOBALS['user_auth_realm_filenames']['enabled_a.php'])->toBe(111)
-		->and($GLOBALS['user_auth_realm_filenames']['enabled_b.php'])->toBe(112)
-		->and($GLOBALS['user_auth_realms'][110])->toBe('Disabled Plugin')
-		->and(count($GLOBALS['bulk_plugin_logs']))->toBe($logsAfterFirst * 2);
-});
-
-test('api_plugin_get_dependencies rejects traversal and parses INFO with INI_SCANNER_RAW', function () {
-	$tmpBase = sys_get_temp_dir() . '/cacti-plugin-ini-' . bin2hex(random_bytes(6));
-	mkdir($tmpBase . '/plugins/rawtest', 0700, true);
-	$infoPath = $tmpBase . '/plugins/rawtest/INFO';
-	file_put_contents($infoPath, "[info]\nrequires = \${PATH} thold:1.0\n");
-
-	$prevBase = isset($GLOBALS['config']['base_path']) ? $GLOBALS['config']['base_path'] : null;
-	$GLOBALS['config']['base_path'] = $tmpBase;
-
-	try {
-		expect(api_plugin_get_dependencies('../etc'))->toBeFalse();
-		$deps = api_plugin_get_dependencies('rawtest');
-		expect($deps)->toBeArray()
-			->and(isset($deps['${PATH}']))->toBeTrue()
-			->and($deps['thold'])->toBe('1.0');
-	} finally {
-		if ($prevBase === null) {
-			unset($GLOBALS['config']['base_path']);
-		} else {
-			$GLOBALS['config']['base_path'] = $prevBase;
-		}
-		@unlink($infoPath);
-		@rmdir($tmpBase . '/plugins/rawtest');
-		@rmdir($tmpBase . '/plugins');
-		@rmdir($tmpBase);
-	}
+	expect($res['cb']['internal_config'])->toBeTrue()
+		->and($res['cb']['internal_nav'])->toBeTrue()
+		->and($res['cb']['internal_phpinfo'])->toBeFalse()
+		->and($res['cb']['internal_system'])->toBeFalse()
+		->and($res['cb']['empty_fn'])->toBeFalse()
+		->and($res['cb']['missing_fn'])->toBeFalse()
+		->and($res['cb']['bad_plugin_path'])->toBeFalse()
+		->and($res['cb']['php_internal'])->toBeFalse()
+		->and($res['cb']['outside_user_fn'])->toBeFalse()
+		->and($res['cb']['valid_plugin_fn'])->toBeTrue()
+		->and($res['deps_traversal'])->toBeFalse()
+		->and($res['deps_raw']['${PATH}'])->toBeTrue()
+		->and($res['deps_raw']['thold'])->toBe('1.0')
+		->and($res['caps'])->toBe('online_view:1')
+		->and($res['compat']['compat'])->toBeTrue()
+		->and($res['compat_bad']['compat'])->toBeFalse()
+		->and($res['reg_plugins_php'])->toBeFalse()
+		->and($res['reg_core_host'])->toBeFalse()
+		->and($res['realm_files']['host.php'])->toBe(3)
+		->and($res['realm_files']['plugins.php'])->toBe(101)
+		->and(isset($res['realm_files']['disabled_page.php']))->toBeFalse()
+		->and($res['realm_files']['enabled_a.php'])->toBe(111)
+		->and($res['realm_files']['enabled_b.php'])->toBe(112)
+		->and($res['realms'][110])->toBe('Disabled Plugin')
+		->and($res['logs_second'])->toBe($res['logs_first'] * 2);
 });
 
 test('lib/plugins.php fails closed on hook file validation and uses INI_SCANNER_RAW everywhere', function () use ($root) {
