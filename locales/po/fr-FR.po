@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-25 10:18+0000\n"
+"PO-Revision-Date: 2026-11-26 05:54+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: French <https://translate.cacti.net/projects/cacti/core/fr/>\n"
 "Language: fr-FR\n"
@@ -1433,7 +1433,7 @@ msgstr "Exporter les données vers un fichier"
 #: automation_devices.php:613 data_debug.php:1080 lib/clog_webapi.php:220
 #: lib/clog_webapi.php:566 managers.php:772
 msgid "Purge"
-msgstr "Supprimer"
+msgstr "Purger"
 
 #: automation_devices.php:613
 msgid "Purge Discovered Devices"
@@ -1729,7 +1729,7 @@ msgstr "Mensuel"
 
 #: automation_networks.php:46
 msgid "Monthly on Day"
-msgstr "Mensuel"
+msgstr "Mensuel à jour fixe"
 
 #: automation_networks.php:123
 msgid "Import Network Discovery Rule from Local File"
@@ -2192,7 +2192,9 @@ msgstr "Jours de la semaine"
 
 #: automation_networks.php:912 automation_networks.php:970
 msgid "What Day(s) of the week will this Network Range be discovered."
-msgstr "Quel (s) jour(s) de la semaine cette plage de réseau sera-t-elle découverte."
+msgstr ""
+"Indique le ou les jours de la semaine durant lesquels cette plage réseau "
+"sera découverte."
 
 #: automation_networks.php:914 automation_networks.php:972
 #: include/global_arrays.php:2080
@@ -2235,7 +2237,9 @@ msgstr "Mois de l’année"
 
 #: automation_networks.php:928
 msgid "What Months(s) of the Year will this Network Range be discovered."
-msgstr "Quels moisde l'année cette gamme de réseaux sera-t-elle découverte ?."
+msgstr ""
+"Indique le ou les mois de l'année durant lesquels cette plage réseau sera "
+"découverte."
 
 #: automation_networks.php:930 include/global_arrays.php:2034
 msgid "January"
@@ -2291,7 +2295,9 @@ msgstr "Jours du mois"
 
 #: automation_networks.php:949
 msgid "What Day(s) of the Month will this Network Range be discovered."
-msgstr "Quel (s) jour(s) du mois cette plage de réseau sera-t-elle découverte."
+msgstr ""
+"Indique le ou les jours du mois durant lesquels cette plage réseau sera "
+"découverte."
 
 #: automation_networks.php:950 automation_networks.php:962
 msgid "Last"
@@ -2303,7 +2309,9 @@ msgstr "Semaine(s) du mois"
 
 #: automation_networks.php:957
 msgid "What Week(s) of the Month will this Network Range be discovered."
-msgstr "Quelle (s) semaine(s) du mois cette plage de réseau sera-t-elle découverte."
+msgstr ""
+"Indique la ou les semaines du mois durant lesquelles cette plage réseau sera "
+"découverte."
 
 #: automation_networks.php:959
 msgid "First"
@@ -7241,7 +7249,7 @@ msgstr "Si vous forcez un changement de mot de passe, vous devez également auto
 
 #: include/global_arrays.php:306
 msgid "You are not allowed to change your password."
-msgstr "Désolé, vous n’êtes pas autorisé à changer votre mot de passe !."
+msgstr "Vous n'êtes pas autorisé à modifier votre mot de passe."
 
 #: include/global_arrays.php:309
 msgid "Unable to determine size of password field, please check permissions of db user"
@@ -7597,7 +7605,7 @@ msgstr "Ping ou SNMP Uptime"
 
 #: include/global_arrays.php:693
 msgid "SNMP Uptime"
-msgstr "SNMP Uptime"
+msgstr "Temps de fonctionnement SNMP"
 
 #: include/global_arrays.php:694
 msgid "SNMP Desc"
@@ -9452,7 +9460,7 @@ msgstr "Choisissez le protocole de chiffrement SNMPv3."
 
 #: include/global_form.php:99
 msgid "SNMP Privacy Passphrase (v3)"
-msgstr "Mot de passe SNMP (v3)"
+msgstr "Phrase secrète de confidentialité SNMP (v3)"
 
 #: include/global_form.php:100
 msgid "Choose the SNMPv3 Privacy Passphrase."
@@ -15783,7 +15791,7 @@ msgstr "Exécuter une action"
 
 #: lib/html.php:2126 managers.php:41 managers.php:229
 msgid "Logs"
-msgstr "Logs"
+msgstr "Journaux"
 
 #: lib/html.php:2354
 msgid "Metric"
@@ -19379,7 +19387,9 @@ msgstr "Actualisation automatique de la page"
 
 #: links.php:585
 msgid "How often do you wish this page to be refreshed automatically."
-msgstr "À quelle fréquence souhaitez-vous que cette page soit actualisée automatiquement."
+msgstr ""
+"Indique la fréquence souhaitée pour l'actualisation automatique de cette "
+"page."
 
 #: links.php:593
 #, php-format
