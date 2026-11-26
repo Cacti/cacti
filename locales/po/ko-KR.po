@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-25 10:18+0000\n"
+"PO-Revision-Date: 2026-11-26 05:54+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Korean <https://translate.cacti.net/projects/cacti/core/ko/>\n"
 "Language: ko-KR\n"
@@ -3620,7 +3620,7 @@ msgstr "명명 된 색"
 
 #: color.php:670
 msgid "Is this color a named color which are read only."
-msgstr "이 색은 읽기 전용 인 명명 된 색입니까?."
+msgstr "이 색상이 읽기 전용인 명명된 색상인지 여부입니다."
 
 #: color.php:673 color_templates.php:118 include/global_arrays.php:1099
 #: include/global_form.php:2235
@@ -4216,7 +4216,7 @@ msgstr "스크립트 쿼리"
 
 #: data_input.php:524 include/global_arrays.php:523
 msgid "Script Server Query"
-msgstr "스크립트 서버"
+msgstr "스크립트 서버 쿼리"
 
 #: data_input.php:533
 msgid "White List Verification Succeeded."
@@ -4402,7 +4402,7 @@ msgstr "제안 된 값 없음"
 #: data_queries.php:832 data_queries.php:941 include/global_form.php:2270
 #: include/global_form.php:2312 lib/api_automation.php:1626 utilities.php:797
 msgid "Field Name"
-msgstr "Field Name"
+msgstr "필드 이름"
 
 #: data_queries.php:838 data_queries.php:947
 msgid "Suggested Value"
@@ -8432,7 +8432,7 @@ msgstr "최근 %d시간"
 
 #: include/global_arrays.php:1569
 msgid "Last Day"
-msgstr "Last Day"
+msgstr "최근 1일"
 
 #: include/global_arrays.php:1570 include/global_arrays.php:1571
 #: include/global_arrays.php:1572
@@ -10267,7 +10267,7 @@ msgstr "대시 수식자는 파선 스타일을 사용합니다."
 
 #: include/global_form.php:1128
 msgid "Dash Offset (dash-offset=offset)"
-msgstr "대시 오프셋 (대시 오프셋 = 오프셋)"
+msgstr "대시 오프셋 (dash-offset=offset)"
 
 #: include/global_form.php:1133 include/global_form.php:1141
 msgid "The dash-offset parameter specifies an offset into the pattern at which the stroke begins."
@@ -11154,7 +11154,7 @@ msgstr "로그 대상"
 
 #: include/global_settings.php:310
 msgid "How will Cacti handle event logging."
-msgstr "Cacti는 어떻게 이벤트 로깅을 처리 할 것입니까?."
+msgstr "Cacti가 이벤트 로깅을 처리하는 방식입니다."
 
 #: include/global_settings.php:316
 msgid "Generic Log Level"
@@ -11311,8 +11311,8 @@ msgstr "MySQL - TimeZone 지원"
 
 #: include/global_settings.php:457
 msgid "How should Cacti support Client Dates based upon the Client browsers timezone."
-msgstr "Cacti는 클라이언트 브라우저 시간대에 따라 클라이언트 날짜를 어떻게 지원해야 "
-"합니까?."
+msgstr "Cacti가 클라이언트 브라우저 시간대에 따라 클라이언트 날짜를 지원하는 "
+"방식입니다."
 
 #: include/global_settings.php:466 include/global_settings.php:2936
 msgid "Date Display Format"
@@ -12027,7 +12027,7 @@ msgstr "로그 테일 새로 고침"
 
 #: include/global_settings.php:1177
 msgid "How often do you want the Cacti log display to update."
-msgstr "Cacti 로그 표시를 얼마나 자주 업데이트 하시겠습니까?."
+msgstr "Cacti 로그 화면을 업데이트할 주기입니다."
 
 #: include/global_settings.php:1183
 msgid "Log Viewer Settings"
@@ -19265,7 +19265,7 @@ msgstr "자동 페이지 새로 고침"
 
 #: links.php:585
 msgid "How often do you wish this page to be refreshed automatically."
-msgstr "얼마나 자주이 페이지가 자동으로 새로 고침되기를 원하십니까?."
+msgstr "이 페이지를 자동으로 새로 고침할 주기입니다."
 
 #: links.php:593
 #, php-format
