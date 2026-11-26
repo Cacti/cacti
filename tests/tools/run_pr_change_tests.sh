@@ -58,6 +58,9 @@ if [[ -f tests/fixtures/BoostBulkDrainFailureProbe.php ]]; then
 		run_probe ../BoostBulkDrainFailureProbe.php "boost-bulk-drain-$scenario" "$scenario" > /dev/null
 	done
 fi
+if [[ -f tests/fixtures/Core/TreeUserNames.php ]]; then
+	run_probe TreeUserNames.php tree-user-names
+fi
 if [[ -f tests/fixtures/BoostOnDemandFailureProbe.php ]]; then
 	for scenario in first middle ok-substring archive-copy temp-create tail ack-create ack-insert ack-delete archive-ok ack-empty; do
 		run_probe ../BoostOnDemandFailureProbe.php "boost-on-demand-$scenario" "$scenario" > /dev/null
