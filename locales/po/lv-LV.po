@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.2.20\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-26 05:54+0000\n"
+"PO-Revision-Date: 2026-11-26 19:34+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Latvian <https://translate.cacti.net/projects/cacti/core/lv/>"
 "\n"
@@ -3770,7 +3770,7 @@ msgstr "Krāsu veidne [jauna]"
 #, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
 msgstr ""
-"Krāsu veidnei “%1$s” bija izstumtas %2$d apkopotās veidnes un %3$d neveidnes "
+"Krāsu veidnei “%s” bija izstumtas %d apkopotās veidnes un %d neveidnes "
 "apkopotās veidnes"
 
 #: color_templates.php:764
@@ -6384,8 +6384,7 @@ msgstr "Iestatīt noklusējumu"
 #: help.php:44
 #, php-format
 msgid "WARNING: Cacti Page:%s for User:%s Generated a Fatal Error %d!"
-msgstr ""
-"BRĪDINĀJUMS: Cacti lapa:%1$s lietotājam:%2$s izraisīja fatālu kļūdu %3$d!"
+msgstr "BRĪDINĀJUMS: Cacti lapa:%s lietotājam:%s izraisīja fatālu kļūdu %d!"
 
 #: help.php:74
 #, php-format
@@ -10137,7 +10136,7 @@ msgstr "Kreisās ass formāts (--left-axis-format &lt;format&gt;)"
 
 #: include/global_form.php:923
 msgid "Left Axis Formatter (--left-axis-formatter &lt;formatname&gt;)"
-msgstr "Left Axis Formatter (--left-axis-formatter &lt;formatname&gt;)"
+msgstr "Kreisās ass formatētājs (--left-axis-formatter &lt;formatname&gt;)"
 
 #: include/global_form.php:928
 msgid "When you setup the left axis labeling, apply a rule to the data format.  Supported formats include \"numeric\" where data is treated as numeric, \"timestamp\" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is \"%Y-%m-%d %H:%M:%S\").  See also --units-length.  Finally \"duration\" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT."
@@ -10173,7 +10172,7 @@ msgstr "Zīmējiet līniju marķierus kā līniju."
 
 #: include/global_form.php:948
 msgid "Force Rules Legend (--force-rules-legend)"
-msgstr "Force Rules Legend (--force-rules-legend)"
+msgstr "Piespiest noteikumu leģendu (--force-rules-legend)"
 
 #: include/global_form.php:951
 msgid "Force the generation of HRULE and VRULE legends."
@@ -12513,7 +12512,7 @@ msgstr ""
 
 #: include/global_settings.php:1544
 msgid "Poller Output Not Empty Debouncing"
-msgstr "Poller Output Not Empty Debouncing"
+msgstr "Aptaujātāja netukšas izvades atkārtojumu slāpēšana"
 
 #: include/global_settings.php:1545
 msgid "If you are having issues with some data sources, your Email could be flooded with 'Poller Output Not Empty' warnings.  If this is happening, you can debounce the setting based upon this interval."
@@ -15260,7 +15259,7 @@ msgstr "Lielapjoma pastaigas lielums ir fiksēts uz %d."
 #: lib/data_query.php:935
 #, php-format
 msgid "Executing SNMP get for num of indexes @ '%s' Index Count: %s"
-msgstr "Izpilda SNMP get indeksu skaitam @ '%1$s' Indeksu skaits: %2$s"
+msgstr "Izpilda SNMP get indeksu skaitam @ '%s' Indeksu skaits: %s"
 
 #: lib/data_query.php:937
 msgid "&lt;oid_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting oid_index entries"
@@ -15328,7 +15327,7 @@ msgstr "oid_rewrite pie OID: '%s' jauns OID: '%s'"
 #: lib/data_query.php:1064
 #, php-format
 msgid "Executing SNMP get for data @ '%s' [value='%s']"
-msgstr "Izpilda SNMP get datiem @ '%1$s' [value='%2$s']"
+msgstr "Izpilda SNMP get datiem @ '%s' [value='%s']"
 
 #: lib/data_query.php:1076
 #, php-format
@@ -15418,7 +15417,7 @@ msgstr "Nevarēja parsēt tulkojuma karti (rewrite_value)"
 #: lib/data_query.php:1750
 #, php-format
 msgid "rewrite_value: '%s' => '%s'"
-msgstr "rewrite_value: '%1$s' => '%2$s'"
+msgstr "rewrite_value: '%s' => '%s'"
 
 #: lib/data_query.php:1856
 msgid "Update graph data query cache complete"
@@ -15698,8 +15697,8 @@ msgid ""
 "Reason: %s.\n"
 "See Cacti Log for details."
 msgstr ""
-"Neizdevās sazināties ar attālo aģentu %1$s\n"
-"Iemesls: %2$s.\n"
+"Neizdevās sazināties ar attālo aģentu %s\n"
+"Iemesls: %s.\n"
 "Plašāku informāciju skatiet Cacti žurnālā."
 
 #: lib/functions.php:7247
@@ -15721,8 +15720,8 @@ msgstr "Versija %s %s"
 #, php-format
 msgid "WARNING: Key Cacti Include File \"%s\" missing.  Please locate and replace this file as we checked in \"%s\""
 msgstr ""
-"BRĪDINĀJUMS: trūkst galvenā Cacti iekļaušanas faila \"%1$s\". Lūdzu, "
-"atrodiet un aizstājiet šo failu, kā pārbaudījām mapē \"%2$s\""
+"BRĪDINĀJUMS: trūkst galvenā Cacti iekļaušanas faila \"%s\". Lūdzu, atrodiet "
+"un aizstājiet šo failu, kā pārbaudījām mapē \"%s\""
 
 #: lib/functions.php:8996
 msgid "System Device"
@@ -15942,7 +15941,7 @@ msgstr "Absolūtais maksimums"
 
 #: lib/html.php:2817
 msgid "Dry Run StdDev"
-msgstr "Dry Run StdDev"
+msgstr "Izmēģinājuma palaišanas standartnovirze"
 
 #: lib/html.php:2818
 #, fuzzy
@@ -15951,11 +15950,11 @@ msgstr "Dry Run Variance"
 
 #: lib/html.php:2819
 msgid "Dry Run Gap Fill Range"
-msgstr "Dry Run Gap Fill Range"
+msgstr "Izmēģinājuma palaišanas robu aizpildīšanas diapazons"
 
 #: lib/html.php:2820
 msgid "Dry Run Float Range"
-msgstr "Dry Run Float Range"
+msgstr "Izmēģinājuma palaišanas peldošā komata diapazons"
 
 #: lib/html.php:2821
 msgid "Dry Run Absolute Maximum"
@@ -18125,7 +18124,7 @@ msgstr "Jūsu Cacti Server tagad tiek instalēts"
 #: lib/installer.php:3165
 #, php-format
 msgid "Spawning background process: %s %s"
-msgstr "Tiek palaists fona process: %1$s %2$s"
+msgstr "Tiek palaists fona process: %s %s"
 
 #: lib/installer.php:3192
 msgid "Complete"
@@ -18837,13 +18836,13 @@ msgstr "RRA failam '%s' ir tik pat CF/soļi (%s, %s) kā '%s'"
 #, php-format
 msgid "The pdp_per_row of '%s' is invalid for RRA '%s' should be '%s'.  Consider deleting and allowing Cacti to re-create RRDfile."
 msgstr ""
-"pdp_per_row vērtība '%1$s' RRA '%2$s' nav derīga, tai jābūt '%3$s'. "
-"Apsveriet iespēju izdzēst un ļaut Cacti atkārtoti izveidot RRD failu."
+"pdp_per_row vērtība '%s' RRA '%s' nav derīga, tai jābūt '%s'. Apsveriet "
+"iespēju izdzēst un ļaut Cacti atkārtoti izveidot RRD failu."
 
 #: lib/rrd.php:3454
 #, php-format
 msgid "The XFF for Cacti RRA id is '%s' but should be '%s'"
-msgstr "Cacti RRA ID XFF vērtība ir '%1$s', bet tai jābūt '%2$s'"
+msgstr "Cacti RRA ID XFF vērtība ir '%s', bet tai jābūt '%s'"
 
 #: lib/rrd.php:3458
 #, php-format
@@ -19061,7 +19060,7 @@ msgstr ""
 "pirms sistēmā beigsies vieta atmiņas tabulā. Tas tiek darīts divos veidos, "
 "vispirms samazinot izvades kolonnas izmēru līdz pareizajam izmēram. Šī "
 "kolonna atrodas tabulās poller_output un poller_output_boost. Otra lieta, ko "
-"varat darīt, ir piešķirt vairāk atmiņas atmiņas tabulām. Mēs esam patvaļīgi "
+"varat darīt, ir piešķirt papildu atmiņu atmiņas tabulām. Mēs esam patvaļīgi "
 "izvēlējušies ieteicamo sistēmas atmiņas vērtību — 10%%, taču, ja izmantojat "
 "SSD diskdziņus vai jums ir mazāka sistēma, varat ignorēt šo ieteikumu vai "
 "izvēlēties citu krātuves programmu. Varat redzēt paredzamo Performance "
@@ -19130,9 +19129,9 @@ msgstr "Izmantojot moderno SSD tipa krātuvi, vairāki io pavedieni ir izdevīgi
 #, php-format
 msgid "As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential"
 msgstr ""
-"No %1$s %2$s varat kontrolēt, cik bieži %3$s izskalo darījumus diskā. "
-"Noklusējums ir 1 sekunde, bet augstās I/O sistēmās, iestatot vērtību, kas "
-"lielāka par 1, diska ievade/izvade var būt vairāk secīga"
+"No %s %s varat kontrolēt, cik bieži %s izskalo darījumus diskā. Noklusējums "
+"ir 1 sekunde, bet augstās I/O sistēmās, iestatot vērtību, kas lielāka par 1, "
+"diska ievade/izvade var būt vairāk secīga"
 
 #: lib/utility.php:1303
 msgid "With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics.  Depending on your MariaDB/MySQL versions, this value can go as high as 64.  But try to keep the number less than your total SMT threads on the database server."
@@ -20896,8 +20895,7 @@ msgstr "BRĪDINĀJUMS: Pollera izvades tabula nav tukša pollera ID %d. Problēm
 #, php-format
 msgid "ERROR: The spine path: %s is invalid for Poller[%d].  Poller can not continue!"
 msgstr ""
-"KĻŪDA: spine ceļš: %1$s nav derīgs Poller[%2$d].  Poller nevar turpināt "
-"darbu!"
+"KĻŪDA: spine ceļš: %s nav derīgs Poller[%d].  Poller nevar turpināt darbu!"
 
 #: poller.php:819
 #, php-format
@@ -21944,7 +21942,7 @@ msgstr "Datu vaicājumi nav atrasti"
 
 #: support.php:503 support.php:650
 msgid "Cacti Poller"
-msgstr "Cacti Poller"
+msgstr "Cacti aptaujātājs"
 
 #: support.php:504
 msgid "Cacti Process"
@@ -23859,7 +23857,7 @@ msgstr ""
 
 #: utilities.php:1260
 msgid "Boost Utilities"
-msgstr "Boost Utilities"
+msgstr "Boost rīki"
 
 #: utilities.php:1261
 msgid "View Boost Status"
@@ -24075,9 +24073,9 @@ msgstr "Procesi: %d"
 #, php-format
 msgid "Status: <span class=\"deviceUp\"><b>Running</b></span>, Remaining: %s (dses), CurrentRuntime: %s (secs), PrevRuntime: %s (secs), PrevProcessed: %10s (ds rows)"
 msgstr ""
-"Statuss: <span class=\"deviceUp\"><b>Darbojas</b></span>, Atlicis: %1$s ("
-"datu avoti), Pašreizējais izpildes laiks: %2$s (sek.), Iepriekšējais "
-"izpildes laiks: %3$s (sek.), Iepriekš apstrādāts: %4$10s (datu avota rindas)"
+"Statuss: <span class=\"deviceUp\"><b>Darbojas</b></span>, Atlicis: %s (datu "
+"avoti), Pašreizējais izpildes laiks: %s (sek.), Iepriekšējais izpildes laiks:"
+" %s (sek.), Iepriekš apstrādāts: %10s (datu avota rindas)"
 
 #: utilities.php:1781
 #, php-format
