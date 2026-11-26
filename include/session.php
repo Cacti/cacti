@@ -84,15 +84,33 @@ function cacti_db_session_close() {
  * @return string The resulting string.
  */
 function cacti_db_session_read($id) {
-	db_execute_prepared('UPDATE IGNORE sessions
-		SET access = ?
-		WHERE id = ?',
-		array(time(), $id));
+	$now         = time();
+	$maxlifetime = max(1, (int) ini_get('session.gc_maxlifetime'));
+	$cutoff      = $now - $maxlifetime;
 
-	$session = db_fetch_cell_prepared('SELECT data
+	$row = db_fetch_row_prepared('SELECT data, access
 		FROM sessions
 		WHERE id = ?',
 		array($id));
+
+	if (!cacti_sizeof($row)) {
+		return '';
+	}
+
+	if ((int) $row['access'] < $cutoff) {
+		db_execute_prepared('DELETE FROM sessions
+			WHERE id = ?',
+			array($id));
+
+		return '';
+	}
+
+	db_execute_prepared('UPDATE IGNORE sessions
+		SET access = ?
+		WHERE id = ?',
+		array($now, $id));
+
+	$session = isset($row['data']) ? $row['data'] : '';
 
 	// work with PHP 7.1
 	if (empty($session)) {
@@ -138,7 +156,7 @@ function cacti_db_session_write($id, $data) {
 				user_agent = VALUES(user_agent),
 				transactions = transactions + 1',
 			array($id, $client_addr, $access, $data, $user_id, $user_agent));
-	} elseif (strpos($data, 'ses_user_id') !== false) {
+	} elseif (strpos($data, 'sess_user_id') !== false) {
 		db_execute_prepared('INSERT INTO sessions
 			(id, remote_addr, access, data, user_agent)
 			VALUES (?, ?, ?, ?, ?)

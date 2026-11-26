@@ -64,6 +64,7 @@ function csrf_startup() {
 		csrf_conf('rewrite-js', $config['url_path'] . 'include/vendor/csrf/csrf-magic.js');
 		csrf_conf('callback', 'csrf_error_callback');
 		csrf_conf('expires', 7200);
+		csrf_conf('allow-ip', false);
 	} else {
 		csrf_conf('disable',true);
 	}

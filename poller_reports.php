@@ -168,6 +168,18 @@ if (cacti_sizeof($reports)) {
 	foreach ($reports as $report) {
 		reports_log('Reports processing report: ' . $report['name'], true, 'REPORTS', POLLER_VERBOSITY_MEDIUM);
 		$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($report['user_id']));
+
+		if (!cacti_sizeof($current_user) ||
+			$current_user['enabled'] != 'on' ||
+			(isset($current_user['locked']) && $current_user['locked'] == 'on') ||
+			(!is_realm_allowed(21, $report['user_id']) && !is_realm_allowed(22, $report['user_id']))) {
+			reports_log('WARNING: Skipping and disabling report "' . $report['name'] . '" because owner account ID ' . (int) $report['user_id'] . ' is missing, disabled, locked, or lacks reporting permissions.', true, 'REPORTS', POLLER_VERBOSITY_LOW);
+			if (function_exists('reports_html_report_disable')) {
+				reports_html_report_disable($report['id']);
+			}
+			continue;
+		}
+
 		if (isset($report['email'])) {
 			generate_report($report, false, 'poller');
 			$number_sent++;

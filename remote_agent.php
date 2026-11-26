@@ -370,7 +370,7 @@ function get_graph_data() {
 		$graph_data_array['graph_theme'] = cacti_validate_theme(get_request_var('graph_theme'));
 	}
 
-	/* set the theme */
+	/* validate the effective user when authentication is active */
 	if (isset_request_var('effective_user')) {
 		$user = remote_agent_validate_effective_user(get_request_var('effective_user'));
 
@@ -380,6 +380,11 @@ function get_graph_data() {
 
 			return false;
 		}
+	} elseif (!function_exists('read_config_option') || read_config_option('auth_method') != 0) {
+		http_response_code(403);
+		cacti_log('WARNING: Rejected a Remote Agent graph request missing an effective user.', false, 'SECURITY');
+
+		return false;
 	} else {
 		$user = 0;
 	}

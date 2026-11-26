@@ -137,26 +137,40 @@ if ($config['poller_id'] == 1 || read_config_option('storage_location')) {
 	$null_param = array();
 	$output = rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
 } else {
-	$url  = $config['url_path'] . 'remote_agent.php?action=graph_json';
-	$url .= '&local_graph_id=' . get_request_var('local_graph_id');
-	$url .= '&rra_id=' . $rra_id;
+	if (isset($_SESSION['sess_user_id']) && !is_graph_allowed(get_request_var('local_graph_id'), $_SESSION['sess_user_id'])) {
+		$output = false;
+	} else {
+		if (isset($_SESSION['sess_user_id'])) {
+			$graph_data_array['effective_user'] = $_SESSION['sess_user_id'];
+		}
 
-	foreach($graph_data_array as $variable => $value) {
-		$url .= '&' . rawurlencode((string)$variable) . '=' . rawurlencode((string)$value);
+		$url  = $config['url_path'] . 'remote_agent.php?action=graph_json';
+		$url .= '&local_graph_id=' . get_request_var('local_graph_id');
+		$url .= '&rra_id=' . $rra_id;
+
+		foreach($graph_data_array as $variable => $value) {
+			$url .= '&' . rawurlencode((string)$variable) . '=' . rawurlencode((string)$value);
+		}
+
+		$output = call_remote_data_collector(1, $url);
+
+		if (is_array($output) && isset($output['image'])) {
+			$output = $output['image'];
+		}
+
+		if (is_string($output) && ($image_begin_pos = strpos($output, 'image = ')) !== false) {
+			// Find the end of the line of the image definition row, after this the raw image data will come
+			$image_line_end = strpos($output, "\n", $image_begin_pos);
+			if ($image_line_end !== false) {
+				// Insert the raw image data to the array
+				$output = substr($output, $image_line_end + 1);
+			} else {
+				$output = false;
+			}
+		} else {
+			$output = false;
+		}
 	}
-
-	$output = call_remote_data_collector(1, $url);
-
-	if (is_array($output) && isset($output['image'])) {
-		$output = $output['image'];
-	}
-
-	// Find the beginning of the image definition row
-	$image_begin_pos  = strpos($output, 'image = ');
-	// Find the end of the line of the image definition row, after this the raw image data will come
-	$image_data_pos   = strpos($output, "\n" , $image_begin_pos) + 1;
-	// Insert the raw image data to the array
-	$output  = substr($output, $image_data_pos);
 }
 
 if ($output !== false && $output != '') {
