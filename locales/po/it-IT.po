@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2026-03-10 10:57-0400\n"
-"PO-Revision-Date: 2026-11-26 05:54+0000\n"
+"PO-Revision-Date: 2026-11-26 19:34+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Italian <https://translate.cacti.net/projects/cacti/core/it/>"
 "\n"
@@ -31,7 +31,7 @@ msgstr "Cacti è stato progettato per essere una soluzione grafica completa basa
 #, php-format
 msgid "Please see the official %sCacti website%s for information on how to use Cacti, get support, and updates."
 msgstr ""
-"Consulta il %1$ssito web ufficiale di Cacti%2$s per informazioni su come "
+"Consulta il %ssito web ufficiale di Cacti%s per informazioni su come "
 "utilizzare Cacti, ottenere supporto e aggiornamenti."
 
 #: about.php:50
@@ -2029,7 +2029,7 @@ msgstr "Immettere IP o FQDN dei server DNS"
 
 #: automation_networks.php:743
 msgid "Discovery Threads"
-msgstr "Discovery Threads"
+msgstr "Thread di rilevamento"
 
 #: automation_networks.php:744
 msgid "Define the number of threads to use for discovering this Network Range."
@@ -2553,7 +2553,7 @@ msgstr "Protocollo d'autore"
 
 #: automation_snmp.php:762
 msgid "Priv Passphrase"
-msgstr "Priv Passphrase"
+msgstr "Passphrase di privacy"
 
 #: automation_snmp.php:766
 msgid "Priv Protocol"
@@ -3325,7 +3325,7 @@ msgstr "Nessun CDEF"
 
 #: changelog.php:58
 msgid "Highlights"
-msgstr "Highlights"
+msgstr "In evidenza"
 
 #: changelog.php:59
 msgid "Full"
@@ -3585,8 +3585,8 @@ msgstr "Modello di colore [nuovo]"
 #, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
 msgstr ""
-"Il modello di colore '%1$s' ha distribuito %2$d modelli aggregati e %3$d "
-"aggregati senza modello"
+"Il modello di colore '%s' ha distribuito %d modelli aggregati e %d aggregati "
+"senza modello"
 
 #: color_templates.php:761
 #, php-format
@@ -3872,7 +3872,7 @@ msgstr "Oggetto"
 #: data_debug.php:846
 #, php-format
 msgid "For attribute '%s', issue found '%s'"
-msgstr "Per l'attrito \"%1$s\", l'emissione ha trovato \"%2$s\""
+msgstr "Per l'attrito \"%s\", l'emissione ha trovato \"%s\""
 
 #: data_debug.php:861
 msgid "Apply Suggested Fixes"
@@ -3921,7 +3921,7 @@ msgstr "Fallito"
 
 #: data_debug.php:991
 msgid "Debugging"
-msgstr "Debugging"
+msgstr "Debug"
 
 #: data_debug.php:1055 data_sources.php:1819 graphs.php:3104 host.php:1656
 #: host.php:1932 include/global_settings.php:853 lib/api_automation.php:203
@@ -4103,7 +4103,7 @@ msgstr "Ordine campo"
 
 #: data_input.php:579
 msgid "Input Fields"
-msgstr "Input Fields"
+msgstr "Campi di input"
 
 #: data_input.php:626
 msgid "(Not In Use)"
@@ -4430,7 +4430,7 @@ msgstr ""
 #: data_source_profiles.php:350 data_source_profiles.php:352
 #, php-format
 msgid "Data Source Profile '%s' %s!"
-msgstr "Profilo origine dati '%1$s': %2$s!"
+msgstr "Profilo origine dati '%s': %s!"
 
 #: data_source_profiles.php:350 data_source_profiles.php:352
 #: lib/api_automation.php:5488 lib/api_automation.php:5490
@@ -4480,7 +4480,7 @@ msgstr "Aggiornato"
 #: data_source_profiles.php:356 data_source_profiles.php:358
 #, php-format
 msgid "Data Source Profile '%s' %s Failed!"
-msgstr "Profilo origine dati '%1$s': %2$s non riuscito!"
+msgstr "Profilo origine dati '%s': %s non riuscito!"
 
 #: data_source_profiles.php:356 data_source_profiles.php:358
 #: lib/api_automation.php:5494 lib/api_automation.php:5496
@@ -5108,7 +5108,7 @@ msgstr "Debug della fonte dati"
 
 #: data_sources.php:1354
 msgid "RRDtool Tune Info"
-msgstr "RRDtool Tune Info"
+msgstr "Informazioni RRDtool Tune"
 
 #: data_sources.php:1380 data_templates.php:1182 include/global_form.php:621
 msgid "External"
@@ -5209,7 +5209,7 @@ msgstr "Indice"
 
 #: data_sources.php:1869 graphs.php:3135
 msgid "Orphaned"
-msgstr "Orphaned"
+msgstr "Orfano"
 
 #: data_sources.php:1878
 msgid "Errored"
@@ -5535,7 +5535,7 @@ msgstr "Grafici di sincronizzazione"
 
 #: graph_templates.php:347 graph_templates.php:391 graphs.php:592
 msgid "Cur:"
-msgstr "Cur:"
+msgstr "Attuale:"
 
 #: graph_templates.php:360 graph_templates.php:404 graphs.php:602
 msgid "Avg:"
@@ -5825,7 +5825,7 @@ msgstr "Nono Percentile"
 
 #: graph_xport.php:149 graph_xport.php:268
 msgid "Summation"
-msgstr "Summation"
+msgstr "Sommatoria"
 
 #: graph_xport.php:155 graph_xport.php:288 rrdcheck.php:147 support.php:1207
 #: user_log.php:113
@@ -6275,7 +6275,7 @@ msgstr "Creazione nuovo apparecchio"
 #: graphs_new.php:472
 #, php-format
 msgid "New Graphs [ %s - %s ] [ %s ]"
-msgstr "Nuovi grafici [ %1$s - %2$s ] [ %3$s ]"
+msgstr "Nuovi grafici [ %s - %s ] [ %s ]"
 
 #: graphs_new.php:474
 msgid "New Graphs [ Search for a Device First ]"
@@ -6364,15 +6364,15 @@ msgstr "Imposta come predefinito"
 #, php-format
 msgid "WARNING: Cacti Page:%s for User:%s Generated a Fatal Error %d!"
 msgstr ""
-"ATTENZIONE: la pagina Cacti:%1$s per l'utente:%2$s ha generato un errore "
-"fatale %3$d!"
+"ATTENZIONE: la pagina Cacti:%s per l'utente:%s ha generato un errore fatale "
+"%d!"
 
 #: help.php:77
 #, php-format
 msgid "The Document page '%s' count not be reached.  The Cacti Documentation site is not reachable.  The http error was '%s'.  Consider downloading an official release to obtain the latest documentation and hosting the documentation locally."
 msgstr ""
-"Impossibile raggiungere la pagina del documento '%1$s'. Il sito della "
-"documentazione di Cacti non è raggiungibile. L'errore HTTP è stato '%2$s'. "
+"Impossibile raggiungere la pagina del documento '%s'. Il sito della "
+"documentazione di Cacti non è raggiungibile. L'errore HTTP è stato '%s'. "
 "Valuta di scaricare una versione ufficiale per ottenere la documentazione "
 "più recente e ospitarla localmente."
 
@@ -6440,8 +6440,8 @@ msgstr "ERRORE: Dispositivo."
 #, php-format
 msgid "Device Reindex Completed in %0.2f seconds.  There were %d items updated."
 msgstr ""
-"Reindicizzazione dispositivo completata in %1$0.2f secondi. Sono stati "
-"aggiornati %2$d elementi."
+"Reindicizzazione dispositivo completata in %0.2f secondi. Sono stati "
+"aggiornati %d elementi."
 
 #: host.php:359
 #, php-format
@@ -7707,7 +7707,7 @@ msgstr "Numerico"
 
 #: include/global_arrays.php:611
 msgid "Timestamp"
-msgstr "Timestamp"
+msgstr "Marca temporale"
 
 #: include/global_arrays.php:639
 msgid "Warnings, Errors, Device and Tree Creation"
@@ -7823,7 +7823,7 @@ msgstr "Tempo di attività SNMP"
 
 #: include/global_arrays.php:704
 msgid "SNMP Desc"
-msgstr "SNMP Desc"
+msgstr "Descrizione SNMP"
 
 #: include/global_arrays.php:705
 msgid "SNMP getNext"
@@ -8043,7 +8043,7 @@ msgstr "Ordinazione numerica"
 
 #: include/global_arrays.php:1041 lib/rrd.php:3623
 msgid "Header"
-msgstr "Header"
+msgstr "Intestazione"
 
 #: include/global_arrays.php:1042 include/global_arrays.php:1105
 #: include/global_arrays.php:1830 include/global_arrays.php:1999
@@ -8299,7 +8299,7 @@ msgstr "Risoluzione dei problemi"
 
 #: include/global_arrays.php:1148 rrdcheck.php:270
 msgid "RRDfile Checker"
-msgstr "RRDfile Checker"
+msgstr "Verifica file RRD"
 
 #: include/global_arrays.php:1149
 msgid "Technical Info"
@@ -8339,7 +8339,7 @@ msgstr "Dispositivo generico"
 
 #: include/global_arrays.php:1199
 msgid "HPC/Grid Computing"
-msgstr "HPC/Grid Computing"
+msgstr "Calcolo HPC/Grid"
 
 #: include/global_arrays.php:1200
 msgid "Hypervisor Related"
@@ -8767,7 +8767,7 @@ msgstr "%d MByte"
 
 #: include/global_arrays.php:1690
 msgid "1 GByte"
-msgstr "1 GByte"
+msgstr "1 Gigabyte"
 
 #: include/global_arrays.php:1691 include/global_arrays.php:1754
 #: lib/boost.php:80
@@ -8841,7 +8841,7 @@ msgstr "%s Ore"
 #: include/global_arrays.php:1753
 #, php-format
 msgid "%d GByte"
-msgstr "%d GByte"
+msgstr "%d gigabyte"
 
 #: include/global_arrays.php:1761 utilities.php:1321 utilities.php:1322
 #: utilities.php:1376
@@ -10346,7 +10346,7 @@ msgstr "Quante cifre deve assumere RRDtool le etichette dell'asse y? Potrebbe es
 
 #: include/global_form.php:882
 msgid "No Gridfit (--no-gridfit)"
-msgstr "No Gridfit (--no-gridfit)"
+msgstr "Nessun adattamento alla griglia (--no-gridfit)"
 
 #: include/global_form.php:885
 msgid "In order to avoid anti-aliasing blurring effects RRDtool snaps points to device resolution pixels, this results in a crisper appearance. If this is not to your liking, you can use this switch to turn this behavior off.<br><strong>Note: </strong>Gridfitting is turned off for PDF, EPS, SVG output by default."
@@ -10456,7 +10456,7 @@ msgstr "Forzare la generazione di leggende HRULE e VRULE."
 
 #: include/global_form.php:970
 msgid "Tab Width (--tabwidth &lt;pixels&gt;)"
-msgstr "Tab Width (--tabwidth &lt;pixels&gt;)"
+msgstr "Larghezza tabulazione (--tabwidth &lt;pixels&gt;)"
 
 #: include/global_form.php:975
 msgid "By default the tab-width is 40 pixels, use this option to change it."
@@ -10627,7 +10627,7 @@ msgstr "Il modificatore dei trattini consente di abilitare lo stile della linea 
 
 #: include/global_form.php:1144
 msgid "Dash Offset (dash-offset=offset)"
-msgstr "Dash Offset (dash-offset=offset)"
+msgstr "Scostamento tratteggio (dash-offset=offset)"
 
 #: include/global_form.php:1149 include/global_form.php:1157
 msgid "The dash-offset parameter specifies an offset into the pattern at which the stroke begins."
@@ -12233,7 +12233,7 @@ msgstr "Protocollo SNMPv3 Privacy di default per tutti i nuovi dispositivi."
 
 #: include/global_settings.php:966
 msgid "Privacy Passphrase (v3)"
-msgstr "Privacy Passphrase (v3)"
+msgstr "Passphrase di privacy (v3)"
 
 #: include/global_settings.php:967
 msgid "Default SNMPv3 Privacy Passphrase for all new Devices."
@@ -13254,7 +13254,7 @@ msgstr "1 Giorno"
 
 #: include/global_settings.php:1962
 msgid "Pwned Checks (Online)"
-msgstr "Pwned Checks (Online)"
+msgstr "Controlli Pwned (online)"
 
 #: include/global_settings.php:1967
 msgid "Pwned Check"
@@ -14937,7 +14937,7 @@ msgstr "La regola del grafico corrispondente all'avviso non ha restituito corris
 
 #: lib/api_automation.php:1574
 msgid "Propagate Change"
-msgstr "Propagate Change"
+msgstr "Propaga modifica"
 
 #: lib/api_automation.php:1638
 msgid "No Tree Creation Criteria"
@@ -14966,12 +14966,12 @@ msgstr "Crea regola dell'albero (grafico)"
 #: lib/api_automation.php:2547
 #, php-format
 msgid "Rule Item [edit rule item for %s: %s]"
-msgstr "Voce della regola [modifica la voce della regola per %1$s: %2$s]"
+msgstr "Voce della regola [modifica la voce della regola per %s: %s]"
 
 #: lib/api_automation.php:2549
 #, php-format
 msgid "Rule Item [new rule item for %s: %s]"
-msgstr "Voce della regola [nuova voce della regola per %1$s: %2$s]"
+msgstr "Voce della regola [nuova voce della regola per %s: %s]"
 
 #: lib/api_automation.php:3574
 msgid "Added by Cacti Automation"
@@ -15054,38 +15054,38 @@ msgstr ""
 #: lib/api_automation.php:6086 lib/api_automation.php:6088
 #, php-format
 msgid "Automation Graph Rule '%s' %s!"
-msgstr "Regola grafico di automazione '%1$s': %2$s!"
+msgstr "Regola grafico di automazione '%s': %s!"
 
 #: lib/api_automation.php:5731 lib/api_automation.php:5733
 #: lib/api_automation.php:6092 lib/api_automation.php:6094
 #, php-format
 msgid "Automation Graph Rule '%s' %s Failed!"
-msgstr "Regola grafico di automazione '%1$s': %2$s non riuscito!"
+msgstr "Regola grafico di automazione '%s': %s non riuscito!"
 
 #: lib/api_automation.php:5752 lib/api_automation.php:5754
 #: lib/api_automation.php:6113 lib/api_automation.php:6115
 #, php-format
 msgid "Automation Graph Rule Item '%s' %s!"
-msgstr "Elemento regola grafico di automazione '%1$s': %2$s!"
+msgstr "Elemento regola grafico di automazione '%s': %s!"
 
 #: lib/api_automation.php:5758 lib/api_automation.php:5760
 #: lib/api_automation.php:6119 lib/api_automation.php:6121
 #, php-format
 msgid "Automation Graph Rule Item '%s' %s Failed!"
-msgstr "Elemento regola grafico di automazione '%1$s': %2$s non riuscito!"
+msgstr "Elemento regola grafico di automazione '%s': %s non riuscito!"
 
 #: lib/api_automation.php:5781 lib/api_automation.php:5783
 #: lib/api_automation.php:6142 lib/api_automation.php:6144
 #, php-format
 msgid "Automation Graph Rule Match Item '%s' %s!"
-msgstr "Elemento di corrispondenza regola grafico di automazione '%1$s': %2$s!"
+msgstr "Elemento di corrispondenza regola grafico di automazione '%s': %s!"
 
 #: lib/api_automation.php:5787 lib/api_automation.php:5789
 #: lib/api_automation.php:6148 lib/api_automation.php:6150
 #, php-format
 msgid "Automation Graph Rule Match Item '%s' %s Failed!"
 msgstr ""
-"Elemento di corrispondenza regola grafico di automazione '%1$s': %2$s non "
+"Elemento di corrispondenza regola grafico di automazione '%s': %s non "
 "riuscito!"
 
 #: lib/api_automation.php:5797
@@ -15098,40 +15098,40 @@ msgstr ""
 #: lib/api_automation.php:6195 lib/api_automation.php:6197
 #, php-format
 msgid "Automation Tree Rule '%s' %s!"
-msgstr "Regola albero di automazione '%1$s': %2$s!"
+msgstr "Regola albero di automazione '%s': %s!"
 
 #: lib/api_automation.php:5865 lib/api_automation.php:5867
 #: lib/api_automation.php:6201 lib/api_automation.php:6203
 #, php-format
 msgid "Automation Tree Device Rule '%s' %s Failed!"
-msgstr "Regola dispositivo albero di automazione '%1$s': %2$s non riuscito!"
+msgstr "Regola dispositivo albero di automazione '%s': %s non riuscito!"
 
 #: lib/api_automation.php:5884 lib/api_automation.php:5886
 #: lib/api_automation.php:6220 lib/api_automation.php:6222
 #, php-format
 msgid "Automation Tree Rule Item '%s' %s!"
-msgstr "Elemento regola albero di automazione '%1$s': %2$s!"
+msgstr "Elemento regola albero di automazione '%s': %s!"
 
 #: lib/api_automation.php:5890 lib/api_automation.php:5892
 #: lib/api_automation.php:6226 lib/api_automation.php:6228
 #, php-format
 msgid "Automation Tree Device Rule Item '%s' %s Failed!"
 msgstr ""
-"Elemento regola dispositivo albero di automazione '%1$s': %2$s non riuscito!"
+"Elemento regola dispositivo albero di automazione '%s': %s non riuscito!"
 
 #: lib/api_automation.php:5915 lib/api_automation.php:5917
 #: lib/api_automation.php:6251 lib/api_automation.php:6253
 #, php-format
 msgid "Automation Tree Rule Match Item '%s' %s!"
-msgstr "Elemento di corrispondenza regola albero di automazione '%1$s': %2$s!"
+msgstr "Elemento di corrispondenza regola albero di automazione '%s': %s!"
 
 #: lib/api_automation.php:5921 lib/api_automation.php:5923
 #: lib/api_automation.php:6257 lib/api_automation.php:6259
 #, php-format
 msgid "Automation Tree Device Rule Match Item '%s' %s Failed!"
 msgstr ""
-"Elemento di corrispondenza regola dispositivo albero di automazione '%1$s': "
-"%2$s non riuscito!"
+"Elemento di corrispondenza regola dispositivo albero di automazione '%s': %s "
+"non riuscito!"
 
 #: lib/api_automation.php:5930
 msgid "Automation Tree Rule Import data is either for another object type or not JSON formatted."
@@ -15147,22 +15147,22 @@ msgstr ""
 #: lib/api_automation.php:6028 lib/api_automation.php:6030
 #, php-format
 msgid "Automation Device Rule '%s' %s!"
-msgstr "Regola dispositivo di automazione '%1$s': %2$s!"
+msgstr "Regola dispositivo di automazione '%s': %s!"
 
 #: lib/api_automation.php:6034 lib/api_automation.php:6036
 #, php-format
 msgid "Automation Device Rule '%s' %s Failed!"
-msgstr "Regola dispositivo di automazione '%1$s': %2$s non riuscito!"
+msgstr "Regola dispositivo di automazione '%s': %s non riuscito!"
 
 #: lib/api_automation.php:6307 lib/api_automation.php:6309
 #, php-format
 msgid "Automation Device Rule Item '%s' %s!"
-msgstr "Elemento regola dispositivo di automazione '%1$s': %2$s!"
+msgstr "Elemento regola dispositivo di automazione '%s': %s!"
 
 #: lib/api_automation.php:6313 lib/api_automation.php:6315
 #, php-format
 msgid "Automation Device Rule Item '%s' %s Failed!"
-msgstr "Elemento regola dispositivo di automazione '%1$s': %2$s non riuscito!"
+msgstr "Elemento regola dispositivo di automazione '%s': %s non riuscito!"
 
 #: lib/api_automation.php:6324
 msgid "The Thold Plugin is not Installed on this system.  So, Thresholds will not be imported."
@@ -15171,12 +15171,12 @@ msgstr ""
 #: lib/api_automation.php:6359 lib/api_automation.php:6361
 #, php-format
 msgid "Automation Threshold Template '%s' %s!"
-msgstr "Modello di soglia di automazione '%1$s': %2$s!"
+msgstr "Modello di soglia di automazione '%s': %s!"
 
 #: lib/api_automation.php:6365 lib/api_automation.php:6367
 #, php-format
 msgid "Automation Threshold Template Device '%s' %s Failed!"
-msgstr "Dispositivo modello di soglia di automazione '%1$s': %2$s non riuscito!"
+msgstr "Dispositivo modello di soglia di automazione '%s': %s non riuscito!"
 
 #: lib/api_automation.php:6383
 msgid "Automation Device Rule Import data is either for another object type or not JSON formatted."
@@ -15939,8 +15939,8 @@ msgstr "Controllo della modifica del campo di ordinamento.  Non sono state rilev
 #, php-format
 msgid "Detected New Sort Field: '%s' Old Sort Field '%s'"
 msgstr ""
-"Campo di ordinamento nuovo rilevato: \"%1$s\" Campo di ordinamento vecchio "
-"\"%2$s\""
+"Campo di ordinamento nuovo rilevato: \"%s\" Campo di ordinamento vecchio "
+"\"%s\""
 
 #: lib/data_query.php:597
 msgid "ERROR: New Sort Field not suitable.  Sort Field will not change."
@@ -16107,17 +16107,17 @@ msgstr "Nessun dato SNMP restituito"
 #: lib/data_query.php:1091
 #, php-format
 msgid "Index found at OID: '%s' value: '%s'"
-msgstr "Indice trovato all'OID: '%1$s' valore: '%2$s'"
+msgstr "Indice trovato all'OID: '%s' valore: '%s'"
 
 #: lib/data_query.php:1108
 #, php-format
 msgid "List of indexes filtered by value @ '%s' Index Count: %s"
-msgstr "Elenco degli indici filtrati per valore @ '%1$s' Conteggio indici: %2$s"
+msgstr "Elenco degli indici filtrati per valore @ '%s' Conteggio indici: %s"
 
 #: lib/data_query.php:1112
 #, php-format
 msgid "Filtered Index by value found at OID: '%s' value: '%s'"
-msgstr "Filtrato Indice trovato all'OID: '%1$s' valore: '%2$s'"
+msgstr "Filtrato Indice trovato all'OID: '%s' valore: '%s'"
 
 #: lib/data_query.php:1129
 #, php-format
@@ -16127,7 +16127,7 @@ msgstr "Elenco filtrante degli indici @ '%s' Index Count: %s"
 #: lib/data_query.php:1133
 #, php-format
 msgid "Filtered Index found at OID: '%s' value: '%s'"
-msgstr "Filtrato Indice trovato all'OID: '%1$s' valore: '%2$s'"
+msgstr "Filtrato Indice trovato all'OID: '%s' valore: '%s'"
 
 #: lib/data_query.php:1153
 #, php-format
@@ -16139,7 +16139,7 @@ msgstr ""
 #: lib/data_query.php:1160
 #, php-format
 msgid "Inserting index data for field '%s' [value='%s']"
-msgstr "Inserimento dei dati dell'indice per il campo '%1$s' [value='%2$s']"
+msgstr "Inserimento dei dati dell'indice per il campo '%s' [value='%s']"
 
 #: lib/data_query.php:1165
 #, php-format
@@ -16154,12 +16154,12 @@ msgstr ""
 #: lib/data_query.php:1185
 #, php-format
 msgid "oid_rewrite at OID: '%s' new OID: '%s'"
-msgstr "oid_rewrite a OID: '%1$s' nuovo OID: '%2$s'"
+msgstr "oid_rewrite a OID: '%s' nuovo OID: '%s'"
 
 #: lib/data_query.php:1206
 #, php-format
 msgid "Executing SNMP get for data @ '%s' [value='%s']"
-msgstr "Esecuzione di SNMP get per i dati @ '%1$s' [value='%2$s']"
+msgstr "Esecuzione di SNMP get per i dati @ '%s' [value='%s']"
 
 #: lib/data_query.php:1220
 #, php-format
@@ -16175,24 +16175,22 @@ msgstr "Esecuzione di SNMP ottenere per %s oids (%s)"
 #, php-format
 msgid "Sort field returned no data for Host[%s] DQ[%s], skipping."
 msgstr ""
-"Il campo di ordinamento non ha restituito dati per Host[%1$s] DQ[%2$s], "
-"ignorato."
+"Il campo di ordinamento non ha restituito dati per Host[%s] DQ[%s], ignorato."
 
 #: lib/data_query.php:1314
 #, php-format
 msgid "Found result for data @ '%s' [value='%s']"
-msgstr "Risultato trovato per i dati @ '%1$s' [value='%2$s']"
+msgstr "Risultato trovato per i dati @ '%s' [value='%s']"
 
 #: lib/data_query.php:1322
 #, php-format
 msgid "Setting result for data @ '%s' [key='%s', value='%s']"
-msgstr ""
-"Impostazione del risultato per i dati @ '%1$s' [tasto='%2$s', valore='%3$s']"
+msgstr "Impostazione del risultato per i dati @ '%s' [tasto='%s', valore='%s']"
 
 #: lib/data_query.php:1326
 #, php-format
 msgid "Skipped result for data @ '%s' [key='%s', value='%s']"
-msgstr "Risultato saltato per i dati @ '%1$s' [key='%2$s', value='%3$s']"
+msgstr "Risultato saltato per i dati @ '%s' [key='%s', value='%s']"
 
 #: lib/data_query.php:1340
 #, php-format
@@ -16235,7 +16233,7 @@ msgstr "Voce trovata [%s='%s'] indice: %s [da %s]"
 #: lib/data_query.php:1526
 #, php-format
 msgid "Found OCTET STRING '%s' decoded value: '%s'"
-msgstr "STRING OCTET STRING \"%1$s\" valore decodificato: \"%2$s\""
+msgstr "STRING OCTET STRING \"%s\" valore decodificato: \"%s\""
 
 #: lib/data_query.php:1532 lib/data_query.php:1586
 #, php-format
@@ -16245,8 +16243,7 @@ msgstr "Voce trovata [%s='%s'] indice: %s [da regexp oid parse]"
 #: lib/data_query.php:1618
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid value parse]"
-msgstr ""
-"Voce trovata [%1$s='%2$s'] indice: %3$s [dal valore del regexp oid parse]"
+msgstr "Voce trovata [%s='%s'] indice: %s [dal valore del regexp oid parse]"
 
 #: lib/data_query.php:1905
 #, php-format
@@ -16260,7 +16257,7 @@ msgstr "Impossibile analizzare la mappa di traduzione (rewrite_value)"
 #: lib/data_query.php:1945
 #, php-format
 msgid "rewrite_value: '%s' => '%s'"
-msgstr "rewrite_value: '%1$s' => '%2$s'"
+msgstr "rewrite_value: '%s' => '%s'"
 
 #: lib/data_query.php:2068
 msgid "Update graph data query cache complete"
@@ -16546,8 +16543,8 @@ msgid ""
 "Reason: %s.\n"
 "See Cacti Log for details."
 msgstr ""
-"Impossibile contattare l'agente remoto %1$s\n"
-"Motivo: %2$s.\n"
+"Impossibile contattare l'agente remoto %s\n"
+"Motivo: %s.\n"
 "Consulta il log di Cacti per i dettagli."
 
 #: lib/functions.php:7524
@@ -17074,7 +17071,7 @@ msgstr "Sempre attivo"
 
 #: lib/html.php:3265
 msgid "Quick"
-msgstr "Quick"
+msgstr "Rapido"
 
 #: lib/html.php:3266
 msgid "Save graph"
@@ -17929,7 +17926,7 @@ msgstr "Elenco notifiche in uso"
 #: lib/html_reports.php:2305
 #, php-format
 msgid "%s sec"
-msgstr "%s sec"
+msgstr "%s s"
 
 #: lib/html_reports.php:2307
 #, php-format
@@ -18127,7 +18124,7 @@ msgstr "L'immagine di percorso non è scrivibile"
 #: lib/installer.php:825
 #, php-format
 msgid "Failed to set specified %sRRDTool version: %s"
-msgstr "Impossibile impostare la versione %1$sRRDTool specificata: %2$s"
+msgstr "Impossibile impostare la versione %sRRDTool specificata: %s"
 
 #: lib/installer.php:885
 msgid "Invalid Theme Specified"
@@ -18268,7 +18265,7 @@ msgstr "Aggiorna versione"
 
 #: lib/installer.php:1955 lib/installer.php:3104 lib/installer.php:3169
 msgid "Downgrade"
-msgstr "Downgrade"
+msgstr "Declassamento"
 
 #: lib/installer.php:2062 support.php:1214
 msgid "Cacti Version"
@@ -18474,7 +18471,7 @@ msgstr "Tipo di installazione"
 #: lib/installer.php:2400
 #, php-format
 msgid "Upgrade from <strong>%s</strong> to <strong>%s</strong>"
-msgstr "Aggiornamento da <strong>%1$s</strong> a <strong>%2$s</strong>"
+msgstr "Aggiornamento da <strong>%s</strong> a <strong>%s</strong>"
 
 #: lib/installer.php:2402
 msgid "In the event of issues, It is highly recommended that you clear your browser cache, closing then reopening your browser (not just the tab Cacti is on) and retrying, before raising an issue with The Cacti Group"
@@ -18494,7 +18491,7 @@ msgstr "Se dopo aver cancellato la cache e riavviato il browser, si verificano a
 #: lib/installer.php:2411
 #, php-format
 msgid "Downgrade from <strong>%s</strong> to <strong>%s</strong>"
-msgstr "Declassamento da <strong>%1$s</strong> a <strong>%2$s</strong>"
+msgstr "Declassamento da <strong>%s</strong> a <strong>%s</strong>"
 
 #: lib/installer.php:2412
 msgid "You appear to be downgrading to a previous version.  Database changes made for the newer version will not be reversed and <i>could</i> cause issues."
@@ -19597,7 +19594,7 @@ msgstr "TCP Ping Successo (%s ms)"
 
 #: lib/ping.php:637
 msgid "TCP ping timed out"
-msgstr "TCP ping timed out"
+msgstr "Timeout del ping TCP"
 
 #: lib/ping.php:664
 msgid "Ping not performed due to setting."
@@ -19889,17 +19886,17 @@ msgstr ""
 #: lib/rrd.php:3475
 #, php-format
 msgid "Type for Data Source '%s' should be '%s'"
-msgstr "Tipo per la fonte dati \"%1$s\" dovrebbe essere \"%2$s\""
+msgstr "Tipo per la fonte dati \"%s\" dovrebbe essere \"%s\""
 
 #: lib/rrd.php:3481
 #, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
-msgstr "Battito cardiaco per la fonte dati \"%1$s\" dovrebbe essere \"%2$s\""
+msgstr "Battito cardiaco per la fonte dati \"%s\" dovrebbe essere \"%s\""
 
 #: lib/rrd.php:3493
 #, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
-msgstr "RRD minimo per la fonte dei dati \"%1$s\" dovrebbe essere \"%2$s\""
+msgstr "RRD minimo per la fonte dei dati \"%s\" dovrebbe essere \"%s\""
 
 #: lib/rrd.php:3502
 #, php-format
@@ -19909,12 +19906,12 @@ msgstr "DS \"%s\" mancanti nella definizione di Cacti"
 #: lib/rrd.php:3516 lib/rrd.php:3517
 #, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
-msgstr "Cacti RRA \"%1$s\" ha la stessa CF/passi (%2$s, %3$s) di \"%4$s\""
+msgstr "Cacti RRA \"%s\" ha la stessa CF/passi (%s, %s) di \"%s\""
 
 #: lib/rrd.php:3531 lib/rrd.php:3532
 #, php-format
 msgid "File RRA '%s' has same CF/steps (%s, %s) as '%s'"
-msgstr "Il file RRA \"%1$s\" ha la stessa CF/passi (%2$s, %3$s) di \"%4$s\""
+msgstr "Il file RRA \"%s\" ha la stessa CF/passi (%s, %s) di \"%s\""
 
 #: lib/rrd.php:3566
 #, php-format
@@ -19924,14 +19921,14 @@ msgstr "Il pdp_per_row di '%s' non è valido per RRA '%s' dovrebbe essere '%s'. 
 #: lib/rrd.php:3570
 #, php-format
 msgid "The XFF for Cacti RRA id is '%s' but should be '%s'"
-msgstr "Il valore XFF per l'ID RRA di Cacti è '%1$s' ma dovrebbe essere '%2$s'"
+msgstr "Il valore XFF per l'ID RRA di Cacti è '%s' ma dovrebbe essere '%s'"
 
 #: lib/rrd.php:3574
 #, php-format
 msgid "The number of rows for Cacti RRA id '%s' is incorrect.  The number of rows are '%s' but should be '%s'"
 msgstr ""
-"Il numero di righe per l'ID RRA di Cacti '%1$s' non è corretto. Il numero di "
-"righe è '%2$s' ma dovrebbe essere '%3$s'"
+"Il numero di righe per l'ID RRA di Cacti '%s' non è corretto. Il numero di "
+"righe è '%s' ma dovrebbe essere '%s'"
 
 #: lib/rrd.php:3593
 #, php-format
@@ -20025,15 +20022,12 @@ msgstr "Errore durante l'analisi dell'XML di RRDtool dump"
 #: lib/rrd.php:4331
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file"
-msgstr ""
-"RRA (CF=%1$s, ROWS=%2$d, PDP_PER_ROW=%3$d, XFF=%4$1.2f) rimosso dal file RRD"
+msgstr "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) rimosso dal file RRD"
 
 #: lib/rrd.php:4375
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file"
-msgstr ""
-"RRA (CF=%1$s, ROWS=%2$d, PDP_PER_ROW=%3$d, XFF=%4$1.2f) aggiungendo al file "
-"RRD"
+msgstr "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) aggiungendo al file RRD"
 
 #: lib/rrd.php:4472 lib/rrd.php:4488
 #, php-format
@@ -20154,7 +20148,7 @@ msgstr ""
 #: lib/spikekill.php:356
 #, php-format
 msgid "RRDfile:       %s"
-msgstr "RRDfile:       %s"
+msgstr "File RRD:       %s"
 
 #: lib/spikekill.php:357
 #, php-format
@@ -22121,8 +22115,7 @@ msgstr "Le directory dei plugin non possono includere spazi"
 #, php-format
 msgid "Plugin directory is not correct.  Should be '%s' but is '%s'"
 msgstr ""
-"La directory dei plugin non è corretta.  Dovrebbe essere \"%1$s\" ma è "
-"\"%2$s\""
+"La directory dei plugin non è corretta.  Dovrebbe essere \"%s\" ma è \"%s\""
 
 #: plugins.php:1937
 msgid "Plugin is integrated into Cacti core"
@@ -22175,15 +22168,14 @@ msgstr "Poller in modalità Heartbeat"
 msgid "WARNING: 24 Hour Poller[%d] Average run time threshold breached.  It is %f seconds (more than %d &#37; of threshold.)"
 msgstr ""
 "ATTENZIONE: superata la soglia del tempo medio di esecuzione nelle 24 ore "
-"per Poller[%1$d]. È di %2$f secondi (oltre il %3$d &#37; della soglia.)"
+"per Poller[%d]. È di %f secondi (oltre il %d &#37; della soglia.)"
 
 #: poller.php:1399
 #, php-format
 msgid "WARNING: In last hour Poller[%d] run time exceeded the threshold %d times (limit %d) by %d percent of the time limit."
 msgstr ""
-"ATTENZIONE: nell'ultima ora il tempo di esecuzione di Poller[%1$d] ha "
-"superato la soglia %2$d volte (limite %3$d) del %4$d percento rispetto al "
-"limite di tempo."
+"ATTENZIONE: nell'ultima ora il tempo di esecuzione di Poller[%d] ha superato "
+"la soglia %d volte (limite %d) del %d percento rispetto al limite di tempo."
 
 #: poller.php:1423
 msgid "Cacti System Notification"
@@ -22801,7 +22793,7 @@ msgstr "NOTA: le impostazioni del percorso in questa scheda vengono salvate solo
 #: settings.php:140
 #, php-format
 msgid "Cacti Settings (%s)%s"
-msgstr "Impostazioni di Cacti (%1$s)%2$s"
+msgstr "Impostazioni di Cacti (%s)%s"
 
 #: settings.php:264
 msgid "Changing Permission Model Warning"
@@ -23278,7 +23270,7 @@ msgstr "Supporto tecnico [ Processi in background ]"
 
 #: support.php:586 support.php:639
 msgid "Cacti Poller"
-msgstr "Cacti Poller"
+msgstr "Poller di Cacti"
 
 #: support.php:587
 msgid "Cacti Process"
@@ -23585,7 +23577,7 @@ msgstr "Timeout script"
 
 #: support.php:1412
 msgid "Max OID"
-msgstr "Max OID"
+msgstr "OID massimo"
 
 #: support.php:1417
 msgid "Last Run Statistics"
@@ -23790,7 +23782,7 @@ msgstr "Pubblica"
 #: tree.php:33
 msgctxt "dropdown action"
 msgid "Un-Publish"
-msgstr "Un-Publish"
+msgstr "Annulla pubblicazione"
 
 #: tree.php:34
 msgctxt "dropdown action"
@@ -23800,7 +23792,7 @@ msgstr "Sblocca"
 #: tree.php:406
 msgctxt "ordering of tree items"
 msgid "inherit"
-msgstr "inherit"
+msgstr "eredita"
 
 #: tree.php:410
 msgctxt "ordering of tree items"
@@ -24376,7 +24368,7 @@ msgstr "Permessi per i dispositivi"
 
 #: user_admin.php:1857 user_group_admin.php:1718
 msgid "Template Perms"
-msgstr "Template Perms"
+msgstr "Permessi modello"
 
 #: user_admin.php:1858 user_group_admin.php:1719
 msgid "Tree Perms"
