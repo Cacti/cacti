@@ -25,10 +25,16 @@
 $guest_account = true;
 
 require('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/help_error_guard.php');
 
 if (isrv('error')) {
-	$page  = basename(gnrv('page'));
-	$error = gfrv('error');
+	$known_pages = is_array($GLOBALS['user_auth_realm_filenames'] ?? null) ? $GLOBALS['user_auth_realm_filenames'] : [];
+	$page        = help_resolve_error_page((string) gnrv('page'), $known_pages, CACTI_PATH_BASE);
+	$error       = gfrv('error');
+
+	if ($page === null || !help_error_status_is_valid($error)) {
+		return;
+	}
 
 	if (isset($_SESSION['sess_user_id'])) {
 		$username = get_username($_SESSION['sess_user_id']);
@@ -41,7 +47,7 @@ if (isrv('error')) {
 	cacti_log($message, false);
 
 	if (debounce_run_notification('page_error_' . $page)) {
-		admin_email(__('Cacti System Warning'), __('WARNING: Cacti Page:%s for User:%s Generated a Fatal Error %d!', $page, $username, $error));
+		admin_email(__('Cacti System Warning'), __('WARNING: Cacti Page:%s for User:%s Generated a Fatal Error %d!', html_escape($page), html_escape($username), $error));
 	}
 } elseif (isrv('page')) {
 	gfrv('page', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
