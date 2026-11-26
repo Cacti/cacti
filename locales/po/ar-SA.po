@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-25 10:18+0000\n"
+"PO-Revision-Date: 2026-11-26 05:54+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Arabic (Saudi Arabia) <https://translate.cacti.net/projects/"
 "cacti/core/ar_SA/>\n"
@@ -1266,7 +1266,7 @@ msgstr "حذف الجهاز (الأجهزة)"
 #: lib/api_automation.php:76 lib/api_automation.php:1176
 #: lib/html_utility.php:1134 pollers.php:46
 msgid "Down"
-msgstr "معطل"
+msgstr "متوقف"
 
 #: automation_devices.php:55 automation_devices.php:375
 #: automation_devices.php:519 automation_devices.php:529
@@ -2445,7 +2445,7 @@ msgstr "قيمة المهلة لاستخدام المضيف ICMP و poding UDP. 
 #: automation_networks.php:1059 include/global_form.php:1370
 #: include/global_settings.php:1007
 msgid "Ping Retry Count"
-msgstr "بينغ إعادة المحاولة الكونت"
+msgstr "عدد مرات إعادة محاولة Ping"
 
 #: automation_networks.php:1060 include/global_form.php:1371
 msgid "After an initial failure, the number of ping retries Cacti will attempt before failing."
@@ -2555,7 +2555,7 @@ msgstr "بدأت في الماضي"
 
 #: automation_networks.php:1436 pollers.php:44 utilities.php:1492
 msgid "Running"
-msgstr "مفتوح"
+msgstr "قيد التشغيل"
 
 #: automation_networks.php:1462 pollers.php:45 utilities.php:1490
 msgid "Idle"
@@ -2578,7 +2578,7 @@ msgstr "لم يتم العثور على شبكات"
 #: support.php:335 support.php:579 support.php:616 utilities.php:372
 #: utilities.php:375 utilities.php:1412
 msgid "Refresh"
-msgstr "تحديث"
+msgstr "إنعاش"
 
 #: automation_networks.php:1542 automation_networks.php:1543
 #: automation_networks.php:1544 automation_networks.php:1545
@@ -2790,7 +2790,7 @@ msgstr "املأ اسم مجموعة خيارات SNMP هذه."
 #: lib/api_automation.php:1534 lib/api_automation.php:1624
 #: lib/html_reports.php:1709 vdef.php:577
 msgid "Item"
-msgstr "اعلان"
+msgstr "عنصر"
 
 #: automation_snmp.php:717 graph_templates.php:1802 host_templates.php:947
 #: include/auth.php:337 include/global_form.php:1165
@@ -4268,7 +4268,7 @@ msgstr "استعلام البرنامج النصي"
 
 #: data_input.php:524 include/global_arrays.php:523
 msgid "Script Server Query"
-msgstr "خادم سيناريو"
+msgstr "استعلام خادم النصوص البرمجية"
 
 #: data_input.php:533
 msgid "White List Verification Succeeded."
@@ -4888,7 +4888,7 @@ msgstr[5] "الرسوم البيانية التالية تستخدم مصادر 
 msgid "Leave the Graph Untouched"
 msgid_plural "Leave all Graphs untouched."
 msgstr[0] "ترك جميع الرسوم البيانية دون تغيير."
-msgstr[1] "ترك الرسم البياني دون تغيير."
+msgstr[1] "ترك الرسم البياني دون تغيير"
 msgstr[2] "ترك كلا الرسمين البيانيين دون تغيير."
 msgstr[3] "ترك جميع الرسوم البيانية دون تغيير."
 msgstr[4] "ترك جميع الرسوم البيانية دون تغيير."
@@ -4898,7 +4898,7 @@ msgstr[5] "ترك جميع الرسوم البيانية دون تغيير."
 msgid "Delete all Graph Items that reference this Data Source."
 msgid_plural "Delete all Graph Items that reference these Data Sources"
 msgstr[0] "حذف جميع عناصر الرسم البياني التي تشير إلى مصادر البيانات هذه"
-msgstr[1] "حذف جميع عناصر الرسم البياني التي تشير إلى مصدر البيانات هذا"
+msgstr[1] "حذف جميع عناصر الرسم البياني التي تشير إلى مصدر البيانات هذا."
 msgstr[2] "حذف جميع عناصر الرسم البياني التي تشير إلى مصدري البيانات هذين"
 msgstr[3] "حذف جميع عناصر الرسم البياني التي تشير إلى مصادر البيانات هذه"
 msgstr[4] "حذف جميع عناصر الرسم البياني التي تشير إلى مصادر البيانات هذه"
@@ -4908,7 +4908,7 @@ msgstr[5] "حذف جميع عناصر الرسم البياني التي تشي�
 msgid "Delete all Graphs that reference this Data Source."
 msgid_plural "Delete all Graphs that reference these Data Sources"
 msgstr[0] "حذف جميع الرسوم البيانية التي تشير إلى مصادر البيانات هذه"
-msgstr[1] "حذف جميع الرسوم البيانية التي تشير إلى مصدر البيانات هذا"
+msgstr[1] "حذف جميع الرسوم البيانية التي تشير إلى مصدر البيانات هذا."
 msgstr[2] "حذف جميع الرسوم البيانية التي تشير إلى مصدري البيانات هذين"
 msgstr[3] "حذف جميع الرسوم البيانية التي تشير إلى مصادر البيانات هذه"
 msgstr[4] "حذف جميع الرسوم البيانية التي تشير إلى مصادر البيانات هذه"
@@ -6610,7 +6610,7 @@ msgstr "انقر فوق &quot;متابعة&quot; لتمكين الأجهزة (ا
 
 #: host.php:502
 msgid "Enable Device"
-msgstr "تمكين الأجهزة (الأجهزة)"
+msgstr "تمكين الجهاز"
 
 #: host.php:503
 msgid "Enable Devices"
@@ -6934,7 +6934,7 @@ msgstr ""
 
 #: host.php:1808
 msgid "In State"
-msgstr "الحالة"
+msgstr "في الحالة"
 
 #: host.php:1811
 msgid "The amount of time that this Device has been in its current state."
@@ -7567,7 +7567,7 @@ msgstr "مصدر بيانات البند البياني الحالي"
 
 #: include/global_arrays.php:520 include/global_arrays.php:529
 msgid "Script/Command"
-msgstr "النصي / القيادة"
+msgstr "نص برمجي/أمر"
 
 #: include/global_arrays.php:522 include/global_arrays.php:530
 #: utilities.php:1038
@@ -7807,7 +7807,7 @@ msgstr "ICMP بينغ"
 
 #: include/global_arrays.php:702
 msgid "TCP Ping"
-msgstr "برنامج التعاون الفني بينغ"
+msgstr "بينغ TCP"
 
 #: include/global_arrays.php:703
 msgid "TCP Ping Closed"
@@ -8658,7 +8658,7 @@ msgstr "وردية نهارية"
 
 #: include/global_arrays.php:1583
 msgid "This Day"
-msgstr "كل يوم"
+msgstr "هذا اليوم"
 
 #: include/global_arrays.php:1584
 msgid "This Week"
@@ -9808,7 +9808,9 @@ msgstr "مستوى التجميع"
 
 #: include/global_form.php:300
 msgid "The number of samples required prior to filling a row in the RRA specification.  The first RRA should always have a value of 1."
-msgstr "عدد العينات المطلوبة قبل ملء صف في مواصفات RRA. ينبغي أن يكون لوادى RRA دائمًا قيمة 1."
+msgstr ""
+"عدد العينات المطلوبة قبل ملء صف في مواصفات RRA. ينبغي أن تكون لأول RRA قيمة "
+"1 دائمًا."
 
 #: include/global_form.php:308
 msgid "How many generations data is kept in the RRA."
@@ -10470,7 +10472,7 @@ msgstr "يعمل مُعد الشرط على تمكين نمط الخط المت�
 
 #: include/global_form.php:1128
 msgid "Dash Offset (dash-offset=offset)"
-msgstr "Dash Offset (اندفاعة - إزاحة = تخالف)"
+msgstr "إزاحة الشرطة (dash-offset=offset)"
 
 #: include/global_form.php:1133 include/global_form.php:1141
 msgid "The dash-offset parameter specifies an offset into the pattern at which the stroke begins."
@@ -14061,7 +14063,7 @@ msgstr "اعرض عنوان الرسم البياني في الصفحة حتى �
 
 #: include/global_settings.php:2918
 msgid "Hide Disabled"
-msgstr "إخفاء المعاقين"
+msgstr "إخفاء العناصر المعطلة"
 
 #: include/global_settings.php:2919
 msgid "Hides Disabled Devices and Graphs when viewing outside of Console tab."
@@ -14651,14 +14653,14 @@ msgstr ""
 #: lib/api_automation.php:5309 lib/api_automation.php:5311
 #: lib/api_automation.php:5404 lib/api_automation.php:5406
 msgid "Imported"
-msgstr "استيراد"
+msgstr "مستورد"
 
 #: lib/api_automation.php:5273 lib/api_automation.php:5275
 #: lib/api_automation.php:5309 lib/api_automation.php:5311
 #: lib/api_automation.php:5404 lib/api_automation.php:5406
 #: package_import.php:1213 templates_import.php:289
 msgid "Updated"
-msgstr "تحديث"
+msgstr "تم التحديث"
 
 #: lib/api_automation.php:5279 lib/api_automation.php:5281
 #, php-format
@@ -17148,7 +17150,7 @@ msgstr "التقارير"
 
 #: lib/html_reports.php:2061 tree.php:2246
 msgid "Owner"
-msgstr "المشارك"
+msgstr "المالك"
 
 #: lib/html_reports.php:2062 lib/html_reports.php:2073
 msgid "Frequency"
@@ -22019,11 +22021,11 @@ msgstr "جداول قاعدة البيانات"
 
 #: support.php:49
 msgid "Database Settings"
-msgstr "إعدادات تخزين البيانات"
+msgstr "إعدادات قاعدة البيانات"
 
 #: support.php:50
 msgid "Database Status"
-msgstr "قاعدة البيانات"
+msgstr "حالة قاعدة البيانات"
 
 #: support.php:51
 msgid "Database Permissions"
@@ -23831,7 +23833,7 @@ msgstr "النجاح - الرمز المميز"
 
 #: user_log.php:181 user_log.php:318
 msgid "Success - Password Change"
-msgstr "النجاح - Pswd"
+msgstr "نجاح - تغيير كلمة المرور"
 
 #: user_log.php:186
 msgid "Attempts"
