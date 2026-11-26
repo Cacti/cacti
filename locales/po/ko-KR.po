@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-25 22:34+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Korean <https://translate.cacti.net/projects/cacti/core-v1-2-x/ko/>\nLanguage: ko-KR\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-26 05:54+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Korean <https://translate.cacti.net/projects/cacti/core-v1-2-x/ko/>\nLanguage: ko-KR\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -552,10 +552,8 @@ msgid "No Aggregate Graphs Found"
 msgstr "누적 된 그래프 없음"
 
 #: aggregate_templates.php
-#, fuzzy
-#| msgid "No Aggregate Templates Found"
 msgid "Aggregate Template not found."
-msgstr "누적 된 템플릿 없음"
+msgstr "집계 템플릿을 찾을 수 없습니다."
 
 #: aggregate_templates.php
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -2442,7 +2440,7 @@ msgstr "이 Color 정의의 이름입니다."
 
 #: color.php
 msgid "Is this color a named color which are read only."
-msgstr "이 색은 읽기 전용 인 명명 된 색입니까?."
+msgstr "이 색상이 읽기 전용인 명명된 색상인지 여부입니다."
 
 #: color.php
 msgid "Named Color"
@@ -2535,10 +2533,8 @@ msgid "Delete Color Item"
 msgstr "색상 항목 삭제"
 
 #: color_templates.php
-#, fuzzy
-#| msgid "No Color Templates Found"
 msgid "Color Template not found."
-msgstr "색상 템플릿을 찾을 수 없음"
+msgstr "색상 템플릿을 찾을 수 없습니다."
 
 #: color_templates.php
 #, php-format
@@ -2572,10 +2568,8 @@ msgid "No Color Templates Found"
 msgstr "색상 템플릿을 찾을 수 없음"
 
 #: color_templates_items.php
-#, fuzzy
-#| msgid "Color Template Items"
 msgid "Color Template or Item not found."
-msgstr "색상 템플릿 항목"
+msgstr "색상 템플릿 또는 항목을 찾을 수 없습니다."
 
 #: color_templates_items.php
 msgid "Click 'Continue' to delete the following Color Template Color."
@@ -3016,7 +3010,7 @@ msgstr "스크립트 쿼리"
 
 #: data_input.php include/global_arrays.php
 msgid "Script Server Query"
-msgstr "스크립트 서버"
+msgstr "스크립트 서버 쿼리"
 
 #: data_input.php
 msgid "White List Verification Succeeded."
@@ -3197,7 +3191,7 @@ msgstr "제안 된 값 없음"
 #: data_queries.php include/global_form.php lib/api_automation.php
 #: utilities.php
 msgid "Field Name"
-msgstr "Field Name"
+msgstr "필드 이름"
 
 #: data_queries.php
 msgid "Suggested Value"
@@ -3981,10 +3975,8 @@ msgid "Delete GPRINT Preset(s)"
 msgstr "GPRINT 프리셋 삭제"
 
 #: gprint_presets.php
-#, fuzzy
-#| msgid "GPRINT Preset"
 msgid "GPRINT Preset not found."
-msgstr "GPRINT 프리셋"
+msgstr "GPRINT 프리셋을 찾을 수 없습니다."
 
 #: gprint_presets.php
 #, php-format
@@ -4235,10 +4227,8 @@ msgid "No Inputs"
 msgstr "입력 없음"
 
 #: graph_templates.php
-#, fuzzy
-#| msgid "No Graph Templates Found"
 msgid "Graph Template not found."
-msgstr "그래프 템플릿 없음"
+msgstr "그래프 템플릿을 찾을 수 없습니다."
 
 #: graph_templates.php
 #, php-format
@@ -5737,10 +5727,8 @@ msgid "Unable to determine size of password field, please check permissions of d
 msgstr "암호 필드의 크기를 확인할 수 없습니다. db 사용자의 권한을 확인하십시오"
 
 #: include/global_arrays.php
-#, fuzzy
-#| msgid "Unable to increase size of password field, pleas check permission of db user"
 msgid "Unable to increase size of password field, please check permission of db user"
-msgstr "암호 필드의 크기를 늘릴 수 없습니다. db 사용자의 허가를 확인하십시오."
+msgstr "암호 필드의 크기를 늘릴 수 없습니다. DB 사용자의 권한을 확인하십시오"
 
 #: include/global_arrays.php
 msgid "LDAP/AD based password change not supported."
@@ -6655,7 +6643,7 @@ msgstr "최근 %d시간"
 
 #: include/global_arrays.php
 msgid "Last Day"
-msgstr "Last Day"
+msgstr "최근 1일"
 
 #: include/global_arrays.php
 #, php-format
@@ -8365,7 +8353,7 @@ msgstr "대시 수식자는 파선 스타일을 사용합니다."
 
 #: include/global_form.php
 msgid "Dash Offset (dash-offset=offset)"
-msgstr "대시 오프셋 (대시 오프셋 = 오프셋)"
+msgstr "대시 오프셋 (dash-offset=offset)"
 
 #: include/global_form.php
 msgid "The dash-offset parameter specifies an offset into the pattern at which the stroke begins."
@@ -9179,7 +9167,7 @@ msgstr "로그 대상"
 
 #: include/global_settings.php
 msgid "How will Cacti handle event logging."
-msgstr "Cacti는 어떻게 이벤트 로깅을 처리 할 것입니까?."
+msgstr "Cacti가 이벤트 로깅을 처리하는 방식입니다."
 
 #: include/global_settings.php
 msgid "Generic Log Level"
@@ -9307,7 +9295,7 @@ msgstr "MySQL - TimeZone 지원"
 
 #: include/global_settings.php
 msgid "How should Cacti support Client Dates based upon the Client browsers timezone."
-msgstr "Cacti는 클라이언트 브라우저 시간대에 따라 클라이언트 날짜를 어떻게 지원해야 합니까?."
+msgstr "Cacti가 클라이언트 브라우저 시간대에 따라 클라이언트 날짜를 지원하는 방식입니다."
 
 #: include/global_settings.php
 msgid "Date Display Format"
@@ -9961,7 +9949,7 @@ msgstr "로그 테일 새로 고침"
 
 #: include/global_settings.php
 msgid "How often do you want the Cacti log display to update."
-msgstr "Cacti 로그 표시를 얼마나 자주 업데이트 하시겠습니까?."
+msgstr "Cacti 로그 화면을 업데이트할 주기입니다."
 
 #: include/global_settings.php
 msgid "Log Viewer Settings"
@@ -13294,7 +13282,7 @@ msgstr "기타"
 
 #: lib/html.php
 msgid "Dashboards"
-msgstr "Dashboards"
+msgstr "대시보드"
 
 #: lib/html.php
 msgid "Charts"
@@ -15892,10 +15880,8 @@ msgid "Optional Tuning Recommendations"
 msgstr "선택적 튜닝 권장 사항"
 
 #: lib/rrd.php
-#, fuzzy
-#| msgid "Enter a valid file path"
 msgid "ERROR: Invalid RRDfile path"
-msgstr "유효한 파일 경로를 입력하십시오."
+msgstr "오류: 잘못된 RRDfile 경로"
 
 #: lib/rrd.php
 msgid "Error while parsing the XML of rrdtool dump"
@@ -16412,10 +16398,8 @@ msgid "Number of I/O threads used for read operations in InnoDB."
 msgstr ""
 
 #: lib/utility.php
-#, fuzzy
-#| msgid "default"
 msgid "1-64; default 4."
-msgstr "기본"
+msgstr "1-64; 기본값 4."
 
 #: lib/utility.php
 msgid "Number of I/O threads used for write operations in InnoDB."
@@ -16843,7 +16827,7 @@ msgstr "자동 페이지 새로 고침"
 
 #: links.php
 msgid "How often do you wish this page to be refreshed automatically."
-msgstr "얼마나 자주이 페이지가 자동으로 새로 고침되기를 원하십니까?."
+msgstr "이 페이지를 자동으로 새로 고침할 주기입니다."
 
 #: links.php
 #, php-format
@@ -19443,10 +19427,8 @@ msgid "PHP SNMP"
 msgstr "PHP SNMP"
 
 #: utilities.php
-#, fuzzy
-#| msgid "Installed"
 msgid "Installed."
-msgstr "설치됨"
+msgstr "설치됨."
 
 #: utilities.php
 msgid "You've set memory limit to 'unlimited'."
