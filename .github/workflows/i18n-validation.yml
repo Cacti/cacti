@@ -1,0 +1,131 @@
+# +-------------------------------------------------------------------------+
+# | Copyright (C) 2004-2026 The Cacti Group                                 |
+# |                                                                         |
+# | This program is free software; you can redistribute it and/or           |
+# | modify it under the terms of the GNU General Public License             |
+# | as published by the Free Software Foundation; either version 2          |
+# | of the License, or (at your option) any later version.                  |
+# +-------------------------------------------------------------------------+
+
+name: i18n Validation
+
+on:
+  pull_request:
+    branches:
+      - 1.2.x
+    paths:
+      - 'locales/po/*.po'
+      - 'locales/po/cacti.pot'
+      - '.github/workflows/i18n-validation.yml'
+      - 'tests/tools/audit_po.py'
+      - 'tests/tools/test_audit_po.py'
+      - 'tests/tools/audit_pot.py'
+      - 'tests/tools/test_audit_pot.py'
+      - 'tests/tools/run_msgcheck.py'
+      - 'tests/tools/test_run_msgcheck.py'
+  push:
+    branches:
+      - 1.2.x
+    paths:
+      - 'locales/po/*.po'
+      - 'locales/po/cacti.pot'
+      - '.github/workflows/i18n-validation.yml'
+      - 'tests/tools/audit_po.py'
+      - 'tests/tools/test_audit_po.py'
+      - 'tests/tools/audit_pot.py'
+      - 'tests/tools/test_audit_pot.py'
+      - 'tests/tools/run_msgcheck.py'
+      - 'tests/tools/test_run_msgcheck.py'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-po:
+    name: Validate Translation Files
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq && sudo apt-get install -y gettext
+          python3 -m pip install --only-binary=:all: msgcheck==4.2.0 polib==1.2.0
+
+      - name: Run i18n tool unit tests
+        run: python3 -m unittest tests/tools/test_audit_po.py tests/tools/test_audit_pot.py tests/tools/test_run_msgcheck.py
+
+      - name: Identify changed translation files
+        id: changed
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PUSH_BEFORE: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            BASE="$PR_BASE_SHA"
+          else
+            BASE="$PUSH_BEFORE"
+          fi
+          # Fall back to HEAD alone on the first push to a branch, or after a
+          # force-push whose previous head is no longer in the clone.
+          if [ -z "$BASE" ] || ! git cat-file -e "${BASE}^{commit}" 2>/dev/null; then
+            git show --name-only --diff-filter=d --format="" HEAD -- 'locales/po/*.po' > /tmp/changed_po.txt
+            POT_CHANGED=$(git show --name-only --diff-filter=d --format="" HEAD -- 'locales/po/cacti.pot' | grep -c '.' || true)
+          else
+            git diff --name-only --diff-filter=d "$BASE" HEAD -- 'locales/po/*.po' > /tmp/changed_po.txt
+            POT_CHANGED=$(git diff --name-only --diff-filter=d "$BASE" HEAD -- 'locales/po/cacti.pot' | grep -c '.' || true)
+            echo "base=$BASE" >> "$GITHUB_OUTPUT"
+          fi
+          COUNT=$(grep -c '.' /tmp/changed_po.txt || true)
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+          echo "pot_changed=$POT_CHANGED" >> "$GITHUB_OUTPUT"
+          echo "Changed .po files ($COUNT):"
+          cat /tmp/changed_po.txt
+
+      - name: Run msgfmt syntax and format-string check
+        if: steps.changed.outputs.count != '0'
+        run: xargs -a /tmp/changed_po.txt -I{} msgfmt -c -v -o /dev/null {}
+
+      - name: Run msgcheck linter
+        if: steps.changed.outputs.count != '0'
+        run: xargs -a /tmp/changed_po.txt python3 tests/tools/run_msgcheck.py --error-on-fuzzy --no-lines
+
+      # Audit only entries this change touches, so existing problems elsewhere
+      # in a catalog do not fail an unrelated translation update.
+      - name: Run custom HTML and placeholder audit
+        if: steps.changed.outputs.count != '0'
+        env:
+          BASE: ${{ steps.changed.outputs.base }}
+        run: |
+          set -euo pipefail
+          if [ -n "$BASE" ]; then
+            xargs -a /tmp/changed_po.txt python3 tests/tools/audit_po.py --base "$BASE"
+          else
+            xargs -a /tmp/changed_po.txt python3 tests/tools/audit_po.py
+          fi
+
+      - name: Run POT source-string audit
+        if: steps.changed.outputs.pot_changed != '0'
+        env:
+          BASE: ${{ steps.changed.outputs.base }}
+        run: |
+          set -euo pipefail
+          if [ -n "$BASE" ]; then
+            python3 tests/tools/audit_pot.py --base "$BASE" locales/po/cacti.pot
+          else
+            python3 tests/tools/audit_pot.py locales/po/cacti.pot
+          fi
