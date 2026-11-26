@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-26 05:54+0000\n"
+"PO-Revision-Date: 2026-11-26 19:34+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Hebrew (Israel) <https://translate.cacti.net/projects/cacti/"
 "core/he_IL/>\n"
@@ -3767,8 +3767,7 @@ msgstr "תבנית צבע [חדש]"
 #: color_templates.php:762
 #, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
-msgstr ""
-"מתבנית הצבע '%1$s' הופצו %2$d תבניות מצטברות ו-%3$d גרפים מצטברים ללא תבנית"
+msgstr "מתבנית הצבע '%s' הופצו %d תבניות מצטברות ו-%d גרפים מצטברים ללא תבנית"
 
 #: color_templates.php:764
 #, php-format
@@ -6320,8 +6319,8 @@ msgstr "שגיאה בניתוח קובץ XML של משאב שאילתת נתונ
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'.  Field Name '%s' missing a 'direction' attribute"
 msgstr ""
-"שגיאה בפענוח קובץ XML של משאב שאילתת נתונים עבור שאילתת הנתונים '%1$s' עם "
-"מזהה '%2$s'. לשם השדה '%3$s' חסרה תכונת 'direction'"
+"שגיאה בפענוח קובץ XML של משאב שאילתת נתונים עבור שאילתת הנתונים '%s' עם מזהה "
+"'%s'. לשם השדה '%s' חסרה תכונת 'direction'"
 
 #: graphs_new.php:699
 #, php-format
@@ -6372,14 +6371,14 @@ msgstr "קבע כברירת מחדל"
 #: help.php:44
 #, php-format
 msgid "WARNING: Cacti Page:%s for User:%s Generated a Fatal Error %d!"
-msgstr "אזהרה: דף Cacti:%1$s עבור משתמש:%2$s יצר שגיאה קריטית %3$d!"
+msgstr "אזהרה: דף Cacti:%s עבור משתמש:%s יצר שגיאה קריטית %d!"
 
 #: help.php:74
 #, php-format
 msgid "The Document page '%s' count not be reached.  The Cacti Documentation site is not reachable.  The http error was '%s'.  Consider downloading an official release to obtain the latest documentation and hosting the documentation locally."
 msgstr ""
-"לא ניתן היה להגיע אל דף התיעוד '%1$s'. אתר התיעוד של Cacti אינו זמין. שגיאת "
-"ה-HTTP הייתה '%2$s'. שקול להוריד גרסה רשמית כדי לקבל את התיעוד העדכני ביותר "
+"לא ניתן היה להגיע אל דף התיעוד '%s'. אתר התיעוד של Cacti אינו זמין. שגיאת ה-"
+"HTTP הייתה '%s'. שקול להוריד גרסה רשמית כדי לקבל את התיעוד העדכני ביותר "
 "ולארח את התיעוד באופן מקומי."
 
 #: help.php:88
@@ -6679,7 +6678,7 @@ msgstr "שיטת אינדקס מחדש"
 #: host.php:982
 #, php-format
 msgid " [%d Items, %d Rows]"
-msgstr " [%1$d פריטים, %2$d שורות]"
+msgstr " [%d פריטים, %d שורות]"
 
 #: host.php:982
 msgid "Fail"
@@ -7642,7 +7641,7 @@ msgstr "זמן פעולה של SNMP"
 
 #: include/global_arrays.php:694
 msgid "SNMP Desc"
-msgstr "SNMP Desc"
+msgstr "תיאור SNMP"
 
 #: include/global_arrays.php:695
 msgid "SNMP getNext"
@@ -8476,7 +8475,7 @@ msgstr "יום אחרון"
 #: include/global_arrays.php:1572
 #, php-format
 msgid "Last %d Days"
-msgstr ""
+msgstr "%d הימים האחרונים"
 
 #: include/global_arrays.php:1573
 msgid "Last Week"
@@ -8585,13 +8584,13 @@ msgstr "%d מגה-בייט"
 
 #: include/global_arrays.php:1680
 msgid "1 GByte"
-msgstr "1 GByte"
+msgstr "1 ג'יגה-בייט"
 
 #: include/global_arrays.php:1681 include/global_arrays.php:1744
 #: lib/boost.php:62
 #, php-format
 msgid "%s GBytes"
-msgstr "%s GBytes"
+msgstr "%s ג'יגה-בייט"
 
 #: include/global_arrays.php:1682 include/global_arrays.php:1683
 #: include/global_arrays.php:1745 include/global_arrays.php:1746
@@ -11776,31 +11775,31 @@ msgstr "אם Cacti לא יכול לקבוע את מהירות הממשק בשל 
 
 #: include/global_settings.php:841
 msgid "100 Mbps Ethernet"
-msgstr "100 Mbps Ethernet"
+msgstr "אתרנט 100 Mbps"
 
 #: include/global_settings.php:842
 msgid "1 Gbps Ethernet"
-msgstr "1 Gbps Ethernet"
+msgstr "אתרנט 1 Gbps"
 
 #: include/global_settings.php:843
 msgid "10 Gbps Ethernet"
-msgstr "10 Gbps Ethernet"
+msgstr "אתרנט 10 Gbps"
 
 #: include/global_settings.php:844
 msgid "25 Gbps Ethernet"
-msgstr "25 Gbps Ethernet"
+msgstr "אתרנט 25 Gbps"
 
 #: include/global_settings.php:845
 msgid "40 Gbps Ethernet"
-msgstr "40 Gbps Ethernet"
+msgstr "אתרנט 40 Gbps"
 
 #: include/global_settings.php:846
 msgid "56 Gbps Ethernet"
-msgstr "56 Gbps Ethernet"
+msgstr "אתרנט 56 Gbps"
 
 #: include/global_settings.php:847
 msgid "100 Gbps Ethernet"
-msgstr "100 Gbps Ethernet"
+msgstr "אתרנט 100 Gbps"
 
 #: include/global_settings.php:851
 msgid "SNMP Defaults"
@@ -14857,12 +14856,12 @@ msgstr " - תצוגת מנהל מערכת"
 #: lib/clog_webapi.php:290
 #, php-format
 msgid "Log [Total Lines: %d %s - Filter active]"
-msgstr "יומן [סה\"כ שורות: %1$d %2$s - מסנן פעיל]"
+msgstr "יומן [סה\"כ שורות: %d %s - מסנן פעיל]"
 
 #: lib/clog_webapi.php:292
 #, php-format
 msgid "Log [Total Lines: %d %s - Unfiltered]"
-msgstr "יומן [סה\"כ שורות: %1$d %2$s - ללא סינון]"
+msgstr "יומן [סה\"כ שורות: %d %s - ללא סינון]"
 
 #: lib/clog_webapi.php:297 utilities.php:430 utilities.php:791
 #: utilities.php:1042 utilities.php:1045 utilities.php:1141 utilities.php:2008
@@ -14984,7 +14983,7 @@ msgstr "הפעלת שאילתת נתונים [ %s]."
 #: lib/data_query.php:113
 #, php-format
 msgid "Found Type = '%s' [%s]."
-msgstr "נמצא סוג = '%1$s' [%2$s]."
+msgstr "נמצא סוג = '%s' [%s]."
 
 #: lib/data_query.php:135
 #, php-format
@@ -15017,7 +15016,7 @@ msgstr "הסרת אינדקס זוהתה! הקודם Endex: %s."
 #: lib/data_query.php:326
 #, php-format
 msgid "Index Removal Detected! PreviousIndex: %s"
-msgstr "זוהתה הסרת אינדקס! אינדקס קודם: %s"
+msgstr "הסרת אינדקס זוהתה! האינדקס הקודם: %s"
 
 #: lib/data_query.php:360
 #, php-format
@@ -15049,8 +15048,7 @@ msgstr "איגוד המדדים עם נתונים מקומיים הושלם"
 #, php-format
 msgid "Update Re-Index Cache complete. There were %s index changes, and %s orphaned indexes."
 msgstr ""
-"עדכון מטמון האינדוקס מחדש הושלם. היו %1$s שינויי אינדקס ו-%2$s אינדקסים "
-"יתומים."
+"עדכון מטמון האינדוקס מחדש הושלם. היו %s שינויי אינדקס ו-%s אינדקסים יתומים."
 
 #: lib/data_query.php:396
 msgid "Update Poller Cache for Query complete"
@@ -15075,7 +15073,7 @@ msgstr "בדיקת שינוי שדה מיון. לא זוהו שינויים."
 #: lib/data_query.php:509
 #, php-format
 msgid "Detected New Sort Field: '%s' Old Sort Field '%s'"
-msgstr "שדה מיון חדש זוהה: '%1$s' שדה מיון ישן '%2$s'"
+msgstr "שדה מיון חדש זוהה: '%s' שדה מיון ישן '%s'"
 
 #: lib/data_query.php:526
 msgid "ERROR: New Sort Field not suitable.  Sort Field will not change."
@@ -15183,7 +15181,7 @@ msgstr "נמצא פריט [%s='%s'] אינדקס: %s"
 #: lib/data_query.php:799 lib/data_query.php:814
 #, php-format
 msgid "Total: %f, Delta: %f, %s"
-msgstr "סה\"כ: %1$f, הפרש: %2$f, %3$s"
+msgstr "סה\"כ: %f, הפרש: %f, %s"
 
 #: lib/data_query.php:839
 #, php-format
@@ -15238,7 +15236,7 @@ msgstr "לא הוחזרו נתוני SNMP"
 #: lib/data_query.php:950
 #, php-format
 msgid "Index found at OID: '%s' value: '%s'"
-msgstr "אינדקס שנמצא ב-OID: '%1$s' ערך: '%2$s'"
+msgstr "אינדקס שנמצא ב-OID: '%s' ערך: '%s'"
 
 #: lib/data_query.php:966
 #, php-format
@@ -15248,7 +15246,7 @@ msgstr "רשימת אינדקסים מסוננת לפי ערך @ '%s' ספירת
 #: lib/data_query.php:970
 #, php-format
 msgid "Filtered Index by value found at OID: '%s' value: '%s'"
-msgstr "אינדקס מסונן לפי ערך נמצא ב-OID: '%1$s' ערך: '%2$s'"
+msgstr "אינדקס מסונן לפי ערך נמצא ב-OID: '%s' ערך: '%s'"
 
 #: lib/data_query.php:987
 #, php-format
@@ -15258,7 +15256,7 @@ msgstr "סינון רשימת אינדקסים @ '%s' ספירת אינדקסי�
 #: lib/data_query.php:991
 #, php-format
 msgid "Filtered Index found at OID: '%s' value: '%s'"
-msgstr "אינדקס מסונן נמצא ב-OID: '%1$s' ערך: '%2$s'"
+msgstr "אינדקס מסונן נמצא ב-OID: '%s' ערך: '%s'"
 
 #: lib/data_query.php:1011
 #, php-format
@@ -15270,32 +15268,32 @@ msgstr ""
 #: lib/data_query.php:1018
 #, php-format
 msgid "Inserting index data for field '%s' [value='%s']"
-msgstr "הוספת נתוני אינדקס לשדה &#39; %s&#39; [value = &#39; %s&#39;]"
+msgstr "הוספת נתוני אינדקס לשדה '%s' [value='%s']"
 
 #: lib/data_query.php:1023
 #, php-format
 msgid "Located input field '%s' [get]"
-msgstr "שדה קלט ממוקם &#39; %s&#39; [get]"
+msgstr "אותר שדה קלט '%s' [get]"
 
 #: lib/data_query.php:1032
 #, php-format
 msgid "Found OID rewrite rule: 's/%s/%s/'"
-msgstr "נמצא כלל שכתוב OID: 's/%1$s/%2$s/'"
+msgstr "נמצא כלל שכתוב OID: 's/%s/%s/'"
 
 #: lib/data_query.php:1043
 #, php-format
 msgid "oid_rewrite at OID: '%s' new OID: '%s'"
-msgstr "oid_rewrite ב- OID: &#39; %1$s&#39; חדש OID: &#39; %2$s&#39"
+msgstr "oid_rewrite ב-OID: '%s', ערך OID חדש: '%s'"
 
 #: lib/data_query.php:1064
 #, php-format
 msgid "Executing SNMP get for data @ '%s' [value='%s']"
-msgstr "ביצוע SNMP עבור נתונים @ &#39; %s&#39; [ערך = &#39; %s&#39;]"
+msgstr "ביצוע SNMP get עבור נתונים @ '%s' [value='%s']"
 
 #: lib/data_query.php:1076
 #, php-format
 msgid "Field '%s' %s"
-msgstr "שדה &#39; %s&#39; %s"
+msgstr "שדה '%s' %s"
 
 #: lib/data_query.php:1140
 #, php-format
@@ -15310,32 +15308,32 @@ msgstr "שדה המיון לא החזיר נתונים עבור OID[%s], מדל�
 #: lib/data_query.php:1171
 #, php-format
 msgid "Found result for data @ '%s' [value='%s']"
-msgstr "נמצאה תוצאה של נתונים @ &#39; %s&#39; [value = &#39; %s&#39;]"
+msgstr "נמצאה תוצאה עבור נתונים @ '%s' [value='%s']"
 
 #: lib/data_query.php:1179
 #, php-format
 msgid "Setting result for data @ '%s' [key='%s', value='%s']"
-msgstr "הגדרת תוצאה עבור נתונים @ &#39; %s&#39; [key = &#39; %s&#39;, value = &#39; %s&#39;]"
+msgstr "הגדרת תוצאה עבור נתונים @ '%s' [key='%s', value='%s']"
 
 #: lib/data_query.php:1183
 #, php-format
 msgid "Skipped result for data @ '%s' [key='%s', value='%s']"
-msgstr "התוצאה דילגה עבור נתונים @ &#39; %s&#39; [key = &#39; %s&#39;, value = &#39; %s&#39;]"
+msgstr "דילוג על תוצאה עבור נתונים @ '%s' [key='%s', value='%s']"
 
 #: lib/data_query.php:1197
 #, php-format
 msgid "Got SNMP get result for data @ '%s' [value='%s'] (index: %s)"
-msgstr "קיבלת תוצאה של SNMP עבור נתונים @ &#39; %s&#39; [value = &#39; %s&#39;] (index: %s)"
+msgstr "התקבלה תוצאת SNMP get עבור נתונים @ '%s' [value='%s'] (index: %s)"
 
 #: lib/data_query.php:1227
 #, php-format
 msgid "Executing SNMP get for data @ '%s' [value='$value']"
-msgstr "ביצוע SNMP עבור נתונים @ &#39; %s&#39; [value = &#39;$ value&#39;]"
+msgstr "ביצוע SNMP get עבור נתונים @ '%s' [ערך='$value']"
 
 #: lib/data_query.php:1235
 #, php-format
 msgid "Located input field '%s' [walk]"
-msgstr "שדה קלט נמצא &#39; %s&#39; [walk]"
+msgstr "אותר שדה קלט '%s' [walk]"
 
 #: lib/data_query.php:1275
 #, php-format
@@ -15351,22 +15349,22 @@ msgstr "אין אינדקס[%s] ב - VALUE_INDEX_PARSE, מדלג."
 #: lib/data_query.php:1342
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from %s]"
-msgstr "נמצא פריט [ %s = &#39; %s&#39;] אינדקס: %s [מ- %s]"
+msgstr "נמצא פריט [%s='%s'] אינדקס: %s [מתוך %s]"
 
 #: lib/data_query.php:1386
 #, php-format
 msgid "Found OCTET STRING '%s' decoded value: '%s'"
-msgstr "נמצאה מחרוזת OCTET STRING '%1$s', ערך מפוענח: '%2$s'"
+msgstr "נמצאה מחרוזת OCTET STRING '%s', ערך מפוענח: '%s'"
 
 #: lib/data_query.php:1392 lib/data_query.php:1443
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid parse]"
-msgstr "נמצא פריט [ %s = &#39; %s&#39;] index: %s [מתוך regexp oid לנתח]"
+msgstr "נמצא פריט [%s='%s'] אינדקס: %s [מתוך regexp oid parse]"
 
 #: lib/data_query.php:1472
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid value parse]"
-msgstr "נמצא פריט [ %s = &#39; %s&#39;] index: %s [מתוך rexxp oid value parse]"
+msgstr "נמצא פריט [%s='%s'] אינדקס: %s [מתוך regexp oid value parse]"
 
 #: lib/data_query.php:1710
 #, php-format
@@ -15380,7 +15378,7 @@ msgstr "לא ניתן לנתח את מפת התרגום (REWRITE_VALUE)"
 #: lib/data_query.php:1750
 #, php-format
 msgid "rewrite_value: '%s' => '%s'"
-msgstr "rewrite_value: '%1$s' => '%2$s'"
+msgstr "rewrite_value: '%s' => '%s'"
 
 #: lib/data_query.php:1856
 msgid "Update graph data query cache complete"
@@ -15647,7 +15645,7 @@ msgstr "Cacti מושבת plugin %s עקב השגיאה הבאה: %s! לקבלת 
 #: lib/functions.php:6752
 #, php-format
 msgid "WARNING: PollerID:%s has an invalid hostname:%s.  Is it not reachable via DNS!"
-msgstr "אזהרה: ל-PollerID:%1$s יש שם מארח לא תקין:%2$s. הוא אינו נגיש דרך DNS!"
+msgstr "אזהרה: ל-PollerID:%s יש שם מארח לא תקין:%s. הוא אינו נגיש דרך DNS!"
 
 #: lib/functions.php:6781
 #, php-format
@@ -15656,8 +15654,8 @@ msgid ""
 "Reason: %s.\n"
 "See Cacti Log for details."
 msgstr ""
-"יצירת הקשר עם הסוכן המרוחק %1$s נכשלה\n"
-"סיבה: %2$s.\n"
+"יצירת הקשר עם הסוכן המרוחק %s נכשלה\n"
+"סיבה: %s.\n"
 "ראה יומן Cacti לפרטים."
 
 #: lib/functions.php:7247
@@ -15739,7 +15737,7 @@ msgstr "הקודם"
 #: lib/html.php:671
 #, php-format
 msgid "%d to %d of %s [ %s ]"
-msgstr "%1$d עד %2$d מתוך %3$s [ %4$s ]"
+msgstr "%d עד %d מתוך %s [ %s ]"
 
 #: lib/html.php:674 lib/html.php:703 lib/installer.php:1778
 msgid "Next"
@@ -15748,7 +15746,7 @@ msgstr "הבא"
 #: lib/html.php:681
 #, php-format
 msgid "All %d %s"
-msgstr "כל %1$d %2$s"
+msgstr "כל %d %s"
 
 #: lib/html.php:700
 #, php-format
@@ -17025,7 +17023,7 @@ msgstr "נבחר"
 #: lib/html_utility.php:589 lib/html_utility.php:828
 #, php-format
 msgid "The regular expression \"%s\" is not valid. Error is %s"
-msgstr "מונח החיפוש &quot; %s&quot; אינו חוקי. השגיאה היא %s"
+msgstr "הביטוי הרגולרי \"%s\" אינו תקין. השגיאה היא %s"
 
 #: lib/html_utility.php:1040
 msgid "Cacti regular expressions are limited to 50 characters only for security reasons."
@@ -17672,7 +17670,7 @@ msgstr "אם SELinux מופעל בשרת שלך, באפשרותך לבטל זא�
 #: lib/installer.php:2587
 #, php-format
 msgid "The user '%s' should have MODIFY permission to enable read/write."
-msgstr "המשתמש &#39; %s&#39; צריך להיות בעל הרשאת MODIFY כדי לאפשר קריאה / כתיבה."
+msgstr "למשתמש '%s' צריכה להיות הרשאת MODIFY כדי לאפשר קריאה/כתיבה."
 
 #: lib/installer.php:2597
 msgid "An example of how to set folder permissions is shown here, though you may need to adjust this depending on your operating system, user accounts and desired permissions."
@@ -17943,7 +17941,7 @@ msgstr "שרת Cacti שלך מוכן כמעט. בדוק כי אתה שמח לה�
 #, php-format
 msgid "Press '%s' then click '%s' to complete the installation process after selecting your Device Templates."
 msgstr ""
-"לחץ על '%1$s' ולאחר מכן לחץ על '%2$s' כדי להשלים את תהליך ההתקנה לאחר בחירת "
+"לחץ על '%s' ולאחר מכן לחץ על '%s' כדי להשלים את תהליך ההתקנה לאחר בחירת "
 "תבניות ההתקנים שלך."
 
 #: lib/installer.php:2964
@@ -18143,7 +18141,7 @@ msgstr "מעדכן קובץ תצורה מרוחק"
 #: lib/installer.php:3532
 #, php-format
 msgid "Setting default data source profile to %s (%s)"
-msgstr "מגדיר את פרופיל ברירת המחדל של מקור הנתונים ל-%1$s (%2$s)"
+msgstr "מגדיר את פרופיל ברירת המחדל של מקור הנתונים ל-%s (%s)"
 
 #: lib/installer.php:3557
 #, php-format
@@ -18295,7 +18293,7 @@ msgstr "הרקע כבר התחיל ב-%s, ניסיון זה ב-%s דילג"
 #: lib/installer.php:3946
 #, php-format
 msgid "Exception occurred during installation: #%s - %s"
-msgstr "אירעה חריגה במהלך ההתקנה: #%1$s - %2$s"
+msgstr "אירעה חריגה במהלך ההתקנה: #%s - %s"
 
 #: lib/installer.php:3956
 #, php-format
@@ -18526,15 +18524,15 @@ msgstr ""
 #, php-format
 msgid "The Plugin in the directory '%s' does not include an version function '%s()'.  This function must exist for the plugin to be installed."
 msgstr ""
-"התוסף בספרייה '%1$s' אינו כולל פונקציית גרסה '%2$s()'. פונקציה זו חייבת "
-"להתקיים כדי שניתן יהיה להתקין את התוסף."
+"התוסף בספרייה '%s' אינו כולל פונקציית גרסה '%s()'. פונקציה זו חייבת להתקיים "
+"כדי שניתן יהיה להתקין את התוסף."
 
 #: lib/plugins.php:784
 #, php-format
 msgid "The Plugin in the directory '%s' does not include an install function '%s()'.  This function must exist for the plugin to be installed."
 msgstr ""
-"התוסף בספרייה '%1$s' אינו כולל פונקציית התקנה '%2$s()'. פונקציה זו חייבת "
-"להתקיים כדי שניתן יהיה להתקין את התוסף."
+"התוסף בספרייה '%s' אינו כולל פונקציית התקנה '%s()'. פונקציה זו חייבת להתקיים "
+"כדי שניתן יהיה להתקין את התוסף."
 
 #: lib/plugins.php:982
 #, php-format
@@ -18750,23 +18748,22 @@ msgstr "הפקודה RRDtool:"
 #: lib/rrd.php:3299
 #, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
-msgstr "גודל הצעד הנדרש עבור RRDfile הוא '%1$s' אך הצעד שנצפה הוא '%2$s'"
+msgstr "גודל הצעד הנדרש עבור RRDfile הוא '%s' אך הצעד שנצפה הוא '%s'"
 
 #: lib/rrd.php:3359
 #, php-format
 msgid "Type for Data Source '%s' should be '%s'"
-msgstr "סוג עבור מקור הנתונים &#39; %1$s&#39; צריך להיות &#39; %2$s&#39"
+msgstr "הסוג עבור מקור הנתונים '%s' צריך להיות '%s'"
 
 #: lib/rrd.php:3365
 #, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
-msgstr "פעימת הלב עבור מקור הנתונים &#39; %1$s&#39; צריכה להיות &#39; %2$s&#39"
+msgstr "ה-Heartbeat עבור מקור הנתונים '%s' צריך להיות '%s'"
 
 #: lib/rrd.php:3377
 #, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
-msgstr ""
-"המינימום של RRD עבור מקור הנתונים &#39; %1$s&#39; צריך להיות &#39; %2$s&#39"
+msgstr "ערך המינימום של RRD עבור מקור הנתונים '%s' צריך להיות '%s'"
 
 #: lib/rrd.php:3386
 #, php-format
@@ -18776,35 +18773,31 @@ msgstr "&#39; %s&#39; חסר בהגדרת Cacti"
 #: lib/rrd.php:3400 lib/rrd.php:3401
 #, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
-msgstr ""
-"ל- Cacti RRA &#39; %1$s&#39; יש אותו CF / שלבים ( %2$s, %3$s) כ- &#39; "
-"%4$s&#39"
+msgstr "ל-Cacti RRA '%s' יש אותו CF/steps (%s, %s) כמו ל-'%s'"
 
 #: lib/rrd.php:3415 lib/rrd.php:3416
 #, php-format
 msgid "File RRA '%s' has same CF/steps (%s, %s) as '%s'"
-msgstr ""
-"קובץ ה- RRA &#39; %1$s&#39; כולל אותו CF / שלבים ( %2$s, %3$s) כ- &#39; "
-"%4$s&#39"
+msgstr "לקובץ RRA '%s' יש אותו CF/steps (%s, %s) כמו ל-'%s'"
 
 #: lib/rrd.php:3450
 #, php-format
 msgid "The pdp_per_row of '%s' is invalid for RRA '%s' should be '%s'.  Consider deleting and allowing Cacti to re-create RRDfile."
 msgstr ""
-"הערך pdp_per_row של '%1$s' אינו תקין עבור RRA '%2$s', צריך להיות '%3$s'. "
-"שקול למחוק ולאפשר ל-Cacti ליצור מחדש את ה-RRDfile."
+"הערך pdp_per_row של '%s' אינו תקין עבור RRA '%s', צריך להיות '%s'. שקול "
+"למחוק ולאפשר ל-Cacti ליצור מחדש את ה-RRDfile."
 
 #: lib/rrd.php:3454
 #, php-format
 msgid "The XFF for Cacti RRA id is '%s' but should be '%s'"
-msgstr "ה-XFF עבור Cacti RRA id הוא '%1$s' אך צריך להיות '%2$s'"
+msgstr "ה-XFF עבור Cacti RRA id הוא '%s' אך צריך להיות '%s'"
 
 #: lib/rrd.php:3458
 #, php-format
 msgid "The number of rows for Cacti RRA id '%s' is incorrect.  The number of rows are '%s' but should be '%s'"
 msgstr ""
-"מספר השורות עבור מזהה RRA '%1$s' של Cacti שגוי. מספר השורות הוא '%2$s' אך "
-"צריך להיות '%3$s'"
+"מספר השורות עבור מזהה RRA '%s' של Cacti שגוי. מספר השורות הוא '%s' אך צריך "
+"להיות '%s'"
 
 #: lib/rrd.php:3476
 #, php-format
@@ -18814,7 +18807,7 @@ msgstr "ה-RRA '%s' חסר בקובץ ה-RRDfile הקיים של Cacti"
 #: lib/rrd.php:3483
 #, php-format
 msgid "RRA '%s' missing in Cacti definition"
-msgstr "RRA &#39; %s&#39; חסר בהגדרת Cacti"
+msgstr "RRA '%s' חסר בהגדרת Cacti"
 
 #: lib/rrd.php:3504
 msgid "RRD File Information"
@@ -18858,7 +18851,7 @@ msgstr "PDP לכל שורה"
 
 #: lib/rrd.php:3600
 msgid "CDP Prep Value (0)"
-msgstr "CDP Prep Value (0)"
+msgstr "ערך הכנת CDP (0)"
 
 #: lib/rrd.php:3601
 msgid "CDP Unknown Data points (0)"
@@ -18898,12 +18891,12 @@ msgstr "שגיאה בעת פענוח ה-XML של RRDtool dump"
 #: lib/rrd.php:4159
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file"
-msgstr "הוסר RRA (CF=%1$s, ROWS=%2$d, PDP_PER_ROW=%3$d, XFF=%4$1.2f) מקובץ RRD"
+msgstr "הוסר RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) מקובץ RRD"
 
 #: lib/rrd.php:4199
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file"
-msgstr "מוסיף RRA (CF=%1$s, ROWS=%2$d, PDP_PER_ROW=%3$d, XFF=%4$1.2f) לקובץ RRD"
+msgstr "מוסיף RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) לקובץ RRD"
 
 #: lib/rrd.php:4291 lib/rrd.php:4305
 #, php-format
@@ -19376,7 +19369,7 @@ msgstr ""
 #: logout.php:61
 #, php-format
 msgid "Please close your browser or %sLogin Again%s"
-msgstr "נא לסגור את הדפדפן או %1$sלהתחבר שוב%2$s"
+msgstr "נא לסגור את הדפדפן או %sלהתחבר שוב%s"
 
 #: logout.php:62
 msgid "Cookies have been cleared"
@@ -20676,7 +20669,7 @@ msgstr "לא הותקן"
 #: plugins.php:1744 plugins.php:1877
 #, php-format
 msgid "Plugin directory '%s' is missing setup.php"
-msgstr "ספריית הפלאגין &#39; %s&#39; חסרה את setup.php"
+msgstr "בתיקיית הפלאגין '%s' חסר setup.php"
 
 #: plugins.php:1746 plugins.php:1879
 msgid "Plugin is lacking an INFO file"
@@ -20762,8 +20755,7 @@ msgstr "ספריות תוסף לא יכול לכלול רווחים"
 #: plugins.php:1870
 #, php-format
 msgid "Plugin directory is not correct.  Should be '%s' but is '%s'"
-msgstr ""
-"ספריית Plugin אינה נכונה. צריך להיות &#39; %1$s&#39; אך הוא &#39; %2$s&#39"
+msgstr "ספריית ה-Plugin אינה תקינה.  היא צריכה להיות '%s' אך בפועל היא '%s'"
 
 #: plugins.php:1881
 msgid "Plugin is integrated into Cacti core"
@@ -21392,7 +21384,7 @@ msgstr "הערה: הגדרות הנתיב בכרטיסייה זו נשמרות �
 #: settings.php:138
 #, php-format
 msgid "Cacti Settings (%s)%s"
-msgstr "הגדרות Cacti (%1$s)%2$s"
+msgstr "הגדרות Cacti (%s)%s"
 
 #: settings.php:248
 msgid "Changing Permission Model Warning"
@@ -21840,7 +21832,7 @@ msgstr "לא נמצאו שאילתות נתונים"
 
 #: support.php:503 support.php:650
 msgid "Cacti Poller"
-msgstr "Cacti Poller"
+msgstr "דוגם Cacti"
 
 #: support.php:504
 msgid "Cacti Process"
@@ -23182,7 +23174,9 @@ msgstr "סוג חבר בקבוצה"
 
 #: user_domains.php:421
 msgid "Defines if users use full Distinguished Name or just Username in the defined Group Member Attribute."
-msgstr "מגדיר אם משתמשים משתמשים בשם מלא או שם משתמש רק בתכונת חבר הקבוצה המוגדרת."
+msgstr ""
+"מגדיר אם משתמשים עושים שימוש בשם מובחן מלא (Distinguished Name) או בשם משתמש "
+"בלבד בתכונת חבר הקבוצה המוגדרת."
 
 #: user_domains.php:427
 msgid "LDAP Specific Search Settings"
@@ -23727,7 +23721,7 @@ msgstr "בעת הפעלת נתונים מרובים אספנים ב Cacti, Cacti
 
 #: utilities.php:1260
 msgid "Boost Utilities"
-msgstr "Boost Utilities"
+msgstr "כלי עזר של Boost"
 
 #: utilities.php:1261
 msgid "View Boost Status"
@@ -23911,7 +23905,7 @@ msgstr "עדכוני RRD:"
 
 #: utilities.php:1699
 msgid "MBytes"
-msgstr "MBytes"
+msgstr "מגה-בייט"
 
 #: utilities.php:1699
 msgid "Peak Poller Memory:"
