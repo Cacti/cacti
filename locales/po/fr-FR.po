@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: Cacti\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-25 22:34+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: French <https://translate.cacti.net/projects/cacti/core-v1-2-x/fr/>\nLanguage: fr-FR\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n > 1;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: Cacti\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-26 05:53+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: French <https://translate.cacti.net/projects/cacti/core-v1-2-x/fr/>\nLanguage: fr-FR\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n > 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -547,10 +547,8 @@ msgid "No Aggregate Graphs Found"
 msgstr "Aucun graphique agrégé trouvé"
 
 #: aggregate_templates.php
-#, fuzzy
-#| msgid "No Aggregate Templates Found"
 msgid "Aggregate Template not found."
-msgstr "Aucun modèle d'agrégat trouvé"
+msgstr "Modèle d'agrégat introuvable."
 
 #: aggregate_templates.php
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -1030,7 +1028,7 @@ msgstr "Exporter dans un fichier"
 
 #: automation_devices.php data_debug.php lib/clog_webapi.php managers.php
 msgid "Purge"
-msgstr "Supprimer"
+msgstr "Purger"
 
 #: automation_devices.php
 msgid "Purge Discovered Devices"
@@ -1272,7 +1270,7 @@ msgstr "Mensuel"
 
 #: automation_networks.php
 msgid "Monthly on Day"
-msgstr "Mensuel"
+msgstr "Mensuel à jour fixe"
 
 #: automation_networks.php
 msgid "Network not found."
@@ -1505,7 +1503,7 @@ msgstr "Jours de la semaine"
 
 #: automation_networks.php
 msgid "What Day(s) of the week will this Network Range be discovered."
-msgstr "Quel(s) jour(s) de la semaine cette plage Réseau sera-t-elle découverte ?"
+msgstr "Indique le ou les jours de la semaine durant lesquels cette plage réseau sera découverte."
 
 #: automation_networks.php include/global_arrays.php
 msgid "Sunday"
@@ -1541,7 +1539,7 @@ msgstr "Mois de l’année"
 
 #: automation_networks.php
 msgid "What Months(s) of the Year will this Network Range be discovered."
-msgstr "Quels moisde l'année cette gamme de réseaux sera-t-elle découverte ?."
+msgstr "Indique le ou les mois de l'année durant lesquels cette plage réseau sera découverte."
 
 #: automation_networks.php include/global_arrays.php
 msgid "January"
@@ -1597,7 +1595,7 @@ msgstr "Jours du mois"
 
 #: automation_networks.php
 msgid "What Day(s) of the Month will this Network Range be discovered."
-msgstr "Quel(s) jour(s) du mois cette plage Réseau sera-t-elle découverte ?"
+msgstr "Indique le ou les jours du mois durant lesquels cette plage réseau sera découverte."
 
 #: automation_networks.php
 msgid "Last"
@@ -1609,7 +1607,7 @@ msgstr "Semaine(s) du mois"
 
 #: automation_networks.php
 msgid "What Week(s) of the Month will this Network Range be discovered."
-msgstr "Quelle(s) semaine(s) du mois cette plage Réseau sera-t-elle découverte ?"
+msgstr "Indique la ou les semaines du mois durant lesquelles cette plage réseau sera découverte."
 
 #: automation_networks.php
 msgid "First"
@@ -1731,7 +1729,7 @@ msgstr "Planifier"
 
 #: automation_networks.php
 msgid "Total IPs"
-msgstr "Total IPs"
+msgstr "Total des IP"
 
 #: automation_networks.php
 msgid "The Current Status of this Networks Discovery"
@@ -2543,10 +2541,8 @@ msgid "Delete Color Item"
 msgstr "Supprimer un élément de couleur"
 
 #: color_templates.php
-#, fuzzy
-#| msgid "No Color Templates Found"
 msgid "Color Template not found."
-msgstr "Aucun modèle de couleur trouvé"
+msgstr "Modèle de couleur introuvable."
 
 #: color_templates.php
 #, php-format
@@ -3583,7 +3579,7 @@ msgstr[1] "Supprimer des sources de données"
 msgid "Choose a new Device for this Data Source and click 'Continue'."
 msgid_plural "Choose a new Device for these Data Sources and click 'Continue'"
 msgstr[0] "Choisissez un nouveau périphérique pour cette source de données et cliquez sur 'Continuer'."
-msgstr[1] "Choisissez un nouveau périphérique pour ces sources de données et cliquez sur 'Continuer'."
+msgstr[1] "Choisissez un nouveau périphérique pour ces sources de données et cliquez sur 'Continuer'"
 
 #: data_sources.php
 msgid "New Device:"
@@ -4257,10 +4253,8 @@ msgid "No Inputs"
 msgstr "Pas d'entrées"
 
 #: graph_templates.php
-#, fuzzy
-#| msgid "No Graph Templates Found"
 msgid "Graph Template not found."
-msgstr "Aucun modèle de graphique trouvé"
+msgstr "Modèle de graphique introuvable."
 
 #: graph_templates.php
 #, php-format
@@ -5232,7 +5226,7 @@ msgstr "Ping et SNMP Uptime"
 
 #: host.php include/global_arrays.php
 msgid "SNMP Uptime"
-msgstr "SNMP Uptime"
+msgstr "Temps de fonctionnement SNMP"
 
 #: host.php include/global_arrays.php
 msgid "Ping or SNMP Uptime"
@@ -5752,7 +5746,7 @@ msgstr "Si vous forcez un changement de mot de passe, vous devez également perm
 
 #: include/global_arrays.php
 msgid "You are not allowed to change your password."
-msgstr "Désolé, vous n’êtes pas autorisé à changer votre mot de passe !."
+msgstr "Vous n'êtes pas autorisé à modifier votre mot de passe."
 
 #: include/global_arrays.php
 msgid "Unable to determine size of password field, please check permissions of db user"
@@ -7636,7 +7630,7 @@ msgstr "Choisissez le protocole de chiffrement SNMPv3."
 
 #: include/global_form.php
 msgid "SNMP Privacy Passphrase (v3)"
-msgstr "Mot de passe SNMP (v3)"
+msgstr "Phrase secrète de confidentialité SNMP (v3)"
 
 #: include/global_form.php
 msgid "Choose the SNMPv3 Privacy Passphrase."
@@ -13213,7 +13207,7 @@ msgstr "Exécuter une action"
 
 #: lib/html.php managers.php
 msgid "Logs"
-msgstr "Logs"
+msgstr "Journaux"
 
 #: lib/html.php
 msgid "Standard Deviations"
@@ -16421,10 +16415,8 @@ msgid "Number of I/O threads used for read operations in InnoDB."
 msgstr ""
 
 #: lib/utility.php
-#, fuzzy
-#| msgid "default"
 msgid "1-64; default 4."
-msgstr "défaut"
+msgstr "1-64 ; par défaut 4."
 
 #: lib/utility.php
 msgid "Number of I/O threads used for write operations in InnoDB."
@@ -16852,7 +16844,7 @@ msgstr "Actualisation automatique de la page"
 
 #: links.php
 msgid "How often do you wish this page to be refreshed automatically."
-msgstr "À quelle fréquence souhaitez-vous que cette page soit rafraîchie automatiquement ?"
+msgstr "Indique la fréquence souhaitée pour l'actualisation automatique de cette page."
 
 #: links.php
 #, php-format
@@ -19480,10 +19472,8 @@ msgid "PHP SNMP"
 msgstr "PHP SNMP"
 
 #: utilities.php
-#, fuzzy
-#| msgid "Installed"
 msgid "Installed."
-msgstr "Installé"
+msgstr "Installé."
 
 #: utilities.php
 msgid "You've set memory limit to 'unlimited'."
