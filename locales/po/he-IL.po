@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-25 22:34+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Hebrew (Israel) <https://translate.cacti.net/projects/cacti/core-v1-2-x/he_IL/>\nLanguage: he-IL\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && n % 10 == 0) ? 2 : 3));\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-26 05:53+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Hebrew (Israel) <https://translate.cacti.net/projects/cacti/core-v1-2-x/he_IL/>\nLanguage: he-IL\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && n % 10 == 0) ? 2 : 3));\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -519,7 +519,7 @@ msgstr "תבנית"
 #: lib/api_automation.php lib/auth.php lib/html.php lib/html_reports.php
 #: managers.php user_admin.php user_group_admin.php utilities.php
 msgid "Any"
-msgstr "הכל"
+msgstr "כלשהו"
 
 #: aggregate_graphs.php automation_graph_rules.php automation_networks.php
 #: automation_tree_rules.php data_debug.php data_sources.php data_templates.php
@@ -552,10 +552,8 @@ msgid "No Aggregate Graphs Found"
 msgstr "לא נמצאו גרפים מצטברים"
 
 #: aggregate_templates.php
-#, fuzzy
-#| msgid "No Aggregate Templates Found"
 msgid "Aggregate Template not found."
-msgstr "לא נמצאו תבניות מצטברות"
+msgstr "לא נמצאה תבנית מצטברת."
 
 #: aggregate_templates.php
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -1046,7 +1044,7 @@ msgstr "טיהור התגלה התקנים"
 #: lib/html.php lib/html_reports.php lib/spikekill.php lib/utility.php
 #: plugins.php pollers.php user_admin.php utilities.php
 msgid "N/A"
-msgstr "לא זמין"
+msgstr "לא רלוונטי"
 
 #: automation_graph_rules.php automation_snmp.php automation_tree_rules.php
 #: cdef.php color_templates.php data_input.php data_queries.php
@@ -1170,7 +1168,7 @@ msgstr "מאופשר"
 #: managers.php pollers.php user_admin.php user_domains.php
 #: user_group_admin.php utilities.php
 msgid "Disabled"
-msgstr "לא זמין"
+msgstr "מושבת"
 
 #: automation_graph_rules.php automation_tree_rules.php
 msgid "Rule Name"
@@ -1734,7 +1732,7 @@ msgstr "שם רשת"
 
 #: automation_networks.php
 msgid "Schedule"
-msgstr "תאריך משלוח"
+msgstr "לוח זמנים"
 
 #: automation_networks.php
 msgid "Total IPs"
@@ -1990,7 +1988,7 @@ msgstr "רשומות SNMP"
 
 #: automation_snmp.php
 msgid "V1 Entries"
-msgstr "ערכי"
+msgstr "רשומות V1"
 
 #: automation_snmp.php
 msgid "V2 Entries"
@@ -2574,10 +2572,8 @@ msgid "Delete Color Item"
 msgstr "מחק פריט צבע"
 
 #: color_templates.php
-#, fuzzy
-#| msgid "No Color Templates Found"
 msgid "Color Template not found."
-msgstr "לא נמצאו תבניות צבע"
+msgstr "לא נמצאה תבנית צבע."
 
 #: color_templates.php
 #, php-format
@@ -4340,10 +4336,8 @@ msgid "No Inputs"
 msgstr "אין תשומות"
 
 #: graph_templates.php
-#, fuzzy
-#| msgid "No Graph Templates Found"
 msgid "Graph Template not found."
-msgstr "לא נמצאו תבניות גרפים"
+msgstr "לא נמצאה תבנית גרף."
 
 #: graph_templates.php
 #, php-format
@@ -5096,7 +5090,7 @@ msgstr "לחץ על 'המשך' כדי להפעיל את ההתקנים הבאי�
 
 #: host.php
 msgid "Enable Device(s)"
-msgstr "הפעלת מכשירים (מכשירים)"
+msgstr "הפעלת מכשיר(ים)"
 
 #: host.php
 msgid "Click 'Continue' to disable the following Device(s)."
@@ -6379,7 +6373,7 @@ msgstr "כל מקורות הנתונים הדומים (אל תכלול כפיל�
 
 #: include/global_arrays.php
 msgid "All Similar Data Sources (Do not Include Duplicates) Polling Interval"
-msgstr "כל מקורות נתונים דומים (לא כולל כפילויות)"
+msgstr "מרווח דגימה של כל מקורות הנתונים הדומים (לא כולל כפילויות)"
 
 #: include/global_arrays.php
 msgid "All Similar Data Sources (Include Duplicates)"
@@ -6761,7 +6755,7 @@ msgstr "%d שעות אחרונות"
 
 #: include/global_arrays.php
 msgid "Last Day"
-msgstr "סוף היום"
+msgstr "יום אחרון"
 
 #: include/global_arrays.php
 #, php-format
@@ -6801,7 +6795,7 @@ msgstr "משמרת יום"
 
 #: include/global_arrays.php
 msgid "This Day"
-msgstr "סוף היום"
+msgstr "יום זה"
 
 #: include/global_arrays.php
 msgid "This Week"
@@ -7878,7 +7872,7 @@ msgstr "כמה דורות הנתונים נשמרים ב- RRA."
 
 #: include/global_form.php include/global_settings.php
 msgid "Default Timespan"
-msgstr "ברירת מחדל"
+msgstr "טווח זמן ברירת מחדל"
 
 #: include/global_form.php
 msgid "When viewing a Graph based upon the RRA in question, the default Timespan to show for that Graph."
@@ -11717,7 +11711,7 @@ msgstr "ברירת המחדל של Timespan מוצגת בעת הצגת גרפי�
 
 #: include/global_settings.php
 msgid "Default Timeshift"
-msgstr "ברירת מחדל"
+msgstr "הסטת זמן ברירת מחדל"
 
 #: include/global_settings.php
 msgid "The default Timeshift displayed when viewing Graphs and other time specific data."
@@ -17288,10 +17282,8 @@ msgid "Are you sure you want to Force Uninstall the plugin"
 msgstr "האם אתה בטוח שברצונך להסיר את ההתקנה?"
 
 #: plugins.php
-#, fuzzy
-#| msgid "Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click 'Uninstall' below.  Otherwise click 'Cancel'"
 msgid "This permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone.  If you really want to Force Uninstall the Plugin, click 'Force Uninstall' below.  Otherwise click 'Cancel'."
-msgstr "הסרת תוסף זה תסיר את כל נתוני הפלאגין וההגדרות. אם אתה באמת רוצה להסיר את תוסף, לחץ על &#39;הסר&#39; להלן. אחרת, לחץ על &#39;ביטול&#39;"
+msgstr "פעולה זו מסירה לצמיתות את כל הרשומות שלו מטבלאות התוספים של Cacti (תצורה, hooks, הרשאות וכל טבלה או עמודה שהוא יצר). לא ניתן לבטל פעולה זו. אם ברצונך להסיר את התוסף בכוח, לחץ על 'הסרה כפויה' למטה. אחרת לחץ על 'ביטול'."
 
 #: plugins.php
 #, fuzzy
@@ -19438,7 +19430,7 @@ msgstr "מסד נתונים"
 
 #: utilities.php
 msgid "Database Settings"
-msgstr "הגדרות אחסון נתונים"
+msgstr "הגדרות מסד נתונים"
 
 #: utilities.php
 msgid "Database Status"
@@ -19645,10 +19637,8 @@ msgid "PHP SNMP"
 msgstr "PHP SNMP"
 
 #: utilities.php
-#, fuzzy
-#| msgid "Installed"
 msgid "Installed."
-msgstr "מותקן"
+msgstr "מותקן."
 
 #: utilities.php
 msgid "You've set memory limit to 'unlimited'."
