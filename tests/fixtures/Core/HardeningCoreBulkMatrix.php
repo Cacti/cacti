@@ -37,17 +37,18 @@ if (!defined('SIGINT')) {
 	define('SIGINT', 2);
 }
 
-$GLOBALS['passed']        = 0;
-$GLOBALS['events']        = [];
-$GLOBALS['cookies']       = [];
-$GLOBALS['fail_tmpdir']   = false;
-$GLOBALS['rra_allow']     = true;
-$GLOBALS['tighten_allow'] = true;
-$GLOBALS['write_allow']   = true;
-$GLOBALS['dir_allow']     = true;
-$GLOBALS['remember_me']   = true;
-$GLOBALS['auth_cache']    = 'on';
-$GLOBALS['realm_cookies'] = true;
+$GLOBALS['passed']               = 0;
+$GLOBALS['events']               = [];
+$GLOBALS['cookies']              = [];
+$GLOBALS['registered_shutdowns'] = [];
+$GLOBALS['fail_tmpdir']          = false;
+$GLOBALS['rra_allow']            = true;
+$GLOBALS['tighten_allow']        = true;
+$GLOBALS['write_allow']          = true;
+$GLOBALS['dir_allow']            = true;
+$GLOBALS['remember_me']          = true;
+$GLOBALS['auth_cache']           = 'on';
+$GLOBALS['realm_cookies']        = true;
 
 function check(mixed $actual, mixed $expected, string $label) : void {
 	if ($actual !== $expected) {
@@ -117,6 +118,10 @@ function float_rrd_create_private_temp_dir(?string $base_dir = null) : string|fa
 	}
 
 	return \float_rrd_create_private_temp_dir($base_dir);
+}
+
+function register_shutdown_function(callable $callback) : void {
+	$GLOBALS['registered_shutdowns'][] = $callback;
 }
 
 function float_kill_running_processes() : void {
@@ -206,7 +211,7 @@ function slice(string $file, string $first, ?string $last, array $variables) : m
 
 function expect_exit(callable $verify) : void {
 	$GLOBALS['exit_probe'] = 'armed';
-	register_shutdown_function(static function () use ($verify) : void {
+	\register_shutdown_function(static function () use ($verify) : void {
 		if (($GLOBALS['exit_probe'] ?? '') !== 'armed') {
 			return;
 		}
@@ -404,6 +409,12 @@ try {
 	float_rrdfile($fake_rrd, 1, 300, 1000, 2000);
 	$GLOBALS['seebug'] = false;
 	check(is_string($GLOBALS['float_tmp_dir'] ?? null) && is_dir($GLOBALS['float_tmp_dir']), true, 'float_rrdfile created private dir');
+	check(count($GLOBALS['registered_shutdowns']), 1, 'float_rrdfile registered shutdown cleanup');
+
+	foreach ($GLOBALS['registered_shutdowns'] as $callback) {
+		$callback();
+	}
+	check(is_dir($GLOBALS['float_tmp_dir']), false, 'shutdown cleanup removed float temp dir');
 	@unlink($fake_rrd);
 } finally {
 	@chmod($ro_base, 0700);
