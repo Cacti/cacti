@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: Cacti 1\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-25 22:34+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Spanish <https://translate.cacti.net/projects/cacti/core-v1-2-x/es/>\nLanguage: es-ES\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: Cacti 1\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-11-04 11:45-0800\nPO-Revision-Date: 2026-11-26 05:53+0000\nLast-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\nLanguage-Team: Spanish <https://translate.cacti.net/projects/cacti/core-v1-2-x/es/>\nLanguage: es-ES\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php include/global_arrays.php lib/html.php
 msgid "About Cacti"
@@ -549,10 +549,8 @@ msgid "No Aggregate Graphs Found"
 msgstr "Gráficos Agregados no encontrados"
 
 #: aggregate_templates.php
-#, fuzzy
-#| msgid "No Aggregate Templates Found"
 msgid "Aggregate Template not found."
-msgstr "No se encontraron plantillas de Agregados"
+msgstr "No se encontró la plantilla de agregado."
 
 #: aggregate_templates.php
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -1757,7 +1755,7 @@ msgstr "Procesos simultáneos"
 
 #: automation_networks.php
 msgid "Last Runtime"
-msgstr "Ultima ejecución"
+msgstr "Último tiempo de ejecución"
 
 #: automation_networks.php
 msgid "Next Start"
@@ -1788,7 +1786,7 @@ msgstr "No se encontraron redes"
 #: automation_networks.php data_debug.php lib/clog_webapi.php
 #: lib/html_graph.php lib/html_tree.php pollers.php utilities.php
 msgid "Refresh"
-msgstr "Actualizar"
+msgstr "Refrescar"
 
 #: automation_networks.php data_sources.php include/global_arrays.php
 #: include/global_settings.php pollers.php
@@ -2546,10 +2544,8 @@ msgid "Delete Color Item"
 msgstr "Borrar item de color"
 
 #: color_templates.php
-#, fuzzy
-#| msgid "No Color Templates Found"
 msgid "Color Template not found."
-msgstr "No se encontraron plantillas de colores"
+msgstr "No se encontró la plantilla de color."
 
 #: color_templates.php
 #, php-format
@@ -4261,10 +4257,8 @@ msgid "No Inputs"
 msgstr "Sin entradas"
 
 #: graph_templates.php
-#, fuzzy
-#| msgid "No Graph Templates Found"
 msgid "Graph Template not found."
-msgstr "No se encontraron plantillas de gráficos"
+msgstr "No se encontró la plantilla de gráfico."
 
 #: graph_templates.php
 #, php-format
@@ -9101,7 +9095,7 @@ msgstr "Ubicación del archivo binario de PHP (puede requerir una re compilació
 
 #: include/global_settings.php
 msgid "Logging"
-msgstr "Registro"
+msgstr "Registro de actividad"
 
 #: include/global_settings.php
 msgid "Cacti Log Path"
@@ -9329,7 +9323,7 @@ msgstr "Soporte de zona horaria del cliente"
 
 #: include/global_settings.php
 msgid "How should Cacti support Client Dates based upon the Client browsers timezone."
-msgstr "¿Cómo debería Cacti admitir las Fechas del Cliente en función de la zona horaria de los navegadores del Cliente?"
+msgstr "Define cómo debe admitir Cacti las fechas del cliente según la zona horaria del navegador del cliente."
 
 #: include/global_settings.php
 msgid "Date Display Format"
@@ -13222,7 +13216,7 @@ msgstr "Ejecutar acción"
 
 #: lib/html.php managers.php
 msgid "Logs"
-msgstr "Logs"
+msgstr "Registros"
 
 #: lib/html.php
 msgid "Standard Deviations"
@@ -14562,7 +14556,7 @@ msgstr "Comenzar"
 
 #: lib/installer.php
 msgid "Upgrade"
-msgstr "Actualizar"
+msgstr "Actualizar versión"
 
 #: lib/installer.php
 msgid "Downgrade"
@@ -16425,10 +16419,8 @@ msgid "Number of I/O threads used for read operations in InnoDB."
 msgstr ""
 
 #: lib/utility.php
-#, fuzzy
-#| msgid "default"
 msgid "1-64; default 4."
-msgstr "Predeterminado"
+msgstr "1-64; predeterminado 4."
 
 #: lib/utility.php
 msgid "Number of I/O threads used for write operations in InnoDB."
@@ -17136,7 +17128,7 @@ msgstr "Cambios/Diferencias"
 
 #: package_import.php templates_import.php
 msgid "Updated"
-msgstr "Actualizar"
+msgstr "Actualizado"
 
 #: package_import.php templates_import.php
 msgid "Orphans"
@@ -17199,10 +17191,8 @@ msgid "Are you sure you want to Force Uninstall the plugin"
 msgstr "¿está seguro de que desea desinstalar?"
 
 #: plugins.php
-#, fuzzy
-#| msgid "Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click 'Uninstall' below.  Otherwise click 'Cancel'"
 msgid "This permanently removes all of its entries from the Cacti plugin tables (configuration, hooks, permissions, and any tables or columns it created).  This can not be undone.  If you really want to Force Uninstall the Plugin, click 'Force Uninstall' below.  Otherwise click 'Cancel'."
-msgstr "La desinstalación de este plugin eliminará todos los datos y ajustes del plugin. Si realmente desea desinstalar el Plugin, haga clic en 'desinstalar'. De lo contrario, haga clic en 'Cancelar'"
+msgstr "Esto elimina permanentemente todas sus entradas de las tablas de plugins de Cacti (configuración, hooks, permisos y cualquier tabla o columna que haya creado). Esto no se puede deshacer. Si realmente desea forzar la desinstalación del plugin, haga clic en 'Forzar desinstalación' a continuación. De lo contrario, haga clic en 'Cancelar'."
 
 #: plugins.php
 #, fuzzy
@@ -18142,10 +18132,8 @@ msgstr[0] "Duplicar Sitio"
 msgstr[1] "Duplicar"
 
 #: sites.php
-#, fuzzy
-#| msgid "File not found"
 msgid "Site not found."
-msgstr "Archivo no encontrado"
+msgstr "Sitio no encontrado."
 
 #: sites.php tree.php
 msgid "Site Name"
@@ -19486,10 +19474,8 @@ msgid "PHP SNMP"
 msgstr "PHP SNMP"
 
 #: utilities.php
-#, fuzzy
-#| msgid "Installed"
 msgid "Installed."
-msgstr "Instalado"
+msgstr "Instalado."
 
 #: utilities.php
 msgid "You've set memory limit to 'unlimited'."
