@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-26 05:54+0000\n"
+"PO-Revision-Date: 2026-11-26 09:54+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: French <https://translate.cacti.net/projects/cacti/core/fr/>\n"
 "Language: fr-FR\n"
@@ -11366,7 +11366,7 @@ msgstr "Afficher uniquement les emplacements disponibles sur le site sélectionn
 
 #: include/global_settings.php:491
 msgid "Has Graphs/Data Sources Checked"
-msgstr "A des graphiques/sources de données vérifiés"
+msgstr "Graphiques et sources de données vérifiés"
 
 #: include/global_settings.php:492
 msgid "Should the Has Graphs and Has Data Sources be Checked by Default."
@@ -13227,7 +13227,7 @@ msgstr ""
 
 #: include/global_settings.php:2305
 msgid "How Often Should Boost Update All RRDs"
-msgstr "À quelle fréquence Boost devrait mettre à jour tous les RRD"
+msgstr "Fréquence de mise à jour de tous les RRD par Boost"
 
 #: include/global_settings.php:2306
 msgid "When you enable boost, your RRD files are only updated when they are requested by a user, or when this time period elapses."
