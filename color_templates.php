@@ -368,7 +368,7 @@ function aggregate_color_item() {
 					applySkin();
 
 					$('#cdialog').dialog({
-						title: '<?php print __('Delete Color Item');?>',
+						title: <?php print json_encode(__('Delete Color Item'));?>,
 						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
 						minHeight: 80,
 						minWidth: 500

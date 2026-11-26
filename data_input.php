@@ -778,7 +778,7 @@ function data_edit() {
 					applySkin();
 
 					$('#cdialog').dialog({
-						title: '<?php print __('Delete Data Input Field');?>',
+						title: <?php print json_encode(__('Delete Data Input Field'));?>,
 						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
 						modal: false,
 						minHeight: 80,
@@ -791,7 +791,7 @@ function data_edit() {
 		}).css('cursor', 'pointer');
 
 		if (whiteList) {
-			$('input[name="action"]').after('<input id="updateme" class="ui-button ui-corner-all ui-widget" type="button" value="<?php print __('Update Whitelist');?>" role="button" data-id="<?php print get_filter_request_var('id');?>">');
+			$('input[name="action"]').after($('<input id="updateme" class="ui-button ui-corner-all ui-widget" type="button" role="button">').val(<?php print json_encode(__('Update Whitelist'));?>).attr('data-id', '<?php print get_filter_request_var('id');?>'));
 
 			$('#updateme').on('click', function() {
 				var data = {

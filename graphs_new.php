@@ -430,7 +430,7 @@ function graphs() {
 
 		$.post(strURL, {__csrf_magic: csrfMagicToken})
 			.done(function(data) {
-				$('#text').show().text('<?php print __('Filter Settings Saved');?>').fadeOut(2000);
+				$('#text').show().text(<?php print json_encode(__('Filter Settings Saved'));?>).fadeOut(2000);
 			})
 			.fail(function(data) {
 				getPresentHTTPError(data);

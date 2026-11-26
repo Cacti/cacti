@@ -522,9 +522,9 @@ default:
 	var smtpPath       = '';
 	var currentTab     = <?php print json_encode($current_tab);?>;
 	var dataCollectors = <?php print json_encode($data_collectors);?>;
-	var permsTitle     = '<?php print __esc('Changing Permission Model Warning');?>';
-	var permsHeader    = '<?php print __esc('Changing Permission Model will alter a users effective Graph permissions.');?>';
-	var permsMessage   = '<?php print __esc('After you change the Graph Permission Model you should audit your Users and User Groups Effective Graph permission to ensure that you still have adequate control of your Graphs.  NOTE: If you want to restrict all Graphs at the Device or Graph Template Graph Permission Model, the default Graph Policy should be set to \'Deny\'.');?>';
+	var permsTitle     = <?php print json_encode(__('Changing Permission Model Warning'));?>;
+	var permsHeader    = <?php print json_encode(__esc('Changing Permission Model will alter a users effective Graph permissions.'));?>;
+	var permsMessage   = <?php print json_encode(__esc('After you change the Graph Permission Model you should audit your Users and User Groups Effective Graph permission to ensure that you still have adequate control of your Graphs.  NOTE: If you want to restrict all Graphs at the Device or Graph Template Graph Permission Model, the default Graph Policy should be set to \'Deny\'.'));?>;
 
 	$(function() {
 		$('.subTab').find('a').on('click', function(event) {
@@ -538,7 +538,7 @@ default:
 			event.preventDefault();
 
 			if (parseInt($('#cron_interval').val()) < parseInt($('#poller_interval').val())) {
-				$('#message_container').html('<div id="message" class="textError messageBox"><?php print __('Poller Interval must be less than Cron Interval');?></div>').show().delay(4000).slideUp('fast', function() {
+				$('#message_container').html('<div id="message" class="textError messageBox">' + <?php print json_encode(__esc('Poller Interval must be less than Cron Interval'));?> + '</div>').show().delay(4000).slideUp('fast', function() {
 					$('#message_container').empty();
 				});
 				return false;
@@ -602,7 +602,7 @@ default:
 				}
 			}).trigger('change');
 		} else if (currentTab == 'mail') {
-			$('#row_settings_email_header div.formHeaderText').append('<div id="emailtest" class="emailtest"><?php print __('Send a Test Email');?></div>');
+			$('#row_settings_email_header div.formHeaderText').append('<div id="emailtest" class="emailtest">' + <?php print json_encode(__esc('Send a Test Email'));?> + '</div>');
 
 			initMail();
 
@@ -613,7 +613,7 @@ default:
 			$('#emailtest').on('click', function() {
 				$.post('settings.php?action=send_test', {__csrf_magic: csrfMagicToken})
 					.done(function(data) {
-						$('body').append('<div id="testmail" title="<?php print __esc('Test Email Results');?>"></div>');
+						$('body').append($('<div id="testmail"></div>').attr('title', <?php print json_encode(__('Test Email Results'));?>));
 						$('#testmail').html(data);
 
 						$('#testmail').dialog({

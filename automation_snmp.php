@@ -717,7 +717,7 @@ function automation_snmp_edit() {
 					applySkin();
 
 					$('#cdialog').dialog({
-						title: '<?php print __('Delete SNMP Option Item');?>',
+						title: <?php print json_encode(__('Delete SNMP Option Item'));?>,
 						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
 						minHeight: 80,
 						minWidth: 500

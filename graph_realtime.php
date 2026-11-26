@@ -439,7 +439,7 @@ $selectedTheme = get_selected_theme();
 		var refreshPage=urlPath+'/graph_realtime.php?action=countdown&size='+$('#size').val();
 		var refreshMSeconds=999999999;
 		var myCountdown = {};
-		var secondsLeft = '<?php print __(' seconds left.');?>';
+		var secondsLeft = <?php print json_encode(__(' seconds left.'));?>;
 
 		function countdown_update() {
 			ds_step--;

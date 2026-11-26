@@ -1279,9 +1279,9 @@ function form_actions() {
 
 				function changeTotalsType() {
 					if (($('#aggregate_total_type').val() == <?php print AGGREGATE_TOTAL_TYPE_SIMILAR;?>)) {
-						$('#aggregate_total_prefix').attr('value', '<?php print __('Total');?>');
+						$('#aggregate_total_prefix').attr('value', <?php print json_encode(__('Total'));?>);
 					} else if (($('#aggregate_total_type').val() == <?php print AGGREGATE_TOTAL_TYPE_ALL;?>)) {
-						$('#aggregate_total_prefix').attr('value', '<?php print __('All Items');?>');
+						$('#aggregate_total_prefix').attr('value', <?php print json_encode(__('All Items'));?>);
 					}
 				}
 
@@ -1989,7 +1989,10 @@ function graph_edit() {
 	});
 
 	if (locked) {
-		$('input').not('input[value="<?php print __('Cancel');?>"]').not('input[value="<?php print __('Return');?>"]').prop('disabled', true);
+		$('input').filter(function() {
+			var v = $(this).val();
+			return v !== <?php print json_encode(__('Cancel'));?> && v !== <?php print json_encode(__('Return'));?>;
+		}).prop('disabled', true);
 		$('.moveArrow, .deleteMarker, .linkOverDark, .linkEditMain').attr('href', '#').removeClass('moveArrow').removeClass('deleteMarker');
 		if ($('#submit').button('instance')) {
 			$('#submit').button('disable');
