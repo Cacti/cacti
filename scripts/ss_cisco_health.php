@@ -419,7 +419,7 @@ if (PHP_SAPI === 'cli' && realpath($_SERVER['SCRIPT_FILENAME'] ?? '') === __FILE
 }
 
 /** Run one binary GET, retaining stderr without exposing credentials or changing core. */
-function cisco_health_binary_get(array|string $command, int $timeout, string $version, bool $numeric) : string {
+function cisco_health_binary_get(array|string $command, int|float $timeout, string $version, bool $numeric) : string {
 	$process = @proc_open($command, [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
 	if (!is_resource($process)) {
 		return 'U';
@@ -593,7 +593,7 @@ function cisco_health_snmp_get_raw($hostname, $community, $oid, $version, $auth_
 
 		/* no valid snmp version has been set, get out */
 		if (empty($snmp_auth)) {
-			return;
+			return 'U';
 		}
 
 		$binary = read_config_option('path_snmpget');

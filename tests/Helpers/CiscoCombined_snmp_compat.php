@@ -26,10 +26,10 @@ function cacti_escapeshellarg($s){return escapeshellarg($s);}
 function read_config_option($s){global $binary;return $binary;}
 function cacti_log(...$a){}
 if(($argv[1]??'')==='array'){
- function cacti_get_snmp_auth_args(&$v,$community,...$a){$v=$v==='2'?'2c':$v;return ['-c',$community];}
+ function cacti_get_snmp_auth_args(&$v,$community,...$a){$v=$v==='2'?'2c':$v;return $community === 'invalid-auth-fixture' ? [] : ['-c',$community];}
  function snmp_format_target_arg($h,$p){return $h.':'.$p;}
  function cacti_snmp_debug_command(...$a){}
- function cacti_snmp_command_timeout(...$a){return 2;}
+ function cacti_snmp_command_timeout(...$a){return 2.5;}
 }
 $root=sys_get_temp_dir().'/cisco-snmp-loader-'.bin2hex(random_bytes(6));
 mkdir($root);mkdir($root.'/scripts');mkdir($root.'/lib');
@@ -41,6 +41,8 @@ file_put_contents($binary,'#!'.PHP_BINARY."\n<?php array_shift(\$argv);echo json
 chmod($binary,0700);
 try {
  $n=0;
+ set_error_handler(static function($severity,$message){throw new RuntimeException($message);});
+ if(function_exists('cacti_get_snmp_auth_args') && cisco_health_snmp_get_raw('127.0.0.1','invalid-auth-fixture','.1','2',auth_proto:'SHA',priv_proto:'AES')!=='U')throw new RuntimeException('Invalid auth must return unknown');
  foreach(['1','2','3'] as $v)foreach([false,true] as $numeric){
   $community='test ; $(false) `false` " quoted';
   $a=json_decode(cisco_health_snmp_get_raw('127.0.0.1',$community,'.1.3.6.1',$v,'test user','quoted pass',auth_proto:'SHA',priv_proto:'AES',numeric_value:$numeric),true,512,JSON_THROW_ON_ERROR);
@@ -96,4 +98,4 @@ try {
   $n++;
  }
  echo 'PASS '.($argv[1]??'string').' API: '.($n+1).' compatibility cases'.PHP_EOL;
-} finally {unlink($binary);unlink($root.'/scripts/ss_cisco_health.php');unlink($root.'/lib/snmp.php');rmdir($root.'/scripts');rmdir($root.'/lib');rmdir($root);}
+} finally {restore_error_handler();unlink($binary);unlink($root.'/scripts/ss_cisco_health.php');unlink($root.'/lib/snmp.php');rmdir($root.'/scripts');rmdir($root.'/lib');rmdir($root);}
