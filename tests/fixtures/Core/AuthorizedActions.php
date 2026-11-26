@@ -45,7 +45,7 @@ require $root . '/include/csrf.php';
 class_alias(\CactiCsrfGuard::class, __NAMESPACE__ . '\\CactiCsrfGuard');
 
 foreach (['include/csrf.php' => ['csrf_check', 'csrf_require_post'], 'lib/auth.php' => ['cacti_authorize_resource'],
-	'lib/functions.php'         => ['sanitize_uri', 'is_urlencoded'], 'lib/reports.php' => ['reports_remove_history'],
+	'lib/functions.php'         => ['sanitize_uri', 'is_urlencoded', 'filter_value'], 'lib/reports.php' => ['reports_remove_history'],
 	'tree.php'                  => ['tree_require_edit_permission', 'tree_require_item_edit_permission', 'tree_dnd', 'set_host_sort_type', 'set_branch_sort_type'],
 	'auth_profile.php'          => ['settings_javascript']] as $file => $functions) {
 	foreach ($functions as $function) {
@@ -224,7 +224,7 @@ run_controller('data_debug.php', "/^(if \\(grv\\('action'\\) === 'purge'\\) \\{[
 run_controller('utilities.php', "/case 'purge_snmpagent_events':\\s*(db_execute\\(.*?srv\\('clear', true\\);)/s");
 check($GLOBALS['queries'] === ['TRUNCATE TABLE data_debug', 'TRUNCATE table snmpagent_notifications_log'] && $_REQUEST['clear'] === true, 'Purge did not reset its data and filters');
 
-run_controller('automation_templates.php', '/^(\\s*form_selectable_cell\\(\\x27<a class="linkEditMain cactiPostAction".*?;)/m',
+run_controller('automation_templates.php', '/^(\\s*form_selectable_cell\\(filter_value\\(\\$exit_text, .*?;)/m',
 	['exit_on_url' => 'automation_templates.php?action=exitonchange&id=1', 'id' => 1, 'exit_text' => 'Toggle']);
 check(str_contains($GLOBALS['cell'], 'data-url="automation_templates.php?action=exitonchange&amp;id=1"') && str_contains($GLOBALS['cell'], '>Toggle</a>'), 'Toggle link lost the action or label');
 
