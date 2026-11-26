@@ -1,0 +1,1 @@
+Embed the remaining translated JavaScript strings with json_encode so apostrophes no longer stop the package, SNMP option and tree rule scripts

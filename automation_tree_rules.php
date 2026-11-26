@@ -901,14 +901,14 @@ function automation_tree_rules_edit() : void {
 			if (automationLeafTypeNew == 3) {
 				var automationLeafTypeButtons = {
 					'Yes': {
-						text: '<?php print __('Yes'); ?>',
+						text: <?php print json_encode(__('Yes')); ?>,
 						id: 'btnAutomationLeafTypeYes',
 						click: function() {
 							applyTreeChange('change_leaf',true);
 						}
 					},
 					'No': {
-						text: '<?php print __('No'); ?>',
+						text: <?php print json_encode(__('No')); ?>,
 						id: 'btnAutomationLeafTypeNo',
 						click: function() {
 							$(this).dialog('close');
@@ -922,13 +922,13 @@ function automation_tree_rules_edit() : void {
 					}
 				};
 
-				var automationLeafTypeTitle = '<?php print __('Change Leaf Type'); ?>';
+				var automationLeafTypeTitle = <?php print json_encode(__('Change Leaf Type')); ?>;
 				var automationLeafTypeContainer = '<div id="automationLeafTypeContainer" style="display:none">' +
 					'<p style="display:table-cell;overflow:auto"> ' +
-					'<b><?php print __('WARNING:'); ?></b>' +
-					'<?php print __('You are changing the leaf type to "Device" which does not support Graph-based object matching/creation.'); ?>' +
-					'<?php print __('By changing the leaf type, all invalid rules will be automatically removed and will not be recoverable.'); ?> <br/><br/>' +
-					'<?php print __('Are you sure you wish to continue?'); ?>' +
+					'<b>' + <?php print json_encode(__('WARNING:')); ?> + '</b>' +
+					<?php print json_encode(__('You are changing the leaf type to "Device" which does not support Graph-based object matching/creation.')); ?> +
+					<?php print json_encode(__('By changing the leaf type, all invalid rules will be automatically removed and will not be recoverable.')); ?> + ' <br/><br/>' +
+					<?php print json_encode(__('Are you sure you wish to continue?')); ?> +
 					'</p>' +
 					'</div>';
 
