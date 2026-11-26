@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-26 05:54+0000\n"
+"PO-Revision-Date: 2026-11-26 19:34+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://translate.cacti.net/"
 "projects/cacti/core/zh_Hant/>\n"
@@ -31,7 +31,7 @@ msgstr "Cacti旨在成為基於RRDtool框架的完整圖形解決方案。其目
 #: about.php:46
 #, php-format
 msgid "Please see the official %sCacti website%s for information on how to use Cacti, get support, and updates."
-msgstr "請參閱官方 %1$sCacti 網站%2$s，以取得使用 Cacti、尋求支援和更新的相關資訊。"
+msgstr "請參閱官方 %sCacti 網站%s，以取得使用 Cacti、尋求支援和更新的相關資訊。"
 
 #: about.php:50
 msgid "Active Developers"
@@ -64,8 +64,8 @@ msgstr "謝謝"
 #: about.php:88
 #, php-format
 msgid "A very special thanks to %sTobi Oetiker%s, the creator of %sRRDtool%s and the very popular %sMRTG%s."
-msgstr "特別感謝 %1$sTobi Oetiker%2$s，他是 %3$sRRDtool%4$s 以及廣受歡迎的 "
-"%5$sMRTG%6$s 之創作者。"
+msgstr "特別感謝 %sTobi Oetiker%s，他是 %sRRDtool%s 以及廣受歡迎的 %sMRTG%s "
+"之創作者。"
 
 #: about.php:91
 msgid "The users of Cacti"
@@ -2808,7 +2808,7 @@ msgstr "驗證協議"
 
 #: automation_snmp.php:726
 msgid "Priv Passphrase"
-msgstr "Priv Passphrase"
+msgstr "隱私密碼詞組"
 
 #: automation_snmp.php:727
 msgid "Priv Protocol"
@@ -3779,7 +3779,7 @@ msgstr "彩色模板[新]"
 #: color_templates.php:762
 #, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
-msgstr "色彩範本「%1$s」已推出 %2$d 個彙總範本及 %3$d 個非範本彙總圖表"
+msgstr "色彩範本「%s」已推出 %d 個彙總範本及 %d 個非範本彙總圖表"
 
 #: color_templates.php:764
 #, php-format
@@ -4066,7 +4066,7 @@ msgstr "問題"
 #: data_debug.php:910
 #, php-format
 msgid "For attribute '%s', issue found '%s'"
-msgstr "屬性 '%1$s' 發現問題 '%2$s'"
+msgstr "屬性 '%s' 發現問題 '%s'"
 
 #: data_debug.php:925
 msgid "Apply Suggested Fixes"
@@ -4597,7 +4597,7 @@ msgstr "（有些元素只讀）"
 #: data_source_profiles.php:524
 #, php-format
 msgid "RRA [edit: %s %s]"
-msgstr "RRA [編輯: %1$s %2$s]"
+msgstr "RRA [編輯: %s %s]"
 
 #: data_source_profiles.php:614
 #, php-format
@@ -4646,7 +4646,7 @@ msgstr "刪除數據源配置文件項"
 #: data_source_profiles.php:799
 #, php-format
 msgid "%s KBytes per Data Sources and %s Bytes for the Header"
-msgstr "每個資料來源 %1$s KB，標頭 %2$s 位元組"
+msgstr "每個資料來源 %s KB，標頭 %s 位元組"
 
 #: data_source_profiles.php:808
 #, php-format
@@ -5058,7 +5058,7 @@ msgstr "數據源調試"
 
 #: data_sources.php:1189
 msgid "RRDtool Tune Info"
-msgstr "RRDtool Tune Info"
+msgstr "RRDtool 調整資訊"
 
 #: data_sources.php:1217 data_templates.php:1329 include/global_form.php:605
 msgid "External"
@@ -5521,7 +5521,7 @@ msgstr "此過濾器將限制數據源下拉列表中可見的數據源。"
 #: graph_templates.php:1163 graph_templates.php:1178
 #, php-format
 msgid "Sync of Graph Template '%s' Resulted in %s Repairs!"
-msgstr "圖表範本 '%1$s' 的同步作業已完成 %2$s 項修復！"
+msgstr "圖表範本 '%s' 的同步作業已完成 %s 項修復！"
 
 #: graph_templates.php:1165 graph_templates.php:1180
 #, php-format
@@ -5887,7 +5887,7 @@ msgstr "主機識別碼"
 
 #: graph_xport.php:134 graph_xport.php:211
 msgid "Nth Percentile"
-msgstr "Nth Percentile"
+msgstr "第 N 百分位數"
 
 #: graph_xport.php:140 graph_xport.php:226
 msgid "Summation"
@@ -6342,19 +6342,18 @@ msgstr "選擇所有行"
 #: graphs_new.php:678
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id of '%s'"
-msgstr "剖析資料查詢 '%1$s' (ID 為 '%2$s') 的資料查詢資源 XML 檔案時發生錯誤"
+msgstr "剖析資料查詢 '%s' (ID 為 '%s') 的資料查詢資源 XML 檔案時發生錯誤"
 
 #: graphs_new.php:695
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'.  Field Name '%s' missing a 'direction' attribute"
-msgstr ""
-"剖析資料查詢 '%1$s' (ID 為 '%2$s') 的資料查詢資源 XML 檔案時發生錯誤。"
-"欄位名稱 '%3$s' 缺少 'direction' 屬性"
+msgstr "剖析資料查詢 '%s' (ID 為 '%s') 的資料查詢資源 XML 檔案時發生錯誤。欄位名稱 "
+"'%s' 缺少 'direction' 屬性"
 
 #: graphs_new.php:699
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'"
-msgstr "剖析資料查詢 '%1$s' (ID 為 '%2$s') 的資料查詢資源 XML 檔案時發生錯誤"
+msgstr "剖析資料查詢 '%s' (ID 為 '%s') 的資料查詢資源 XML 檔案時發生錯誤"
 
 #: graphs_new.php:740
 #, php-format
@@ -6469,7 +6468,7 @@ msgstr "錯誤：無效的裝置 ID。"
 #: host.php:217
 #, php-format
 msgid "Device Reindex Completed in %0.2f seconds.  There were %d items updated."
-msgstr "裝置重新建立索引已完成，耗時 %1$0.2f 秒。已更新 %2$d 個項目。"
+msgstr "裝置重新建立索引已完成，耗時 %0.2f 秒。已更新 %d 個項目。"
 
 #: host.php:360
 #, php-format
@@ -6710,7 +6709,7 @@ msgstr "重新索引方法"
 #: host.php:982
 #, php-format
 msgid " [%d Items, %d Rows]"
-msgstr " [%1$d 個項目，%2$d 列]"
+msgstr " [%d 個項目，%d 列]"
 
 #: host.php:982
 msgid "Fail"
@@ -8626,17 +8625,17 @@ msgstr "Boost 之後"
 #: include/global_arrays.php:1742
 #, php-format
 msgid "%d MBytes"
-msgstr "%d MBytes"
+msgstr "%d MB"
 
 #: include/global_arrays.php:1680
 msgid "1 GByte"
-msgstr "1 GByte"
+msgstr "1 GB"
 
 #: include/global_arrays.php:1681 include/global_arrays.php:1744
 #: lib/boost.php:62
 #, php-format
 msgid "%s GBytes"
-msgstr "%s GBytes"
+msgstr "%s GB"
 
 #: include/global_arrays.php:1682 include/global_arrays.php:1683
 #: include/global_arrays.php:1745 include/global_arrays.php:1746
@@ -8644,7 +8643,7 @@ msgstr "%s GBytes"
 #: include/global_arrays.php:1749 include/global_arrays.php:1750
 #, php-format
 msgid "%d GBytes"
-msgstr "%d GBytes"
+msgstr "%d GB"
 
 #: include/global_arrays.php:1703
 msgid "2,000 Data Source Items"
@@ -9332,7 +9331,7 @@ msgstr "圖形模板項"
 
 #: include/global_arrays.php:2487
 msgid "Round Robin Archives"
-msgstr "Round Robin Archives"
+msgstr "循環封存"
 
 #: include/global_arrays.php:2529
 msgid "Data Input Fields"
@@ -14655,12 +14654,12 @@ msgstr "創建樹規則（圖）"
 #: lib/api_automation.php:2435
 #, php-format
 msgid "Rule Item [edit rule item for %s: %s]"
-msgstr "規則項目 [編輯 %1$s 的規則項目：%2$s]"
+msgstr "規則項目 [編輯 %s 的規則項目：%s]"
 
 #: lib/api_automation.php:2437
 #, php-format
 msgid "Rule Item [new rule item for %s: %s]"
-msgstr "規則項目 [新增 %1$s 的規則項目：%2$s]"
+msgstr "規則項目 [新增 %s 的規則項目：%s]"
 
 #: lib/api_automation.php:3457
 msgid "Added by Cacti Automation"
@@ -14759,7 +14758,7 @@ msgstr "未知的裝置範本"
 #: lib/api_automation.php:5404 lib/api_automation.php:5406
 #, php-format
 msgid "Automation Network Rule '%s' %s!"
-msgstr "自動化網路規則「%1$s」%2$s！"
+msgstr "自動化網路規則「%s」%s！"
 
 #: lib/api_automation.php:5410 lib/api_automation.php:5412
 #, php-format
@@ -14871,7 +14870,7 @@ msgstr "新增分支"
 
 #: lib/auth.php:575
 msgid "Web Basic"
-msgstr "Web Basic"
+msgstr "基本網頁驗證"
 
 #: lib/auth.php:2336
 msgid "Device:(Hide Disabled)"
@@ -14880,29 +14879,29 @@ msgstr "裝置：(隱藏已停用)"
 #: lib/auth.php:2355 lib/auth.php:2357 lib/auth.php:2363 lib/auth.php:2365
 #, php-format
 msgid "Graph:(%s%s)"
-msgstr "圖表:(%1$s%2$s)"
+msgstr "圖表:(%s%s)"
 
 #: lib/auth.php:2378 lib/auth.php:2384 lib/auth.php:2451 lib/auth.php:2453
 #: lib/auth.php:2457 lib/auth.php:2459
 #, php-format
 msgid "Device:(%s%s)"
-msgstr "裝置：(%1$s%2$s)"
+msgstr "裝置：(%s%s)"
 
 #: lib/auth.php:2392 lib/auth.php:2398 lib/auth.php:2467 lib/auth.php:2469
 #: lib/auth.php:2473 lib/auth.php:2475
 #, php-format
 msgid "Template:(%s%s)"
-msgstr "範本:(%1$s%2$s)"
+msgstr "範本:(%s%s)"
 
 #: lib/auth.php:2405
 #, php-format
 msgid "Graph+Device+Template:(%s%s)"
-msgstr "圖表+裝置+範本:(%1$s%2$s)"
+msgstr "圖表+裝置+範本:(%s%s)"
 
 #: lib/auth.php:2442 lib/auth.php:2444
 #, php-format
 msgid "Device+Template:(%s%s)"
-msgstr "裝置+範本：(%1$s%2$s)"
+msgstr "裝置+範本：(%s%s)"
 
 #: lib/auth.php:2488 lib/auth.php:2495 lib/auth.php:2504
 msgid "Restricted By: "
@@ -15101,12 +15100,12 @@ msgstr " - 管理員視圖"
 #: lib/clog_webapi.php:290
 #, php-format
 msgid "Log [Total Lines: %d %s - Filter active]"
-msgstr "日誌 [總行數：%1$d %2$s - 已啟用篩選]"
+msgstr "日誌 [總行數：%d %s - 已啟用篩選]"
 
 #: lib/clog_webapi.php:292
 #, php-format
 msgid "Log [Total Lines: %d %s - Unfiltered]"
-msgstr "日誌 [總行數：%1$d %2$s - 未篩選]"
+msgstr "日誌 [總行數：%d %s - 未篩選]"
 
 #: lib/clog_webapi.php:297 utilities.php:430 utilities.php:791
 #: utilities.php:1042 utilities.php:1045 utilities.php:1141 utilities.php:2008
@@ -15230,7 +15229,7 @@ msgstr "運行數據查詢[%s]。"
 #: lib/data_query.php:113
 #, php-format
 msgid "Found Type = '%s' [%s]."
-msgstr "找到類型 = '%1$s' [%2$s]。"
+msgstr "找到類型 = '%s' [%s]。"
 
 #: lib/data_query.php:135
 #, php-format
@@ -15253,7 +15252,7 @@ msgstr "找到 %s 個要驗證的本機資料 ID"
 #: lib/data_query.php:303
 #, php-format
 msgid "Index Change Detected! CurrentIndex: %s, PreviousIndex: %s"
-msgstr "偵測到索引變更！目前索引：%1$s，前次索引：%2$s"
+msgstr "偵測到索引變更！目前索引：%s，前次索引：%s"
 
 #: lib/data_query.php:323
 #, php-format
@@ -15273,7 +15272,7 @@ msgstr "已完成 %s 個本機資料 ID 的驗證"
 #: lib/data_query.php:363
 #, php-format
 msgid "Found Changed %s and %s Orphaned Local Data ID's to Re-map."
-msgstr "找到 %1$s 個已變更與 %2$s 個孤立的本機資料 ID 需要重新對應。"
+msgstr "找到 %s 個已變更與 %s 個孤立的本機資料 ID 需要重新對應。"
 
 #: lib/data_query.php:366
 msgid "Done remapping Graphs to their new Indexes"
@@ -15294,7 +15293,7 @@ msgstr "與本地數據的索引關聯完成"
 #: lib/data_query.php:392
 #, php-format
 msgid "Update Re-Index Cache complete. There were %s index changes, and %s orphaned indexes."
-msgstr "更新重新索引快取完成。共有 %1$s 個索引變更，以及 %2$s 個孤立索引。"
+msgstr "更新重新索引快取完成。共有 %s 個索引變更，以及 %s 個孤立索引。"
 
 #: lib/data_query.php:396
 msgid "Update Poller Cache for Query complete"
@@ -15319,7 +15318,7 @@ msgstr "檢查排序字段更改。未檢測到任何更改。"
 #: lib/data_query.php:509
 #, php-format
 msgid "Detected New Sort Field: '%s' Old Sort Field '%s'"
-msgstr "偵測到新的排序欄位：「%1$s」舊排序欄位「%2$s」"
+msgstr "偵測到新的排序欄位：「%s」舊排序欄位「%s」"
 
 #: lib/data_query.php:526
 msgid "ERROR: New Sort Field not suitable.  Sort Field will not change."
@@ -15393,7 +15392,7 @@ msgstr "錯誤：數據查詢未返回任何索引。"
 #: lib/data_query.php:715
 #, php-format
 msgid "Executing script for list of indexes '%s', Index Count: %s"
-msgstr "正在執行指令碼以取得索引清單 '%1$s'，索引計數：%2$s"
+msgstr "正在執行指令碼以取得索引清單 '%s'，索引計數：%s"
 
 #: lib/data_query.php:717
 msgid "Click to show Data Query output for 'index'"
@@ -15422,12 +15421,12 @@ msgstr "執行腳本查詢&#39;%s&#39"
 #: lib/data_query.php:754 lib/data_query.php:761
 #, php-format
 msgid "Found item [%s='%s'] index: %s"
-msgstr "找到項目 [%1$s='%2$s'] 索引：%3$s"
+msgstr "找到項目 [%s='%s'] 索引：%s"
 
 #: lib/data_query.php:799 lib/data_query.php:814
 #, php-format
 msgid "Total: %f, Delta: %f, %s"
-msgstr "總計: %1$f，差值: %2$f，%3$s"
+msgstr "總計: %f，差值: %f，%s"
 
 #: lib/data_query.php:839
 #, php-format
@@ -15445,7 +15444,7 @@ msgstr "無法加載SNMP會話。"
 #: lib/data_query.php:886
 #, php-format
 msgid "Tested Bulk Walk Size %d with a response of %2.4f."
-msgstr "已測試 Bulk Walk 大小 %1$d，回應為 %2$2.4f。"
+msgstr "已測試 Bulk Walk 大小 %d，回應為 %2.4f。"
 
 #: lib/data_query.php:898
 #, php-format
@@ -15464,7 +15463,7 @@ msgstr "Bulk Walk 大小固定為 %d。"
 #: lib/data_query.php:935
 #, php-format
 msgid "Executing SNMP get for num of indexes @ '%s' Index Count: %s"
-msgstr "正在對索引數量 @ '%1$s' 執行 SNMP get，索引計數：%2$s"
+msgstr "正在對索引數量 @ '%s' 執行 SNMP get，索引計數：%s"
 
 #: lib/data_query.php:937
 msgid "&lt;oid_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting oid_index entries"
@@ -15474,7 +15473,7 @@ msgstr "XML文件中缺少&lt;oid_num_indexes&gt;，通過計算oid_index條目�
 #: lib/data_query.php:940
 #, php-format
 msgid "Executing SNMP walk for list of indexes @ '%s' Index Count: %s"
-msgstr "正在對索引清單 @ '%1$s' 執行 SNMP walk，索引計數：%2$s"
+msgstr "正在對索引清單 @ '%s' 執行 SNMP walk，索引計數：%s"
 
 #: lib/data_query.php:944
 msgid "No SNMP data returned"
@@ -15483,27 +15482,27 @@ msgstr "沒有返回SNMP數據"
 #: lib/data_query.php:950
 #, php-format
 msgid "Index found at OID: '%s' value: '%s'"
-msgstr "在 OID '%1$s' 找到索引，值：'%2$s'"
+msgstr "在 OID '%s' 找到索引，值：'%s'"
 
 #: lib/data_query.php:966
 #, php-format
 msgid "List of indexes filtered by value @ '%s' Index Count: %s"
-msgstr "依值篩選的索引清單 @ '%1$s' 索引數量：%2$s"
+msgstr "依值篩選的索引清單 @ '%s' 索引數量：%s"
 
 #: lib/data_query.php:970
 #, php-format
 msgid "Filtered Index by value found at OID: '%s' value: '%s'"
-msgstr "依值篩選的索引位於 OID：'%1$s' 值：'%2$s'"
+msgstr "依值篩選的索引位於 OID：'%s' 值：'%s'"
 
 #: lib/data_query.php:987
 #, php-format
 msgid "Filtering list of indexes @ '%s' Index Count: %s"
-msgstr "正在篩選索引清單 @ '%1$s' 索引數量：%2$s"
+msgstr "正在篩選索引清單 @ '%s' 索引數量：%s"
 
 #: lib/data_query.php:991
 #, php-format
 msgid "Filtered Index found at OID: '%s' value: '%s'"
-msgstr "篩選後的索引位於 OID：'%1$s' 值：'%2$s'"
+msgstr "篩選後的索引位於 OID：'%s' 值：'%s'"
 
 #: lib/data_query.php:1011
 #, php-format
@@ -15515,7 +15514,7 @@ msgstr ""
 #: lib/data_query.php:1018
 #, php-format
 msgid "Inserting index data for field '%s' [value='%s']"
-msgstr "正在為欄位 '%1$s' 插入索引資料 [值='%2$s']"
+msgstr "正在為欄位 '%s' 插入索引資料 [值='%s']"
 
 #: lib/data_query.php:1023
 #, php-format
@@ -15525,27 +15524,27 @@ msgstr "找到輸入欄位 '%s' [get]"
 #: lib/data_query.php:1032
 #, php-format
 msgid "Found OID rewrite rule: 's/%s/%s/'"
-msgstr "找到 OID 改寫規則：'s/%1$s/%2$s/'"
+msgstr "找到 OID 改寫規則：'s/%s/%s/'"
 
 #: lib/data_query.php:1043
 #, php-format
 msgid "oid_rewrite at OID: '%s' new OID: '%s'"
-msgstr "oid_rewrite 於 OID: '%1$s' 新 OID: '%2$s'"
+msgstr "oid_rewrite 於 OID: '%s' 新 OID: '%s'"
 
 #: lib/data_query.php:1064
 #, php-format
 msgid "Executing SNMP get for data @ '%s' [value='%s']"
-msgstr "正在對資料 @ '%1$s' 執行 SNMP get [值='%2$s']"
+msgstr "正在對資料 @ '%s' 執行 SNMP get [值='%s']"
 
 #: lib/data_query.php:1076
 #, php-format
 msgid "Field '%s' %s"
-msgstr "欄位 '%1$s' %2$s"
+msgstr "欄位 '%s' %s"
 
 #: lib/data_query.php:1140
 #, php-format
 msgid "Executing SNMP get for %s oids (%s)"
-msgstr "正在對 %1$s 個 OID (%2$s) 執行 SNMP get"
+msgstr "正在對 %s 個 OID (%s) 執行 SNMP get"
 
 #: lib/data_query.php:1167 lib/data_query.php:1260 lib/data_query.php:1269
 #, php-format
@@ -15555,22 +15554,22 @@ msgstr "排序欄位未傳回 OID[%s] 的資料，略過。"
 #: lib/data_query.php:1171
 #, php-format
 msgid "Found result for data @ '%s' [value='%s']"
-msgstr "找到資料 @ '%1$s' 的結果 [值='%2$s']"
+msgstr "找到資料 @ '%s' 的結果 [值='%s']"
 
 #: lib/data_query.php:1179
 #, php-format
 msgid "Setting result for data @ '%s' [key='%s', value='%s']"
-msgstr "正在設定資料 @ '%1$s' 的結果 [key='%2$s', value='%3$s']"
+msgstr "正在設定資料 @ '%s' 的結果 [key='%s', value='%s']"
 
 #: lib/data_query.php:1183
 #, php-format
 msgid "Skipped result for data @ '%s' [key='%s', value='%s']"
-msgstr "已略過位於 '%1$s' 的資料結果 [key='%2$s', value='%3$s']"
+msgstr "已略過位於 '%s' 的資料結果 [key='%s', value='%s']"
 
 #: lib/data_query.php:1197
 #, php-format
 msgid "Got SNMP get result for data @ '%s' [value='%s'] (index: %s)"
-msgstr "取得資料 @ '%1$s' 的 SNMP get 結果 [值='%2$s'] (索引：%3$s)"
+msgstr "取得資料 @ '%s' 的 SNMP get 結果 [值='%s'] (索引：%s)"
 
 #: lib/data_query.php:1227
 #, php-format
@@ -15596,22 +15595,22 @@ msgstr ""
 #: lib/data_query.php:1342
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from %s]"
-msgstr "找到項目 [%1$s='%2$s'] 索引：%3$s [來自 %4$s]"
+msgstr "找到項目 [%s='%s'] 索引：%s [來自 %s]"
 
 #: lib/data_query.php:1386
 #, php-format
 msgid "Found OCTET STRING '%s' decoded value: '%s'"
-msgstr "找到 OCTET STRING '%1$s' 解碼後的值：'%2$s'"
+msgstr "找到 OCTET STRING '%s' 解碼後的值：'%s'"
 
 #: lib/data_query.php:1392 lib/data_query.php:1443
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid parse]"
-msgstr "找到項目 [%1$s='%2$s'] 索引：%3$s [來自正規表示式 OID 解析]"
+msgstr "找到項目 [%s='%s'] 索引：%s [來自正規表示式 OID 解析]"
 
 #: lib/data_query.php:1472
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid value parse]"
-msgstr "找到項目 [%1$s='%2$s'] 索引：%3$s [來自正規表示式 OID 值解析]"
+msgstr "找到項目 [%s='%s'] 索引：%s [來自正規表示式 OID 值解析]"
 
 #: lib/data_query.php:1710
 #, php-format
@@ -15625,7 +15624,7 @@ msgstr ""
 #: lib/data_query.php:1750
 #, php-format
 msgid "rewrite_value: '%s' => '%s'"
-msgstr "rewrite_value: '%1$s' => '%2$s'"
+msgstr "rewrite_value: '%s' => '%s'"
 
 #: lib/data_query.php:1856
 msgid "Update graph data query cache complete"
@@ -15676,13 +15675,12 @@ msgstr "數據源未設置為活動"
 #: lib/dsdebug.php:277
 #, php-format
 msgid "RRDfile Folder (rra) is not writable by Poller.  Folder owner: %s.  Poller runs as: %s"
-msgstr "Poller 無法寫入 RRD 檔案資料夾 (rra)。資料夾擁有者: %1$s。Poller 執行身分: "
-"%2$s"
+msgstr "Poller 無法寫入 RRD 檔案資料夾 (rra)。資料夾擁有者: %s。Poller 執行身分: %s"
 
 #: lib/dsdebug.php:282
 #, php-format
 msgid "RRDfile is not writable by Poller.  RRDfile owner: %s.  Poller runs as %s"
-msgstr "Poller 無法寫入 RRD 檔案。RRD 檔案擁有者: %1$s。Poller 執行身分為 %2$s"
+msgstr "Poller 無法寫入 RRD 檔案。RRD 檔案擁有者: %s。Poller 執行身分為 %s"
 
 #: lib/dsdebug.php:291
 msgid "RRDfile does not match Data Source"
@@ -15889,7 +15887,7 @@ msgstr "自安裝以來"
 #: lib/functions.php:6565 lib/functions.php:6660
 #, php-format
 msgid "Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details."
-msgstr "由於下列錯誤，Cacti 已停用外掛程式 %1$s: %2$s! 如需詳細資訊，請參閱 Cacti "
+msgstr "由於下列錯誤，Cacti 已停用外掛程式 %s: %s! 如需詳細資訊，請參閱 Cacti "
 "記錄檔。"
 
 #: lib/functions.php:6752
@@ -15908,7 +15906,7 @@ msgstr ""
 #: lib/functions.php:7247
 #, php-format
 msgid "- Dev %s"
-msgstr "- Dev %s"
+msgstr "- 裝置 %s"
 
 #: lib/functions.php:7249
 #, php-format
@@ -15918,7 +15916,7 @@ msgstr "- Beta %s"
 #: lib/functions.php:7309
 #, php-format
 msgid "Version %s %s"
-msgstr "版本 %1$s %2$s"
+msgstr "版本 %s %s"
 
 #: lib/functions.php:7852
 #, php-format
@@ -15987,7 +15985,7 @@ msgstr "上一個"
 #: lib/html.php:671
 #, php-format
 msgid "%d to %d of %s [ %s ]"
-msgstr "第 %1$d 至 %2$d 筆，共 %3$s 筆 [ %4$s ]"
+msgstr "第 %d 至 %d 筆，共 %s 筆 [ %s ]"
 
 #: lib/html.php:674 lib/html.php:703 lib/installer.php:1778
 msgid "Next"
@@ -15996,7 +15994,7 @@ msgstr "下一頁"
 #: lib/html.php:681
 #, php-format
 msgid "All %d %s"
-msgstr "所有 %1$d %2$s"
+msgstr "所有 %d %s"
 
 #: lib/html.php:700
 #, php-format
@@ -16148,7 +16146,7 @@ msgstr ""
 
 #: lib/html.php:2817
 msgid "Dry Run StdDev"
-msgstr "Dry Run StdDev"
+msgstr "模擬執行標準差"
 
 #: lib/html.php:2818
 #, fuzzy
@@ -16508,7 +16506,7 @@ msgstr ""
 #: lib/html.php:3403
 #, php-format
 msgid "Version %s | %s"
-msgstr "版本 %1$s | %2$s"
+msgstr "版本 %s | %s"
 
 #: lib/html_filter.php:89
 msgid "Apply filter to table"
@@ -16677,7 +16675,7 @@ msgstr "從%s創建圖表"
 #: lib/html_graph.php:677
 #, php-format
 msgid "Create %s Graphs from %s"
-msgstr "從 %2$s 建立 %1$s 圖表"
+msgstr "建立 %s 圖表 (來源: %s)"
 
 #: lib/html_graph.php:718
 #, php-format
@@ -17308,7 +17306,7 @@ msgstr "已選取"
 #: lib/html_utility.php:589 lib/html_utility.php:828
 #, php-format
 msgid "The regular expression \"%s\" is not valid. Error is %s"
-msgstr "正規表示式 \"%1$s\" 無效。錯誤為 %2$s"
+msgstr "正規表示式 \"%s\" 無效。錯誤為 %s"
 
 #: lib/html_utility.php:1040
 msgid "Cacti regular expressions are limited to 50 characters only for security reasons."
@@ -17345,7 +17343,7 @@ msgstr "離線 (Thold)"
 #: lib/html_validate.php:97
 #, php-format
 msgid "Validation error for variable %s with a value of %s.  See backtrace below for more details."
-msgstr "變數 %1$s (值為 %2$s) 發生驗證錯誤。請參閱下方的回溯追蹤以取得更多詳細資訊。"
+msgstr "變數 %s (值為 %s) 發生驗證錯誤。請參閱下方的回溯追蹤以取得更多詳細資訊。"
 
 #: lib/html_validate.php:115
 msgid "Validation Error"
@@ -17444,7 +17442,7 @@ msgstr "路徑不可寫"
 #: lib/installer.php:786
 #, php-format
 msgid "Failed to set specified %sRRDTool version: %s"
-msgstr "無法設定指定的 %1$sRRDTool 版本：%2$s"
+msgstr "無法設定指定的 %sRRDTool 版本：%s"
 
 #: lib/installer.php:837
 msgid "Invalid Theme Specified"
@@ -17469,7 +17467,7 @@ msgstr "意外的路徑參數"
 #: lib/installer.php:968
 #, php-format
 msgid "Failed to apply specified profile %s != %s"
-msgstr "無法套用指定的設定檔 %1$s != %2$s"
+msgstr "無法套用指定的設定檔 %s != %s"
 
 #: lib/installer.php:1015
 #, php-format
@@ -17780,7 +17778,7 @@ msgstr "安裝類型"
 #: lib/installer.php:2239
 #, php-format
 msgid "Upgrade from <strong>%s</strong> to <strong>%s</strong>"
-msgstr "從 <strong>%1$s</strong> 升級至 <strong>%2$s</strong>"
+msgstr "從 <strong>%s</strong> 升級至 <strong>%s</strong>"
 
 #: lib/installer.php:2241
 msgid "In the event of issues, It is highly recommended that you clear your browser cache, closing then reopening your browser (not just the tab Cacti is on) and retrying, before raising an issue with The Cacti Group"
@@ -17805,7 +17803,7 @@ msgstr "如果在清除緩存並重新啟動瀏覽器後仍然遇到問題，請
 #: lib/installer.php:2250
 #, php-format
 msgid "Downgrade from <strong>%s</strong> to <strong>%s</strong>"
-msgstr "從 <strong>%1$s</strong> 降級至 <strong>%2$s</strong>"
+msgstr "從 <strong>%s</strong> 降級至 <strong>%s</strong>"
 
 #: lib/installer.php:2251
 msgid "You appear to be downgrading to a previous version.  Database changes made for the newer version will not be reversed and <i>could</i> cause issues."
@@ -18287,7 +18285,7 @@ msgstr "您的Cacti服務器幾乎準備就緒。請檢查您是否樂意繼續�
 #: lib/installer.php:2936
 #, php-format
 msgid "Press '%s' then click '%s' to complete the installation process after selecting your Device Templates."
-msgstr "選擇裝置範本後，請按「%1$s」，再按一下「%2$s」以完成安裝程序。"
+msgstr "選擇裝置範本後，請按「%s」，再按一下「%s」以完成安裝程序。"
 
 #: lib/installer.php:2964
 msgid "The following General Install Options will be applied."
@@ -18413,7 +18411,7 @@ msgstr "您的Cacti服務器現在正在安裝"
 #: lib/installer.php:3165
 #, php-format
 msgid "Spawning background process: %s %s"
-msgstr "正在產生背景處理程序: %1$s %2$s"
+msgstr "正在產生背景處理程序: %s %s"
 
 #: lib/installer.php:3192
 msgid "Complete"
@@ -18444,12 +18442,12 @@ msgstr "開始使用"
 #: lib/installer.php:3359
 #, php-format
 msgid "Starting %s Process for v%s"
-msgstr "正在啟動 %1$s 處理程序 (v%2$s)"
+msgstr "正在啟動 %s 處理程序 (v%s)"
 
 #: lib/installer.php:3388
 #, php-format
 msgid "Finished %s Process for v%s"
-msgstr "已完成 v%2$s 的 %1$s 處理程序"
+msgstr "已完成 %s 處理程序 (v%s)"
 
 #: lib/installer.php:3428
 #, php-format
@@ -18459,17 +18457,17 @@ msgstr "找到了要安裝的%s模板"
 #: lib/installer.php:3438
 #, php-format
 msgid "About to import Package #%s '%s'."
-msgstr "即將匯入套件 #%1$s「%2$s」。"
+msgstr "即將匯入套件 #%s「%s」。"
 
 #: lib/installer.php:3447
 #, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' succeeded"
-msgstr "匯入設定檔「%3$s」下的套件 #%1$s「%2$s」成功"
+msgstr "套件 #%s「%s」在設定檔「%s」下匯入成功"
 
 #: lib/installer.php:3453
 #, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' failed"
-msgstr "匯入設定檔「%3$s」下的套件 #%1$s「%2$s」失敗"
+msgstr "套件 #%s「%s」在設定檔「%s」下匯入失敗"
 
 #: lib/installer.php:3469
 #, php-format
@@ -18487,7 +18485,7 @@ msgstr "正在更新遠端設定檔"
 #: lib/installer.php:3532
 #, php-format
 msgid "Setting default data source profile to %s (%s)"
-msgstr "正在將預設資料來源設定檔設為 %1$s (%2$s)"
+msgstr "正在將預設資料來源設定檔設為 %s (%s)"
 
 #: lib/installer.php:3557
 #, fuzzy, php-format
@@ -18497,8 +18495,7 @@ msgstr "無法應用指定的配置文件%s！=%s"
 #: lib/installer.php:3568
 #, php-format
 msgid "Updating automation network (%s), mode \"%s\" => \"%s\", subnet \"%s\" => %s\""
-msgstr "正在更新自動化網路 (%1$s)，模式 \"%2$s\" => \"%3$s\"，子網路 \"%4$s\" => %5$"
-"s\""
+msgstr "正在更新自動化網路 (%s)，模式 \"%s\" => \"%s\"，子網路 \"%s\" => %s\""
 
 #: lib/installer.php:3583
 msgid "Failed to find automation network, no changes were made"
@@ -18601,7 +18598,7 @@ msgstr "找到要轉換的%s表"
 #: lib/installer.php:3767
 #, php-format
 msgid "Converting Table #%s '%s'"
-msgstr "正在轉換資料表 #%1$s「%2$s」"
+msgstr "正在轉換資料表 #%s「%s」"
 
 #: lib/installer.php:3784
 #, fuzzy
@@ -18611,7 +18608,7 @@ msgstr "沒有找到或選擇要轉換的表"
 #: lib/installer.php:3795
 #, php-format
 msgid "Switched from %s to %s"
-msgstr "已從 %1$s 切換至 %2$s"
+msgstr "已從 %s 切換至 %s"
 
 #: lib/installer.php:3799
 #, php-format
@@ -18621,7 +18618,7 @@ msgstr "注意：使用臨時文件進行數據庫高速緩存：%s"
 #: lib/installer.php:3822
 #, php-format
 msgid "Upgrading from v%s (DB %s) to v%s"
-msgstr "正在從 v%1$s (資料庫 %2$s) 升級至 v%3$s"
+msgstr "正在從 v%s (資料庫 %s) 升級至 v%s"
 
 #: lib/installer.php:3831
 #, php-format
@@ -18635,17 +18632,17 @@ msgstr "由於未接受EULA，安裝被中止"
 #: lib/installer.php:3920
 #, php-format
 msgid "Background was already started at %s, this attempt at %s was skipped"
-msgstr "背景作業已於 %1$s 啟動，已略過 %2$s 的此次嘗試"
+msgstr "背景作業已於 %s 啟動，已略過 %s 的此次嘗試"
 
 #: lib/installer.php:3946
 #, php-format
 msgid "Exception occurred during installation: #%s - %s"
-msgstr "安裝期間發生例外狀況：#%1$s - %2$s"
+msgstr "安裝期間發生例外狀況：#%s - %s"
 
 #: lib/installer.php:3956
 #, php-format
 msgid "Installation was started at %s, completed at %s"
-msgstr "安裝開始於 %1$s，完成於 %2$s"
+msgstr "安裝開始於 %s，完成於 %s"
 
 #: lib/installer.php:3997
 msgid "Both"
@@ -18677,12 +18674,12 @@ msgstr "cli命令"
 #: lib/installer.php:4015
 #, php-format
 msgid "Setting PHP Option %s = %s"
-msgstr "正在設定 PHP 選項 %1$s = %2$s"
+msgstr "正在設定 PHP 選項 %s = %s"
 
 #: lib/installer.php:4023
 #, php-format
 msgid "Failed to set PHP option %s, is %s (should be %s)"
-msgstr "無法設定 PHP 選項 %1$s，目前為 %2$s (應為 %3$s)"
+msgstr "無法設定 PHP 選項 %s，目前為 %s (應為 %s)"
 
 #: lib/installer.php:4043
 msgid "No Remote Data Collectors found for full synchronization"
@@ -18707,17 +18704,17 @@ msgstr "沒有定義用戶名"
 #: lib/ldap.php:412
 #, php-format
 msgid "Protocol Error, Unable to set version (%s) on Server (%s)"
-msgstr "通訊協定錯誤，無法在伺服器 (%2$s) 上設定版本 (%1$s)"
+msgstr "通訊協定錯誤，無法設定版本 (%s) (伺服器: %s)"
 
 #: lib/ldap.php:416
 #, php-format
 msgid "Protocol Error, Unable to set referrals option (%s) on Server (%s)"
-msgstr "通訊協定錯誤，無法在伺服器 (%2$s) 上設定參照選項 (%1$s)"
+msgstr "通訊協定錯誤，無法設定參照選項 (%s) (伺服器: %s)"
 
 #: lib/ldap.php:420
 #, php-format
 msgid "Protocol Error, unable to start TLS communications (%s) on Server (%s)"
-msgstr "通訊協定錯誤，無法在伺服器 (%2$s) 上啟動 TLS 通訊 (%1$s)"
+msgstr "通訊協定錯誤，無法啟動 TLS 通訊 (%s) (伺服器: %s)"
 
 #: lib/ldap.php:424
 #, php-format
@@ -18727,7 +18724,7 @@ msgstr "協議錯誤，一般失敗（%s）"
 #: lib/ldap.php:428
 #, php-format
 msgid "Protocol Error, Unable to bind, LDAP result: (%s) on Server (%s)"
-msgstr "通訊協定錯誤，無法繫結，伺服器 (%2$s) 上的 LDAP 結果: (%1$s)"
+msgstr "通訊協定錯誤，無法繫結，LDAP 結果: (%s) (伺服器: %s)"
 
 #: lib/ldap.php:432
 #, php-format
@@ -18777,7 +18774,7 @@ msgstr "提供的密碼無效。登錄失敗。"
 #: lib/ldap.php:473
 #, php-format
 msgid "Unexpected error %s (Ldap Error: %s) on Server (%s)"
-msgstr "伺服器 (%3$s) 上發生非預期的錯誤 %1$s (LDAP 錯誤: %2$s)"
+msgstr "發生非預期的錯誤 %s (LDAP 錯誤: %s) (伺服器: %s)"
 
 #: lib/ping.php:149
 msgid "ICMP Ping timed out"
@@ -18849,12 +18846,12 @@ msgstr "由於設置，Ping未執行。"
 #: lib/plugins.php:681
 #, php-format
 msgid "'%s' versions '%s' above or in range are required to install '%s'. "
-msgstr "安裝「%3$s」需要「%1$s」的「%2$s」以上或範圍內的版本。 "
+msgstr "需要「%s」的「%s」以上或範圍內的版本才能安裝「%s」。 "
 
 #: lib/plugins.php:685
 #, php-format
 msgid "'%s' must first be installed before '%s' is installed. "
-msgstr "必須先安裝「%1$s」，才能安裝「%2$s」。 "
+msgstr "必須先安裝「%s」，才能安裝「%s」。 "
 
 #: lib/plugins.php:708
 msgid "Plugin cannot be installed."
@@ -19027,7 +19024,7 @@ msgstr "設備“%s”未添加到報告中，因為它已存在於報告中。"
 #: lib/reports.php:625
 #, php-format
 msgid "Problems sending Report '%s' Problem with e-mail Subsystem Error is '%s'"
-msgstr "傳送報表「%1$s」時發生問題，電子郵件子系統發生問題，錯誤為「%2$s」"
+msgstr "傳送報表「%s」時發生問題，電子郵件子系統發生問題，錯誤為「%s」"
 
 #: lib/reports.php:634
 #, php-format
@@ -19090,22 +19087,22 @@ msgstr "RRDtool命令："
 #: lib/rrd.php:3299
 #, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
-msgstr "所需的 RRDfile 步長大小為 '%1$s'，但觀察到的步長為 '%2$s'"
+msgstr "所需的 RRDfile 步長大小為 '%s'，但觀察到的步長為 '%s'"
 
 #: lib/rrd.php:3359
 #, php-format
 msgid "Type for Data Source '%s' should be '%s'"
-msgstr "資料來源 '%1$s' 的類型應為 '%2$s'"
+msgstr "資料來源 '%s' 的類型應為 '%s'"
 
 #: lib/rrd.php:3365
 #, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
-msgstr "資料來源「%1$s」的 Heartbeat 應為「%2$s」"
+msgstr "資料來源「%s」的 Heartbeat 應為「%s」"
 
 #: lib/rrd.php:3377
 #, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
-msgstr "資料來源「%1$s」的 RRD 最小值應為「%2$s」"
+msgstr "資料來源「%s」的 RRD 最小值應為「%s」"
 
 #: lib/rrd.php:3386
 #, fuzzy, php-format
@@ -19115,12 +19112,12 @@ msgstr "Cacti定義中缺少DS&#39;%s&#39;"
 #: lib/rrd.php:3400 lib/rrd.php:3401
 #, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
-msgstr "Cacti RRA '%1$s' 與 '%4$s' 具有相同的 CF/步數 (%2$s, %3$s)"
+msgstr "Cacti RRA '%s' 的 CF/步數 (%s, %s) 與 '%s' 相同"
 
 #: lib/rrd.php:3415 lib/rrd.php:3416
 #, php-format
 msgid "File RRA '%s' has same CF/steps (%s, %s) as '%s'"
-msgstr "檔案 RRA '%1$s' 與 '%4$s' 具有相同的 CF/steps (%2$s, %3$s)"
+msgstr "檔案 RRA '%s' 的 CF/steps (%s, %s) 與 '%s' 相同"
 
 #: lib/rrd.php:3450
 #, php-format
@@ -19130,12 +19127,12 @@ msgstr ""
 #: lib/rrd.php:3454
 #, php-format
 msgid "The XFF for Cacti RRA id is '%s' but should be '%s'"
-msgstr "Cacti RRA ID 的 XFF 為 '%1$s'，但應為 '%2$s'"
+msgstr "Cacti RRA ID 的 XFF 為 '%s'，但應為 '%s'"
 
 #: lib/rrd.php:3458
 #, php-format
 msgid "The number of rows for Cacti RRA id '%s' is incorrect.  The number of rows are '%s' but should be '%s'"
-msgstr "Cacti RRA ID '%1$s' 的列數不正確。目前的列數為 '%2$s'，但應為 '%3$s'"
+msgstr "Cacti RRA ID '%s' 的列數不正確。目前的列數為 '%s'，但應為 '%s'"
 
 #: lib/rrd.php:3476
 #, php-format
@@ -19177,11 +19174,11 @@ msgstr "未知的秒"
 
 #: lib/rrd.php:3594
 msgid "Round Robin Archive"
-msgstr "Round Robin Archive"
+msgstr "循環封存"
 
 #: lib/rrd.php:3597
 msgid "Cur Row"
-msgstr "Cur Row"
+msgstr "目前列"
 
 #: lib/rrd.php:3598
 msgid "PDP per Row"
@@ -19206,7 +19203,7 @@ msgstr "選用調校建議"
 #: lib/rrd.php:3700 lib/rrd.php:3703
 #, php-format
 msgid "rename %s to %s"
-msgstr "將 %1$s 重新命名為 %2$s"
+msgstr "將 %s 重新命名為 %s"
 
 #: lib/rrd.php:3770
 msgid "Error while parsing the XML of rrdtool dump"
@@ -19229,13 +19226,12 @@ msgstr "解析RRDtool轉儲的XML時出錯"
 #: lib/rrd.php:4159
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file"
-msgstr "已從 RRD 檔案移除 RRA (CF=%1$s, ROWS=%2$d, PDP_PER_ROW=%3$d, XFF=%4$1.2f)"
+msgstr "已從 RRD 檔案移除 RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f)"
 
 #: lib/rrd.php:4199
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file"
-msgstr "正在將 RRA (CF=%1$s, ROWS=%2$d, PDP_PER_ROW=%3$d, XFF=%4$1.2f) 新增至 RRD "
-"檔案"
+msgstr "正在將 RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) 新增至 RRD 檔案"
 
 #: lib/rrd.php:4291 lib/rrd.php:4305
 #, php-format
@@ -19431,8 +19427,8 @@ msgstr "使用現代SSD類型存儲，具有多個io線程對於具有高io特�
 #, php-format
 msgid "As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential"
 msgstr ""
-"從 %1$s %2$s 開始，您可以控制 %3$s 將交易寫入磁碟的頻率。預設值為 1 秒，"
-"但在高 I/O 系統中，將值設為大於 1 可讓磁碟 I/O 更具循序性"
+"從 %s %s 開始，您可以控制 %s 將交易寫入磁碟的頻率。預設值為 1 秒，但在高 I/O "
+"系統中，將值設為大於 1 可讓磁碟 I/O 更具循序性"
 
 #: lib/utility.php:1303
 msgid "With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics.  Depending on your MariaDB/MySQL versions, this value can go as high as 64.  But try to keep the number less than your total SMT threads on the database server."
@@ -19774,7 +19770,7 @@ msgstr "由於 %s，您已被登出 Cacti。"
 #: logout.php:61
 #, php-format
 msgid "Please close your browser or %sLogin Again%s"
-msgstr "請關閉您的瀏覽器或%1$s重新登入%2$s"
+msgstr "請關閉您的瀏覽器或%s重新登入%s"
 
 #: logout.php:62
 msgid "Cookies have been cleared"
@@ -21129,7 +21125,7 @@ msgstr "插件目錄不能包含空格"
 #: plugins.php:1870
 #, php-format
 msgid "Plugin directory is not correct.  Should be '%s' but is '%s'"
-msgstr "外掛程式目錄不正確。應為 '%1$s'，但目前為 '%2$s'"
+msgstr "外掛程式目錄不正確。應為 '%s'，但目前為 '%s'"
 
 #: plugins.php:1881
 msgid "Plugin is integrated into Cacti core"
@@ -21147,28 +21143,28 @@ msgstr "在本機啟用外掛程式"
 #, php-format
 msgid "WARNING: %s is out of sync with the Poller Interval for Poller[%d]!  The Poller Interval is %d seconds, with a maximum of a %d seconds, but %d seconds have passed since the last poll!"
 msgstr ""
-"警告：%1$s 與 Poller[%2$d] 的 Poller 間隔不同步！Poller 間隔為 %3$d 秒，"
-"上限為 %4$d 秒，但自上次輪詢以來已經過了 %5$d 秒！"
+"警告：%s 與 Poller[%d] 的 Poller 間隔不同步！Poller 間隔為 %d 秒，上限為 %d "
+"秒，但自上次輪詢以來已經過了 %d 秒！"
 
 #: poller.php:579
 #, php-format
 msgid "WARNING: There are %d processes detected as overrunning a polling cycle for Poller[%d], please investigate."
-msgstr "警告：偵測到 Poller[%2$d] 有 %1$d 個處理程序超出輪詢週期，請進行調查。"
+msgstr "警告：偵測到有 %d 個處理程序超出輪詢週期 (Poller[%d])，請進行調查。"
 
 #: poller.php:637
 #, php-format
 msgid "WARNING: Poller Output Table not empty for Poller[%d].  Issues: %d, %s."
-msgstr "警告：Poller[%1$d] 的 Poller 輸出資料表不為空。問題：%2$d，%3$s。"
+msgstr "警告：Poller[%d] 的 Poller 輸出資料表不為空。問題：%d，%s。"
 
 #: poller.php:671
 #, php-format
 msgid "ERROR: The spine path: %s is invalid for Poller[%d].  Poller can not continue!"
-msgstr "錯誤：Poller[%2$d] 的 Spine 路徑 %1$s 無效。Poller 無法繼續！"
+msgstr "錯誤：Spine 路徑 %s 對 Poller[%d] 無效。Poller 無法繼續！"
 
 #: poller.php:819
 #, php-format
 msgid "Maximum runtime of %d seconds exceeded for Poller[%d]. Exiting."
-msgstr "Poller[%2$d] 已超過 %1$d 秒的最大執行時間。正在結束。"
+msgstr "已超過 %d 秒的最大執行時間 (Poller[%d])。正在結束。"
 
 #: poller.php:944
 #, fuzzy
@@ -21209,7 +21205,7 @@ msgstr "警告：主要 Cacti 資料庫 %s 離線或正在復原中"
 
 #: poller_automation.php:1037 poller_automation.php:1091
 msgid "Cacti Primary Admin"
-msgstr "Cacti Primary Admin"
+msgstr "Cacti 主要管理員"
 
 #: poller_automation.php:1189
 msgid "Cacti Automation Report requires an html based Email client"
@@ -21775,7 +21771,7 @@ msgstr "注意：此選項卡上的路徑設置僅在本地保存！"
 #: settings.php:138
 #, php-format
 msgid "Cacti Settings (%s)%s"
-msgstr "Cacti 設定 (%1$s)%2$s"
+msgstr "Cacti 設定 (%s)%s"
 
 #: settings.php:248
 msgid "Changing Permission Model Warning"
@@ -22227,7 +22223,7 @@ msgstr "找不到資料庫查詢"
 
 #: support.php:503 support.php:650
 msgid "Cacti Poller"
-msgstr "Cacti Poller"
+msgstr "Cacti 輪詢器"
 
 #: support.php:504
 msgid "Cacti Process"
@@ -22482,12 +22478,12 @@ msgstr "PHP服務器"
 #: support.php:1370 support.php:1372 support.php:1378 support.php:1380
 #, php-format
 msgid "Main Server: Current: %s, Min Required: %s"
-msgstr "主伺服器：目前：%1$s，最低需求：%2$s"
+msgstr "主伺服器：目前：%s，最低需求：%s"
 
 #: support.php:1388 support.php:1390
 #, php-format
 msgid "Local Server: Current: %s, Min Required: %s"
-msgstr "本機伺服器：目前：%1$s，最低需求：%2$s"
+msgstr "本機伺服器：目前：%s，最低需求：%s"
 
 #: support.php:1395
 msgid "Minimum Connections:"
