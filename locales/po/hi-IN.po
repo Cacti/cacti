@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-25 10:18+0000\n"
+"PO-Revision-Date: 2026-11-26 05:54+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Hindi <https://translate.cacti.net/projects/cacti/core/hi/>\n"
 "Language: hi-IN\n"
@@ -10395,7 +10395,7 @@ msgstr "यदि लाइन को चुना गया था, तो य�
 
 #: include/global_form.php:1120
 msgid "Dashes (dashes[=on_s[,off_s[,on_s,off_s]...]])"
-msgstr "डैश (डैश [= on_s [, off_s [, on_s, off_s] ...]))"
+msgstr "डैश (dashes[=on_s[,off_s[,on_s,off_s]...]])"
 
 #: include/global_form.php:1125
 msgid "The dashes modifier enables dashed line style."
@@ -10403,7 +10403,7 @@ msgstr "डैश डैशफ़ॉर्म धराशायी रेखा
 
 #: include/global_form.php:1128
 msgid "Dash Offset (dash-offset=offset)"
-msgstr "डैश ऑफसेट (डैश ऑफ़सेट = ऑफसेट)"
+msgstr "डैश ऑफसेट (dash-offset=offset)"
 
 #: include/global_form.php:1133 include/global_form.php:1141
 msgid "The dash-offset parameter specifies an offset into the pattern at which the stroke begins."
@@ -13275,7 +13275,7 @@ msgstr "कृपया मिलीसेकंड में DNS टाइम�
 
 #: include/global_settings.php:2256
 msgid "Internet Proxy Settings"
-msgstr "सामान्य सेटिंग्स"
+msgstr "इंटरनेट प्रॉक्सी सेटिंग्स"
 
 #: include/global_settings.php:2261
 msgid "Internet Proxy Address"
