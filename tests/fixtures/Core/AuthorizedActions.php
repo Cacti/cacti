@@ -227,6 +227,7 @@ check($GLOBALS['queries'] === ['TRUNCATE TABLE data_debug', 'TRUNCATE table snmp
 run_controller('automation_templates.php', '/^(\\s*form_selectable_cell\\(filter_value\\(\\$exit_text, .*?;)/m',
 	['exit_on_url' => 'automation_templates.php?action=exitonchange&id=1', 'id' => 1, 'exit_text' => 'Toggle']);
 check(str_contains($GLOBALS['cell'], 'data-url="automation_templates.php?action=exitonchange&amp;id=1"') && str_contains($GLOBALS['cell'], '>Toggle</a>'), 'Toggle link lost the action or label');
+check(filter_value('Edit', '', 'automation_templates.php?action=edit&id=1') === '<a class="linkEditMain" href="automation_templates.php?action=edit&amp;id=1" title="">Edit</a>', 'A link that only views lost its address');
 
 foreach (['edit', 'tree_up', 'tree_down', 'lock', 'unlock'] as $action) {
 	$_REQUEST                 = ['action' => $action, 'id' => 10];
