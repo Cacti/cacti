@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Cacti German Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-25 10:18+0000\n"
+"PO-Revision-Date: 2026-11-26 05:54+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: German <https://translate.cacti.net/projects/cacti/core/de/>\n"
 "Language: de-DE\n"
@@ -829,7 +829,7 @@ msgstr "Graphen mit"
 #: include/global_arrays.php:1499 include/global_form.php:1545
 #: include/global_form.php:1781 lib/html_reports.php:1139 tree.php:1864
 msgid "Graph Template"
-msgstr "Diagrammvorlage"
+msgstr "Graph-Vorlage"
 
 #: aggregate_templates.php:709
 msgid "No Aggregate Templates Found"
@@ -1375,7 +1375,7 @@ msgstr "Betriebsystem"
 
 #: automation_devices.php:343 host.php:1814 include/global_arrays.php:535
 msgid "Uptime"
-msgstr "Laufzeit"
+msgstr "Betriebszeit"
 
 #: automation_devices.php:348 automation_devices.php:659
 #: automation_devices.php:662 include/global_arrays.php:1110 utilities.php:1036
@@ -1467,7 +1467,7 @@ msgstr "Erkannte Geräte löschen"
 #: utilities.php:1710 utilities.php:1721 utilities.php:1744 utilities.php:1790
 #: utilities.php:2034
 msgid "N/A"
-msgstr "Nicht verfügbar"
+msgstr "Nicht zutreffend"
 
 #: automation_graph_rules.php:30 automation_networks.php:34
 #: automation_snmp.php:31 automation_tree_rules.php:30 cdef.php:30
@@ -2210,7 +2210,8 @@ msgstr "Wochentage"
 #: automation_networks.php:912 automation_networks.php:970
 msgid "What Day(s) of the week will this Network Range be discovered."
 msgstr ""
-"An welchem/welchen Wochentag(en) wird dieser Netzwerkbereich ermittelt?."
+"Legt fest, an welchem/welchen Wochentag(en) dieser Netzwerkbereich ermittelt "
+"wird."
 
 #: automation_networks.php:914 automation_networks.php:972
 #: include/global_arrays.php:2080
@@ -2254,8 +2255,8 @@ msgstr "Monate des Jahres"
 #: automation_networks.php:928
 msgid "What Months(s) of the Year will this Network Range be discovered."
 msgstr ""
-"In welchem/welchen Monat(en) des Jahres wird dieser Netzwerkbereich "
-"ermittelt?."
+"Legt fest, in welchem/welchen Monat(en) des Jahres dieser Netzwerkbereich "
+"ermittelt wird."
 
 #: automation_networks.php:930 include/global_arrays.php:2034
 msgid "January"
@@ -2312,7 +2313,8 @@ msgstr "Tage des Monats"
 #: automation_networks.php:949
 msgid "What Day(s) of the Month will this Network Range be discovered."
 msgstr ""
-"An welchem/welchen Tag(en) des Monats wird dieser Netzwerkbereich ermittelt?."
+"Legt fest, an welchem/welchen Tag(en) des Monats dieser Netzwerkbereich "
+"ermittelt wird."
 
 #: automation_networks.php:950 automation_networks.php:962
 msgid "Last"
@@ -2325,8 +2327,8 @@ msgstr "Woche(n) des Monats"
 #: automation_networks.php:957
 msgid "What Week(s) of the Month will this Network Range be discovered."
 msgstr ""
-"In welcher/welchen Woche(n) des Monats wird dieser Netzwerkbereich "
-"ermittelt?."
+"Legt fest, in welcher/welchen Woche(n) des Monats dieser Netzwerkbereich "
+"ermittelt wird."
 
 #: automation_networks.php:959
 msgid "First"
@@ -2556,7 +2558,7 @@ msgstr "Keine Netzwerke gefunden"
 #: support.php:335 support.php:579 support.php:616 utilities.php:372
 #: utilities.php:375 utilities.php:1412
 msgid "Refresh"
-msgstr "Aktualisieren"
+msgstr "Neu laden"
 
 #: automation_networks.php:1542 automation_networks.php:1543
 #: automation_networks.php:1544 automation_networks.php:1545
@@ -3626,8 +3628,8 @@ msgstr "Benannte Farbe"
 #: color.php:670
 msgid "Is this color a named color which are read only."
 msgstr ""
-"Handelt es sich bei dieser Farbe um eine benannte Farbe, die "
-"schreibgeschützt ist?."
+"Gibt an, ob es sich bei dieser Farbe um eine benannte, schreibgeschützte "
+"Farbe handelt."
 
 #: color.php:673 color_templates.php:118 include/global_arrays.php:1099
 #: include/global_form.php:2235
@@ -4840,19 +4842,19 @@ msgstr[1] "Die folgenden Diagramme verwenden diese Datenquellen."
 #: data_sources.php:551
 msgid "Leave the Graph Untouched"
 msgid_plural "Leave all Graphs untouched."
-msgstr[0] "Lassen Sie das Diagramm unberührt."
+msgstr[0] "Lassen Sie das Diagramm unberührt"
 msgstr[1] "Lassen Sie alle Diagramme unverändert."
 
 #: data_sources.php:555
 msgid "Delete all Graph Items that reference this Data Source."
 msgid_plural "Delete all Graph Items that reference these Data Sources"
-msgstr[0] "Löschen Sie alle Diagrammelemente, die auf diese Datenquelle verweisen"
+msgstr[0] "Löschen Sie alle Diagrammelemente, die auf diese Datenquelle verweisen."
 msgstr[1] "Löschen Sie alle Diagrammelemente, die auf diese Datenquellen verweisen"
 
 #: data_sources.php:559
 msgid "Delete all Graphs that reference this Data Source."
 msgid_plural "Delete all Graphs that reference these Data Sources"
-msgstr[0] "Löschen Sie alle Diagramme, die auf diese Datenquelle verweisen"
+msgstr[0] "Löschen Sie alle Diagramme, die auf diese Datenquelle verweisen."
 msgstr[1] "Löschen Sie alle Diagramme, die auf diese Datenquellen verweisen"
 
 #: data_sources.php:566
@@ -6791,7 +6793,7 @@ msgstr ""
 
 #: host.php:1808
 msgid "In State"
-msgstr "Im Staat"
+msgstr "Im Zustand"
 
 #: host.php:1811
 msgid "The amount of time that this Device has been in its current state."
@@ -9451,7 +9453,7 @@ msgstr "Wählen Sie die SNMP-Version für diesen Host."
 
 #: include/global_form.php:44
 msgid "SNMP Community String"
-msgstr "SNMP-Community-String"
+msgstr "SNMP-Community-Zeichenkette"
 
 #: include/global_form.php:45
 msgid "Fill in the SNMP read community for this device."
@@ -10258,7 +10260,7 @@ msgstr "Eine VDEF-Funktion (mathematische Funktion), die auf dieses Element in d
 
 #: include/global_form.php:1061
 msgid "Shift Data"
-msgstr "Nach links verschieben"
+msgstr "Daten verschieben"
 
 #: include/global_form.php:1064
 msgid "Offset your data on the time axis (x-axis) by the amount specified in the 'value' field."
@@ -10332,7 +10334,7 @@ msgstr "Der Strichmodifikator aktiviert den gestrichelten Linienstil."
 
 #: include/global_form.php:1128
 msgid "Dash Offset (dash-offset=offset)"
-msgstr "Strich-Abstand (dash-offset=Abstand)"
+msgstr "Strich-Abstand (dash-offset=offset)"
 
 #: include/global_form.php:1133 include/global_form.php:1141
 msgid "The dash-offset parameter specifies an offset into the pattern at which the stroke begins."
@@ -10408,7 +10410,7 @@ msgstr "Gerätestandortzuordnung"
 
 #: include/global_form.php:1283
 msgid "What Site is this Device associated with."
-msgstr "Mit welcher Site ist dieses Gerät verbunden?."
+msgstr "Die Site, der dieses Gerät zugeordnet ist."
 
 #: include/global_form.php:1292
 msgid "Choose the Device Template to use to define the default Graph Templates and Data Queries associated with this Device."
@@ -10807,7 +10809,7 @@ msgstr "Gesamttyp"
 #: include/global_form.php:1995 include/global_form.php:2082
 #: include/global_form.php:2187
 msgid "Which type of totaling shall be performed."
-msgstr "Welche Art der Summierung soll durchgeführt werden?."
+msgstr "Art der durchzuführenden Summierung."
 
 #: include/global_form.php:2002 include/global_form.php:2090
 #: include/global_form.php:2195
@@ -11227,7 +11229,7 @@ msgstr "Ziel für Log"
 
 #: include/global_settings.php:310
 msgid "How will Cacti handle event logging."
-msgstr "Wie wird Cacti die Ereignisprotokollierung handhaben?."
+msgstr "Legt fest, wie Cacti die Ereignisprotokollierung handhabt."
 
 #: include/global_settings.php:316
 msgid "Generic Log Level"
@@ -11390,8 +11392,8 @@ msgstr "Client-Zeitzonen-Support"
 #: include/global_settings.php:457
 msgid "How should Cacti support Client Dates based upon the Client browsers timezone."
 msgstr ""
-"Wie sollte Cacti Client-Daten basierend auf der Zeitzone des Client-Browsers "
-"unterstützen?."
+"Legt fest, wie Cacti Client-Daten basierend auf der Zeitzone des Client-"
+"Browsers unterstützt."
 
 #: include/global_settings.php:466 include/global_settings.php:2936
 msgid "Date Display Format"
@@ -11428,7 +11430,8 @@ msgstr "Hat Diagramme/Datenquellen überprüft"
 #: include/global_settings.php:492
 msgid "Should the Has Graphs and Has Data Sources be Checked by Default."
 msgstr ""
-"Sollte „Hat Diagramme“ und „Hat Datenquellen“ standardmäßig aktiviert sein?."
+"Legt fest, ob „Hat Diagramme“ und „Hat Datenquellen“ standardmäßig aktiviert "
+"sind."
 
 #: include/global_settings.php:497 lib/installer.php:2994 support.php:1218
 #: support.php:1223
@@ -11801,10 +11804,9 @@ msgstr "Standard-Schnittstellengeschwindigkeit"
 #: include/global_settings.php:837
 msgid "If Cacti can not determine the interface speed due to either ifSpeed or ifHighSpeed not being set or being zero, what maximum value do you wish on the resulting RRDfiles."
 msgstr ""
-"Wenn Cacti die Schnittstellengeschwindigkeit nicht bestimmen kann, weil "
-"entweder „ifSpeed“ oder „ifHighSpeed“ nicht festgelegt ist oder Null "
-"beträgt, welchen Maximalwert wünschen Sie für die resultierenden RRD-"
-"Dateien?."
+"Maximalwert für die resultierenden RRD-Dateien, wenn Cacti die "
+"Schnittstellengeschwindigkeit nicht bestimmen kann, weil entweder „ifSpeed“ "
+"oder „ifHighSpeed“ nicht festgelegt ist oder Null beträgt."
 
 #: include/global_settings.php:841
 msgid "100 Mbps Ethernet"
@@ -13187,8 +13189,8 @@ msgstr "Standardmäßiges Diagrammbildformat"
 #: include/global_settings.php:2203
 msgid "When creating a new report, what image type should be used for the inline graphs."
 msgstr ""
-"Welcher Bildtyp soll beim Erstellen eines neuen Berichts für die Inline-"
-"Diagramme verwendet werden?."
+"Bildtyp, der beim Erstellen eines neuen Berichts für die Inline-Diagramme "
+"verwendet werden soll."
 
 #: include/global_settings.php:2209
 msgid "Maximum E-Mail Size"
@@ -14046,7 +14048,9 @@ msgstr "Thumbnail Bereich"
 
 #: include/global_settings.php:3025
 msgid "Which portions of Cacti display Thumbnails by default."
-msgstr "Welche Teile von Cacti zeigen standardmäßig Miniaturansichten an?."
+msgstr ""
+"Bereiche von Cacti, in denen standardmäßig Miniaturansichten angezeigt "
+"werden."
 
 #: include/global_settings.php:3039
 msgid "Preview Thumbnail Columns"
@@ -16013,7 +16017,7 @@ msgstr "Zum Cacti-Projekt beitragen"
 
 #: lib/html.php:3053
 msgid "Panels"
-msgstr "Panels"
+msgstr "Bereiche"
 
 #: lib/html.php:3054
 msgid "Help in Developing"
@@ -17382,7 +17386,7 @@ msgstr "Anfang"
 #: lib/installer.php:1792 lib/installer.php:2238 lib/installer.php:2249
 #: lib/installer.php:2906 lib/installer.php:2972
 msgid "Upgrade"
-msgstr "Upgrade"
+msgstr "Aktualisierung"
 
 #: lib/installer.php:1794 lib/installer.php:2911 lib/installer.php:2975
 msgid "Downgrade"
@@ -18902,7 +18906,7 @@ msgstr "DS „%s“ fehlt in der Cacti-Definition"
 #: lib/rrd.php:3400 lib/rrd.php:3401
 #, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
-msgstr "Cacti RRA „%s“ hat dieselben CF/Schritte (%s, %s) wie „%s“"
+msgstr "Cacti RRA '%1$s' hat die gleichen CF/Schritte (%2$s, %3$s) wie '%4$s'"
 
 #: lib/rrd.php:3415 lib/rrd.php:3416
 #, php-format
@@ -19476,7 +19480,7 @@ msgstr "Automatische Seitenaktualisierung"
 
 #: links.php:585
 msgid "How often do you wish this page to be refreshed automatically."
-msgstr "Wie oft soll diese Seite automatisch aktualisiert werden?."
+msgstr "Intervall, in dem diese Seite automatisch aktualisiert werden soll."
 
 #: links.php:593
 #, php-format
@@ -21619,7 +21623,7 @@ msgstr "Geben Sie die Stadt oder Ortschaft ein"
 
 #: sites.php:92 sites.php:662
 msgid "State"
-msgstr "Bundesland"
+msgstr "Zustand"
 
 #: sites.php:93
 msgid "The state for the Site."
@@ -21999,7 +22003,7 @@ msgstr "Poller:"
 
 #: support.php:698 support.php:707
 msgid "Collector"
-msgstr "Collector"
+msgstr "Sammler"
 
 #: support.php:763
 msgid "The Type of Task.  Generally represents the plugin and task within the plugin."
@@ -23064,7 +23068,7 @@ msgstr "LDAP/AD"
 
 #: user_admin.php:2140
 msgid "Domain"
-msgstr "Domain"
+msgstr "Domäne"
 
 #: user_admin.php:2257
 msgid "User ID"
@@ -23473,7 +23477,9 @@ msgstr "Sollten Benutzer dieser Gruppe Zugriff auf die Diagrammvorschau haben?"
 
 #: user_group_admin.php:133
 msgid "What to do when a User from this User Group logs in."
-msgstr "Was zu tun ist, wenn sich ein Benutzer aus dieser Benutzergruppe anmeldet."
+msgstr ""
+"Aktion, die ausgeführt wird, wenn sich ein Benutzer aus dieser "
+"Benutzergruppe anmeldet."
 
 #: user_group_admin.php:455
 msgid "Click 'Continue' to Delete the following User Group."
