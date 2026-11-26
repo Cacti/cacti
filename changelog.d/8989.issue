@@ -1,0 +1,1 @@
+Escape translations printed into single-quoted HTML attributes so apostrophes no longer cut filter labels and tooltips short
