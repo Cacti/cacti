@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-26 05:54+0000\n"
+"PO-Revision-Date: 2026-11-26 19:34+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Vietnamese <https://translate.cacti.net/projects/cacti/core/"
 "vi/>\n"
@@ -35,7 +35,7 @@ msgstr ""
 #, php-format
 msgid "Please see the official %sCacti website%s for information on how to use Cacti, get support, and updates."
 msgstr ""
-"Vui lòng xem %1$strang web Cacti%2$s chính thức để biết thông tin về cách sử "
+"Vui lòng xem %strang web Cacti%s chính thức để biết thông tin về cách sử "
 "dụng Cacti, nhận hỗ trợ và các bản cập nhật."
 
 #: about.php:50
@@ -70,8 +70,8 @@ msgstr "Cám ơn"
 #, php-format
 msgid "A very special thanks to %sTobi Oetiker%s, the creator of %sRRDtool%s and the very popular %sMRTG%s."
 msgstr ""
-"Lời cảm ơn đặc biệt dành cho %1$sTobi Oetiker%2$s, người sáng tạo ra "
-"%3$sRRDtool%4$s và công cụ rất phổ biến %5$sMRTG%6$s."
+"Lời cảm ơn đặc biệt dành cho %sTobi Oetiker%s, người sáng tạo ra %sRRDtool%s "
+"và công cụ rất phổ biến %sMRTG%s."
 
 #: about.php:91
 msgid "The users of Cacti"
@@ -105,8 +105,8 @@ msgid "This program is distributed in the hope that it will be useful, but WITHO
 msgstr ""
 "Chương trình này được phân phối với hy vọng rằng nó sẽ hữu ích, nhưng KHÔNG "
 "CÓ BẤT KỲ BẢO ĐẢM NÀO; thậm chí không có bảo đảm ngụ ý về KHẢ NĂNG THƯƠNG "
-"MẠI hoặc SỰ PHÙ HỢP CHO MỘT MỤC ĐÍCH CỤ THỂ. Xem Giấy phép Công cộng GNU ("
-"GNU General Public License) để biết thêm chi tiết."
+"MẠI hoặc SỰ PHÙ HỢP CHO MỘT MỤC ĐÍCH CỤ THỂ. Xem Giấy phép Công cộng (GNU "
+"General Public License) để biết thêm chi tiết."
 
 #: aggregate_graphs.php:42 aggregate_templates.php:30
 #: automation_graph_rules.php:34 automation_networks.php:31
@@ -3893,8 +3893,7 @@ msgstr "Mẫu màu [mới]"
 #: color_templates.php:762
 #, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
-msgstr ""
-"Mẫu màu '%1$s' đã đẩy ra %2$d Mẫu tổng hợp và %3$d Tổng hợp không theo mẫu"
+msgstr "Mẫu màu '%s' đã đẩy ra %d Mẫu tổng hợp và %d Tổng hợp không theo mẫu"
 
 #: color_templates.php:764
 #, php-format
@@ -3922,7 +3921,7 @@ msgstr "Chạy kiểm tra"
 
 #: data_debug.php:31
 msgid "Delete Check"
-msgstr "Delete Check"
+msgstr "Xóa kiểm tra"
 
 #: data_debug.php:52
 msgid "Data Source debug started."
@@ -4191,7 +4190,7 @@ msgstr "Ban hành"
 #: data_debug.php:910
 #, php-format
 msgid "For attribute '%s', issue found '%s'"
-msgstr "Đối với thuộc tính '%1$s', đã phát hiện sự cố '%2$s'"
+msgstr "Đối với thuộc tính '%s', đã phát hiện sự cố '%s'"
 
 #: data_debug.php:925
 msgid "Apply Suggested Fixes"
@@ -4391,7 +4390,7 @@ msgstr "Tên thân thiện"
 
 #: data_input.php:563
 msgid "Field Order"
-msgstr "Field Order"
+msgstr "Thứ tự trường"
 
 #: data_input.php:612
 msgid "(Not In Use)"
@@ -4743,7 +4742,7 @@ msgstr "(Một số yếu tố chỉ đọc)"
 #: data_source_profiles.php:524
 #, php-format
 msgid "RRA [edit: %s %s]"
-msgstr "RRA [chỉnh sửa: %1$s %2$s]"
+msgstr "RRA [chỉnh sửa: %s %s]"
 
 #: data_source_profiles.php:614
 #, php-format
@@ -4792,7 +4791,7 @@ msgstr "Xóa mục hồ sơ nguồn dữ liệu"
 #: data_source_profiles.php:799
 #, php-format
 msgid "%s KBytes per Data Sources and %s Bytes for the Header"
-msgstr "%1$s KByte trên mỗi nguồn dữ liệu và %2$s Byte cho phần tiêu đề"
+msgstr "%s KByte trên mỗi nguồn dữ liệu và %s Byte cho phần tiêu đề"
 
 #: data_source_profiles.php:808
 #, php-format
@@ -5701,7 +5700,7 @@ msgstr ""
 #: graph_templates.php:1163 graph_templates.php:1178
 #, php-format
 msgid "Sync of Graph Template '%s' Resulted in %s Repairs!"
-msgstr "Quá trình đồng bộ Mẫu biểu đồ '%1$s' đã thực hiện %2$s lượt sửa chữa!"
+msgstr "Quá trình đồng bộ Mẫu biểu đồ '%s' đã thực hiện %s lượt sửa chữa!"
 
 #: graph_templates.php:1165 graph_templates.php:1180
 #, php-format
@@ -6559,21 +6558,21 @@ msgstr "Chọn tất cả các hàng"
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id of '%s'"
 msgstr ""
 "Lỗi phân tích cú pháp tệp XML tài nguyên Truy vấn dữ liệu cho Truy vấn dữ "
-"liệu '%1$s' có ID '%2$s'"
+"liệu '%s' có ID '%s'"
 
 #: graphs_new.php:695
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'.  Field Name '%s' missing a 'direction' attribute"
 msgstr ""
 "Lỗi phân tích cú pháp tệp XML tài nguyên Truy vấn dữ liệu cho Truy vấn dữ "
-"liệu '%1$s' có ID '%2$s'.  Tên trường '%3$s' thiếu thuộc tính 'direction'"
+"liệu '%s' có ID '%s'.  Tên trường '%s' thiếu thuộc tính 'direction'"
 
 #: graphs_new.php:699
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'"
 msgstr ""
 "Lỗi phân tích cú pháp tệp XML tài nguyên Truy vấn dữ liệu cho Truy vấn dữ "
-"liệu '%1$s' có ID '%2$s'"
+"liệu '%s' có ID '%s'"
 
 #: graphs_new.php:740
 #, php-format
@@ -6694,8 +6693,8 @@ msgstr "LỖI: ID Thiết bị không hợp lệ."
 #, php-format
 msgid "Device Reindex Completed in %0.2f seconds.  There were %d items updated."
 msgstr ""
-"Quá trình đánh chỉ mục lại thiết bị đã hoàn tất trong %1$0.2f giây. Đã có %2$"
-"d mục được cập nhật."
+"Quá trình đánh chỉ mục lại thiết bị đã hoàn tất trong %0.2f giây. Đã có %d "
+"mục được cập nhật."
 
 #: host.php:360
 #, php-format
@@ -6939,7 +6938,7 @@ msgstr "Phương pháp lập chỉ mục lại"
 #: host.php:982
 #, php-format
 msgid " [%d Items, %d Rows]"
-msgstr " [%1$d mục, %2$d hàng]"
+msgstr " [%d mục, %d hàng]"
 
 #: host.php:982
 msgid "Fail"
@@ -7995,7 +7994,7 @@ msgstr "Thời gian hoạt động của SNMP"
 
 #: include/global_arrays.php:694
 msgid "SNMP Desc"
-msgstr "SNMP Desc"
+msgstr "Mô tả SNMP"
 
 #: include/global_arrays.php:695
 msgid "SNMP getNext"
@@ -8208,7 +8207,7 @@ msgstr "Sắp xếp theo thứ tự bảng chữ cái"
 
 #: include/global_arrays.php:1027
 msgid "Natural Ordering"
-msgstr "Trật tự tự nhiên"
+msgstr "Sắp xếp tự nhiên"
 
 #: include/global_arrays.php:1028
 msgid "Numeric Ordering"
@@ -8943,7 +8942,7 @@ msgstr "%d MByte"
 
 #: include/global_arrays.php:1680
 msgid "1 GByte"
-msgstr "1 GByte"
+msgstr "1 GB"
 
 #: include/global_arrays.php:1681 include/global_arrays.php:1744
 #: lib/boost.php:62
@@ -9017,7 +9016,7 @@ msgstr "%s giờ"
 #: include/global_arrays.php:1743
 #, php-format
 msgid "%d GByte"
-msgstr "%d GByte"
+msgstr "%d GB"
 
 #: include/global_arrays.php:1751 utilities.php:1656 utilities.php:1657
 #: utilities.php:1706
@@ -9042,7 +9041,7 @@ msgstr "%s Phút"
 
 #: include/global_arrays.php:1780
 msgid "1 Megabyte"
-msgstr "1 Megabyte"
+msgstr "1 MB"
 
 #: include/global_arrays.php:1781 include/global_arrays.php:1782
 #: include/global_arrays.php:1783 include/global_arrays.php:1784
@@ -9445,7 +9444,7 @@ msgstr "Tiếng Bungari"
 
 #: include/global_arrays.php:2102
 msgid "Chinese (China)"
-msgstr "Tiếng Trung (Trung Quốc)"
+msgstr "Tiếng Hoa (Trung Quốc)"
 
 #: include/global_arrays.php:2103
 msgid "Chinese (Taiwan)"
@@ -10846,7 +10845,7 @@ msgstr ""
 "Chọn hộp kiểm này nếu bạn muốn kiểm tra các Nguồn dữ liệu trước khi tạo. Khi "
 "Nguồn dữ liệu thử nghiệm được bật, nếu Nguồn dữ liệu không trả về dữ liệu "
 "hợp lệ, Biểu đồ sẽ không được tạo. Cài đặt này rất quan trọng nếu bạn muốn "
-"có Mẫu thiết bị chung chung hơn có thể bao gồm nhiều Mẫu biểu đồ hơn có thể "
+"có Mẫu thiết bị tổng quát hơn có thể bao gồm nhiều Mẫu biểu đồ hơn có thể "
 "được áp dụng một cách chọn lọc tùy thuộc vào đặc điểm của chính Thiết bị. "
 "Lưu ý: Nếu bạn có một tập lệnh đang chạy dài làm Nguồn dữ liệu, thì thời "
 "gian tạo Đồ thị sẽ tăng lên."
@@ -12328,7 +12327,7 @@ msgstr ""
 "Nguồn dữ liệu cho các Mẫu biểu đồ mới và mới được nhập. Khi Nguồn dữ liệu "
 "thử nghiệm được bật, nếu Nguồn dữ liệu không trả về dữ liệu hợp lệ, Biểu đồ "
 "sẽ không được tạo. Cài đặt này rất quan trọng nếu bạn muốn có Mẫu thiết bị "
-"chung chung hơn có thể bao gồm nhiều Mẫu biểu đồ hơn có thể được áp dụng một "
+"tổng quát hơn có thể bao gồm nhiều Mẫu biểu đồ hơn có thể được áp dụng một "
 "cách chọn lọc tùy thuộc vào đặc điểm của chính Thiết bị. Lưu ý: Nếu bạn có "
 "một tập lệnh đang chạy dài làm Nguồn dữ liệu, thì thời gian tạo Đồ thị sẽ "
 "tăng lên."
@@ -13894,7 +13893,7 @@ msgstr ""
 
 #: include/global_settings.php:2178
 msgid "SMTP Security"
-msgstr "SMTP Security"
+msgstr "Bảo mật SMTP"
 
 #: include/global_settings.php:2179
 msgid "The encryption method to use for the Email."
@@ -15327,12 +15326,12 @@ msgstr "Tạo quy tắc cây (đồ thị)"
 #: lib/api_automation.php:2435
 #, php-format
 msgid "Rule Item [edit rule item for %s: %s]"
-msgstr "Mục quy tắc [chỉnh sửa mục quy tắc cho %1$s: %2$s]"
+msgstr "Mục quy tắc [chỉnh sửa mục quy tắc cho %s: %s]"
 
 #: lib/api_automation.php:2437
 #, php-format
 msgid "Rule Item [new rule item for %s: %s]"
-msgstr "Mục quy tắc [mục quy tắc mới cho %1$s: %2$s]"
+msgstr "Mục quy tắc [mục quy tắc mới cho %s: %s]"
 
 #: lib/api_automation.php:3457
 msgid "Added by Cacti Automation"
@@ -15431,7 +15430,7 @@ msgstr "Mẫu không xác định"
 #: lib/api_automation.php:5404 lib/api_automation.php:5406
 #, php-format
 msgid "Automation Network Rule '%s' %s!"
-msgstr "Quy tắc mạng tự động hóa '%1$s' %2$s!"
+msgstr "Quy tắc mạng tự động hóa '%s' %s!"
 
 #: lib/api_automation.php:5410 lib/api_automation.php:5412
 #, php-format
@@ -15478,11 +15477,11 @@ msgstr "LRI: Không thể kết nối với bộ thu từ xa."
 
 #: lib/api_device.php:1637
 msgid "Device is Disabled"
-msgstr "Thiết bị bị vô hiệu hóa"
+msgstr "Thiết bị đang bị vô hiệu hóa"
 
 #: lib/api_device.php:1638
 msgid "Device Availability Check Bypassed"
-msgstr "Kiểm tra tính khả dụng của thiết bị bị bỏ qua"
+msgstr "Kiểm tra tính khả dụng của thiết bị đã bị bỏ qua"
 
 #: lib/api_device.php:1644
 msgid "SNMP Information"
@@ -15552,29 +15551,29 @@ msgstr "Thiết bị:(Ẩn mục đã tắt)"
 #: lib/auth.php:2355 lib/auth.php:2357 lib/auth.php:2363 lib/auth.php:2365
 #, php-format
 msgid "Graph:(%s%s)"
-msgstr "Đồ thị:(%1$s%2$s)"
+msgstr "Đồ thị:(%s%s)"
 
 #: lib/auth.php:2378 lib/auth.php:2384 lib/auth.php:2451 lib/auth.php:2453
 #: lib/auth.php:2457 lib/auth.php:2459
 #, php-format
 msgid "Device:(%s%s)"
-msgstr "Thiết bị:(%1$s%2$s)"
+msgstr "Thiết bị:(%s%s)"
 
 #: lib/auth.php:2392 lib/auth.php:2398 lib/auth.php:2467 lib/auth.php:2469
 #: lib/auth.php:2473 lib/auth.php:2475
 #, php-format
 msgid "Template:(%s%s)"
-msgstr "Mẫu:(%1$s%2$s)"
+msgstr "Mẫu:(%s%s)"
 
 #: lib/auth.php:2405
 #, php-format
 msgid "Graph+Device+Template:(%s%s)"
-msgstr "Đồ thị+Thiết bị+Mẫu:(%1$s%2$s)"
+msgstr "Đồ thị+Thiết bị+Mẫu:(%s%s)"
 
 #: lib/auth.php:2442 lib/auth.php:2444
 #, php-format
 msgid "Device+Template:(%s%s)"
-msgstr "Thiết bị+Mẫu:(%1$s%2$s)"
+msgstr "Thiết bị+Mẫu:(%s%s)"
 
 #: lib/auth.php:2488 lib/auth.php:2495 lib/auth.php:2504
 msgid "Restricted By: "
@@ -15780,12 +15779,12 @@ msgstr " - Chế độ xem của quản trị viên"
 #: lib/clog_webapi.php:290
 #, php-format
 msgid "Log [Total Lines: %d %s - Filter active]"
-msgstr "Nhật ký [Tổng số dòng: %1$d %2$s - Đang bật bộ lọc]"
+msgstr "Nhật ký [Tổng số dòng: %d %s - Đang bật bộ lọc]"
 
 #: lib/clog_webapi.php:292
 #, php-format
 msgid "Log [Total Lines: %d %s - Unfiltered]"
-msgstr "Nhật ký [Tổng số dòng: %1$d %2$s - Không lọc]"
+msgstr "Nhật ký [Tổng số dòng: %d %s - Không lọc]"
 
 #: lib/clog_webapi.php:297 utilities.php:430 utilities.php:791
 #: utilities.php:1042 utilities.php:1045 utilities.php:1141 utilities.php:2008
@@ -15909,7 +15908,7 @@ msgstr "Chạy truy vấn dữ liệu [ %s]."
 #: lib/data_query.php:113
 #, php-format
 msgid "Found Type = '%s' [%s]."
-msgstr "Đã tìm thấy Loại = '%1$s' [%2$s]."
+msgstr "Đã tìm thấy Loại = '%s' [%s]."
 
 #: lib/data_query.php:135
 #, php-format
@@ -15934,8 +15933,7 @@ msgstr "Đã tìm thấy %s ID dữ liệu cục bộ để xác minh"
 #: lib/data_query.php:303
 #, php-format
 msgid "Index Change Detected! CurrentIndex: %s, PreviousIndex: %s"
-msgstr ""
-"Phát hiện thay đổi chỉ mục! Chỉ mục hiện tại: %1$s, Chỉ mục trước đó: %2$s"
+msgstr "Phát hiện thay đổi chỉ mục! Chỉ mục hiện tại: %s, Chỉ mục trước đó: %s"
 
 #: lib/data_query.php:323
 #, php-format
@@ -15958,8 +15956,8 @@ msgstr "Đã hoàn tất xác minh %s ID dữ liệu cục bộ"
 #, php-format
 msgid "Found Changed %s and %s Orphaned Local Data ID's to Re-map."
 msgstr ""
-"Đã tìm thấy %1$s ID dữ liệu cục bộ đã thay đổi và %2$s ID dữ liệu cục bộ mồ "
-"côi để ánh xạ lại."
+"Đã tìm thấy %s ID dữ liệu cục bộ đã thay đổi và %s ID dữ liệu cục bộ mồ côi "
+"để ánh xạ lại."
 
 #: lib/data_query.php:366
 msgid "Done remapping Graphs to their new Indexes"
@@ -15981,8 +15979,8 @@ msgstr "Hiệp hội chỉ mục với dữ liệu địa phương hoàn tất"
 #, php-format
 msgid "Update Re-Index Cache complete. There were %s index changes, and %s orphaned indexes."
 msgstr ""
-"Đã hoàn tất cập nhật Bộ nhớ đệm lập chỉ mục lại. Đã có %1$s thay đổi chỉ mục "
-"và %2$s chỉ mục mồ côi."
+"Đã hoàn tất cập nhật Bộ nhớ đệm lập chỉ mục lại. Đã có %s thay đổi chỉ mục "
+"và %s chỉ mục mồ côi."
 
 #: lib/data_query.php:396
 msgid "Update Poller Cache for Query complete"
@@ -16009,7 +16007,7 @@ msgstr "Kiểm tra thay đổi Trường sắp xếp. Không có thay đổi đ�
 #: lib/data_query.php:509
 #, php-format
 msgid "Detected New Sort Field: '%s' Old Sort Field '%s'"
-msgstr "Đã phát hiện trường sắp xếp mới: '%1$s' Trường sắp xếp cũ '%2$s'"
+msgstr "Đã phát hiện trường sắp xếp mới: '%s' Trường sắp xếp cũ '%s'"
 
 #: lib/data_query.php:526
 msgid "ERROR: New Sort Field not suitable.  Sort Field will not change."
@@ -16088,7 +16086,7 @@ msgstr "LỖI: Truy vấn dữ liệu không trả về chỉ mục nào."
 #: lib/data_query.php:715
 #, php-format
 msgid "Executing script for list of indexes '%s', Index Count: %s"
-msgstr "Đang thực thi tập lệnh cho danh sách chỉ mục '%1$s', Số chỉ mục: %2$s"
+msgstr "Đang thực thi tập lệnh cho danh sách chỉ mục '%s', Số chỉ mục: %s"
 
 #: lib/data_query.php:717
 msgid "Click to show Data Query output for 'index'"
@@ -16117,12 +16115,12 @@ msgstr "Thực hiện truy vấn tập lệnh &#39; %s&#39"
 #: lib/data_query.php:754 lib/data_query.php:761
 #, php-format
 msgid "Found item [%s='%s'] index: %s"
-msgstr "Đã tìm thấy mục [%1$s='%2$s'] chỉ mục: %3$s"
+msgstr "Đã tìm thấy mục [%s='%s'] chỉ mục: %s"
 
 #: lib/data_query.php:799 lib/data_query.php:814
 #, php-format
 msgid "Total: %f, Delta: %f, %s"
-msgstr "Tổng: %1$f, Chênh lệch: %2$f, %3$s"
+msgstr "Tổng: %f, Chênh lệch: %f, %s"
 
 #: lib/data_query.php:839
 #, php-format
@@ -16140,7 +16138,7 @@ msgstr "Không thể tải phiên SNMP."
 #: lib/data_query.php:886
 #, php-format
 msgid "Tested Bulk Walk Size %d with a response of %2.4f."
-msgstr "Đã kiểm tra kích thước Bulk Walk %1$d với phản hồi %2$2.4f."
+msgstr "Đã kiểm tra kích thước Bulk Walk %d với phản hồi %2.4f."
 
 #: lib/data_query.php:898
 #, php-format
@@ -16159,7 +16157,7 @@ msgstr "Kích thước Bulk Walk được cố định ở mức %d."
 #: lib/data_query.php:935
 #, php-format
 msgid "Executing SNMP get for num of indexes @ '%s' Index Count: %s"
-msgstr "Đang thực thi SNMP get cho số lượng chỉ mục tại '%1$s' Số chỉ mục: %2$s"
+msgstr "Đang thực thi SNMP get cho số lượng chỉ mục tại '%s' Số chỉ mục: %s"
 
 #: lib/data_query.php:937
 msgid "&lt;oid_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting oid_index entries"
@@ -16170,8 +16168,7 @@ msgstr ""
 #: lib/data_query.php:940
 #, php-format
 msgid "Executing SNMP walk for list of indexes @ '%s' Index Count: %s"
-msgstr ""
-"Đang thực thi SNMP walk cho danh sách chỉ mục tại '%1$s' Số chỉ mục: %2$s"
+msgstr "Đang thực thi SNMP walk cho danh sách chỉ mục tại '%s' Số chỉ mục: %s"
 
 #: lib/data_query.php:944
 msgid "No SNMP data returned"
@@ -16180,28 +16177,27 @@ msgstr "Không có dữ liệu SNMP được trả về"
 #: lib/data_query.php:950
 #, php-format
 msgid "Index found at OID: '%s' value: '%s'"
-msgstr "Tìm thấy chỉ mục tại OID: '%1$s' giá trị: '%2$s'"
+msgstr "Tìm thấy chỉ mục tại OID: '%s' giá trị: '%s'"
 
 #: lib/data_query.php:966
 #, php-format
 msgid "List of indexes filtered by value @ '%s' Index Count: %s"
-msgstr "Danh sách chỉ mục được lọc theo giá trị @ '%1$s' Số lượng chỉ mục: %2$s"
+msgstr "Danh sách chỉ mục được lọc theo giá trị @ '%s' Số lượng chỉ mục: %s"
 
 #: lib/data_query.php:970
 #, php-format
 msgid "Filtered Index by value found at OID: '%s' value: '%s'"
-msgstr ""
-"Chỉ mục đã lọc theo giá trị được tìm thấy tại OID: '%1$s' giá trị: '%2$s'"
+msgstr "Chỉ mục đã lọc theo giá trị được tìm thấy tại OID: '%s' giá trị: '%s'"
 
 #: lib/data_query.php:987
 #, php-format
 msgid "Filtering list of indexes @ '%s' Index Count: %s"
-msgstr "Đang lọc danh sách chỉ mục tại '%1$s' Số chỉ mục: %2$s"
+msgstr "Đang lọc danh sách chỉ mục tại '%s' Số chỉ mục: %s"
 
 #: lib/data_query.php:991
 #, php-format
 msgid "Filtered Index found at OID: '%s' value: '%s'"
-msgstr "Chỉ mục đã lọc được tìm thấy tại OID: '%1$s' giá trị: '%2$s'"
+msgstr "Chỉ mục đã lọc được tìm thấy tại OID: '%s' giá trị: '%s'"
 
 #: lib/data_query.php:1011
 #, php-format
@@ -16213,7 +16209,7 @@ msgstr ""
 #: lib/data_query.php:1018
 #, php-format
 msgid "Inserting index data for field '%s' [value='%s']"
-msgstr "Đang chèn dữ liệu chỉ mục cho trường '%1$s' [giá trị='%2$s']"
+msgstr "Đang chèn dữ liệu chỉ mục cho trường '%s' [giá trị='%s']"
 
 #: lib/data_query.php:1023
 #, php-format
@@ -16223,27 +16219,27 @@ msgstr "Đã tìm thấy trường nhập '%s' [get]"
 #: lib/data_query.php:1032
 #, php-format
 msgid "Found OID rewrite rule: 's/%s/%s/'"
-msgstr "Đã tìm thấy quy tắc viết lại OID: 's/%1$s/%2$s/'"
+msgstr "Đã tìm thấy quy tắc viết lại OID: 's/%s/%s/'"
 
 #: lib/data_query.php:1043
 #, php-format
 msgid "oid_rewrite at OID: '%s' new OID: '%s'"
-msgstr "oid_rewrite tại OID: '%1$s' OID mới: '%2$s'"
+msgstr "oid_rewrite tại OID: '%s' OID mới: '%s'"
 
 #: lib/data_query.php:1064
 #, php-format
 msgid "Executing SNMP get for data @ '%s' [value='%s']"
-msgstr "Đang thực thi SNMP get cho dữ liệu tại '%1$s' [giá trị='%2$s']"
+msgstr "Đang thực thi SNMP get cho dữ liệu tại '%s' [giá trị='%s']"
 
 #: lib/data_query.php:1076
 #, php-format
 msgid "Field '%s' %s"
-msgstr "Trường '%1$s' %2$s"
+msgstr "Trường '%s' %s"
 
 #: lib/data_query.php:1140
 #, php-format
 msgid "Executing SNMP get for %s oids (%s)"
-msgstr "Đang thực thi SNMP get cho %1$s OID (%2$s)"
+msgstr "Đang thực thi SNMP get cho %s OID (%s)"
 
 #: lib/data_query.php:1167 lib/data_query.php:1260 lib/data_query.php:1269
 #, php-format
@@ -16253,24 +16249,23 @@ msgstr "Trường sắp xếp không trả về dữ liệu nào cho OID[%s], đ
 #: lib/data_query.php:1171
 #, php-format
 msgid "Found result for data @ '%s' [value='%s']"
-msgstr "Đã tìm thấy kết quả cho dữ liệu tại '%1$s' [giá trị='%2$s']"
+msgstr "Đã tìm thấy kết quả cho dữ liệu tại '%s' [giá trị='%s']"
 
 #: lib/data_query.php:1179
 #, php-format
 msgid "Setting result for data @ '%s' [key='%s', value='%s']"
-msgstr "Đang đặt kết quả cho dữ liệu @ '%1$s' [key='%2$s', value='%3$s']"
+msgstr "Đang đặt kết quả cho dữ liệu @ '%s' [key='%s', value='%s']"
 
 #: lib/data_query.php:1183
 #, php-format
 msgid "Skipped result for data @ '%s' [key='%s', value='%s']"
-msgstr "Đã bỏ qua kết quả cho dữ liệu @ '%1$s' [key='%2$s', value='%3$s']"
+msgstr "Đã bỏ qua kết quả cho dữ liệu @ '%s' [key='%s', value='%s']"
 
 #: lib/data_query.php:1197
 #, php-format
 msgid "Got SNMP get result for data @ '%s' [value='%s'] (index: %s)"
 msgstr ""
-"Đã nhận kết quả SNMP get cho dữ liệu tại '%1$s' [giá trị='%2$s'] (chỉ mục: "
-"%3$s)"
+"Đã nhận kết quả SNMP get cho dữ liệu tại '%s' [giá trị='%s'] (chỉ mục: %s)"
 
 #: lib/data_query.php:1227
 #, php-format
@@ -16296,25 +16291,24 @@ msgstr ""
 #: lib/data_query.php:1342
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from %s]"
-msgstr "Đã tìm thấy mục [%1$s='%2$s'] chỉ mục: %3$s [từ %4$s]"
+msgstr "Đã tìm thấy mục [%s='%s'] chỉ mục: %s [từ %s]"
 
 #: lib/data_query.php:1386
 #, php-format
 msgid "Found OCTET STRING '%s' decoded value: '%s'"
-msgstr "Đã tìm thấy OCTET STRING '%1$s' giá trị được giải mã: '%2$s'"
+msgstr "Đã tìm thấy OCTET STRING '%s' giá trị được giải mã: '%s'"
 
 #: lib/data_query.php:1392 lib/data_query.php:1443
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid parse]"
 msgstr ""
-"Đã tìm thấy mục [%1$s='%2$s'] chỉ mục: %3$s "
-"[từ phân tích biểu thức chính quy OID]"
+"Đã tìm thấy mục [%s='%s'] chỉ mục: %s [từ phân tích biểu thức chính quy OID]"
 
 #: lib/data_query.php:1472
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid value parse]"
 msgstr ""
-"Đã tìm thấy mục [%1$s='%2$s'] chỉ mục: %3$s "
+"Đã tìm thấy mục [%s='%s'] chỉ mục: %s "
 "[từ phân tích giá trị biểu thức chính quy OID]"
 
 #: lib/data_query.php:1710
@@ -16329,7 +16323,7 @@ msgstr ""
 #: lib/data_query.php:1750
 #, php-format
 msgid "rewrite_value: '%s' => '%s'"
-msgstr "rewrite_value: '%1$s' => '%2$s'"
+msgstr "rewrite_value: '%s' => '%s'"
 
 #: lib/data_query.php:1856
 msgid "Update graph data query cache complete"
@@ -16389,15 +16383,15 @@ msgstr "Nguồn dữ liệu không được đặt là Hoạt động"
 #, php-format
 msgid "RRDfile Folder (rra) is not writable by Poller.  Folder owner: %s.  Poller runs as: %s"
 msgstr ""
-"Poller không thể ghi vào thư mục RRDfile (rra).  Chủ sở hữu thư mục: %1$s.  "
-"Poller chạy dưới quyền: %2$s"
+"Poller không thể ghi vào thư mục RRDfile (rra).  Chủ sở hữu thư mục: %s.  "
+"Poller chạy dưới quyền: %s"
 
 #: lib/dsdebug.php:282
 #, php-format
 msgid "RRDfile is not writable by Poller.  RRDfile owner: %s.  Poller runs as %s"
 msgstr ""
-"Poller không thể ghi vào RRDfile.  Chủ sở hữu RRDfile: %1$s.  Poller chạy "
-"dưới quyền: %2$s"
+"Poller không thể ghi vào RRDfile.  Chủ sở hữu RRDfile: %s.  Poller chạy dưới "
+"quyền: %s"
 
 #: lib/dsdebug.php:291
 msgid "RRDfile does not match Data Source"
@@ -16609,8 +16603,8 @@ msgstr "Kể từ khi cài đặt"
 #, php-format
 msgid "Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details."
 msgstr ""
-"Cacti đã tắt plugin %1$s do lỗi sau: %2$s!  Xem tệp nhật ký Cacti để biết "
-"thêm chi tiết."
+"Cacti đã tắt plugin %s do lỗi sau: %s!  Xem tệp nhật ký Cacti để biết thêm "
+"chi tiết."
 
 #: lib/functions.php:6752
 #, php-format
@@ -16638,7 +16632,7 @@ msgstr "- Beta %s"
 #: lib/functions.php:7309
 #, php-format
 msgid "Version %s %s"
-msgstr "Phiên bản %1$s %2$s"
+msgstr "Phiên bản %s %s"
 
 #: lib/functions.php:7852
 #, php-format
@@ -16707,7 +16701,7 @@ msgstr "Trước"
 #: lib/html.php:671
 #, php-format
 msgid "%d to %d of %s [ %s ]"
-msgstr "%1$d đến %2$d trong tổng số %3$s [ %4$s ]"
+msgstr "%d đến %d trong tổng số %s [ %s ]"
 
 #: lib/html.php:674 lib/html.php:703 lib/installer.php:1778
 msgid "Next"
@@ -16716,7 +16710,7 @@ msgstr "Tiếp"
 #: lib/html.php:681
 #, php-format
 msgid "All %d %s"
-msgstr "Tất cả %1$d %2$s"
+msgstr "Tất cả %d %s"
 
 #: lib/html.php:700
 #, php-format
@@ -16877,7 +16871,7 @@ msgstr "Phương pháp chạy khô"
 
 #: lib/html.php:2819
 msgid "Dry Run Gap Fill Range"
-msgstr "Dry Run Gap Fill Range"
+msgstr "Phạm vi lấp khoảng trống chạy thử"
 
 #: lib/html.php:2820
 msgid "Dry Run Float Range"
@@ -16989,7 +16983,7 @@ msgstr "Xin lỗi, chúng tôi không thể xử lý hành động cuối cùng 
 
 #: lib/html.php:3087
 msgid "Reason:"
-msgstr "Reason:"
+msgstr "Lý do:"
 
 #: lib/html.php:3088
 msgid "Action failed"
@@ -17093,7 +17087,7 @@ msgstr "Thao tác đã thành công. Chi tiết ở bên dưới."
 
 #: lib/html.php:3122
 msgid "Operation successful"
-msgstr "Operation successful"
+msgstr "Thao tác thành công"
 
 #: lib/html.php:3123
 msgid "Click to Show/Hide Filter"
@@ -17232,7 +17226,7 @@ msgstr ""
 #: lib/html.php:3403
 #, php-format
 msgid "Version %s | %s"
-msgstr "Phiên bản %1$s | %2$s"
+msgstr "Phiên bản %s | %s"
 
 #: lib/html_filter.php:89
 msgid "Apply filter to table"
@@ -17400,7 +17394,7 @@ msgstr "Tạo đồ thị từ %s"
 #: lib/html_graph.php:677
 #, php-format
 msgid "Create %s Graphs from %s"
-msgstr "Tạo %1$s Biểu đồ từ %2$s"
+msgstr "Tạo %s Biểu đồ từ %s"
 
 #: lib/html_graph.php:718
 #, php-format
@@ -17606,7 +17600,7 @@ msgstr "Kiểu đính kèm hình ảnh"
 
 #: lib/html_reports.php:218
 msgid "Select one of the given Types for the Image Attachments"
-msgstr "Chọn một trong các Loại đã cho cho Tệp đính kèm hình ảnh"
+msgstr "Chọn một trong các Loại đã nêu cho Tệp đính kèm hình ảnh"
 
 #: lib/html_reports.php:323
 #, fuzzy
@@ -18041,7 +18035,7 @@ msgstr "Đã chọn"
 #: lib/html_utility.php:589 lib/html_utility.php:828
 #, php-format
 msgid "The regular expression \"%s\" is not valid. Error is %s"
-msgstr "Biểu thức chính quy \"%1$s\" không hợp lệ. Lỗi là %2$s"
+msgstr "Biểu thức chính quy \"%s\" không hợp lệ. Lỗi là %s"
 
 #: lib/html_utility.php:1040
 msgid "Cacti regular expressions are limited to 50 characters only for security reasons."
@@ -18079,7 +18073,7 @@ msgstr "Ngừng hoạt động (Thold)"
 #, php-format
 msgid "Validation error for variable %s with a value of %s.  See backtrace below for more details."
 msgstr ""
-"Lỗi xác thực cho biến %1$s có giá trị %2$s. Xem dấu vết ngăn xếp bên dưới để "
+"Lỗi xác thực cho biến %s có giá trị %s. Xem dấu vết ngăn xếp bên dưới để "
 "biết thêm chi tiết."
 
 #: lib/html_validate.php:115
@@ -18179,7 +18173,7 @@ msgstr "Đường dẫn không thể ghi"
 #: lib/installer.php:786
 #, php-format
 msgid "Failed to set specified %sRRDTool version: %s"
-msgstr "Không thể đặt phiên bản %1$sRRDTool đã chỉ định: %2$s"
+msgstr "Không thể đặt phiên bản %sRRDTool đã chỉ định: %s"
 
 #: lib/installer.php:837
 msgid "Invalid Theme Specified"
@@ -18204,7 +18198,7 @@ msgstr "Tham số đường dẫn không mong đợi"
 #: lib/installer.php:968
 #, php-format
 msgid "Failed to apply specified profile %s != %s"
-msgstr "Không thể áp dụng hồ sơ đã chỉ định %1$s != %2$s"
+msgstr "Không thể áp dụng hồ sơ đã chỉ định %s != %s"
 
 #: lib/installer.php:1015
 #, php-format
@@ -18323,7 +18317,7 @@ msgstr "Nâng cấp"
 
 #: lib/installer.php:1794 lib/installer.php:2911 lib/installer.php:2975
 msgid "Downgrade"
-msgstr "Downgrade"
+msgstr "Hạ cấp"
 
 #: lib/installer.php:1900 support.php:1198
 msgid "Cacti Version"
@@ -18386,8 +18380,8 @@ msgid "This program is distributed in the hope that it will be useful, but WITHO
 msgstr ""
 "Chương trình này được phân phối với hy vọng rằng nó sẽ hữu ích, nhưng KHÔNG "
 "CÓ BẤT KỲ BẢO ĐẢM NÀO; thậm chí không có bảo đảm ngụ ý về KHẢ NĂNG THƯƠNG "
-"MẠI hoặc SỰ PHÙ HỢP CHO MỘT MỤC ĐÍCH CỤ THỂ.  Xem Giấy phép Công cộng GNU ("
-"GNU General Public License) để biết thêm chi tiết."
+"MẠI hoặc SỰ PHÙ HỢP CHO MỘT MỤC ĐÍCH CỤ THỂ.  Xem Giấy phép Công cộng (GNU "
+"General Public License) để biết thêm chi tiết."
 
 #: lib/installer.php:1965
 msgid "Accept GPL License Agreement"
@@ -18558,7 +18552,7 @@ msgstr "Loại cài đặt"
 #: lib/installer.php:2239
 #, php-format
 msgid "Upgrade from <strong>%s</strong> to <strong>%s</strong>"
-msgstr "Nâng cấp từ <strong>%1$s</strong> lên <strong>%2$s</strong>"
+msgstr "Nâng cấp từ <strong>%s</strong> lên <strong>%s</strong>"
 
 #: lib/installer.php:2241
 msgid "In the event of issues, It is highly recommended that you clear your browser cache, closing then reopening your browser (not just the tab Cacti is on) and retrying, before raising an issue with The Cacti Group"
@@ -18588,7 +18582,7 @@ msgstr ""
 #: lib/installer.php:2250
 #, php-format
 msgid "Downgrade from <strong>%s</strong> to <strong>%s</strong>"
-msgstr "Hạ cấp từ <strong>%1$s</strong> xuống <strong>%2$s</strong>"
+msgstr "Hạ cấp từ <strong>%s</strong> xuống <strong>%s</strong>"
 
 #: lib/installer.php:2251
 msgid "You appear to be downgrading to a previous version.  Database changes made for the newer version will not be reversed and <i>could</i> cause issues."
@@ -19140,8 +19134,8 @@ msgstr ""
 #, php-format
 msgid "Press '%s' then click '%s' to complete the installation process after selecting your Device Templates."
 msgstr ""
-"Nhấn '%1$s' rồi nhấp '%2$s' để hoàn tất quá trình cài đặt sau khi chọn Mẫu "
-"thiết bị của bạn."
+"Nhấn '%s' rồi nhấp '%s' để hoàn tất quá trình cài đặt sau khi chọn Mẫu thiết "
+"bị của bạn."
 
 #: lib/installer.php:2964
 msgid "The following General Install Options will be applied."
@@ -19267,7 +19261,7 @@ msgstr "Máy chủ Cacti của bạn hiện đang cài đặt"
 #: lib/installer.php:3165
 #, php-format
 msgid "Spawning background process: %s %s"
-msgstr "Đang khởi tạo tiến trình nền: %1$s %2$s"
+msgstr "Đang khởi tạo tiến trình nền: %s %s"
 
 #: lib/installer.php:3192
 msgid "Complete"
@@ -19300,12 +19294,12 @@ msgstr "Bắt đầu"
 #: lib/installer.php:3359
 #, php-format
 msgid "Starting %s Process for v%s"
-msgstr "Đang khởi động tiến trình %1$s cho v%2$s"
+msgstr "Đang khởi động tiến trình %s cho v%s"
 
 #: lib/installer.php:3388
 #, php-format
 msgid "Finished %s Process for v%s"
-msgstr "Đã hoàn tất tiến trình %1$s cho phiên bản v%2$s"
+msgstr "Đã hoàn tất tiến trình %s cho phiên bản v%s"
 
 #: lib/installer.php:3428
 #, php-format
@@ -19315,17 +19309,17 @@ msgstr "Đã tìm thấy mẫu%s để cài đặt"
 #: lib/installer.php:3438
 #, php-format
 msgid "About to import Package #%s '%s'."
-msgstr "Sắp nhập Gói #%1$s '%2$s'."
+msgstr "Sắp nhập Gói #%s '%s'."
 
 #: lib/installer.php:3447
 #, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' succeeded"
-msgstr "Nhập gói #%1$s '%2$s' thuộc Hồ sơ '%3$s' thành công"
+msgstr "Nhập gói #%s '%s' thuộc Hồ sơ '%s' thành công"
 
 #: lib/installer.php:3453
 #, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' failed"
-msgstr "Nhập gói #%1$s '%2$s' thuộc Hồ sơ '%3$s' thất bại"
+msgstr "Nhập gói #%s '%s' thuộc Hồ sơ '%s' thất bại"
 
 #: lib/installer.php:3469
 #, php-format
@@ -19343,7 +19337,7 @@ msgstr "Đang cập nhật tệp cấu hình từ xa"
 #: lib/installer.php:3532
 #, php-format
 msgid "Setting default data source profile to %s (%s)"
-msgstr "Đang đặt hồ sơ nguồn dữ liệu mặc định thành %1$s (%2$s)"
+msgstr "Đang đặt hồ sơ nguồn dữ liệu mặc định thành %s (%s)"
 
 #: lib/installer.php:3557
 #, fuzzy, php-format
@@ -19354,8 +19348,8 @@ msgstr "Không thể áp dụng hồ sơ được chỉ định %s! = %s"
 #, php-format
 msgid "Updating automation network (%s), mode \"%s\" => \"%s\", subnet \"%s\" => %s\""
 msgstr ""
-"Đang cập nhật mạng tự động hóa (%1$s), chế độ \"%2$s\" => \"%3$s\", mạng con "
-"\"%4$s\" => %5$s\""
+"Đang cập nhật mạng tự động hóa (%s), chế độ \"%s\" => \"%s\", mạng con \"%s\""
+" => %s\""
 
 #: lib/installer.php:3583
 msgid "Failed to find automation network, no changes were made"
@@ -19459,7 +19453,7 @@ msgstr "Đã tìm thấy bảng%s để chuyển đổi"
 #: lib/installer.php:3767
 #, php-format
 msgid "Converting Table #%s '%s'"
-msgstr "Đang chuyển đổi Bảng #%1$s '%2$s'"
+msgstr "Đang chuyển đổi Bảng #%s '%s'"
 
 #: lib/installer.php:3784
 #, fuzzy
@@ -19469,7 +19463,7 @@ msgstr "Không có bảng nơi tìm thấy hoặc được chọn để chuyển
 #: lib/installer.php:3795
 #, php-format
 msgid "Switched from %s to %s"
-msgstr "Đã chuyển từ %1$s sang %2$s"
+msgstr "Đã chuyển từ %s sang %s"
 
 #: lib/installer.php:3799
 #, php-format
@@ -19479,7 +19473,7 @@ msgstr "LƯU Ý: Sử dụng tệp tạm thời cho bộ đệm db:%s"
 #: lib/installer.php:3822
 #, php-format
 msgid "Upgrading from v%s (DB %s) to v%s"
-msgstr "Đang nâng cấp từ v%1$s (CSDL %2$s) lên v%3$s"
+msgstr "Đang nâng cấp từ v%s (CSDL %s) lên v%s"
 
 #: lib/installer.php:3831
 #, php-format
@@ -19494,17 +19488,17 @@ msgstr "Cài đặt bị hủy bỏ do không chấp nhận EULA"
 #, php-format
 msgid "Background was already started at %s, this attempt at %s was skipped"
 msgstr ""
-"Tiến trình nền đã được khởi chạy lúc %1$s, lần thử này lúc %2$s đã bị bỏ qua"
+"Tiến trình nền đã được khởi chạy lúc %s, lần thử này lúc %s đã bị bỏ qua"
 
 #: lib/installer.php:3946
 #, php-format
 msgid "Exception occurred during installation: #%s - %s"
-msgstr "Đã xảy ra ngoại lệ trong quá trình cài đặt: #%1$s - %2$s"
+msgstr "Đã xảy ra ngoại lệ trong quá trình cài đặt: #%s - %s"
 
 #: lib/installer.php:3956
 #, php-format
 msgid "Installation was started at %s, completed at %s"
-msgstr "Quá trình cài đặt bắt đầu lúc %1$s, hoàn tất lúc %2$s"
+msgstr "Quá trình cài đặt bắt đầu lúc %s, hoàn tất lúc %s"
 
 #: lib/installer.php:3997
 msgid "Both"
@@ -19536,12 +19530,12 @@ msgstr "CLI"
 #: lib/installer.php:4015
 #, php-format
 msgid "Setting PHP Option %s = %s"
-msgstr "Đang đặt Tùy chọn PHP %1$s = %2$s"
+msgstr "Đang đặt Tùy chọn PHP %s = %s"
 
 #: lib/installer.php:4023
 #, php-format
 msgid "Failed to set PHP option %s, is %s (should be %s)"
-msgstr "Không thể đặt tùy chọn PHP %1$s, hiện là %2$s (nên là %3$s)"
+msgstr "Không thể đặt tùy chọn PHP %s, hiện là %s (nên là %s)"
 
 #: lib/installer.php:4043
 msgid "No Remote Data Collectors found for full synchronization"
@@ -19566,20 +19560,19 @@ msgstr "Không có tên người dùng được xác định"
 #: lib/ldap.php:412
 #, php-format
 msgid "Protocol Error, Unable to set version (%s) on Server (%s)"
-msgstr "Lỗi giao thức, không thể đặt phiên bản (%1$s) trên máy chủ (%2$s)"
+msgstr "Lỗi giao thức, không thể đặt phiên bản (%s) trên máy chủ (%s)"
 
 #: lib/ldap.php:416
 #, php-format
 msgid "Protocol Error, Unable to set referrals option (%s) on Server (%s)"
 msgstr ""
-"Lỗi giao thức, không thể đặt tùy chọn chuyển tiếp (referrals) (%1$s) trên "
-"máy chủ (%2$s)"
+"Lỗi giao thức, không thể đặt tùy chọn chuyển tiếp (referrals) (%s) trên máy "
+"chủ (%s)"
 
 #: lib/ldap.php:420
 #, php-format
 msgid "Protocol Error, unable to start TLS communications (%s) on Server (%s)"
-msgstr ""
-"Lỗi giao thức, không thể bắt đầu giao tiếp TLS (%1$s) trên máy chủ (%2$s)"
+msgstr "Lỗi giao thức, không thể bắt đầu giao tiếp TLS (%s) trên máy chủ (%s)"
 
 #: lib/ldap.php:424
 #, php-format
@@ -19590,8 +19583,8 @@ msgstr "Lỗi giao thức, lỗi chung ( %s)"
 #, php-format
 msgid "Protocol Error, Unable to bind, LDAP result: (%s) on Server (%s)"
 msgstr ""
-"Lỗi giao thức, không thể liên kết (bind), kết quả LDAP: (%1$s) trên máy chủ "
-"(%2$s)"
+"Lỗi giao thức, không thể liên kết (bind), kết quả LDAP: (%s) trên máy chủ "
+"(%s)"
 
 #: lib/ldap.php:432
 #, php-format
@@ -19641,7 +19634,7 @@ msgstr "Mật khẩu được cung cấp không hợp lệ. Đăng nhập thất
 #: lib/ldap.php:473
 #, php-format
 msgid "Unexpected error %s (Ldap Error: %s) on Server (%s)"
-msgstr "Lỗi không mong muốn %1$s (Lỗi LDAP: %2$s) trên máy chủ (%3$s)"
+msgstr "Lỗi không mong muốn %s (Lỗi LDAP: %s) trên máy chủ (%s)"
 
 #: lib/ping.php:149
 msgid "ICMP Ping timed out"
@@ -19714,13 +19707,13 @@ msgstr "Ping không được thực hiện do cài đặt."
 #, php-format
 msgid "'%s' versions '%s' above or in range are required to install '%s'. "
 msgstr ""
-"Cần có '%1$s' phiên bản '%2$s' trở lên hoặc trong phạm vi cho phép để cài "
-"đặt '%3$s'. "
+"Cần có '%s' phiên bản '%s' trở lên hoặc trong phạm vi cho phép để cài đặt "
+"'%s'. "
 
 #: lib/plugins.php:685
 #, php-format
 msgid "'%s' must first be installed before '%s' is installed. "
-msgstr "'%1$s' phải được cài đặt trước khi cài đặt '%2$s'. "
+msgstr "'%s' phải được cài đặt trước khi cài đặt '%s'. "
 
 #: lib/plugins.php:708
 msgid "Plugin cannot be installed."
@@ -19896,7 +19889,7 @@ msgstr ""
 #: lib/reports.php:625
 #, php-format
 msgid "Problems sending Report '%s' Problem with e-mail Subsystem Error is '%s'"
-msgstr "Sự cố khi gửi báo cáo '%1$s' Lỗi với hệ thống con e-mail là '%2$s'"
+msgstr "Sự cố khi gửi báo cáo '%s' Lỗi với hệ thống con e-mail là '%s'"
 
 #: lib/reports.php:634
 #, php-format
@@ -19962,22 +19955,22 @@ msgstr "Lệnh RRDtool:"
 #, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
 msgstr ""
-"Kích thước bước RRDfile yêu cầu là '%1$s' nhưng bước quan sát được là '%2$s'"
+"Kích thước bước RRDfile yêu cầu là '%s' nhưng bước quan sát được là '%s'"
 
 #: lib/rrd.php:3359
 #, php-format
 msgid "Type for Data Source '%s' should be '%s'"
-msgstr "Loại cho Nguồn Dữ liệu '%1$s' phải là '%2$s'"
+msgstr "Loại cho Nguồn Dữ liệu '%s' phải là '%s'"
 
 #: lib/rrd.php:3365
 #, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
-msgstr "Heartbeat cho nguồn dữ liệu '%1$s' phải là '%2$s'"
+msgstr "Heartbeat cho nguồn dữ liệu '%s' phải là '%s'"
 
 #: lib/rrd.php:3377
 #, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
-msgstr "Giá trị tối thiểu RRD cho Nguồn dữ liệu '%1$s' phải là '%2$s'"
+msgstr "Giá trị tối thiểu RRD cho Nguồn dữ liệu '%s' phải là '%s'"
 
 #: lib/rrd.php:3386
 #, fuzzy, php-format
@@ -19987,12 +19980,12 @@ msgstr "DS &#39; %s&#39; bị thiếu trong định nghĩa Cacti"
 #: lib/rrd.php:3400 lib/rrd.php:3401
 #, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
-msgstr "RRA '%1$s' của Cacti có cùng CF/bước (%2$s, %3$s) với '%4$s'"
+msgstr "RRA '%s' của Cacti có cùng CF/bước (%s, %s) với '%s'"
 
 #: lib/rrd.php:3415 lib/rrd.php:3416
 #, php-format
 msgid "File RRA '%s' has same CF/steps (%s, %s) as '%s'"
-msgstr "Tệp RRA '%1$s' có cùng CF/bước (%2$s, %3$s) với '%4$s'"
+msgstr "Tệp RRA '%s' có cùng CF/bước (%s, %s) với '%s'"
 
 #: lib/rrd.php:3450
 #, php-format
@@ -20002,14 +19995,14 @@ msgstr ""
 #: lib/rrd.php:3454
 #, php-format
 msgid "The XFF for Cacti RRA id is '%s' but should be '%s'"
-msgstr "Giá trị XFF cho id RRA của Cacti là '%1$s' nhưng phải là '%2$s'"
+msgstr "Giá trị XFF cho id RRA của Cacti là '%s' nhưng phải là '%s'"
 
 #: lib/rrd.php:3458
 #, php-format
 msgid "The number of rows for Cacti RRA id '%s' is incorrect.  The number of rows are '%s' but should be '%s'"
 msgstr ""
-"Số hàng cho RRA của Cacti có ID '%1$s' không chính xác. Số hàng hiện là '%2$"
-"s' nhưng phải là '%3$s'"
+"Số hàng cho RRA của Cacti có ID '%s' không chính xác. Số hàng hiện là '%s' "
+"nhưng phải là '%s'"
 
 #: lib/rrd.php:3476
 #, php-format
@@ -20080,7 +20073,7 @@ msgstr "Đề xuất tinh chỉnh tùy chọn"
 #: lib/rrd.php:3700 lib/rrd.php:3703
 #, php-format
 msgid "rename %s to %s"
-msgstr "đổi tên %1$s thành %2$s"
+msgstr "đổi tên %s thành %s"
 
 #: lib/rrd.php:3770
 msgid "Error while parsing the XML of rrdtool dump"
@@ -20103,14 +20096,12 @@ msgstr "Lỗi trong khi phân tích cú pháp XML của RRDtool dump"
 #: lib/rrd.php:4159
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file"
-msgstr ""
-"Đã xóa RRA (CF=%1$s, ROWS=%2$d, PDP_PER_ROW=%3$d, XFF=%4$1.2f) khỏi tệp RRD"
+msgstr "Đã xóa RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) khỏi tệp RRD"
 
 #: lib/rrd.php:4199
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file"
-msgstr ""
-"Đang thêm RRA (CF=%1$s, ROWS=%2$d, PDP_PER_ROW=%3$d, XFF=%4$1.2f) vào tệp RRD"
+msgstr "Đang thêm RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) vào tệp RRD"
 
 #: lib/rrd.php:4291 lib/rrd.php:4305
 #, php-format
@@ -20337,9 +20328,9 @@ msgstr ""
 #, php-format
 msgid "As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential"
 msgstr ""
-"Kể từ %1$s %2$s, bạn có thể kiểm soát tần suất %3$s đẩy các giao dịch xuống "
-"đĩa.  Giá trị mặc định là 1 giây, nhưng trong các hệ thống có I/O cao, việc "
-"đặt giá trị lớn hơn 1 có thể giúp I/O đĩa tuần tự hơn"
+"Kể từ %s %s, bạn có thể kiểm soát tần suất %s đẩy các giao dịch xuống đĩa.  "
+"Giá trị mặc định là 1 giây, nhưng trong các hệ thống có I/O cao, việc đặt "
+"giá trị lớn hơn 1 có thể giúp I/O đĩa tuần tự hơn"
 
 #: lib/utility.php:1303
 msgid "With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics.  Depending on your MariaDB/MySQL versions, this value can go as high as 64.  But try to keep the number less than your total SMT threads on the database server."
@@ -20692,7 +20683,7 @@ msgstr "Bạn đã bị đăng xuất khỏi Cacti do %s."
 #: logout.php:61
 #, php-format
 msgid "Please close your browser or %sLogin Again%s"
-msgstr "Vui lòng đóng trình duyệt của bạn hoặc %1$sĐăng nhập lại%2$s"
+msgstr "Vui lòng đóng trình duyệt của bạn hoặc %sĐăng nhập lại%s"
 
 #: logout.php:62
 msgid "Cookies have been cleared"
@@ -22072,8 +22063,7 @@ msgstr "Thư mục plugin không thể bao gồm dấu cách"
 #: plugins.php:1870
 #, php-format
 msgid "Plugin directory is not correct.  Should be '%s' but is '%s'"
-msgstr ""
-"Thư mục plugin không chính xác. Đáng lẽ phải là '%1$s' nhưng hiện là '%2$s'"
+msgstr "Thư mục plugin không chính xác. Đáng lẽ phải là '%s' nhưng hiện là '%s'"
 
 #: plugins.php:1881
 msgid "Plugin is integrated into Cacti core"
@@ -22091,36 +22081,35 @@ msgstr "Bật Plugin cục bộ"
 #, php-format
 msgid "WARNING: %s is out of sync with the Poller Interval for Poller[%d]!  The Poller Interval is %d seconds, with a maximum of a %d seconds, but %d seconds have passed since the last poll!"
 msgstr ""
-"CẢNH BÁO: %1$s không đồng bộ với Chu kỳ Poller cho Poller[%2$d]! Chu kỳ "
-"Poller là %3$d giây, tối đa là %4$d giây, nhưng đã %5$d giây trôi qua kể từ "
-"lần thu thập cuối cùng!"
+"CẢNH BÁO: %s không đồng bộ với Chu kỳ Poller cho Poller[%d]! Chu kỳ Poller "
+"là %d giây, tối đa là %d giây, nhưng đã %d giây trôi qua kể từ lần thu thập "
+"cuối cùng!"
 
 #: poller.php:579
 #, php-format
 msgid "WARNING: There are %d processes detected as overrunning a polling cycle for Poller[%d], please investigate."
 msgstr ""
-"CẢNH BÁO: Phát hiện %1$d tiến trình chạy vượt quá một chu kỳ thu thập cho "
-"Poller[%2$d], vui lòng kiểm tra."
+"CẢNH BÁO: Phát hiện %d tiến trình chạy vượt quá một chu kỳ thu thập cho "
+"Poller[%d], vui lòng kiểm tra."
 
 #: poller.php:637
 #, php-format
 msgid "WARNING: Poller Output Table not empty for Poller[%d].  Issues: %d, %s."
 msgstr ""
-"CẢNH BÁO: Bảng đầu ra của Poller không trống đối với Poller[%1$d]. Sự cố: %2$"
-"d, %3$s."
+"CẢNH BÁO: Bảng đầu ra của Poller không trống đối với Poller[%d]. Sự cố: %d, "
+"%s."
 
 #: poller.php:671
 #, php-format
 msgid "ERROR: The spine path: %s is invalid for Poller[%d].  Poller can not continue!"
 msgstr ""
-"LỖI: Đường dẫn Spine: %1$s không hợp lệ cho Poller[%2$d].  Poller không thể "
-"tiếp tục!"
+"LỖI: Đường dẫn Spine: %s không hợp lệ cho Poller[%d].  Poller không thể tiếp "
+"tục!"
 
 #: poller.php:819
 #, php-format
 msgid "Maximum runtime of %d seconds exceeded for Poller[%d]. Exiting."
-msgstr ""
-"Đã vượt quá thời gian chạy tối đa %1$d giây cho Poller[%2$d]. Đang thoát."
+msgstr "Đã vượt quá thời gian chạy tối đa %d giây cho Poller[%d]. Đang thoát."
 
 #: poller.php:944
 #, fuzzy
@@ -22754,7 +22743,7 @@ msgstr "LƯU Ý: Cài đặt đường dẫn trên Tab này chỉ được lưu 
 #: settings.php:138
 #, php-format
 msgid "Cacti Settings (%s)%s"
-msgstr "Cài đặt Cacti (%1$s)%2$s"
+msgstr "Cài đặt Cacti (%s)%s"
 
 #: settings.php:248
 msgid "Changing Permission Model Warning"
@@ -23471,12 +23460,12 @@ msgstr "Máy chủ PHP"
 #: support.php:1370 support.php:1372 support.php:1378 support.php:1380
 #, php-format
 msgid "Main Server: Current: %s, Min Required: %s"
-msgstr "Máy chủ chính: Hiện tại: %1$s, Yêu cầu tối thiểu: %2$s"
+msgstr "Máy chủ chính: Hiện tại: %s, Yêu cầu tối thiểu: %s"
 
 #: support.php:1388 support.php:1390
 #, php-format
 msgid "Local Server: Current: %s, Min Required: %s"
-msgstr "Máy chủ cục bộ: Hiện tại: %1$s, Yêu cầu tối thiểu: %2$s"
+msgstr "Máy chủ cục bộ: Hiện tại: %s, Yêu cầu tối thiểu: %s"
 
 #: support.php:1395
 msgid "Minimum Connections:"
