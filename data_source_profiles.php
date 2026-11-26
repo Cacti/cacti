@@ -321,7 +321,7 @@ function form_actions() {
 		} elseif (get_request_var('drp_action') == '2') { // duplicate
 			print "<tr>
 				<td class='textArea' class='odd'>
-					<p>" . __n('Click \'Continue\' to duplicate the following Data Source Profile. You can optionally change the title format for the new Data Source Profile', 'Click \'Continue\' to duplicate following Data Source Profiles. You can optionally change the title format for the new Data Source Profiles.', cacti_sizeof($profile_array)) . "</p>
+					<p>" . __n('Click \'Continue\' to duplicate the following Data Source Profile. You can optionally change the title format for the new Data Source Profile.', 'Click \'Continue\' to duplicate following Data Source Profiles. You can optionally change the title format for the new Data Source Profiles.', cacti_sizeof($profile_array)) . "</p>
 					<div class='itemlist'><ul>$profile_list</ul></div>
 					<p>" . __('Title Format:') . "<br>"; form_text_box('title_format', '<profile_title> (1)', '', '255', '30', 'text'); print "</p>
 				</td>
