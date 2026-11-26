@@ -2372,7 +2372,7 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCols) {
 	$return_code = db_execute($sql, true, $db_conn);
 
 	if (!$return_code) {
-		$col_names = implode(', ', array_keys($array_items));
+		$col_names = implode(', ', array_keys($fieldArray));
 		cacti_log("ERROR: SQL Save Failed for Table '$table'.  Columns: '$col_names'", false, 'DBCALL');
 	}
 

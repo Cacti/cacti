@@ -1444,7 +1444,7 @@ function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
 	if ($plugin !== 'internal') {
 		foreach ($files as $tfile) {
 			$tfile = trim($tfile);
-			if ($tfile === '' || $tfile === 'plugins.php' || (isset($user_auth_realm_filenames[$tfile]) && (int) $user_auth_realm_filenames[$tfile] <= 101)) {
+			if ($tfile === '' || $tfile === 'plugins.php' || ($tfile !== 'index.php' && isset($user_auth_realm_filenames[$tfile]) && (int) $user_auth_realm_filenames[$tfile] <= 101)) {
 				cacti_log(sprintf('ERROR: Plugin \'%s\' attempted to register reserved realm filename \'%s\'.', $plugin, $tfile), false, 'SECURITY');
 				return false;
 			}
@@ -1600,8 +1600,9 @@ function api_plugin_load_realms() {
 
 	if (cacti_sizeof($plugin_realms)) {
 		foreach ($plugin_realms as $plugin_realm) {
-			$is_internal = ($plugin_realm['plugin'] === 'internal');
-			$is_enabled  = $is_internal || (isset($plugin_realm['plugin_status']) && (int) $plugin_realm['plugin_status'] === 1);
+			$is_internal     = ($plugin_realm['plugin'] === 'internal');
+			$is_enabled      = $is_internal || (isset($plugin_realm['plugin_status']) && (int) $plugin_realm['plugin_status'] === 1);
+			$target_realm_id = (int) $plugin_realm['id'] + 100;
 
 			if ($is_enabled) {
 				$plugin_files = explode(',', $plugin_realm['file']);
@@ -1612,16 +1613,16 @@ function api_plugin_load_realms() {
 						continue;
 					}
 
-					if (!$is_internal && isset($user_auth_realm_filenames[$plugin_file])) {
+					if (!$is_internal && isset($user_auth_realm_filenames[$plugin_file]) && (int) $user_auth_realm_filenames[$plugin_file] !== $target_realm_id) {
 						cacti_log(sprintf('WARNING: Plugin \'%s\' realm filename \'%s\' collides with an existing realm and was ignored.', $plugin_realm['plugin'], $plugin_file), false, 'SECURITY');
 						continue;
 					}
 
-					$user_auth_realm_filenames[$plugin_file] = $plugin_realm['id'] + 100;
+					$user_auth_realm_filenames[$plugin_file] = $target_realm_id;
 				}
 			}
 
-			$user_auth_realms[$plugin_realm['id'] + 100] = $plugin_realm['display'];
+			$user_auth_realms[$target_realm_id] = $plugin_realm['display'];
 		}
 	}
 }

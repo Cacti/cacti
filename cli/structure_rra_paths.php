@@ -197,7 +197,11 @@ foreach ($data_sources as $info) {
     }
 
 	/* Validate destination path stays within RRA root and contains no symlinks */
-	if (!data_source_path_within_rra($new_rrd_path) || strtolower(substr($new_rrd_path, -4)) !== '.rrd' || is_link($new_base_path) || is_link($new_rrd_path)) {
+	$rel_new_rrd = strncmp($new_rrd_path, $base_rra_path . '/', strlen($base_rra_path) + 1) === 0
+		? substr($new_rrd_path, strlen($base_rra_path) + 1)
+		: '';
+	if ($rel_new_rrd === '' || strpos($rel_new_rrd, '..') !== false || strpos($rel_new_rrd, "\0") !== false ||
+		strtolower(substr($new_rrd_path, -4)) !== '.rrd' || is_link($new_base_path) || is_link($new_rrd_path)) {
 		$warn_count++;
 
 		print "WARNING: Destination RRD Path '$new_rrd_path' is outside the RRA directory or is a symlink, Skipping" . PHP_EOL;
@@ -283,6 +287,16 @@ foreach ($data_sources as $info) {
 	 * it's new location if different than the old
 	 */
 	if (file_exists($old_rrd_path)) {
+		if (!data_source_path_within_rra($new_rrd_path) || is_link($new_rrd_path)) {
+			$warn_count++;
+
+			print "WARNING: Destination RRD Path '$new_rrd_path' failed RRA containment check, Skipping" . PHP_EOL;
+
+			db_fetch_cell("SELECT RELEASE_LOCK('boost.single_ds.$local_data_id')");
+
+			continue;
+		}
+
 		if ($old_rrd_path != $new_rrd_path) {
 			if (rename($old_rrd_path, $new_rrd_path)) {
 				$done_count++;

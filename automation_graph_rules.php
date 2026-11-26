@@ -158,9 +158,11 @@ function save() {
 
 		if (!$exists) {
 			/* check the case where there is no entry in the host_snmp_cache table yet */
+			$has_prefix = (strpos($save['field'], '.') !== false);
 			if ($save['field'] !== '' && (
 				preg_match('/^(?:(?:h|ht|gt|gtg)\.)?[A-Za-z0-9_]+$/', $save['field']) !== 1 ||
-				(!db_column_exists('host', $field_name) &&
+				($has_prefix &&
+				!db_column_exists('host', $field_name) &&
 				!db_column_exists('host_template', $field_name) &&
 				!db_column_exists('graph_templates', $field_name) &&
 				!db_column_exists('graph_local', $field_name) &&

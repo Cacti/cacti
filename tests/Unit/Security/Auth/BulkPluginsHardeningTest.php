@@ -53,13 +53,6 @@ beforeEach(function () {
 });
 
 test('api_plugin_callback_is_allowed permits only allowlisted internal hooks and plugin-owned functions', function () {
-	expect(api_plugin_callback_is_allowed('internal', 'plugin_config_arrays'))->toBeTrue()
-		->and(api_plugin_callback_is_allowed('internal', 'plugin_draw_navigation_text'))->toBeTrue()
-		->and(api_plugin_callback_is_allowed('internal', 'phpinfo'))->toBeFalse()
-		->and(api_plugin_callback_is_allowed('internal', 'system'))->toBeFalse()
-		->and(api_plugin_callback_is_allowed('demo', 'system'))->toBeFalse()
-		->and(api_plugin_callback_is_allowed('../escape', 'strlen'))->toBeFalse();
-
 	$tmpBase = sys_get_temp_dir() . '/cacti-plugin-cb-' . bin2hex(random_bytes(6));
 	mkdir($tmpBase . '/plugins/sample', 0700, true);
 	$pluginFile = $tmpBase . '/plugins/sample/setup.php';
@@ -71,7 +64,13 @@ test('api_plugin_callback_is_allowed permits only allowlisted internal hooks and
 	$GLOBALS['config']['base_path'] = $tmpBase;
 
 	try {
-		expect(api_plugin_callback_is_allowed('sample', $funcName))->toBeTrue()
+		expect(api_plugin_callback_is_allowed('internal', 'plugin_config_arrays'))->toBeTrue()
+			->and(api_plugin_callback_is_allowed('internal', 'plugin_draw_navigation_text'))->toBeTrue()
+			->and(api_plugin_callback_is_allowed('internal', 'phpinfo'))->toBeFalse()
+			->and(api_plugin_callback_is_allowed('internal', 'system'))->toBeFalse()
+			->and(api_plugin_callback_is_allowed('demo', 'system'))->toBeFalse()
+			->and(api_plugin_callback_is_allowed('../escape', 'strlen'))->toBeFalse()
+			->and(api_plugin_callback_is_allowed('sample', $funcName))->toBeTrue()
 			->and(api_plugin_callback_is_allowed('sample', 'cacti_sizeof'))->toBeFalse()
 			->and(api_plugin_callback_is_allowed('sample', 'strlen'))->toBeFalse();
 	} finally {
@@ -101,13 +100,16 @@ test('api_plugin_load_realms ignores disabled plugins and blocks core or cross-p
 	);
 
 	api_plugin_load_realms();
+	$logsAfterFirst = count($GLOBALS['bulk_plugin_logs']);
+	api_plugin_load_realms();
 
 	expect($GLOBALS['user_auth_realm_filenames']['host.php'])->toBe(3)
 		->and($GLOBALS['user_auth_realm_filenames']['plugins.php'])->toBe(101)
 		->and(isset($GLOBALS['user_auth_realm_filenames']['disabled_page.php']))->toBeFalse()
 		->and($GLOBALS['user_auth_realm_filenames']['enabled_a.php'])->toBe(111)
 		->and($GLOBALS['user_auth_realm_filenames']['enabled_b.php'])->toBe(112)
-		->and($GLOBALS['user_auth_realms'][110])->toBe('Disabled Plugin');
+		->and($GLOBALS['user_auth_realms'][110])->toBe('Disabled Plugin')
+		->and(count($GLOBALS['bulk_plugin_logs']))->toBe($logsAfterFirst * 2);
 });
 
 test('api_plugin_get_dependencies rejects traversal and parses INFO with INI_SCANNER_RAW', function () {
