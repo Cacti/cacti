@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-25 10:19+0000\n"
+"PO-Revision-Date: 2026-11-26 05:54+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Swedish <https://translate.cacti.net/projects/cacti/core/sv/>"
 "\n"
@@ -1234,7 +1234,7 @@ msgstr "Aktiverad"
 
 #: auth_profile.php:604
 msgid "Enabling..."
-msgstr "Aktiverar ..."
+msgstr "Aktiverar …"
 
 #: auth_profile.php:697
 msgid "Private Data Cleared"
@@ -2287,7 +2287,7 @@ msgstr "Veckodagar"
 
 #: automation_networks.php:912 automation_networks.php:970
 msgid "What Day(s) of the week will this Network Range be discovered."
-msgstr "Vilka veckodagar ska nätverksintervallet genomsökas?."
+msgstr "Veckodagar då nätverksintervallet ska genomsökas."
 
 #: automation_networks.php:914 automation_networks.php:972
 #: include/global_arrays.php:2080
@@ -2330,7 +2330,7 @@ msgstr "Årets månader"
 
 #: automation_networks.php:928
 msgid "What Months(s) of the Year will this Network Range be discovered."
-msgstr "Vilka månader ska nätverksintervallet genomsökas?."
+msgstr "Månader då nätverksintervallet ska genomsökas."
 
 #: automation_networks.php:930 include/global_arrays.php:2034
 msgid "January"
@@ -2386,7 +2386,7 @@ msgstr "Månadens dagar"
 
 #: automation_networks.php:949
 msgid "What Day(s) of the Month will this Network Range be discovered."
-msgstr "Vilka dagar i månaden ska nätverksintervallet genomsökas?."
+msgstr "Dagar i månaden då nätverksintervallet ska genomsökas."
 
 #: automation_networks.php:950 automation_networks.php:962
 msgid "Last"
@@ -2398,7 +2398,7 @@ msgstr "Veckor i månaden"
 
 #: automation_networks.php:957
 msgid "What Week(s) of the Month will this Network Range be discovered."
-msgstr "Vilka veckor i månaden ska nätverksintervallet genomsökas?."
+msgstr "Veckor i månaden då nätverksintervallet ska genomsökas."
 
 #: automation_networks.php:959
 msgid "First"
@@ -4985,13 +4985,13 @@ msgstr[1] "Följande grafer använder dessa datakällor."
 #: data_sources.php:551
 msgid "Leave the Graph Untouched"
 msgid_plural "Leave all Graphs untouched."
-msgstr[0] "Lämna grafen orörd."
+msgstr[0] "Lämna grafen orörd"
 msgstr[1] "Lämna alla grafer orörda."
 
 #: data_sources.php:555
 msgid "Delete all Graph Items that reference this Data Source."
 msgid_plural "Delete all Graph Items that reference these Data Sources"
-msgstr[0] "Ta bort alla grafobjekt som refererar till denna datakälla"
+msgstr[0] "Ta bort alla grafobjekt som refererar till denna datakälla."
 msgstr[1] "Ta bort alla grafobjekt som hänvisar till dessa datakällor"
 
 #: data_sources.php:559
@@ -9958,7 +9958,7 @@ msgstr "Insamlingsintervall"
 
 #: include/global_form.php:234
 msgid "The frequency that data will be collected from the Data Source?"
-msgstr "Hur ofta data ska samlas in från datakällan"
+msgstr "Hur ofta ska data samlas in från datakällan?"
 
 #: include/global_form.php:242
 msgid "How long can data be missing before RRDtool records unknown data.  Increase this value if your Data Source is unstable and you wish to carry forward old data rather than show gaps in your graphs.  This value is multiplied by the X-Files Factor to determine the actual amount of time."
@@ -11928,7 +11928,8 @@ msgstr "”Har grafer” och ”Har datakällor” markerade"
 
 #: include/global_settings.php:492
 msgid "Should the Has Graphs and Has Data Sources be Checked by Default."
-msgstr "Ska ”Har grafer” och ”Har datakällor” vara markerade som standard?."
+msgstr ""
+"Anger om ”Har grafer” och ”Har datakällor” ska vara markerade som standard."
 
 #: include/global_settings.php:497 lib/installer.php:2994 support.php:1218
 #: support.php:1223
@@ -14075,7 +14076,7 @@ msgstr "Maximal körtid för RRD-uppdateringsskript"
 msgid "If the boost poller exceeds this runtime, a warning will be placed in the cacti log,"
 msgstr ""
 "Om Boost-processen överskrider denna körtid skrivs en varning till Cactis "
-"logg.,"
+"logg"
 
 #: include/global_settings.php:2377
 msgid "Enable Direct Population of Boost Table"
@@ -16022,7 +16023,7 @@ msgstr "Ogiltigt fält &lt;index_order&gt;%s&lt;/index_order&gt;"
 msgid "Must contain &lt;direction&gt;input&lt;/direction&gt; or &lt;direction&gt;input-output&lt;/direction&gt; fields only"
 msgstr ""
 "Får endast innehålla fälten &lt;direction&gt;input&lt;/direction&gt; eller "
-"&lt;direction&gt;input-output&lt;/direction&gt"
+"&lt;direction&gt;input-output&lt;/direction&gt;"
 
 #: lib/data_query.php:686
 msgid "Data Query returned no indexes."
@@ -16081,7 +16082,7 @@ msgstr "Klicka för att visa datafrågans utdata för fältet ”%s”"
 #: lib/data_query.php:741
 #, php-format
 msgid "Sort field returned no data for field name %s, skipping"
-msgstr "Sorteringsfältet returnerade inga data för fältnamnet %s. Hoppar över"
+msgstr "Sorteringsfältet returnerade inga data för fältnamnet %s, hoppar över"
 
 #: lib/data_query.php:743
 #, php-format
@@ -18848,8 +18849,8 @@ msgstr ""
 #: lib/installer.php:2683
 msgid "If your devices require a different set of options to be used first, you may define them below and they will be utilized before the defaults"
 msgstr ""
-"Om enheterna först kräver andra alternativ kan du ange dem nedan. De används "
-"då före standardalternativen"
+"Om enheterna först kräver andra alternativ kan du ange dem nedan så används "
+"de före standardalternativen"
 
 #: lib/installer.php:2684
 msgid "All options may be adjusted post installation"
@@ -20633,7 +20634,7 @@ msgstr "Automatisk siduppdatering"
 
 #: links.php:585
 msgid "How often do you wish this page to be refreshed automatically."
-msgstr "Hur ofta ska sidan uppdateras automatiskt?."
+msgstr "Anger hur ofta den här sidan ska uppdateras automatiskt."
 
 #: links.php:593
 #, php-format
@@ -20945,7 +20946,7 @@ msgid "Some Packages require additional changes outside of Cacti's scope such as
 msgstr ""
 "Vissa paket kräver ytterligare ändringar utanför Cactis räckvidd, t.ex. att "
 "konfigurera ett SNMP-agenttillägg på de enheter som ska övervakas.  Du bör "
-"lägga till dessa instruktioner här."
+"lägga till dessa instruktioner här..."
 
 #: package.php:781
 msgid "Author Information"
@@ -23565,10 +23566,10 @@ msgstr "Största möjliga totala minne"
 #, php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr ""
-"Minska minnet för MySQL/MariaDB till mindre än 80% av systemminnet. Bevara "
-"ytterligare cacheminne för RRD-filer om databasen finns på samma system som "
-"RRD-filerna. Se Kärn- och klientsummor nedan för en förklaring av "
-"beräkningsmetoden."
+"Minska MySQL/MariaDB-minnet till mindre än 80 % av systemminnet. Reservera "
+"ytterligare cacheminne för RRD-filer om databasen och RRD-filerna finns på "
+"samma system. Se de totala värdena för kärna och klienter nedan för en "
+"förklaring av beräkningsmetoden."
 
 #: support.php:1612 support.php:1617 support.php:1645
 msgid "Max Core Memory Possible"
