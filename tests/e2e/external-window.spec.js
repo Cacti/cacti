@@ -107,6 +107,7 @@ test('midwinter guest navigation opens the Cacti website without an opener', asy
 		window.cactiConsoleAllowed = false;
 		window.noFileSelected = '';
 		window.setNavigationScroll = () => {};
+		window.setHostAutocomplete = () => {};
 		// Shared layout behavior is exercised by filter-search-icons.spec.js.
 		window.addFilterSearchIcons = () => {};
 		$.fn.dropcolor = function() { return this; };
