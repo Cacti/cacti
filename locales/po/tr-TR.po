@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-11-26 05:54+0000\n"
+"PO-Revision-Date: 2026-11-26 19:34+0000\n"
 "Last-Translator: Thomas Vincent <balder.infuser.6n@icloud.com>\n"
 "Language-Team: Turkish <https://translate.cacti.net/projects/cacti/core/tr/>"
 "\n"
@@ -36,7 +36,7 @@ msgstr ""
 msgid "Please see the official %sCacti website%s for information on how to use Cacti, get support, and updates."
 msgstr ""
 "Cacti'yi nasıl kullanacağınız, destek ve güncellemeleri nasıl alacağınız "
-"hakkında bilgi için lütfen resmi %1$sCacti web sitesine%2$s bakın."
+"hakkında bilgi için lütfen resmi %sCacti web sitesine%s bakın."
 
 #: about.php:50
 msgid "Active Developers"
@@ -1344,7 +1344,7 @@ msgstr "Keşfedilen Cihazları Ekle"
 #: automation_devices.php:233 include/global_settings.php:43
 #: include/global_settings.php:803
 msgid "Poller"
-msgstr "Poller"
+msgstr "Yoklayıcı"
 
 #: automation_devices.php:241 automation_templates.php:899
 #: include/global_arrays.php:1503 include/global_form.php:1291
@@ -2904,7 +2904,7 @@ msgstr "Deneme hakkı"
 
 #: automation_snmp.php:722
 msgid "Max OIDS"
-msgstr "Max OIDS"
+msgstr "Maks. OID"
 
 #: automation_snmp.php:723
 msgid "Auth Username"
@@ -3929,8 +3929,7 @@ msgstr "Renk Şablonu [yeni]"
 #, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
 msgstr ""
-"'%1$s' Renk Şablonu, %2$d Toplu Şablona ve %3$d Şablonsuz Toplu Grafiğe "
-"gönderildi"
+"'%s' Renk Şablonu, %d Toplu Şablona ve %d Şablonsuz Toplu Grafiğe gönderildi"
 
 #: color_templates.php:764
 #, php-format
@@ -4229,7 +4228,7 @@ msgstr "Verilen"
 #: data_debug.php:910
 #, php-format
 msgid "For attribute '%s', issue found '%s'"
-msgstr "'%1$s' özniteliği için '%2$s' sorunu bulundu"
+msgstr "'%s' özniteliği için '%s' sorunu bulundu"
 
 #: data_debug.php:925
 msgid "Apply Suggested Fixes"
@@ -4787,7 +4786,7 @@ msgstr "(Bazı Öğeler Salt Okunur)"
 #: data_source_profiles.php:524
 #, php-format
 msgid "RRA [edit: %s %s]"
-msgstr "RRA [düzenle: %1$s %2$s]"
+msgstr "RRA [düzenle: %s %s]"
 
 #: data_source_profiles.php:614
 #, php-format
@@ -4838,7 +4837,7 @@ msgstr "Veri Kaynağı Profil Öğesini Sil"
 #: data_source_profiles.php:799
 #, php-format
 msgid "%s KBytes per Data Sources and %s Bytes for the Header"
-msgstr "Veri Kaynakları başına %1$s KBayt ve Başlık için %2$s Bayt"
+msgstr "Veri Kaynakları başına %s KBayt ve Başlık için %s Bayt"
 
 #: data_source_profiles.php:808
 #, php-format
@@ -5765,7 +5764,7 @@ msgstr ""
 #: graph_templates.php:1163 graph_templates.php:1178
 #, php-format
 msgid "Sync of Graph Template '%s' Resulted in %s Repairs!"
-msgstr "Grafik Şablonu '%1$s' Eşitlemesi %2$s Onarımla Sonuçlandı!"
+msgstr "Grafik Şablonu '%s' Eşitlemesi %s Onarımla Sonuçlandı!"
 
 #: graph_templates.php:1165 graph_templates.php:1180
 #, php-format
@@ -6644,21 +6643,21 @@ msgstr "Tüm Satırları Seç"
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id of '%s'"
 msgstr ""
-"'%2$s' kimliğine sahip '%1$s' Veri Sorgusu için Veri Sorgusu Kaynak XML "
-"dosyası ayrıştırılırken hata oluştu"
+"'%s' Veri Sorgusu (kimliği '%s') için Veri Sorgusu Kaynak XML dosyası "
+"ayrıştırılırken hata oluştu"
 
 #: graphs_new.php:695
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'.  Field Name '%s' missing a 'direction' attribute"
 msgstr ""
-"'%2$s' kimlikli '%1$s' Veri Sorgusu için Veri Sorgusu Kaynak XML dosyası "
-"ayrıştırılırken hata oluştu. '%3$s' Alan Adında 'direction' özniteliği eksik"
+"'%s' Veri Sorgusu (kimliği '%s') için Veri Sorgusu Kaynak XML dosyası "
+"ayrıştırılırken hata oluştu. '%s' Alan Adında 'direction' özniteliği eksik"
 
 #: graphs_new.php:699
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'"
 msgstr ""
-"'%2$s' kimlikli '%1$s' Veri Sorgusu için Veri Sorgusu Kaynak XML dosyası "
+"'%s' Veri Sorgusu (kimlik: '%s') için Veri Sorgusu Kaynak XML dosyası "
 "ayrıştırılırken hata oluştu"
 
 #: graphs_new.php:740
@@ -6711,17 +6710,15 @@ msgstr "Varsayılana ayarla"
 #: help.php:44
 #, php-format
 msgid "WARNING: Cacti Page:%s for User:%s Generated a Fatal Error %d!"
-msgstr ""
-"UYARI: Kullanıcı:%2$s için Cacti Sayfası:%1$s Ölümcül Hata %3$d Oluşturdu!"
+msgstr "UYARI: Cacti Sayfası:%s, Kullanıcı:%s için Ölümcül Hata %d Oluşturdu!"
 
 #: help.php:74
 #, php-format
 msgid "The Document page '%s' count not be reached.  The Cacti Documentation site is not reachable.  The http error was '%s'.  Consider downloading an official release to obtain the latest documentation and hosting the documentation locally."
 msgstr ""
-"'%1$s' belge sayfasına ulaşılamadı. Cacti Belgelendirme sitesine "
-"erişilemiyor. HTTP hatası '%2$s' idi. En güncel belgeleri edinmek ve "
-"belgeleri yerel olarak barındırmak için resmi bir sürüm indirmeyi "
-"düşünebilirsiniz."
+"'%s' belge sayfasına ulaşılamadı. Cacti Belgelendirme sitesine erişilemiyor. "
+"HTTP hatası '%s' idi. En güncel belgeleri edinmek ve belgeleri yerel olarak "
+"barındırmak için resmi bir sürüm indirmeyi düşünebilirsiniz."
 
 #: help.php:88
 msgid "Cacti GitHub Site"
@@ -6784,8 +6781,7 @@ msgstr "HATA: Geçersiz Cihaz Kimliği."
 #: host.php:217
 #, php-format
 msgid "Device Reindex Completed in %0.2f seconds.  There were %d items updated."
-msgstr ""
-"Cihaz Yeniden Dizinleme %1$0.2f saniyede tamamlandı. %2$d öğe güncellendi."
+msgstr "Cihaz Yeniden Dizinleme %0.2f saniyede tamamlandı. %d öğe güncellendi."
 
 #: host.php:360
 #, php-format
@@ -7036,7 +7032,7 @@ msgstr "Yeniden Dizin Yöntemi"
 #: host.php:982
 #, php-format
 msgid " [%d Items, %d Rows]"
-msgstr " [%1$d Öğe, %2$d Satır]"
+msgstr " [%d Öğe, %d Satır]"
 
 #: host.php:982
 msgid "Fail"
@@ -8095,7 +8091,7 @@ msgstr "SNMP Çalışma Süresi"
 
 #: include/global_arrays.php:694
 msgid "SNMP Desc"
-msgstr "SNMP Desc"
+msgstr "SNMP Açıklaması"
 
 #: include/global_arrays.php:695
 msgid "SNMP getNext"
@@ -8300,7 +8296,7 @@ msgstr "Üst Sıralamayı Devralma"
 
 #: include/global_arrays.php:1025
 msgid "Manual Ordering (No Sorting)"
-msgstr "Manuel Sıralama (Sıralama Yok)"
+msgstr "Manuel Sıralama (Sıralamasız)"
 
 #: include/global_arrays.php:1026
 msgid "Alphabetic Ordering"
@@ -9040,13 +9036,13 @@ msgstr "%d MBayt"
 
 #: include/global_arrays.php:1680
 msgid "1 GByte"
-msgstr "1 GByte"
+msgstr "1 GBayt"
 
 #: include/global_arrays.php:1681 include/global_arrays.php:1744
 #: lib/boost.php:62
 #, php-format
 msgid "%s GBytes"
-msgstr "%s GBytes"
+msgstr "%s GBayt"
 
 #: include/global_arrays.php:1682 include/global_arrays.php:1683
 #: include/global_arrays.php:1745 include/global_arrays.php:1746
@@ -15486,12 +15482,12 @@ msgstr "Ağaç Kuralı Oluştur (Grafik)"
 #: lib/api_automation.php:2435
 #, php-format
 msgid "Rule Item [edit rule item for %s: %s]"
-msgstr "Kural Öğesi [%1$s için kural öğesini düzenle: %2$s]"
+msgstr "Kural Öğesi [%s için kural öğesini düzenle: %s]"
 
 #: lib/api_automation.php:2437
 #, php-format
 msgid "Rule Item [new rule item for %s: %s]"
-msgstr "Kural Öğesi [%1$s için yeni kural öğesi: %2$s]"
+msgstr "Kural Öğesi [%s için yeni kural öğesi: %s]"
 
 #: lib/api_automation.php:3457
 msgid "Added by Cacti Automation"
@@ -15590,7 +15586,7 @@ msgstr "Bilinmeyen Cihaz Şablonu"
 #: lib/api_automation.php:5404 lib/api_automation.php:5406
 #, php-format
 msgid "Automation Network Rule '%s' %s!"
-msgstr "Otomasyon Ağ Kuralı '%1$s' %2$s!"
+msgstr "Otomasyon Ağ Kuralı '%s' %s!"
 
 #: lib/api_automation.php:5410 lib/api_automation.php:5412
 #, php-format
@@ -15711,29 +15707,29 @@ msgstr "Cihaz:(Devre Dışı Olanları Gizle)"
 #: lib/auth.php:2355 lib/auth.php:2357 lib/auth.php:2363 lib/auth.php:2365
 #, php-format
 msgid "Graph:(%s%s)"
-msgstr "Grafik:(%1$s%2$s)"
+msgstr "Grafik:(%s%s)"
 
 #: lib/auth.php:2378 lib/auth.php:2384 lib/auth.php:2451 lib/auth.php:2453
 #: lib/auth.php:2457 lib/auth.php:2459
 #, php-format
 msgid "Device:(%s%s)"
-msgstr "Cihaz:(%1$s%2$s)"
+msgstr "Cihaz:(%s%s)"
 
 #: lib/auth.php:2392 lib/auth.php:2398 lib/auth.php:2467 lib/auth.php:2469
 #: lib/auth.php:2473 lib/auth.php:2475
 #, php-format
 msgid "Template:(%s%s)"
-msgstr "Şablon:(%1$s%2$s)"
+msgstr "Şablon:(%s%s)"
 
 #: lib/auth.php:2405
 #, php-format
 msgid "Graph+Device+Template:(%s%s)"
-msgstr "Grafik+Cihaz+Şablon:(%1$s%2$s)"
+msgstr "Grafik+Cihaz+Şablon:(%s%s)"
 
 #: lib/auth.php:2442 lib/auth.php:2444
 #, php-format
 msgid "Device+Template:(%s%s)"
-msgstr "Cihaz+Şablon:(%1$s%2$s)"
+msgstr "Cihaz+Şablon:(%s%s)"
 
 #: lib/auth.php:2488 lib/auth.php:2495 lib/auth.php:2504
 msgid "Restricted By: "
@@ -15939,12 +15935,12 @@ msgstr " - Yönetici görünümü"
 #: lib/clog_webapi.php:290
 #, php-format
 msgid "Log [Total Lines: %d %s - Filter active]"
-msgstr "Günlük [Toplam Satır: %1$d %2$s - Filtre etkin]"
+msgstr "Günlük [Toplam Satır: %d %s - Filtre etkin]"
 
 #: lib/clog_webapi.php:292
 #, php-format
 msgid "Log [Total Lines: %d %s - Unfiltered]"
-msgstr "Günlük [Toplam Satır: %1$d %2$s - Filtresiz]"
+msgstr "Günlük [Toplam Satır: %d %s - Filtresiz]"
 
 #: lib/clog_webapi.php:297 utilities.php:430 utilities.php:791
 #: utilities.php:1042 utilities.php:1045 utilities.php:1141 utilities.php:2008
@@ -16068,7 +16064,7 @@ msgstr "Veri Sorgusu çalışıyor [ %s]."
 #: lib/data_query.php:113
 #, php-format
 msgid "Found Type = '%s' [%s]."
-msgstr "Tür Bulundu = '%1$s' [%2$s]."
+msgstr "Tür Bulundu = '%s' [%s]."
 
 #: lib/data_query.php:135
 #, php-format
@@ -16093,7 +16089,7 @@ msgstr "Doğrulanacak %s Yerel Veri Kimliği Bulundu"
 #: lib/data_query.php:303
 #, php-format
 msgid "Index Change Detected! CurrentIndex: %s, PreviousIndex: %s"
-msgstr "Dizin Değişikliği Algılandı! Mevcut Dizin: %1$s, Önceki Dizin: %2$s"
+msgstr "Dizin Değişikliği Algılandı! Mevcut Dizin: %s, Önceki Dizin: %s"
 
 #: lib/data_query.php:323
 #, php-format
@@ -16115,7 +16111,7 @@ msgstr "%s Yerel Veri Kimliğinin Doğrulaması Tamamlandı"
 #, php-format
 msgid "Found Changed %s and %s Orphaned Local Data ID's to Re-map."
 msgstr ""
-"Yeniden eşlenecek %1$s Değişmiş ve %2$s Sahipsiz Yerel Veri Kimliği Bulundu."
+"Yeniden eşlenecek %s Değişmiş ve %s Sahipsiz Yerel Veri Kimliği Bulundu."
 
 #: lib/data_query.php:366
 msgid "Done remapping Graphs to their new Indexes"
@@ -16137,8 +16133,8 @@ msgstr "Yerel Verilerle Dizin Birliği tamamlandı"
 #, php-format
 msgid "Update Re-Index Cache complete. There were %s index changes, and %s orphaned indexes."
 msgstr ""
-"Yeniden İndeksleme Önbelleği güncellemesi tamamlandı. %1$s indeks "
-"değişikliği ve %2$s sahipsiz indeks bulundu."
+"Yeniden İndeksleme Önbelleği güncellemesi tamamlandı. %s indeks değişikliği "
+"ve %s sahipsiz indeks bulundu."
 
 #: lib/data_query.php:396
 msgid "Update Poller Cache for Query complete"
@@ -16166,7 +16162,7 @@ msgstr ""
 #: lib/data_query.php:509
 #, php-format
 msgid "Detected New Sort Field: '%s' Old Sort Field '%s'"
-msgstr "Yeni Sıralama Alanı Algılandı: '%1$s' Eski Sıralama Alanı '%2$s'"
+msgstr "Yeni Sıralama Alanı Algılandı: '%s' Eski Sıralama Alanı '%s'"
 
 #: lib/data_query.php:526
 msgid "ERROR: New Sort Field not suitable.  Sort Field will not change."
@@ -16244,7 +16240,7 @@ msgstr "HATA: Veri Sorgu hiçbir dizin döndürmedi."
 #: lib/data_query.php:715
 #, php-format
 msgid "Executing script for list of indexes '%s', Index Count: %s"
-msgstr "'%1$s' dizin listesi için betik yürütülüyor, Dizin Sayısı: %2$s"
+msgstr "'%s' dizin listesi için betik yürütülüyor, Dizin Sayısı: %s"
 
 #: lib/data_query.php:717
 msgid "Click to show Data Query output for 'index'"
@@ -16273,12 +16269,12 @@ msgstr "'%s' komut dosyası sorgusu çalıştırılıyor"
 #: lib/data_query.php:754 lib/data_query.php:761
 #, php-format
 msgid "Found item [%s='%s'] index: %s"
-msgstr "Öğe bulundu [%1$s='%2$s'] dizin: %3$s"
+msgstr "Öğe bulundu [%s='%s'] dizin: %s"
 
 #: lib/data_query.php:799 lib/data_query.php:814
 #, php-format
 msgid "Total: %f, Delta: %f, %s"
-msgstr "Toplam: %1$f, Delta: %2$f, %3$s"
+msgstr "Toplam: %f, Delta: %f, %s"
 
 #: lib/data_query.php:839
 #, php-format
@@ -16296,7 +16292,7 @@ msgstr "SNMP oturumu yüklenemedi."
 #: lib/data_query.php:886
 #, php-format
 msgid "Tested Bulk Walk Size %d with a response of %2.4f."
-msgstr "Bulk Walk Boyutu %1$d, %2$2.4f yanıtıyla test edildi."
+msgstr "Bulk Walk Boyutu %d, %2.4f yanıtıyla test edildi."
 
 #: lib/data_query.php:898
 #, php-format
@@ -16316,7 +16312,7 @@ msgstr "Toplu Yürüyüş Boyutu, %d olarak sabitlenmiştir."
 #, php-format
 msgid "Executing SNMP get for num of indexes @ '%s' Index Count: %s"
 msgstr ""
-"'%1$s' konumundaki dizin sayısı için SNMP get yürütülüyor Dizin Sayısı: %2$s"
+"'%s' konumundaki dizin sayısı için SNMP get yürütülüyor Dizin Sayısı: %s"
 
 #: lib/data_query.php:937
 msgid "&lt;oid_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting oid_index entries"
@@ -16328,8 +16324,7 @@ msgstr ""
 #, php-format
 msgid "Executing SNMP walk for list of indexes @ '%s' Index Count: %s"
 msgstr ""
-"'%1$s' konumundaki dizin listesi için SNMP walk yürütülüyor Dizin Sayısı: "
-"%2$s"
+"'%s' konumundaki dizin listesi için SNMP walk yürütülüyor Dizin Sayısı: %s"
 
 #: lib/data_query.php:944
 msgid "No SNMP data returned"
@@ -16338,27 +16333,27 @@ msgstr "SNMP verisi döndürülmedi"
 #: lib/data_query.php:950
 #, php-format
 msgid "Index found at OID: '%s' value: '%s'"
-msgstr "OID konumunda dizin bulundu: '%1$s' değer: '%2$s'"
+msgstr "OID konumunda dizin bulundu: '%s' değer: '%s'"
 
 #: lib/data_query.php:966
 #, php-format
 msgid "List of indexes filtered by value @ '%s' Index Count: %s"
-msgstr "Değere göre filtrelenmiş dizin listesi @ '%1$s' Dizin Sayısı: %2$s"
+msgstr "Değere göre filtrelenmiş dizin listesi @ '%s' Dizin Sayısı: %s"
 
 #: lib/data_query.php:970
 #, php-format
 msgid "Filtered Index by value found at OID: '%s' value: '%s'"
-msgstr "OID'de değere göre filtrelenmiş dizin bulundu: '%1$s' değer: '%2$s'"
+msgstr "OID'de değere göre filtrelenmiş dizin bulundu: '%s' değer: '%s'"
 
 #: lib/data_query.php:987
 #, php-format
 msgid "Filtering list of indexes @ '%s' Index Count: %s"
-msgstr "'%1$s' konumundaki dizin listesi filtreleniyor Dizin Sayısı: %2$s"
+msgstr "'%s' konumundaki dizin listesi filtreleniyor Dizin Sayısı: %s"
 
 #: lib/data_query.php:991
 #, php-format
 msgid "Filtered Index found at OID: '%s' value: '%s'"
-msgstr "OID'de filtrelenmiş dizin bulundu: '%1$s' değer: '%2$s'"
+msgstr "OID'de filtrelenmiş dizin bulundu: '%s' değer: '%s'"
 
 #: lib/data_query.php:1011
 #, php-format
@@ -16370,7 +16365,7 @@ msgstr ""
 #: lib/data_query.php:1018
 #, php-format
 msgid "Inserting index data for field '%s' [value='%s']"
-msgstr "'%1$s' alanı için dizin verisi ekleniyor [değer='%2$s']"
+msgstr "'%s' alanı için dizin verisi ekleniyor [değer='%s']"
 
 #: lib/data_query.php:1023
 #, php-format
@@ -16380,27 +16375,27 @@ msgstr "Giriş alanı '%s' bulundu [get]"
 #: lib/data_query.php:1032
 #, php-format
 msgid "Found OID rewrite rule: 's/%s/%s/'"
-msgstr "OID yeniden yazma kuralı bulundu: 's/%1$s/%2$s/'"
+msgstr "OID yeniden yazma kuralı bulundu: 's/%s/%s/'"
 
 #: lib/data_query.php:1043
 #, php-format
 msgid "oid_rewrite at OID: '%s' new OID: '%s'"
-msgstr "OID: '%1$s' konumunda oid_rewrite, yeni OID: '%2$s'"
+msgstr "OID: '%s' konumunda oid_rewrite, yeni OID: '%s'"
 
 #: lib/data_query.php:1064
 #, php-format
 msgid "Executing SNMP get for data @ '%s' [value='%s']"
-msgstr "'%1$s' konumundaki veri için SNMP get yürütülüyor [değer='%2$s']"
+msgstr "'%s' konumundaki veri için SNMP get yürütülüyor [değer='%s']"
 
 #: lib/data_query.php:1076
 #, php-format
 msgid "Field '%s' %s"
-msgstr "'%1$s' alanı %2$s"
+msgstr "'%s' alanı %s"
 
 #: lib/data_query.php:1140
 #, php-format
 msgid "Executing SNMP get for %s oids (%s)"
-msgstr "%1$s OID için SNMP get yürütülüyor (%2$s)"
+msgstr "%s OID için SNMP get yürütülüyor (%s)"
 
 #: lib/data_query.php:1167 lib/data_query.php:1260 lib/data_query.php:1269
 #, php-format
@@ -16410,26 +16405,23 @@ msgstr "Sıralama alanı OID[%s] için veri döndürmedi, atlanıyor."
 #: lib/data_query.php:1171
 #, php-format
 msgid "Found result for data @ '%s' [value='%s']"
-msgstr "'%1$s' konumundaki veri için sonuç bulundu [değer='%2$s']"
+msgstr "'%s' konumundaki veri için sonuç bulundu [değer='%s']"
 
 #: lib/data_query.php:1179
 #, php-format
 msgid "Setting result for data @ '%s' [key='%s', value='%s']"
-msgstr ""
-"'%1$s' konumundaki veri için sonuç ayarlanıyor [anahtar='%2$s', değer='%3$s']"
+msgstr "'%s' konumundaki veri için sonuç ayarlanıyor [anahtar='%s', değer='%s']"
 
 #: lib/data_query.php:1183
 #, php-format
 msgid "Skipped result for data @ '%s' [key='%s', value='%s']"
-msgstr ""
-"'%1$s' konumundaki veri için sonuç atlandı [anahtar='%2$s', değer='%3$s']"
+msgstr "'%s' konumundaki veri için sonuç atlandı [anahtar='%s', değer='%s']"
 
 #: lib/data_query.php:1197
 #, php-format
 msgid "Got SNMP get result for data @ '%s' [value='%s'] (index: %s)"
 msgstr ""
-"'%1$s' konumundaki veri için SNMP get sonucu alındı [değer='%2$s'] (dizin: "
-"%3$s)"
+"'%s' konumundaki veri için SNMP get sonucu alındı [değer='%s'] (dizin: %s)"
 
 #: lib/data_query.php:1227
 #, php-format
@@ -16455,25 +16447,23 @@ msgstr ""
 #: lib/data_query.php:1342
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from %s]"
-msgstr "Öğe bulundu [%1$s='%2$s'] dizin: %3$s [%4$s kaynağından]"
+msgstr "Öğe bulundu [%s='%s'] dizin: %s [%s kaynağından]"
 
 #: lib/data_query.php:1386
 #, php-format
 msgid "Found OCTET STRING '%s' decoded value: '%s'"
-msgstr "OCTET STRING '%1$s' bulundu, çözümlenmiş değer: '%2$s'"
+msgstr "OCTET STRING '%s' bulundu, çözümlenmiş değer: '%s'"
 
 #: lib/data_query.php:1392 lib/data_query.php:1443
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid parse]"
-msgstr ""
-"Öğe bulundu [%1$s='%2$s'] dizin: %3$s [düzenli ifade OID ayrıştırmasından]"
+msgstr "Öğe bulundu [%s='%s'] dizin: %s [düzenli ifade OID ayrıştırmasından]"
 
 #: lib/data_query.php:1472
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid value parse]"
 msgstr ""
-"Öğe bulundu [%1$s='%2$s'] dizin: %3$s "
-"[düzenli ifade OID değer ayrıştırmasından]"
+"Öğe bulundu [%s='%s'] dizin: %s [düzenli ifade OID değer ayrıştırmasından]"
 
 #: lib/data_query.php:1710
 #, php-format
@@ -16487,7 +16477,7 @@ msgstr ""
 #: lib/data_query.php:1750
 #, php-format
 msgid "rewrite_value: '%s' => '%s'"
-msgstr "rewrite_value: '%1$s' => '%2$s'"
+msgstr "rewrite_value: '%s' => '%s'"
 
 #: lib/data_query.php:1856
 msgid "Update graph data query cache complete"
@@ -16546,14 +16536,14 @@ msgstr "Veri Kaynağı Aktif olarak ayarlanmadı"
 msgid "RRDfile Folder (rra) is not writable by Poller.  Folder owner: %s.  Poller runs as: %s"
 msgstr ""
 "RRDfile Klasörü (rra) Poller tarafından yazılabilir değil.  Klasör sahibi: "
-"%1$s.  Poller çalıştıran kullanıcı: %2$s"
+"%s.  Poller çalıştıran kullanıcı: %s"
 
 #: lib/dsdebug.php:282
 #, php-format
 msgid "RRDfile is not writable by Poller.  RRDfile owner: %s.  Poller runs as %s"
 msgstr ""
-"RRDfile Poller tarafından yazılabilir değil.  RRDfile sahibi: %1$s.  Poller "
-"%2$s olarak çalışıyor"
+"RRDfile Poller tarafından yazılabilir değil.  RRDfile sahibi: %s.  Poller %s "
+"olarak çalışıyor"
 
 #: lib/dsdebug.php:291
 msgid "RRDfile does not match Data Source"
@@ -16765,8 +16755,8 @@ msgstr "Kurulumdan Bu Yana"
 #, php-format
 msgid "Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details."
 msgstr ""
-"Cacti, şu hata nedeniyle %1$s eklentisini devre dışı bıraktı: %2$s! Daha "
-"fazla ayrıntı için Cacti günlük dosyasına bakın."
+"Cacti, şu hata nedeniyle %s eklentisini devre dışı bıraktı: %s! Daha fazla "
+"ayrıntı için Cacti günlük dosyasına bakın."
 
 #: lib/functions.php:6752
 #, php-format
@@ -16794,7 +16784,7 @@ msgstr "- Beta %s"
 #: lib/functions.php:7309
 #, php-format
 msgid "Version %s %s"
-msgstr "Sürüm %1$s %2$s"
+msgstr "Sürüm %s %s"
 
 #: lib/functions.php:7852
 #, php-format
@@ -16863,7 +16853,7 @@ msgstr "Önceki"
 #: lib/html.php:671
 #, php-format
 msgid "%d to %d of %s [ %s ]"
-msgstr "%1$d - %2$d / %3$s [ %4$s ]"
+msgstr "%d - %d / %s [ %s ]"
 
 #: lib/html.php:674 lib/html.php:703 lib/installer.php:1778
 msgid "Next"
@@ -16872,7 +16862,7 @@ msgstr "Sonraki"
 #: lib/html.php:681
 #, php-format
 msgid "All %d %s"
-msgstr "Tüm %1$d %2$s"
+msgstr "Tüm %d %s"
 
 #: lib/html.php:700
 #, php-format
@@ -17386,7 +17376,7 @@ msgstr ""
 #: lib/html.php:3403
 #, php-format
 msgid "Version %s | %s"
-msgstr "Sürüm %1$s | %2$s"
+msgstr "Sürüm %s | %s"
 
 #: lib/html_filter.php:89
 msgid "Apply filter to table"
@@ -17554,7 +17544,7 @@ msgstr "%s öğesinden Grafik Oluştur"
 #: lib/html_graph.php:677
 #, php-format
 msgid "Create %s Graphs from %s"
-msgstr "%2$s üzerinden %1$s Grafik Oluştur"
+msgstr "%s Grafik Oluştur (%s üzerinden)"
 
 #: lib/html_graph.php:718
 #, php-format
@@ -18198,7 +18188,7 @@ msgstr "Seçili"
 #: lib/html_utility.php:589 lib/html_utility.php:828
 #, php-format
 msgid "The regular expression \"%s\" is not valid. Error is %s"
-msgstr "\"%1$s\" düzenli ifadesi geçerli değil. Hata: %2$s"
+msgstr "\"%s\" düzenli ifadesi geçerli değil. Hata: %s"
 
 #: lib/html_utility.php:1040
 msgid "Cacti regular expressions are limited to 50 characters only for security reasons."
@@ -18238,8 +18228,8 @@ msgstr "Kapalı (Thold)"
 #, php-format
 msgid "Validation error for variable %s with a value of %s.  See backtrace below for more details."
 msgstr ""
-"%2$s değerine sahip %1$s değişkeni için doğrulama hatası. Ayrıntılar için "
-"aşağıdaki geri izlemeye bakın."
+"%s değişkeninin %s değeri için doğrulama hatası. Ayrıntılar için aşağıdaki "
+"geri izlemeye bakın."
 
 #: lib/html_validate.php:115
 msgid "Validation Error"
@@ -18338,7 +18328,7 @@ msgstr "Yol yazılabilir değildi"
 #: lib/installer.php:786
 #, php-format
 msgid "Failed to set specified %sRRDTool version: %s"
-msgstr "Belirtilen %1$sRRDTool sürümü ayarlanamadı: %2$s"
+msgstr "Belirtilen %sRRDTool sürümü ayarlanamadı: %s"
 
 #: lib/installer.php:837
 msgid "Invalid Theme Specified"
@@ -18363,7 +18353,7 @@ msgstr "Beklenmeyen yol parametresi"
 #: lib/installer.php:968
 #, php-format
 msgid "Failed to apply specified profile %s != %s"
-msgstr "Belirtilen profil uygulanamadı %1$s != %2$s"
+msgstr "Belirtilen profil uygulanamadı %s != %s"
 
 #: lib/installer.php:1015
 #, php-format
@@ -18717,8 +18707,7 @@ msgstr "Kurulum Türü"
 #: lib/installer.php:2239
 #, php-format
 msgid "Upgrade from <strong>%s</strong> to <strong>%s</strong>"
-msgstr ""
-"<strong>%1$s</strong> sürümünden <strong>%2$s</strong> sürümüne yükseltme"
+msgstr "<strong>%s</strong> sürümünden <strong>%s</strong> sürümüne yükseltme"
 
 #: lib/installer.php:2241
 msgid "In the event of issues, It is highly recommended that you clear your browser cache, closing then reopening your browser (not just the tab Cacti is on) and retrying, before raising an issue with The Cacti Group"
@@ -18749,7 +18738,7 @@ msgstr ""
 #: lib/installer.php:2250
 #, php-format
 msgid "Downgrade from <strong>%s</strong> to <strong>%s</strong>"
-msgstr "<strong>%1$s</strong> sürümünden <strong>%2$s</strong> sürümüne düşür"
+msgstr "<strong>%s</strong> sürümünden <strong>%s</strong> sürümüne düşür"
 
 #: lib/installer.php:2251
 msgid "You appear to be downgrading to a previous version.  Database changes made for the newer version will not be reversed and <i>could</i> cause issues."
@@ -19307,8 +19296,8 @@ msgstr ""
 #, php-format
 msgid "Press '%s' then click '%s' to complete the installation process after selecting your Device Templates."
 msgstr ""
-"Cihaz Şablonlarınızı seçtikten sonra kurulum işlemini tamamlamak için '%1$s' "
-"tuşuna basın ve ardından '%2$s' öğesine tıklayın."
+"Cihaz Şablonlarınızı seçtikten sonra kurulum işlemini tamamlamak için '%s' "
+"tuşuna basın ve ardından '%s' öğesine tıklayın."
 
 #: lib/installer.php:2964
 msgid "The following General Install Options will be applied."
@@ -19434,7 +19423,7 @@ msgstr "Cacti Sunucunuz şimdi yüklüyor"
 #: lib/installer.php:3165
 #, php-format
 msgid "Spawning background process: %s %s"
-msgstr "Arka plan süreci başlatılıyor: %1$s %2$s"
+msgstr "Arka plan süreci başlatılıyor: %s %s"
 
 #: lib/installer.php:3192
 msgid "Complete"
@@ -19467,12 +19456,12 @@ msgstr "Şimdi Başlayın"
 #: lib/installer.php:3359
 #, php-format
 msgid "Starting %s Process for v%s"
-msgstr "v%2$s için %1$s Süreci Başlatılıyor"
+msgstr "%s Süreci (v%s için) Başlatılıyor"
 
 #: lib/installer.php:3388
 #, php-format
 msgid "Finished %s Process for v%s"
-msgstr "v%2$s için %1$s İşlemi Tamamlandı"
+msgstr "%s İşlemi (v%s için) Tamamlandı"
 
 #: lib/installer.php:3428
 #, php-format
@@ -19482,20 +19471,17 @@ msgstr "Yüklenecek%s şablon bulundu"
 #: lib/installer.php:3438
 #, php-format
 msgid "About to import Package #%s '%s'."
-msgstr "Paket #%1$s '%2$s' içe aktarılmak üzere."
+msgstr "Paket #%s '%s' içe aktarılmak üzere."
 
 #: lib/installer.php:3447
 #, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' succeeded"
-msgstr ""
-"'%3$s' Profili altındaki #%1$s '%2$s' Paketinin içe aktarılması başarılı oldu"
+msgstr "#%s '%s' Paketinin '%s' Profili altında içe aktarılması başarılı oldu"
 
 #: lib/installer.php:3453
 #, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' failed"
-msgstr ""
-"'%3$s' Profili altındaki #%1$s '%2$s' Paketinin içe aktarılması başarısız "
-"oldu"
+msgstr "#%s '%s' Paketinin '%s' Profili altında içe aktarılması başarısız oldu"
 
 #: lib/installer.php:3469
 #, php-format
@@ -19513,7 +19499,7 @@ msgstr "Uzak yapılandırma dosyası güncelleniyor"
 #: lib/installer.php:3532
 #, php-format
 msgid "Setting default data source profile to %s (%s)"
-msgstr "Varsayılan veri kaynağı profili %1$s (%2$s) olarak ayarlanıyor"
+msgstr "Varsayılan veri kaynağı profili %s (%s) olarak ayarlanıyor"
 
 #: lib/installer.php:3557
 #, fuzzy, php-format
@@ -19524,8 +19510,7 @@ msgstr "%s belirtilen profil uygulanamadı! = %s"
 #, php-format
 msgid "Updating automation network (%s), mode \"%s\" => \"%s\", subnet \"%s\" => %s\""
 msgstr ""
-"Otomasyon ağı (%1$s) güncelleniyor, mod \"%2$s\" => \"%3$s\", alt ağ \"%4$s\""
-" => %5$s\""
+"Otomasyon ağı (%s) güncelleniyor, mod \"%s\" => \"%s\", alt ağ \"%s\" => %s\""
 
 #: lib/installer.php:3583
 msgid "Failed to find automation network, no changes were made"
@@ -19630,7 +19615,7 @@ msgstr "Dönüştürülecek%s tablo bulundu"
 #: lib/installer.php:3767
 #, php-format
 msgid "Converting Table #%s '%s'"
-msgstr "#%1$s '%2$s' Tablosu Dönüştürülüyor"
+msgstr "#%s '%s' Tablosu Dönüştürülüyor"
 
 #: lib/installer.php:3784
 #, fuzzy
@@ -19640,7 +19625,7 @@ msgstr "Dönüşüm için bulunduğu veya seçildiği yerlerde tablo yok"
 #: lib/installer.php:3795
 #, php-format
 msgid "Switched from %s to %s"
-msgstr "%1$s öğesinden %2$s öğesine geçildi"
+msgstr "%s öğesinden %s öğesine geçildi"
 
 #: lib/installer.php:3799
 #, php-format
@@ -19650,7 +19635,7 @@ msgstr "NOT: db önbelleği için geçici dosya kullanma:%s"
 #: lib/installer.php:3822
 #, php-format
 msgid "Upgrading from v%s (DB %s) to v%s"
-msgstr "v%1$s (DB %2$s) sürümünden v%3$s sürümüne yükseltiliyor"
+msgstr "v%s (DB %s) sürümünden v%s sürümüne yükseltiliyor"
 
 #: lib/installer.php:3831
 #, php-format
@@ -19665,18 +19650,17 @@ msgstr "EULA kabulü olmadığından yükleme iptal edildi"
 #, php-format
 msgid "Background was already started at %s, this attempt at %s was skipped"
 msgstr ""
-"Arka plan %1$s zamanında zaten başlatılmıştı, %2$s zamanındaki bu girişim "
-"atlandı"
+"Arka plan %s zamanında zaten başlatılmıştı, %s zamanındaki bu girişim atlandı"
 
 #: lib/installer.php:3946
 #, php-format
 msgid "Exception occurred during installation: #%s - %s"
-msgstr "Kurulum sırasında özel durum oluştu: #%1$s - %2$s"
+msgstr "Kurulum sırasında özel durum oluştu: #%s - %s"
 
 #: lib/installer.php:3956
 #, php-format
 msgid "Installation was started at %s, completed at %s"
-msgstr "Kurulum %1$s zamanında başlatıldı, %2$s zamanında tamamlandı"
+msgstr "Kurulum %s zamanında başlatıldı, %s zamanında tamamlandı"
 
 #: lib/installer.php:3997
 msgid "Both"
@@ -19708,12 +19692,12 @@ msgstr "komut satırı"
 #: lib/installer.php:4015
 #, php-format
 msgid "Setting PHP Option %s = %s"
-msgstr "PHP Seçeneği %1$s = %2$s ayarlanıyor"
+msgstr "PHP Seçeneği %s = %s ayarlanıyor"
 
 #: lib/installer.php:4023
 #, php-format
 msgid "Failed to set PHP option %s, is %s (should be %s)"
-msgstr "PHP seçeneği %1$s ayarlanamadı, mevcut değer %2$s (%3$s olmalıdır)"
+msgstr "PHP seçeneği %s ayarlanamadı, mevcut değer %s (%s olmalıdır)"
 
 #: lib/installer.php:4043
 msgid "No Remote Data Collectors found for full synchronization"
@@ -19738,18 +19722,18 @@ msgstr "Tanımlanmış kullanıcı adı yok"
 #: lib/ldap.php:412
 #, php-format
 msgid "Protocol Error, Unable to set version (%s) on Server (%s)"
-msgstr "Protokol Hatası, (%2$s) Sunucusunda sürüm (%1$s) ayarlanamıyor"
+msgstr "Protokol Hatası, sürüm (%s), (%s) Sunucusunda ayarlanamıyor"
 
 #: lib/ldap.php:416
 #, php-format
 msgid "Protocol Error, Unable to set referrals option (%s) on Server (%s)"
 msgstr ""
-"Protokol Hatası, (%2$s) Sunucusunda yönlendirme seçeneği (%1$s) ayarlanamıyor"
+"Protokol Hatası, yönlendirme seçeneği (%s), (%s) Sunucusunda ayarlanamıyor"
 
 #: lib/ldap.php:420
 #, php-format
 msgid "Protocol Error, unable to start TLS communications (%s) on Server (%s)"
-msgstr "Protokol Hatası, (%2$s) Sunucusunda TLS iletişimi (%1$s) başlatılamıyor"
+msgstr "Protokol Hatası, TLS iletişimi (%s), (%s) Sunucusunda başlatılamıyor"
 
 #: lib/ldap.php:424
 #, php-format
@@ -19759,7 +19743,7 @@ msgstr "Protokol Hatası, Genel başarısızlık ( %s)"
 #: lib/ldap.php:428
 #, php-format
 msgid "Protocol Error, Unable to bind, LDAP result: (%s) on Server (%s)"
-msgstr "Protokol Hatası, Bağlanılamıyor, (%2$s) Sunucusunda LDAP sonucu: (%1$s)"
+msgstr "Protokol Hatası, Bağlanılamıyor, LDAP sonucu: (%s), (%s) Sunucusunda"
 
 #: lib/ldap.php:432
 #, php-format
@@ -19809,7 +19793,7 @@ msgstr "Geçersiz Şifre sağlandı. Giriş başarısız."
 #: lib/ldap.php:473
 #, php-format
 msgid "Unexpected error %s (Ldap Error: %s) on Server (%s)"
-msgstr "Sunucuda (%3$s) beklenmeyen hata %1$s (LDAP Hatası: %2$s)"
+msgstr "Beklenmeyen hata %s (LDAP Hatası: %s), (%s) Sunucusunda"
 
 #: lib/ping.php:149
 msgid "ICMP Ping timed out"
@@ -19882,13 +19866,13 @@ msgstr "Ayar nedeniyle ping işlemi gerçekleştirilmedi."
 #, php-format
 msgid "'%s' versions '%s' above or in range are required to install '%s'. "
 msgstr ""
-"'%3$s' kurulumu için '%2$s' üzeri veya bu aralıktaki '%1$s' sürümleri "
+"'%s' ('%s' üzeri veya bu aralıktaki sürümleri), '%s' kurulumu için "
 "gereklidir. "
 
 #: lib/plugins.php:685
 #, php-format
 msgid "'%s' must first be installed before '%s' is installed. "
-msgstr "'%2$s' kurulmadan önce '%1$s' kurulmalıdır. "
+msgstr "'%s', '%s' kurulmadan önce kurulmalıdır. "
 
 #: lib/plugins.php:708
 msgid "Plugin cannot be installed."
@@ -19905,7 +19889,7 @@ msgstr ""
 #, php-format
 msgid "The Plugin in the directory '%s' does not include an version function '%s()'.  This function must exist for the plugin to be installed."
 msgstr ""
-"'%1$s' dizinindeki Eklenti, '%2$s()' sürüm işlevini içermiyor. Eklentinin "
+"'%s' dizinindeki Eklenti, '%s()' sürüm işlevini içermiyor. Eklentinin "
 "kurulabilmesi için bu işlevin mevcut olması gerekir."
 
 #: lib/plugins.php:784
@@ -20068,8 +20052,8 @@ msgstr "Cihaz '%s', raporda zaten mevcut olduğundan Rapor'a eklenmedi."
 #, php-format
 msgid "Problems sending Report '%s' Problem with e-mail Subsystem Error is '%s'"
 msgstr ""
-"'%1$s' Raporu gönderilirken sorun oluştu. E-posta Alt Sistemi ile ilgili "
-"sorun, Hata: '%2$s'"
+"'%s' Raporu gönderilirken sorun oluştu. E-posta Alt Sistemi ile ilgili "
+"sorun, Hata: '%s'"
 
 #: lib/reports.php:634
 #, php-format
@@ -20134,22 +20118,22 @@ msgstr "RRDtool Komutu:"
 #: lib/rrd.php:3299
 #, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
-msgstr "Gerekli RRDfile adım boyutu '%1$s' ancak gözlemlenen adım '%2$s'"
+msgstr "Gerekli RRDfile adım boyutu '%s' ancak gözlemlenen adım '%s'"
 
 #: lib/rrd.php:3359
 #, php-format
 msgid "Type for Data Source '%s' should be '%s'"
-msgstr "'%1$s' Veri Kaynağının türü '%2$s' olmalıdır"
+msgstr "'%s' Veri Kaynağının türü '%s' olmalıdır"
 
 #: lib/rrd.php:3365
 #, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
-msgstr "'%1$s' Veri Kaynağı için Heartbeat '%2$s' olmalıdır"
+msgstr "'%s' Veri Kaynağı için Heartbeat '%s' olmalıdır"
 
 #: lib/rrd.php:3377
 #, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
-msgstr "'%1$s' Veri Kaynağı için RRD minimum değeri '%2$s' olmalıdır"
+msgstr "'%s' Veri Kaynağı için RRD minimum değeri '%s' olmalıdır"
 
 #: lib/rrd.php:3386
 #, fuzzy, php-format
@@ -20159,12 +20143,12 @@ msgstr "DS &#39; %s&#39; Cacti tanımında eksik"
 #: lib/rrd.php:3400 lib/rrd.php:3401
 #, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
-msgstr "Cacti RRA '%1$s', '%4$s' ile aynı CF/adımlara (%2$s, %3$s) sahip"
+msgstr "Cacti RRA '%s' CF/adımları (%s, %s), '%s' ile aynı"
 
 #: lib/rrd.php:3415 lib/rrd.php:3416
 #, php-format
 msgid "File RRA '%s' has same CF/steps (%s, %s) as '%s'"
-msgstr "RRA dosyası '%1$s', '%4$s' ile aynı CF/adımlara (%2$s, %3$s) sahip"
+msgstr "RRA dosyası '%s' CF/adımları (%s, %s), '%s' ile aynı"
 
 #: lib/rrd.php:3450
 #, php-format
@@ -20174,14 +20158,14 @@ msgstr ""
 #: lib/rrd.php:3454
 #, php-format
 msgid "The XFF for Cacti RRA id is '%s' but should be '%s'"
-msgstr "Cacti RRA kimliği için XFF '%1$s' ancak '%2$s' olmalıdır"
+msgstr "Cacti RRA kimliği için XFF '%s' ancak '%s' olmalıdır"
 
 #: lib/rrd.php:3458
 #, php-format
 msgid "The number of rows for Cacti RRA id '%s' is incorrect.  The number of rows are '%s' but should be '%s'"
 msgstr ""
-"Cacti RRA kimliği '%1$s' için satır sayısı hatalı. Satır sayısı '%2$s' ancak "
-"'%3$s' olmalıdır"
+"Cacti RRA kimliği '%s' için satır sayısı hatalı. Satır sayısı '%s' ancak "
+"'%s' olmalıdır"
 
 #: lib/rrd.php:3476
 #, php-format
@@ -20227,7 +20211,7 @@ msgstr "Round Robin Arşivi"
 
 #: lib/rrd.php:3597
 msgid "Cur Row"
-msgstr "Cur Row"
+msgstr "Geçerli Satır"
 
 #: lib/rrd.php:3598
 msgid "PDP per Row"
@@ -20252,7 +20236,7 @@ msgstr "İsteğe Bağlı İnce Ayar Önerileri"
 #: lib/rrd.php:3700 lib/rrd.php:3703
 #, php-format
 msgid "rename %s to %s"
-msgstr "%1$s öğesini %2$s olarak yeniden adlandır"
+msgstr "%s öğesini %s olarak yeniden adlandır"
 
 #: lib/rrd.php:3770
 msgid "Error while parsing the XML of rrdtool dump"
@@ -20276,15 +20260,12 @@ msgstr "RRDtool dökümü XML&#39;sini ayrıştırırken hata oluştu"
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file"
 msgstr ""
-"RRA (CF=%1$s, ROWS=%2$d, PDP_PER_ROW=%3$d, XFF=%4$1.2f) RRD dosyasından "
-"kaldırıldı"
+"RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) RRD dosyasından kaldırıldı"
 
 #: lib/rrd.php:4199
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file"
-msgstr ""
-"RRA (CF=%1$s, ROWS=%2$d, PDP_PER_ROW=%3$d, XFF=%4$1.2f) RRD dosyasına "
-"ekleniyor"
+msgstr "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) RRD dosyasına ekleniyor"
 
 #: lib/rrd.php:4291 lib/rrd.php:4305
 #, php-format
@@ -20519,7 +20500,7 @@ msgstr ""
 #, php-format
 msgid "As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential"
 msgstr ""
-"%1$s %2$s sürümünden itibaren, %3$s bileşeninin işlemleri diske ne sıklıkla "
+"%s %s sürümünden itibaren, %s bileşeninin işlemleri diske ne sıklıkla "
 "yazacağını kontrol edebilirsiniz. Varsayılan değer 1 saniyedir, ancak yüksek "
 "G/Ç sistemlerinde 1'den büyük bir değer ayarlamak disk G/Ç işlemlerinin daha "
 "sıralı olmasını sağlayabilir"
@@ -20611,7 +20592,7 @@ msgstr ""
 #: lib/utility.php:1405
 #, php-format
 msgid "%s Tuning"
-msgstr "%s Tuning"
+msgstr "%s İnce Ayarı"
 
 #: lib/utility.php:1405
 msgid "Note: Many changes below require a database restart"
@@ -20883,7 +20864,7 @@ msgstr "%s nedeniyle Cacti oturumunuz kapatıldı."
 #: logout.php:61
 #, php-format
 msgid "Please close your browser or %sLogin Again%s"
-msgstr "Lütfen tarayıcınızı kapatın veya %1$sYeniden Oturum Açın%2$s"
+msgstr "Lütfen tarayıcınızı kapatın veya %sYeniden Oturum Açın%s"
 
 #: logout.php:62
 msgid "Cookies have been cleared"
@@ -22282,7 +22263,7 @@ msgstr "Eklenti dizinleri boşluk içeremez"
 #: plugins.php:1870
 #, php-format
 msgid "Plugin directory is not correct.  Should be '%s' but is '%s'"
-msgstr "Eklenti dizini doğru değil. '%1$s' olmalı ancak '%2$s'"
+msgstr "Eklenti dizini doğru değil. '%s' olmalı ancak '%s'"
 
 #: plugins.php:1881
 msgid "Plugin is integrated into Cacti core"
@@ -22300,35 +22281,32 @@ msgstr "Eklentiyi Yerel Olarak Etkinleştir"
 #, php-format
 msgid "WARNING: %s is out of sync with the Poller Interval for Poller[%d]!  The Poller Interval is %d seconds, with a maximum of a %d seconds, but %d seconds have passed since the last poll!"
 msgstr ""
-"UYARI: %1$s, Poller[%2$d] için Poller Aralığı ile senkronize değil! Poller "
-"Aralığı %3$d saniyedir (en fazla %4$d saniye), ancak son yoklamadan bu yana "
-"%5$d saniye geçti!"
+"UYARI: %s, Poller[%d] için Poller Aralığı ile senkronize değil! Poller "
+"Aralığı %d saniyedir (en fazla %d saniye), ancak son yoklamadan bu yana %d "
+"saniye geçti!"
 
 #: poller.php:579
 #, php-format
 msgid "WARNING: There are %d processes detected as overrunning a polling cycle for Poller[%d], please investigate."
 msgstr ""
-"UYARI: Poller[%2$d] için bir yoklama döngüsünü aşan %1$d işlem algılandı, "
+"UYARI: %d işlemin bir yoklama döngüsünü aştığı algılandı (Poller[%d]), "
 "lütfen inceleyin."
 
 #: poller.php:637
 #, php-format
 msgid "WARNING: Poller Output Table not empty for Poller[%d].  Issues: %d, %s."
 msgstr ""
-"UYARI: Poller[%1$d] için Poller Çıktı Tablosu boş değil. Sorunlar: %2$d, "
-"%3$s."
+"UYARI: Poller[%d] için Poller Çıktı Tablosu boş değil. Sorunlar: %d, %s."
 
 #: poller.php:671
 #, php-format
 msgid "ERROR: The spine path: %s is invalid for Poller[%d].  Poller can not continue!"
-msgstr ""
-"HATA: Spine yolu (%1$s), Poller[%2$d] için geçersiz. Poller devam edemiyor!"
+msgstr "HATA: Spine yolu (%s), Poller[%d] için geçersiz. Poller devam edemiyor!"
 
 #: poller.php:819
 #, php-format
 msgid "Maximum runtime of %d seconds exceeded for Poller[%d]. Exiting."
-msgstr ""
-"Poller[%2$d] için %1$d saniyelik maksimum çalışma süresi aşıldı. Çıkılıyor."
+msgstr "Maksimum %d saniyelik çalışma süresi aşıldı (Poller[%d]). Çıkılıyor."
 
 #: poller.php:944
 #, fuzzy
@@ -22706,7 +22684,7 @@ msgstr "Toplayıcılar"
 
 #: pollers.php:1048
 msgid "Pollers"
-msgstr "Pollers"
+msgstr "Yoklayıcılar"
 
 #: pollers.php:1058
 msgid "Collector Name"
@@ -22968,7 +22946,7 @@ msgstr "NOT: Bu Sekmedeki Yol Ayarları yalnızca yerel olarak kaydedilir!"
 #: settings.php:138
 #, php-format
 msgid "Cacti Settings (%s)%s"
-msgstr "Cacti Ayarları (%1$s)%2$s"
+msgstr "Cacti Ayarları (%s)%s"
 
 #: settings.php:248
 msgid "Changing Permission Model Warning"
@@ -23427,7 +23405,7 @@ msgstr "Veritabanı Sorgusu Bulunamadı"
 
 #: support.php:503 support.php:650
 msgid "Cacti Poller"
-msgstr "Cacti Poller"
+msgstr "Cacti Yoklayıcı"
 
 #: support.php:504
 msgid "Cacti Process"
@@ -23467,7 +23445,7 @@ msgstr "Görev Türü"
 
 #: support.php:680 support.php:716 support.php:725
 msgid "Poller:"
-msgstr "Poller:"
+msgstr "Yoklayıcı:"
 
 #: support.php:698 support.php:707
 msgid "Collector"
@@ -23686,12 +23664,12 @@ msgstr "PHP Sunucuları"
 #: support.php:1370 support.php:1372 support.php:1378 support.php:1380
 #, php-format
 msgid "Main Server: Current: %s, Min Required: %s"
-msgstr "Ana Sunucu: Mevcut: %1$s, Gerekli En Az: %2$s"
+msgstr "Ana Sunucu: Mevcut: %s, Gerekli En Az: %s"
 
 #: support.php:1388 support.php:1390
 #, php-format
 msgid "Local Server: Current: %s, Min Required: %s"
-msgstr "Yerel Sunucu: Mevcut: %1$s, Gerekli En Az: %2$s"
+msgstr "Yerel Sunucu: Mevcut: %s, Gerekli En Az: %s"
 
 #: support.php:1395
 msgid "Minimum Connections:"
@@ -23941,7 +23919,7 @@ msgstr "Kilidi Aç"
 #: tree.php:421
 msgctxt "ordering of tree items"
 msgid "inherit"
-msgstr "inherit"
+msgstr "devral"
 
 #: tree.php:425
 msgctxt "ordering of tree items"
