@@ -51,6 +51,8 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'update_data':
+		csrf_require_post();
+
 		$name  = get_nfilter_request_var('name');
 		$value = get_nfilter_request_var('value');
 
@@ -220,6 +222,37 @@ function api_auth_clear_user_setting($name) {
  *
  * @return void No value is returned.
  */
+/**
+ * api_auth_user_setting_allowed - decides whether the current user may store
+ *   a value for one of their own settings
+ *
+ * The settings form is shown and saved only with the graph settings
+ * permission, so the single-setting update follows the same rule. The
+ * horizontal scroll toggle is the exception: the page layout offers it to
+ * every user. The value itself is checked by
+ * cacti_user_setting_value_allowed().
+ *
+ * @param  string $name  - the setting name
+ * @param  mixed  $value - the value to store
+ *
+ * @return bool   true when the value may be stored
+ */
+function api_auth_user_setting_allowed($name, $value) {
+	global $settings_user;
+
+	if ($name !== 'enable_hscroll' && !is_view_allowed('graph_settings')) {
+		return false;
+	}
+
+	foreach ($settings_user as $settings) {
+		if (isset($settings[$name])) {
+			return cacti_user_setting_value_allowed($settings[$name], $value);
+		}
+	}
+
+	return false;
+}
+
 function api_auth_update_user_setting($name, $value) {
 	global $settings_user;
 
@@ -232,6 +265,10 @@ function api_auth_update_user_setting($name, $value) {
 				WHERE id = ?",
 				array($value, $user));
 		} else {
+			if (!api_auth_user_setting_allowed($name, $value)) {
+				return;
+			}
+
 			foreach($settings_user as $tab => $settings) {
 				if (isset($settings[$name])) {
 					db_execute_prepared('REPLACE INTO settings_user
@@ -509,9 +546,9 @@ function settings_javascript() {
 
 	var themeFonts   = <?php print read_config_option('font_method');?>;
 	var currentTab   = <?php print json_encode((string) get_nfilter_request_var('tab'));?>;
-	var currentTheme = '<?php print get_selected_theme();?>';
-	var currentLang  = '<?php print read_config_option('user_language');?>';
-	var authMethod   = '<?php print read_config_option('auth_method');?>';
+	var currentTheme = <?php print json_encode((string) get_selected_theme());?>;
+	var currentLang  = <?php print json_encode((string) read_config_option('user_language'));?>;
+	var authMethod   = <?php print json_encode((string) read_config_option('auth_method'));?>;
 
 	function clearUserSettings() {
 		$.post('auth_profile.php?action=clear_user_settings', {__csrf_magic: csrfMagicToken}, function() {

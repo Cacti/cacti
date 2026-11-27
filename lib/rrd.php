@@ -3707,7 +3707,7 @@ function rrdtool_function_theme_font_options(&$graph_data_array) {
 	if (isset($graph_data_array['graph_theme'])) {
 		$theme = cacti_validate_theme($graph_data_array['graph_theme']);
 	} else {
-		$theme = get_selected_theme();
+		$theme = cacti_validate_theme(get_selected_theme());
 	}
 
 	$rrdtheme = $config['base_path'] . '/include/themes/' . $theme . '/rrdtheme.php';

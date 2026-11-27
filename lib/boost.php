@@ -1398,8 +1398,17 @@ function boost_graph_cache_filename($cache_directory, $local_graph_id, $rra_id, 
 		}
 	}
 
+	// the image differs by the theme it was drawn with and by that theme's
+	// color mode, so both belong in the key
+	$color_mode = '';
+
+	if (isset($_COOKIE['CactiColorMode']) && in_array($_COOKIE['CactiColorMode'], array('dark', 'light', 'dark-dimmed'), true)) {
+		$color_mode = $_COOKIE['CactiColorMode'];
+	}
+
 	$cache_key = serialize(array(
-		'theme'          => get_selected_theme(),
+		'theme'          => cacti_validate_theme(isset($graph_data_array['graph_theme']) ? $graph_data_array['graph_theme'] : get_selected_theme()),
+		'color_mode'     => $color_mode,
 		'local_graph_id' => (int) $local_graph_id,
 		'rra_id'         => (int) $rra_id,
 		'timespan'       => (int) $timespan,

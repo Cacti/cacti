@@ -33,6 +33,7 @@
             <file>Unit/Security/Session/LogoutEverywhereSessionsTest.php</file>
             <file>Unit/Security/Import/ImportPackageLimitsTest.php</file>
             <file>Unit/Security/PathTraversal/ReportImageConversionTest.php</file>
+            <file>Unit/Security/Misc/ThemeNameHardeningTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>
