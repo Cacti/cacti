@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='utf-8'?>
+<hsrp>
+	<name>Get Cisco HSRP State information</name>
+	<description>Discover each HSRP interface and group, and collect its state.</description>
+	<oid_index>.1.3.6.1.4.1.9.9.106.1.2.1.1.15</oid_index>
+	<oid_index_parse>OID/REGEXP:.*[.]([0-9]+[.][0-9]+)$</oid_index_parse>
+	<index_order>hsrpIndex</index_order>
+	<index_order_type>numeric</index_order_type>
+	<index_title_format>Interface/group |chosen_order_field|</index_title_format>
+	<fields>
+		<hsrpIndex>
+			<name>Interface / Group</name>
+			<method>walk</method>
+			<source>OID/REGEXP:.*[.]([0-9]+[.][0-9]+)$</source>
+			<direction>input</direction>
+			<oid>.1.3.6.1.4.1.9.9.106.1.2.1.1.15</oid>
+		</hsrpIndex>
+		<hsrpState>
+			<name>HSRP State</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>input-output</direction>
+			<oid>.1.3.6.1.4.1.9.9.106.1.2.1.1.15</oid>
+		</hsrpState>
+		<hsrp_vip>
+			<name>HSRP Virtual IP</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>input</direction>
+			<oid>.1.3.6.1.4.1.9.9.106.1.2.1.1.11</oid>
+		</hsrp_vip>
+		<hsrp_priority>
+			<name>HSRP Priority</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>input</direction>
+			<oid>.1.3.6.1.4.1.9.9.106.1.2.1.1.3</oid>
+		</hsrp_priority>
+		<hsrp_hold_timer>
+			<name>Learned Hold Timer (ms)</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>input</direction>
+			<oid>.1.3.6.1.4.1.9.9.106.1.2.1.1.10</oid>
+		</hsrp_hold_timer>
+	</fields>
+</hsrp>
