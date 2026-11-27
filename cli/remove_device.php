@@ -54,6 +54,7 @@ if (cacti_sizeof($parms)) {
 	$confirm     = false;
 	$quiet       = false;
 	$debug       = false;
+	$regex       = false;
 
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
@@ -72,6 +73,10 @@ if (cacti_sizeof($parms)) {
 			break;
 		case '--confirm':
 			$confirm=true;
+
+			break;
+		case '--regex':
+			$regex = true;
 
 			break;
 		case '--description':
@@ -125,7 +130,7 @@ if (cacti_sizeof($parms)) {
 			print "Searching hosts by description..." . PHP_EOL;
 		}
 
-		$ids_host = preg_array_key_match("/$description/", $hosts);
+		$ids_host = array_key_match($description, $hosts, $regex);
 		if (cacti_sizeof($ids_host) == 0) {
 			print "ERROR: Unable to find host in the database matching description ($description)" . PHP_EOL;
 			exit(1);
@@ -137,7 +142,7 @@ if (cacti_sizeof($parms)) {
 			print "Searching hosts by IP..." . PHP_EOL;
 		}
 
-		$ids_ip = preg_array_key_match("/$ip/", $addresses);
+		$ids_ip = array_key_match($ip, $addresses, $regex);
 		if (cacti_sizeof($ids_ip) == 0) {
 			print "ERROR: Unable to find host in the database matching IP ($ip)" . PHP_EOL;
 			exit(1);
@@ -217,25 +222,32 @@ function display_help() {
 
 	print PHP_EOL;
 	print 'usage: remove_device.php --description=\'S\' | --ip=\'S\' | --id=N,N,N,...' . PHP_EOL;
-	print '    [--confirm] [--quiet]' . PHP_EOL . PHP_EOL;
+	print '    [--regex] [--confirm] [--quiet]' . PHP_EOL . PHP_EOL;
 
 	print 'Required: (on or more)' . PHP_EOL;
-	print "    --description='S' A substring or regular expression of the hostname or description." . PHP_EOL;
-	print "    --ip='S'          A IP or hostname (can also be a FQDN)." . PHP_EOL;
+	print "    --description='S' Exact device description." . PHP_EOL;
+	print "    --ip='S'          Exact IP or hostname (can also be a FQDN)." . PHP_EOL;
 	print '    --id=N,N,...      A column delimited list of device ids.' . PHP_EOL . PHP_EOL;
 
-	print '   (both --description and --ip can be a regex)' . PHP_EOL . PHP_EOL;
 	print 'Optional:' . PHP_EOL;
+	print '    --regex             treat --description and --ip as regular expressions' . PHP_EOL;
+	print '                        (escape / as \/ in patterns)' . PHP_EOL;
 	print '    --confirm           confirms that you wish to remove matches' . PHP_EOL . PHP_EOL;
 
 	print 'List Options:' . PHP_EOL;
 	print '    --quiet             batch mode value return' . PHP_EOL . PHP_EOL;
 }
 
-function preg_array_key_match($needle, $haystack) {
+function array_key_match($needle, $haystack, $regex) {
 	global $debug;
 
 	$matches = array();
+	$pattern = "/$needle/";
+
+	if ($regex && @preg_match($pattern, '') === false) {
+		print "ERROR: Invalid regular expression ($needle)" . PHP_EOL;
+		exit(1);
+	}
 
 	if (isset($haystack)) {
 		if (!is_array($haystack)) {
@@ -254,7 +266,17 @@ function preg_array_key_match($needle, $haystack) {
 			print " - Key $str => Value $value" . PHP_EOL;
 		}
 
-		if (preg_match ($needle, $str, $m)) {
+		if ($regex) {
+			$matched = @preg_match($pattern, (string) $str);
+			if ($matched === false) {
+				print "ERROR: Failed to match regular expression ($needle)" . PHP_EOL;
+				exit(1);
+			}
+		} else {
+			$matched = (string) $str === $needle;
+		}
+
+		if ($matched) {
 			if ($debug) {
 				print "   + $str: $value" . PHP_EOL;
 			}
