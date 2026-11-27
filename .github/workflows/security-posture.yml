@@ -70,9 +70,10 @@ jobs:
 
       - name: Upload Semgrep SARIF
         # Fork PRs get a read-only GITHUB_TOKEN without security-events: write, so
-        # the upload fails with "Resource not accessible by integration". Skip it
-        # there; the SARIF is still kept as an artifact below.
-        if: always() && github.event.pull_request.head.repo.fork == false
+        # the upload fails with "Resource not accessible by integration". Push and
+        # schedule runs have no pull_request payload, so != true runs them while
+        # still skipping fork PRs; the SARIF is kept as an artifact below.
+        if: always() && github.event.pull_request.head.repo.fork != true
         uses: github/codeql-action/upload-sarif@33d7b85da1a04171e211befe2c739303b9a4c066 # v4.39.3
         with:
           sarif_file: semgrep.sarif
