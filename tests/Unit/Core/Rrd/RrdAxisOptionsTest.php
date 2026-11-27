@@ -5,6 +5,7 @@ require_once dirname(__DIR__, 4) . '/lib/rrd.php';
 require_once dirname(__DIR__, 4) . '/lib/api_aggregate.php';
 require_once dirname(__DIR__, 3) . '/Helpers/SourceSlice.php';
 require_once dirname(__DIR__, 3) . '/fixtures/Core/Rrd/AxisOptions.php';
+cacti_fixture_source_function(dirname(__DIR__, 4) . '/lib/rrd_graph_options.php', 'rrdtool_build_graph_options', 'CactiAxisFixture');
 cacti_fixture_source_function(dirname(__DIR__, 4) . '/lib/rrd.php', 'rrd_function_process_graph_options', 'CactiAxisFixture');
 cacti_fixture_source_function(dirname(__DIR__, 4) . '/lib/template.php', 'push_out_graph', 'CactiAxisFixture');
 
@@ -45,8 +46,9 @@ test('invalid imported axis values cannot reach the graph command', function (st
 
 test('graph rendering includes the new options only at the configured capability level', function () {
 	global $image_types;
-	$image_types = [1 => 'PNG'];
-	$graph       = [
+	$previous_image_types = $image_types ?? null;
+	$image_types          = [1 => 'PNG'];
+	$graph                = [
 		'auto_scale'             => '', 'upper_limit' => '', 'lower_limit' => '',
 		'auto_scale_log'         => '', 'scale_log_units' => '', 'auto_scale_rigid' => '',
 		'unit_value'             => '', 'unit_exponent_value' => '', 'height' => '100', 'width' => '200',
@@ -55,12 +57,61 @@ test('graph rendering includes the new options only at the configured capability
 	];
 	$data = [];
 
-	foreach (['1.10.0', '1.11.0'] as $version) {
-		$GLOBALS['axis_fixture_version'] = $version;
-		$options                         = CactiAxisFixture\rrd_function_process_graph_options(1700000000, 1700003600, $graph, $data);
+	try {
+		foreach (['1.10.0', '1.11.0'] as $version) {
+			$GLOBALS['axis_fixture_version'] = $version;
+			$options                         = CactiAxisFixture\rrd_function_process_graph_options(1700000000, 1700003600, $graph, $data);
 
-		foreach (['vertical-label-angle', 'right-axis-label-angle', 'right-axis-range'] as $flag) {
-			expect(substr_count($options, '--' . $flag . ' '))->toBe($version === '1.11.0' ? 1 : 0);
+			foreach (['vertical-label-angle', 'right-axis-label-angle', 'right-axis-range'] as $flag) {
+				expect(substr_count($options, '--' . $flag . ' '))->toBe($version === '1.11.0' ? 1 : 0);
+			}
+		}
+	} finally {
+		if ($previous_image_types === null) {
+			unset($GLOBALS['image_types']);
+		} else {
+			$image_types = $previous_image_types;
+		}
+	}
+});
+
+test('graphv, graph-level legend and RRDtool tag settings emit their options', function () {
+	global $image_types;
+	$previous_image_types = $image_types ?? null;
+	$image_types          = [1 => 'PNG'];
+	$graph                = [
+		'auto_scale'       => '', 'upper_limit' => '', 'lower_limit' => '',
+		'auto_scale_log'   => '', 'scale_log_units' => '', 'auto_scale_rigid' => '',
+		'unit_value'       => '', 'unit_exponent_value' => '', 'height' => '100', 'width' => '200',
+		'image_format_id'  => 1, 'graph_nolegend' => 'on',
+	];
+
+	try {
+		$GLOBALS['axis_fixture_config'] = ['graph_watermark_rrd' => 'on'];
+
+		foreach (['1.7.0' => 0, '1.8.0' => 1] as $version => $jsontime) {
+			$GLOBALS['axis_fixture_version'] = $version;
+			$data                            = ['graphv' => true, 'graph_nolegend' => 'on'];
+			$options                         = CactiAxisFixture\rrd_function_process_graph_options(1700000000, 1700003600, $graph, $data);
+			expect(substr_count($options, '--add-jsontime ' . RRD_NL))->toBe($jsontime)
+				->and($options)->toContain('--no-legend' . RRD_NL)
+				->and($options)->toEndWith('--disable-rrdtool-tag' . RRD_NL);
+		}
+
+		// The graph-level flag alone adds nothing; only the request suppresses the legend.
+		$GLOBALS['axis_fixture_config'] = [];
+		$data                           = [];
+		$options                        = CactiAxisFixture\rrd_function_process_graph_options(1700000000, 1700003600, $graph, $data);
+		expect($options)->not->toContain('--no-legend')
+			->and($options)->not->toContain('--disable-rrdtool-tag')
+			->and($options)->not->toContain('--add-jsontime');
+	} finally {
+		unset($GLOBALS['axis_fixture_config']);
+
+		if ($previous_image_types === null) {
+			unset($GLOBALS['image_types']);
+		} else {
+			$image_types = $previous_image_types;
 		}
 	}
 });

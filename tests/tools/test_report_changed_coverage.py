@@ -80,6 +80,10 @@ class CoverageEvidenceTest(unittest.TestCase):
                 source = '<?php\n' + directive + '\nreturn true;\n'
                 self.assertEqual(self.evaluate({3: 1}, (2, 3), source_text=source), 1)
 
+    def test_unreported_call_outside_the_evidence_still_fails(self):
+        source = '<?php\nexample();\nreturn true;\n'
+        self.assertEqual(self.evaluate({3: 1}, (2, 3), source_text=source), 1)
+
     def inline_evaluate(self, hit=1, stale=False, php_statement=False):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

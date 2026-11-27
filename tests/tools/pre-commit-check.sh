@@ -60,6 +60,10 @@ check_merge_conflicts() {
 check_composer_lock() {
     # Cacti tracks its lockfile so installs use reviewed dependency versions.
     if git diff --cached --name-only | grep -Eq '^composer\.(json|lock)$'; then
+        if ! command -v composer >/dev/null 2>&1; then
+            echo "ERROR: Composer is required to validate staged dependency files."
+            exit 1
+        fi
         composer validate --strict --no-check-publish
     fi
 }

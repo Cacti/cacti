@@ -41,10 +41,10 @@ test('escape_command is not redefined elsewhere under lib', function () {
 	expect($found)->toBe([]);
 });
 
-test('__rrd_execute escapes array arguments one at a time', function () use ($rrdPath) {
+test('__rrd_execute serializes structured arguments one at a time', function () use ($rrdPath) {
 	$source = file_get_contents($rrdPath);
 
-	expect($source)->toContain("array_map('cacti_escapeshellarg', \$command)")
+	expect($source)->toContain("forLineProtocol(\$command, 'cacti_escapeshellarg')")
 		->toContain('$command_line = rrdtool_build_command($command_line);');
 });
 
