@@ -1,0 +1,1 @@
+Refuse control characters other than tab in a data input method's command on form save and template import, and cover both save paths with request-level tests.

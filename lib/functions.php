@@ -5922,7 +5922,9 @@ function sanitize_sql_column(string $column, string $default = 'id') : string {
  * a data_input.input_string template.
  *
  * Remove recognized field placeholders before checking the surrounding text.
- * Characters blocked outside placeholders: ; & | ` $ \ newline carriage-return ' " < > ( ) { }. Paired
+ * Characters blocked outside placeholders: ; & | ` $ \ ' " < > ( ) { } and
+ * every control character except tab, which includes newline, carriage-return,
+ * NUL and DEL. Paired
  * quotes surrounding a placeholder ("<x>" or '<x>') are removed together with
  * the placeholder so legitimate argument quoting such as
  * <path_cacti>/scripts/x.php "<reason>" is kept.
@@ -5943,7 +5945,7 @@ function cacti_input_string_is_safe(mixed $input_string) : bool {
 
 	$bare = preg_replace('/"<[a-zA-Z0-9_]+>"|\'<[a-zA-Z0-9_]+>\'|<[a-zA-Z0-9_]+>/', '', $input_string);
 
-	return $bare !== null && preg_match('/[;&|`$\\\\\n\r\'"<>(){}]/', $bare) === 0;
+	return $bare !== null && preg_match('/[;&|`$\\\\\'"<>(){}\x00-\x08\x0a-\x1f\x7f]/', $bare) === 0;
 }
 
 /**
