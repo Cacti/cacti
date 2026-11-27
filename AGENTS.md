@@ -8,6 +8,30 @@ easiest to get wrong, and does not repeat the rest.
 `CLAUDE.md` contains shared repository guidance. Keep private security-research
 notes outside tracked instruction files and follow `SECURITY.md` for reporting.
 
+## Contributor skills
+
+Choose a workflow for the task at hand. Use the target branch's code and
+contributor instructions when a skill refers to a branch-specific contract.
+
+| Task | Skill |
+| --- | --- |
+| Create or change a plugin | [cacti-plugin-contract](.agents/skills/cacti-plugin-contract/SKILL.md) |
+| Fix core behavior | [cacti-core-fix](.agents/skills/cacti-core-fix/SKILL.md) |
+| Develop a data query or diagnose a graph | [cacti-data-query-graph](.agents/skills/cacti-data-query-graph/SKILL.md) |
+| Identify when a regression began | [cacti-regression-origin](.agents/skills/cacti-regression-origin/SKILL.md) |
+| Assess a maintenance backport | [cacti-backport](.agents/skills/cacti-backport/SKILL.md) |
+| Find other affected callers | [cacti-related-failures](.agents/skills/cacti-related-failures/SKILL.md) |
+| Describe a patch for maintainers | [cacti-patch-description](.agents/skills/cacti-patch-description/SKILL.md) |
+| Design or verify a regression test | [cacti-regression-test](.agents/skills/cacti-regression-test/SKILL.md) |
+| Develop a polling or storage change | [cacti-poller-reliability](.agents/skills/cacti-poller-reliability/SKILL.md) |
+| Develop a database upgrade | [cacti-database-upgrade](.agents/skills/cacti-database-upgrade/SKILL.md) |
+| Implement or verify graph access | [cacti-effective-permissions](.agents/skills/cacti-effective-permissions/SKILL.md) |
+| Develop template import or export | [cacti-template-roundtrip](.agents/skills/cacti-template-roundtrip/SKILL.md) |
+| Develop a localized UI change | [cacti-localization](.agents/skills/cacti-localization/SKILL.md) |
+| Document a feature or correct an existing guide | [cacti-documentation](.agents/skills/cacti-documentation/SKILL.md) |
+| Review the security of changed code | [cacti-security-review](.agents/skills/cacti-security-review/SKILL.md) |
+| Review a patch for idiomatic Cacti code | [cacti-idiomatic-review](.agents/skills/cacti-idiomatic-review/SKILL.md) |
+
 ## Maintenance fix scope
 
 Follow the [maintenance fix scope rules](.github/copilot-instructions.md#maintenance-fix-scope).
