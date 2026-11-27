@@ -52,6 +52,14 @@ rules:
           - metavariable-regex:
               metavariable: $COLUMN
               regex: ^['"][A-Za-z0-9_.]+['"]$
+      # db_in_clause() coerces numeric lists with intval() or quotes strings with
+      # db_qstr(), but interpolates its column argument directly. Only a literal
+      # identifier is safe.
+      - patterns:
+          - pattern: db_in_clause($COLUMN, ...)
+          - metavariable-regex:
+              metavariable: $COLUMN
+              regex: ^['"][A-Za-z0-9_.]+['"]$
       # gfrv()/get_filter_request_var() are only SQL-safe here when they enforce numeric types
       - pattern: gfrv($NAME)
       - pattern: gfrv($NAME, FILTER_VALIDATE_INT, ...)
