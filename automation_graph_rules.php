@@ -448,7 +448,7 @@ function automation_graph_rules_form_actions() : void {
 
 					$(function() {
 						//debugger;
-						DownloadStart(\'automation_graph_rules.php?action=export&selected_items=' . gnrv('selected_items') . '\');
+						DownloadStart(' . cacti_js_encode(cacti_url('automation_graph_rules.php', ['action' => 'export', 'selected_items' => serialize($selected_items)])) . ');
 					});
 				</script>
 				<iframe id="download_iframe" style="display:none;"></iframe>';
