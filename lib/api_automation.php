@@ -1324,7 +1324,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 			form_selectable_cell(filter_value($template['hostname'], get_request_var('filter')), $template['host_id']);
 			form_selectable_cell(filter_value($template['host_template_name'], get_request_var('filter')), $template['host_id']);
 			form_selectable_cell(get_colored_device_status(($template['disabled'] == 'on' ? true : false), $template['status']), $template['host_id']);
-			form_selectable_cell($template['source'], $template['host_id']);
+			form_selectable_cell(filter_value($template['source'], get_request_var('filter')), $template['host_id']);
 			form_selectable_cell($repl, $template['host_id']);
 			form_end_row();
 		}

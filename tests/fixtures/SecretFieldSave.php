@@ -36,6 +36,9 @@ function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options =
 function read_config_option($name, $force = false) {
 	return $name === 'poller_interval' ? 300 : '';
 }
+function is_realm_allowed($realm, $check_user = false) {
+	return $GLOBALS['settings_realm'] ?? true;
+}
 function cacti_log($message, $output = false, $facility = 'SYSTEM', $level = 2) {
 }
 function cacti_debug_backtrace($message, $output = false, $log = true, $level = 0, $skip = 0) {
@@ -132,7 +135,12 @@ foreach (['collector', 'domain'] as $kind) {
 	$table = $kind === 'collector' ? 'poller' : 'user_domains_ldap';
 	$key = $kind === 'collector' ? 'id' : 'domain_id';
 	$id = $kind === 'collector' ? 2 : 7;
-	foreach (['keep', 'replace', 'clear', 'new', 'invalid'] as $mode) {
+	$modes = ['keep', 'replace', 'clear', 'new', 'invalid'];
+	if ($kind === 'collector') {
+		$modes[] = 'no-settings';
+	}
+	foreach ($modes as $mode) {
+		$GLOBALS['settings_realm'] = $mode !== 'no-settings';
 		$_SESSION = [];
 		$_REQUEST = $kind === 'collector' ? $collector : $domain;
 		db_execute_prepared('DELETE FROM ' . $table);
@@ -143,6 +151,10 @@ foreach (['collector', 'domain'] as $kind) {
 			check(sql_save($seed, $table, $key) !== false, 'Seed failed');
 		}
 		$_REQUEST[$field] = $mode === 'replace' ? "replacement-'fixture" : '';
+		if ($mode === 'no-settings') {
+			$_REQUEST[$field] = 'unauthorized-replacement';
+			$_REQUEST['dbhost'] = 'unauthorized.example';
+		}
 		if ($mode === 'clear') {
 			$_REQUEST[$field . '_clear'] = 'on';
 		}
@@ -162,6 +174,9 @@ foreach (['collector', 'domain'] as $kind) {
 		$actual = db_fetch_cell_prepared('SELECT ' . $field . ' FROM ' . $table);
 		$expected = $mode === 'replace' ? "replacement-'fixture" : ($mode === 'clear' ? '' : ($mode === 'new' ? ($kind === 'collector' ? $database_password : '') : 'stored-fixture'));
 		check($actual === $expected, $kind . ' ' . $mode . ' save changed the credential incorrectly');
+		if ($mode === 'no-settings') {
+			check(db_fetch_cell_prepared('SELECT dbhost FROM poller') === $collector['dbhost'], 'Collector database host changed without Settings permission');
+		}
 		if ($kind === 'domain' && $ldap_uri) {
 			$ldap = ldap_connect($ldap_uri);
 			ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);

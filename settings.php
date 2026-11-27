@@ -113,6 +113,12 @@ case 'save':
 						$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
 						$errors[9] = 9;
 						$continue = false;
+					} elseif (preg_match('/[\x00-\x1f\x7f<>"\'`]/', get_nfilter_request_var($field_name))) {
+						/* a log file name is shown in the log viewer, so keep markup and control characters out of it */
+						$_SESSION['sess_error_fields'][$field_name] = $field_name;
+						$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
+						$errors[36] = 36;
+						$continue = false;
 					}
 				} elseif (get_nfilter_request_var($field_name) != '' && !is_valid_pathname(get_nfilter_request_var($field_name))) {
 					$_SESSION['sess_error_fields'][$field_name] = $field_name;

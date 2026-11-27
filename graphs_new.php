@@ -473,8 +473,8 @@ function graphs() {
 						</td>
 						<td>
 							<select id='graph_type' name='graph_type'>
-								<option value='-2'<?php if (get_request_var('graph_type') == '-2') {?> selected<?php }?>><?php print __('All');?></option>
-								<option value='-1'<?php if (get_request_var('graph_type') == '-1') {?> selected<?php }?>><?php print __('Graph Template Based');?></option>
+								<option value='-2'<?php if (get_request_var('graph_type') == '-2') { print ' selected'; }?>><?php print __('All');?></option>
+								<option value='-1'<?php if (get_request_var('graph_type') == '-1') { print ' selected'; }?>><?php print __('Graph Template Based');?></option>
 								<?php
 
 								$snmp_queries = db_fetch_assoc_prepared('SELECT sq.id, sq.name
@@ -854,7 +854,7 @@ function graphs() {
 						if (cacti_sizeof($field_names)) {
 							foreach($field_names as $column) {
 								$field_name = $column['field_name'];
-								$sql_query .= ", MAX(CASE WHEN field_name='$field_name' THEN field_value ELSE NULL END) AS '$field_name'";
+								$sql_query .= ', MAX(CASE WHEN field_name = ' . db_qstr($field_name) . ' THEN field_value ELSE NULL END) AS ' . db_qstr($field_name);
 								$i++;
 							}
 						}
@@ -904,7 +904,7 @@ function graphs() {
 							if (($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') && cacti_sizeof($field_names)) {
 								foreach($field_names as $row) {
 									if ($row['field_name'] == $field_name) {
-										$html_dq_header .= "<th class='tableSubHeaderColumn'>" . $field_array['name'] . '</th>';
+										$html_dq_header .= "<th class='tableSubHeaderColumn'>" . html_escape($field_array['name']) . '</th>';
 										break;
 									}
 								}

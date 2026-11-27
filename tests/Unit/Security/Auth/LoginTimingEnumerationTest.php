@@ -37,6 +37,25 @@ test('secpass_login_process keeps the real verify and dummy-verifies the unknown
 	// the real verification against the stored hash remains
 	expect($body)->toContain('compat_password_verify($password, $user[\'password\'])');
 
-	// a fixed dummy hash is verified on both the disabled and not-found branches
-	expect(substr_count($body, 'compat_password_verify($password, \'$2y$10$qgRPCKzfZe'))->toBe(2);
+	// a decoy hash is verified on both the disabled and not-found branches
+	expect(substr_count($body, 'compat_password_verify($password, cacti_password_decoy_hash())'))->toBe(2);
+});
+
+test('the decoy hash matches the default password hash cost and verifies nothing', function () {
+	require_once dirname(__DIR__, 3) . '/Helpers/SourceSlice.php';
+
+	if (!function_exists('CactiLoginDecoy\cacti_password_decoy_hash')) {
+		cacti_fixture_source_function(dirname(__DIR__, 4) . '/lib/auth.php', 'cacti_password_decoy_hash', 'CactiLoginDecoy');
+	}
+
+	$decoy = \CactiLoginDecoy\cacti_password_decoy_hash();
+	$fresh = password_get_info(password_hash('probe', PASSWORD_DEFAULT));
+	$info  = password_get_info($decoy);
+
+	expect(strlen($decoy))->toBe(60)
+		->and($info['algoName'])->toBe($fresh['algoName'])
+		->and($info['options']['cost'])->toBe($fresh['options']['cost'])
+		->and(\CactiLoginDecoy\cacti_password_decoy_hash())->toBe($decoy)
+		->and(password_verify('', $decoy))->toBeFalse()
+		->and(password_verify('probe', $decoy))->toBeFalse();
 });

@@ -2087,7 +2087,7 @@ function xml_to_host_template($hash, &$xml_array, &$hash_cache, &$host_template_
 						array($dhash));
 
 					if (!$exists1) {
-						$import_debug_info['differences'][] = __('New Graph Template: %s', $dname);
+						$import_debug_info['differences'][] = __('New Graph Template: %s', html_escape($dname));
 						$status++;
 					} elseif ($save['id']) {
 						// For existing, we have to perform two checks
@@ -2104,7 +2104,7 @@ function xml_to_host_template($hash, &$xml_array, &$hash_cache, &$host_template_
 								array($exists1));
 
 							if (!$data_query_id) {
-								$import_debug_info['differences'][] = __('New Graph Template: %s', $dname);
+								$import_debug_info['differences'][] = __('New Graph Template: %s', html_escape($dname));
 								$status++;
 							}
 						}
@@ -2116,7 +2116,7 @@ function xml_to_host_template($hash, &$xml_array, &$hash_cache, &$host_template_
 						array($dhash));
 
 					if (!$exists) {
-						$import_debug_info['differences'][] = __('New Data Query: %s', $dname);
+						$import_debug_info['differences'][] = __('New Data Query: %s', html_escape($dname));
 						$status++;
 					} elseif ($save['id']) {
 						$exists = db_fetch_cell_prepared('SELECT COUNT(*)
@@ -2126,7 +2126,7 @@ function xml_to_host_template($hash, &$xml_array, &$hash_cache, &$host_template_
 							array($save['id'], $exists));
 
 						if (!$exists) {
-							$import_debug_info['differences'][] = __('New Data Query: %s', $dname);
+							$import_debug_info['differences'][] = __('New Data Query: %s', html_escape($dname));
 							$status++;
 						}
 					}
