@@ -144,7 +144,7 @@ test('a missing data source leaves that item unwired, same as before', function 
 });
 
 test('create path calls the bulk connect helper and uses a bulk rrd fetch', function () use ($src) {
-	expect($src)->toContain('graph_template_connect_task_items($graph_template_id, $cache_array);');
+	expect($src)->toContain('if (!graph_template_connect_task_items($graph_template_id, $cache_array)) {');
 
 	$fn = strstr($src, 'function graph_template_connect_task_items');
 	$fn = substr($fn, 0, strpos($fn, "\nfunction ", 1));

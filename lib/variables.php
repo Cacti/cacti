@@ -108,11 +108,13 @@ function update_data_source_title_cache_from_host(int $host_id, int $query_id = 
 /**
  * update_data_source_title_cache - updates the title cache for a single data source
  *
- * @param int $local_data_id The ID of the data source to update the title cache for
+ * @param int  $local_data_id The ID of the data source to update the title cache for
+ * @param bool $notify        Whether to notify plugins after updating the title. Graph
+ *                            creation defers the notification until its transaction commits.
  *
  * @return void
  */
-function update_data_source_title_cache(int $local_data_id) : void {
+function update_data_source_title_cache(int $local_data_id, bool $notify = true) : void {
 	$old_title = db_fetch_cell_prepared('SELECT name_cache
 		FROM data_template_data
 		WHERE local_data_id = ?',
@@ -127,7 +129,9 @@ function update_data_source_title_cache(int $local_data_id) : void {
 				WHERE local_data_id = ?',
 				[$data_source, $local_data_id]);
 
-			api_plugin_hook_function('update_data_source_title_cache', $local_data_id);
+			if ($notify) {
+				api_plugin_hook_function('update_data_source_title_cache', $local_data_id);
+			}
 		}
 	} else {
 		db_execute_prepared('UPDATE data_template_data
@@ -135,7 +139,9 @@ function update_data_source_title_cache(int $local_data_id) : void {
 			WHERE local_data_id = ?',
 			[$data_source, $local_data_id]);
 
-		api_plugin_hook_function('update_data_source_title_cache', $local_data_id);
+		if ($notify) {
+			api_plugin_hook_function('update_data_source_title_cache', $local_data_id);
+		}
 	}
 }
 

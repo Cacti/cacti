@@ -116,8 +116,12 @@ test('api_data_source_duplicate INSERT column count matches placeholder count', 
 	$body = _extract_function_body($apiDataSourceSource, 'api_data_source_duplicate');
 	expect($body)->not->toBe('');
 
-	$insertPos = strpos($body, 'INSERT IGNORE INTO data_input_data');
-	expect($insertPos)->not->toBeFalse('INSERT IGNORE INTO data_input_data must remain present');
+	/* The copy is new, so a conflicting row must fail the copy rather than
+	 * be skipped by INSERT IGNORE. */
+	expect($body)->not->toContain('INSERT IGNORE INTO data_input_data');
+
+	$insertPos = strpos($body, 'INSERT INTO data_input_data');
+	expect($insertPos)->not->toBeFalse('INSERT INTO data_input_data must remain present');
 
 	$insertSlice = substr($body, $insertPos, 800);
 

@@ -38,7 +38,7 @@ test('change_data_template REPLACE keeps seven placeholders (Mutation Protection
 
 test('api_data_source_duplicate INSERT keeps seven placeholders (Mutation Protection)', function () use ($apiDataSourceSource) {
 	$body  = _mut_extract_function($apiDataSourceSource, 'api_data_source_duplicate');
-	$slice = substr($body, strpos($body, 'INSERT IGNORE INTO data_input_data'), 800);
+	$slice = substr($body, strpos($body, 'INSERT INTO data_input_data'), 800);
 	expect(substr_count($slice, '?'))->toBe(7);
 });
 
@@ -77,7 +77,7 @@ test('api_data_source_duplicate stamps the duplicated identity, not the source (
 	 * $bound_data_template_id / $bound_local_data_id / $bound_host_id
 	 * for the bind list. */
 	$body  = _mut_extract_function($apiDataSourceSource, 'api_data_source_duplicate');
-	$slice = substr($body, strpos($body, 'INSERT IGNORE INTO data_input_data'), 1500);
+	$slice = substr($body, strpos($body, 'INSERT INTO data_input_data'), 1500);
 
 	expect($slice)->toContain('$bound_data_template_id');
 	expect($slice)->toContain('$bound_local_data_id');
@@ -97,7 +97,7 @@ test('api_data_source_duplicate template-dup branch zeroes local_data_id and hos
 	 * the template-dup branch, child rows go out tagged with whatever
 	 * the source happened to carry. */
 	$body  = _mut_extract_function($apiDataSourceSource, 'api_data_source_duplicate');
-	$slice = substr($body, strpos($body, 'INSERT IGNORE INTO data_input_data') - 1500, 1500);
+	$slice = substr($body, strpos($body, 'INSERT INTO data_input_data') - 1500, 1500);
 
 	expect($slice)->toContain('$bound_local_data_id    = 0;');
 	expect($slice)->toContain('$bound_host_id          = 0;');
