@@ -17,6 +17,12 @@ if ($requestCoverageDirectory !== false && $requestCoverageDirectory !== '') {
 		}
 		$data = xdebug_get_code_coverage();
 
+		foreach ($GLOBALS['cacti_fixture_request_coverage'] ?? [] as $file => $lines) {
+			foreach ($lines as $line => $hits) {
+				$data[$file][$line] = max($hits, $data[$file][$line] ?? -2);
+			}
+		}
+
 		foreach ($GLOBALS['cacti_fixture_source_map'] ?? [] as $temporary => $original) {
 			foreach ($data[$temporary] ?? [] as $line => $hits) {
 				$data[$original][$line] = max($hits, $data[$original][$line] ?? -2);

@@ -41,7 +41,11 @@ function remote_agent_http_status(array $headers) : ?int {
  *
  * @return array<string, array<string, mixed>> Stream context options
  */
-function remote_agent_context_options(string $protocol, int $timeout, bool $verify_peer, string $ca_file = '', string $peer_name = '') : array {
+function remote_agent_context_options(string $protocol,
+	int $timeout,
+	bool $verify_peer,
+	string $ca_file = '',
+	string $peer_name = '') : array {
 	$options = [];
 
 	if (in_array($protocol, ['ssl', 'https', 'ftps'], true)) {

@@ -86,7 +86,8 @@ function snmpagent_global_settings_update() : void {
 	$mc->object('boostApplRrdUpdateEnabled')->set((read_config_option('boost_rrd_update_enable', true) == 'on') ? 1 : 2);
 	$mc->object('boostApplRrdUpdateInterval')->set(read_config_option('boost_rrd_update_interval', true));
 	$mc->object('boostApplRrdUpdateMaxRecords')->set(read_config_option('boost_rrd_update_max_records', true));
-	$mc->object('boostApplRrdUpdateMaxRecordsPerSelect')->set(read_config_option('boost_rrd_update_max_records_per_select', true));
+	$mc->object('boostApplRrdUpdateMaxRecordsPerSelect')->set(read_config_option('boost_rrd_update_max_records_per_select',
+		true));
 	$mc->object('boostApplRrdUpdateMaxStringLength')->set(read_config_option('boost_rrd_update_string_length', true));
 	$mc->object('boostApplRrdUpdatePollerMemLimit')->set(read_config_option('boost_poller_mem_limit', true));
 	$mc->object('boostApplRrdUpdateMaxRunTime')->set(read_config_option('boost_rrd_update_max_runtime', true));
@@ -393,7 +394,8 @@ function snmpagent_poller_bottom() : bool {
 	$mc_dfailed      = [];
 
 	try {
-		$mc_device_stats = $mc->table('cactiStatsDeviceTable')->select(['cactiStatsDeviceIndex', 'cactiStatsDeviceFailedPolls']);
+		$mc_device_stats = $mc->table('cactiStatsDeviceTable')->select(['cactiStatsDeviceIndex',
+			'cactiStatsDeviceFailedPolls']);
 
 		if ($mc_device_stats && cacti_sizeof($mc_device_stats) > 0) {
 			foreach ($mc_device_stats as $mc_device_stat) {
@@ -428,13 +430,23 @@ function snmpagent_poller_bottom() : bool {
 				$overwrite['snmp_engine_id'] = $device['snmp_engine_id'];
 
 				if (isset($mc_dfailed[$device['id']]) && $device['failed_polls'] > $mc_dfailed[$device['id']]) {
-					snmpagent_notification('cactiNotifyDeviceFailedPoll', 'CACTI-MIB', $varbinds, SNMPAGENT_EVENT_SEVERITY_MEDIUM, $overwrite);
+					snmpagent_notification('cactiNotifyDeviceFailedPoll',
+						'CACTI-MIB',
+						$varbinds,
+						SNMPAGENT_EVENT_SEVERITY_MEDIUM,
+						$overwrite);
 				}
 
 				if (isset($mc_dstatus[$device['id']]) && $mc_dstatus[$device['id']] == HOST_UP && $device['status'] == HOST_DOWN) {
 					snmpagent_notification('cactiNotifyDeviceDown', 'CACTI-MIB', $varbinds, SNMPAGENT_EVENT_SEVERITY_HIGH, $overwrite);
-				} elseif (isset($mc_dstatus[$device['id']]) && $mc_dstatus[$device['id']] == HOST_DOWN && $device['status'] == HOST_RECOVERING) {
-					snmpagent_notification('cactiNotifyDeviceRecovering', 'CACTI-MIB', $varbinds, SNMPAGENT_EVENT_SEVERITY_MEDIUM, $overwrite);
+				} elseif (isset($mc_dstatus[$device['id']]) &&
+					$mc_dstatus[$device['id']] == HOST_DOWN &&
+					$device['status'] == HOST_RECOVERING) {
+					snmpagent_notification('cactiNotifyDeviceRecovering',
+						'CACTI-MIB',
+						$varbinds,
+						SNMPAGENT_EVENT_SEVERITY_MEDIUM,
+						$overwrite);
 				}
 			}
 
@@ -773,7 +785,11 @@ function snmpagent_read(string $object) : mixed {
 	return $value;
 }
 
-function snmpagent_notification(string $notification, string $mib, array $varbinds, int $severity = SNMPAGENT_EVENT_SEVERITY_MEDIUM, mixed $overwrite = false) : bool {
+function snmpagent_notification(string $notification,
+	string $mib,
+	array $varbinds,
+	int $severity = SNMPAGENT_EVENT_SEVERITY_MEDIUM,
+	mixed $overwrite = false) : bool {
 	global $config, $snmpagent_event_severity;
 
 	if (isset($config['snmpagent']['notifications']['ignore'][$notification])) {
@@ -782,8 +798,16 @@ function snmpagent_notification(string $notification, string $mib, array $varbin
 
 	$path_snmptrap = read_config_option('path_snmptrap');
 
-	if (!in_array($severity, [SNMPAGENT_EVENT_SEVERITY_LOW, SNMPAGENT_EVENT_SEVERITY_MEDIUM, SNMPAGENT_EVENT_SEVERITY_HIGH, SNMPAGENT_EVENT_SEVERITY_CRITICAL], true)) {
-		cacti_log('ERROR: Unknown event severity: "' . $severity . '" for ' . $notification . ' (' . $mib . ')', false, 'SNMPAGENT', POLLER_VERBOSITY_NONE);
+	if (!in_array($severity,
+		[SNMPAGENT_EVENT_SEVERITY_LOW,
+		SNMPAGENT_EVENT_SEVERITY_MEDIUM,
+		SNMPAGENT_EVENT_SEVERITY_HIGH,
+		SNMPAGENT_EVENT_SEVERITY_CRITICAL],
+		true)) {
+		cacti_log('ERROR: Unknown event severity: "' . $severity . '" for ' . $notification . ' (' . $mib . ')',
+			false,
+			'SNMPAGENT',
+			POLLER_VERBOSITY_NONE);
 
 		return false;
 	}
@@ -816,7 +840,19 @@ function snmpagent_notification(string $notification, string $mib, array $varbin
 
 	if (cacti_sizeof($notification_managers) == 0) {
 		// No receivers found for the message, record it to the cacti.log
-		cacti_log('NOTICE: No enabled SNMP notification receivers are configured for event: ' . $notification . ' (' . $mib . '), severity: ' . $snmpagent_event_severity[$severity] . '. Configure or enable receivers under Console > Utilities > SNMP Managers, or ignore this notice when SNMP traps are intentionally disabled.', false, 'SNMPAGENT', POLLER_VERBOSITY_NONE);
+		cacti_log(('NOTICE: No enabled SNMP notification receivers are configured for ' .
+			'event: ') .
+				$notification .
+				' (' .
+				$mib .
+				'), severity: ' .
+				$snmpagent_event_severity[$severity] .
+				('. Configure or enable receivers under Console > Utilities > SNMP ' .
+			'Managers, or ignore this notice when SNMP traps are intentionally ' .
+			'disabled.'),
+			false,
+			'SNMPAGENT',
+			POLLER_VERBOSITY_NONE);
 
 		if (!in_array($severity, [SNMPAGENT_EVENT_SEVERITY_HIGH, SNMPAGENT_EVENT_SEVERITY_CRITICAL], true)) {
 			// Prevent log spam of messages lower than a high severity
@@ -918,7 +954,9 @@ function snmpagent_notification(string $notification, string $mib, array $varbin
 			foreach ($notification_managers as $notification_manager) {
 				// the receiver hostname is attacker-controlled device data; strip '%'
 				// here so cmd.exe cannot expand an environment variable from it.
-				$snmp_trap_receiver = (CACTI_SERVER_OS == 'win32' ? str_replace('%', '', $notification_manager['hostname']) : $notification_manager['hostname']) . ':' . $notification_manager['snmp_port'];
+				$snmp_trap_receiver = (CACTI_SERVER_OS == 'win32' ? str_replace('%',
+					'',
+					$notification_manager['hostname']) : $notification_manager['hostname']) . ':' . $notification_manager['snmp_port'];
 
 				if (!cacti_sizeof($snmp_notification_varbinds)) {
 					foreach ($registered_var_binds as $name => $attributes) {
@@ -1017,14 +1055,24 @@ function snmpagent_notification(string $notification, string $mib, array $varbin
 				sql_save($save, 'snmpagent_notifications_log');
 
 				// log the net-snmp command for Cacti admins if they wish for
-				cacti_log("NOTE: $path_snmptrap " . str_replace([$notification_manager['snmp_password'], $notification_manager['snmp_priv_passphrase']], '********', implode(' ', $args)), false, 'SNMPAGENT', POLLER_VERBOSITY_MEDIUM);
+				cacti_log("NOTE: $path_snmptrap " . str_replace([$notification_manager['snmp_password'],
+					$notification_manager['snmp_priv_passphrase']],
+					'********',
+					implode(' ',
+						$args)),
+					false,
+					'SNMPAGENT',
+					POLLER_VERBOSITY_MEDIUM);
 			}
 		}
 
 		return true;
 	} else {
 		// mismatching number of var binds
-		cacti_log('ERROR: Incomplete number of varbinds given for event: ' . $notification . ' (' . $mib . ')', false, 'SNMPAGENT', POLLER_VERBOSITY_NONE);
+		cacti_log('ERROR: Incomplete number of varbinds given for event: ' . $notification . ' (' . $mib . ')',
+			false,
+			'SNMPAGENT',
+			POLLER_VERBOSITY_NONE);
 
 		return false;
 	}

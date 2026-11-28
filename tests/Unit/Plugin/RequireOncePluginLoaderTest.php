@@ -18,6 +18,8 @@
  * fatal errors rather than silent undefined-function failures downstream.
  */
 
+require_once dirname(__DIR__, 2) . '/Helpers/PhpSource.php';
+
 test('include/global.php uses require_once for all core library includes', function () {
 	$source = file_get_contents(__DIR__ . '/../../../include/global.php');
 
@@ -37,14 +39,14 @@ test('lib/plugins.php uses require_once for plugin setup.php in install path', f
 test('lib/plugins.php install path hard-fails with sanitized log when setup.php missing', function () {
 	$source = file_get_contents(__DIR__ . '/../../../lib/plugins.php');
 
-	/* Verify the file_exists guard exists before require_once in the install path. */
-	expect($source)->toContain("file_exists(CACTI_PATH_PLUGINS . \"/\$plugin/setup.php\")");
+	// Verify the file_exists guard exists before require_once in the install path.
+	expect($source)->toContain('file_exists(CACTI_PATH_PLUGINS . "/$plugin/setup.php")');
 
 	/* The log message must use preg_replace to strip non-safe chars from $plugin
 	 * before interpolation, preventing pipe/newline injection into structured logs. */
-	expect($source)->toContain("preg_replace('/[^a-zA-Z0-9_\\-]/', '', \$plugin)");
+	expect($source)->toContainPhp("preg_replace('/[^a-zA-Z0-9_\\-]/', '', \$plugin)");
 
-	/* raise_message must accompany the log call so the UI reflects the failure. */
+	// raise_message must accompany the log call so the UI reflects the failure.
 	expect($source)->toContain("raise_message('plugin_missing'");
 });
 
@@ -68,7 +70,7 @@ test('cli/audit_database.php uses require_once inside file_exists guard', functi
 test('cli/audit_database.php inner includes/database.php load is guarded by file_exists', function () {
 	$source = file_get_contents(__DIR__ . '/../../../cli/audit_database.php');
 
-	/* Confirm includes/database.php is loaded with require_once and only when present. */
+	// Confirm includes/database.php is loaded with require_once and only when present.
 	expect($source)->toContain("require_once(\$plugin . '/includes/database.php')");
 	expect($source)->toContain("file_exists(\$plugin . '/includes/database.php')");
 });

@@ -204,7 +204,11 @@ function draw_nontemplated_fields_graph_item(int $graph_template_id, int $local_
 
 			if (cacti_sizeof($current_def_value)) {
 				$struct_graph_item[$item['column_name']]['id'] = $current_def_value[$item['column_name']];
-				$struct_graph_item['task_item_id']['action']   = 'ajax_graph_items' . (isset($host_id) ? '&host_id=' . $host_id : '') . '&rrd_id=' . $current_def_value[$item['column_name']];
+				$struct_graph_item['task_item_id']['action']   = 'ajax_graph_items' .
+					(isset($host_id) ? '&host_id=' .
+					$host_id : '') .
+					'&rrd_id=' .
+					$current_def_value[$item['column_name']];
 			}
 
 			$form_array += [$form_field_name => $struct_graph_item[$item['column_name']]];
@@ -633,7 +637,10 @@ function draw_nontemplated_fields_custom_data(int $data_template_data_id, string
  *
  * @return void
  */
-function draw_custom_data_row(string $field_name, int $data_input_field_id, int $data_template_data_id, mixed $current_value) : void {
+function draw_custom_data_row(string $field_name,
+	int $data_input_field_id,
+	int $data_template_data_id,
+	mixed $current_value) : void {
 	$field = db_fetch_row_prepared('SELECT data_name, type_code
 		FROM data_input_fields
 		WHERE id = ?',
@@ -654,7 +661,8 @@ function draw_custom_data_row(string $field_name, int $data_input_field_id, int 
 			[$local_data['host_id'], $local_data['snmp_query_id']]);
 
 		if (cacti_sizeof($index_type) == 0) {
-			print '<em>' . __('Data Query Data Sources must be created through %s', "<a href='graphs_new.php'>" . __('New Graphs') . '.</a>') . "</em>\n";
+			print '<em>' . __('Data Query Data Sources must be created through %s',
+				"<a href='graphs_new.php'>" . __('New Graphs') . '.</a>') . "</em>\n";
 		} else {
 			form_dropdown($field_name, $index_type, 'field_name', 'field_name', $current_value, '', '', '');
 		}
@@ -666,7 +674,8 @@ function draw_custom_data_row(string $field_name, int $data_input_field_id, int 
 			[$local_data['snmp_query_id']]);
 
 		if (cacti_sizeof($output_type) == 0) {
-			print '<em>' . __('Data Query Data Sources must be created through %s', "<a href='graphs_new.php'>" . __('New Graphs') . '.</a>') . "</em>\n";
+			print '<em>' . __('Data Query Data Sources must be created through %s',
+				"<a href='graphs_new.php'>" . __('New Graphs') . '.</a>') . "</em>\n";
 		} else {
 			form_dropdown($field_name, $output_type, 'name', 'id', $current_value, '', '', '');
 		}
