@@ -2272,7 +2272,8 @@ function replicate_out(int $remote_poller_id = 1, string $class = 'all') : bool 
 			FROM poller_item AS pi
 			WHERE pi.poller_id = ?',
 			[$remote_poller_id]);
-		replicate_out_table($rcnn_id, $data, 'poller_item', $remote_poller_id, false, ['last_updated']);
+		// rrd_next_step is owned by the Remote Data Collector's poll schedule, never overwrite it
+		replicate_out_table($rcnn_id, $data, 'poller_item', $remote_poller_id, false, ['last_updated', 'rrd_next_step']);
 
 		// Remove anything not updated recently
 		$time = db_fetch_cell('SELECT MAX(UNIX_TIMESTAMP(last_updated)) FROM poller_item', '', false, $rcnn_id);
@@ -2683,6 +2684,7 @@ function replicate_table_to_poller(mixed $db_conn, array &$data, string $table, 
 		$suffix    = ' ON DUPLICATE KEY UPDATE ';
 		$sql       = '';
 		$colcnt    = 0;
+		$updcnt    = 0;
 		$rows_done = 0;
 		$columns   = array_keys($data[0]);
 		$skipcols  = [];
@@ -2697,19 +2699,30 @@ function replicate_table_to_poller(mixed $db_conn, array &$data, string $table, 
 			$exclude = false;
 		}
 
-		// Find columns to skip from updates
+		/**
+		 * Columns missing on the remote are skipped entirely.  Excluded columns
+		 * are still inserted for new rows, but are left out of the update list
+		 * so the remote's value is kept, matching replicate_out_table().
+		 */
 		foreach ($columns as $index => $c) {
 			if (!db_column_exists($table, $c, false, $db_conn)) {
 				$skipcols[$index] = $c;
-			} elseif ($exclude !== false && array_search($c, $exclude, true) !== false) {
-				$skipcols[$index] = $c;
 			} else {
 				$prefix .= ($colcnt > 0 ? ', ' : '') . $c;
-				$suffix .= ($colcnt > 0 ? ', ' : '') . "$c=VALUES($c)";
 				$colcnt++;
+
+				if ($exclude === false || array_search($c, $exclude, true) === false) {
+					$suffix .= ($updcnt > 0 ? ', ' : '') . "$c=VALUES($c)";
+					$updcnt++;
+				}
 			}
 		}
 		$prefix .= ') VALUES ';
+
+		if ($updcnt == 0) {
+			$prefix = 'INSERT IGNORE' . substr($prefix, 6);
+			$suffix = '';
+		}
 
 		$rowcnt = 0;
 		$ohead  = strlen($prefix) + strlen($suffix);
@@ -2797,16 +2810,12 @@ function poller_push_data_to_main() : void {
 
 		poller_push_table($remote_db_cnn_id, $host_records, 'host', true, $updates);
 
-		$poller_item_records = db_fetch_assoc_prepared('SELECT local_data_id, host_id, rrd_name, rrd_step, rrd_next_step
-			FROM poller_item
-			WHERE poller_id = ?',
-			[POLLER_ID]);
-
-		$updates = [
-			'rrd_next_step'
-		];
-
-		poller_push_table($remote_db_cnn_id, $poller_item_records, 'poller_item', true, $updates);
+		/**
+		 * poller_item.rrd_next_step is deliberately not pushed.  The Remote Data
+		 * Collector owns its own poll schedule, and the replication paths no
+		 * longer overwrite it, so pushing every poller_item row each polling
+		 * cycle only generated traffic and load on the main database.
+		 */
 
 		$host_errors = db_fetch_assoc_prepared('SELECT *
 			FROM host_errors
