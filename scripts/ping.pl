@@ -55,7 +55,7 @@ if (($ping =~ 'unknown host') || ($ping =~ 'Unknown host') || ($ping =~ 'not sup
 
 $ping =~ m/(.*time=)(.*) (ms|usec)/;
 
-if ($2 == '') {
+if ($2 eq '') {
 	print 'U'; 		# avoid cacti errors, but do not fake rrdtool stats
 }elsif ($3 eq 'usec') {
 	print $2/1000;	# re-calculate in units of 'ms'
