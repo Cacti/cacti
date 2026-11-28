@@ -22,46 +22,89 @@
  +-------------------------------------------------------------------------+
 */
 
+/* get_vdef_item_value - formats an already-fetched VDEF item row into its text-based representation
+   @param $vdef_item - associative array with 'type' and 'value' keys
+   @returns - a text-based representation of the vdef item */
+function get_vdef_item_value(mixed $vdef_item) : string {
+	global $vdef_functions;
+
+	if (!cacti_sizeof($vdef_item) || !isset($vdef_item['type']) || !array_key_exists('value', $vdef_item)) {
+		return '';
+	}
+
+	$value = $vdef_item['value'];
+
+	return match ((int) $vdef_item['type']) {
+		1       => (string) ($vdef_functions[$value] ?? ''),
+		4, 6    => (string) ($value ?? ''),
+		default => '',
+	};
+}
+
 /* get_vdef_item_name - resolves a single VDEF item into its text-based representation
    @param $vdef_item_id - the id of the individual vdef item
    @returns - a text-based representation of the vdef item */
-function get_vdef_item_name($vdef_item_id) 	{
-	global $vdef_functions, $vdef_item_types;
+function get_vdef_item_name($vdef_item_id) {
+	$vdef_item = db_fetch_row_prepared('SELECT type, value FROM vdef_items WHERE id = ?', [$vdef_item_id]);
 
-	$vdef_item = db_fetch_row_prepared('SELECT type, value FROM vdef_items WHERE id = ?', array($vdef_item_id));
-	$current_vdef_value = $vdef_item['value'];
-
-	switch ($vdef_item['type']) {
-		case '1': return $vdef_functions[$current_vdef_value];
-		case '4': return $current_vdef_value;
-		case '6': return $current_vdef_value;
-	}
+	return get_vdef_item_value($vdef_item);
 }
 
 /* get_vdef - resolves an entire VDEF into its text-based representation for use in the RRDtool 'graph'
      string. this name will be resolved recursively if necessary
    @param $vdef_id - the id of the vdef to resolve
+   @param $display - whether to include spaces after commas for display
+   @param $visited - internal map of VDEF IDs active in the current recursion stack
+   @param $cache - internal per-call cache of resolved VDEF strings
    @returns - a text-based representation of the vdef */
-function get_vdef($vdef_id, $display = false) {
-	$vdef_items = db_fetch_assoc_prepared('SELECT * FROM vdef_items WHERE vdef_id = ? ORDER BY sequence', array($vdef_id));
+function get_vdef($vdef_id, $display = false, array $visited = [], array &$cache = []) {
+	$vdef_key = (int) $vdef_id;
 
-	$i = 0; $vdef_string = '';
+	if (isset($visited[$vdef_key])) {
+		cacti_log(sprintf('ERROR: VDEF %d contains a recursive cycle.', $vdef_key), false, 'VDEF');
+
+		return '';
+	}
+
+	if (array_key_exists($vdef_key, $cache)) {
+		return $cache[$vdef_key];
+	}
+
+	if (count($visited) >= 64) {
+		cacti_log(sprintf('ERROR: VDEF %d exceeds maximum nesting depth.', $vdef_key), false, 'VDEF');
+
+		return '';
+	}
+
+	$visited[$vdef_key] = true;
+
+	$vdef_items = db_fetch_assoc_prepared('SELECT * FROM vdef_items WHERE vdef_id = ? ORDER BY sequence', [$vdef_id]);
+
+	$parts     = [];
+	$cacheable = true;
 
 	if (cacti_sizeof($vdef_items)) {
 		foreach ($vdef_items as $vdef_item) {
-			if ($i > 0) {
-				$vdef_string .= ($display ? ', ':',');
-			}
-
 			if ($vdef_item['type'] == 5) {
-				$current_vdef_id = $vdef_item['value'];
-				$vdef_string .= get_vdef($current_vdef_id, $display);
+				$item_value = get_vdef($vdef_item['value'], $display, $visited, $cache);
+
+				if ($item_value === '') {
+					$cacheable = false;
+				}
 			} else {
-				$vdef_string .= get_vdef_item_name($vdef_item['id']);
+				$item_value = get_vdef_item_value($vdef_item);
 			}
 
-			$i++;
+			if ($item_value !== '') {
+				$parts[] = $item_value;
+			}
 		}
+	}
+
+	$vdef_string = implode($display ? ', ' : ',', $parts);
+
+	if ($cacheable) {
+		$cache[$vdef_key] = $vdef_string;
 	}
 
 	return $vdef_string;

@@ -285,12 +285,12 @@ class spikekill {
 				break;
 		}
 
-		if ($this->method == 'float' || $this->method == 'fill') {
-			if (!is_numeric($this->out_start)) {
+		if ($this->method == SPIKE_METHOD_FLOAT || $this->method == SPIKE_METHOD_FILL) {
+			if ($this->out_start !== false && !is_numeric($this->out_start)) {
 				$this->out_start = strtotime($this->out_start);
 			}
 
-			if (!is_numeric($this->out_end)) {
+			if ($this->out_end !== false && !is_numeric($this->out_end)) {
 				$this->out_end = strtotime($this->out_end);
 			}
 
@@ -311,7 +311,7 @@ class spikekill {
 			}
 		}
 
-		if (!$this->numspike != '') {
+		if ($this->numspike !== '') {
 			if (!is_numeric($this->numspike) || ($this->numspike < 1)) {
 				$this->set_error(__("FATAL: Number of spikes to remove must be a positive integer"));
 			}
@@ -572,7 +572,7 @@ class spikekill {
 										if (!is_numeric($dsvalue)) {
 											$this->debug(sprintf('Fill Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%s', $rra_num, $ds_num, date('Y-m-d H:i:s', $timestamp), $dsvalue));
 										}
-									} else {
+									} elseif ($this->debug) {
 										$this->debug(sprintf('Float Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%s', $rra_num, $ds_num, date('Y-m-d H:i:s', $timestamp), $dsvalue));
 									}
 
@@ -705,8 +705,8 @@ class spikekill {
 
 			if (!$this->dryrun) {
 				$new_output = $this->updateXML($output, $rra);
-				$output   = true;
-				$continue = true;
+				$output     = true;
+				$continue   = $this->total_kills > 0;
 			} else {
 				$new_output = $this->updateXML($output, $rra);
 				$output     = false;
@@ -730,12 +730,10 @@ class spikekill {
 							$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
 								__('NOTE: Spikes Found and Remediated.  Total Spikes %s', $this->total_kills) . ($this->html ? "</p>\n":"\n");
 						} else {
-							$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-								__esc("FATAL: Unable to backup '%s'", $this->rrdfile) . ($this->html ? "</p>\n":"\n");
+							$this->set_error(__esc("FATAL: Unable to backup '%s'", $this->rrdfile));
 						}
 					} else {
-						$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-							__esc("FATAL: Unable to write XML file '%s'", $xmlfile) . ($this->html ? "</p>\n":"\n");
+						$this->set_error(__esc("FATAL: Unable to write XML file '%s'", $xmlfile));
 					}
 				} else {
 					$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
@@ -746,7 +744,7 @@ class spikekill {
 
 		$this->strout .= ($this->html ? "</table>":'');
 
-		if ($this->total_kills > 0) {
+		if (!$this->dryrun && !$this->is_error_set() && $this->total_kills > 0) {
 			cacti_log("WARNING: Removed '$this->total_kills' Spikes from '$this->rrdfile', Method:'$this->method'", false, 'WEBUI');
 		} elseif($this->debug) {
 			cacti_log("NOTE: Removed '$this->total_kills' Spikes from '$this->rrdfile', Method:'$this->method'", false, 'WEBUI');
@@ -760,7 +758,7 @@ class spikekill {
 			unlink($bakfile);
 		}
 
-		return true;
+		return !$this->is_error_set();
 	}
 
 	/* All Functions */
@@ -777,7 +775,7 @@ class spikekill {
 	}
 
 	private function writeXMLFile($output, $xmlfile) {
-		return file_put_contents($xmlfile, $output);
+		return @file_put_contents($xmlfile, $output);
 	}
 
 	private function backupRRDFile($rrdfile) {
@@ -796,7 +794,7 @@ class spikekill {
 		$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
 			__esc("NOTE: Backing Up '%s' to '%s/%s'", $rrdfile, $backupdir, $newfile) . ($this->html ? "</p>\n":"\n");
 
-		return copy($rrdfile, $backupdir . "/" . $newfile);
+		return @copy($rrdfile, $backupdir . '/' . $newfile);
 	}
 
 	private function calculateVarianceAverages(&$rra, &$samples) {
@@ -863,13 +861,26 @@ class spikekill {
 								$rra[$rra_num][$ds_num]['average'] = 0;
 							}
 
+							/* Windowed deviation and its mean must use the same reference samples. */
+							if ($this->method == SPIKE_METHOD_STDDEV && $this->out_start > 0) {
+								$reference = [];
+								foreach ($samples[$rra_num][$ds_num] as $timestamp => $value) {
+									if (($timestamp < $this->out_start || $timestamp > $this->out_end) && is_numeric($value)) {
+										$reference[] = $value;
+									}
+								}
+								if (count($reference) > 0) {
+									$rra[$rra_num][$ds_num]['average'] = array_sum($reference) / count($reference);
+								}
+							}
+
 							$rra[$rra_num][$ds_num]['min_cutoff'] = $rra[$rra_num][$ds_num]['average'] - ($this->stddev * $rra[$rra_num][$ds_num]['stddev']);
-							if ($rra[$rra_num][$ds_num]['min_cutoff'] < $this->ds_min[$ds_num]) {
+							if (isset($this->ds_min[$ds_num]) && is_numeric($this->ds_min[$ds_num]) && $rra[$rra_num][$ds_num]['min_cutoff'] < $this->ds_min[$ds_num]) {
 								$rra[$rra_num][$ds_num]['min_cutoff'] = $this->ds_min[$ds_num];
 							}
 
 							$rra[$rra_num][$ds_num]['max_cutoff'] = $rra[$rra_num][$ds_num]['average'] + ($this->stddev * $rra[$rra_num][$ds_num]['stddev']);
-							if ($rra[$rra_num][$ds_num]['max_cutoff'] > $this->ds_max[$ds_num]) {
+							if (isset($this->ds_max[$ds_num]) && is_numeric($this->ds_max[$ds_num]) && $rra[$rra_num][$ds_num]['max_cutoff'] > $this->ds_max[$ds_num]) {
 								$rra[$rra_num][$ds_num]['max_cutoff'] = $this->ds_max[$ds_num];
 							}
 
@@ -891,7 +902,9 @@ class spikekill {
 											$rra[$rra_num][$ds_num]['outwind_samples']++;
 
 											if ($this->method == SPIKE_METHOD_FLOAT) {
-												$this->debug(sprintf("Window Float Found, Date:%s, Value:%s", date('Y-m-d H:i', $timestamp), $sample));
+												if ($this->debug) {
+													$this->debug(sprintf('Window Float Found, Date:%s, Value:%s', date('Y-m-d H:i', $timestamp), $sample));
+												}
 
 												$rra[$rra_num][$ds_num]['outwind_killed']++;
 
@@ -912,7 +925,7 @@ class spikekill {
 												$rra[$rra_num][$ds_num]['outwind_samples']++;
 											}
 
-											if (($sample > $rra[$rra_num][$ds_num]['max_cutoff']) || ($sample < $rra[$rra_num][$ds_num]['min_cutoff'])) {
+											if (is_numeric($sample) && (($sample > $rra[$rra_num][$ds_num]['max_cutoff']) || ($sample < $rra[$rra_num][$ds_num]['min_cutoff']))) {
 												$this->debug(sprintf("StdDev Found, Date:%s, Value:%.2e, StandardDev:%.2e, StdDevLimit:%.2e", date('Y-m-d H:i', $timestamp), $sample, $rra[$rra_num][$ds_num]['stddev'], ($rra[$rra_num][$ds_num]['max_cutoff'] * (1+$this->percent))));
 
 												$rra[$rra_num][$ds_num]['stddev_killed']++;
@@ -936,7 +949,7 @@ class spikekill {
 												$rra[$rra_num][$ds_num]['outwind_samples']++;
 											}
 
-											if ($sample > ($rra[$rra_num][$ds_num]['variance_avg'] * (1+$this->percent))) {
+											if (is_numeric($sample) && is_numeric($rra[$rra_num][$ds_num]['variance_avg']) && $sample > ($rra[$rra_num][$ds_num]['variance_avg'] * (1 + $this->percent))) {
 												$this->debug(sprintf("Variance Found, Date:%s, Value:%.2e, VarianceDev:%.2e, VarianceLimit:%.2e", date('Y-m-d H:i', $timestamp), $sample, $rra[$rra_num][$ds_num]['variance_avg'], ($rra[$rra_num][$ds_num]['variance_avg'] * (1 + $this->percent))));
 
 												$rra[$rra_num][$ds_num]['variance_killed']++;
@@ -1019,13 +1032,13 @@ class spikekill {
 								$this->rra_cf[$rra_key],
 								number_format_i18n($ds['totalsamples']),
 								(isset($ds['numsamples']) ? number_format_i18n($ds['numsamples']) : '0'),
-								($ds['average']         != 'N/A' ? round($ds['average'], 2)       : 'N/A'),
-								($ds['stddev']          != 'N/A' ? round($ds['stddev'], 2)        : 'N/A')
-								($ds['variance_avg']    != 'N/A' ? round($ds['variance_avg'], 2)  : 'N/A'),
-								($ds['max_value']       != 'N/A' ? round($ds['max_value'], 2)     : 'N/A'),
-								($ds['min_value']       != 'N/A' ? round($ds['min_value'], 2)     : 'N/A'),
-								($ds['max_cutoff']      != 'N/A' ? round($ds['max_cutoff'], 2)    : 'N/A'),
-								($ds['min_cutoff']      != 'N/A' ? round($ds['min_cutoff'], 2)    : 'N/A'),
+								(is_numeric($ds['average'])      ? round((float) $ds['average'], 2)      : 'N/A'),
+								(is_numeric($ds['stddev'])       ? round((float) $ds['stddev'], 2)       : 'N/A'),
+								(is_numeric($ds['variance_avg']) ? round((float) $ds['variance_avg'], 2) : 'N/A'),
+								(is_numeric($ds['max_value'])    ? round((float) $ds['max_value'], 2)    : 'N/A'),
+								(is_numeric($ds['min_value'])    ? round((float) $ds['min_value'], 2)    : 'N/A'),
+								(is_numeric($ds['max_cutoff'])   ? round((float) $ds['max_cutoff'], 2)   : 'N/A'),
+								(is_numeric($ds['min_cutoff'])   ? round((float) $ds['min_cutoff'], 2)   : 'N/A'),
 								($ds['stddev_killed']   != 'N/A' ? number_format_i18n($ds['stddev_killed'])   : 'N/A'),
 								($ds['variance_killed'] != 'N/A' ? number_format_i18n($ds['variance_killed']) : 'N/A'),
 								number_format_i18n($ds['outwind_samples']),
@@ -1066,13 +1079,13 @@ class spikekill {
 								$this->rra_cf[$rra_key],
 								($ds['totalsamples']    != 'N/A' ? number_format_i18n($ds['totalsamples']) : '0'),
 								($ds['numsamples']      != 'N/A' ? number_format_i18n($ds['numsamples'])   : '0'),
-								($ds['average']         != 'N/A' ? round($ds['average'], 2)       : __('N/A')),
-								($ds['stddev']          != 'N/A' ? round($ds['stddev'], 2)        : __('N/A')),
-								($ds['variance_avg']    != 'N/A' ? round($ds['variance_avg'], 2)  : __('N/A')),
-								($ds['max_value']       != 'N/A' ? round($ds['max_value'], 2)     : __('N/A')),
-								($ds['min_value']       != 'N/A' ? round($ds['min_value'], 2)     : __('N/A')),
-								($ds['max_cutoff']      != 'N/A' ? round($ds['max_cutoff'], 2)    : __('N/A')),
-								($ds['min_cutoff']      != 'N/A' ? round($ds['min_cutoff'], 2)    : __('N/A')),
+								(is_numeric($ds['average'])      ? round((float) $ds['average'], 2)      : __('N/A')),
+								(is_numeric($ds['stddev'])       ? round((float) $ds['stddev'], 2)       : __('N/A')),
+								(is_numeric($ds['variance_avg']) ? round((float) $ds['variance_avg'], 2) : __('N/A')),
+								(is_numeric($ds['max_value'])    ? round((float) $ds['max_value'], 2)    : __('N/A')),
+								(is_numeric($ds['min_value'])    ? round((float) $ds['min_value'], 2)    : __('N/A')),
+								(is_numeric($ds['max_cutoff'])   ? round((float) $ds['max_cutoff'], 2)   : __('N/A')),
+								(is_numeric($ds['min_cutoff'])   ? round((float) $ds['min_cutoff'], 2)   : __('N/A')),
 								($ds['stddev_killed']   != 'N/A' ? number_format_i18n($ds['stddev_killed'])   : __('N/A')),
 								($ds['variance_killed'] != 'N/A' ? number_format_i18n($ds['variance_killed']) : __('N/A')),
 								($ds['outwind_samples'] != 'N/A' ? number_format_i18n($ds['outwind_samples']) : __('N/A')),
@@ -1087,8 +1100,9 @@ class spikekill {
 	private function updateXML(&$output, &$rra) {
 		$rra_num   = 0;
 		$ds_num    = 0;
-		$last_num  = array();
-		$new_array = array();
+		$last_num  = [];
+		$new_array = [];
+		$kills     = 0;
 
 		if (cacti_sizeof($output)) {
 			foreach($output as $line) {
@@ -1109,9 +1123,8 @@ class spikekill {
 					array_shift($linearray);
 
 					/* initialize variables */
-					$ds_num         = 0;
-					$out_row        = '<row>';
-					$kills          = 0;
+					$ds_num  = 0;
+					$out_row = '<row>';
 
 					foreach($linearray as $dsvalue) {
 						/* peel off garbage */
@@ -1188,7 +1201,7 @@ class spikekill {
 								break;
 							case SPIKE_METHOD_VARIANCE:
 								if ($this->out_start == 0 || ($timestamp >= $this->out_start && $timestamp <= $this->out_end)) {
-									if ($dsvalue > (1 + $this->percent) * (float) $rra[$rra_num][$ds_num]['variance_avg']) {
+									if (is_numeric($dsvalue) && is_numeric($rra[$rra_num][$ds_num]['variance_avg']) && $dsvalue > (1 + $this->percent) * (float) $rra[$rra_num][$ds_num]['variance_avg']) {
 										if ($kills < $this->numspike) {
 											if ($this->avgnan == 'avg') {
 												if ($this->debug) {
@@ -1212,18 +1225,22 @@ class spikekill {
 												}
 
 												$dsvalue = 'NaN';
+												$this->total_kills++;
+												$kills++;
 											}
 										}
+									} elseif (is_numeric($dsvalue)) {
+										$last_num[$ds_num] = $dsvalue;
 									}
-								} elseif (is_numeric($dsvalue) && $dsvalue != 0) {
+								} elseif (is_numeric($dsvalue)) {
 									$last_num[$ds_num] = $dsvalue;
 								}
 
 								break;
 							case SPIKE_METHOD_STDDEV:
 								if ($this->out_start == 0 || ($timestamp >= $this->out_start && $timestamp <= $this->out_end)) {
-									if (($dsvalue > $rra[$rra_num][$ds_num]['max_cutoff']) ||
-										($dsvalue < $rra[$rra_num][$ds_num]['min_cutoff'])) {
+									if (is_numeric($dsvalue) && (($dsvalue > $rra[$rra_num][$ds_num]['max_cutoff']) ||
+										($dsvalue < $rra[$rra_num][$ds_num]['min_cutoff']))) {
 										if ($kills < $this->numspike) {
 											$rra[$rra_num][$ds_num]['outwind_killed']++;
 
@@ -1250,10 +1267,14 @@ class spikekill {
 												}
 
 												$dsvalue = 'NaN';
+												$this->total_kills++;
+												$kills++;
 											}
 										}
+									} elseif (is_numeric($dsvalue)) {
+										$last_num[$ds_num] = $dsvalue;
 									}
-								} elseif (is_numeric($dsvalue) && $dsvalue != 0) {
+								} elseif (is_numeric($dsvalue)) {
 									$last_num[$ds_num] = $dsvalue;
 								}
 
@@ -1305,19 +1326,22 @@ class spikekill {
 					if ($comment_start === false) {
 						/* do nothing no line */
 					} else {
-						$comment_end = strpos($line, '-->');
-						if ($comment_start == 0) {
-							$line = trim(substr($line, $comment_end+3));
-						} else {
-							$line = trim(substr($line,0,$comment_start-1) . substr($line,$comment_end+3));
-						}
+						$comment_end = strpos($line, '-->', $comment_start + 4);
 
-						if (strpos($line, '<row>') !== false) {
-							/* capture the timestamp */
-							$stamp     = trim(substr($oline, $comment_start+4, $comment_end-4));
-							$stamp     = explode('/', $stamp);
-							$timestamp = trim($stamp[1]);
-							$line = str_replace('<row><v>', "<row><timestamp> $timestamp </timestamp><v>", $line);
+						if ($comment_end !== false) {
+							$line = $comment_start === 0
+								? trim(substr($line, $comment_end + 3))
+								: trim(substr($line, 0, $comment_start) . substr($line, $comment_end + 3));
+
+							if (str_contains($line, '<row>')) {
+								/* capture the timestamp */
+								$stamp = explode('/', trim(substr($oline, $comment_start + 4, $comment_end - $comment_start - 4)));
+
+								if (isset($stamp[1])) {
+									$timestamp = trim($stamp[1]);
+									$line      = str_replace('<row><v>', "<row><timestamp> $timestamp </timestamp><v>", $line);
+								}
+							}
 						}
 					}
 
