@@ -133,10 +133,23 @@ function automation_tree_rules_form_save() {
 		$save['operator']  = form_input_validate((isset_request_var('operator') ? get_nfilter_request_var('operator') : ''), 'operator', '^[0-9]+$', true, 3);
 		$save['pattern']   = form_input_validate((isset_request_var('pattern') ? get_nfilter_request_var('pattern') : ''), 'pattern', '', true, 3);
 
-		/* Test for SQL injections */
+		/* Test for SQL injections and sensitive credential columns */
+		$sensitive_host_columns = array(
+			'snmp_community',
+			'snmp_username',
+			'snmp_password',
+			'snmp_auth_protocol',
+			'snmp_priv_passphrase',
+			'snmp_priv_protocol',
+			'snmp_context',
+			'snmp_engine_id'
+		);
+
 		$field_name = str_replace(array('ht.', 'h.', 'gt.'), '', $save['field']);
 
-		if (!db_column_exists('host', $field_name) && !db_column_exists('host_template', $field_name) && !db_column_exists('graph_templates', $field_name)) {
+		if (!preg_match('/^(?:(?:ht|h|gt)\.)?[a-zA-Z0-9_]+$/', $save['field']) ||
+			in_array(strtolower($field_name), $sensitive_host_columns, true) ||
+			(!db_column_exists('host', $field_name) && !db_column_exists('host_template', $field_name) && !db_column_exists('graph_templates', $field_name))) {
 			raise_message('sql_injection', __('An attempt was made to perform a SQL injection in Tree automation'), MESSAGE_LEVEL_ERROR);
 
 			cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Tree automation from client address \'%s\'', get_client_addr()), false, 'SECURITY');
@@ -179,13 +192,26 @@ function automation_tree_rules_form_save() {
 		$save['replace_pattern']   = isset_request_var('replace_pattern') ? form_input_validate(get_nfilter_request_var('replace_pattern'), 'replace_pattern', '', true, 3) : '';
 
 		if ($save['field'] != AUTOMATION_TREE_ITEM_TYPE_STRING && $save['field'] != '') {
+			$sensitive_host_columns = array(
+				'snmp_community',
+				'snmp_username',
+				'snmp_password',
+				'snmp_auth_protocol',
+				'snmp_priv_passphrase',
+				'snmp_priv_protocol',
+				'snmp_context',
+				'snmp_engine_id'
+			);
+
 			$field_name = str_replace(array('ht.', 'h.', 'gt.', 'gl.', 'gtg.'), '', $save['field']);
-			$field_name = preg_replace('/[^a-zA-Z0-9_]/', '', $field_name);
-			if (!db_column_exists('host', $field_name) &&
+
+			if (!preg_match('/^(?:(?:ht|h|gt|gl|gtg)\.)?[a-zA-Z0-9_]+$/', $save['field']) ||
+				in_array(strtolower($field_name), $sensitive_host_columns, true) ||
+				(!db_column_exists('host', $field_name) &&
 				!db_column_exists('host_template', $field_name) &&
 				!db_column_exists('graph_templates', $field_name) &&
 				!db_column_exists('graph_local', $field_name) &&
-				!db_column_exists('graph_templates_graph', $field_name)) {
+				!db_column_exists('graph_templates_graph', $field_name))) {
 				raise_message('field_invalid', __('Invalid Field Name specified for Tree Rule Item.'), MESSAGE_LEVEL_ERROR);
 				header('Location: automation_tree_rules.php?header=false&action=item_edit&id=' . get_request_var('id') . '&item_id=' . get_request_var('item_id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_ACTION);
 				exit;

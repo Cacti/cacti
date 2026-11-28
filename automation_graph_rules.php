@@ -127,8 +127,31 @@ function save() {
 		$save['operator']  = form_input_validate((isset_request_var('operator') ? get_nfilter_request_var('operator') : ''), 'operator', '^[0-9]+$', true, 3);
 		$save['pattern']   = form_input_validate((isset_request_var('pattern') ? get_nfilter_request_var('pattern') : ''), 'pattern', '', true, 3);
 
-		/* Test for SQL injections */
-		$field_name = str_replace(array('ht.', 'h.', 'gt.', 'gtg.'), '', $save['field']);
+		/* Test for SQL injections and sensitive credential columns */
+		$sensitive_host_columns = array(
+			'snmp_community',
+			'snmp_username',
+			'snmp_password',
+			'snmp_auth_protocol',
+			'snmp_priv_passphrase',
+			'snmp_priv_protocol',
+			'snmp_context',
+			'snmp_engine_id'
+		);
+
+		$field_name       = str_replace(array('ht.', 'h.', 'gt.', 'gtg.'), '', $save['field']);
+		$normalized_field = strtolower(trim($save['field']));
+		$column_part      = strpos($normalized_field, '.') !== false ? substr($normalized_field, strrpos($normalized_field, '.') + 1) : $normalized_field;
+
+		if (in_array($column_part, $sensitive_host_columns, true)) {
+			raise_message('sql_injection', __('Invalid or restricted field specified in Graph automation'), MESSAGE_LEVEL_ERROR);
+
+			cacti_log(sprintf('ERROR: Restricted credential field specified in Graph Automation from client address \'%s\'', get_client_addr()), false, 'SECURITY');
+
+			header('Location: automation_graph_rules.php?header=false&action=edit&id=' . get_request_var('id'));
+
+			exit;
+		}
 
 		$exists = db_fetch_cell_prepared('SELECT field_name
 			FROM host_snmp_cache
@@ -186,15 +209,27 @@ function save() {
 		$save['operator']  = form_input_validate((isset_request_var('operator') ? get_nfilter_request_var('operator') : ''), 'operator', '^[0-9]+$', true, 3);
 		$save['pattern']   = form_input_validate((isset_request_var('pattern') ? get_nfilter_request_var('pattern') : ''), 'pattern', '', true, 3);
 
-		/* Test for SQL injections */
-		$field_name = str_replace(array('ht.', 'h.', 'gt.', 'gl.', 'gtg.'), '', $save['field']);
-		$field_name = preg_replace('/[^a-zA-Z0-9_]/', '', $field_name);
+		/* Test for SQL injections and sensitive credential columns */
+		$sensitive_host_columns = array(
+			'snmp_community',
+			'snmp_username',
+			'snmp_password',
+			'snmp_auth_protocol',
+			'snmp_priv_passphrase',
+			'snmp_priv_protocol',
+			'snmp_context',
+			'snmp_engine_id'
+		);
 
-		if (!db_column_exists('host', $field_name) &&
+		$field_name = str_replace(array('ht.', 'h.', 'gt.', 'gl.', 'gtg.'), '', $save['field']);
+
+		if (!preg_match('/^(?:(?:ht|h|gt|gl|gtg)\.)?[a-zA-Z0-9_]+$/', $save['field']) ||
+			in_array(strtolower($field_name), $sensitive_host_columns, true) ||
+			(!db_column_exists('host', $field_name) &&
 			!db_column_exists('host_template', $field_name) &&
 			!db_column_exists('graph_templates', $field_name) &&
 			!db_column_exists('graph_local', $field_name) &&
-			!db_column_exists('graph_templates_graph', $field_name)) {
+			!db_column_exists('graph_templates_graph', $field_name))) {
 			raise_message('sql_injection', __('An attempt was made to perform a SQL injection in Graph automation'), MESSAGE_LEVEL_ERROR);
 
 			cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Graph Automation from client address \'%s\'', get_client_addr()), false, 'SECURITY');

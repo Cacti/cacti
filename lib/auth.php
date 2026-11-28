@@ -1258,10 +1258,16 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $sql_o
 		'id', 'name'
 	);
 
+	if (!cacti_sizeof($trees)) {
+		return array();
+	}
+
 	if ($tree_id > 0) {
-		if (cacti_sizeof($trees)) {
-			$sql_where .= ' AND gt.id IN (' . implode(', ', array_keys($trees)) . ')';
+		if (!isset($trees[(int) $tree_id])) {
+			return array();
 		}
+
+		$sql_where .= " AND gt.enabled = 'on' AND gt.id IN (" . implode(', ', array_keys($trees)) . ')';
 
 		$hierarchy = db_fetch_assoc("SELECT gti.graph_tree_id AS tree_id, gti.id, gti.title, gti.host_id, gti.site_id,
 			gti.local_graph_id, gti.host_grouping_type, h.description AS hostname, s.name AS sitename
@@ -1274,7 +1280,7 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $sql_o
 			ON gti.site_id=s.id
 			$sql_where
 			ORDER BY gti.position");
-	} elseif (cacti_sizeof($trees)) {
+	} else {
 		$hierarchy = db_fetch_assoc("SELECT gt.id AS tree_id, '0' AS id, gt.name AS title, '0' AS host_id, '0' AS site_id,
 			'0' AS local_graph_id, '1' AS host_grouping_type, '' AS hostname, '' AS sitename
 			FROM graph_tree AS gt
@@ -2629,6 +2635,15 @@ function get_allowed_branches($sql_where = '', $sql_order = 'name', $sql_limit =
 		}
 	}
 
+	$tree_rows = -1;
+	$trees     = get_allowed_trees(false, false, '', '', '', $tree_rows, $user_id);
+
+	if (!cacti_sizeof($trees)) {
+		$total_rows = 0;
+
+		return array();
+	}
+
 	$simple_perms = get_simple_device_perms($user_id);
 
 	/* get policies for all groups and user */
@@ -2637,10 +2652,13 @@ function get_allowed_branches($sql_where = '', $sql_order = 'name', $sql_limit =
 	$sql_hosts_where = '';
 
 	if (!$simple_perms) {
-		$hosts = get_allowed_devices('', 'description', '', $total_rows);
+		$host_rows = -1;
+		$hosts     = get_allowed_devices('', 'description', '', $host_rows, $user_id);
 
 		if (cacti_sizeof($hosts)) {
 			$hosts = array_rekey($hosts, 'id', 'description');
+		} else {
+			$hosts = array();
 		}
 
 		$tree_hosts = db_fetch_assoc("SELECT DISTINCT h.id, h.description
@@ -2649,17 +2667,21 @@ function get_allowed_branches($sql_where = '', $sql_order = 'name', $sql_limit =
 			ON gti.graph_tree_id = gt.id
 			INNER JOIN host AS h
 			ON gti.host_id = h.id
-			WHERE gti.host_id > 0
-			AND $sql_where", false);
+			WHERE gti.host_id > 0" .
+			($sql_where != '' ? " AND $sql_where" : ''), false);
 
 		if (cacti_sizeof($tree_hosts)) {
 			$tree_hosts = array_rekey($tree_hosts, 'id', 'description');
+		} else {
+			$tree_hosts = array();
 		}
 
 		$hosts = array_intersect_key($hosts, $tree_hosts);
 
 		if (cacti_sizeof($hosts) > 0) {
-			$sql_hosts_where =  'AND h.id IN (' . implode(',', array_keys($hosts)) . ')';
+			$sql_hosts_where = 'AND h.id IN (' . implode(',', array_keys($hosts)) . ')';
+		} else {
+			$sql_hosts_where = 'AND 1 = 0';
 		}
 	}
 
@@ -2903,7 +2925,7 @@ function get_allowed_sites($sql_where = '', $sql_order = 'name', $sql_limit = ''
 	}
 
 	if ($site_id > 0) {
-		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . " s.id=$site_id";
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' s.id=' . (int) $site_id;
 	}
 
 	if ($user_id === -1) {
@@ -2912,10 +2934,30 @@ function get_allowed_sites($sql_where = '', $sql_order = 'name', $sql_limit = ''
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if (isset($_SESSION['sess_user_id']) && $user_id === 0) {
-		$user_id = $_SESSION['sess_user_id'];
-	} elseif ($auth_method > 0) {
-		return array();
+	if ($auth_method > 0 && $user_id === 0) {
+		if (isset($_SESSION['sess_user_id'])) {
+			$user_id = $_SESSION['sess_user_id'];
+		} else {
+			return array();
+		}
+	}
+
+	if ($auth_method != 0) {
+		$simple_perms = get_simple_device_perms($user_id);
+
+		if (!$simple_perms) {
+			$host_rows = -1;
+			$hosts     = get_allowed_devices('', 'id', '', $host_rows, $user_id);
+
+			if (!cacti_sizeof($hosts)) {
+				$total_rows = 0;
+
+				return array();
+			}
+
+			$host_ids   = array_map('intval', array_column($hosts, 'id'));
+			$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'h.id IN (' . implode(', ', $host_ids) . ')';
+		}
 	}
 
 	$sites = db_fetch_assoc("SELECT s.id, s.name
@@ -5168,7 +5210,7 @@ function cacti_authorize_has_realm($user_id, $realm_id) {
 		return $realm_cache[$key];
 	}
 
-	$has = (bool) db_fetch_cell_prepared('SELECT 1
+	$has = (bool) db_fetch_cell_prepared("SELECT 1
 		FROM user_auth_realm
 		WHERE user_id = ?
 		AND realm_id = ?
@@ -5177,9 +5219,12 @@ function cacti_authorize_has_realm($user_id, $realm_id) {
 		FROM user_auth_group_realm AS ugr
 		INNER JOIN user_auth_group_members AS ugm
 		ON ugm.group_id = ugr.group_id
+		INNER JOIN user_auth_group AS uag
+		ON uag.id = ugr.group_id
 		WHERE ugm.user_id = ?
 		AND ugr.realm_id = ?
-		LIMIT 1',
+		AND uag.enabled = 'on'
+		LIMIT 1",
 		array($user_id, $realm_id, $user_id, $realm_id)
 	);
 

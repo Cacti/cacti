@@ -24,10 +24,17 @@
 
 include_once('./include/global.php');
 
-$page = db_fetch_row_prepared('SELECT
+/* External links enforce per-link realms (10000 + id) below; mark link.php
+ * as requiring authentication without a static filename realm entry. */
+$user_auth_realm_filenames['link.php'] = -1;
+
+include('./include/auth.php');
+
+$page = db_fetch_row_prepared("SELECT
 	id, title, style, contentfile, enabled, refresh
 	FROM external_links AS el
-	WHERE id = ?',
+	WHERE id = ?
+	AND enabled = 'on'",
 	array(get_filter_request_var('id')));
 
 if (!cacti_sizeof($page)) {
@@ -69,7 +76,7 @@ if (!cacti_sizeof($page)) {
 			$basepath = $config['base_path'] . '/include/content';
 			$file     = realpath($basepath . '/' . $page['contentfile']);
 
-			if ($file !== false && substr($file, 0, strlen($basepath)) == $basepath) {
+			if ($file !== false && is_file($file) && cacti_path_is_within($file, $basepath)) {
 				include_once($file);
 			} else {
 				print '<h1>The file \'' . html_escape($page['contentfile']) . '\' does not exist!!</h1>';

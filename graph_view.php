@@ -157,6 +157,22 @@ case 'ajax_search':
 
 	break;
 case 'ajax_reports':
+	if (!isset($_SERVER['REQUEST_METHOD']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
+		header('Allow: POST');
+		http_response_code(405);
+		exit;
+	}
+
+	if (function_exists('csrf_check') && !csrf_check(false)) {
+		http_response_code(403);
+		exit;
+	}
+
+	if (!is_realm_allowed(21) && !is_realm_allowed(22)) {
+		http_response_code(403);
+		exit;
+	}
+
 	// Add to a report
 	get_filter_request_var('report_id');
 	get_filter_request_var('timespan');
@@ -169,7 +185,9 @@ case 'ajax_reports':
 			$good = true;
 
 			foreach($items as $item) {
-				if (!reports_add_graphs(get_filter_request_var('report_id'), $item, get_request_var('timespan'), get_request_var('align'))) {
+				$local_graph_id = (int) trim($item);
+
+				if ($local_graph_id <= 0 || !is_graph_allowed($local_graph_id) || !reports_add_graphs(get_filter_request_var('report_id'), $local_graph_id, get_request_var('timespan'), get_request_var('align'))) {
 					raise_message('reports_add_error');
 					$good = false;
 					break;
@@ -252,6 +270,11 @@ case 'tree':
 
 	break;
 case 'get_node':
+	if (!is_view_allowed('show_tree')) {
+		http_response_code(403);
+		exit;
+	}
+
 	$parent  = -1;
 	$tree_id = 0;
 
@@ -299,6 +322,13 @@ case 'get_node':
 				}
 			}
 		}
+	}
+
+	$tree_id = (int) $tree_id;
+
+	if ($tree_id > 0 && !is_tree_allowed($tree_id)) {
+		http_response_code(403);
+		exit;
 	}
 
 	api_tree_get_main($tree_id, $parent);
@@ -1050,7 +1080,7 @@ case 'list':
 							'&align='       + $('#align').val()       +
 							'&graph_list='  + $('#graph_list').val();
 
-						loadPageUsingPost(strURL);
+						loadPageUsingPost(strURL, { __csrf_magic: csrfMagicToken });
 					}
 				}
 			],

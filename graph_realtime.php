@@ -34,7 +34,7 @@ get_filter_request_var('graph_start');
 get_filter_request_var('graph_end');
 get_filter_request_var('graph_height');
 get_filter_request_var('graph_width');
-get_filter_request_var('graph_nolegend', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '(true|false)')));
+get_filter_request_var('graph_nolegend', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^(true|false)$/')));
 get_filter_request_var('local_graph_id');
 get_filter_request_var('size');
 get_filter_request_var('ds_step');
@@ -43,7 +43,17 @@ get_filter_request_var('top');
 get_filter_request_var('left');
 /* ==================================================== */
 
-if (!isset($_SESSION['sess_realtime_hash'])) {
+if (read_config_option('realtime_enabled') != 'on') {
+	http_response_code(403);
+	print "<html>\n";
+	print "<body>\n";
+	print "	<p><strong>" . __('Real-time has been disabled by your administrator.') . "</strong></p>\n";
+	print "</body>\n";
+	print "</html>\n";
+	exit;
+}
+
+if (!isset($_SESSION['sess_realtime_hash']) || !is_string($_SESSION['sess_realtime_hash']) || !preg_match('/^[a-fA-F0-9]+$/', $_SESSION['sess_realtime_hash'])) {
 	$_SESSION['sess_realtime_hash'] = generate_hash();
 }
 
@@ -166,7 +176,7 @@ case 'countdown':
 	}
 
 	/* print RRDtool graph source? */
-	if (!isempty_request_var('show_source')) {
+	if (!isempty_request_var('show_source') && is_realm_allowed(27)) {
 		$graph_data_array['print_source'] = get_request_var('show_source');
 	}
 
@@ -210,11 +220,28 @@ case 'countdown':
 	$graph_data_array['image_format'] = $gtype;
 
 	/* call poller */
-	$local_graph_id = get_filter_request_var('local_graph_id');
+	$local_graph_id = (int) get_filter_request_var('local_graph_id');
+
+	if ($local_graph_id <= 0 || !is_graph_allowed($local_graph_id)) {
+		ob_end_clean();
+		http_response_code(403);
+		print json_encode(array('error' => 'GRAPH ACCESS DENIED'));
+		exit;
+	}
+
+	$ds_step = (int) $graph_data_array['ds_step'];
+	if ($ds_step < 1) {
+		$ds_step = (int) read_user_setting('realtime_interval', 10);
+	}
+	if ($ds_step < 1) {
+		$ds_step = 10;
+	}
+	$graph_data_array['ds_step'] = $ds_step;
+
 	$graph_rrd      = read_config_option('realtime_cache_path') . '/user_' . $hash . '_lgi_' . $local_graph_id . '.png';
 	$php_binary     = cacti_escapeshellcmd(read_config_option('path_php_binary'));
 	$script_path    = cacti_escapeshellarg($config['base_path'] . '/poller_realtime.php');
-	$args           = '--graph=' . $local_graph_id . ' --interval=' . $graph_data_array['ds_step'] . ' --poller_id=' . $hash;
+	$args           = '--graph=' . $local_graph_id . ' --interval=' . $ds_step . ' --poller_id=' . cacti_escapeshellarg($hash);
 
 	shell_exec($php_binary . ' -q ' . $script_path . ' ' . $args);
 
@@ -268,12 +295,14 @@ case 'countdown':
 	}
 
 	/* save user preferences */
-	set_user_setting('realtime_interval', get_request_var('ds_step'));
-	set_user_setting('realtime_gwindow', abs(get_request_var('graph_start')));
-	set_user_setting('realtime_size', get_request_var('size'));
-	set_user_setting('realtime_nolegend', get_request_var('graph_nolegend'));
+	if (cacti_user_can_save_own_settings()) {
+		set_user_setting('realtime_interval', $ds_step);
+		set_user_setting('realtime_gwindow', abs(get_request_var('graph_start')));
+		set_user_setting('realtime_size', get_request_var('size'));
+		set_user_setting('realtime_nolegend', get_request_var('graph_nolegend'));
+	}
 
-	$_SESSION['sess_realtime_ds_step']     = get_request_var('ds_step');
+	$_SESSION['sess_realtime_ds_step']     = $ds_step;
 	$_SESSION['sess_realtime_graph_start'] = get_request_var('graph_start');
 	$_SESSION['sess_realtime_size']        = get_request_var('size');
 	$_SESSION['sess_realtime_nolegend']    = get_request_var('graph_nolegend');
@@ -296,7 +325,14 @@ case 'countdown':
 	exit;
 	break;
 case 'view':
-	$graph_rrd = read_config_option('realtime_cache_path') . '/user_' . $hash . '_lgi_' . get_filter_request_var('local_graph_id') . '.png';
+	$local_graph_id = (int) get_filter_request_var('local_graph_id');
+
+	if ($local_graph_id <= 0 || !is_graph_allowed($local_graph_id)) {
+		http_response_code(403);
+		exit;
+	}
+
+	$graph_rrd = read_config_option('realtime_cache_path') . '/user_' . $hash . '_lgi_' . $local_graph_id . '.png';
 
 	if (file_exists($graph_rrd)) {
 		print base64_encode(file_get_contents($graph_rrd));
@@ -335,19 +371,14 @@ if (!isset($_SESSION['sess_realtime_graph_start'])) {
 }
 
 /* save user preferences */
-set_user_setting('realtime_interval', get_request_var('ds_step'));
-set_user_setting('realtime_gwindow', abs(get_request_var('graph_start')));
-set_user_setting('realtime_size', get_request_var('size'));
-set_user_setting('realtime_nolegend', get_request_var('graph_nolegend'));
+if (cacti_user_can_save_own_settings()) {
+	set_user_setting('realtime_interval', get_request_var('ds_step'));
+	set_user_setting('realtime_gwindow', abs(get_request_var('graph_start')));
+	set_user_setting('realtime_size', get_request_var('size'));
+	set_user_setting('realtime_nolegend', get_request_var('graph_nolegend'));
+}
 
-if (read_config_option('realtime_enabled') == '') {
-	print "<html>\n";
-	print "<body>\n";
-	print "	<p><strong>" . __('Real-time has been disabled by your administrator.') . "</strong></p>\n";
-	print "</body>\n";
-	print "</html>\n";
-	exit;
-} elseif (!is_dir(read_config_option('realtime_cache_path'))) {
+if (!is_dir(read_config_option('realtime_cache_path'))) {
 	print "<html>\n";
 	print "<body>\n";
 	print "	<p><strong>" . __('The Image Cache Directory does not exist.  Please first create it and set permissions and then attempt to open another Real-time graph.') . "</strong></p>\n";
