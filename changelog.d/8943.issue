@@ -1,0 +1,1 @@
+Keep the user group graph permission query valid for a group without a policy, and show data source debug values one per line with a final status once the check completes
