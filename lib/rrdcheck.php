@@ -29,7 +29,7 @@ function get_rrdfiles($thread_id = 1, $max_threads = 1) {
 	static $newrows = array();
 
 	if (cacti_sizeof($newrows)) {
-		return $newrows[$thread_id - 1];
+		return isset($newrows[$thread_id - 1]) ? $newrows[$thread_id - 1] : array();
 	}
 
 	$rows = db_fetch_assoc_prepared('SELECT dtd.data_source_profile_id, dtd.local_data_id,
@@ -54,12 +54,19 @@ function get_rrdfiles($thread_id = 1, $max_threads = 1) {
 		GROUP BY dtd.local_data_id',
 		array($config['rra_path']));
 
-	if ($max_threads == 1) {
+	$total_rows = cacti_sizeof($rows);
+
+	if (!$total_rows) {
+		return array();
+	}
+
+	if ($max_threads <= 1) {
 		$newrows[0] = $rows;
 
 		return $rows;
 	} else {
-		$newrows = array_chunk($rows, ceil(cacti_sizeof($rows) / $max_threads));
+		$chunk_size = max(1, (int) ceil($total_rows / $max_threads));
+		$newrows    = array_chunk($rows, $chunk_size);
 
 		if (isset($newrows[$thread_id - 1])) {
 			return $newrows[$thread_id - 1];
@@ -159,7 +166,7 @@ function do_rrdcheck($thread_id = 1) {
 			$file = $rrdval['data_source_path'];
 
 			if ($use_proxy) {
-				$file_exists = rrdtool_execute('file_exists ' . cacti_escapeshellarg($file), true, RRDTOOL_OUTPUT_BOOLEAN, false, 'RRDCHECK');
+				$file_exists = rrdtool_execute('file_exists ' . cacti_escapeshellarg($file), true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'RRDCHECK');
 			} else {
 				clearstatcache();
 				$file_exists = file_exists($file);
@@ -210,7 +217,7 @@ function do_rrdcheck($thread_id = 1) {
 				}
 
 				if ($use_proxy) {
-					$output = rrdtool_execute('info ' . cacti_escapeshellarg($file), false, RRDTOOL_OUTPUT_STDOUT, false, 'RRDCHECK');
+					$output = rrdtool_execute('info ' . cacti_escapeshellarg($file), false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'RRDCHECK');
 				} else {
 					$output = rrdcheck_rrdtool_execute(['info', $file], $pipes);
 				}
@@ -364,7 +371,7 @@ function do_rrdcheck($thread_id = 1) {
 				$one_hour_limit = ($duration - 3600) / $step;
 
 				if ($use_proxy) {
-					$info_array = rrdtool_execute(['fetch', $file, 'LAST', '-s', $pstart, '-e', $pend], false, RRDTOOL_OUTPUT_STDOUT, false, 'RRDCHECK');
+					$info_array = rrdtool_execute(['fetch', $file, 'LAST', '-s', $pstart, '-e', $pend], false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'RRDCHECK');
 				} else {
 					$info_array = rrdcheck_rrdtool_execute(['fetch', $file, 'LAST', '-s', $pstart, '-e', $pend], $pipes);
 				}
@@ -431,10 +438,12 @@ function do_rrdcheck($thread_id = 1) {
 						}
 					}
 
-					$notified = false;
+					$notified = array();
 
 					// 24 hour statistics
 					foreach	($nan_24 as $index=>$count) {
+						$ds_name = isset($data_source_names[$index]) ? $data_source_names[$index] : $index;
+
 						if ($lines_24 > 0) {
 							$ratio = $count/$lines_24;
 						} else {
@@ -460,7 +469,7 @@ function do_rrdcheck($thread_id = 1) {
 								)
 							);
 
-							$notified = true;
+							$notified[$ds_name] = true;
 						} elseif ($ratio > 0.5) {
 							db_execute_prepared ('INSERT INTO rrdcheck
 								(local_data_id, test_date, message)
@@ -476,7 +485,9 @@ function do_rrdcheck($thread_id = 1) {
 					// 1 hour statistics
 
 					foreach	($nan_1 as $index=>$count) {
-						if ($notified) {
+						$ds_name = isset($data_source_names[$index]) ? $data_source_names[$index] : $index;
+
+						if (!empty($notified[$ds_name])) {
 							// 24hour notified, skipping
 							continue;
 						}
@@ -850,17 +861,60 @@ function rrdcheck_rrdtool_execute($command, &$pipes) {
 	if ($command == '') return;
 
 	$command .= "\r\n";
-	$return_code = fwrite($pipes[0], $command);
+
+	if (is_resource($pipes[0])) {
+		$return_code = fwrite($pipes[0], $command);
+	}
 
 	if (is_resource($pipes[1])) {
-		while (!feof($pipes[1])) {
-			$stdout .= fgets($pipes[1], 4096);
+		$line_buffer = '';
+		$timeout     = 30;
+		$deadline    = microtime(true) + $timeout;
 
-			if (substr_count($stdout, 'OK')) {
+		while (!feof($pipes[1])) {
+			$remaining = $deadline - microtime(true);
+
+			if ($remaining <= 0) {
+				cacti_log('WARNING: RRDtool pipe read timed out in rrdcheck_rrdtool_execute().', false, 'RRDCHECK');
+
 				break;
 			}
 
-			if (substr_count($stdout, 'ERROR')) {
+			$read   = array($pipes[1]);
+			$write  = null;
+			$except = null;
+			$sec    = (int) floor($remaining);
+			$usec   = (int) (($remaining - $sec) * 1000000);
+
+			$ready = @stream_select($read, $write, $except, $sec, $usec);
+
+			if ($ready === false) {
+				break;
+			}
+
+			if ($ready === 0) {
+				continue;
+			}
+
+			$done = false;
+
+			while (($chunk = fgets($pipes[1], 4096)) !== false) {
+				$stdout      .= $chunk;
+				$line_buffer .= $chunk;
+
+				if (substr($chunk, -1) === "\n") {
+					$trimmed     = ltrim($line_buffer);
+					$line_buffer = '';
+
+					if (strncmp($trimmed, 'OK u:', 5) === 0 || strncmp($trimmed, 'ERROR:', 6) === 0) {
+						$done = true;
+
+						break;
+					}
+				}
+			}
+
+			if ($done) {
 				break;
 			}
 		}

@@ -285,12 +285,12 @@ class spikekill {
 				break;
 		}
 
-		if ($this->method == 'float' || $this->method == 'fill') {
-			if (!is_numeric($this->out_start)) {
+		if ($this->method == SPIKE_METHOD_FLOAT || $this->method == SPIKE_METHOD_FILL) {
+			if ($this->out_start !== false && !is_numeric($this->out_start)) {
 				$this->out_start = strtotime($this->out_start);
 			}
 
-			if (!is_numeric($this->out_end)) {
+			if ($this->out_end !== false && !is_numeric($this->out_end)) {
 				$this->out_end = strtotime($this->out_end);
 			}
 
@@ -311,7 +311,7 @@ class spikekill {
 			}
 		}
 
-		if (!$this->numspike != '') {
+		if ($this->numspike !== '') {
 			if (!is_numeric($this->numspike) || ($this->numspike < 1)) {
 				$this->set_error(__("FATAL: Number of spikes to remove must be a positive integer"));
 			}
@@ -1305,19 +1305,23 @@ class spikekill {
 					if ($comment_start === false) {
 						/* do nothing no line */
 					} else {
-						$comment_end = strpos($line, '-->');
-						if ($comment_start == 0) {
-							$line = trim(substr($line, $comment_end+3));
-						} else {
-							$line = trim(substr($line,0,$comment_start-1) . substr($line,$comment_end+3));
-						}
+						$comment_end = strpos($line, '-->', $comment_start + 4);
+						if ($comment_end !== false) {
+							if ($comment_start == 0) {
+								$line = trim(substr($line, $comment_end + 3));
+							} else {
+								$line = trim(substr($line, 0, $comment_start) . substr($line, $comment_end + 3));
+							}
 
-						if (strpos($line, '<row>') !== false) {
-							/* capture the timestamp */
-							$stamp     = trim(substr($oline, $comment_start+4, $comment_end-4));
-							$stamp     = explode('/', $stamp);
-							$timestamp = trim($stamp[1]);
-							$line = str_replace('<row><v>', "<row><timestamp> $timestamp </timestamp><v>", $line);
+							if (strpos($line, '<row>') !== false) {
+								/* capture the timestamp */
+								$stamp = trim(substr($oline, $comment_start + 4, $comment_end - $comment_start - 4));
+								$stamp = explode('/', $stamp);
+								if (isset($stamp[1])) {
+									$timestamp = trim($stamp[1]);
+									$line = str_replace('<row><v>', "<row><timestamp> $timestamp </timestamp><v>", $line);
+								}
+							}
 						}
 					}
 
