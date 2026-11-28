@@ -49,6 +49,48 @@ def section_bounds(lines: list[str]) -> tuple[int, int]:
 	return start, end
 
 
+def insert_group(lines: list[str], start: int, end: int, order: tuple[str, ...], rank: int, kind: str, group: list[tuple[str, str]]) -> None:
+	if kind == "feature":
+		# close the block: after the last entry of this kind or the one before it
+		prefixes = tuple(f"-{order[r]}" for r in range(rank + 1))
+	else:
+		# open the block: after the last entry of the preceding kinds only
+		prefixes = tuple(f"-{order[r]}" for r in range(rank))
+
+	anchor = start + 1
+	if prefixes:
+		for index in range(end - 1, start, -1):
+			if lines[index].startswith(prefixes):
+				anchor = index + 1
+				break
+
+	for offset, (number, text) in enumerate(group):
+		lines.insert(anchor + offset, f"-{kind}#{number}: {text}")
+
+
+def fold_entries(lines: list[str], start: int, end: int, fragments: list[tuple[str, str, str]]) -> int:
+	# A release section runs security, then issue, then feature. Security and
+	# issue entries are newest first, so they open their block; features run
+	# oldest first, so they close theirs.
+	order = ("security", "issue", "feature")
+	folded = 0
+
+	for rank, kind in enumerate(order):
+		group = sorted(
+			((n, t) for n, k, t in fragments if k == kind),
+			key=lambda item: (0, int(item[0])) if item[0].isdigit() else (1, item[0]),
+			reverse=kind != "feature",
+		)
+		if not group:
+			continue
+
+		insert_group(lines, start, end, order, rank, kind, group)
+
+		end += len(group)
+		folded += len(group)
+	return folded
+
+
 def main() -> int:
 	parser = argparse.ArgumentParser(description=__doc__)
 	parser.add_argument("--check", action="store_true", help="report without writing")
@@ -83,40 +125,7 @@ def main() -> int:
 		print(error, file=sys.stderr)
 		return 1
 
-	# A release section runs security, then issue, then feature. Security and
-	# issue entries are newest first, so they open their block in descending
-	# order; features run oldest first, so they close theirs in ascending order.
-	order = ("security", "issue", "feature")
-	folded = 0
-
-	for rank, kind in enumerate(order):
-		group = sorted(
-			((n, t) for n, k, t in fragments if k == kind),
-			key=lambda item: (0, int(item[0])) if item[0].isdigit() else (1, item[0]),
-			reverse=kind != "feature",
-		)
-		if not group:
-			continue
-
-		if kind == "feature":
-			# close the block: after the last entry of this kind or the one before it
-			prefixes = tuple(f"-{order[r]}" for r in range(rank + 1))
-		else:
-			# open the block: after the last entry of the preceding kinds only
-			prefixes = tuple(f"-{order[r]}" for r in range(rank))
-
-		anchor = start + 1
-		if prefixes:
-			for index in range(end - 1, start, -1):
-				if lines[index].startswith(prefixes):
-					anchor = index + 1
-					break
-
-		for offset, (number, text) in enumerate(group):
-			lines.insert(anchor + offset, f"-{kind}#{number}: {text}")
-
-		end += len(group)
-		folded += len(group)
+	folded = fold_entries(lines, start, end, fragments)
 
 	if args.check:
 		print(f"{folded} fragment(s) would be folded")

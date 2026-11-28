@@ -28,7 +28,7 @@ def parse_po(path: Path) -> List[Entry]:
         nonlocal cur, active_field, active_index
         if cur.msgid is not None or cur.msgstr or cur.comments:
             entries.append(cur)
-        cur.__init__(); active_field = active_index = None
+        cur = Entry(); active_field = active_index = None
     for lineno, line in enumerate(lines, 1):
         line = line.rstrip()
         if not line.strip(): flush(); continue

@@ -8,7 +8,7 @@ import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
-SPEC = importlib.util.spec_from_file_location('validate_cacti_po', ROOT / 'scripts' / 'validate_cacti_po.py')
+SPEC = importlib.util.spec_from_file_location('validate_cacti_po', ROOT / 'tests' / 'tools' / 'validate_cacti_po.py')
 validator = importlib.util.module_from_spec(SPEC)
 # dataclasses resolves the script's string annotations through sys.modules.
 sys.modules[SPEC.name] = validator
