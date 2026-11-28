@@ -32,7 +32,7 @@ test('profile logout and graph maintenance use the POST action contract', async 
 	}
 	const profile = fs.readFileSync(path.join(root, 'auth_profile.php'), 'utf8');
 	const rendered = execFileSync('php', ['tests/fixtures/Core/AuthorizedActions.php', 'profile'], { cwd: root, encoding: 'utf8' });
-	const signature = '\t\tfunction logoutEverywhere() {';
+	const signature = '\t\tfunction logoutEverywhere(fields = {}) {';
 	const first = rendered.indexOf(signature);
 	const last = rendered.indexOf('\n\t\tfunction graphSettings()', first);
 	const original = profile.indexOf(signature);

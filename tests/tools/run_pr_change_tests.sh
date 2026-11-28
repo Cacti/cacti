@@ -93,6 +93,12 @@ if [[ -f tests/fixtures/Core/TableColumnSizing.php ]]; then
 	done
 fi
 
+if [[ -f tests/fixtures/Core/UserSettingsAndRealtimeHardening.php ]]; then
+	for mode in core auth-guest-exit auth-disable-2fa auth-enable-2fa auth-verify-2fa realtime-denied realtime-view-denied; do
+		run_probe UserSettingsAndRealtimeHardening.php "user-settings-realtime-$mode" "$mode"
+	done
+fi
+
 run_probe ConfiguredCommands.php configured-commands
 run_probe ConfiguredCommands.php deprecated-rebuild deprecated
 run_probe DisplayAndValidation.php display-validation
@@ -102,7 +108,7 @@ for mode in requests denied reorder oauth; do
 done
 
 browser_specs=()
-for spec in graph-drilldown graph-spikekill filter-dialog-theme table-column-widths authorized-post-actions; do
+for spec in graph-drilldown graph-spikekill filter-dialog-theme table-column-widths; do
 	if [[ -f "tests/e2e/tests/$spec.spec.js" ]]; then
 		browser_specs+=("tests/$spec.spec.js")
 	fi
@@ -117,6 +123,7 @@ for spec in develop-theme-correctness develop-theme-cleanup; do
 		theme_specs+=("tests/e2e/tests/$spec.spec.ts")
 	fi
 done
+browser_specs+=("tests/authorized-post-actions.spec.js")
 theme_coverage=0
 if (( ${#theme_specs[@]} )); then
 	while IFS= read -r changed; do
