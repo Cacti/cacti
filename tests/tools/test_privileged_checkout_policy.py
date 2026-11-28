@@ -18,12 +18,12 @@ SPEC.loader.exec_module(POLICY)
 
 
 class PrivilegedCheckoutPolicyTest(unittest.TestCase):
-    def validate(self, event, ref, repository=None):
+    def validate(self, event, ref, repository=None, runner="ubuntu-24.04"):
         checkout = {'persist-credentials': False, 'ref': ref}
         if repository is not None:
             checkout['repository'] = repository
         workflow = {'on': event, 'jobs': {'review': {
-            'runs-on': 'ubuntu-24.04', 'timeout-minutes': 5, 'steps': [{
+            'runs-on': runner, 'timeout-minutes': 5, 'steps': [{
                 'uses': 'actions/checkout@' + 'a' * 40, 'with': checkout}]}}}
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -36,6 +36,14 @@ class PrivilegedCheckoutPolicyTest(unittest.TestCase):
                     redirect_stdout(output):
                 status = POLICY.main()
             return status, output.getvalue()
+
+    def test_native_windows_jobs_require_a_fixed_runner_image(self):
+        event = {'pull_request': {}}
+        ref = '${{ github.event.pull_request.head.sha }}'
+        self.assertEqual(self.validate(event, ref, runner='windows-2022')[0], 0)
+        status, output = self.validate(event, ref, runner='windows-latest')
+        self.assertEqual(status, 1)
+        self.assertIn('fixed approved image', output)
 
     def test_privileged_events_accept_only_the_current_repositories_trusted_refs(self):
         for event in ['pull_request_target', ['pull_request_target'], {'pull_request_target': {}}]:

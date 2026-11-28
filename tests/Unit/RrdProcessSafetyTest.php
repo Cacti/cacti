@@ -209,3 +209,146 @@ test('process relaunches are bounded so a persistently failing binary cannot spi
 test('a handle that is not an RRDtool process is never relaunched', function () {
 	expect(rrdtool_process_restart((object) ['alive' => false]))->toBeFalse();
 });
+
+test('a reply ends only at a newline-terminated status line on every platform', function (string $stdout, ?array $expected) {
+	expect(rrdtool_reply_status($stdout))->toBe($expected);
+})->with([
+	'getrusage status after text'          => ["1700000060\nOK u:0.00 s:0.00 r:0.00\n", ['OK u:0.00 s:0.00 r:0.00', 11]],
+	'bare Windows status after text'       => ["1700000060\nOK\n", ['OK', 11]],
+	'bare status with no output'           => ["OK\n", ['OK', 0]],
+	'CRLF terminated status'               => ["1700000060\r\nOK\r\n", ['OK', 12]],
+	'getrusage status after a PNG'         => ["\x89PNG\nIEND\xaeB`\x82OK u:0.01 s:0.00 r:0.02\n", ['OK u:0.01 s:0.00 r:0.02', 13]],
+	'bare Windows status after a PNG'      => ["\x89PNG\nIEND\xaeB`\x82OK\n", ['OK', 13]],
+	'error in place of output'             => ["ERROR: opening 'x.rrd': No such file\n", ["ERROR: opening 'x.rrd': No such file", 0]],
+	'error after earlier lines'            => ["line\nERROR: bad\r\n", ['ERROR: bad', 5]],
+	'PRINT text ending in OK'              => ["PRINT:BOOK\n", null],
+	'PRINT text paused before its newline' => ['PRINT:BOOK', null],
+	'image bytes spelling OK'              => ["\x89PNG\x01OK", null],
+	'status line not yet terminated'       => ["1700000060\nOK u:0.00 s:0.00", null],
+	'ERROR inside a line'                  => ["PRINT:no ERROR: here\n", null],
+	'nothing read yet'                     => ['', null],
+]);
+
+/**
+ * Write a scripted RRDtool double that answers each command with a canned reply.
+ *
+ * @param string $body Shell case arms keyed on the command line read from stdin
+ *
+ * @return string Path of the executable script
+ */
+function rrd_reply_framing_binary(string $body) : string {
+	$path = sys_get_temp_dir() . '/cacti-rrd-framing-' . bin2hex(random_bytes(6)) . '.sh';
+
+	file_put_contents($path, "#!/bin/sh\nwhile IFS= read -r command; do\n\tcase \"\$command\" in\n" . $body . "\tesac\ndone\n");
+	chmod($path, 0700);
+
+	return $path;
+}
+
+test('a reply is not complete until its status line is newline terminated', function () {
+	if (PHP_OS_FAMILY === 'Windows') {
+		test()->markTestSkipped('The RRDtool double is a POSIX shell script.');
+	}
+
+	// The first reply pauses after PRINT text ending in "OK"; the second one
+	// fails. Taking the pause as the end of the first reply would hand its
+	// real OK line to the second command and acknowledge a rejected update.
+	$binary = rrd_reply_framing_binary(
+		"\t\tinfo*) printf 'PRINT:BOOK'; sleep 1; printf '\\nOK u:0.00 s:0.00 r:0.00\\n' ;;\n" .
+		"\t\t*) printf 'ERROR: second\\n' ;;\n"
+	);
+
+	set_config_option('path_rrdtool', $binary);
+
+	$process = __rrd_init(false);
+
+	try {
+		$first  = rrdtool_process_command($process, 'info first.rrd', 5.0);
+		$second = rrdtool_process_command($process, 'last second.rrd', 5.0);
+
+		expect($first['success'])->toBeTrue()
+			->and($first['output'])->toBe("PRINT:BOOK\n")
+			->and($second['success'])->toBeFalse()
+			->and($second['error'])->toBe('ERROR: second');
+	} finally {
+		rrd_close($process);
+		unlink($binary);
+	}
+});
+
+test('an OK that ends a partial image is not taken as the reply status', function () {
+	if (PHP_OS_FAMILY === 'Windows') {
+		test()->markTestSkipped('The RRDtool double is a POSIX shell script.');
+	}
+
+	// Image bytes can spell "OK" at a read boundary; the real status follows
+	// the image's last byte with no newline in between.
+	$binary = rrd_reply_framing_binary(
+		"\t\tgraph*) printf '\\211PNG\\001OK'; sleep 1; printf '\\nIEND\\256B`\\202OK u:0.01 s:0.00 r:0.02\\n' ;;\n" .
+		"\t\t*) printf '1700000060\\nOK\\n' ;;\n"
+	);
+
+	set_config_option('path_rrdtool', $binary);
+
+	$process = __rrd_init(false);
+
+	try {
+		$graph = rrdtool_process_command($process, 'graph -', 5.0);
+		$last  = rrdtool_process_command($process, 'last file.rrd', 5.0);
+
+		expect($graph['success'])->toBeTrue()
+			->and($graph['output'])->toBe("\x89PNG\x01OK\nIEND\xaeB`\x82")
+			->and($last['success'])->toBeTrue()
+			->and($last['output'])->toBe("1700000060\n");
+	} finally {
+		rrd_close($process);
+		unlink($binary);
+	}
+});
+
+test('real RRDtool image and text replies stay in step on one pipe', function () {
+	$configured = getenv('RRDTOOL_BINARY');
+	$binary     = $configured !== false ? $configured : trim((string) shell_exec('command -v rrdtool'));
+
+	if ($configured === false && $binary === '') {
+		test()->markTestSkipped('rrdtool is not installed');
+	}
+
+	expect(is_file($binary) && is_executable($binary))->toBeTrue();
+
+	$directory = sys_get_temp_dir() . '/cacti rrd framing ' . bin2hex(random_bytes(6));
+	mkdir($directory, 0700);
+	$rrd = $directory . '/framing.rrd';
+
+	set_config_option('path_rrdtool', $binary);
+
+	$process = __rrd_init(false);
+
+	try {
+		// Relative filenames avoid treating a Windows drive colon as a DEF separator.
+		$cd = rrdtool_process_command($process, 'cd "' . str_replace('\\', '/', $directory) . '"');
+		expect($cd['success'])->toBeTrue();
+
+		$create = rrdtool_process_command($process, 'create framing.rrd --start 1700000000 --step 60 DS:BOOK:GAUGE:120:U:U RRA:AVERAGE:0.5:1:10');
+		$update = rrdtool_process_command($process, 'update framing.rrd 1700000060:1');
+		$graph  = rrdtool_process_command($process, 'graph - --start 1700000000 --end 1700000300 DEF:a=framing.rrd:BOOK:AVERAGE LINE1:a#FF0000 PRINT:a:LAST:BOOK%lf');
+		$last   = rrdtool_process_command($process, 'last framing.rrd');
+		$reject = rrdtool_process_command($process, 'update framing.rrd 1700000060:1');
+
+		expect($create['success'])->toBeTrue()
+			->and($update['success'])->toBeTrue()
+			->and($graph['success'])->toBeTrue()
+			->and($graph['output'])->toContain("\x89PNG")
+			->and($last['output'])->toBe("1700000060\n")
+			->and($reject['success'])->toBeFalse()
+			->and($reject['error'])->toStartWith('ERROR:');
+	} finally {
+		rrd_close($process);
+
+		if (is_file($rrd)) {
+			unlink($rrd);
+		}
+
+		rmdir($directory);
+	}
+});

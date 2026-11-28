@@ -1,0 +1,96 @@
+name: RRDtool Windows Pipe
+
+on:
+  pull_request:
+    branches: [develop]
+    paths:
+      - '.github/workflows/rrd-pipe-windows.yml'
+      - '.github/actions/setup-php-composer/**'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'lib/rrd.php'
+      - 'tests/Unit/RrdProcessSafetyTest.php'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rrd-pipe-windows-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  windows:
+    name: Native Windows RRDtool / PHP ${{ matrix.php }} / ${{ matrix.source }}
+    runs-on: windows-2022
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - php: '8.3'
+            source: pull-request
+          - php: '8.4'
+            source: pull-request
+          - php: '8.4'
+            source: base
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+
+      - name: Use the exact base RRDtool implementation for the control
+        if: matrix.source == 'base'
+        shell: bash
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          git show "$BASE_SHA:lib/rrd.php" > "$RUNNER_TEMP/base-rrd.php"
+          cp "$RUNNER_TEMP/base-rrd.php" lib/rrd.php
+
+      - name: Setup native PHP with locked dependencies
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          extensions: intl, mysqli, pdo_mysql, gd, ldap, gmp, xml, curl, json, mbstring, sockets, sqlite3
+          # This focused suite uses proc_open, not the Unix-only pcntl/posix APIs.
+          install-args: --prefer-dist --no-progress --no-interaction --ignore-platform-req=ext-pcntl --ignore-platform-req=ext-posix
+
+      - name: Install native Windows RRDtool
+        id: msys2
+        uses: msys2/setup-msys2@ec48f7c5447b3140e2b088413ae3a55687bccb6e
+        with:
+          msystem: UCRT64
+          update: true
+          install: mingw-w64-ucrt-x86_64-rrdtool
+
+      - name: Verify native runtimes
+        shell: bash
+        run: |
+          set -euo pipefail
+          rrd_directory='${{ steps.msys2.outputs.msys2-location }}/ucrt64/bin'
+          rrd_binary="$rrd_directory/rrdtool.exe"
+          test -f "$rrd_binary"
+          export PATH="$rrd_directory:$PATH"
+          cygpath -w "$rrd_directory" >> "$GITHUB_PATH"
+          printf 'RRDTOOL_BINARY=%s\n' "$(cygpath -w "$rrd_binary")" >> "$GITHUB_ENV"
+          php -r 'if (PHP_OS_FAMILY !== "Windows") { exit(1); } print PHP_VERSION . PHP_EOL;'
+          "$rrd_binary" --version
+
+      - name: Check platform-neutral reply parser
+        if: matrix.source == 'pull-request'
+        timeout-minutes: 1
+        shell: bash
+        run: |
+          set -euo pipefail
+          php include/vendor/bin/pest --configuration=tests/phpunit.xml tests/Unit/RrdProcessSafetyTest.php --filter='a reply ends only' --fail-on-skipped --fail-on-empty-test-suite --do-not-cache-result
+
+      - name: Check real persistent pipe
+        timeout-minutes: 3
+        shell: bash
+        run: |
+          set -euo pipefail
+          php include/vendor/bin/pest --configuration=tests/phpunit.xml tests/Unit/RrdProcessSafetyTest.php --filter='real RRDtool image' --debug --fail-on-skipped --fail-on-empty-test-suite --do-not-cache-result
