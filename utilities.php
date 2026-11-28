@@ -398,28 +398,28 @@ function utilities_view_tech() {
 		print '</td>';
 		form_end_row();
 
-		$processes = db_fetch_cell('SELECT
-			GROUP_CONCAT(
-				CONCAT("' . __('Name: ') . '", name, ", ' . __('Procs: ') . '", processes) SEPARATOR "<br>"
-			) AS poller
+		$pollers = db_fetch_assoc('SELECT name, processes, threads
 			FROM poller
-			WHERE disabled=""');
+			WHERE disabled=""
+			ORDER BY id');
 
-		$threads = db_fetch_cell('SELECT
-			GROUP_CONCAT(
-				CONCAT("' . __('Name: ') . '", name, ", ' . __('Threads: ') . '", threads) SEPARATOR "<br>"
-			) AS poller
-			FROM poller
-			WHERE disabled=""');
+		$processes = array();
+		$threads   = array();
+
+		// Data Collector names are stored text, so print them as text
+		foreach ($pollers as $poller) {
+			$processes[] = __('Name: ') . html_escape($poller['name']) . ', ' . __('Procs: ') . html_escape($poller['processes']);
+			$threads[]   = __('Name: ') . html_escape($poller['name']) . ', ' . __('Threads: ') . html_escape($poller['threads']);
+		}
 
 		form_alternate_row();
 		print '<td>' . __('Concurrent Processes') . '</td>';
-		print '<td>' . $processes . '</td>';
+		print '<td>' . implode('<br>', $processes) . '</td>';
 		form_end_row();
 
 		form_alternate_row();
 		print '<td>' . __('Max Threads') . '</td>';
-		print '<td>' . $threads . '</td>';
+		print '<td>' . implode('<br>', $threads) . '</td>';
 		form_end_row();
 
 		$script_servers = read_config_option('php_servers');

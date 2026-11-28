@@ -68,7 +68,7 @@ if (isset_request_var('update_policy')) {
 	case 'checkpass':
 		$error = secpass_check_pass(get_nfilter_request_var('password'));
 
-		if ($error == '') {
+		if ($error != '') {
 			print $error;
 		} else {
 			print 'ok';
