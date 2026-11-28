@@ -162,7 +162,7 @@ function auth_profile_deny_guest_write() : void {
 
 	if (empty($user) || cacti_user_is_guest_account($user, get_guest_account())) {
 		http_response_code(403);
-		print json_encode(['status' => 403, 'text' => __('Forbidden')]);
+		print json_encode(['status' => 403, 'text' => __('Permission Denied')]);
 
 		exit;
 	}
@@ -171,48 +171,52 @@ function auth_profile_deny_guest_write() : void {
 function api_auth_logout_everywhere() : void {
 	$user = $_SESSION[SESS_USER_ID] ?? 0;
 
-	if (empty($user) || cacti_user_is_guest_account($user, get_guest_account())) {
+	if (cacti_user_is_guest_account($user, get_guest_account())) {
 		http_response_code(403);
 
 		return;
 	}
 
-	db_execute_prepared('DELETE FROM user_auth_cache
-		WHERE user_id = ?',
-		[$user]
-	);
+	if (!empty($user)) {
+		db_execute_prepared('DELETE FROM user_auth_cache
+			WHERE user_id = ?',
+			[$user]
+		);
 
-	// Revoking the remember-me tokens is not enough: a database session on
-	// another device stays authenticated until it expires. Terminate the
-	// user's other sessions too, keeping the current one so the action does
-	// not log the caller out mid-request.
-	db_execute_prepared('DELETE FROM sessions
-		WHERE user_id = ?
-		AND id != ?',
-		[$user, session_id()]);
+		// Revoking the remember-me tokens is not enough: a database session on
+		// another device stays authenticated until it expires. Terminate the
+		// user's other sessions too, keeping the current one so the action does
+		// not log the caller out mid-request.
+		db_execute_prepared('DELETE FROM sessions
+			WHERE user_id = ?
+			AND id != ?',
+			[$user, session_id()]);
+	}
 }
 
 function api_auth_clear_user_settings() : void {
 	$user = $_SESSION[SESS_USER_ID] ?? 0;
 
-	if (empty($user) || cacti_user_is_guest_account($user, get_guest_account()) || !is_view_allowed('graph_settings')) {
+	if (cacti_user_is_guest_account($user, get_guest_account()) || !is_view_allowed('graph_settings')) {
 		http_response_code(403);
 
 		return;
 	}
 
-	if (isrv('tab') && gnrv('tab') == 'general') {
-		db_execute_prepared('DELETE FROM settings_user
-			WHERE user_id = ?',
-			[$user]
-		);
+	if (!empty($user)) {
+		if (isrv('tab') && gnrv('tab') == 'general') {
+			db_execute_prepared('DELETE FROM settings_user
+				WHERE user_id = ?',
+				[$user]
+			);
 
-		kill_session_var(OPTIONS_USER);
-	} elseif (isrv('tab')) {
-		api_plugin_hook('auth_profile_reset');
+			kill_session_var(OPTIONS_USER);
+		} elseif (isrv('tab')) {
+			api_plugin_hook('auth_profile_reset');
+		}
+
+		raise_message('37');
 	}
-
-	raise_message('37');
 }
 
 function api_auth_clear_user_setting(string $name) : void {
@@ -220,7 +224,7 @@ function api_auth_clear_user_setting(string $name) : void {
 
 	$user = $_SESSION[SESS_USER_ID] ?? 0;
 
-	if (empty($user) || cacti_user_is_guest_account($user, get_guest_account()) || !is_view_allowed('graph_settings')) {
+	if (cacti_user_is_guest_account($user, get_guest_account()) || !is_view_allowed('graph_settings')) {
 		http_response_code(403);
 
 		return;
@@ -230,33 +234,35 @@ function api_auth_clear_user_setting(string $name) : void {
 		unset($settings_user['client_timezone_support']);
 	}
 
-	if (isrv('tab') && gnrv('tab') == 'general') {
-		db_execute_prepared('DELETE FROM settings_user
-			WHERE user_id = ?
-			AND name = ?',
-			[$user, $name]
-		);
+	if (!empty($user)) {
+		if (isrv('tab') && gnrv('tab') == 'general') {
+			db_execute_prepared('DELETE FROM settings_user
+				WHERE user_id = ?
+				AND name = ?',
+				[$user, $name]
+			);
 
-		foreach ($settings_user as $tab => $settings) {
-			if (isset($settings[$name])) {
-				if (isset($settings[$name]['default'])) {
-					db_execute_prepared('INSERT INTO settings_user
-						(name, value, user_id)
-						VALUES (?, ?, ?)',
-						[$name, $settings[$name]['default'], $user]
-					);
+			foreach ($settings_user as $tab => $settings) {
+				if (isset($settings[$name])) {
+					if (isset($settings[$name]['default'])) {
+						db_execute_prepared('INSERT INTO settings_user
+							(name, value, user_id)
+							VALUES (?, ?, ?)',
+							[$name, $settings[$name]['default'], $user]
+						);
 
-					header('Content-Type: application/json');
-					print json_encode(['id' => $name, 'value' => $settings[$name]['default']]);
+						header('Content-Type: application/json');
+						print json_encode(['id' => $name, 'value' => $settings[$name]['default']]);
 
-					kill_session_var(OPTIONS_USER);
+						kill_session_var(OPTIONS_USER);
 
-					break;
+						break;
+					}
 				}
 			}
+		} else {
+			api_plugin_hook_function('auth_profile_reset_value', $name);
 		}
-	} else {
-		api_plugin_hook_function('auth_profile_reset_value', $name);
 	}
 }
 
@@ -265,46 +271,48 @@ function api_auth_update_user_setting(string $name, string $value) : void {
 
 	$user = $_SESSION[SESS_USER_ID] ?? 0;
 
-	if (empty($user) || cacti_user_is_guest_account($user, get_guest_account())) {
+	if (cacti_user_is_guest_account($user, get_guest_account())) {
 		http_response_code(403);
 
 		return;
 	}
 
-	if ($name == 'full_name' || $name == 'email_address') {
-		db_execute_prepared("UPDATE user_auth
-			SET $name = ?
-			WHERE id = ?",
-			[$value, $user]
-		);
-	} else {
-		if (!is_view_allowed('graph_settings')) {
-			http_response_code(403);
+	if (!empty($user)) {
+		if ($name == 'full_name' || $name == 'email_address') {
+			db_execute_prepared("UPDATE user_auth
+				SET $name = ?
+				WHERE id = ?",
+				[$value, $user]
+			);
+		} else {
+			if (!is_view_allowed('graph_settings')) {
+				http_response_code(403);
 
-			return;
-		}
+				return;
+			}
 
-		foreach ($settings_user as $tab => $settings) {
-			if (isset($settings[$name])) {
-				$validated_value = cacti_validate_user_setting_value($name, $value, $settings[$name]);
+			foreach ($settings_user as $tab => $settings) {
+				if (isset($settings[$name])) {
+					$validated_value = cacti_validate_user_setting_value($name, $value, $settings[$name]);
 
-				if ($validated_value === false) {
-					http_response_code(400);
+					if ($validated_value === false) {
+						http_response_code(400);
 
-					return;
+						return;
+					}
+
+					db_execute_prepared('REPLACE INTO settings_user
+						(name, value, user_id)
+						VALUES (?, ?, ?)',
+						[$name, $validated_value, $user]
+					);
+
+					kill_session_var(OPTIONS_USER);
+					kill_session_var('selected_theme');
+					kill_session_var(SESS_USER_LANGUAGE);
+
+					break;
 				}
-
-				db_execute_prepared('REPLACE INTO settings_user
-					(name, value, user_id)
-					VALUES (?, ?, ?)',
-					[$name, $validated_value, $user]
-				);
-
-				kill_session_var(OPTIONS_USER);
-				kill_session_var('selected_theme');
-				kill_session_var(SESS_USER_LANGUAGE);
-
-				break;
 			}
 		}
 	}

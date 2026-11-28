@@ -347,7 +347,7 @@ function read_graph_config_option(string $config_name, bool $force = false) : st
 function save_user_settings(mixed $user = null) : void {
 	global $settings_user;
 
-	require_once(__DIR__ . '/user_setting_validation.php');
+	require_once(CACTI_PATH_LIBRARY . '/user_setting_validation.php');
 
 	// Passed user id, or session id, or else 0
 	$user ??= $_SESSION[SESS_USER_ID] ?? 0;

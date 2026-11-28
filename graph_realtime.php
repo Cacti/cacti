@@ -222,18 +222,19 @@ switch (grv('action')) {
 		if ($local_graph_id <= 0 || !is_graph_allowed($local_graph_id)) {
 			ob_end_clean();
 			http_response_code(403);
-			print json_encode(['error' => __('GRAPH ACCESS DENIED')]);
+			print json_encode(['error' => 'GRAPH ACCESS DENIED']);
 
 			exit;
 		}
 
 		$ds_step                     = cacti_sanitize_realtime_interval($graph_data_array['ds_step'], $realtime_refresh ?? [], 10);
 		$graph_data_array['ds_step'] = $ds_step;
-		$poller_id                   = hash('sha256', session_id());
-		$graph_rrd                   = read_config_option('realtime_cache_path') . '/user_' . $poller_id . '_lgi_' . $local_graph_id . '.png';
-		$php_binary                  = cacti_escapeshellcmd((string) read_config_option('path_php_binary'));
-		$script_path                 = cacti_escapeshellarg(CACTI_PATH_BASE . '/poller_realtime.php');
-		$args                        = '--graph=' . $local_graph_id . ' --interval=' . $ds_step . ' --poller_id=' . cacti_escapeshellarg($poller_id);
+
+		$poller_id      = hash('sha256', session_id());
+		$graph_rrd      = read_config_option('realtime_cache_path') . '/user_' . $poller_id . '_lgi_' . $local_graph_id . '.png';
+		$php_binary     = cacti_escapeshellcmd((string) read_config_option('path_php_binary'));
+		$script_path    = cacti_escapeshellarg(CACTI_PATH_BASE . '/poller_realtime.php');
+		$args           = '--graph=' . $local_graph_id . ' --interval=' . $ds_step . ' --poller_id=' . cacti_escapeshellarg($poller_id);
 
 		shell_exec($php_binary . ' -q ' . $script_path . ' ' . $args);
 
