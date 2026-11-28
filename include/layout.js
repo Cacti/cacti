@@ -2923,10 +2923,69 @@ function cactiIsPostActionUrl(href) {
 		"lock",
 		"unlock",
 		"set_host_sort",
-		"set_branch_sort"
+		"set_branch_sort",
+		"tree_up",
+		"tree_down"
 	],
 	"links.php": [
 		"delete_page",
+		"ajax_dnd",
+		"move_page_up",
+		"move_page_down"
+	],
+	"automation_templates.php": [
+		"item_movedown",
+		"item_moveup",
+		"movedown",
+		"moveup",
+		"ajax_dnd",
+		"graph_dnd",
+		"tree_dnd",
+		"exitonchange",
+		"item_add_agr",
+		"item_add_atr",
+		"item_add_ttr",
+		"item_remove_agr",
+		"item_remove_atr",
+		"item_remove_ttr"
+	],
+	"automation_graph_rules.php": [
+		"qedit"
+	],
+	"auth_profile.php": [
+		"logout_everywhere",
+		"clear_user_settings",
+		"reset_default"
+	],
+	"automation_snmp.php": [
+		"item_movedown",
+		"item_moveup",
+		"item_remove",
+		"ajax_dnd"
+	],
+	"cdef.php": [
+		"item_movedown",
+		"item_moveup",
+		"item_remove",
+		"ajax_dnd"
+	],
+	"color_templates.php": [
+		"item_movedown",
+		"item_moveup",
+		"item_remove",
+		"ajax_dnd"
+	],
+	"graph_templates.php": [
+		"ajax_dnd",
+		"input_remove"
+	],
+	"graphs.php": [
+		"ajax_dnd"
+	],
+	"vdef.php": [
+		"item_movedown",
+		"item_moveup",
+		"item_remove",
 		"ajax_dnd"
 	],
 	"reports.php": [

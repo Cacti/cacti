@@ -74,6 +74,8 @@ switch (grv('action')) {
 }
 
 function form_save() : void {
+	csrf_require_post();
+
 	global $registered_cacti_names;
 
 	if (isrv('save_component_repo')) {
@@ -149,6 +151,8 @@ function form_actions() : void {
 
 	// if we are to save this form, instead of display it
 	if (isrv('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = PackageListFilter::decodeSelectedIds(gnrv('selected_items'));
 
 		if ($selected_items != false) {

@@ -117,6 +117,10 @@ class CactiTableFilter {
 class QueryReady extends \RuntimeException {
 }
 
+// The sliced form_save() requires POST; the save probe stands in for that request.
+function csrf_require_post() : void {
+}
+
 function db_qstr(string $value) : string {
 	return "'" . $value . "'";
 }

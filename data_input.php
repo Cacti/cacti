@@ -39,6 +39,10 @@ $actions = [
 // set default action
 set_default_action();
 
+if (in_array(grv('action'), ['field_remove'], true)) {
+	csrf_require_post();
+}
+
 switch (grv('action')) {
 	case 'save':
 		form_save();
@@ -88,6 +92,8 @@ switch (grv('action')) {
  * form_save - Saves the data input method
  */
 function form_save() : void {
+	csrf_require_post();
+
 	global $registered_cacti_names;
 
 	if (isrv('save_component_data_input')) {
@@ -213,6 +219,8 @@ function form_actions() : void {
 
 	// if we are to save this form, instead of display it
 	if (isrv('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = sanitize_unserialize_selected_items(gnrv('selected_items'));
 
 		if ($selected_items != false) {

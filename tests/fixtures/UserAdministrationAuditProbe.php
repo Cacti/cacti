@@ -6,8 +6,9 @@ use RuntimeException;
 require dirname(__DIR__) . '/Helpers/RequestCoverage.php';
 require dirname(__DIR__) . '/Helpers/SourceSlice.php';
 // Run the real save handler and audit helper with an isolated SQLite save boundary.
-$scenario = $argv[1] ?? 'edit';
-$root     = dirname(__DIR__, 2);
+$scenario                  = $argv[1] ?? 'edit';
+$_SERVER['REQUEST_METHOD'] = 'POST';
+$root                      = dirname(__DIR__, 2);
 require $root . '/include/global_constants.php';
 $pdo      = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
 $pdo->exec('CREATE TABLE user_auth (id INTEGER PRIMARY KEY, username TEXT, password TEXT, enabled TEXT, locked TEXT)');
@@ -33,6 +34,12 @@ if (in_array($scenario, ['password', 'failed-save', 'failed-save-id', 'save-read
 	$request['password']         = 'new password';
 	$request['password_confirm'] = $scenario === 'mismatch' ? 'different password' : 'new password';
 }
+
+// These audit scenarios model an already authenticated, token-validated POST.
+function csrf_check(bool $fatal = true) : bool {
+	return true;
+}
+cacti_fixture_source_function($root . '/include/csrf.php', 'csrf_require_post', __NAMESPACE__);
 
 function load_audit_function($file, $name) {
 	cacti_fixture_source_function($file, $name, __NAMESPACE__);

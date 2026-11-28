@@ -62,6 +62,10 @@ if (gnrv('action') == 'archives' || gnrv('action_type') == 'archives') {
 // set default action
 set_default_action();
 
+if (in_array(grv('action'), ['item_add_dq', 'item_add_gt', 'item_remove_dq', 'item_remove_gt'], true)) {
+	csrf_require_post();
+}
+
 api_plugin_hook('device_template_top');
 
 switch (grv('action')) {
@@ -135,6 +139,8 @@ switch (grv('action')) {
 }
 
 function form_save() : void {
+	csrf_require_post();
+
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('host_template_id');
@@ -208,6 +214,8 @@ function form_actions() : void {
 
 	// if we are to save this form, instead of display it
 	if (isrv('selected_items')) {
+		csrf_require_post();
+
 		if (gnrv('action_type') == 'templates') {
 			$selected_items = sanitize_unserialize_selected_items(gnrv('selected_items'));
 

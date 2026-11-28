@@ -74,6 +74,17 @@ if [[ -f tests/fixtures/Core/DocumentDirectionShells.php ]]; then
 	run_probe DocumentDirectionShells.php document-shells-rtl-unsupported he-IL modern
 	run_probe DocumentDirectionShells.php document-shells-unknown xx-XX modern
 fi
+run_probe ../CoreBulkActionPostGuardCoverage.php core-bulk-post
+run_probe ../AdministrationBulkActionPostGuardCoverage.php administration-bulk-post
+if [[ -f tests/fixtures/Core/CsrfPostGuardBatch3Probe.php ]]; then
+	# csrf_require_post() exits, so every guard decision runs in its own process.
+	case_number=0
+	while read -r file kind mode; do
+		run_probe CsrfPostGuardBatch3Probe.php "csrf-post-$case_number" "$file" "$kind" "$mode" < /dev/null
+		case_number=$((case_number + 1))
+	done < <("$php_binary" tests/fixtures/Core/CsrfPostGuardBatch3Probe.php --list)
+fi
+
 if [[ -f tests/fixtures/Core/RealtimeDocumentShell.php ]]; then
 	for mode in disabled missing unwritable page; do
 		run_probe RealtimeDocumentShell.php "realtime-shell-$mode" "$mode"
@@ -105,7 +116,7 @@ run_probe DisplayAndValidation.php display-validation
 run_probe DisplayAndValidation.php input-method-save save
 
 browser_specs=()
-for spec in graph-drilldown graph-spikekill filter-dialog-theme table-column-widths; do
+for spec in graph-drilldown graph-spikekill filter-dialog-theme table-column-widths post-action-transport; do
 	if [[ -f "tests/e2e/tests/$spec.spec.js" ]]; then
 		browser_specs+=("tests/$spec.spec.js")
 	fi
