@@ -2048,6 +2048,27 @@ $settings['authentication'] = [
 		'sql'           => 'SELECT id AS id, username AS name FROM user_auth WHERE realm = 0 AND id NOT IN (' . $admin_account . ') ORDER BY username',
 		'default'       => '0'
 	],
+	'auth_throttle_window' => [
+		'friendly_name' => __('Login Attempt Interval'),
+		'description'   => __('Duration in seconds for client login attempt limits.'),
+		'method'        => 'drop_array',
+		'default'       => '300',
+		'array'         => [60 => '60', 300 => '300', 900 => '900', 3600 => '3600']
+	],
+	'auth_throttle_ip' => [
+		'friendly_name' => __('Login Attempts per Address'),
+		'description'   => __('Maximum password login attempts from one client address per interval.'),
+		'method'        => 'drop_array',
+		'default'       => '120',
+		'array'         => [20 => '20', 60 => '60', 120 => '120', 300 => '300', 600 => '600']
+	],
+	'auth_throttle_pair' => [
+		'friendly_name' => __('Login Attempts per Account and Address'),
+		'description'   => __('Maximum attempts for one login name from the same client address per interval.'),
+		'method'        => 'drop_array',
+		'default'       => '10',
+		'array'         => [3 => '3', 5 => '5', 10 => '10', 20 => '20', 40 => '40']
+	],
 	'secpass_lock_header' => [
 		'friendly_name' => __('Account Locking'),
 		'method'        => 'spacer',

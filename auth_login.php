@@ -24,6 +24,7 @@
 
 use Cacti\Auth\BasicAuthLoginProvider;
 use Cacti\Auth\LocalAuthLoginProvider;
+use Cacti\Auth\LoginThrottle;
 
 // include ldap support
 require_once(__DIR__ . '/lib/ldap.php');
@@ -52,7 +53,11 @@ $error_msg     = '';                                  // The errors message in c
 // global variables for exception handling
 global $error, $error_msg;
 
-if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
+if (gnrv('action') === 'login' && $auth_method != AUTH_METHOD_BASIC && !LoginThrottle::allow((string) get_client_addr(), $username)) {
+	$error     = true;
+	$error_msg = __('Access Denied! Login Failed.');
+	auth_log_failure($username, auth_realm_token((int) $frv_realm), 'rate_limited');
+} elseif (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 	if ($auth_method > AUTH_METHOD_BASIC && $frv_realm <= 1) {
 		// User picked 'local' from dropdown;
 		$auth_method = AUTH_METHOD_CACTI;

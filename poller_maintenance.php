@@ -116,6 +116,7 @@ if (POLLER_ID == 1) {
 
 	reindex_devices();
 
+	db_execute('DELETE FROM auth_login_windows WHERE expires_at <= UNIX_TIMESTAMP()');
 	remove_aged_password_hashes();
 
 	unlock_cacti();

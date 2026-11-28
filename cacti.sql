@@ -3230,6 +3230,18 @@ CREATE TABLE `user_layouts` (
 --
 
 --
+-- Table structure for table `auth_login_windows`
+--
+
+CREATE TABLE `auth_login_windows` (
+  bucket char(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+  attempts int unsigned NOT NULL,
+  expires_at bigint unsigned NOT NULL,
+  PRIMARY KEY (bucket),
+  KEY expires_at (expires_at)
+) ENGINE=InnoDB;
+
+--
 -- Table structure for table `user_log`
 --
 
