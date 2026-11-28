@@ -379,12 +379,13 @@ $il = $config['is_web'] ? '</li>' : '';
 
 /* Git checkouts and interrupted upgrades do not ship include/vendor.  Without
    this check the autoload require below produces a bare fatal error. */
-// The installer can repair a missing vendor tree before application classes
-// are loaded.  All normal entry points still fail closed with an actionable
-// message rather than emitting a raw require() fatal.
 $vendor_autoload = CACTI_PATH_INCLUDE . '/vendor/autoload.php';
 
-if (!is_file($vendor_autoload) && !defined('IN_CACTI_INSTALL')) {
+if (!is_file($vendor_autoload)) {
+	if ($config['is_web']) {
+		http_response_code(500);
+	}
+
 	print $ps . 'FATAL: The include/vendor directory is not populated.  Cacti requires its Composer dependencies before it can start.  From the Cacti directory, run:' . $sp;
 	print $ps . 'composer install' . $sp;
 	print $ps . 'Then reload this page.  See the README for details.' . $sp;

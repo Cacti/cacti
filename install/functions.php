@@ -227,10 +227,65 @@ function prune_deprecated_files() : void {
 	}
 }
 
-function prime_default_settings() : void {
+/**
+ * Check the prepared production dependency tree without executing Composer.
+ * This checks package metadata and directories, not individual file integrity.
+ */
+function install_validate_vendor_dependencies(string $base) : bool {
+	$vendor = $base . '/include/vendor';
+
+	if (!is_file($vendor . '/autoload.php') ||
+		!is_readable($base . '/composer.lock') ||
+		!is_readable($vendor . '/composer/installed.json')) {
+		return false;
+	}
+
+	$lock_json      = file_get_contents($base . '/composer.lock');
+	$installed_json = file_get_contents($vendor . '/composer/installed.json');
+
+	if ($lock_json === false || $installed_json === false) {
+		return false;
+	}
+
+	$lock      = json_decode($lock_json, true);
+	$installed = json_decode($installed_json, true);
+
+	if (!isset($lock['packages'], $installed['packages']) ||
+		!is_array($lock['packages']) || !is_array($installed['packages'])) {
+		return false;
+	}
+
+	$packages = array_column($installed['packages'], null, 'name');
+
+	foreach ($lock['packages'] as $required) {
+		if (!isset($required['name'], $required['version'])) {
+			return false;
+		}
+
+		$package = $packages[$required['name']] ?? [];
+
+		if (($package['version'] ?? null) !== $required['version']) {
+			return false;
+		}
+
+		// Composer metapackages have no files or installation directory.
+		if (($required['type'] ?? '') !== 'metapackage' &&
+			(!isset($package['install-path']) || !is_dir($vendor . '/composer/' . $package['install-path']))) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+function prime_default_settings() : bool {
 	global $settings;
 
-	if (is_array($settings) && !isset($_SESSION['settings_primed'])) {
+	if (!is_array($settings)) {
+		return false;
+	}
+
+	if (!isset($_SESSION['settings_primed'])) {
 		$defaults = [];
 
 		foreach ($settings as $tab_array) {
@@ -259,13 +314,17 @@ function prime_default_settings() : void {
 				$params[]       = $value;
 			}
 
-			db_execute_prepared('INSERT IGNORE INTO settings
+			if (!db_execute_prepared('INSERT IGNORE INTO settings
 				(name, value) VALUES ' . implode(', ', $placeholders),
-				$params);
+				$params)) {
+				return false;
+			}
 		}
 	}
 
 	$_SESSION['settings_primed'] = true;
+
+	return true;
 }
 
 function install_create_csrf_secret(string $file) : bool {
@@ -552,7 +611,7 @@ function install_test_temporary_table() : bool {
 }
 
 function db_install_execute(string $sql, array $params = [], bool $log = true) : int {
-	$status = (db_execute_prepared($sql, $params, $log) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR);
+	$status = (db_execute_prepared($sql, $params, $log && empty($params), redact: true) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR);
 
 	if ($log) {
 		db_install_add_cache($status, $sql, $params);
@@ -806,28 +865,17 @@ function db_install_add_cache(int $status, string $sql, mixed $params = null) : 
 		$database_upgrade_status[$cacti_upgrade_version] = [];
 	}
 
-	$query    = clean_up_lines($sql);
-	$actual   = 0;
-	$expected = substr_count($query, '?');
-
-	if (cacti_sizeof($params)) {
-		foreach ($params as $arg) {
-			$pos = strpos($query, '?');
-
-			if ($pos !== false) {
-				$actual++;
-				$query = substr_replace($query, "'$arg'", $pos, 1);
-			}
-		}
-	}
-
-	$sql = clean_up_lines($query);
+	// Retain placeholders, never substitute parameter values into diagnostics.
+	$sql      = clean_up_lines($sql);
+	$actual   = is_array($params) ? count($params) : 0;
+	$expected = substr_count($sql, '?');
+	$error    = empty($database_last_error) ? '' : 'Database operation failed (error details omitted)';
 
 	if ($actual !== $expected) {
 		$sql .= "\n [[ WARNING: $expected parameters expected, $actual provided ]]";
 	}
 
-	$database_upgrade_status[$cacti_upgrade_version][] = ['status' => $status, 'sql' => $sql, 'error' => $database_last_error];
+	$database_upgrade_status[$cacti_upgrade_version][] = ['status' => $status, 'sql' => $sql, 'error' => $error];
 
 	$cacheFile = '';
 
@@ -836,8 +884,8 @@ function db_install_add_cache(int $status, string $sql, mixed $params = null) : 
 	}
 
 	if (!empty($cacheFile)) {
-		log_install_high('cache','<[version]> ' . $cacti_upgrade_version . ' <[status]> ' . $status . ' <[sql]> ' . clean_up_lines($sql) . ' <[error]> ' . $database_last_error);
-		file_put_contents($cacheFile, '<[version]> ' . $cacti_upgrade_version . ' <[status]> ' . $status . ' <[sql]> ' . clean_up_lines($sql) . ' <[error]> ' . $database_last_error . PHP_EOL, FILE_APPEND);
+		log_install_high('cache','<[version]> ' . $cacti_upgrade_version . ' <[status]> ' . $status . ' <[sql]> ' . clean_up_lines($sql) . ' <[error]> ' . $error);
+		file_put_contents($cacheFile, '<[version]> ' . $cacti_upgrade_version . ' <[status]> ' . $status . ' <[sql]> ' . clean_up_lines($sql) . ' <[error]> ' . $error . PHP_EOL, FILE_APPEND);
 	}
 }
 
@@ -940,6 +988,14 @@ function find_best_path(string $binary_name) : string {
 }
 
 function install_setup_get_templates() : array {
+	// Reading every package costs about 50 ms and the installer asks several
+	// times per request, so read them once. The set is fixed for a request.
+	static $info = null;
+
+	if ($info !== null) {
+		return $info;
+	}
+
 	if (CACTI_WEB) {
 		ini_set('zlib.output_compression', '0');
 	}
@@ -1315,6 +1371,136 @@ function install_file_paths() : array {
 	return $input;
 }
 
+/**
+ * Replace the remote poller assignment without truncating the live configuration.
+ */
+function install_write_poller_config(string $file, int $poller_id) : bool {
+	$path = realpath($file);
+
+	if ($path === false || !is_file($path) || !is_writable($path)) {
+		return false;
+	}
+
+	$contents = file_get_contents($path);
+	$stat     = stat($path);
+
+	if ($contents === false || $stat === false) {
+		return false;
+	}
+
+	$original = $contents;
+	$contents = preg_replace('~^([ \t]*)\$poller_id[ \t]*=[^;\r\n]*;[ \t]*(?://[^\r\n]*|\#[^\r\n]*)?\r?$~m',
+		'${1}$poller_id = ' . $poller_id . ';', $contents, -1, $count);
+
+	if ($contents === null || $count !== 1) {
+		return false;
+	}
+
+	/* The installer only requires config.php itself to be writable. When its
+	   directory is not, or a new inode cannot keep the file's owner and group,
+	   the file is rewritten in place instead of being replaced. */
+	if (!is_writable(dirname($path))) {
+		return install_rewrite_poller_config($path, $contents, $original);
+	}
+
+	$temp = tempnam(dirname($path), '.cacti-config-');
+
+	if ($temp === false) {
+		return install_rewrite_poller_config($path, $contents, $original);
+	}
+
+	try {
+		// tempnam can fall back to the system temporary directory.
+		if (dirname($temp) !== dirname($path)) {
+			return install_rewrite_poller_config($path, $contents, $original);
+		}
+
+		$stream = fopen($temp, 'wb');
+
+		if ($stream === false) {
+			return false;
+		}
+
+		try {
+			if (!install_write_whole_stream($stream, $contents)) {
+				return false;
+			}
+		} finally {
+			fclose($stream);
+		}
+
+		// Keep the original access policy when replacing the inode.
+		if ((fileowner($temp) !== $stat['uid'] && !@chown($temp, $stat['uid'])) ||
+			(filegroup($temp) !== $stat['gid'] && !@chgrp($temp, $stat['gid']))) {
+			return install_rewrite_poller_config($path, $contents, $original);
+		}
+
+		if (!chmod($temp, $stat['mode'] & 0777)) {
+			return false;
+		}
+
+		return rename($temp, $path);
+	} finally {
+		if (is_file($temp)) {
+			unlink($temp);
+		}
+	}
+}
+
+/**
+ * Rewrite the configuration in place, which keeps its inode, owner and mode.
+ * The original contents are written back when the new contents cannot be.
+ */
+function install_rewrite_poller_config(string $path, string $contents, string $original) : bool {
+	$stream = fopen($path, 'r+b');
+
+	if ($stream === false) {
+		return false;
+	}
+
+	try {
+		if (!flock($stream, LOCK_EX)) {
+			return false;
+		}
+
+		if (install_write_whole_stream($stream, $contents)) {
+			return true;
+		}
+
+		install_write_whole_stream($stream, $original);
+
+		return false;
+	} finally {
+		fclose($stream);
+	}
+}
+
+/**
+ * Write the complete contents from the start of the stream and flush them.
+ *
+ * @param resource $stream An open, writable file stream
+ */
+function install_write_whole_stream($stream, string $contents) : bool {
+	if (!rewind($stream)) {
+		return false;
+	}
+
+	$offset = 0;
+	$length = strlen($contents);
+
+	while ($offset < $length) {
+		$written = fwrite($stream, substr($contents, $offset));
+
+		if ($written === false || $written === 0) {
+			return false;
+		}
+
+		$offset += $written;
+	}
+
+	return ftruncate($stream, $length) && fflush($stream) && fsync($stream);
+}
+
 function remote_update_config_file() : string {
 	global $rdatabase_type, $rdatabase_hostname, $rdatabase_username,
 	$rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_retries,
@@ -1326,7 +1512,6 @@ function remote_update_config_file() : string {
 	$database_ssl_capath, $database_ssl_verify_server_cert;
 
 	$failure     = '';
-	$newfile     = [];
 	$config_file = CACTI_PATH_INCLUDE . '/config.php';
 
 	$connection = db_connect_real(
@@ -1378,33 +1563,8 @@ function remote_update_config_file() : string {
 		}
 
 		if (!empty($poller_id)) {
-			if (is_writable($config_file)) {
-				$file_array = file($config_file);
-
-				if (is_array($file_array) && cacti_sizeof($file_array)) {
-					foreach ($file_array as $line) {
-						if (str_contains(trim($line), '$poller_id')) {
-							$newfile[] = "\$poller_id = $poller_id;" . PHP_EOL;
-						} else {
-							$newfile[] = $line;
-						}
-					}
-
-					$fp = fopen($config_file, 'w');
-
-					if ($fp !== false) {
-						foreach ($newfile as $line) {
-							fwrite($fp, $line);
-						}
-						fclose($fp);
-					} else {
-						$failure = 'Failed to open configuration file for writing';
-					}
-				} else {
-					$failure = 'Failed to read configuration file';
-				}
-			} else {
-				$failure = 'Configuration file is not writable';
+			if (!install_write_poller_config($config_file, (int) $poller_id)) {
+				$failure = 'Failed to update configuration file';
 			}
 		} else {
 			$failure = 'Unable to obtain poller id for this server';
@@ -1732,6 +1892,12 @@ function install_full_sync() : array {
 
 	log_install_always('sync', 'Found ' . cacti_sizeof($pollers) . ' poller(s) to sync');
 
+	// Decide once whether this run replicates. The flag stops a rerun of the
+	// installer from replicating again, so it is set after the loop: setting it
+	// inside would make every poller after the first read it as already done.
+	$replicate = read_config_option('disable_full_sync_on_upgrade') == '' && read_config_option('install_replicate', true) == '';
+	$attempted = false;
+
 	if (is_array($pollers) && cacti_sizeof($pollers)) {
 		foreach ($pollers as $poller) {
 			log_install_debug('sync', 'Poller ' . $poller['id'] . ' has a status of ' . $poller['status'] . ' with gap ' . $poller['gap']);
@@ -1745,10 +1911,19 @@ function install_full_sync() : array {
 			} elseif ($poller['gap'] < $gap_time) {
 				log_install_medium('sync', 'Replicating to Poller ' . $poller['id']);
 
-				if (read_config_option('disable_full_sync_on_upgrade') == '' && read_config_option('install_replicate', true) == '') {
-					set_config_option('install_replicate', 1);
+				if ($replicate) {
+					$attempted = true;
 
-					if (replicate_out($poller['id'])) {
+					try {
+						$replicated = replicate_out($poller['id']);
+					} catch (Throwable $e) {
+						// One collector must not fail the whole install, which has
+						// already recorded its version by the time collectors are synced.
+						log_install_always('sync', 'Replication to Poller ' . $poller['id'] . ' raised: ' . $e->getMessage());
+						$replicated = false;
+					}
+
+					if ($replicated) {
 						log_install_debug('sync', 'Completed replication to Poller ' . $poller['id']);
 						$success[] = $poller['id'];
 
@@ -1767,6 +1942,10 @@ function install_full_sync() : array {
 				$timeout[] = $poller['id'];
 			}
 		}
+	}
+
+	if ($attempted) {
+		set_config_option('install_replicate', 1);
 	}
 
 	log_install_debug('sync', 'Success: ' . cacti_sizeof($success) . ', Failed: ' . cacti_sizeof($failed) . ', Skipped: ' . cacti_sizeof($skipped) . ', Total: ' . cacti_sizeof($pollers));
