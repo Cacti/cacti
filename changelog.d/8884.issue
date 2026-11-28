@@ -1,0 +1,1 @@
+Give rrdcheck a primary key and key user_log on an auto-increment id so a second login event in the same second is stored

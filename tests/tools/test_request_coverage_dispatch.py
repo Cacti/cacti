@@ -32,9 +32,10 @@ class RequestDispatchTest(unittest.TestCase):
 
     def test_retired_theme_cleanup_runs_for_upgrade_and_pruning_changes(self):
         for path, expected in [
-                ('install/functions.php', ['installer', 'RetiredThemeCleanup.php']),
-                ('install/upgrades/1_3_0.php', ['queue', 'RetiredThemeCleanup.php']),
-                ('tests/fixtures/Installer/RetiredThemeCleanup.php', ['RetiredThemeCleanup.php'])]:
+                ('install/functions.php', ['installer', 'RetiredThemeCleanup.php', 'RrdcheckUserLogKeys.php']),
+                ('install/upgrades/1_3_0.php', ['queue', 'RetiredThemeCleanup.php', 'RrdcheckUserLogKeys.php']),
+                ('tests/fixtures/Installer/RetiredThemeCleanup.php', ['RetiredThemeCleanup.php']),
+                ('tests/fixtures/Installer/RrdcheckUserLogKeys.php', ['RrdcheckUserLogKeys.php'])]:
             with self.subTest(path=path):
                 self.dispatch(path, expected)
 
@@ -111,7 +112,7 @@ class RequestDispatchTest(unittest.TestCase):
                            'Core/ConstantTimeGuardMatrix.php', 'Core/PackageManifestMatrix.php',
                            'Core/PackageSaveMatrix.php', 'Core/PackageArchive.php', 'Core/PackageDiffBoundary.php',
                            'Core/PackageRepositoryWorkspace.php', 'Core/PackageImportFileStatus.php',
-                           'Installer/RetiredThemeCleanup.php', 'ScriptServerLogMaskingCoverage.php', 'BoostBulkDrainCoverage.php']:
+                           'Installer/RetiredThemeCleanup.php', 'Installer/RrdcheckUserLogKeys.php', 'ScriptServerLogMaskingCoverage.php', 'BoostBulkDrainCoverage.php']:
                 path = repository / 'tests/fixtures' / script
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text('<?php // dispatch fixture\n')

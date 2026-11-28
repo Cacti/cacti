@@ -3234,13 +3234,15 @@ CREATE TABLE `user_layouts` (
 --
 
 CREATE TABLE `user_log` (
+  `id` bigint(20) unsigned NOT NULL auto_increment,
   `username` varchar(50) NOT NULL default '0',
   `user_id` mediumint(8) NOT NULL default '0',
   `time` timestamp NOT NULL default '0000-00-00 00:00:00',
   `result` tinyint(3) unsigned NOT NULL default '0',
   `ip` varchar(40) NOT NULL default '',
-  PRIMARY KEY (`username`,`user_id`,`time`),
-  KEY user_id (`user_id`)
+  PRIMARY KEY (`id`),
+  KEY user_id (`user_id`),
+  KEY `username_user_id_time` (`username`,`user_id`,`time`)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
@@ -3534,9 +3536,12 @@ INSERT INTO vdef_items VALUES(15, 'e7ae90275bc1efada07c19ca3472d9db', 7, 3, 1, '
 --
 
 CREATE TABLE `rrdcheck` (
+  `id` bigint(20) unsigned NOT NULL auto_increment,
   `local_data_id` mediumint(8) unsigned NOT NULL,
   `test_date` timestamp NOT NULL default '0000-00-00 00:00:00',
-  `message` varchar(250) default ''
+  `message` varchar(250) default '',
+  PRIMARY KEY (`id`),
+  KEY `local_data_id` (`local_data_id`)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='rrdcheck';
 
 --

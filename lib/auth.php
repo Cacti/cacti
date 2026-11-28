@@ -3940,12 +3940,6 @@ function auth_process_lockout(string $username, int $realm) : void {
 					$user['locked'] = 'on';
 				}
 
-				// Log the invalid password attempt
-				db_execute_prepared('INSERT IGNORE INTO user_log
-					(username, user_id, result, ip, time)
-					VALUES (?, ?, 0, ?, NOW())',
-					[$username, $user['id'] ?? 0, get_client_addr()]);
-
 				if ($user['locked'] == 'on') {
 					cacti_log(sprintf("LOGIN FAILED: Login failed for user '%s' from IP address '%s'. Account is locked out.", $username, get_client_addr()), false, 'AUTH');
 
