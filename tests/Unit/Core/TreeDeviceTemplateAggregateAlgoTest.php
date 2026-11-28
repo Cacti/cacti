@@ -142,8 +142,19 @@ test('core function regression contracts hold', function (string $relPath, strin
 	'grow_right_pane_tree batches active template lookup with DISTINCT' => [
 		'lib/html_tree.php',
 		'function grow_right_pane_tree(',
-		['SELECT DISTINCT graph_template_id'],
+		[
+			'SELECT DISTINCT graph_template_id',
+			'html_escape(get_formatted_data_query_index(',
+			'JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP',
+			'DOMPurify.sanitize(navBar)',
+		],
 		['WHERE graph_template_id = ? LIMIT 1'],
+	],
+	'grow_dhtml_trees JSON-encodes logout needle for JavaScript' => [
+		'lib/html_tree.php',
+		'function grow_dhtml_trees(',
+		["json_encode(__('Login to Cacti'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP)"],
+		["html.indexOf('<?php print __('Login to Cacti');?>')"],
 	],
 	'api_device_remove binds integer host_id for reports_items' => [
 		'lib/api_device.php',
@@ -803,4 +814,111 @@ PHP);
 	));
 	expect($pruneDeletes[0])->toContain('aggregate_graph_id IN (88)');
 	expect($pruneDeletes[0])->toContain('local_graph_id IN (701)');
+});
+
+test('grow_right_pane_tree escapes data query index titles and JSON-encodes/sanitizes navBar markup', function () use ($repoRoot) : void {
+	$libFile = var_export($repoRoot . '/lib/html_tree.php', true);
+
+	$result = pr4RunPhpProbe(<<<PHP
+define('MAX_DISPLAY_PAGES', 5);
+define('GT_CUSTOM', 0);
+define('HOST_GROUPING_GRAPH_TEMPLATE', 1);
+define('HOST_GROUPING_DATA_QUERY_INDEX', 2);
+define('FILTER_VALIDATE_IS_NUMERIC_LIST', 1001);
+define('FILTER_VALIDATE_IS_REGEX', 1002);
+
+\$tmpRoot = sys_get_temp_dir() . '/cacti_pr4_tree_' . getmypid();
+@mkdir(\$tmpRoot . '/inc', 0777, true);
+@mkdir(\$tmpRoot . '/lib', 0777, true);
+file_put_contents(\$tmpRoot . '/inc/global_arrays.php', "<?php\n\\\$graph_timespans = [1 => 'Last Half Hour'];\n\\\$realtime_window = [60 => '1 Minute'];\n\\\$realtime_refresh = [5 => '5 Seconds'];\n");
+file_put_contents(\$tmpRoot . '/lib/data_query.php', "<?php\n");
+file_put_contents(\$tmpRoot . '/lib/html_utility.php', "<?php\n");
+
+\$config            = ['base_path' => \$tmpRoot, 'include_path' => \$tmpRoot . '/inc', 'library_path' => \$tmpRoot . '/lib', 'url_path' => '/cacti/'];
+\$current_user      = ['id' => 1];
+\$graphs_per_page   = [10 => '10'];
+\$graph_timeshifts  = [1 => '30 Minutes'];
+\$_SESSION          = [
+	'sess_current_timespan'      => 1,
+	'sess_current_date1'         => '2026-01-01 00:00',
+	'sess_current_date2'         => '2026-01-01 01:00',
+	'sess_current_timeshift'     => 1,
+	'sess_realtime_window'       => 60,
+	'sess_realtime_dsstep'       => 5,
+];
+
+class CactiSecureHeaders {
+	public static function getNonceAttribute() : string { return ''; }
+}
+
+function __(\$s, ...\$a) { return \$a ? vsprintf(\$s, \$a) : \$s; }
+function __esc(\$s, ...\$a) { return htmlspecialchars((string) (\$a ? vsprintf(\$s, \$a) : \$s), ENT_QUOTES, 'UTF-8'); }
+function html_escape(\$s) { return htmlspecialchars((string) \$s, ENT_QUOTES, 'UTF-8'); }
+function html_escape_request_var(\$k) { return ''; }
+function is_tree_allowed(\$tree_id) { return true; }
+function is_view_allowed(\$v) { return false; }
+function api_tree_get_item_type(\$leaf_id) { return 'host'; }
+function get_tree_name(\$tree_id) { return 'Main Tree'; }
+function validate_store_request_vars(\$filters, \$sess) {}
+function html_graph_normalize_filters(\$sess, \$default) {}
+function read_config_option(\$k) { return 'off'; }
+function read_user_setting(\$k, \$default = '') { return \$default; }
+function isset_request_var(\$k) { return false; }
+function get_request_var(\$k) {
+	return match (\$k) {
+		'columns' => 2,
+		'graphs'  => 10,
+		'page'    => 1,
+		default   => '',
+	};
+}
+function get_nfilter_request_var(\$k) { return ''; }
+function get_current_graph_start() { return 1700000000; }
+function get_current_graph_end() { return 1700003600; }
+function get_current_timespan() { return 1; }
+function get_current_timeshift() { return 1; }
+function is_realm_allowed(\$r) { return false; }
+function get_allowed_graph_templates(\$w = '', \$o = '', \$l = '', &\$t = 0) { return []; }
+function get_allowed_graphs(\$w = '') { return []; }
+function get_allowed_aggregate_graphs(\$w = '') { return []; }
+function get_allowed_tree_header_graphs(\$t, \$l, \$w = '') { return []; }
+function db_fetch_assoc(\$sql) { return []; }
+function db_fetch_assoc_prepared(\$sql, \$params = []) { return []; }
+function html_start_box(\$t = '', \$w = '', \$b = '', \$p = '', \$a = '', \$f = '') {}
+function html_end_box() {}
+function html_graph_template_multiselect() {}
+function html_spikekill_js() {}
+function html_nav_bar(...\$args) { return ''; }
+function html_graph_area(...\$args) {}
+function html_graph_thumbnail_area(...\$args) {}
+function api_plugin_hook_function(\$hook, \$args = null) { return \$args; }
+function db_fetch_row_prepared(\$sql, \$params = []) {
+	return ['id' => 5, 'host_id' => 9, 'site_id' => 0, 'parent' => 0, 'title' => '', 'host_grouping_type' => HOST_GROUPING_DATA_QUERY_INDEX];
+}
+function db_fetch_cell_prepared(\$sql, \$params = []) {
+	if (str_contains(\$sql, 'FROM snmp_query')) { return 'Interface <b>Stats</b>'; }
+	if (str_contains(\$sql, 'FROM host')) { return 'Edge Router'; }
+	return '';
+}
+function get_formatted_data_query_index(\$host_id, \$dq_id, \$dq_index) {
+	return 'eth0"><script>alert(1)</script>';
+}
+function draw_navigation_text() {
+	return 'Tree </script><img src=x onerror=alert(1)>';
+}
+
+require_once $libFile;
+
+ob_start();
+grow_right_pane_tree(1, 5, 'dqi:1:eth0');
+\$html = (string) ob_get_clean();
+
+echo json_encode(['html' => \$html]);
+PHP);
+
+	expect($result['html'])->toContain('eth0&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;');
+	expect($result['html'])->not->toContain('eth0"><script>alert(1)</script>');
+	expect($result['html'])->toContain('\u003C\/script\u003E');
+	expect($result['html'])->not->toContain('Tree </script><img');
+	expect($result['html'])->toContain('DOMPurify.sanitize(navBar)');
 });
