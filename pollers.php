@@ -563,7 +563,7 @@ function form_actions() : void {
 					false,
 					'WEBUI');
 			} elseif ((grv('drp_action') == POLLER_RESYNC || grv('drp_action') == POLLER_AUTHSYNC) && !is_realm_allowed(15)) {
-				raise_message('poller_sync_permission', __('Synchronizing a Data Collector requires the Settings permission.'), MESSAGE_LEVEL_ERROR);
+				raise_message('poller_sync_permission', __('Permission Denied'), MESSAGE_LEVEL_ERROR);
 			} elseif (grv('drp_action') == POLLER_RESYNC || grv('drp_action') == POLLER_AUTHSYNC) { // full or auth sync
 				cacti_session_close();
 
