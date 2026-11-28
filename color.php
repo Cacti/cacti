@@ -42,12 +42,6 @@ switch (get_request_var('action')) {
 		form_actions();
 
 		break;
-	case 'remove':
-		csrf_require_post();
-		color_remove();
-
-		header ('Location: color.php');
-		break;
 	case 'edit':
 		top_header();
 
@@ -93,16 +87,30 @@ function form_save() {
 
 		$save['id']        = get_nfilter_request_var('id');
 
-		if (get_nfilter_request_var('read_only') == '') {
+		/* a named color is read only; that comes from the stored row, never from the form */
+		$read_only = db_fetch_cell_prepared('SELECT read_only
+			FROM colors
+			WHERE id = ?',
+			array($save['id'])) == 'on';
+
+		if (!$read_only) {
 			$save['name']      = get_filter_request_var('name', FILTER_SANITIZE_SPECIAL_CHARS);
-			$save['hex']       = form_input_validate(get_nfilter_request_var('hex'),  'hex',  '^[a-fA-F0-9]+$' , false, 3);
-		} else {
-			$save['name']      = get_filter_request_var('hidden_name', FILTER_SANITIZE_SPECIAL_CHARS);
-			$save['read_only'] = 'on';
+			$save['hex']       = form_input_validate(get_nfilter_request_var('hex'),  'hex',  '^[a-fA-F0-9]{6}\z' , false, 3);
+
+			/* hex is a unique key, so saving one that another color has would change that color or nothing */
+			if (!is_error_message() && db_fetch_cell_prepared('SELECT id
+				FROM colors
+				WHERE hex = ?
+				AND id != ?',
+				array($save['hex'], $save['id']))) {
+				raise_message('color_hex_exists', __('Another Color already has the Hex value %s.', $save['hex']), MESSAGE_LEVEL_ERROR);
+
+				$_SESSION['sess_error_fields']['hex'] = 'hex';
+			}
 		}
 
 		if (!is_error_message()) {
-			$color_id = sql_save($save, 'colors');
+			$color_id = $read_only ? $save['id'] : sql_save($save, 'colors');
 
 			if ($color_id) {
 				raise_message(1);
@@ -117,17 +125,16 @@ function form_save() {
 			header('Location: color.php?header=false');
 		}
 	} elseif (isset_request_var('save_component_import')) {
-		if (isset($_FILES['import_file']['tmp_name'])) {
-			if (($_FILES['import_file']['tmp_name'] != 'none') && ($_FILES['import_file']['tmp_name'] != '')) {
-				$csv_data = file($_FILES['import_file']['tmp_name']);
-				$debug_data = color_import_processor($csv_data);
+		/* with no file chosen, PHP still sets tmp_name, to an empty string */
+		if (isset($_FILES['import_file']['tmp_name']) && $_FILES['import_file']['tmp_name'] != 'none' && $_FILES['import_file']['tmp_name'] != '') {
+			$csv_data = file($_FILES['import_file']['tmp_name']);
+			$debug_data = color_import_processor($csv_data);
 
-				if (cacti_sizeof($debug_data)) {
-					$_SESSION['import_debug_info'] = $debug_data;
-				}
-
-				header('Location: color.php?action=import');
+			if (cacti_sizeof($debug_data)) {
+				$_SESSION['import_debug_info'] = $debug_data;
 			}
+
+			header('Location: color.php?action=import');
 		} else {
 			raise_message(35);
 
@@ -161,7 +168,16 @@ function form_actions() {
 
 		if ($selected_items != false) {
 			if (get_request_var('drp_action') == '1') { // delete
-				db_execute('DELETE FROM colors WHERE ' . array_to_sql_or($selected_items, 'id'));
+				/* named colors and colors used by a graph item or a color template are kept */
+				db_execute('DELETE FROM colors
+					WHERE ' . array_to_sql_or($selected_items, 'id') . "
+					AND COALESCE(read_only, '') != 'on'
+					AND NOT EXISTS (SELECT 1 FROM graph_templates_item AS gti WHERE gti.color_id = colors.id)
+					AND NOT EXISTS (SELECT 1 FROM color_template_items AS cti WHERE cti.color_id = colors.id)");
+
+				if (db_affected_rows() < cacti_sizeof($selected_items)) {
+					raise_message('color_in_use', __('Named Colors and Colors in use were not deleted.'), MESSAGE_LEVEL_WARN);
+				}
 			}
 		}
 
@@ -182,7 +198,12 @@ function form_actions() {
 
 			$color = db_fetch_row_prepared('SELECT name, hex FROM colors WHERE id = ?', array($matches[1]));
 
-			$color_list .= '<li>' . ($color['name'] != '' ? html_escape($color['name']): __('Unnamed Color')) . ' (<span style="background-color:#' . $color['hex'] . '">' . $color['hex'] . '</span>)</li>';
+			/* deleted since the list was shown */
+			if (!cacti_sizeof($color)) {
+				continue;
+			}
+
+			$color_list .= '<li>' . ($color['name'] != '' ? html_escape($color['name']): __('Unnamed Color')) . ' (<span style="background-color:#' . html_escape($color['hex']) . '">' . html_escape($color['hex']) . '</span>)</li>';
 			$color_array[$i] = $matches[1];
 
 			$i++;
@@ -303,7 +324,15 @@ function color_import_processor(&$colors) {
 					}
 
 					if (isset_request_var('allow_update')) {
-						if (db_execute_prepared('INSERT INTO colors
+						/* a named color keeps its name */
+						$read_only = db_fetch_cell_prepared('SELECT read_only
+							FROM colors
+							WHERE hex = ?',
+							[$hex]);
+
+						if ($read_only == 'on') {
+							array_push($return_array, "<strong>UPDATE SKIPPED, NAMED COLOR:</strong> $save_value");
+						} elseif (db_execute_prepared('INSERT INTO colors
 							(hex, name)
 							VALUES (?, ?)
 							ON DUPLICATE KEY UPDATE
@@ -426,6 +455,15 @@ function color_edit() {
 
 	if (!isempty_request_var('id')) {
 		$color = db_fetch_row_prepared('SELECT * FROM colors WHERE id = ?', array(get_request_var('id')));
+
+		if (!cacti_sizeof($color)) {
+			raise_message('color_not_found', __('Color not found.'), MESSAGE_LEVEL_ERROR);
+
+			cacti_header('color.php');
+
+			exit;
+		}
+
 		$header_label = __esc('Colors [edit: %s]', $color['hex']);
 	} else {
 		$header_label = __('Colors [new]');
@@ -669,7 +707,8 @@ function color() {
 
 	$colors = db_fetch_assoc("SELECT *,
         SUM(CASE WHEN local_graph_id>0 THEN 1 ELSE 0 END) AS graphs,
-        SUM(CASE WHEN local_graph_id=0 THEN 1 ELSE 0 END) AS templates
+        SUM(CASE WHEN local_graph_id=0 THEN 1 ELSE 0 END) AS templates,
+        (SELECT COUNT(*) FROM color_template_items AS cti WHERE cti.color_id = rs.id) AS color_templates
         FROM (
 			SELECT c.*, local_graph_id
 			FROM colors AS c
@@ -699,7 +738,7 @@ function color() {
 		'name'      => array('display' => __('Color Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Color definition.')),
 		'read_only' => array('display' => __('Named Color'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('Is this color a named color which are read only.')),
 		'nosort1'   => array('display' => __('Color'), 'align' => 'center', 'sort' => 'DESC', 'tip' => __('The Color as shown on the screen.')),
-		'nosort'    => array('display' => __('Deletable'), 'align' => 'right', 'sort' => '', 'tip' => __('Colors in use cannot be Deleted.  In use is defined as being referenced either by a Graph or a Graph Template.')),
+		'nosort'    => array('display' => __('Deletable'), 'align' => 'right', 'sort' => '', 'tip' => __('Named Colors and Colors in use cannot be Deleted.  In use is defined as being referenced by a Graph, a Graph Template or a Color Template.')),
 		'graphs'    => array('display' => __('Graphs Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graph using this Color.')),
 		'templates' => array('display' => __('Templates Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graph Templates using this Color.'))
 	);
@@ -709,7 +748,7 @@ function color() {
 	$i = 0;
 	if (cacti_sizeof($colors)) {
 		foreach ($colors as $color) {
-			if ($color['graphs'] == 0 && $color['templates'] == 0) {
+			if ($color['graphs'] == 0 && $color['templates'] == 0 && $color['color_templates'] == 0 && $color['read_only'] != 'on') {
 				$disabled = false;
 			} else {
 				$disabled = true;
@@ -720,10 +759,10 @@ function color() {
 			}
 
 			form_alternate_row('line' . $color['id'], false, $disabled);
-			form_selectable_cell("<a class='linkEditMain' href='" . html_escape('color.php?action=edit&id=' . $color['id']) . "'>" . $color['hex'] . '</a>', $color['id']);
+			form_selectable_cell("<a class='linkEditMain' href='" . html_escape('color.php?action=edit&id=' . $color['id']) . "'>" . html_escape($color['hex']) . '</a>', $color['id']);
 			form_selectable_cell(filter_value($color['name'], get_request_var('filter')), $color['id']);
 			form_selectable_cell($color['read_only'] == 'on' ? __('Yes'):__('No'), $color['id']);
-			form_selectable_cell('', $color['id'], '', 'text-align:right;background-color:#' . $color['hex'] . ';min-width:30%');
+			form_selectable_cell('', $color['id'], '', 'text-align:right;background-color:#' . html_escape($color['hex']) . ';min-width:30%');
 			form_selectable_cell($disabled ? __('No'):__('Yes'), $color['id'], '', 'text-align:right');
 			form_selectable_cell(number_format_i18n($color['graphs'], '-1'), $color['id'], '', 'text-align:right');
 			form_selectable_cell(number_format_i18n($color['templates'], '-1'), $color['id'], '', 'text-align:right');

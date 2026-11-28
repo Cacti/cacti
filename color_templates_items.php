@@ -103,7 +103,7 @@ function aggregate_color_item_form_save() {
 
 			$save['color_template_item_id'] = html_escape_request_var('color_template_item_id');
 			$save['color_template_id'] = html_escape_request_var('color_template_id');
-			$save['color_id'] = form_input_validate((isset($item['color_id']) ? $item['color_id'] : get_nfilter_request_var('color_id')), 'color_id', '', true, 3);
+			$save['color_id'] = form_input_validate((isset($item['color_id']) ? $item['color_id'] : get_nfilter_request_var('color_id')), 'color_id', '^[1-9][0-9]*\z', false, 3);
 			$save['sequence'] = $sequence;
 
 			if (!is_error_message()) {
@@ -313,7 +313,7 @@ function aggregate_color_item_remove_confirm() {
 		<td class='topBoxAlt'>
 			<p><?php print __('Click \'Continue\' to delete the following Color Template Color.'); ?></p>
 			<p><?php print __('Color Name:');?> '<?php print html_escape($template['name']);?>'<br>
-			<?php print __('Color Hex:');?><strong><?php print $color_hex;?></p>
+			<?php print __('Color Hex:');?><strong><?php print html_escape($color_hex);?></p>
 		</td>
 	</tr>
 	<tr>
@@ -391,7 +391,17 @@ function aggregate_color_item_edit() {
 			FROM color_template_items
 			WHERE color_template_item_id = ?',
 			array(get_request_var('color_template_item_id')));
+	}
 
+	if (!cacti_sizeof($template) || (isset($template_item) && !cacti_sizeof($template_item))) {
+		raise_message('color_item_not_found', __('Color Template or Item not found.'), MESSAGE_LEVEL_ERROR);
+
+		cacti_header('color_templates.php');
+
+		exit;
+	}
+
+	if (isset($template_item)) {
 		$header_label = __esc('Color Template Items [edit Report Item: %s]', $template['name']);
 	} else {
 		$template_item = array();

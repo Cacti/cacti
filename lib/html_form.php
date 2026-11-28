@@ -1433,7 +1433,7 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
 	}
 
 	if ($class != '') {
-		$class = " class='colordropdown $class' ";
+		$class = " class='colordropdown " . htmlspecialchars($class, ENT_QUOTES, 'UTF-8') . "' ";
 	} else {
 		$class = " class='colordropdown'";
 	}
@@ -1451,14 +1451,11 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
 
 	$colors_sql = 'SELECT *
 		FROM colors
-		ORDER BY
-			SUBSTRING(hex,0,2) ASC,
-			SUBSTRING(hex,2,2) ASC,
-			SUBSTRING(hex,4,2) ASC';
+		ORDER BY hex ASC';
 
 	$colors_list = db_fetch_assoc($colors_sql);
 
-	print "<select style='background-color: #$current_color;' id='$form_name' name='$form_name'" . $class . ">";
+	print "<select style='background-color: #" . html_escape($current_color) . ";' id='$form_name' name='$form_name'" . $class . ">";
 
 	if ($form_none_entry != '') {
 		print "<option value='0'>$form_none_entry</option>";

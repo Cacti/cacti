@@ -98,7 +98,7 @@ switch (get_request_var('action')) {
 
 function form_save() {
 	if (isset_request_var('save_component_item')) {
-		global $graph_item_types;
+		global $graph_item_types, $graph_color_alpha;
 
 		/* ================= input validation ================= */
 		get_filter_request_var('sequence');
@@ -190,7 +190,7 @@ function form_save() {
 				set_request_var('alpha', get_nfilter_request_var('invisible_alpha'));
 			}
 
-			$save['alpha']          = form_input_validate((isset($item['alpha']) ? $item['alpha'] : get_nfilter_request_var('alpha')), 'alpha', '', true, 3);
+			$save['alpha']          = form_input_validate(strtoupper((string) (isset($item['alpha']) ? $item['alpha'] : get_nfilter_request_var('alpha'))), 'alpha', '^(' . implode('|', array_keys($graph_color_alpha)) . ')\z', true, 3);
 			$save['graph_type_id']  = form_input_validate((isset($item['graph_type_id']) ? $item['graph_type_id'] : get_nfilter_request_var('graph_type_id')), 'graph_type_id', '^[0-9]+$', true, 3);
 
 			if (isset_request_var('line_width') || isset($item['line_width'])) {

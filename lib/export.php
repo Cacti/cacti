@@ -115,7 +115,7 @@ function graph_template_to_xml($graph_template_id) {
 							$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version('gprint_preset') . get_hash_gprint($item[$field_name]) . "</$field_name>\n";
 							break;
 						case 'color_id':
-							$xml_text .= "\t\t\t<$field_name>" . db_fetch_cell_prepared('SELECT hex FROM colors WHERE id = ?', array($item[$field_name])) . "</$field_name>\n";
+							$xml_text .= "\t\t\t<$field_name>" . xml_character_encode(db_fetch_cell_prepared('SELECT hex FROM colors WHERE id = ?', array($item[$field_name]))) . "</$field_name>\n";
 							break;
 						default:
 							$xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item[$field_name]) . "</$field_name>\n";

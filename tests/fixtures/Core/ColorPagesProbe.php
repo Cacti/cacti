@@ -1,0 +1,533 @@
+<?php
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ +-------------------------------------------------------------------------+
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+*/
+
+/*
+ * Runs unchanged functions of the color pages in their own process against
+ * an SQLite database built from the scenario, and prints what they wrote:
+ * the tables, the redirect, the raised messages, the fields that failed
+ * validation and the page output.
+ *
+ * The scenario names the page functions to load, the function to call, the
+ * request, the posted fields and the table rows. Page code and the library
+ * helpers it uses are loaded into this namespace, so the request, database
+ * and page chrome functions below stand in for the Cacti runtime.
+ */
+
+namespace CactiColorPagesFixture;
+
+if (PHP_SAPI !== 'cli') {
+	http_response_code(404);
+	exit;
+}
+
+require dirname(__DIR__, 2) . '/Helpers/RequestCoverage.php';
+require dirname(__DIR__, 2) . '/Helpers/SourceSlice.php';
+$root = dirname(__DIR__, 3);
+require $root . '/include/global_constants.php';
+
+$scenario = json_decode($argv[1], true, 512, JSON_THROW_ON_ERROR);
+
+$config   = array('base_path' => $root, 'include_path' => __DIR__ . '/ColorPages', 'is_web' => false, 'cacti_server_os' => 'unix');
+$messages = array();
+$_SESSION = $scenario['session'] ?? array();
+$_POST    = $scenario['post'] ?? array();
+$_FILES   = $scenario['files'] ?? array();
+
+$GLOBALS['request']       = ($scenario['request'] ?? array()) + $_POST;
+$GLOBALS['options']       = ($scenario['options'] ?? array()) + array('log_validation' => '', 'num_rows_table' => '30', 'default_has' => '', 'drag_and_drop' => '');
+$GLOBALS['location']      = null;
+$GLOBALS['raised']        = array();
+$GLOBALS['checkboxes']    = array();
+$GLOBALS['pushed']        = array();
+$GLOBALS['affected_rows'] = 0;
+
+$pages = array('color.php', 'color_templates.php', 'color_templates_items.php', 'graphs_items.php', 'graph_templates_items.php', 'lib/html_form.php', 'lib/aggregate.php', 'lib/api_aggregate.php', 'lib/functions.php', 'lib/html.php', 'lib/html_utility.php', 'lib/database.php', 'lib/export.php');
+
+/* the alpha keys the graph item editor offers, read from include/global_arrays.php */
+$graph_color_alpha = array();
+
+if (preg_match('/^\$graph_color_alpha = array\((.*?)\);$/ms', file_get_contents($root . '/include/global_arrays.php'), $match)) {
+	preg_match_all("/'([0-9A-F]{2})'\s*=>\s*'([^']*)'/", $match[1], $keys);
+	$graph_color_alpha = array_combine($keys[1], $keys[2]);
+}
+
+$helpers = array(
+	array('lib/functions.php', 'cacti_sizeof'),
+	array('lib/functions.php', 'cacti_count'),
+	array('lib/functions.php', 'array_rekey'),
+	array('lib/functions.php', 'form_input_validate'),
+	array('lib/functions.php', 'is_error_message'),
+	array('lib/functions.php', 'sanitize_unserialize_selected_items'),
+	array('lib/functions.php', 'filter_value'),
+	array('lib/html.php', 'html_escape'),
+	array('lib/html_utility.php', 'form_selectable_cell'),
+	array('lib/html_utility.php', 'form_selectable_ecell'),
+);
+
+foreach (array_merge($helpers, $scenario['slice']) as $slice) {
+	if (!in_array($slice[0], $pages, true)) {
+		throw new \RuntimeException('Not a page of the color feature: ' . $slice[0]);
+	}
+
+	\cacti_fixture_source_function($root . '/' . $slice[0], $slice[1], __NAMESPACE__);
+}
+
+require $config['include_path'] . '/global_arrays.php';
+
+/* template export writes these fields of a graph item */
+$struct_graph                     = array();
+$struct_graph_item                = array('color_id' => array(), 'alpha' => array(), 'text_format' => array());
+$fields_graph_template_input_edit = array();
+$export_errors                    = 0;
+
+$db = new \PDO('sqlite::memory:');
+$db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+$db->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
+$db->setAttribute(\PDO::ATTR_STRINGIFY_FETCHES, true);
+$db->exec("CREATE TABLE colors (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT DEFAULT '', hex TEXT NOT NULL DEFAULT '', read_only TEXT DEFAULT '', UNIQUE (hex))");
+$db->exec("CREATE TABLE graph_templates_item (id INTEGER PRIMARY KEY AUTOINCREMENT, hash TEXT DEFAULT '', graph_template_id INTEGER DEFAULT 0, local_graph_id INTEGER DEFAULT 0, local_graph_template_item_id INTEGER DEFAULT 0, task_item_id INTEGER DEFAULT 0, color_id INTEGER DEFAULT 0, alpha TEXT DEFAULT 'FF', graph_type_id INTEGER DEFAULT 0, line_width TEXT DEFAULT '', dashes TEXT DEFAULT '', dash_offset TEXT DEFAULT '', cdef_id INTEGER DEFAULT 0, vdef_id INTEGER DEFAULT 0, shift TEXT DEFAULT '', consolidation_function_id INTEGER DEFAULT 0, textalign TEXT DEFAULT '', text_format TEXT DEFAULT '', value TEXT DEFAULT '', hard_return TEXT DEFAULT '', gprint_id INTEGER DEFAULT 0, sequence INTEGER DEFAULT 0)");
+$db->exec("CREATE TABLE cdef (id INTEGER PRIMARY KEY, name TEXT DEFAULT '')");
+$db->exec("CREATE TABLE graph_templates (id INTEGER PRIMARY KEY, name TEXT DEFAULT '', multiple TEXT DEFAULT '', test_source TEXT DEFAULT '')");
+$db->exec('CREATE TABLE graph_templates_graph (id INTEGER PRIMARY KEY, graph_template_id INTEGER DEFAULT 0, local_graph_id INTEGER DEFAULT 0)');
+$db->exec("CREATE TABLE graph_template_input (id INTEGER PRIMARY KEY, hash TEXT DEFAULT '', graph_template_id INTEGER DEFAULT 0, name TEXT DEFAULT '', column_name TEXT DEFAULT '')");
+$db->exec('CREATE TABLE graph_template_input_defs (graph_template_input_id INTEGER, graph_template_item_id INTEGER)');
+$db->exec("CREATE TABLE color_templates (color_template_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT DEFAULT '')");
+$db->exec('CREATE TABLE color_template_items (color_template_item_id INTEGER PRIMARY KEY AUTOINCREMENT, color_template_id INTEGER DEFAULT 0, color_id INTEGER DEFAULT 0, sequence INTEGER DEFAULT 0)');
+$db->exec('CREATE TABLE aggregate_graph_templates_item (aggregate_template_id INTEGER, graph_templates_item_id INTEGER, color_template INTEGER DEFAULT 0)');
+$db->exec("CREATE TABLE aggregate_graphs (id INTEGER PRIMARY KEY, aggregate_template_id INTEGER DEFAULT 0, template_propogation TEXT DEFAULT '', local_graph_id INTEGER DEFAULT 0)");
+$db->exec('CREATE TABLE aggregate_graphs_graph_item (aggregate_graph_id INTEGER, graph_templates_item_id INTEGER, color_template INTEGER DEFAULT 0)');
+
+/*
+ * Each table is seeded by a fixed statement: a row of defaults is added and the
+ * columns the scenario names replace their defaults.
+ */
+$seed_columns = array(
+	'colors' => array('id', 'name', 'hex', 'read_only'),
+	'graph_templates_item' => array('id', 'hash', 'graph_template_id', 'local_graph_id', 'local_graph_template_item_id', 'task_item_id', 'color_id', 'alpha', 'graph_type_id', 'line_width', 'dashes', 'dash_offset', 'cdef_id', 'vdef_id', 'shift', 'consolidation_function_id', 'textalign', 'text_format', 'value', 'hard_return', 'gprint_id', 'sequence'),
+	'cdef' => array('id', 'name'),
+	'graph_templates' => array('id', 'name', 'multiple', 'test_source'),
+	'graph_templates_graph' => array('id', 'graph_template_id', 'local_graph_id'),
+	'graph_template_input' => array('id', 'hash', 'graph_template_id', 'name', 'column_name'),
+	'graph_template_input_defs' => array('graph_template_input_id', 'graph_template_item_id'),
+	'color_templates' => array('color_template_id', 'name'),
+	'color_template_items' => array('color_template_item_id', 'color_template_id', 'color_id', 'sequence'),
+	'aggregate_graph_templates_item' => array('aggregate_template_id', 'graph_templates_item_id', 'color_template'),
+	'aggregate_graphs' => array('id', 'aggregate_template_id', 'template_propogation', 'local_graph_id'),
+	'aggregate_graphs_graph_item' => array('aggregate_graph_id', 'graph_templates_item_id', 'color_template'),
+);
+
+$seed_statements = array(
+	'colors' => 'UPDATE colors SET id = COALESCE(?, id), name = COALESCE(?, name), hex = COALESCE(?, hex), read_only = COALESCE(?, read_only) WHERE rowid = ?',
+	'graph_templates_item' => 'UPDATE graph_templates_item SET id = COALESCE(?, id), hash = COALESCE(?, hash), graph_template_id = COALESCE(?, graph_template_id), local_graph_id = COALESCE(?, local_graph_id), local_graph_template_item_id = COALESCE(?, local_graph_template_item_id), task_item_id = COALESCE(?, task_item_id), color_id = COALESCE(?, color_id), alpha = COALESCE(?, alpha), graph_type_id = COALESCE(?, graph_type_id), line_width = COALESCE(?, line_width), dashes = COALESCE(?, dashes), dash_offset = COALESCE(?, dash_offset), cdef_id = COALESCE(?, cdef_id), vdef_id = COALESCE(?, vdef_id), shift = COALESCE(?, shift), consolidation_function_id = COALESCE(?, consolidation_function_id), textalign = COALESCE(?, textalign), text_format = COALESCE(?, text_format), value = COALESCE(?, value), hard_return = COALESCE(?, hard_return), gprint_id = COALESCE(?, gprint_id), sequence = COALESCE(?, sequence) WHERE rowid = ?',
+	'cdef' => 'UPDATE cdef SET id = COALESCE(?, id), name = COALESCE(?, name) WHERE rowid = ?',
+	'graph_templates' => 'UPDATE graph_templates SET id = COALESCE(?, id), name = COALESCE(?, name), multiple = COALESCE(?, multiple), test_source = COALESCE(?, test_source) WHERE rowid = ?',
+	'graph_templates_graph' => 'UPDATE graph_templates_graph SET id = COALESCE(?, id), graph_template_id = COALESCE(?, graph_template_id), local_graph_id = COALESCE(?, local_graph_id) WHERE rowid = ?',
+	'graph_template_input' => 'UPDATE graph_template_input SET id = COALESCE(?, id), hash = COALESCE(?, hash), graph_template_id = COALESCE(?, graph_template_id), name = COALESCE(?, name), column_name = COALESCE(?, column_name) WHERE rowid = ?',
+	'graph_template_input_defs' => 'UPDATE graph_template_input_defs SET graph_template_input_id = COALESCE(?, graph_template_input_id), graph_template_item_id = COALESCE(?, graph_template_item_id) WHERE rowid = ?',
+	'color_templates' => 'UPDATE color_templates SET color_template_id = COALESCE(?, color_template_id), name = COALESCE(?, name) WHERE rowid = ?',
+	'color_template_items' => 'UPDATE color_template_items SET color_template_item_id = COALESCE(?, color_template_item_id), color_template_id = COALESCE(?, color_template_id), color_id = COALESCE(?, color_id), sequence = COALESCE(?, sequence) WHERE rowid = ?',
+	'aggregate_graph_templates_item' => 'UPDATE aggregate_graph_templates_item SET aggregate_template_id = COALESCE(?, aggregate_template_id), graph_templates_item_id = COALESCE(?, graph_templates_item_id), color_template = COALESCE(?, color_template) WHERE rowid = ?',
+	'aggregate_graphs' => 'UPDATE aggregate_graphs SET id = COALESCE(?, id), aggregate_template_id = COALESCE(?, aggregate_template_id), template_propogation = COALESCE(?, template_propogation), local_graph_id = COALESCE(?, local_graph_id) WHERE rowid = ?',
+	'aggregate_graphs_graph_item' => 'UPDATE aggregate_graphs_graph_item SET aggregate_graph_id = COALESCE(?, aggregate_graph_id), graph_templates_item_id = COALESCE(?, graph_templates_item_id), color_template = COALESCE(?, color_template) WHERE rowid = ?',
+);
+
+$seed_defaults = array(
+	'colors' => 'INSERT INTO colors DEFAULT VALUES',
+	'graph_templates_item' => 'INSERT INTO graph_templates_item DEFAULT VALUES',
+	'cdef' => 'INSERT INTO cdef DEFAULT VALUES',
+	'graph_templates' => 'INSERT INTO graph_templates DEFAULT VALUES',
+	'graph_templates_graph' => 'INSERT INTO graph_templates_graph DEFAULT VALUES',
+	'graph_template_input' => 'INSERT INTO graph_template_input DEFAULT VALUES',
+	'graph_template_input_defs' => 'INSERT INTO graph_template_input_defs DEFAULT VALUES',
+	'color_templates' => 'INSERT INTO color_templates DEFAULT VALUES',
+	'color_template_items' => 'INSERT INTO color_template_items DEFAULT VALUES',
+	'aggregate_graph_templates_item' => 'INSERT INTO aggregate_graph_templates_item DEFAULT VALUES',
+	'aggregate_graphs' => 'INSERT INTO aggregate_graphs DEFAULT VALUES',
+	'aggregate_graphs_graph_item' => 'INSERT INTO aggregate_graphs_graph_item DEFAULT VALUES',
+);
+
+foreach ($scenario['db'] ?? array() as $table => $rows) {
+	foreach ($rows as $row) {
+		if (cacti_sizeof(array_diff(array_keys($row), $seed_columns[$table]))) {
+			throw new \InvalidArgumentException('Unknown column for ' . $table);
+		}
+
+		$db->exec($seed_defaults[$table]);
+
+		$values = array();
+
+		foreach ($seed_columns[$table] as $column) {
+			$values[] = $row[$column] ?? null;
+		}
+
+		$values[] = $db->lastInsertId();
+
+		$db->prepare($seed_statements[$table])->execute($values);
+	}
+}
+
+register_shutdown_function(function () use ($db) {
+	$output = '';
+
+	while (ob_get_level() > 0) {
+		$output = ob_get_clean() . $output;
+	}
+
+	$tables = array();
+
+	foreach (array('colors', 'graph_templates_item', 'color_templates', 'color_template_items') as $table) {
+		$tables[$table] = $db->query('SELECT * FROM ' . $table . ' ORDER BY 1')->fetchAll();
+	}
+
+	print json_encode(array(
+		'location'   => $GLOBALS['location'],
+		'raised'     => $GLOBALS['raised'],
+		'errors'     => array_keys($_SESSION['sess_error_fields'] ?? array()),
+		'checkboxes' => $GLOBALS['checkboxes'],
+		'pushed'     => $GLOBALS['pushed'],
+		'result'     => $GLOBALS['result'] ?? null,
+		'session'    => array_diff_key($_SESSION, array('sess_error_fields' => true, 'sess_field_values' => true)),
+		'tables'     => $tables,
+		'output'     => $output,
+	), JSON_THROW_ON_ERROR);
+});
+
+ob_start();
+
+$GLOBALS['result'] = call_user_func_array(__NAMESPACE__ . '\\' . $scenario['call'], $scenario['args'] ?? array());
+
+exit;
+
+/* ---------------- request ---------------- */
+
+function get_request_var($name, $default = '') {
+	return $GLOBALS['request'][$name] ?? $default;
+}
+
+function get_nfilter_request_var($name, $default = '') {
+	return $GLOBALS['request'][$name] ?? $default;
+}
+
+function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options = array()) {
+	if (!isset($GLOBALS['request'][$name])) {
+		return '';
+	}
+
+	if ($filter === FILTER_SANITIZE_SPECIAL_CHARS) {
+		$GLOBALS['request'][$name] = filter_var($GLOBALS['request'][$name], FILTER_SANITIZE_SPECIAL_CHARS);
+	} elseif ($filter === FILTER_VALIDATE_INT && $GLOBALS['request'][$name] !== '' && filter_var($GLOBALS['request'][$name], FILTER_VALIDATE_INT) === false) {
+		throw new \RuntimeException('Request validation stopped the page for ' . $name);
+	}
+
+	return $GLOBALS['request'][$name];
+}
+
+function isset_request_var($name) {
+	return isset($GLOBALS['request'][$name]);
+}
+
+function isempty_request_var($name) {
+	return empty($GLOBALS['request'][$name]);
+}
+
+function set_request_var($name, $value) {
+	$GLOBALS['request'][$name] = $value;
+}
+
+function html_escape_request_var($name) {
+	return html_escape(get_request_var($name));
+}
+
+function validate_store_request_vars($filters, $session = '') {
+	foreach ($filters as $name => $filter) {
+		if (!isset($GLOBALS['request'][$name]) && isset($filter['default'])) {
+			$GLOBALS['request'][$name] = $filter['default'];
+		}
+	}
+}
+
+function input_validate_input_number($value) {
+	if (!is_numeric($value)) {
+		throw new \RuntimeException('Not a number: ' . $value);
+	}
+}
+
+function csrf_require_post() {
+}
+
+/* ---------------- database ---------------- */
+
+function db() {
+	global $db;
+
+	return $db;
+}
+
+function db_execute($sql) {
+	$GLOBALS['affected_rows'] = db()->exec($sql);
+
+	return true;
+}
+
+function db_execute_prepared($sql, $params = array()) {
+	/* the MySQL upsert, in the SQLite form */
+	$sql = preg_replace(array('/ON DUPLICATE KEY UPDATE/', '/VALUES\((\w+)\)/'), array('ON CONFLICT DO UPDATE SET', 'excluded.$1'), $sql);
+
+	try {
+		$statement = db()->prepare($sql);
+		$statement->execute($params);
+	} catch (\PDOException $e) {
+		return false;
+	}
+
+	$GLOBALS['affected_rows'] = $statement->rowCount();
+
+	return true;
+}
+
+function db_affected_rows() {
+	return $GLOBALS['affected_rows'];
+}
+
+function db_fetch_assoc_prepared($sql, $params = array()) {
+	$statement = db()->prepare($sql);
+	$statement->execute($params);
+
+	return $statement->fetchAll();
+}
+
+function db_fetch_assoc($sql) {
+	return db_fetch_assoc_prepared($sql);
+}
+
+function db_fetch_row_prepared($sql, $params = array()) {
+	$rows = db_fetch_assoc_prepared($sql, $params);
+
+	return cacti_sizeof($rows) ? $rows[0] : array();
+}
+
+function db_fetch_cell_prepared($sql, $params = array()) {
+	$row = db_fetch_row_prepared($sql, $params);
+
+	return cacti_sizeof($row) ? reset($row) : false;
+}
+
+function db_fetch_cell($sql) {
+	return db_fetch_cell_prepared($sql);
+}
+
+function db_qstr($value) {
+	return db()->quote((string) $value);
+}
+
+/* lib/database.php names the global db_qstr() as a callback, so its body is repeated here */
+function array_to_sql_or($array, $sql_column) {
+	if (end($array) === null) {
+		array_pop($array);
+	}
+
+	if (cacti_sizeof($array)) {
+		return '(' . $sql_column . ' IN(' . implode(',', array_map(__NAMESPACE__ . '\\db_qstr', $array)) . '))';
+	}
+}
+
+function db_fetch_insert_id() {
+	return db()->lastInsertId();
+}
+
+/* Upsert like the MySQL INSERT ... ON DUPLICATE KEY UPDATE that sql_save() issues. */
+function sql_save($array, $table, $key = 'id', $autoinc = true) {
+	if (empty($array[$key])) {
+		unset($array[$key]);
+	}
+
+	$columns = array_keys($array);
+	$updates = array_map(function ($column) {
+		return $column . ' = excluded.' . $column;
+	}, $columns);
+
+	try {
+		db_execute_prepared('INSERT INTO ' . $table . ' (' . implode(', ', $columns) . ') VALUES (' . implode(', ', array_fill(0, cacti_sizeof($columns), '?')) . ') ON CONFLICT DO UPDATE SET ' . implode(', ', $updates), array_values($array)) || throw new \PDOException('save failed');
+	} catch (\PDOException $e) {
+		return isset($array[$key]) ? $array[$key] : false;
+	}
+
+	return isset($array[$key]) ? $array[$key] : db()->lastInsertId();
+}
+
+function get_next_sequence($id, $field, $table_name, $group_query, $key_field = 'id') {
+	return 1 + (int) db_fetch_cell('SELECT MAX(' . $field . ') FROM ' . $table_name . ' WHERE ' . $group_query);
+}
+
+function get_sequence($id, $field, $table_name, $group_query) {
+	return get_next_sequence($id, $field, $table_name, $group_query);
+}
+
+/* ---------------- runtime ---------------- */
+
+function read_config_option($name, $force = false) {
+	return $GLOBALS['options'][$name] ?? '';
+}
+
+function raise_message($id, $message = '', $level = MESSAGE_LEVEL_NONE) {
+	$GLOBALS['raised'][] = array('id' => $id, 'message' => $message, 'level' => $level);
+}
+
+function cacti_log($message, $output = false, $environ = 'CMDPHP', $level = '') {
+}
+
+function cacti_debug_backtrace($entry = '', $html = false, $record = true, $limit = 0, $skip = 0) {
+}
+
+function header($value) {
+	$GLOBALS['location'] = $value;
+}
+
+function cacti_header($url) {
+	$GLOBALS['location'] = 'Location: ' . $url;
+}
+
+function kill_session_var($name) {
+	unset($_SESSION[$name]);
+}
+
+function push_out_aggregates($aggregate_template_id, $local_graph_id = 0) {
+	$GLOBALS['pushed'][] = array($aggregate_template_id, $local_graph_id);
+
+	return true;
+}
+
+function __($text, ...$args) {
+	return cacti_sizeof($args) ? vsprintf($text, $args) : $text;
+}
+
+function __esc($text, ...$args) {
+	return html_escape(__($text, ...$args));
+}
+
+function __n($singular, $plural, $number) {
+	return $number == 1 ? $singular : $plural;
+}
+
+function number_format_i18n($number, $decimals = null) {
+	return (string) $number;
+}
+
+/* ---------------- page chrome ---------------- */
+
+final class CactiSecureHeaders {
+	public static function getNonceAttribute() {
+		return '';
+	}
+}
+
+function top_header() {
+}
+
+function bottom_footer() {
+}
+
+function form_start($action, $id = '', $multipart = false) {
+	print '<form>';
+}
+
+function form_end() {
+	print '</form>';
+}
+
+function html_start_box($title = '', $width = '', $div = '', $cell_padding = '', $align = '', $add_text = '') {
+	print '<table><caption>' . $title . '</caption>';
+}
+
+function html_end_box($trailing_br = true, $div = false) {
+	print '</table>';
+}
+
+function html_header($display_text, $last_item_colspan = 1) {
+}
+
+function html_header_sort_checkbox($display_text, $sort_column, $sort_direction, $include_form = true) {
+}
+
+function html_search_filter($filter = '', $label = '') {
+}
+
+function html_rows_filter($label = '') {
+}
+
+function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $total_rows, $colspan = 30, $object = '', $page_var = 'page', $return_to = '') {
+	return '<nav data-total="' . $total_rows . '"></nav>';
+}
+
+function get_order_string() {
+	return 'ORDER BY ' . get_request_var('sort_column') . ' ' . get_request_var('sort_direction');
+}
+
+function form_alternate_row($id = '', $light = false, $disabled = false) {
+	print '<tr id="' . $id . '">';
+}
+
+function form_end_row() {
+	print '</tr>';
+}
+
+function form_checkbox_cell($title, $id, $disabled = false) {
+	$GLOBALS['checkboxes'][$id] = $disabled;
+}
+
+function draw_actions_dropdown($actions, $delete_action = 1) {
+}
+
+function escape_page_action($actions, $action) {
+	return '';
+}
+
+function draw_edit_form($array) {
+	print '<fieldset>' . json_encode($array['fields'] ?? array()) . '</fieldset>';
+}
+
+function inject_form_variables($form_array, $arg1 = array()) {
+	return $arg1;
+}
+
+function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $ajax = true) {
+}
+
+function form_hidden_box($form_name, $form_previous_value, $form_default_value, $in_form = false) {
+	print '<input type="hidden" name="' . $form_name . '" value="' . html_escape($form_previous_value) . '">';
+}
+
+function form_alternate_row_class($row_id = '', $class = '') {
+	print '<tr id="' . $row_id . '">';
+}
+
+function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1) {
+}
+
+function push_out_graph_item($graph_template_item_id, $task_item_changed = true) {
+}
+
+function push_out_graph_input($graph_template_input_id, $graph_template_item_id, $session_members) {
+}
+
+function get_hash_version($type) {
+	return '0024';
+}
+
+function get_hash_graph_template($id, $type = 'graph_template') {
+	return substr(hash('sha256', $type . $id), 0, 32);
+}
+
+function html_create_list($form_data, $column_display, $column_id, $form_previous_value) {
+}

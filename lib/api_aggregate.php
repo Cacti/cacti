@@ -2040,8 +2040,8 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 			print "<td style='$this_row_style'>" . $consolidation_functions[$item['consolidation_function_id']] . "</td>";
 
 			/* column 'Item Color' */
-			print "<td style='width:1%;" . ((!empty($item['hex'])) ? 'background-color:#' . $item['hex'] . ";'" : "'") . ">&nbsp;</td>";
-			print "<td style='$this_row_style'>" . $item['hex'] . "</td>";
+			print "<td style='width:1%;" . ((!empty($item['hex'])) ? 'background-color:#' . html_escape($item['hex']) . ";'" : "'") . ">&nbsp;</td>";
+			print "<td style='$this_row_style'>" . html_escape($item['hex']) . "</td>";
 
 			/* column 'Color Template' */
 			print '<td>';
