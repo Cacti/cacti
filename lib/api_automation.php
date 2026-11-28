@@ -243,24 +243,19 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	$host_data_sources = array_rekey(db_fetch_assoc('SELECT host_id, count(*) as data_sources FROM data_local GROUP BY host_id'), 'host_id', 'data_sources');
 
 	/* build magic query, for matching hosts JOIN tables host and host_template */
-	$sql_query = 'SELECT h.id AS host_id, h.hostname, h.description, h.disabled,
-		h.status, ht.name AS host_template_name
-		FROM host AS h
+	$sql_from = 'FROM host AS h
 		LEFT JOIN host_template AS ht
 		ON (h.host_template_id=ht.id) ';
-
-	$hosts = db_fetch_assoc($sql_query . 'WHERE h.deleted = ""');
 
 	/* get the WHERE clause for matching hosts */
 	if ($sql_where != '') {
 		$sql_filter = ' AND (' . build_matching_objects_filter($rule['id'], $rule_type) . ')';
 	} else {
-		$sql_filter = ' WHERE (' . build_matching_objects_filter($rule['id'], $rule_type) .')';
+		$sql_filter = ' WHERE (' . build_matching_objects_filter($rule['id'], $rule_type) . ')';
 	}
 
 	/* now we build up a new query for counting the rows */
-	$rows_query = $sql_query . $sql_where . $sql_filter;
-	$total_rows = cacti_sizeof(db_fetch_assoc($rows_query, false));
+	$total_rows = (int) db_fetch_cell('SELECT COUNT(*) ' . $sql_from . $sql_where . $sql_filter, '', false);
 
 	$sort_columns = array(
 		'description'        => 'h.description',
@@ -274,7 +269,9 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	$sortby      = $sort_columns[$sort_column];
 	$sort_dir    = strtoupper(get_request_var('sort_direction')) === 'DESC' ? 'DESC' : 'ASC';
 
-	$sql_query = $rows_query .
+	$sql_query = 'SELECT h.id AS host_id, h.hostname, h.description, h.disabled,
+		h.status, ht.name AS host_template_name ' .
+		$sql_from . $sql_where . $sql_filter .
 		' ORDER BY ' . $sortby . ' ' . $sort_dir .
 		' LIMIT ' . ($rows*(get_request_var('paged')-1)) . ',' . $rows;
 
@@ -867,9 +864,9 @@ function display_new_graphs($rule, $url) {
 
 			/* now we build up a new query for counting the rows */
 			$rows_query = "SELECT * FROM ($sql_query) AS a " . ($sql_filter != '' ? "WHERE ($sql_filter)":'') . $sql_having;
-			$total_rows = cacti_sizeof(db_fetch_assoc($rows_query, false));
+			$total_rows = (int) db_fetch_cell("SELECT COUNT(*) FROM ($rows_query) AS b", '', false);
 
-			if ($total_rows < (get_request_var('rows')*(get_request_var('page')-1))+1) {
+			if ($total_rows < ($rows*(get_request_var('page')-1))+1) {
 				set_request_var('page', '1');
 			}
 
@@ -1207,16 +1204,18 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 	} else {
 		$sql_field = '"SQL Injection" AS source ';
 		cacti_log("Attempted SQL Injection found in Tree Automation for the field variable {$item['field']}.", false, 'AUTOM8');
-		raise_message('sql_injection', __("Attempted SQL Injection found in Tree Automation for the field variable {$item['field']}."), MESSAGE_LEVEL_ERROR);
+		raise_message('sql_injection', __('Attempted SQL Injection found in Tree Automation for the field variable %s.', html_escape($item['field'])), MESSAGE_LEVEL_ERROR);
 	}
 
 	/* now we build up a new query for counting the rows */
+	$total_rows = (int) db_fetch_cell("SELECT COUNT(*)
+		$sql_tables
+		$sql_where AND ($sql_filter)", '', false);
+
 	$rows_query = "SELECT h.id AS host_id, h.hostname, h.description,
 		h.disabled, h.status, ht.name AS host_template_name, $sql_field
 		$sql_tables
 		$sql_where AND ($sql_filter)";
-
-	$total_rows = cacti_sizeof(db_fetch_assoc($rows_query, false));
 
 	$sort_columns = array(
 		'description'        => 'h.description',
@@ -1247,7 +1246,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 		'hostname'           => array(__('Hostname'), 'ASC'),
 		'host_template_name' => array(__('Device Template Name'), 'ASC'),
 		'status'             => array(__('Status'), 'ASC'),
-		'source'             => array($item['field'], 'ASC'),
+		'source'             => array(html_escape($item['field']), 'ASC'),
 		'result'             => array(__('Resulting Branch'), 'ASC'),
 	);
 
@@ -1299,8 +1298,33 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 	print "</form>\n";
 }
 
+function api_automation_sensitive_host_columns() {
+	return array(
+		'snmp_community',
+		'snmp_username',
+		'snmp_password',
+		'snmp_auth_protocol',
+		'snmp_priv_passphrase',
+		'snmp_priv_protocol',
+		'snmp_context',
+		'snmp_engine_id',
+	);
+}
+
 function api_automation_column_exists($column, $tables) {
+	if (!is_string($column) || $column === '') {
+		return false;
+	}
+
 	$column = str_replace(array('h.', 'ht.', 'gt.', 'gl.', 'gtg.'), array('', '', '', '', ''), $column);
+
+	if (!preg_match('/^[a-zA-Z0-9_]+$/', $column)) {
+		return false;
+	}
+
+	if (in_array(strtolower($column), api_automation_sensitive_host_columns(), true)) {
+		return false;
+	}
 
 	if (cacti_sizeof($tables)) {
 		foreach($tables as $table) {
@@ -1712,7 +1736,15 @@ function build_rule_item_filter($automation_rule_items, $prefix = '') {
 
 			# field name
 			if ($automation_rule_item['field'] != '') {
-				$sql_filter .= (' ' . $prefix . '`' . implode('`.`', explode('.', sanitize_sql_column($automation_rule_item['field']))) . '`');
+				$sanitized_field = sanitize_sql_column($automation_rule_item['field']);
+				$bare_field      = strpos($sanitized_field, '.') !== false ? substr($sanitized_field, strrpos($sanitized_field, '.') + 1) : $sanitized_field;
+
+				if ($sanitized_field == '' || in_array(strtolower($bare_field), api_automation_sensitive_host_columns(), true)) {
+					$sql_filter .= ' (1 != 1)';
+					continue;
+				}
+
+				$sql_filter .= (' ' . $prefix . '`' . implode('`.`', explode('.', $sanitized_field)) . '`');
 				#
 				$sql_filter .= ' ' . $automation_op_array['op'][$automation_rule_item['operator']] . ' ';
 				if ($automation_op_array['binary'][$automation_rule_item['operator']]) {
@@ -1901,12 +1933,17 @@ function get_query_fields($table, $excluded_fields) {
 	$function = automation_function_with_pid(__FUNCTION__);
 	cacti_log($function . ' called', false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
-	$table = trim($table);
+	$table      = trim($table);
+	$new_fields = array();
 
 	$sql = 'SHOW COLUMNS FROM ' . $table;
 	$fields = array_rekey(db_fetch_assoc($sql), 'Field', 'Type');
 	#print '<pre>'; print_r($fields); print '</pre>';
 	# remove unwanted entries
+	if ($table == 'host') {
+		$excluded_fields = array_merge($excluded_fields, api_automation_sensitive_host_columns());
+	}
+
 	$fields = array_minus($fields, $excluded_fields);
 
 	# now reformat entries for use with draw_edit_form
@@ -2397,9 +2434,9 @@ function automation_execute_graph_template($host_id, $graph_template_id) {
 		$input_fields = getInputFields($graph_template_id);
 
 		if (cacti_sizeof($input_fields)) {
-			$suggested_vals[$graph_template_id]['custom_data'] = array();
+			$suggested_values[$graph_template_id]['custom_data'] = array();
 			foreach($input_fields as $field) {
-				$suggested_vals[$graph_template_id]['custom_data'][$field['data_template_id']][$field['data_input_field_id']] = $field['default'];
+				$suggested_values[$graph_template_id]['custom_data'][$field['data_template_id']][$field['data_input_field_id']] = $field['default'];
 			}
 		}
 	}
@@ -2790,7 +2827,7 @@ function create_all_header_nodes($item_id, $rule) {
 				$target = $automation_tree_header_types[AUTOMATION_TREE_ITEM_TYPE_STRING];
 			} else {
 				$sanitized_field = sanitize_sql_column($tree_item['field']);
-				if ($sanitized_field == '') {
+				if ($sanitized_field == '' || !api_automation_column_exists($sanitized_field, array('host', 'host_template', 'graph_local', 'graph_templates_graph', 'graph_templates'))) {
 					$sql_field = 'NULL AS source ';
 				} else {
 					$sql_field = $sanitized_field . ' AS source ';
@@ -3115,21 +3152,21 @@ function automation_find_os($sysDescr, $sysObject, $sysName) {
 	$params     = array();
 
 	if ($sysDescr != '') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . "(? REGEXP CONCAT('/', sysDescr, '/') OR ? LIKE CONCAT('%', sysDescr, '%'))";
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . "((sysDescr != '' AND ? REGEXP sysDescr) OR ? LIKE CONCAT('%', sysDescr, '%'))";
 
 		$params[] = $sysDescr;
 		$params[] = $sysDescr;
 	}
 
 	if ($sysObject != '') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . "(? REGEXP CONCAT('/', sysOid, '/') OR ? LIKE CONCAT('%', sysOid, '%'))";
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . "((sysOid != '' AND ? REGEXP sysOid) OR ? LIKE CONCAT('%', sysOid, '%'))";
 
 		$params[] = $sysObject;
 		$params[] = $sysObject;
 	}
 
 	if ($sysName != '') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . "(? REGEXP CONCAT('/', sysName, '/') OR ? LIKE CONCAT('%', sysName, '%'))";
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . "((sysName != '' AND ? REGEXP sysName) OR ? LIKE CONCAT('%', sysName, '%'))";
 
 		$params[] = $sysName;
 		$params[] = $sysName;
@@ -3579,6 +3616,71 @@ function automation_valid_snmp_device(&$device) {
 	return $host_up;
 }
 
+function automation_parse_dns_name($response, $position) {
+	$response_len = strlen($response);
+	$host         = '';
+	$hops         = 0;
+	$max_hops     = 16;
+	$labels       = 0;
+	$max_labels   = 128;
+	$visited      = array();
+
+	while ($position >= 0 && $position < $response_len) {
+		if (++$labels > $max_labels) {
+			return false;
+		}
+
+		$len = unpack('C', substr($response, $position, 1));
+		if (!isset($len[1])) {
+			return false;
+		}
+
+		$label_len = $len[1];
+
+		/* null terminated string, so length 0 = finished */
+		if ($label_len === 0) {
+			if ($host === '') {
+				return false;
+			}
+
+			/* return the hostname, without the trailing '.' */
+			return strtoupper(rtrim($host, '.'));
+		}
+
+		/* RFC 1035 DNS compression pointer (top two bits set: 0xC0) */
+		if (($label_len & 0xC0) === 0xC0) {
+			if ($position + 1 >= $response_len || ++$hops > $max_hops) {
+				return false;
+			}
+
+			$ptr = unpack('n', substr($response, $position, 2));
+			if (!isset($ptr[1])) {
+				return false;
+			}
+
+			$offset = $ptr[1] & 0x3FFF;
+			if ($offset >= $response_len || isset($visited[$offset])) {
+				return false;
+			}
+
+			$visited[$offset] = true;
+			$position         = $offset;
+			continue;
+		}
+
+		/* Invalid label flags or truncated packet */
+		if (($label_len & 0xC0) !== 0 || $position + 1 + $label_len > $response_len) {
+			return false;
+		}
+
+		/* add the next segment to our host */
+		$host     .= substr($response, $position + 1, $label_len) . '.';
+		$position += $label_len + 1;
+	}
+
+	return false;
+}
+
 /*	gethostbyaddr_wtimeout - This function provides a good method of performing
   a rapid lookup of a DNS entry for a host so long as you don't have to look far.
 */
@@ -3620,9 +3722,12 @@ function automation_get_dns_from_ip($ip, $dns, $timeout = 1000) {
 
 	/* create UDP socket */
 	$handle = @fsockopen("udp://$dns", 53);
+	if ($handle === false) {
+		return strtoupper($ip);
+	}
 
-	@stream_set_timeout($handle, floor($timeout/1000), ($timeout*1000)%1000000);
-	@stream_set_blocking($handle, 1);
+	@stream_set_timeout($handle, (int) floor($timeout / 1000), ($timeout * 1000) % 1000000);
+	@stream_set_blocking($handle, true);
 
 	/* send our request (and store request size so we can cheat later) */
 	$requestsize = @fwrite($handle, $data);
@@ -3636,46 +3741,23 @@ function automation_get_dns_from_ip($ip, $dns, $timeout = 1000) {
 	/* close the socket */
 	@fclose($handle);
 
-	if (isset($info['timed_out'])) {
+	if (!empty($info['timed_out'])) {
 		return 'timed_out';
 	}
 
 	/* more error handling */
-	if ($response == '' || $requestsize == false || strlen($response) <= $requestsize) { return $ip; }
+	if ($response == '' || $requestsize === false || strlen($response) <= $requestsize + 12) {
+		return $ip;
+	}
 
-	/* parse the response and find the response type */
-	$type = @unpack('s', substr($response, $requestsize+2));
+	/* parse the response and find the response type (big-endian PTR = 12) */
+	$type = @unpack('n', substr($response, $requestsize + 2, 2));
 
-	if (isset($type[1]) && $type[1] == 0x0C00) {
-		/* set up our variables */
-		$host = '';
-		$len = 0;
-
-		/* set our pointer at the beginning of the hostname uses the request
-		   size from earlier rather than work it out.
-		*/
-		$position = $requestsize + 12;
-
-		/* reconstruct the hostname */
-		do {
-			/* get segment size */
-			$len = unpack('c', substr($response, $position));
-
-			/* null terminated string, so length 0 = finished */
-			if ($len[1] == 0) {
-				/* return the hostname, without the trailing '.' */
-				return strtoupper(substr($host, 0, strlen($host) -1));
-			}
-
-			/* add the next segment to our host */
-			$host .= substr($response, $position+1, $len[1]) . '.';
-
-			/* move pointer on to the next segment */
-			$position += $len[1] + 1;
-		} while ($len != 0);
-
-		/* error - return the hostname we constructed (without the . on the end) */
-		return strtoupper($ip);
+	if (isset($type[1]) && $type[1] === 12) {
+		$host = automation_parse_dns_name($response, $requestsize + 12);
+		if ($host !== false) {
+			return $host;
+		}
 	}
 
 	/* error - return the hostname */
@@ -3688,6 +3770,10 @@ function api_automation_is_time_to_start($network_id) {
 		WHERE id = ?',
 		array($network_id));
 
+	if (!cacti_sizeof($net)) {
+		return false;
+	}
+
 	$now   = time();
 
 	switch($net['sched_type']) {
@@ -3696,20 +3782,24 @@ function api_automation_is_time_to_start($network_id) {
 
 		break;
 	case '2':
-		$recur = $net['recur_every'] * 86400; // days
-		$start = strtotime($net['start_at']);
-		$next  = strtotime($net['next_start']);
+		$recur_every = max(1, (int) $net['recur_every']);
+		$recur       = $recur_every * 86400; // days
+		$start       = strtotime($net['start_at']);
+		$next        = strtotime($net['next_start']);
 
-		if ($net['next_start'] == '0000-00-00 00:00:00') {
+		if ($net['next_start'] == '0000-00-00 00:00:00' || $next === false) {
 			$target = $start;
 		} else {
 			$target = $next;
 		}
 
+		if ($target === false) {
+			return false;
+		}
+
 		if ($now > $target) {
-			while($now > $target) {
-				$target += $recur;
-			}
+			$steps   = (int) floor(($now - $target) / $recur) + 1;
+			$target += $steps * $recur;
 
 			db_execute_prepared('UPDATE automation_networks
 				SET next_start = ?
@@ -3717,40 +3807,73 @@ function api_automation_is_time_to_start($network_id) {
 				array(date('Y-m-d H:i', $target), $network_id));
 
 			return true;
-
-			break;
 		}
 
 		return false;
 
 		break;
 	case '3':
-		$recur = $net['recur_every'] * 86400 * 7; // weeks
-		$start = strtotime($net['start_at']);
-		$next  = strtotime($net['next_start']);
-		$days  = explode(',', $net['day_of_week']);
-		$day   = 86400;
-		$week  = 86400 * 7;
+		$recur_every = max(1, (int) $net['recur_every']);
+		$recur       = $recur_every * 86400 * 7; // weeks
+		$start       = strtotime($net['start_at']);
+		$next        = strtotime($net['next_start']);
+		$raw_days    = explode(',', (string) $net['day_of_week']);
+		$days        = array();
 
-		if ($net['next_start'] == '0000-00-00 00:00:00') {
+		foreach ($raw_days as $d) {
+			$d = (int) trim($d);
+			if ($d >= 1 && $d <= 7) {
+				$days[] = $d;
+			}
+		}
+
+		$days = array_values(array_unique($days));
+		sort($days);
+
+		if (!cacti_sizeof($days)) {
+			return false;
+		}
+
+		$day  = 86400;
+		$week = 86400 * 7;
+
+		if ($net['next_start'] == '0000-00-00 00:00:00' || $next === false) {
 			$target = $start;
 		} else {
 			$target = $next;
 		}
 
-		if ($now > $target) {
-			while(true) {
-				$target += $day;
-				$cur_day = date('w', $target) + 1;
+		if ($target === false) {
+			return false;
+		}
 
-				$key = array_search($cur_day, $days, false);
-				if ($key !== false && $key >= 0) {
-					if ($key == 0) {
+		if ($now > $target) {
+			if ($now - $target > $recur) {
+				$periods_behind = (int) floor(($now - $target) / $recur);
+				$target        += $periods_behind * $recur;
+			}
+
+			$iterations = 0;
+			$max_iter   = 21;
+			while ($iterations < $max_iter) {
+				$iterations++;
+				$target += $day;
+				$cur_day = (int) date('w', $target) + 1;
+
+				$key = array_search($cur_day, $days, true);
+				if ($key !== false) {
+					if ($key === 0) {
 						$target += $recur - $week;
 					}
 
-					break;
+					if ($target > $now) {
+						break;
+					}
 				}
+			}
+
+			if ($target <= $now) {
+				return false;
 			}
 
 			db_execute_prepared('UPDATE automation_networks
@@ -4114,8 +4237,9 @@ function automation_change_tree_rule_leaf_type($leaf_type, $rule_id) {
 			$match_items = db_fetch_assoc_prepared('SELECT *
 				FROM automation_match_rule_items
 				WHERE rule_id = ?
+				AND rule_type = ?
 				AND (field like \'gtg.%\' or field like \'gt.%\')',
-				array($rule_id));
+				array($rule_id, AUTOMATION_RULE_TYPE_TREE_MATCH));
 
 			if (cacti_sizeof($match_items)) {
 				cacti_log($function . ' ' . cacti_sizeof($match_items) . ' invalid Object Selection rule items found for TreeRule[' . $rule_id . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
@@ -4125,8 +4249,9 @@ function automation_change_tree_rule_leaf_type($leaf_type, $rule_id) {
 
 					db_execute_prepared('DELETE
 						FROM automation_match_rule_items
-						WHERE id = ?',
-						array($match_item['id']));
+						WHERE id = ?
+						AND rule_type = ?',
+						array($match_item['id'], AUTOMATION_RULE_TYPE_TREE_MATCH));
 				}
 			} else {
 				cacti_log($function . ' No invalid Object Selection rule items found for TreeRule[' . $rule_id . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);

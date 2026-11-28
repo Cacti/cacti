@@ -610,7 +610,7 @@ function reports_send($id) {
 
 	if (!cacti_sizeof($report)) {
 		/* set error condition */
-	} elseif ($report['user_id'] == $_SESSION['sess_user_id']) {
+	} elseif ($report['user_id'] == $_SESSION['sess_user_id'] || is_realm_allowed(21)) {
 		reports_log(__FUNCTION__ . ', send now, report_id: ' . $id, false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 
 		/* use report name as default EMail title */
@@ -776,7 +776,7 @@ function reports_item_validate() {
 						$valid = db_fetch_cell_prepared('SELECT id
 							FROM graph_local
 							WHERE graph_template_id = ?
-							AND id = ?',
+							AND host_id = ?',
 							array(get_request_var('graph_template_id'), get_request_var('host_id')));
 
 						if (empty($valid)) {
@@ -1993,7 +1993,7 @@ function reports() {
 
 	form_start(get_reports_page(), 'chk');
 
-	$nav = html_nav_bar(get_reports_page() . 'filter=' . get_request_var('filter') . '&host_id=' . get_request_var('host_id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 10, __('Reports'), 'page', 'main');
+	$nav = html_nav_bar(get_reports_page() . '?filter=' . get_request_var('filter') . '&host_id=' . get_request_var('host_id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 10, __('Reports'), 'page', 'main');
 
 	print $nav;
 
