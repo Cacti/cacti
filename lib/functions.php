@@ -7232,7 +7232,11 @@ function recursive_chown($path, $uid, $gid) {
 
 		$fullpath = $path . '/' . $file;
 
-		if (is_dir($fullpath) && !is_link($fullpath)) {
+		if (is_link($fullpath)) {
+			continue;
+		}
+
+		if (is_dir($fullpath)) {
 			if (!recursive_chown($fullpath, $uid, $gid)) {
 				closedir($d);
 				return false;

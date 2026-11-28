@@ -266,16 +266,37 @@ PHP);
 		]);
 	});
 
-	it('traverses nested directories past dot entries and first subdirectory in recursive_chown()', function () use ($lib) {
+	it('traverses nested directories past dot entries and skips symlinks without dereferencing in recursive_chown()', function () use ($lib, $repoRoot) {
+		$functionsSource = (string) file_get_contents($repoRoot . '/lib/functions.php');
+		$rchownStart     = strpos($functionsSource, 'function recursive_chown(');
+		$rchownEnd       = strpos($functionsSource, "\nfunction ", (int) $rchownStart + 1);
+		$rchownBody      = substr($functionsSource, (int) $rchownStart, (int) $rchownEnd - (int) $rchownStart);
+
+		$linkPos  = strpos($rchownBody, 'if (is_link($fullpath))');
+		$dirPos   = strpos($rchownBody, 'if (is_dir($fullpath))');
+		$chownPos = strpos($rchownBody, '@chown($fullpath');
+
+		expect($linkPos)->not->toBeFalse()
+			->and($dirPos)->not->toBeFalse()
+			->and($chownPos)->not->toBeFalse()
+			->and($linkPos)->toBeLessThan($dirPos)
+			->and($linkPos)->toBeLessThan($chownPos);
+
 		$result = runCoreAlgoSubprocess(<<<PHP
 require_once $lib;
 
-\$base = sys_get_temp_dir() . '/cacti_rchown_' . uniqid('', true);
+\$base    = sys_get_temp_dir() . '/cacti_rchown_' . uniqid('', true);
+\$outside = sys_get_temp_dir() . '/cacti_rchown_out_' . uniqid('', true);
 mkdir(\$base . '/sub_a', 0755, true);
 mkdir(\$base . '/sub_b', 0755, true);
+mkdir(\$outside, 0755, true);
 file_put_contents(\$base . '/sub_a/file_a.txt', 'a');
 file_put_contents(\$base . '/sub_b/file_b.txt', 'b');
 file_put_contents(\$base . '/root_file.txt', 'r');
+file_put_contents(\$outside . '/target.txt', 't');
+symlink(\$outside, \$base . '/link_dir');
+symlink(\$outside . '/target.txt', \$base . '/link_file');
+symlink(\$outside . '/nonexistent_target', \$base . '/dangling_link');
 
 \$uid = function_exists('posix_getuid') ? posix_getuid() : fileowner(\$base);
 \$gid = function_exists('posix_getgid') ? posix_getgid() : filegroup(\$base);
@@ -283,6 +304,11 @@ file_put_contents(\$base . '/root_file.txt', 'r');
 \$ok      = recursive_chown(\$base, \$uid, \$gid);
 \$missing = recursive_chown(\$base . '/does_not_exist', \$uid, \$gid);
 
+unlink(\$base . '/dangling_link');
+unlink(\$base . '/link_file');
+unlink(\$base . '/link_dir');
+unlink(\$outside . '/target.txt');
+rmdir(\$outside);
 unlink(\$base . '/sub_a/file_a.txt');
 unlink(\$base . '/sub_b/file_b.txt');
 unlink(\$base . '/root_file.txt');
