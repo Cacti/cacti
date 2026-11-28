@@ -1449,7 +1449,7 @@ function query_snmp_host(int $host_id, int $snmp_query_id) : bool {
 
 					$value = preg_replace('/' . str_replace('VALUE/REGEXP:', '', $field_array['source']) . '/', '\\1', $value);
 
-					query_debug_timer_offset('data_query', __esc('Executing SNMP get for data @ \'%s\' [value=\'$value\']', $oid, $value));
+					query_debug_timer_offset('data_query', __esc('Executing SNMP get for data @ \'%s\' [value=\'%s\']', $oid, $value));
 
 					$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $value, $index, $oid);
 				}

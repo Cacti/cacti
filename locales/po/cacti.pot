@@ -15414,11 +15414,6 @@ msgstr ""
 
 #: lib/data_query.php
 #, php-format
-msgid "Executing SNMP get for data @ '%s' [value='$value']"
-msgstr ""
-
-#: lib/data_query.php
-#, php-format
 msgid "Located input field '%s' [walk]"
 msgstr ""
 
