@@ -90,6 +90,21 @@ function extract_source_slice(string $src, string $startNeedle, ?string $endNeed
 }
 
 /**
+ * Assert that a slice of PHP source contains every expected snippet.
+ *
+ * @param array<int, string> $needles
+ */
+function assert_source_slice_contains(string $src, string $startNeedle, string $endNeedle, array $needles) : void {
+	$block = extract_source_slice($src, $startNeedle, $endNeedle);
+
+	expect($block)->not->toBe('');
+
+	foreach ($needles as $needle) {
+		expect($block)->toContain($needle);
+	}
+}
+
+/**
  * Execute a self-contained PHP snippet in an isolated child process and decode JSON output.
  *
  * @return array<string, mixed>
@@ -164,14 +179,14 @@ describe('graph_view.php authorization and CSRF hardening', function () use ($re
 	$src = (string) file_get_contents($repoRoot . '/graph_view.php');
 
 	it('enforces POST, CSRF check, and report realms on action=ajax_reports', function () use ($src) {
-		$block = extract_source_slice($src, "case 'ajax_reports':", "case 'update_timespan':");
-
-		expect($block)->toContain("(\$_SERVER['REQUEST_METHOD'] ?? '') !== 'POST'")
-			->and($block)->toContain('http_response_code(405)')
-			->and($block)->toContain('csrf_check(false)')
-			->and($block)->toContain('!is_realm_allowed(21) && !is_realm_allowed(22)')
-			->and($block)->toContain('!is_graph_allowed($local_graph_id)')
-			->and($block)->toContain('http_response_code(403)');
+		assert_source_slice_contains($src, "case 'ajax_reports':", "case 'update_timespan':", [
+			"(\$_SERVER['REQUEST_METHOD'] ?? '') !== 'POST'",
+			'http_response_code(405)',
+			'csrf_check(false)',
+			'!is_realm_allowed(21) && !is_realm_allowed(22)',
+			'!is_graph_allowed($local_graph_id)',
+			'http_response_code(403)',
+		]);
 	});
 
 	it('enforces show_tree view and is_tree_allowed() on action=get_node', function () use ($src) {
@@ -296,24 +311,26 @@ describe('user_admin.php session invalidation, permission token expiry, and filt
 	$src = (string) file_get_contents($repoRoot . '/user_admin.php');
 
 	it('deletes active sessions for target user while preserving self session when resetting own password', function () use ($src) {
-		$block = extract_source_slice($src, '$old_password = db_fetch_cell_prepared', '/* check duplicate username */');
-
-		expect($block)->toContain('DELETE FROM user_auth_cache')
-			->and($block)->toContain('DELETE FROM sessions')
-			->and($block)->toContain('AND id != ?')
-			->and($block)->toContain('session_id()');
+		assert_source_slice_contains($src, '$old_password = db_fetch_cell_prepared', '/* check duplicate username */', [
+			'DELETE FROM user_auth_cache',
+			'DELETE FROM sessions',
+			'AND id != ?',
+			'session_id()',
+		]);
 	});
 
 	it('requires POST on pre-dispatch update_policy and revokes tokens/sessions when disabling a user', function () use ($src) {
-		$dispatchBlock = extract_source_slice($src, "if (isset_request_var('update_policy'))", 'switch (get_request_var');
-		$saveBlock     = extract_source_slice($src, "if (\$save['must_change_password'] == 'on')", 'user_admin_setup_sql_save');
+		assert_source_slice_contains($src, "if (isset_request_var('update_policy'))", 'switch (get_request_var', [
+			"strtoupper(\$_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST'",
+			'http_response_code(405)',
+		]);
 
-		expect($dispatchBlock)->toContain("strtoupper(\$_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST'")
-			->and($dispatchBlock)->toContain('http_response_code(405)')
-			->and($saveBlock)->toContain("!empty(\$save['id']) && \$save['enabled'] != 'on'")
-			->and($saveBlock)->toContain('DELETE FROM user_auth_cache WHERE user_id = ?')
-			->and($saveBlock)->toContain('DELETE FROM user_auth_row_cache WHERE user_id = ?')
-			->and($saveBlock)->toContain('DELETE FROM sessions WHERE user_id = ?');
+		assert_source_slice_contains($src, "if (\$save['must_change_password'] == 'on')", 'user_admin_setup_sql_save', [
+			"!empty(\$save['id']) && \$save['enabled'] != 'on'",
+			'DELETE FROM user_auth_cache WHERE user_id = ?',
+			'DELETE FROM user_auth_row_cache WHERE user_id = ?',
+			'DELETE FROM sessions WHERE user_id = ?',
+		]);
 	});
 
 	it('calls reset_user_perms() on policy, permission, and group mutations and escapes tooltip text', function () use ($src) {
