@@ -164,7 +164,7 @@ function library_graph_totals(int $graph, array $options): void {
 		$match           = ['|sum:0:' . $type . ':2:auto|', '0', $type, '2', 'auto'];
 		$results[$type]  = variable_bandwidth_summation($match, $settings, $item, $items, (int) $options['graph_start'], (int) $options['graph_end'], 1, $step);
 		// Three stored gauge samples of 12.5 span the legend window.
-		library_expect((float) str_replace(',', '', trim($results[$type])), 12.5 * 3 * $step, 'Summation legend totals the stored samples for ' . $type);
+		library_expect(trim($results[$type]), number_format_i18n(12.5 * 3 * $step, 2), 'Summation legend totals the stored samples for ' . $type);
 	}
 }
 
