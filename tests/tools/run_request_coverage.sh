@@ -56,6 +56,8 @@ run_php_probe tests/fixtures/Core/PackageSaveMatrix.php '^(package_repos\.php|te
 run_php_probe tests/fixtures/Core/GraphDrilldownMarkup.php '^(lib/html\.php|tests/fixtures/Core/GraphDrilldownMarkup\.php)'
 run_php_probe tests/fixtures/Core/RrdInfoHtmlEscape.php '^(lib/rrd\.php|tests/fixtures/Core/RrdInfoHtmlEscape\.php)'
 run_php_probe tests/fixtures/Core/GraphItemsListMarkup.php '^(lib/html\.php|tests/fixtures/Core/GraphItemsListMarkup\.php)'
+run_php_probe tests/Unit/fixtures/aggregate_label_render_probe.php '^(lib/(api_aggregate|html)\.php|tests/Unit/fixtures/aggregate_label_render_probe\.php)'
+run_php_probe tests/Unit/fixtures/aggregate_label_render_probe.php '^(lib/(api_aggregate|html)\.php|tests/Unit/fixtures/aggregate_label_render_probe\.php)' graph '<em>Literal label</em>'
 run_php_probe tests/fixtures/Core/SpikekillMutationMatrix.php '^(lib/spikekill\.php|tests/fixtures/Core/SpikekillMutationMatrix\.php)'
 run_php_probe tests/fixtures/Core/RemoveSpikesHelp.php '^(cli/removespikes\.php|tests/fixtures/Core/RemoveSpikesHelp\.php)$'
 run_php_probe tests/fixtures/Core/SpikekillRequestGate.php '^(spikekill\.php|tests/fixtures/Core/SpikekillRequestGate\.php)'
@@ -79,9 +81,6 @@ run_php_probe tests/fixtures/Core/GraphViewCrossFilterCoverage.php '^(lib/html\.
 run_php_probe tests/fixtures/Core/HtmlGraphMarkup.php '^(lib/html_graph\.php|tests/fixtures/Core/HtmlGraphMarkup\.php)'
 
 run_php_probe tests/fixtures/Core/TreeFilterDeviceTemplateCoverage.php '^(lib/html_tree\.php|tests/fixtures/Core/TreeFilterDeviceTemplateCoverage\.php)'
-
-run_php_probe tests/Unit/fixtures/aggregate_label_render_probe.php '^(lib/(api_aggregate|html)\.php|tests/Unit/fixtures/aggregate_label_render_probe\.php)'
-run_php_probe tests/Unit/fixtures/aggregate_label_render_probe.php '^(lib/(api_aggregate|html)\.php|tests/Unit/fixtures/aggregate_label_render_probe\.php)' graph '<em>Literal label</em>'
 
 run_php_probe tests/fixtures/Core/DataSourceRrdRepairCoverage.php '^(data_sources\.php|tests/fixtures/Core/DataSourceRrdRepairCoverage\.php)'
 
