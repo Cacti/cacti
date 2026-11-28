@@ -25,6 +25,51 @@
 use phpseclib3\Crypt\RSA;
 
 /**
+ * Parse and normalize a remember-me cookie payload.
+ *
+ * Rejects non-string values, unexpected segment counts, and non-numeric realms.
+ *
+ * @param mixed $raw_cookie Raw cookie value from $_COOKIE['cacti_remembers'].
+ *
+ * @return array{user_id: int, realm_id: int, token: string}|null
+ */
+function cacti_parse_auth_cookie(mixed $raw_cookie) : ?array {
+	if (!is_string($raw_cookie)) {
+		return null;
+	}
+
+	$parts = explode(',', $raw_cookie);
+
+	if (cacti_sizeof($parts) == 2) {
+		$user_id  = $parts[0];
+		$realm_id = -1;
+		$token    = $parts[1];
+	} elseif (cacti_sizeof($parts) == 3 && is_numeric($parts[1])) {
+		$user_id  = $parts[0];
+		$realm_id = (int) $parts[1];
+		$token    = $parts[2];
+	} else {
+		return null;
+	}
+
+	// Legacy support which leaked usernames
+	if (!is_numeric($user_id)) {
+		$lookup_realm = ($realm_id == -1) ? 0 : $realm_id;
+		$user_id      = db_fetch_cell_prepared('SELECT id
+			FROM user_auth
+			WHERE username = ?
+			AND realm = ?',
+			[$user_id, $lookup_realm]);
+	}
+
+	return [
+		'user_id'  => (int) $user_id,
+		'realm_id' => $realm_id,
+		'token'    => $token,
+	];
+}
+
+/**
  * clear_auth_cookie - clears a users security token
  *
  * @return (void)
@@ -33,46 +78,19 @@ function clear_auth_cookie() {
 	global $config;
 
 	if (isset($_COOKIE['cacti_remembers']) && read_config_option('auth_cache_enabled') == 'on') {
-		$parts = explode(',', $_COOKIE['cacti_remembers']);
+		$parsed = cacti_parse_auth_cookie($_COOKIE['cacti_remembers']);
 
-		if (cacti_sizeof($parts) == 2) {
-			$user_id  = $parts[0];
-			$realm_id = -1;
-			$token    = $parts[1];
-		} else {
-			$user_id  = $parts[0];
-			$realm_id = $parts[1];
-			$token    = $parts[2];
-		}
-
-		// Legacy support which leaked usernames
-		if (!is_numeric($user_id)) {
-			if ($realm_id == -1) {
-				// Assume local realm for tokens without a realm_id
-				$user_id = db_fetch_cell_prepared('SELECT id
-					FROM user_auth
-					WHERE username = ?
-					AND realm = 0',
-					array($user_id));
-			} else {
-				$user_id = db_fetch_cell_prepared('SELECT id
-					FROM user_auth
-					WHERE username = ?
-					AND realm = ?',
-					array($user_id, $realm_id));
-			}
-		}
-
-		if ($user_id > 0) {
-			$secret = hash('sha512', $token, false);
-
-			cacti_cookie_session_logout();
+		if ($parsed !== null && $parsed['user_id'] > 0) {
+			$secret = hash('sha512', $parsed['token'], false);
 
 			db_execute_prepared('DELETE FROM user_auth_cache
 				WHERE user_id = ?
 				AND token = ?',
-				array($user_id, $secret));
+				[$parsed['user_id'], $secret]);
 		}
+
+		/* Revoke the server-side credential before clearing browser state. */
+		cacti_cookie_session_logout();
 	}
 }
 
@@ -119,60 +137,44 @@ function check_auth_cookie() {
 		read_config_option('auth_cache_enabled') == 'on' &&
 		db_table_exists('user_auth_cache')) {
 
-		$parts = explode(',', $_COOKIE['cacti_remembers']);
+		$parsed = cacti_parse_auth_cookie($_COOKIE['cacti_remembers']);
 
-		if (cacti_sizeof($parts) == 2) {
-			$user_id  = $parts[0];
-			$realm_id = -1;
-			$token    = $parts[1];
-		} else {
-			$user_id  = $parts[0];
-			$realm_id = $parts[1];
-			$token    = $parts[2];
+		if ($parsed === null) {
+			return false;
 		}
 
-		// Legacy support which leaked usernames
-		if (!is_numeric($user_id)) {
-			if ($realm_id == -1) {
-				// Assume local realm for tokens without a realm_id
-				$user_id = db_fetch_cell_prepared('SELECT id
-					FROM user_auth
-					WHERE username = ?
-					AND realm = 0',
-					array($user_id));
-			} else {
-				$user_id = db_fetch_cell_prepared('SELECT id
-					FROM user_auth
-					WHERE username = ?
-					AND realm = ?',
-					array($user_id, $realm_id));
-			}
-		}
+		$user_id  = $parsed['user_id'];
+		$realm_id = $parsed['realm_id'];
+		$token    = $parsed['token'];
 
 		if ($user_id > 0 && $user_id != get_guest_account()) {
-			if ($realm_id == -1) {
-				$user_info = db_fetch_row_prepared('SELECT id, realm, username
-					FROM user_auth
-					WHERE id = ?
-					AND realm = 0',
-					array($user_id));
-			} else {
-				$user_info = db_fetch_row_prepared('SELECT id, realm, username
-					FROM user_auth
-					WHERE id = ?
-					AND realm = ?',
-					array($user_id, $realm_id));
+			$lookup_realm = ($realm_id == -1) ? 0 : $realm_id;
+			$user_info    = db_fetch_row_prepared('SELECT id, realm, username, enabled
+				FROM user_auth
+				WHERE id = ?
+				AND realm = ?',
+				[$user_id, $lookup_realm]);
+
+			/* A disabled account must not authenticate from a previously issued cookie. */
+			if (cacti_sizeof($user_info) && $user_info['enabled'] != 'on') {
+				db_execute_prepared('DELETE FROM user_auth_cache
+					WHERE user_id = ?',
+					[$user_info['id']]);
+
+				return false;
 			}
 
 			if (cacti_sizeof($user_info)) {
 				$secret = hash('sha512', $token, false);
 
-				$found  = db_fetch_cell_prepared('SELECT user_id
+				/* Reject remember-me tokens past the 90-day retention window directly at login. */
+				$found = db_fetch_cell_prepared('SELECT user_id
 					FROM user_auth_cache
 					WHERE user_id = ?
 					AND token = ?
-					AND hostname = ?',
-					array($user_info['id'], $secret, get_client_addr())
+					AND hostname = ?
+					AND last_update >= DATE_SUB(NOW(), INTERVAL 90 DAY)',
+					[$user_info['id'], $secret, get_client_addr()]
 				);
 
 				if (empty($found)) {
@@ -254,33 +256,32 @@ function is_template_account($user_id) {
  * @return (string) the new username, or false if one was not passed
  */
 function get_basic_auth_username() {
-	/* Only trust Remote-User / PHP_AUTH_USER headers when Basic Auth is the
-	 * configured auth method (auth_method == 2).  Accepting these headers
-	 * unconditionally allows any proxy or client to spoof arbitrary usernames.
-	 * GHSA-9ffc-rr2g-c8hh */
+	global $config;
+
+	/* Only trust server-set authentication variables when Basic Auth is the
+	 * configured auth method (auth_method == 2). */
 	if (read_config_option('auth_method') != 2) {
 		return false;
 	}
 
-	if (isset($_SERVER['PHP_AUTH_USER'])) {
-		$username = str_replace("\\", "\\\\", $_SERVER['PHP_AUTH_USER']);
-	} elseif (isset($_SERVER['REMOTE_USER'])) {
-		$username = str_replace("\\", "\\\\", $_SERVER['REMOTE_USER']);
-	} elseif (isset($_SERVER['REDIRECT_REMOTE_USER'])) {
-		$username = str_replace("\\", "\\\\", $_SERVER['REDIRECT_REMOTE_USER']);
-	} elseif (isset($_SERVER['HTTP_PHP_AUTH_USER'])) {
-		$username = str_replace("\\", "\\\\", $_SERVER['HTTP_PHP_AUTH_USER']);
-	} elseif (isset($_SERVER['HTTP_REMOTE_USER'])) {
-		$username = str_replace("\\", "\\\\", $_SERVER['HTTP_REMOTE_USER']);
-	} elseif (isset($_SERVER['HTTP_REDIRECT_REMOTE_USER'])) {
-		$username = str_replace("\\", "\\\\", $_SERVER['HTTP_REDIRECT_REMOTE_USER']);
+	/* REMOTE_USER and REDIRECT_REMOTE_USER are set by the web server's own
+	 * authentication module, so they take precedence. PHP populates PHP_AUTH_USER
+	 * by decoding the Authorization header itself; deployments whose web server
+	 * sets REMOTE_USER can disable it via config.php. Forgeable HTTP_-prefixed
+	 * client request headers are never trusted. */
+	if (isset($_SERVER['REMOTE_USER']) && $_SERVER['REMOTE_USER'] !== '') {
+		$username = str_replace('\\', '\\\\', $_SERVER['REMOTE_USER']);
+	} elseif (isset($_SERVER['REDIRECT_REMOTE_USER']) && $_SERVER['REDIRECT_REMOTE_USER'] !== '') {
+		$username = str_replace('\\', '\\\\', $_SERVER['REDIRECT_REMOTE_USER']);
+	} elseif (isset($_SERVER['PHP_AUTH_USER']) && $_SERVER['PHP_AUTH_USER'] !== '' && ($config['auth_basic_allow_php_auth_user'] ?? true) !== false) {
+		$username = str_replace('\\', '\\\\', $_SERVER['PHP_AUTH_USER']);
 	} else {
 		$username = false;
 	}
 
 	if ($username !== false) {
-		if (strpos($username, '@') !== false) {
-			$upart = explode('@', $username);
+		if (str_contains($username, '@')) {
+			$upart    = explode('@', $username);
 			$username = $upart[0];
 		}
 
@@ -292,8 +293,8 @@ function get_basic_auth_username() {
 			$found   = false;
 
 			if (cacti_sizeof($records)) {
-				foreach($records as $r) {
-					list($basic, $shortform) = str_getcsv($r);
+				foreach ($records as $r) {
+					[$basic, $shortform] = str_getcsv($r);
 
 					if (trim($basic) == $username) {
 						$username = trim($shortform);
@@ -304,13 +305,55 @@ function get_basic_auth_username() {
 				}
 			}
 
-			if (!$found) {
+			/* This runs on every request, so only log when signing in. */
+			if (!$found && !isset($_SESSION['sess_user_id'])) {
 				cacti_log("WARNING: Username $username not found in basic mapfile.", false, 'AUTH');
 			}
 		}
 	}
 
 	return $username;
+}
+
+/**
+ * Hold an existing Web Basic session to the identity the web server presents on this request.
+ * The identity is verified when the session is created; this repeats the check on later
+ * requests and ends the session when the identity is missing, differs from the one the session
+ * was created for, or its account is disabled or locked.
+ *
+ * @param string|bool $username     The identity from get_basic_auth_username(), or false.
+ * @param array|bool  $current_user The realm 2 account of that identity, empty if there is none.
+ *
+ * @return bool True if the session was kept, false if there is none or it was ended.
+ */
+function auth_basic_session_recheck($username, $current_user) : bool {
+	if (!isset($_SESSION['sess_user_id'])) {
+		return false;
+	}
+
+	$user_id = (int) $_SESSION['sess_user_id'];
+	$valid   = false;
+
+	/* Several upstream names can sanitize to one account name, so the session
+	 * is also held to the unsanitized name recorded when it was created. */
+	if ($username !== false && isset($_SESSION['sess_basic_auth_user']) && $_SESSION['sess_basic_auth_user'] === $username) {
+		if (cacti_sizeof($current_user)) {
+			$valid = $current_user['enabled'] == 'on' && ($current_user['locked'] ?? '') != 'on' && $user_id === (int) $current_user['id'];
+		} else {
+			/* auth_login.php signs an identity without a realm 2 account in as the guest account. */
+			$guest_user_id = (int) get_guest_account();
+			$valid         = $guest_user_id > 0 && $user_id === $guest_user_id;
+		}
+	}
+
+	if (!$valid) {
+		cacti_log('NOTE: Web Basic session for user id ' . $user_id . ' ended, it no longer matches the identity passed by the web server', false, 'AUTH');
+
+		cacti_session_destroy();
+		cacti_session_start(true);
+	}
+
+	return $valid;
 }
 
 /**
@@ -3879,7 +3922,7 @@ function ldap_login_process($username) {
 function domains_login_process($username) {
 	global $realm, $error, $error_msg;
 
-	$realm    = get_nfilter_request_var('realm');
+	$realm    = get_filter_request_var('realm');
 	$password = get_nfilter_request_var('login_password');
 
 	if ($username == '') {
@@ -3888,41 +3931,48 @@ function domains_login_process($username) {
 
 		cacti_log('LOGIN FAILED: Empty Domains Username provided', false, 'AUTH');
 
-		return array();
+		return [];
+	}
+
+	if (!array_key_exists($realm, get_auth_realms(true))) {
+		$error     = true;
+		$error_msg = __('Access Denied!  Login Failed.');
+
+		cacti_log(sprintf("LOGIN FAILED: Unknown Login Realm '%s' provided for user '%s' from IP address %s", $realm, $username, get_client_addr()), false, 'AUTH');
+
+		return [];
 	}
 
 	auth_checkclear_lockout($username, $realm);
 
 	if (auth_process_lockout_check($username, $realm)) {
-		return array();
+		return [];
 	}
 
-	$user = array();
+	$user = [];
 
-	// realm >= 3: domain realms start at 3; > 3 allowed realm=3 to skip LDAP bind (GHSA-3jj2-v5ch-wmq5)
-	if ($realm >= 3 && $password != '') {
+	if ($realm >= 1000 && $password != '') {
 		/* get user DN */
 		$ldap_dn_search_response = domains_ldap_search_dn($username, $realm);
-		if ($ldap_dn_search_response['error_num'] == '0') {
+		if (is_array($ldap_dn_search_response) && $ldap_dn_search_response['error_num'] == '0') {
 			$ldap_dn = $ldap_dn_search_response['dn'];
 		} else {
-			/* error searching */
 			$error     = true;
-			$error_msg = __('LDAP Search Error: %s', $ldap_dn_search_response['error_text']);
+			$error_msg = __('Access Denied!  Login Failed.');
 
-			cacti_log('LOGIN FAILED: LDAP Error: ' . $ldap_dn_search_response['error_text'], false, 'AUTH');
+			cacti_log('LOGIN FAILED: LDAP Error: ' . (is_array($ldap_dn_search_response) ? $ldap_dn_search_response['error_text'] : 'No LDAP configuration for realm'), false, 'AUTH');
 		}
 
 		if (!$error) {
 			/* auth user with LDAP */
 			$ldap_auth_response = domains_ldap_auth($username, $password, $ldap_dn, $realm);
 
-			if ($ldap_auth_response['error_num'] == '0') {
+			if (is_array($ldap_auth_response) && $ldap_auth_response['error_num'] == '0') {
 				/* User ok */
 				$domain_name = db_fetch_cell_prepared('SELECT domain_name
 					FROM user_domains
 					WHERE domain_id = ?',
-					array($realm-1000));
+					[$realm - 1000]);
 
 				/* Locate user in database */
 				cacti_log("LOGIN: LDAP User '$username' Authenticated from Domain '$domain_name'", false, 'AUTH');
@@ -3931,18 +3981,18 @@ function domains_login_process($username) {
 					FROM user_auth
 					WHERE username = ?
 					AND realm = ?',
-					array($username, $realm));
+					[$username, $realm]);
 
 				/* Create user from template if requested */
 				$template_user = db_fetch_cell_prepared('SELECT user_id
 					FROM user_domains
 					WHERE domain_id = ?',
-					array($realm-1000));
+					[$realm - 1000]);
 
 				$template_username = db_fetch_cell_prepared('SELECT username
 					FROM user_auth
 					WHERE id = ?',
-					array($template_user));
+					[$template_user]);
 
 				if (!cacti_sizeof($user) && $template_user > 0 && $username != '') {
 					cacti_log("NOTE: User '" . $username . "' does not exist, copying template user", false, 'AUTH');
@@ -3951,25 +4001,25 @@ function domains_login_process($username) {
 					$user_template = db_fetch_row_prepared('SELECT *
 						FROM user_auth
 						WHERE id = ?',
-						array($template_user));
+						[$template_user]);
 
 					if (cacti_sizeof($user_template)) {
 						/* template user found */
 						$cn_full_name = db_fetch_cell_prepared('SELECT cn_full_name
 							FROM user_domains_ldap
 							WHERE domain_id = ?',
-							array($realm-1000));
+							[$realm - 1000]);
 
 						$cn_email = db_fetch_cell_prepared('SELECT cn_email
 							FROM user_domains_ldap
 							WHERE domain_id = ?',
-							array($realm-1000));
+							[$realm - 1000]);
 
 						if ($cn_full_name != '' || $cn_email != '') {
-							$ldap_cn_search_response = domains_ldap_search_cn($username, array($cn_full_name, $cn_email), $realm);
+							$ldap_cn_search_response = domains_ldap_search_cn($username, [$cn_full_name, $cn_email], $realm);
 
 							if (isset($ldap_cn_search_response['cn'])) {
-								$data_override = array();
+								$data_override = [];
 
 								if (array_key_exists($cn_full_name, $ldap_cn_search_response['cn'])) {
 									$data_override['full_name'] = $ldap_cn_search_response['cn'][$cn_full_name];
@@ -3985,7 +4035,7 @@ function domains_login_process($username) {
 
 								user_copy($user_template['username'], $username, 0, $realm, false, $data_override);
 							} else {
-								cacti_log('LOGIN: fields not found ' . $ldap_cn_search_response[0] . 'code: ' . $ldap_cn_search_response['error_num'], false, 'AUTH');
+								cacti_log('LOGIN: fields not found code: ' . (is_array($ldap_cn_search_response) ? $ldap_cn_search_response['error_num'] : ''), false, 'AUTH');
 								user_copy($user_template['username'], $username, 0, $realm);
 							}
 						} else {
@@ -3997,7 +4047,7 @@ function domains_login_process($username) {
 							FROM user_auth
 							WHERE username = ?
 							AND realm = ?',
-							array($username, $realm));
+							[$username, $realm]);
 					} else {
 						/* error */
 						$error     = true;
@@ -4006,17 +4056,20 @@ function domains_login_process($username) {
 						cacti_log("LOGIN FAILED: Template user id '" . $template_user . "' does not exist.", false, 'AUTH');
 					}
 				}
+
+				if (!$error && !cacti_sizeof($user)) {
+					$error     = true;
+					$error_msg = __('Access Denied!  Domain template is not configured.  Please contact your Administrator.');
+
+					cacti_log("LOGIN FAILED: LDAP user '" . $username . "' authenticated but the domain has no template and no existing account.", false, 'AUTH');
+				}
 			} else {
-				/* error */
 				$error     = true;
-				$error_msg = __('Access Denied!  LDAP Error: %s', $ldap_auth_response['error_text']);
+				$error_msg = __('Access Denied!  Login Failed.');
 
-				cacti_log('LOGIN FAILED: LDAP Error: ' . $ldap_auth_response['error_text'], false, 'AUTH');
+				cacti_log('LOGIN FAILED: LDAP Error: ' . (is_array($ldap_auth_response) ? $ldap_auth_response['error_text'] : 'No LDAP configuration for realm'), false, 'AUTH');
 
-				/* error_text is a string; the correct field for the numeric
-				 * bind-failure code is error_num (mirrors the check in
-				 * ldap_login_process at line ~3818).  GHSA-2px8-gvmq-85f3 */
-				if ($ldap_auth_response['error_num'] == 1) {
+				if (is_array($ldap_auth_response) && $ldap_auth_response['error_num'] == 1) {
 					auth_process_lockout($username, $realm);
 				}
 			}
@@ -4029,6 +4082,11 @@ function domains_login_process($username) {
 		cacti_log(sprintf('LOGIN FAILED: LDAP No password provided for user %s', $username), false, 'AUTH');
 
 		auth_process_lockout($username, $realm);
+	} else {
+		$error     = true;
+		$error_msg = __('Access Denied!  Login Failed.');
+
+		cacti_log(sprintf("LOGIN FAILED: Login Realm '%s' is not an LDAP domain for user '%s' from IP address %s", $realm, $username, get_client_addr()), false, 'AUTH');
 	}
 
 	return $user;
@@ -4447,39 +4505,50 @@ function rsa_check_keypair() {
 }
 
 /**
- * reset_group_perms - sets a flag for all users of a group logged in that their perms
- *   need to be reloaded from the database
+ * Expires persistent authentication tokens and reloads permissions for users
+ * who are members of the changed group.
  *
- * @param  (int) $group_id - the id of the group to check
+ * @param int $group_id ID of the group whose user permissions changed.
  *
- * @return (void)
+ * @return void
  */
 function reset_group_perms($group_id) {
 	$users = array_rekey(db_fetch_assoc_prepared('SELECT user_id
 		FROM user_auth_group_members
 		WHERE group_id = ?',
-		array($group_id)), 'user_id', 'user_id');
+		[$group_id]), 'user_id', 'user_id');
 
 	if (cacti_sizeof($users)) {
-		db_execute('UPDATE user_auth
-			SET reset_perms=FLOOR(RAND() * 4294967295) + 1
-			WHERE id IN (' . implode(',', $users) . ')');
+		$user_ids     = array_values($users);
+		$placeholders = implode(',', array_fill(0, cacti_sizeof($user_ids), '?'));
+
+		db_execute_prepared("DELETE FROM user_auth_cache
+			WHERE user_id IN ($placeholders)",
+			$user_ids);
+
+		db_execute_prepared("UPDATE user_auth
+			SET reset_perms = FLOOR(RAND() * 4294967295) + 1
+			WHERE id IN ($placeholders)",
+			$user_ids);
 	}
 }
 
 /**
- * reset_user_perms - sets a flag for all users logged in as this user that their perms
- *   need to be reloaded from the database
+ * Expires persistent authentication tokens and reloads permissions for a user.
  *
- * @param  (int) $user_id - the id of the current user
+ * @param int $user_id ID of the user whose permissions changed.
  *
- * @return (void)
+ * @return void
  */
 function reset_user_perms($user_id) {
+	db_execute_prepared('DELETE FROM user_auth_cache
+		WHERE user_id = ?',
+		[$user_id]);
+
 	db_execute_prepared('UPDATE user_auth
-		SET reset_perms=FLOOR(RAND() * 4294967295) + 1
+		SET reset_perms = FLOOR(RAND() * 4294967295) + 1
 		WHERE id = ?',
-		array($user_id));
+		[$user_id]);
 
 	if ($user_id == $_SESSION['sess_user_id']) {
 		kill_session_var('sess_user_realms');
@@ -4650,11 +4719,14 @@ function auth_user_has_access($user) {
 		}
 	}
 
-	// See if they have access to any group realms
-	$user_groups = db_fetch_assoc_prepared('SELECT *
-		FROM user_auth_group_members
-		WHERE user_id = ?',
-		array($user['id']));
+	// See if they have access to any group realms; a disabled group grants nothing
+	$user_groups = db_fetch_assoc_prepared("SELECT uagm.group_id, uag.show_tree, uag.show_list, uag.show_preview
+		FROM user_auth_group_members AS uagm
+		INNER JOIN user_auth_group AS uag
+		ON uag.id = uagm.group_id
+		WHERE uagm.user_id = ?
+		AND uag.enabled = 'on'",
+		[$user['id']]);
 
 	if (cacti_sizeof($user_groups)) {
 		foreach($user_groups as $g) {
@@ -5045,6 +5117,15 @@ function cacti_auth_transition($user_id, $reason = 'login') {
 	/* regenerate session ID to prevent fixation */
 	if (session_status() === PHP_SESSION_ACTIVE) {
 		session_regenerate_id(true);
+	}
+
+	/* Bind Web Basic logins completed through auth_login.php to the upstream identity. */
+	if ($reason === 'login' && read_config_option('auth_method') == 2) {
+		$basic_user = get_basic_auth_username();
+
+		if ($basic_user !== false) {
+			$_SESSION['sess_basic_auth_user'] = $basic_user;
+		}
 	}
 
 	/* invalidate cached permissions so fresh checks occur */

@@ -383,3 +383,355 @@ describe('settings.php filepath validation persistence guard', function () use (
 		'whitespace'   => ['/tmp/bad path', false],
 	]);
 });
+
+describe('lib/auth.php cookie lifecycle, basic auth, permission reset, and domain realm hardening', function () use ($repoRoot) {
+	$authFile = var_export($repoRoot . '/lib/auth.php', true);
+
+	it('hardens remember-me cookie parsing, revocation order, disabled-account rejection, and 90-day retention', function () use ($authFile) {
+		$res = run_sec_isolated_php_json(<<<PHP
+\$GLOBALS['events']         = [];
+\$GLOBALS['cell_queries']   = [];
+\$GLOBALS['exec_queries']   = [];
+\$GLOBALS['user_row']       = [];
+\$GLOBALS['cache_found']    = 7;
+
+function cacti_sizeof(mixed \$v) : int { return is_array(\$v) ? count(\$v) : 0; }
+function read_config_option(string \$k) : string { return \$k === 'auth_cache_enabled' ? 'on' : ''; }
+function db_table_exists(string \$t) : bool { return true; }
+function get_guest_account() : int { return 0; }
+function get_client_addr() : string { return '192.0.2.10'; }
+function cacti_log(string \$m, bool \$o = false, string \$f = '') : void {}
+function cacti_cookie_session_set(int \$u, int \$r, string \$s) : void { \$GLOBALS['events'][] = 'cookie_set'; }
+function cacti_cookie_session_logout() : void { \$GLOBALS['events'][] = 'cookie_logout'; }
+function db_fetch_row_prepared(string \$sql, array \$params = []) : array { return \$GLOBALS['user_row']; }
+function db_fetch_cell_prepared(string \$sql, array \$params = []) : mixed {
+	\$GLOBALS['cell_queries'][] = ['sql' => \$sql, 'params' => \$params];
+	return str_contains(\$sql, 'FROM user_auth_cache') ? \$GLOBALS['cache_found'] : 0;
+}
+function db_execute_prepared(string \$sql, array \$params = []) : void {
+	\$GLOBALS['exec_queries'][] = ['sql' => \$sql, 'params' => \$params];
+	if (str_contains(\$sql, 'DELETE FROM user_auth_cache')) {
+		\$GLOBALS['events'][] = 'db_delete';
+	}
+}
+
+require_once {$authFile};
+
+\$_COOKIE['cacti_remembers'] = ['not-a-string'];
+clear_auth_cookie();
+\$nonStringEvents = \$GLOBALS['events'];
+\$nonStringCheck  = check_auth_cookie();
+
+\$GLOBALS['events'] = [];
+\$_COOKIE['cacti_remembers'] = 'malformed_single_part';
+clear_auth_cookie();
+\$malformedEvents = \$GLOBALS['events'];
+\$malformedCheck  = check_auth_cookie();
+
+\$GLOBALS['events'] = [];
+\$_COOKIE['cacti_remembers'] = '7,badrealm,tok';
+clear_auth_cookie();
+\$badRealmEvents = \$GLOBALS['events'];
+\$badRealmCheck  = check_auth_cookie();
+
+\$GLOBALS['events'] = [];
+\$_COOKIE['cacti_remembers'] = '7,0,validtoken';
+clear_auth_cookie();
+\$validClearOrder = \$GLOBALS['events'];
+
+\$GLOBALS['exec_queries'] = [];
+\$GLOBALS['cell_queries'] = [];
+\$GLOBALS['user_row']     = ['id' => 7, 'realm' => 0, 'username' => 'alice', 'enabled' => ''];
+\$disabledCheck           = check_auth_cookie();
+\$disabledDeletes         = \$GLOBALS['exec_queries'];
+
+\$GLOBALS['exec_queries'] = [];
+\$GLOBALS['cell_queries'] = [];
+\$GLOBALS['user_row']     = ['id' => 7, 'realm' => 0, 'username' => 'alice', 'enabled' => 'on'];
+\$enabledCheck            = check_auth_cookie();
+\$cacheSelectSql          = \$GLOBALS['cell_queries'][0]['sql'] ?? '';
+
+echo json_encode([
+	'nonStringEvents' => \$nonStringEvents,
+	'nonStringCheck'  => \$nonStringCheck,
+	'malformedEvents' => \$malformedEvents,
+	'malformedCheck'  => \$malformedCheck,
+	'badRealmEvents'  => \$badRealmEvents,
+	'badRealmCheck'   => \$badRealmCheck,
+	'validClearOrder' => \$validClearOrder,
+	'disabledCheck'   => \$disabledCheck,
+	'disabledDeletes' => \$disabledDeletes,
+	'enabledCheck'    => \$enabledCheck,
+	'cacheSelectSql'  => \$cacheSelectSql,
+]);
+PHP);
+
+		expect($res['nonStringEvents'])->toBe(['cookie_logout'])
+			->and($res['nonStringCheck'])->toBeFalse()
+			->and($res['malformedEvents'])->toBe(['cookie_logout'])
+			->and($res['malformedCheck'])->toBeFalse()
+			->and($res['badRealmEvents'])->toBe(['cookie_logout'])
+			->and($res['badRealmCheck'])->toBeFalse()
+			->and($res['validClearOrder'])->toBe(['db_delete', 'cookie_logout'])
+			->and($res['disabledCheck'])->toBeFalse()
+			->and($res['disabledDeletes'])->toHaveCount(1)
+			->and($res['disabledDeletes'][0]['sql'])->toContain('DELETE FROM user_auth_cache')
+			->and($res['disabledDeletes'][0]['params'])->toBe([7])
+			->and($res['enabledCheck'])->toBe(7)
+			->and($res['cacheSelectSql'])->toContain('INTERVAL 90 DAY');
+	});
+
+	it('revokes auth cache tokens on permission resets and ignores disabled groups in auth_user_has_access()', function () use ($authFile) {
+		$res = run_sec_isolated_php_json(<<<PHP
+\$_SESSION = ['sess_user_id' => 99];
+\$GLOBALS['exec_queries']  = [];
+\$GLOBALS['assoc_queries'] = [];
+\$GLOBALS['group_rows']    = [];
+
+function cacti_sizeof(mixed \$v) : int { return is_array(\$v) ? count(\$v) : 0; }
+function read_config_option(string \$k) : string { return \$k === 'guest_user' ? '1' : ''; }
+function kill_session_var(string \$k) : void {}
+function array_rekey(array \$arr, string \$k, string \$v) : array {
+	\$out = [];
+	foreach (\$arr as \$r) { \$out[\$r[\$k]] = \$r[\$v]; }
+	return \$out;
+}
+function db_fetch_assoc_prepared(string \$sql, array \$params = []) : array {
+	\$GLOBALS['assoc_queries'][] = ['sql' => \$sql, 'params' => \$params];
+	if (str_contains(\$sql, 'FROM user_auth_group_members') && !str_contains(\$sql, 'INNER JOIN')) {
+		return [['user_id' => 11], ['user_id' => 12]];
+	}
+	return \$GLOBALS['group_rows'];
+}
+function db_fetch_cell_prepared(string \$sql, array \$params = []) : int { return 0; }
+function db_execute_prepared(string \$sql, array \$params = []) : void {
+	\$GLOBALS['exec_queries'][] = ['sql' => \$sql, 'params' => \$params];
+}
+
+require_once {$authFile};
+
+reset_group_perms(5);
+reset_user_perms(11);
+
+\$noGroupAccess = auth_user_has_access(['id' => 11, 'show_tree' => '', 'show_list' => '', 'show_preview' => '']);
+\$GLOBALS['group_rows'] = [['group_id' => 5, 'show_tree' => 'on', 'show_list' => '', 'show_preview' => '']];
+\$enabledGroupAccess = auth_user_has_access(['id' => 11, 'show_tree' => '', 'show_list' => '', 'show_preview' => '']);
+
+echo json_encode([
+	'exec_queries'       => \$GLOBALS['exec_queries'],
+	'group_access_sql'   => \$GLOBALS['assoc_queries'][1]['sql'] ?? '',
+	'noGroupAccess'      => \$noGroupAccess,
+	'enabledGroupAccess' => \$enabledGroupAccess,
+]);
+PHP);
+
+		expect($res['exec_queries'])->toHaveCount(4)
+			->and($res['exec_queries'][0]['sql'])->toContain('DELETE FROM user_auth_cache')
+			->and($res['exec_queries'][0]['params'])->toBe([11, 12])
+			->and($res['exec_queries'][1]['sql'])->toContain('UPDATE user_auth')
+			->and($res['exec_queries'][1]['params'])->toBe([11, 12])
+			->and($res['exec_queries'][2]['sql'])->toContain('DELETE FROM user_auth_cache')
+			->and($res['exec_queries'][2]['params'])->toBe([11])
+			->and($res['group_access_sql'])->toContain('INNER JOIN user_auth_group AS uag')
+			->and($res['group_access_sql'])->toContain("AND uag.enabled = 'on'")
+			->and($res['group_access_sql'])->toContain('uag.show_tree, uag.show_list, uag.show_preview')
+			->and($res['noGroupAccess'])->toBeFalse()
+			->and($res['enabledGroupAccess'])->toBeTrue();
+	});
+
+	it('hardens get_basic_auth_username(), auth_basic_session_recheck(), and cacti_auth_transition()', function () use ($authFile) {
+		$res = run_sec_isolated_php_json(<<<PHP
+\$config = [];
+\$GLOBALS['auth_method'] = '2';
+\$GLOBALS['guest_id']    = 50;
+\$GLOBALS['destroyed']   = 0;
+\$GLOBALS['restarted']   = 0;
+
+function cacti_sizeof(mixed \$v) : int { return is_array(\$v) ? count(\$v) : 0; }
+function read_config_option(string \$k) : string { return \$k === 'auth_method' ? \$GLOBALS['auth_method'] : ''; }
+function get_guest_account() : int { return \$GLOBALS['guest_id']; }
+function cacti_log(string \$m, bool \$o = false, string \$f = '', int \$l = 0) : void {}
+function kill_session_var(string \$k) : void {}
+function db_fetch_cell_prepared(string \$sql, array \$params = []) : string { return ''; }
+function cacti_session_destroy() : void {
+	\$GLOBALS['destroyed']++;
+	\$_SESSION = [];
+}
+function cacti_session_start(bool \$regen = false) : void {
+	if (\$regen) {
+		\$GLOBALS['restarted']++;
+	}
+}
+if (!defined('POLLER_VERBOSITY_MEDIUM')) { define('POLLER_VERBOSITY_MEDIUM', 3); }
+
+require_once {$authFile};
+
+\$_SERVER = ['HTTP_REMOTE_USER' => 'spoof', 'HTTP_PHP_AUTH_USER' => 'spoof2'];
+\$forgedHeaders = get_basic_auth_username();
+
+\$_SERVER = ['REMOTE_USER' => 'realuser', 'PHP_AUTH_USER' => 'fallback'];
+\$prefersRemote = get_basic_auth_username();
+
+\$_SERVER = ['PHP_AUTH_USER' => 'phpuser'];
+\$allowsPhpAuth = get_basic_auth_username();
+\$config['auth_basic_allow_php_auth_user'] = false;
+\$blocksPhpAuth = get_basic_auth_username();
+\$config['auth_basic_allow_php_auth_user'] = true;
+
+\$_SERVER = ['REMOTE_USER' => 'alice'];
+\$_SESSION = [];
+cacti_auth_transition(10, 'login');
+\$transitionBound = \$_SESSION['sess_basic_auth_user'] ?? null;
+
+\$_SESSION = ['sess_user_id' => 10, 'sess_basic_auth_user' => 'alice'];
+\$keepValid = auth_basic_session_recheck('alice', ['id' => 10, 'enabled' => 'on', 'locked' => '']);
+
+\$_SESSION = ['sess_user_id' => 50, 'sess_basic_auth_user' => 'guest-up'];
+\$keepGuest = auth_basic_session_recheck('guest-up', []);
+
+\$_SESSION = ['sess_user_id' => 10, 'sess_basic_auth_user' => 'alice'];
+\$dropChanged = auth_basic_session_recheck('bob', ['id' => 10, 'enabled' => 'on', 'locked' => '']);
+
+\$_SESSION = ['sess_user_id' => 10, 'sess_basic_auth_user' => 'alice'];
+\$dropDisabled = auth_basic_session_recheck('alice', ['id' => 10, 'enabled' => '', 'locked' => '']);
+
+\$_SESSION = ['sess_user_id' => 10, 'sess_basic_auth_user' => 'alice'];
+\$dropLocked = auth_basic_session_recheck('alice', ['id' => 10, 'enabled' => 'on', 'locked' => 'on']);
+
+\$_SESSION = ['sess_user_id' => 10];
+\$dropUnbound = auth_basic_session_recheck('alice', ['id' => 10, 'enabled' => 'on', 'locked' => '']);
+
+echo json_encode([
+	'forgedHeaders'   => \$forgedHeaders,
+	'prefersRemote'   => \$prefersRemote,
+	'allowsPhpAuth'   => \$allowsPhpAuth,
+	'blocksPhpAuth'   => \$blocksPhpAuth,
+	'transitionBound' => \$transitionBound,
+	'keepValid'       => \$keepValid,
+	'keepGuest'       => \$keepGuest,
+	'dropChanged'     => \$dropChanged,
+	'dropDisabled'    => \$dropDisabled,
+	'dropLocked'      => \$dropLocked,
+	'dropUnbound'     => \$dropUnbound,
+	'destroyed'       => \$GLOBALS['destroyed'],
+	'restarted'       => \$GLOBALS['restarted'],
+]);
+PHP);
+
+		expect($res['forgedHeaders'])->toBeFalse()
+			->and($res['prefersRemote'])->toBe('realuser')
+			->and($res['allowsPhpAuth'])->toBe('phpuser')
+			->and($res['blocksPhpAuth'])->toBeFalse()
+			->and($res['transitionBound'])->toBe('alice')
+			->and($res['keepValid'])->toBeTrue()
+			->and($res['keepGuest'])->toBeTrue()
+			->and($res['dropChanged'])->toBeFalse()
+			->and($res['dropDisabled'])->toBeFalse()
+			->and($res['dropLocked'])->toBeFalse()
+			->and($res['dropUnbound'])->toBeFalse()
+			->and($res['destroyed'])->toBe(4)
+			->and($res['restarted'])->toBe(4);
+	});
+
+	it('rejects non-domain realms and unconfigured templates in domains_login_process()', function () use ($authFile) {
+		$res = run_sec_isolated_php_json(<<<PHP
+\$GLOBALS['req']        = [];
+\$GLOBALS['ldap_calls'] = 0;
+
+function cacti_sizeof(mixed \$v) : int { return is_array(\$v) ? count(\$v) : 0; }
+function __(string \$s, mixed ...\$a) : string { return \$a ? vsprintf(\$s, \$a) : \$s; }
+function get_client_addr() : string { return '192.0.2.20'; }
+function cacti_log(string \$m, bool \$o = false, string \$f = '') : void {}
+function read_config_option(string \$k) : string { return \$k === 'auth_method' ? '4' : ''; }
+function get_filter_request_var(string \$k) : int { return (int) (\$GLOBALS['req'][\$k] ?? 0); }
+function get_nfilter_request_var(string \$k) : string { return (string) (\$GLOBALS['req'][\$k] ?? ''); }
+function db_fetch_assoc(string \$sql) : array { return [['domain_id' => 1, 'domain_name' => 'Corp']]; }
+function db_fetch_cell(string \$sql) : int { return 1; }
+function db_fetch_cell_prepared(string \$sql, array \$params = []) : mixed {
+	return str_contains(\$sql, 'SELECT domain_name') ? 'Corp' : 0;
+}
+function db_fetch_row_prepared(string \$sql, array \$params = []) : array {
+	if (str_contains(\$sql, 'FROM user_domains_ldap')) {
+		return ['server' => 'ldap.example.org', 'group_require' => ''];
+	}
+	return [];
+}
+class Ldap {
+	public string \$username = '';
+	public string \$password = '';
+	public string \$dn = '';
+	public string \$host = '';
+	public bool \$group_require = false;
+	public function Search() : array {
+		\$GLOBALS['ldap_calls']++;
+		return ['error_num' => 0, 'dn' => 'uid=alice,dc=example,dc=org'];
+	}
+	public function Authenticate() : array {
+		\$GLOBALS['ldap_calls']++;
+		return ['error_num' => 0];
+	}
+}
+
+require_once {$authFile};
+
+\$runCase = static function (int \$realmVal, string \$cred) : array {
+	global \$realm, \$error, \$error_msg;
+	\$error     = false;
+	\$error_msg = '';
+	\$GLOBALS['req'] = ['realm' => \$realmVal, 'login_password' => \$cred];
+	\$user = domains_login_process('alice');
+	return ['user' => \$user, 'error' => \$error, 'msg' => \$error_msg];
+};
+
+\$sampleCred   = str_repeat('x', 8);
+\$unknownRealm = \$runCase(9999, \$sampleCred);
+\$realmTwo     = \$runCase(2, \$sampleCred);
+\$realmZero    = \$runCase(0, \$sampleCred);
+\$callsBefore  = \$GLOBALS['ldap_calls'];
+\$noTemplate   = \$runCase(1001, \$sampleCred);
+
+echo json_encode([
+	'unknownRealm' => \$unknownRealm,
+	'realmTwo'     => \$realmTwo,
+	'realmZero'    => \$realmZero,
+	'callsBefore'  => \$callsBefore,
+	'noTemplate'   => \$noTemplate,
+	'callsAfter'   => \$GLOBALS['ldap_calls'],
+]);
+PHP);
+
+		expect($res['unknownRealm']['error'])->toBeTrue()
+			->and($res['unknownRealm']['user'])->toBe([])
+			->and($res['realmTwo']['error'])->toBeTrue()
+			->and($res['realmTwo']['user'])->toBe([])
+			->and($res['realmZero']['error'])->toBeTrue()
+			->and($res['realmZero']['user'])->toBe([])
+			->and($res['callsBefore'])->toBe(0)
+			->and($res['noTemplate']['error'])->toBeTrue()
+			->and($res['noTemplate']['user'])->toBe([])
+			->and($res['callsAfter'])->toBe(2);
+	});
+});
+
+describe('include/auth.php Web Basic Auth and realm check enforcement', function () use ($repoRoot) {
+	$src = (string) file_get_contents($repoRoot . '/include/auth.php');
+
+	it('rechecks upstream Basic Auth identity, refuses disabled accounts, and halts on locked accounts', function () use ($src) {
+		$basicBlock = extract_source_slice($src, 'if ($auth_method == 2) {', 'if (isset($guest_account))');
+
+		expect($basicBlock)->toContain('sanitize_search_string($username)')
+			->and($basicBlock)->toContain('auth_basic_session_recheck($username, $current_user)')
+			->and($basicBlock)->toContain("\$current_user['enabled'] != 'on'")
+			->and($basicBlock)->toContain("\$_SESSION['sess_basic_auth_user'] = \$username;")
+			->and($basicBlock)->toContain('auth_display_custom_error_message(')
+			->and($basicBlock)->not->toContain('return false;')
+			->and($basicBlock)->not->toContain('return true;');
+	});
+
+	it('falls through to per-page realm authorization from the guest account branch', function () use ($src) {
+		$guestBlock = extract_source_slice($src, 'if (isset($guest_account))', 'if (!isset($guest_account)');
+
+		expect($guestBlock)->not->toBe('')
+			->and($guestBlock)->not->toContain('return true;');
+	});
+});
