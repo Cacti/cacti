@@ -790,15 +790,15 @@ function setupDefaultElements() {
 
 		// Add the search filter icon once the filter inputs are visible
 		setTimeout(function() {
-			if ($('input[id="filter"]').length > 0 && $('input[id="filter"]').is(':visible') && $('input[id="filter"] > i[class="ti ti-search filter"]').length < 1) {
+			if ($('input[id="filter"]').length > 0 && $('input[id="filter"]').is(':visible') && $('input[id="filter"]').next('i[class="ti ti-search filter"]').length < 1) {
 				$('input[id="filter"]').after("<i class='ti ti-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
 			}
 
-			if ($('input[id="filterd"]').length > 0 && $('input[id="filterd"]').is(':visible') && $('input[id="filterd"] > i[class="ti ti-search filter"]').length < 1) {
+			if ($('input[id="filterd"]').length > 0 && $('input[id="filterd"]').is(':visible') && $('input[id="filterd"]').next('i[class="ti ti-search filter"]').length < 1) {
 				$('input[id="filterd"]').after("<i class='ti ti-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
 			}
 
-			if ($('input[id="rfilter"]').length > 0 && $('input[id="rfilter"]').is(':visible') && $('input[id="rfilter"] > i[class="ti ti-search filter"]').length < 1 && $('input[id="rfilter"]').closest('.cactiFilterEditTable').length < 1) {
+			if ($('input[id="rfilter"]').length > 0 && $('input[id="rfilter"]').is(':visible') && $('input[id="rfilter"]').next('i[class="ti ti-search filter"]').length < 1 && $('input[id="rfilter"]').closest('.cactiFilterEditTable').length < 1) {
 				$('input[id="rfilter"]').after("<i class='ti ti-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchRFilter).parent('td').css('white-space', 'nowrap');
 			}
 		}, 0);

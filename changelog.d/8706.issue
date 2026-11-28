@@ -1,0 +1,1 @@
+Skip rrdtool fetch lines that are not data rows in RRDcheck, return false from the session garbage collector when cleanup fails, and add the Midwinter filter search icon once
