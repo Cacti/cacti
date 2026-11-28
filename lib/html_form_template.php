@@ -37,13 +37,8 @@
  *
  * @return int The number of fields drawn.
  */
-function draw_nontemplated_fields_graph(int $graph_template_id,
-	array &$values_array,
-	string $field_name_format = '|field|',
-	string $header_title = '',
-		bool $alternate_colors = true,
-		bool $include_hidden_fields = true,
-		int $snmp_query_graph_id = 0) : int {
+function draw_nontemplated_fields_graph(int $graph_template_id, array &$values_array, string $field_name_format = '|field|',
+	string $header_title = '', bool $alternate_colors = true, bool $include_hidden_fields = true, int $snmp_query_graph_id = 0) : int {
 	global $struct_graph;
 
 	$form_array       = [];
@@ -76,11 +71,7 @@ function draw_nontemplated_fields_graph(int $graph_template_id,
 			} else {
 				unset($form_array[$form_field_name]);
 			}
-		} elseif ((!empty($snmp_query_graph_id)) &&
-			(cacti_sizeof(db_fetch_assoc_prepared('SELECT id FROM snmp_query_graph_sv WHERE snmp_query_graph_id = ? AND ' .
-				'field_name = ?',
-				[$snmp_query_graph_id,
-				$field_name])) > 0)) {
+		} elseif ((!empty($snmp_query_graph_id)) && (cacti_sizeof(db_fetch_assoc_prepared('SELECT id FROM snmp_query_graph_sv WHERE snmp_query_graph_id = ? AND field_name = ?', [$snmp_query_graph_id, $field_name])) > 0)) {
 			if ($include_hidden_fields == true) {
 				$form_array[$form_field_name]['method'] = 'hidden';
 			} else {
@@ -131,9 +122,7 @@ function draw_nontemplated_fields_graph(int $graph_template_id,
  *
  * @return int The number of fields drawn.
  */
-function draw_nontemplated_fields_graph_item(int $graph_template_id,
-	int $local_graph_id,
-	string $field_name_format = '|field|_|id|',
+function draw_nontemplated_fields_graph_item(int $graph_template_id, int $local_graph_id, string $field_name_format = '|field|_|id|',
 	string $header_title = '', bool $alternate_colors = true, string $locked = 'false') : int {
 	global $struct_graph_item;
 
@@ -356,12 +345,7 @@ function draw_nontemplated_fields_data_source(int $data_template_id, int $local_
 			} else {
 				unset($form_array[$form_field_name]);
 			}
-		} elseif ((!empty($snmp_query_graph_id)) &&
-			(cacti_sizeof(db_fetch_assoc_prepared('SELECT id FROM snmp_query_graph_rrd_sv WHERE snmp_query_graph_id = ? ' .
-				'AND data_template_id = ? AND field_name = ?',
-				[$snmp_query_graph_id,
-				$data_template_id,
-				$field_name])) > 0)) {
+		} elseif ((!empty($snmp_query_graph_id)) && (cacti_sizeof(db_fetch_assoc_prepared('SELECT id FROM snmp_query_graph_rrd_sv WHERE snmp_query_graph_id = ? AND data_template_id = ? AND field_name = ?', [$snmp_query_graph_id, $data_template_id, $field_name])) > 0)) {
 			if ($include_hidden_fields == true) {
 				$form_array[$form_field_name]['method'] = 'hidden';
 			} else {
@@ -469,12 +453,7 @@ function draw_nontemplated_fields_data_source_item(int $data_template_id, array 
 					} else {
 						unset($form_array[$form_field_name]);
 					}
-				} elseif ((!empty($snmp_query_graph_id)) &&
-					(cacti_sizeof(db_fetch_assoc_prepared('SELECT id FROM snmp_query_graph_rrd_sv WHERE snmp_query_graph_id = ? ' .
-						'AND data_template_id = ? AND field_name = ?',
-						[$snmp_query_graph_id,
-						$data_template_id,
-						$field_name])) > 0)) {
+				} elseif ((!empty($snmp_query_graph_id)) && (cacti_sizeof(db_fetch_assoc_prepared('SELECT id FROM snmp_query_graph_rrd_sv WHERE snmp_query_graph_id = ? AND data_template_id = ? AND field_name = ?', [$snmp_query_graph_id, $data_template_id, $field_name])) > 0)) {
 					if ($include_hidden_fields == true) {
 						$form_array[$form_field_name]['method'] = 'hidden';
 					} else {
@@ -484,9 +463,7 @@ function draw_nontemplated_fields_data_source_item(int $data_template_id, array 
 					if ($draw_any_items == false && $draw_title_for_each_item == false && $header_title != '') {
 						print "<div class='tableHeader'><div class='tableSubHeaderColumn'>$header_title</div></div>\n";
 					} elseif ($draw_any_items == false && $draw_title_for_each_item == true && $header_title != '') {
-						print "<div class='tableHeader'><div class='tableSubHeaderColumn'>$header_title [" .
-							htmle($rrd['data_source_name']) .
-							"]</div></div>\n";
+						print "<div class='tableHeader'><div class='tableSubHeaderColumn'>$header_title [" . htmle($rrd['data_source_name']) . "]</div></div>\n";
 					}
 
 					$draw_any_items = true;
@@ -550,10 +527,7 @@ function draw_nontemplated_fields_data_source_item(int $data_template_id, array 
  * @return int The number of fields drawn.
  */
 function draw_nontemplated_fields_custom_data(int $data_template_data_id, string $field_name_format = '|field|',
-	string $header_title = '',
-		bool $alternate_colors = true,
-		bool $include_hidden_fields = true,
-		int $snmp_query_id = 0) : int {
+	string $header_title = '', bool $alternate_colors = true, bool $include_hidden_fields = true, int $snmp_query_id = 0) : int {
 	$draw_any_items   = false;
 	$num_fields_drawn = 0;
 
@@ -612,17 +586,12 @@ function draw_nontemplated_fields_custom_data(int $data_template_data_id, string
 			// find our field name
 			$form_field_name = str_replace('|id|', $field['id'], $field_name_format);
 
-			if ((!empty($host_id)) &&
-				(preg_match('/^' . VALID_HOST_FIELDS . '$/i',
-					$field['type_code'])) &&
-				(empty($can_template))) {
+			if ((!empty($host_id)) && (preg_match('/^' . VALID_HOST_FIELDS . '$/i', $field['type_code'])) && (empty($can_template))) {
 				// no host fields
 				if ($include_hidden_fields == true) {
 					form_hidden_box($form_field_name, $old_value, '');
 				}
-			} elseif ((!empty($snmp_query_id)) &&
-				(preg_match('/^(index_type|index_value|output_type)$/i',
-					$field['type_code']))) {
+			} elseif ((!empty($snmp_query_id)) && (preg_match('/^(index_type|index_value|output_type)$/i', $field['type_code']))) {
 				// no data query fields
 				if ($include_hidden_fields == true) {
 					form_hidden_box($form_field_name, $old_value, '');
