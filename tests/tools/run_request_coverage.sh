@@ -35,7 +35,7 @@ run_php_probe() {
 }
 
 command_files='^((cmd|cmd_realtime|remote_agent)\.php|cli/(audit_database|push_out_hosts|rrdresize|splice_rrd)\.php|lib/(dsstats|poller|rrdcheck|functions)\.php|tests/fixtures/Core/ConfiguredCommands\.php)'
-for mode in disconnected invalid-address begin write; do
+for mode in disconnected invalid-address begin write read increment release; do
 	run_php_probe tests/fixtures/LoginThrottleAvailability.php '^(lib/Auth/LoginThrottle|tests/fixtures/LoginThrottleAvailability)\.php$' "$mode"
 done
 

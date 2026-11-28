@@ -11,11 +11,14 @@ password=$(openssl rand -hex 20)
 hash=$(php -r 'echo password_hash($argv[1], PASSWORD_DEFAULT);' "$password")
 "${compose[@]}" exec -T mariadb mariadb -ucactiuser -pcactiuser cacti <<SQL
 UPDATE user_auth SET password='$hash', must_change_password='', password_change='', locked='', failed_attempts=0 WHERE id=1;
-REPLACE INTO settings(name,value) VALUES ('auth_method','1'),('secpass_lockfailed','6'),('auth_throttle_ip','6'),('auth_throttle_pair','2'),('auth_throttle_window','3');
+REPLACE INTO settings(name,value) VALUES ('auth_method','1'),('secpass_lockfailed','6'),('auth_throttle_ip','6'),('auth_throttle_pair','2'),('auth_throttle_window','300');
 SQL
 cd "$root"
-CACTI_THROTTLE_TEST_PASSWORD="$password" CACTI_THROTTLE_TEST_URL="http://127.0.0.1:$HOST_PORT" \
-	php include/vendor/bin/pest --configuration tests/phpunit.xml --do-not-cache-result tests/integration/LoginThrottleTest.php --filter 'password login form'
+export CACTI_THROTTLE_TEST_PASSWORD="$password" CACTI_THROTTLE_TEST_URL="http://127.0.0.1:$HOST_PORT"
+pest=(php include/vendor/bin/pest --configuration tests/phpunit.xml --do-not-cache-result tests/integration/LoginThrottleTest.php)
+"${pest[@]}" --filter 'password login form keeps'
+"${compose[@]}" exec -T mariadb mariadb -ucactiuser -pcactiuser cacti -e 'UPDATE auth_login_windows SET expires_at=UNIX_TIMESTAMP()-1'
+CACTI_THROTTLE_TEST_EXPIRED=1 "${pest[@]}" --filter 'password login form recovers'
 if [[ "${CACTI_TEST_COVERAGE:-0}" == 1 ]]; then
 	mkdir -p "${CACTI_PR_COVERAGE_OUTPUT:?Coverage directory is required}"
 	"${compose[@]}" cp cacti:/tmp/cacti-pr-coverage/. "$CACTI_PR_COVERAGE_OUTPUT"

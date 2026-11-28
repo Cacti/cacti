@@ -18,12 +18,15 @@ namespace Cacti\Auth;
 
 /** Fixed-duration login attempt budgets shared by all web nodes. */
 final class LoginThrottle {
-	public static function allow(string $address, string $username) : bool {
+	private function __construct(private array $reservations) {
+	}
+
+	public static function reserve(string $address, string $username) : ?self {
 		global $config;
 
 		// A remote collector in recovery has no authoritative shared counter.
 		if (($config['poller_id'] ?? 1) > 1 && ($config['connection'] ?? '') !== 'online') {
-			return false;
+			return null;
 		}
 
 		$ip       = inet_pton($address);
@@ -37,40 +40,80 @@ final class LoginThrottle {
 		}
 
 		if ($ip === false || !db_begin_transaction()) {
-			return false;
+			return null;
 		}
 
 		try {
 			// Acquire the address row first on every node. A saturated address
 			// cannot populate more account rows by submitting new identifiers.
-			$allowed = self::consume(hash('sha256', "ip\0" . $ip), $ip_max, $seconds)
-				&& self::consume(hash('sha256', "account\0" . $ip . "\0" . $account), $pair_max, $seconds);
+			$ip_key     = hash('sha256', "ip\0" . $ip);
+			$pair_key   = hash('sha256', "account\0" . $ip . "\0" . $account);
+			$ip_until   = self::consume($ip_key, $ip_max, $seconds);
+			$pair_until = $ip_until ? self::consume($pair_key, $pair_max, $seconds) : 0;
 
-			return db_commit_transaction() && $allowed;
+			if (!db_commit_transaction() || !$pair_until) {
+				return null;
+			}
+
+			return new self([$ip_key => $ip_until, $pair_key => $pair_until]);
 		} catch (\Throwable $e) {
 			db_rollback_transaction();
 			cacti_log('ERROR: Could not update login throttle counters: ' . $e->getMessage(), false, 'AUTH');
 
-			return false;
+			return null;
 		}
 	}
 
-	private static function consume(string $bucket, int $maximum, int $seconds) : bool {
-		// Database time supplies one clock across all web nodes. Compare the old
-		// deadline before updating it. Denied attempts do not extend the window.
+	private static function consume(string $bucket, int $maximum, int $seconds) : int {
+		// The upsert locks this bucket until both limits have been evaluated.
 		$written = db_execute_prepared('INSERT INTO auth_login_windows (bucket, attempts, expires_at)
-			VALUES (?, 1, UNIX_TIMESTAMP() + ?)
+			VALUES (?, 0, UNIX_TIMESTAMP() + ?)
 			ON DUPLICATE KEY UPDATE
-				attempts = IF(expires_at <= UNIX_TIMESTAMP(), 1, LEAST(attempts + 1, ?)),
+				attempts = IF(expires_at <= UNIX_TIMESTAMP(), 0, attempts),
 				expires_at = IF(expires_at <= UNIX_TIMESTAMP(), UNIX_TIMESTAMP() + ?, expires_at)',
-			[$bucket, $seconds, $maximum + 1, $seconds]);
+			[$bucket, $seconds, $seconds]);
 
 		if ($written === false) {
 			throw new \RuntimeException('Unable to reserve a login attempt.');
 		}
 
-		$count = db_fetch_cell_prepared('SELECT attempts FROM auth_login_windows WHERE bucket = ?', [$bucket]);
+		$row = db_fetch_row_prepared('SELECT attempts, expires_at FROM auth_login_windows WHERE bucket = ?', [$bucket]);
 
-		return is_numeric($count) && (int) $count > 0 && (int) $count <= $maximum;
+		if (!is_array($row) || !isset($row['attempts'], $row['expires_at'])) {
+			throw new \RuntimeException('Unable to read the reserved login window.');
+		}
+
+		if ($row['attempts'] >= $maximum) {
+			return 0;
+		}
+
+		if (!db_execute_prepared('UPDATE auth_login_windows SET attempts = attempts + 1 WHERE bucket = ?', [$bucket])) {
+			throw new \RuntimeException('Unable to count a login attempt.');
+		}
+
+		return (int) $row['expires_at'];
+	}
+
+	public function completeSuccessfulLogin() : void {
+		// Release only this attempt, once, in the windows that admitted it.
+		$reservations       = $this->reservations;
+		$this->reservations = [];
+
+		if (!$reservations || !db_begin_transaction()) {
+			return;
+		}
+
+		try {
+			foreach ($reservations as $bucket => $until) {
+				if (!db_execute_prepared('UPDATE auth_login_windows SET attempts = attempts - 1
+					WHERE bucket = ? AND expires_at = ? AND attempts > 0', [$bucket, $until])) {
+					throw new \RuntimeException('Unable to release a successful login attempt.');
+				}
+			}
+			db_commit_transaction();
+		} catch (\Throwable $e) {
+			db_rollback_transaction();
+			cacti_log('ERROR: Could not release login throttle counters: ' . $e->getMessage(), false, 'AUTH');
+		}
 	}
 }

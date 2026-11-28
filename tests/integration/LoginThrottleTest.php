@@ -64,29 +64,40 @@ test('untrusted forwarded addresses share the peer budget and expiry restores ac
 	expect(throttleTestAttempts([[$peer, '', 'Pat']], 3))->toBe(['allow']);
 })->skip(!getenv('CACTI_THROTTLE_TEST_DATABASE'), 'Requires a disposable Cacti database.');
 
-test('the password login form returns generic denial and recovers after expiry', function () {
+test('successful overlapping logins release only their own reservation in the same window', function () {
+	expect(throttleTestAttempts([[throttleTestAddress(), '', '--reservations']], 2))->toBe(['ok']);
+})->skip(!getenv('CACTI_THROTTLE_TEST_DATABASE'), 'Requires a disposable Cacti database.');
+
+function throttleTestBrowserLogin(string $password) : array {
 	$url = getenv('CACTI_THROTTLE_TEST_URL');
 	expect(parse_url($url, PHP_URL_HOST))->toBeIn(['localhost', '127.0.0.1', '::1']);
 	$client = curl_init(rtrim($url, '/') . '/index.php');
 	curl_setopt_array($client, [CURLOPT_RETURNTRANSFER => true, CURLOPT_COOKIEFILE => '', CURLOPT_TIMEOUT => 15]);
-	$attempt = function (string $password) use ($client) {
-		curl_setopt($client, CURLOPT_HTTPGET, true);
-		$html = curl_exec($client);
-		$dom  = new DOMDocument();
-		$dom->loadHTML($html, LIBXML_NONET | LIBXML_NOERROR | LIBXML_NOWARNING);
-		$csrf = (new DOMXPath($dom))->evaluate('string(//input[@name="__csrf_magic"]/@value)');
-		curl_setopt($client, CURLOPT_POSTFIELDS, http_build_query([
-			'action' => 'login', 'login_username' => 'admin', 'login_password' => $password, '__csrf_magic' => $csrf,
-		]));
-		$result = curl_exec($client);
+	curl_setopt($client, CURLOPT_HTTPGET, true);
+	$html = curl_exec($client);
+	$dom  = new DOMDocument();
+	$dom->loadHTML($html, LIBXML_NONET | LIBXML_NOERROR | LIBXML_NOWARNING);
+	$csrf = (new DOMXPath($dom))->evaluate('string(//input[@name="__csrf_magic"]/@value)');
+	curl_setopt($client, CURLOPT_POSTFIELDS, http_build_query([
+		'action' => 'login', 'login_username' => 'admin', 'login_password' => $password, '__csrf_magic' => $csrf,
+	]));
+	$result = curl_exec($client);
 
-		return [curl_getinfo($client, CURLINFO_RESPONSE_CODE), $result];
-	};
+	return [curl_getinfo($client, CURLINFO_RESPONSE_CODE), $result];
+}
 
-	expect($attempt('incorrect')[0])->toBe(200)->and($attempt('incorrect')[0])->toBe(200);
-	$password         = getenv('CACTI_THROTTLE_TEST_PASSWORD');
-	[$code, $message] = $attempt($password);
+test('the password login form keeps failures and releases valid attempts', function () {
+	$password = getenv('CACTI_THROTTLE_TEST_PASSWORD');
+	expect(throttleTestBrowserLogin('incorrect')[0])->toBe(200);
+
+	foreach (range(1, 7) as $i) {
+		expect(throttleTestBrowserLogin($password)[0])->toBe(302);
+	}
+	expect(throttleTestBrowserLogin('incorrect')[0])->toBe(200);
+	[$code, $message] = throttleTestBrowserLogin($password);
 	expect($code)->toBe(200)->and($message)->toContain('Login Failed');
-	sleep(3);
-	expect($attempt($password)[0])->toBe(302);
 })->skip(!getenv('CACTI_THROTTLE_TEST_URL'), 'Requires a disposable Cacti HTTP installation.');
+
+test('the password login form recovers after both limits expire', function () {
+	expect(throttleTestBrowserLogin(getenv('CACTI_THROTTLE_TEST_PASSWORD'))[0])->toBe(302);
+})->skip(!getenv('CACTI_THROTTLE_TEST_EXPIRED'), 'Runs after expiring the disposable login counters.');
