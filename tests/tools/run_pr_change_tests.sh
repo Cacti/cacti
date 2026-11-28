@@ -43,6 +43,9 @@ if [[ -f tests/fixtures/Core/SpikekillRequestGate.php ]]; then
 	run_probe SpikekillRequestGate.php spike-setting-get GET '' settings
 	run_probe SpikekillRequestGate.php spike-setting-post POST '' settings
 fi
+if [[ -f tests/fixtures/Core/Rrd/AggregateCdefDefs.php ]]; then
+	run_probe Rrd/AggregateCdefDefs.php aggregate-cdef-defs
+fi
 for fixture in PackageArchive PackageDiffBoundary PackageRepositoryWorkspace PackageImportFileStatus; do
 	run_probe "$fixture.php" "$fixture"
 done
