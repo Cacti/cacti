@@ -63,3 +63,30 @@ test('untrusted forwarded addresses share the peer budget and expiry restores ac
 	sleep(3);
 	expect(throttleTestAttempts([[$peer, '', 'Pat']], 3))->toBe(['allow']);
 })->skip(!getenv('CACTI_THROTTLE_TEST_DATABASE'), 'Requires a disposable Cacti database.');
+
+test('the password login form returns generic denial and recovers after expiry', function () {
+	$url = getenv('CACTI_THROTTLE_TEST_URL');
+	expect(parse_url($url, PHP_URL_HOST))->toBeIn(['localhost', '127.0.0.1', '::1']);
+	$client = curl_init(rtrim($url, '/') . '/index.php');
+	curl_setopt_array($client, [CURLOPT_RETURNTRANSFER => true, CURLOPT_COOKIEFILE => '', CURLOPT_TIMEOUT => 15]);
+	$attempt = function (string $password) use ($client) {
+		curl_setopt($client, CURLOPT_HTTPGET, true);
+		$html = curl_exec($client);
+		$dom  = new DOMDocument();
+		$dom->loadHTML($html, LIBXML_NONET | LIBXML_NOERROR | LIBXML_NOWARNING);
+		$csrf = (new DOMXPath($dom))->evaluate('string(//input[@name="__csrf_magic"]/@value)');
+		curl_setopt($client, CURLOPT_POSTFIELDS, http_build_query([
+			'action' => 'login', 'login_username' => 'admin', 'login_password' => $password, '__csrf_magic' => $csrf,
+		]));
+		$result = curl_exec($client);
+
+		return [curl_getinfo($client, CURLINFO_RESPONSE_CODE), $result];
+	};
+
+	expect($attempt('incorrect')[0])->toBe(200)->and($attempt('incorrect')[0])->toBe(200);
+	$password         = getenv('CACTI_THROTTLE_TEST_PASSWORD');
+	[$code, $message] = $attempt($password);
+	expect($code)->toBe(200)->and($message)->toContain('Login Failed');
+	sleep(3);
+	expect($attempt($password)[0])->toBe(302);
+})->skip(!getenv('CACTI_THROTTLE_TEST_URL'), 'Requires a disposable Cacti HTTP installation.');
