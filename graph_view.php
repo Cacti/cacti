@@ -407,8 +407,8 @@ case 'tree':
 
 	?>
 	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
-	minTreeWidth = <?php print read_user_setting('min_tree_width');?>;
-	maxTreeWidth = <?php print read_user_setting('max_tree_width');?>;
+	minTreeWidth = <?php print max(0, (int) read_user_setting('min_tree_width', 100));?>;
+	maxTreeWidth = <?php print max(0, (int) read_user_setting('max_tree_width', 300));?>;
 	</script>
 	<?php
 
@@ -505,7 +505,7 @@ case 'tree_content':
 		/* these are all global variables */
 		refreshIsLogout = false;
 		refreshPage     = <?php print cacti_js_encode(str_replace('tree_content', 'tree', validate_redirect_url($_SERVER['REQUEST_URI'] ?? '')));?>;
-		refreshMSeconds = <?php print read_user_setting('page_refresh')*1000;?>;
+		refreshMSeconds = <?php print max(15, (int) read_user_setting('page_refresh', 300)) * 1000;?>;
 		pageAction      = 'tree';
 		navHeight       = $('.cactiTreeNavigationArea').height();
 		windowHeight    = $(window).height();
@@ -654,7 +654,17 @@ case 'preview':
 		$sql_where .= ($sql_where != '' ? ' AND ':'') . ' (gl.graph_template_id IN (' . get_request_var('graph_template_id') . '))';
 	}
 
-	$limit      = (get_request_var('graphs')*(get_request_var('page')-1)) . ',' . get_request_var('graphs');
+	$graphs_per_page_limit = filter_var(get_request_var('graphs'), FILTER_VALIDATE_INT);
+	if ($graphs_per_page_limit === false || $graphs_per_page_limit < 1 || $graphs_per_page_limit > 1000) {
+		$graphs_per_page_limit = 20;
+	}
+
+	$current_page = filter_var(get_request_var('page'), FILTER_VALIDATE_INT);
+	if ($current_page === false || $current_page < 1) {
+		$current_page = 1;
+	}
+
+	$limit      = ($graphs_per_page_limit * ($current_page - 1)) . ',' . $graphs_per_page_limit;
 	$order      = 'gtg.title_cache';
 
 	$graphs     = get_allowed_graphs($sql_where, $order, $limit, $total_graphs);
