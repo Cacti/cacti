@@ -149,6 +149,72 @@ describe('automation sensitive host column filtering', function () use ($repoRoo
 		$body = automation_reports_function_body($apiSource, 'function create_all_header_nodes(');
 		expect($body)->toContain('api_automation_column_exists(');
 	});
+
+	it('hardens second-order SQLi in build_graph_object_sql_having(), build_data_query_sql(), and create_dq_graphs(), and escapes tree replacements', function () use ($repoRoot, $apiSource) {
+		$apiPath = var_export($repoRoot . '/lib/api_automation.php', true);
+
+		$result = automation_reports_run_isolated(<<<PHP
+			define('AUTOMATION_RULE_TYPE_GRAPH_MATCH', 1);
+			define('POLLER_VERBOSITY_HIGH', 4);
+			\$GLOBALS['mock_fields'] = [];
+			function cacti_sizeof(\$v) { return is_array(\$v) ? count(\$v) : 0; }
+			function cacti_log(\$m, \$o = false, \$e = '', \$l = 0) {}
+			function sanitize_sql_column(\$c) { return preg_replace('/[^a-zA-Z0-9_.]/', '', (string) \$c); }
+			function db_qstr(\$s) { return "'" . str_replace(["\\\\", "'"], ["\\\\\\\\", "\\\\'"], (string) \$s) . "'"; }
+			function db_fetch_assoc_prepared(\$sql, \$params = []) {
+				if (str_contains(\$sql, 'FROM host_snmp_cache')) {
+					return \$GLOBALS['mock_fields'];
+				}
+				return [];
+			}
+			require_once {$apiPath};
+
+			\$GLOBALS['mock_fields'] = [
+				['field_name' => 'ifDescr'],
+				['field_name' => 'bad` OR 1=1 -- '],
+				['field_name' => 'a..b'],
+				['field_name' => '.leading'],
+				['field_name' => 'h.ifName'],
+			];
+			\$havingMixed = build_graph_object_sql_having(['snmp_query_id' => 1], 'eth0');
+
+			\$GLOBALS['mock_fields'] = [
+				['field_name' => 'bad` OR 1=1 -- '],
+				['field_name' => ''],
+			];
+			\$havingOnlyBad = build_graph_object_sql_having(['snmp_query_id' => 1], 'eth0');
+
+			\$GLOBALS['mock_fields'] = [
+				['field_name' => "ifDescr' UNION SELECT 1-- "],
+			];
+			\$dqSql = build_data_query_sql(['id' => 5, 'snmp_query_id' => '9 OR 1=1']);
+
+			print json_encode([
+				'having_mixed'    => \$havingMixed,
+				'having_only_bad' => \$havingOnlyBad,
+				'dq_sql'          => \$dqSql,
+			]);
+		PHP);
+
+		expect($result['having_mixed'])->toContain('`ifDescr` LIKE')
+			->and($result['having_mixed'])->toContain('`h`.`ifName` LIKE')
+			->and($result['having_mixed'])->not->toContain('OR 1=1')
+			->and($result['having_mixed'])->not->toContain('a..b')
+			->and($result['having_mixed'])->not->toContain('leading')
+			->and($result['having_only_bad'])->toBe(' HAVING (1 = 0)')
+			->and($result['dq_sql'])->toContain("field_name = 'ifDescr\\' UNION SELECT 1-- '")
+			->and($result['dq_sql'])->toContain("AS 'ifDescr\\' UNION SELECT 1-- '")
+			->and($result['dq_sql'])->toContain('WHERE snmp_query_id=9')
+			->and($result['dq_sql'])->not->toContain('WHERE snmp_query_id=9 OR 1=1');
+
+		$createDqBody = automation_reports_function_body($apiSource, 'function create_dq_graphs(');
+		expect($createDqBody)->toContain('MAX(CASE WHEN field_name = \' . db_qstr($column) . \' THEN field_value ELSE NULL END) AS \' . db_qstr($column)')
+			->and($createDqBody)->toContain('WHERE snmp_query_id=\' . (int) $snmp_query_id')
+			->and($createDqBody)->toContain('AND host_id=\' . (int) $host_id');
+
+		$treesBody = automation_reports_function_body($apiSource, 'function display_matching_trees (');
+		expect($treesBody)->toContain('html_escape((string) array_shift($replacement))');
+	});
 });
 
 describe('automation DNS PTR packet parsing and timeout handling', function () use ($repoRoot) {
@@ -446,6 +512,65 @@ describe('reports authorization, scheduling, and tree expansion', function () us
 			->and($treeBody)->toContain('$snmp_index_to_graph = [];')
 			->and($treeBody)->toContain('$nested_graphs = [];')
 			->and($treeBody)->toContain('reports_graph_area($nested_graphs,');
+	});
+
+	it('converts PNG streams to JPEG and GIF in memory without /tmp scratch files and escapes device messages', function () use ($repoRoot, $reportsSource) {
+		$reportsPath = var_export($repoRoot . '/lib/reports.php', true);
+
+		expect($reportsSource)->not->toContain("'/tmp/' . time()")
+			->and($reportsSource)->not->toContain('imagedestroy(');
+
+		$addDevBody = automation_reports_function_body($reportsSource, 'function reports_add_devices(');
+		expect($addDevBody)->toContain("__esc('Device \\'%s\\' successfully added to Report.', \$description)")
+			->and($addDevBody)->toContain("__esc('Device \\'%s\\' not added to Report as it already exists on report.', \$description)");
+
+		$result = automation_reports_run_isolated(<<<PHP
+			require_once {$reportsPath};
+
+			if (!function_exists('imagecreate') || !function_exists('imagepng')) {
+				print json_encode(['gd' => false]);
+				exit(0);
+			}
+
+			\$before = glob('/tmp/*.png') ?: [];
+
+			\$src = imagecreate(16, 16);
+			imagecolorallocate(\$src, 20, 40, 60);
+			ob_start();
+			imagepng(\$src);
+			\$validPng = (string) ob_get_clean();
+			unset(\$src);
+
+			\$jpegValid   = png2jpeg(\$validPng);
+			\$gifValid    = png2gif(\$validPng);
+			\$jpegInvalid = png2jpeg('not a png payload');
+			\$gifInvalid  = png2gif(\$jpegValid);
+			\$jpegEmpty   = png2jpeg('');
+			\$gifEmpty    = png2gif('');
+
+			\$after = glob('/tmp/*.png') ?: [];
+
+			print json_encode([
+				'gd'            => true,
+				'no_tmp_files'  => \$before === \$after,
+				'jpeg_magic'    => substr(\$jpegValid, 0, 3) === "\\xFF\\xD8\\xFF",
+				'gif_magic'     => str_starts_with(\$gifValid, 'GIF8'),
+				'invalid_jpeg'  => substr(\$jpegInvalid, 0, 3) === "\\xFF\\xD8\\xFF",
+				'non_png_gif'   => str_starts_with(\$gifInvalid, 'GIF8'),
+				'empty_jpeg'    => \$jpegEmpty,
+				'empty_gif'     => \$gifEmpty,
+			]);
+		PHP);
+
+		if ($result['gd']) {
+			expect($result['no_tmp_files'])->toBeTrue()
+				->and($result['jpeg_magic'])->toBeTrue()
+				->and($result['gif_magic'])->toBeTrue()
+				->and($result['invalid_jpeg'])->toBeTrue()
+				->and($result['non_png_gif'])->toBeTrue()
+				->and($result['empty_jpeg'])->toBe('')
+				->and($result['empty_gif'])->toBe('');
+		}
 	});
 });
 

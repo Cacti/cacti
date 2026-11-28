@@ -135,14 +135,14 @@ function reports_add_devices($report_id, $device_ids, $timespan, $align) {
 						)
 					);
 
-					raise_message('reports_add_device_' . $device_id, __('Device \'%s\' successfully added to Report.', $description), MESSAGE_LEVEL_INFO);
+					raise_message('reports_add_device_' . $device_id, __esc('Device \'%s\' successfully added to Report.', $description), MESSAGE_LEVEL_INFO);
 				} else {
 					$errors++;
 					raise_message('reports_device_not_found', __('Device not found! Unable to add to Report'), MESSAGE_LEVEL_ERROR);
 				}
 			} else {
 				$errors++;
-				raise_message('reports_no_add_device_' . $device_id, __('Device \'%s\' not added to Report as it already exists on report.', $description), MESSAGE_LEVEL_WARN);
+				raise_message('reports_no_add_device_' . $device_id, __esc('Device \'%s\' not added to Report as it already exists on report.', $description), MESSAGE_LEVEL_WARN);
 			}
 		}
 
@@ -1721,44 +1721,56 @@ function reports_graph_area($graphs, &$report, $item, $timespan, $output, $forma
 }
 
 /**
+ * Convert a PNG image stream in memory to JPEG or GIF using php-gd without
+ * touching temporary files on disk.
+ *
+ * @param string $png_data The PNG image as a byte stream.
+ * @param string $format   Target image format ('jpeg' or 'gif').
+ *
+ * @return string The converted image as a byte stream, or empty string when empty.
+ */
+function reports_convert_png_image(string $png_data, string $format) : string {
+	if ($png_data === '') {
+		return '';
+	}
+
+	/* Decode the graph from memory so no scratch file is needed. Only valid
+	 * PNG data is decoded; anything else renders the fallback error image. */
+	$im = false;
+
+	if (str_starts_with($png_data, "\x89PNG\r\n\x1a\n")) {
+		$im = @imagecreatefromstring($png_data);
+	}
+
+	if (!$im) {
+		$im  = imagecreate(150, 30);
+		$bgc = imagecolorallocate($im, 255, 255, 255);
+		$tc  = imagecolorallocate($im, 0, 0, 0);
+		imagefilledrectangle($im, 0, 0, 150, 30, $bgc);
+		imagestring($im, 1, 5, 5, 'Error while decoding PNG data', $tc);
+	}
+
+	ob_start();
+	if ($format === 'gif') {
+		imagegif($im);
+	} else {
+		imagejpeg($im);
+	}
+	$image_data = (string) ob_get_contents();
+	ob_end_clean();
+	unset($im);
+
+	return $image_data;
+}
+
+/**
  * convert png images stream to jpeg using php-gd
  *
  * @param string $png_data	- the png image as a stream
  * @return string			- the jpeg image as a stream
  */
-function png2jpeg ($png_data) {
-	global $config;
-
-	if ($png_data != '') {
-		$fn = '/tmp/' . time() . '.png';
-
-		/* write rrdtool's png file to scratch dir */
-		$f = fopen($fn, 'wb');
-		fwrite($f, $png_data);
-		fclose($f);
-
-		/* create php-gd image object from file */
-		$im = imagecreatefrompng($fn);
-		if (!$im) {								/* check for errors */
-			$im = ImageCreate (150, 30);		/* create an empty image */
-			$bgc = ImageColorAllocate ($im, 255, 255, 255);
-			$tc  = ImageColorAllocate ($im, 0, 0, 0);
-			ImageFilledRectangle ($im, 0, 0, 150, 30, $bgc);
-			/* print error message */
-			ImageString($im, 1, 5, 5, "Error while opening: $fn", $tc);
-		}
-
-        ob_start(); // start a new output buffer to capture jpeg image stream
-		imagejpeg($im);	// output to buffer
-		$ImageData = ob_get_contents(); // fetch image from buffer
-		$ImageDataLength = ob_get_length();
-		ob_end_clean(); // stop this output buffer
-		imagedestroy($im); //clean up
-
-		unlink($fn); // delete scratch file
-	}
-
-	return $ImageData;
+function png2jpeg($png_data) {
+	return reports_convert_png_image((string) $png_data, 'jpeg');
 }
 
 /**
@@ -1767,39 +1779,8 @@ function png2jpeg ($png_data) {
  * @param string $png_data	- the png image as a stream
  * @return string			- the gif image as a stream
  */
-function png2gif ($png_data) {
-	global $config;
-
-	if ($png_data != '') {
-		$fn = '/tmp/' . time() . '.png';
-
-		/* write rrdtool's png file to scratch dir */
-		$f = fopen($fn, 'wb');
-		fwrite($f, $png_data);
-		fclose($f);
-
-		/* create php-gd image object from file */
-		$im = imagecreatefrompng($fn);
-		if (!$im) {								/* check for errors */
-			$im = ImageCreate (150, 30);		/* create an empty image */
-			$bgc = ImageColorAllocate ($im, 255, 255, 255);
-			$tc  = ImageColorAllocate ($im, 0, 0, 0);
-			ImageFilledRectangle ($im, 0, 0, 150, 30, $bgc);
-			/* print error message */
-			ImageString($im, 1, 5, 5, "Error while opening: $fn", $tc);
-		}
-
-        ob_start(); // start a new output buffer to capture gif image stream
-		imagegif($im);	// output to buffer
-		$ImageData = ob_get_contents(); // fetch image from buffer
-		$ImageDataLength = ob_get_length();
-		ob_end_clean(); // stop this output buffer
-		imagedestroy($im); //clean up
-
-		unlink($fn); // delete scratch file
-	}
-
-	return $ImageData;
+function png2gif($png_data) {
+	return reports_convert_png_image((string) $png_data, 'gif');
 }
 
 /**

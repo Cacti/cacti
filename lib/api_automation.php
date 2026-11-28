@@ -1269,9 +1269,9 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 			for ($j=0; cacti_sizeof($replacement); $j++) {
 				if ($j > 0) {
 					$repl .= '<br>';
-					$repl .= str_pad('', $j*3, '-') . '&nbsp;' . array_shift($replacement);
+					$repl .= str_pad('', $j*3, '-') . '&nbsp;' . html_escape((string) array_shift($replacement));
 				} else {
-					$repl  = array_shift($replacement);
+					$repl  = html_escape((string) array_shift($replacement));
 				}
 			}
 			cacti_log($function . " replacement: $repl", false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
@@ -1624,6 +1624,8 @@ function duplicate_automation_tree_rules($_id, $_title) {
 }
 
 function build_graph_object_sql_having($rule, $filter) {
+	$sql_having = '';
+
 	if ($filter != '') {
 		$field_names = get_field_names($rule['snmp_query_id']);
 
@@ -1631,9 +1633,23 @@ function build_graph_object_sql_having($rule, $filter) {
 			$sql_having = ' HAVING (';
 			$i = 0;
 
-			foreach($field_names as $column) {
-				$sql_having .= ($i == 0 ? '':' OR ') . '`' . implode('`.`', explode('.', $column['field_name'])) . '`' . ' LIKE ' . db_qstr('%' . $filter . '%');
+			foreach ($field_names as $column) {
+				/* The name is an identifier here and backticks do not escape one.
+				 * Skip any field name with disallowed characters rather than rewriting
+				 * it to a column the query does not select. */
+				$field_name = (string) $column['field_name'];
+				$parts      = explode('.', $field_name);
+
+				if (in_array('', $parts, true) || sanitize_sql_column($field_name) !== $field_name) {
+					continue;
+				}
+
+				$sql_having .= ($i == 0 ? '' : ' OR ') . '`' . implode('`.`', $parts) . '` LIKE ' . db_qstr('%' . $filter . '%');
 				$i++;
+			}
+
+			if ($i == 0) {
+				return ' HAVING (1 = 0)';
 			}
 
 			$sql_having .= ')';
@@ -1652,9 +1668,9 @@ function build_data_query_sql($rule) {
 	$i = 0;
 
 	if (cacti_sizeof($field_names) > 0) {
-		foreach($field_names as $column) {
+		foreach ($field_names as $column) {
 			$field_name = $column['field_name'];
-			$sql_query .= ", MAX(CASE WHEN field_name='$field_name' THEN field_value ELSE NULL END) AS '$field_name'";
+			$sql_query .= ', MAX(CASE WHEN field_name = ' . db_qstr($field_name) . ' THEN field_value ELSE NULL END) AS ' . db_qstr($field_name);
 			$i++;
 		}
 	}
@@ -1668,7 +1684,7 @@ function build_data_query_sql($rule) {
 		ON (hsc.host_id=h.id)
 		LEFT JOIN host_template AS ht
 		ON (h.host_template_id=ht.id)
-		WHERE snmp_query_id=' . $rule['snmp_query_id'] . "
+		WHERE snmp_query_id=' . (int) $rule['snmp_query_id'] . "
 		AND ($sql_where)
 		GROUP BY host_id, snmp_query_id, snmp_index";
 
@@ -1988,8 +2004,10 @@ function get_field_names($snmp_query_id) {
 	cacti_log($function . " called: $snmp_query_id", false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
 	/* get the unique field values from the database */
-	$sql = 'SELECT DISTINCT field_name FROM host_snmp_cache WHERE snmp_query_id=' . $snmp_query_id;
-	$fields = db_fetch_assoc($sql);
+	$fields = db_fetch_assoc_prepared('SELECT DISTINCT field_name
+		FROM host_snmp_cache
+		WHERE snmp_query_id = ?',
+		[(int) $snmp_query_id]);
 
 	cacti_log($function . ' returns: ' . cacti_sizeof($fields), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
@@ -2674,15 +2692,15 @@ function create_dq_graphs($host_id, $snmp_query_id, $rule) {
 	$num_visible_fields = cacti_sizeof($field_names);
 	$i = 0;
 	if (cacti_sizeof($field_names) > 0) {
-		foreach($field_names as $column) {
-			$sql_query .= ", MAX(CASE WHEN field_name ='$column' THEN field_value ELSE NULL END) AS '$column'";
+		foreach ($field_names as $column) {
+			$sql_query .= ', MAX(CASE WHEN field_name = ' . db_qstr($column) . ' THEN field_value ELSE NULL END) AS ' . db_qstr($column);
 			$i++;
 		}
 	}
 
 	$sql_query .= ' FROM host_snmp_cache AS hsc
-		WHERE snmp_query_id=' . $snmp_query_id . '
-		AND host_id=' . $host_id . '
+		WHERE snmp_query_id=' . (int) $snmp_query_id . '
+		AND host_id=' . (int) $host_id . '
 		GROUP BY snmp_query_id, snmp_index';
 
 	$sql_filter = build_rule_item_filter($automation_rule_items, ' a.');
