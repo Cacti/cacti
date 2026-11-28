@@ -1,0 +1,1 @@
+Fix escaping of the color dropdown value, report item timespans, data source duplication, repeated plugin archive restores, LDAP option defaults, the push_out_host change log, senders without a From Name, and new collector rows for excluded replication columns

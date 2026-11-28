@@ -983,7 +983,7 @@ function push_out_host(int $host_id, int $local_data_id = 0, int $data_template_
 								AND data_template_data_id = ?',
 								[$template_field['id'], $data_source['id']]);
 
-							if (isset($old_value['value']) && $old_data['value'] != $host[$field]) {
+							if (isset($old_data['value']) && $old_data['value'] != $host[$field]) {
 								cacti_log("WARNING: Poller Cache updated Device[{$host['id']}], Field[$field], Old[{$old_data['value']}], New[{$host[$field]}]", false, 'PCACHE', POLLER_VERBOSITY_MEDIUM);
 							}
 
@@ -1566,21 +1566,6 @@ function utilities_get_mysql_recommendations() : int {
 	];
 
 	if (isset($variables['innodb_version']) && version_compare($variables['innodb_version'], '5.6', '<')) {
-		if (version_compare($link_ver, '5.5', '>=')) {
-			if (!isset($variables['innodb_version'])) {
-				$recommendations += [
-					'innodb' => [
-						'value'   => 'ON',
-						'class'   => 'warning',
-						'measure' => 'equalint',
-						'comment' => __('It is STRONGLY recommended that you enable InnoDB in any %s version greater than 5.5.3.', $database)
-					]
-				];
-
-				$variables['innodb'] = 'UNSET';
-			}
-		}
-
 		$recommendations += [
 			'collation_server' => [
 				'value'   => 'utf8mb4_unicode_ci',
