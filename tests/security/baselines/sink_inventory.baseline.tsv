@@ -138,9 +138,6 @@ fs_write	./cactid.php		$STDERR = fopen('/dev/null', 'wb');
 fs_write	./cactid.php		$STDERR = fopen('null', 'wb');
 fs_write	./cli/audit_database.php		if (file_put_contents($path, $contents) === false) {
 fs_write	./cli/clone_device_template.php			$fin = fopen('php://stdin', 'r');
-fs_write	./cli/float_rrdfiles.php					$lf = fopen(sys_get_temp_dir() . '/cacti_float_rrdfiles.log', 'a');
-fs_write	./cli/float_rrdfiles.php				$fp = fopen($tmp_file, 'w');
-fs_write	./cli/genkey.php				if (file_put_contents("$keypair_path/package.key", $privKey)) {
 fs_write	./cli/genkey.php			if (file_put_contents("$keypair_path/package.pub", $pubKey)) {
 fs_write	./cli/genkey.php		file_put_contents("$keypair_path/package.info", $package_info);
 fs_write	./cli/genmanifest.php					$filesystem->writeFile("$dir/package.manifest", json_encode($package_manifest, JSON_PRETTY_PRINT));
@@ -178,6 +175,7 @@ fs_write	./lib/csp_report_endpoint.php	$inputStream = fopen('php://input', 'rb')
 fs_write	./lib/database.php					file_put_contents(sys_get_temp_dir() . '/cacti-option.log',
 fs_write	./lib/database.php					file_put_contents(sys_get_temp_dir() . '/cacti-option.log',
 fs_write	./lib/database.php		file_put_contents(sys_get_temp_dir() . '/cacti-sql.log', get_debug_prefix() . $line, FILE_APPEND);
+fs_write	./lib/float_rrd_temp.php			$handle = @fopen($path, $mode);
 fs_write	./lib/functions.php					file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() .
 fs_write	./lib/functions.php				file_put_contents($tmp_file, 'cacti');
 fs_write	./lib/functions.php				file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() .
@@ -193,6 +191,7 @@ fs_write	./lib/import.php		$f   = fopen($filename, 'r');
 fs_write	./lib/installer.php				$file          = fopen($cacheFile, 'r');
 fs_write	./lib/package.php		$f = fopen("compress.zlib://$tmpdir/" . $archive_name . '.xml.gz','wb');
 fs_write	./lib/package.php		file_put_contents($xmlfile, $template);
+fs_write	./lib/package_key_writer.php			if (@file_put_contents($temporary, $pem) === false || !@chmod($temporary, 0600) || !@rename($temporary, $destination_path)) {
 fs_write	./lib/plugins.php						file_put_contents($restore_path . '/' . $basefile, $output);
 fs_write	./lib/plugins.php				$fh = fopen($file, 'w');
 fs_write	./lib/plugins.php				file_put_contents($tmpfile, $file_data);

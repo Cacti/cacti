@@ -24,6 +24,7 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
+require_once(CACTI_PATH_LIBRARY . '/package_key_writer.php');
 
 // process calling arguments
 $parms = $_SERVER['argv'];
@@ -199,6 +200,12 @@ if (($pubkey != '' && $privkey == '') || ($privkey != '' && $pubkey == '')) {
 if ((file_exists($keypair_path . '/package.pem') || file_exists($keypair_path . '/package.info')) && !$replace) {
 	print 'FATAL: Package private key or info file exists.  You must use the --replace option to replace it' . PHP_EOL;
 } else {
+	if (!package_key_ensure_directory($keypair_path)) {
+		print "FATAL: Unable to prepare package key directory '$keypair_path'." . PHP_EOL;
+
+		exit(1);
+	}
+
 	$package_info  = '[info]' . PHP_EOL;
 	$package_info .= "author = $author" . PHP_EOL;
 	$package_info .= "homepage = $homepage" . PHP_EOL;
@@ -302,27 +309,23 @@ if ((file_exists($keypair_path . '/package.pem') || file_exists($keypair_path . 
 		exit(1);
 	}
 
-	// Output the private key to the package directory
-	if (!$provided) {
-		if (openssl_pkey_export_to_file($privKey, "$keypair_path/package.key")) {
-			print 'NOTE: Generated private key file package.key.' . PHP_EOL;
-		} else {
-			print 'FATAL: Unable to generate private key file package.key.' . PHP_EOL;
+	// Output the private key to the package directory with owner-only permissions
+	$key_file = "$keypair_path/package.key";
+
+	if ($provided && package_key_paths_match($privkey, $key_file)) {
+		if (!package_key_tighten_permissions($key_file)) {
+			print 'FATAL: Unable to set restrictive permissions on package.key.' . PHP_EOL;
 
 			exit(1);
 		}
-	} else {
-		if ($privkey != "$keypair_path/package.key") {
-			if (file_put_contents("$keypair_path/package.key", $privKey)) {
-				print 'NOTE: Generated private key file package.key.' . PHP_EOL;
-			} else {
-				print 'FATAL: Unable to generate private key file package.key.' . PHP_EOL;
 
-				exit(1);
-			}
-		} else {
-			print 'NOTE: Provided private key is the existing packaging private key package.key.' . PHP_EOL;
-		}
+		print 'NOTE: Provided private key is the existing packaging private key package.key.' . PHP_EOL;
+	} elseif (package_key_write_private($privKey, $key_file)) {
+		print 'NOTE: Generated private key file package.key.' . PHP_EOL;
+	} else {
+		print 'FATAL: Unable to generate private key file package.key.' . PHP_EOL;
+
+		exit(1);
 	}
 
 	// Output the public key to the package directory
