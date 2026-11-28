@@ -134,6 +134,7 @@ function html_graph_validate_preview_request_vars() {
 	);
 
 	validate_store_request_vars($filters, 'sess_grview');
+	html_graph_normalize_filters('sess_grview', 20);
 	/* ================= input validation ================= */
 }
 

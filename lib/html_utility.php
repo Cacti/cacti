@@ -362,6 +362,17 @@ function isempty_request_var($variable) {
 	return true;
 }
 
+/* Normalize restored graph filters before using them for SQL, navigation or layout. */
+function html_graph_normalize_filters($session_prefix, $default_rows) {
+	list($page, $rows) = cacti_graph_pagination(get_request_var('page'), get_request_var('graphs'), $default_rows);
+	$columns = filter_var(get_request_var('columns'), FILTER_VALIDATE_INT, array('options' => array('min_range' => 1, 'max_range' => 6)));
+
+	foreach (array('page' => $page, 'graphs' => $rows, 'columns' => $columns === false ? 2 : $columns) as $field => $value) {
+		set_request_var($field, $value);
+		$_SESSION[$session_prefix . '_' . $field] = $value;
+	}
+}
+
 /* set_request_var - sets a given $_REQUEST variable and Cacti global.
    @arg $variable - The variable to set
    @arg $value - The value to set the variable to
