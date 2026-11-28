@@ -113,19 +113,23 @@ function algo_extract_function_body(string $source, string $functionName) : stri
 	return $next === false ? substr($source, $start) : substr($source, $start, $next - $start);
 }
 
-test('function regression contracts hold', function (string $relPath, string $functionName, array $mustContain, array $mustNotContain) use ($repoRoot) : void {
-	$src  = (string) file_get_contents($repoRoot . '/' . $relPath);
-	$body = algo_extract_function_body($src, $functionName);
+function algo_assert_contract(string $src, string $fn, array $required, array $forbidden = []) : void {
+	$body = algo_extract_function_body($src, $fn);
 
 	expect($body)->not->toBeFalse();
 
-	foreach ($mustContain as $needle) {
+	foreach ($required as $needle) {
 		expect($body)->toContain($needle);
 	}
 
-	foreach ($mustNotContain as $forbidden) {
-		expect($body)->not->toContain($forbidden);
+	foreach ($forbidden as $disallowed) {
+		expect($body)->not->toContain($disallowed);
 	}
+}
+
+test('function regression contracts hold', function (string $relPath, string $functionName, array $mustContain, array $mustNotContain) use ($repoRoot) : void {
+	$src = (string) file_get_contents($repoRoot . '/' . $relPath);
+	algo_assert_contract($src, $functionName, $mustContain, $mustNotContain);
 })->with([
 	'dsstats get_rrdfile_names deduplicates poller_item join' => [
 		'lib/dsstats.php',
@@ -241,179 +245,71 @@ test('function regression contracts hold', function (string $relPath, string $fu
 		['FROM poller WHERE disabled = ""'],
 		['FROM pollers'],
 	],
-	'resource_cache_out validates base path containment and uses shell-free cacti_exec' => [
-		'lib/poller.php',
-		'resource_cache_out',
-		[
-			'resource_cache_resolve_path(',
-			'cacti_path_is_within(dirname($mypath)',
-			"cacti_exec(\$php_path, ['-l', \$tmpfile], \$syntax_output)",
-		],
-		[
-			'system($php_path',
-			"mkdir('./'",
-		],
-	],
-	'process_poller_output guards recursion on zero deleted rows and deletes all misaligned sources' => [
-		'lib/poller.php',
-		'process_poller_output',
-		[
-			'$deleted_rows = 0;',
-			'$deleted_rows += $k;',
-			'if ($deleted_rows > 0)',
-		],
-		[],
-	],
-	'timeout_kill_registered_processes fixes SQL timestamp/default guards and validates PIDs' => [
-		'lib/poller.php',
-		'timeout_kill_registered_processes',
-		[
-			'if ($taskid != 0)',
-			'if ($pid != -1)',
-			'WHERE UNIX_TIMESTAMP() > UNIX_TIMESTAMP(started) + timeout',
-			'if (is_system_pid($proc_pid))',
-			'elseif (cacti_process_still_running($proc_pid))',
-			'cacti_process_kill($proc_pid, SIGTERM);',
-		],
-		[
-			"if (\$taskid != '')",
-			"if (\$pid != '')",
-			'FROM_UNIXTIME(started)',
-			'posix_kill($r[\'pid\']',
-		],
-	],
-	'register_process_start guards system PIDs and recycled PIDs' => [
-		'lib/poller.php',
-		'register_process_start',
-		[
-			'if (is_system_pid($timeout_pid))',
-			'if (cacti_process_still_running($timeout_pid))',
-			'cacti_process_kill($timeout_pid, SIGTERM);',
-			'elseif (cacti_process_still_running($r[\'pid\']))',
-		],
-		['posix_kill($r[\'pid\']'],
-	],
-	'dsstats_write_buffer measures appended row length instead of quadratic buffer sum' => [
-		'lib/dsstats.php',
-		'dsstats_write_buffer',
-		[
-			'$outbuf     .= $row;',
-			'$out_length += strlen($row);',
-		],
-		['$out_length += strlen($outbuf);'],
-	],
-	'dsstats_poller_output measures appended row length for cache and last buffers' => [
-		'lib/dsstats.php',
-		'dsstats_poller_output',
-		[
-			'$cachebuf   .= $row;',
-			'$out_length += strlen($row);',
-			'$lastbuf     .= $row;',
-			'$last_length += strlen($row);',
-		],
-		[
-			'$out_length += strlen($cachebuf);',
-			'$last_length += strlen($lastbuf);',
-		],
-	],
-	'dsstats_rrdtool_read_pipe uses stream_select timeout and anchored status lines' => [
-		'lib/dsstats.php',
-		'dsstats_rrdtool_read_pipe',
-		[
-			'stream_select($read, $write, $except,',
-			'dsstats_rrdtool_is_status_line($line)',
-		],
-		[
-			"substr_count(\$stdout, 'OK')",
-			"substr_count(\$stdout, 'ERROR')",
-		],
-	],
-	'dsstats_rrdtool_is_status_line anchors OK and ERROR prefixes' => [
-		'lib/dsstats.php',
-		'dsstats_rrdtool_is_status_line',
-		[
-			"str_starts_with(\$line, 'OK u:')",
-			"str_starts_with(\$line, 'ERROR:')",
-		],
-		[],
-	],
-	'dsstats_rrdtool_close terminates wedged rrdtool before proc_close' => [
-		'lib/dsstats.php',
-		'dsstats_rrdtool_close',
-		['proc_terminate($process);', 'proc_close($process);'],
-		[],
-	],
-	'run_data_query eliminates N+1 per-source lookup queries via data_query_local_data' => [
-		'lib/data_query.php',
-		'run_data_query',
-		[
-			'$local_data = data_query_local_data($host_id, $snmp_query_id, $old_sort_field, $new_sort_field);',
-			'$remap_source        = $remap && $new_sort_field != $previous_sort_field;',
-		],
-		[
-			'$previous_did = db_fetch_row_prepared',
-			'$did_map_data = db_fetch_row_prepared',
-		],
-	],
-	'data_query_remove_disabled_items passes params array before log flag and validates archive tables' => [
-		'lib/data_query.php',
-		'data_query_remove_disabled_items',
-		[
-			'TABLE_SCHEMA = SCHEMA()',
-			"preg_match('/^poller_output_boost_arch_\\d+\$/', \$table)",
-			'$ids, false);',
-		],
-		["implode(', ', \$orphaned_ids) . ')', false)"],
-	],
-	'query_snmp_host uses O(1) data_query_index_lookup instead of O(N) in_array' => [
-		'lib/data_query.php',
-		'query_snmp_host',
-		[
-			'$snmp_index_lookup = data_query_index_lookup($snmp_indexes);',
-			'if (!data_query_index_exists($snmp_index, $snmp_index_lookup))',
-		],
-		['if (!in_array($snmp_index, $snmp_indexes))'],
-	],
-	'boost_process_poller_output fixes stale timestamp check, undefined variables, and bare timestamps' => [
-		'lib/boost.php',
-		'boost_process_poller_output',
-		[
-			'if ($item[\'timestamp\'] <= $last_update && cacti_version_compare(get_rrdtool_version(), \'1.5\', \'<\'))',
-			'$pending_timestamp = null;',
-			'boost_append_update_value($outbuf, $outlen, $pending_timestamp,',
-			'if (cacti_sizeof($rrd_field_names))',
-		],
-		[
-			'if ($time < $last_update',
-			'$nt_rrd_field_names',
-			'$reset_template',
-			'$tv_tmpl[$field]',
-			'$buflen += 2',
-		],
-	],
-	'poller_boost boost_kill_running_processes uses validated PID helpers' => [
-		'poller_boost.php',
-		'boost_kill_running_processes',
-		[
-			'if (cacti_process_still_running($p[\'pid\']))',
-			"cacti_process_kill(\$p['pid'], SIGTERM, 'BOOST');",
-		],
-		['posix_kill($p[\'pid\']'],
-	],
-	'poller_boost boost_process_local_data_ids releases current_lock and checks item timestamp' => [
-		'poller_boost.php',
-		'boost_process_local_data_ids',
-		[
-			"cacti_version_compare(\$rrdtool_version, '1.5', '<') && \$current_lock !== false",
-			"SELECT RELEASE_LOCK('boost.single_ds.\$current_lock')",
-			"if (\$item['timestamp'] <= \$last_update && cacti_version_compare(get_rrdtool_version(), '1.5', '<'))",
-		],
-		[
-			"SELECT RELEASE_LOCK('boost.single_ds.\$local_data_id')",
-			'if ($time < $last_update',
-		],
-	],
 ]);
+
+test('lib/poller.php hardens resource_cache_out, recursion guard, and process reaper', function () use ($repoRoot) : void {
+	$pollerSrc = (string) file_get_contents($repoRoot . '/lib/poller.php');
+
+	algo_assert_contract(
+		$pollerSrc,
+		'resource_cache_out',
+		['resource_cache_resolve_path(', 'cacti_path_is_within(dirname($mypath)', "cacti_exec(\$php_path, ['-l', \$tmpfile], \$syntax_output)"],
+		['system($php_path', "mkdir('./'"]
+	);
+
+	algo_assert_contract(
+		$pollerSrc,
+		'process_poller_output',
+		['$deleted_rows = 0;', '$deleted_rows += $k;', 'if ($deleted_rows > 0)']
+	);
+
+	algo_assert_contract(
+		$pollerSrc,
+		'timeout_kill_registered_processes',
+		['if ($taskid != 0)', 'if ($pid != -1)', 'WHERE UNIX_TIMESTAMP() > UNIX_TIMESTAMP(started) + timeout', 'if (is_system_pid($proc_pid))', 'elseif (cacti_process_still_running($proc_pid))', 'cacti_process_kill($proc_pid, SIGTERM);'],
+		["if (\$taskid != '')", "if (\$pid != '')", 'FROM_UNIXTIME(started)', "posix_kill(\$r['pid']"]
+	);
+
+	algo_assert_contract(
+		$pollerSrc,
+		'register_process_start',
+		['if (is_system_pid($timeout_pid))', 'if (cacti_process_still_running($timeout_pid))', 'cacti_process_kill($timeout_pid, SIGTERM);', "elseif (cacti_process_still_running(\$r['pid']))"],
+		["posix_kill(\$r['pid']"]
+	);
+});
+
+test('lib/dsstats.php fixes quadratic batch length and non-blocking RRDtool reads', function () use ($repoRoot) : void {
+	$dsstatsSrc = (string) file_get_contents($repoRoot . '/lib/dsstats.php');
+
+	algo_assert_contract($dsstatsSrc, 'dsstats_write_buffer', ['$outbuf     .= $row;', '$out_length += strlen($row);'], ['$out_length += strlen($outbuf);']);
+	algo_assert_contract($dsstatsSrc, 'dsstats_poller_output', ['$cachebuf   .= $row;', '$out_length += strlen($row);', '$lastbuf     .= $row;', '$last_length += strlen($row);'], ['$out_length += strlen($cachebuf);', '$last_length += strlen($lastbuf);']);
+	algo_assert_contract($dsstatsSrc, 'dsstats_rrdtool_read_pipe', ['stream_select($read, $write, $except,', 'dsstats_rrdtool_is_status_line($line)'], ["substr_count(\$stdout, 'OK')", "substr_count(\$stdout, 'ERROR')"]);
+	algo_assert_contract($dsstatsSrc, 'dsstats_rrdtool_is_status_line', ["str_starts_with(\$line, 'OK u:')", "str_starts_with(\$line, 'ERROR:')"]);
+	algo_assert_contract($dsstatsSrc, 'dsstats_rrdtool_close', ['proc_terminate($process);', 'proc_close($process);']);
+});
+
+test('lib/data_query.php eliminates N+1 lookups, O(F*N^2) in_array, and prepared-call TypeError', function () use ($repoRoot) : void {
+	$dqSrc = (string) file_get_contents($repoRoot . '/lib/data_query.php');
+
+	algo_assert_contract($dqSrc, 'run_data_query', ['$local_data = data_query_local_data($host_id, $snmp_query_id, $old_sort_field, $new_sort_field);', '$remap_source        = $remap && $new_sort_field != $previous_sort_field;'], ['$previous_did = db_fetch_row_prepared', '$did_map_data = db_fetch_row_prepared']);
+	algo_assert_contract($dqSrc, 'data_query_remove_disabled_items', ['TABLE_SCHEMA = SCHEMA()', "preg_match('/^poller_output_boost_arch_\\d+\$/', \$table)", '$ids, false);'], ["implode(', ', \$orphaned_ids) . ')', false)"]);
+	algo_assert_contract($dqSrc, 'query_snmp_host', ['$snmp_index_lookup = data_query_index_lookup($snmp_indexes);', 'if (!data_query_index_exists($snmp_index, $snmp_index_lookup))'], ['if (!in_array($snmp_index, $snmp_indexes))']);
+});
+
+test('lib/boost.php and poller_boost.php fix stale timestamps, undefined vars, and lock cleanup', function () use ($repoRoot) : void {
+	$boostSrc       = (string) file_get_contents($repoRoot . '/lib/boost.php');
+	$pollerBoostSrc = (string) file_get_contents($repoRoot . '/poller_boost.php');
+
+	algo_assert_contract(
+		$boostSrc,
+		'boost_process_poller_output',
+		["if (\$item['timestamp'] <= \$last_update && cacti_version_compare(get_rrdtool_version(), '1.5', '<'))", '$pending_timestamp = null;', 'boost_append_update_value($outbuf, $outlen, $pending_timestamp,', 'if (cacti_sizeof($rrd_field_names))'],
+		['if ($time < $last_update', '$nt_rrd_field_names', '$reset_template', '$tv_tmpl[$field]', '$buflen += 2']
+	);
+
+	algo_assert_contract($pollerBoostSrc, 'boost_kill_running_processes', ["if (cacti_process_still_running(\$p['pid']))", "cacti_process_kill(\$p['pid'], SIGTERM, 'BOOST');"], ["posix_kill(\$p['pid']"]);
+	algo_assert_contract($pollerBoostSrc, 'boost_process_local_data_ids', ["cacti_version_compare(\$rrdtool_version, '1.5', '<') && \$current_lock !== false", "SELECT RELEASE_LOCK('boost.single_ds.\$current_lock')", "if (\$item['timestamp'] <= \$last_update && cacti_version_compare(get_rrdtool_version(), '1.5', '<'))"], ["SELECT RELEASE_LOCK('boost.single_ds.\$local_data_id')", 'if ($time < $last_update']);
+});
 
 test('get_data_query_array passes $xml_data to calculate_or_set_index_order and derives index_order', function () use ($repoRoot) : void {
 	$src  = (string) file_get_contents($repoRoot . '/lib/data_query.php');
