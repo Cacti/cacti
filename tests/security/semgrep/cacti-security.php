@@ -38,6 +38,12 @@ $unsafe_column = gnrv('column');
 // ruleid: cacti-request-var-in-sql
 $g3 = db_fetch_assoc('SELECT * FROM host WHERE ' . array_to_sql_or([1], $unsafe_column));
 
+// ok: cacti-request-var-in-sql
+$g4 = db_fetch_assoc('SELECT * FROM graph_local WHERE ' . db_in_clause('gl.graph_template_id', grv('graph_template_id')));
+
+// ruleid: cacti-request-var-in-sql
+$g5 = db_fetch_assoc('SELECT * FROM graph_local WHERE ' . db_in_clause($unsafe_column, [1]));
+
 // ---- cacti-request-var-in-shell-or-rrdtool ----
 
 // ruleid: cacti-request-var-in-shell-or-rrdtool

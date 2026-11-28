@@ -78,6 +78,106 @@ function html_graph_validate_page_size(mixed $value) : int|false {
 }
 
 /**
+ * Builds a validated SQL LIMIT offset and row count for graph pagination.
+ *
+ * @param mixed $page       The requested 1-based page number.
+ * @param int   $graph_rows The validated number of graphs per page.
+ *
+ * @return string A safe "<offset>,<limit>" fragment for LIMIT clauses.
+ */
+function html_graph_sql_limit(mixed $page, int $graph_rows) : string {
+	$page_number = filter_var($page, FILTER_VALIDATE_INT);
+
+	if ($page_number === false || $page_number < 1) {
+		$page_number = 1;
+	}
+
+	$rows = max(1, $graph_rows);
+
+	return ($rows * ($page_number - 1)) . ',' . $rows;
+}
+
+/**
+ * Builds the dsstats ordering specification for preview graph queries.
+ *
+ * Validates the requested data source name, sort direction, consolidation
+ * function, and measure against allowlists before returning the array used
+ * by get_allowed_graphs(), falling back to title order otherwise.
+ *
+ * @param mixed $data_source The requested data source name.
+ * @param mixed $order       The requested sort direction ('asc' or 'desc').
+ * @param mixed $cf          The requested consolidation function.
+ * @param mixed $measure     The requested dsstats measure column.
+ * @param int   $start_time  The graph window start timestamp.
+ * @param int   $end_time    The graph window end timestamp.
+ *
+ * @return array<string, int|string>|string Validated dsstats order spec or 'gtg.title_cache'.
+ */
+function html_graph_build_dsstats_order(mixed $data_source, mixed $order, mixed $cf, mixed $measure, int $start_time, int $end_time) : array|string {
+	if (!is_scalar($data_source) || !is_scalar($order)) {
+		return 'gtg.title_cache';
+	}
+
+	$source_name = trim((string) $data_source);
+	$order_input = strtolower(trim((string) $order));
+
+	if ($source_name === '' || $source_name === '-1' || $order_input === '') {
+		return 'gtg.title_cache';
+	}
+
+	if (preg_match('/^[a-zA-Z0-9_-]{1,19}$/', $source_name) !== 1) {
+		return 'gtg.title_cache';
+	}
+
+	$direction = $order_input === 'desc' ? 'desc' : 'asc';
+	$cf_value  = is_scalar($cf) ? strtolower(trim((string) $cf)) : '';
+	$cf_map    = [
+		'avg' => 'avg',
+		'max' => 'max',
+		'0'   => '0',
+		'1'   => '1'
+	];
+	$cf_option = $cf_map[$cf_value] ?? '';
+
+	$allowed_measures = defined('DSSTATS_MEASURES') ? DSSTATS_MEASURES : ['average', 'peak', 'p25n', 'p50n', 'p75n', 'p90n', 'p95n', 'sum'];
+	$measure_option   = defined('DSSTATS_MEASURE_DEFAULT') ? DSSTATS_MEASURE_DEFAULT : 'average';
+	$measure_input    = is_scalar($measure) ? trim((string) $measure) : '';
+
+	foreach ($allowed_measures as $allowed_measure) {
+		if ($measure_input === $allowed_measure) {
+			$measure_option = $allowed_measure;
+
+			break;
+		}
+	}
+
+	return [
+		'data_source' => $source_name,
+		'order'       => $direction,
+		'start_time'  => $start_time,
+		'end_time'    => $end_time,
+		'cf'          => $cf_option,
+		'measure'     => $measure_option
+	];
+}
+
+/**
+ * Builds the dsstats ordering specification from the current graph view request.
+ *
+ * @return array<string, int|string>|string Validated dsstats order spec or 'gtg.title_cache'.
+ */
+function html_graph_dsstats_order_from_request() : array|string {
+	return html_graph_build_dsstats_order(
+		grv('graph_source'),
+		grv('graph_order'),
+		grv('cf'),
+		grv('measure'),
+		(int) get_current_graph_start(),
+		(int) get_current_graph_end()
+	);
+}
+
+/**
  * Sets the default graph action based on user settings and permissions.
  *
  * This function checks if a request variable 'action' is set. If not, it sets up a default action
@@ -957,7 +1057,7 @@ function html_graph_preview_view() : void {
 	$sql_where .= ($sql_or != '' && $sql_where != '' ? ' AND ' : '') . $sql_or;
 
 	if (!ierv('site_id') && grv('site_id') > 0) {
-		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' h.site_id=' . grv('site_id');
+		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' h.site_id=' . gfrv('site_id');
 	} elseif (ierv('site_id')) {
 		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' h.site_id=0';
 	}
@@ -985,7 +1085,7 @@ function html_graph_preview_view() : void {
 	if (grv('graphs') == '-1') {
 		$graph_rows = read_user_setting('preview_graphs_per_page', read_config_option('preview_graphs_per_page') ?? 20);
 	} else {
-		$graph_rows = grv('graphs');
+		$graph_rows = gfrv('graphs');
 	}
 
 	$graph_rows = html_graph_validate_page_size($graph_rows);
@@ -994,19 +1094,12 @@ function html_graph_preview_view() : void {
 		$graph_rows = 20;
 	}
 
-	$sql_limit = ($graph_rows * (grv('page') - 1)) . ',' . $graph_rows;
+	$sql_limit = html_graph_sql_limit(gfrv('page', FILTER_VALIDATE_INT, ['default' => 1]), $graph_rows);
 
-	if (read_config_option('dsstats_enable') == 'on' && grv('graph_source') != '' && grv('graph_order') != '') {
-		$sql_order = [
-			'data_source' => grv('graph_source'),
-			'order'       => grv('graph_order'),
-			'start_time'  => get_current_graph_start(),
-			'end_time'    => get_current_graph_end(),
-			'cf'          => grv('cf'),
-			'measure'     => grv('measure')
-		];
+	if (read_config_option('dsstats_enable') == 'on') {
+		$sql_order = html_graph_dsstats_order_from_request();
 	} else {
-		$sql_order  = 'gtg.title_cache';
+		$sql_order = 'gtg.title_cache';
 	}
 
 	$graphs = get_allowed_graphs($sql_where, $sql_order, $sql_limit, $total_graphs);
@@ -1275,7 +1368,7 @@ function html_graph_list_view() : void {
 	if (grv('graphs') == '-1') {
 		$graph_rows = read_config_option('num_rows_table');
 	} else {
-		$graph_rows = grv('graphs');
+		$graph_rows = gfrv('graphs');
 	}
 
 	$graph_rows = html_graph_validate_page_size($graph_rows);
@@ -1359,7 +1452,7 @@ function html_graph_list_view() : void {
 	}
 
 	if (!ierv('site_id') && grv('site_id') > 0) {
-		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' h.site_id=' . grv('site_id');
+		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' h.site_id=' . gfrv('site_id');
 	} elseif (ierv('site_id')) {
 		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' h.site_id=0';
 	}
@@ -1385,7 +1478,7 @@ function html_graph_list_view() : void {
 	}
 
 	$total_rows = 0;
-	$sql_limit  = ($graph_rows * (grv('page') - 1)) . ',' . $graph_rows;
+	$sql_limit  = html_graph_sql_limit(gfrv('page', FILTER_VALIDATE_INT, ['default' => 1]), $graph_rows);
 
 	$graphs = get_allowed_graphs($sql_where, 'gtg.title_cache', $sql_limit, $total_rows);
 
