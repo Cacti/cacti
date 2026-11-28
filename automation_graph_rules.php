@@ -127,8 +127,18 @@ function save() {
 		$save['operator']  = form_input_validate((isset_request_var('operator') ? get_nfilter_request_var('operator') : ''), 'operator', '^[0-9]+$', true, 3);
 		$save['pattern']   = form_input_validate((isset_request_var('pattern') ? get_nfilter_request_var('pattern') : ''), 'pattern', '', true, 3);
 
-		/* Test for SQL injections */
+		/* Test for SQL injections and sensitive credential columns */
 		$field_name = str_replace(array('ht.', 'h.', 'gt.', 'gtg.'), '', $save['field']);
+
+		if (cacti_automation_is_sensitive_host_field($save['field'])) {
+			raise_message('sql_injection', __('Invalid or restricted field specified in Graph automation'), MESSAGE_LEVEL_ERROR);
+
+			cacti_log(sprintf('ERROR: Restricted credential field specified in Graph Automation from client address \'%s\'', get_client_addr()), false, 'SECURITY');
+
+			header('Location: automation_graph_rules.php?header=false&action=edit&id=' . get_request_var('id'));
+
+			exit;
+		}
 
 		$exists = db_fetch_cell_prepared('SELECT field_name
 			FROM host_snmp_cache
@@ -136,22 +146,24 @@ function save() {
 			LIMIT 1',
 			array($field_name));
 
-		if (!$exists) {
+		if (!$exists && $save['field'] !== '') {
 			/* check the case where there is no entry in the host_snmp_cache table yet */
-			if ("'$field_name'" != db_qstr($field_name)) {
-			if (!db_column_exists('host', $field_name) &&
+			$identifier_pattern = '/^[a-zA-Z0-9_]+(\.[a-zA-Z0-9_]+)?$/';
+
+			if (preg_match($identifier_pattern, $save['field']) !== 1 ||
+				preg_match($identifier_pattern, $field_name) !== 1 ||
+				(!db_column_exists('host', $field_name) &&
 				!db_column_exists('host_template', $field_name) &&
 				!db_column_exists('graph_templates', $field_name) &&
 				!db_column_exists('graph_local', $field_name) &&
-				!db_column_exists('graph_templates_graph', $field_name)) {
-					raise_message('sql_injection', __('An attempt was made to perform a SQL injection in Graph automation'), MESSAGE_LEVEL_ERROR);
+				!db_column_exists('graph_templates_graph', $field_name))) {
+				raise_message('sql_injection', __('An attempt was made to perform a SQL injection in Graph automation'), MESSAGE_LEVEL_ERROR);
 
-					cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Graph Automation from client address \'%s\'', get_client_addr()), false, 'SECURITY');
+				cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Graph Automation from client address \'%s\'', get_client_addr()), false, 'SECURITY');
 
-					header('Location: automation_graph_rules.php?header=false&action=edit&id=' . get_request_var('id'));
+				header('Location: automation_graph_rules.php?header=false&action=edit&id=' . get_request_var('id'));
 
-					exit;
-				}
+				exit;
 			}
 		}
 
@@ -186,15 +198,16 @@ function save() {
 		$save['operator']  = form_input_validate((isset_request_var('operator') ? get_nfilter_request_var('operator') : ''), 'operator', '^[0-9]+$', true, 3);
 		$save['pattern']   = form_input_validate((isset_request_var('pattern') ? get_nfilter_request_var('pattern') : ''), 'pattern', '', true, 3);
 
-		/* Test for SQL injections */
+		/* Test for SQL injections and sensitive credential columns */
 		$field_name = str_replace(array('ht.', 'h.', 'gt.', 'gl.', 'gtg.'), '', $save['field']);
-		$field_name = preg_replace('/[^a-zA-Z0-9_]/', '', $field_name);
 
-		if (!db_column_exists('host', $field_name) &&
+		if (!preg_match('/^(?:(?:ht|h|gt|gl|gtg)\.)?[a-zA-Z0-9_]+$/', $save['field']) ||
+			cacti_automation_is_sensitive_host_field($save['field']) ||
+			(!db_column_exists('host', $field_name) &&
 			!db_column_exists('host_template', $field_name) &&
 			!db_column_exists('graph_templates', $field_name) &&
 			!db_column_exists('graph_local', $field_name) &&
-			!db_column_exists('graph_templates_graph', $field_name)) {
+			!db_column_exists('graph_templates_graph', $field_name))) {
 			raise_message('sql_injection', __('An attempt was made to perform a SQL injection in Graph automation'), MESSAGE_LEVEL_ERROR);
 
 			cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Graph Automation from client address \'%s\'', get_client_addr()), false, 'SECURITY');

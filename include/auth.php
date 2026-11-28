@@ -90,22 +90,53 @@ if ($auth_method != 0) {
 	 * but their user_id is not set, include the auth_login.php script to
 	 * process their log in.
 	 */
-	if ($auth_method == 2 && !isset($_SESSION['sess_user_id'])) {
-		$username = get_basic_auth_username();
+	if ($auth_method == 2) {
+		$username     = get_basic_auth_username();
+		$current_user = [];
+
+		/* auth_login.php resolves the realm 2 account from the sanitized
+		 * name (see auth_get_username()), so use that form here too. */
 		if ($username !== false) {
 			$current_user = db_fetch_row_prepared('SELECT *
 				FROM user_auth
 				WHERE realm = 2
 				AND username = ?',
-				array($username));
+				[sanitize_search_string($username)]);
+		}
+
+		/* Skip upstream Basic Auth recheck for anonymous guest sessions (no bound
+		 * Basic Auth identity) so guest page requests do not thrash the session. */
+		$guest_user_id      = (int) get_guest_account();
+		$is_anon_guest_sess = $username === false
+			&& isset($_SESSION['sess_user_id'])
+			&& !isset($_SESSION['sess_basic_auth_user'])
+			&& $guest_user_id > 0
+			&& (int) $_SESSION['sess_user_id'] === $guest_user_id;
+
+		if (!$is_anon_guest_sess) {
+			/* Hold any existing Web Basic session to the current upstream identity. */
+			auth_basic_session_recheck($username, $current_user);
+		}
+
+		if (!isset($_SESSION['sess_user_id']) && $username !== false) {
+			if (cacti_sizeof($current_user) && $current_user['enabled'] != 'on') {
+				cacti_log("LOGIN FAILED: User '" . $current_user['username'] . "' is disabled and was refused Basic Authentication", false, 'AUTH');
+
+				$current_user = [];
+			}
 
 			if (cacti_sizeof($current_user)) {
-				/* GHSA-273r-qr93-wgcp: regenerate session id on auth transition */
+				/* Regenerate session id and verify lockout state on auth transition. */
 				if (!cacti_auth_transition((int)$current_user['id'], 'basic_auth')) {
-					return false;
+					auth_display_custom_error_message(__('Access Denied! User account locked.'));
+
+					exit;
 				}
 
-				$_SESSION['sess_user_id'] = $current_user['id'];;
+				$_SESSION['sess_user_id'] = $current_user['id'];
+
+				/* Record the upstream identity auth_basic_session_recheck() enforces. */
+				$_SESSION['sess_basic_auth_user'] = $username;
 
 				$client_addr = get_client_addr();
 
@@ -114,9 +145,11 @@ if ($auth_method != 0) {
 				db_execute_prepared('INSERT IGNORE INTO user_log
 					(username, user_id, result, ip, time)
 					VALUES (?, ?, 1, ?, NOW())',
-					array($username, $current_user['id'], $client_addr));
+					[$username, $current_user['id'], $client_addr]);
 
-				return true;
+				/* Fall through to the per-page realm check below instead of returning,
+				 * so a Basic Auth login still has its authorization verified for the
+				 * requested page. */
 			} else {
 				require_once($config['base_path'] . '/auth_login.php');
 			}
@@ -130,21 +163,43 @@ if ($auth_method != 0) {
 	 * if that is the case, then use that valid accounts permissions and not
 	 * the guest account.
 	 */
-	if (isset($guest_account)) {
-		$guest_user_id = get_guest_account();
+	if (!empty($guest_account)) {
+		$guest_user_id = (int) get_guest_account();
 
 		/* find guest user */
-		if (!empty($guest_user_id)) {
+		if ($guest_user_id > 0) {
 			if (empty($_SESSION['sess_user_id'])) {
-				$_SESSION['sess_user_id'] = $guest_user_id;
+				$guest_user = db_fetch_row_prepared('SELECT *
+					FROM user_auth
+					WHERE id = ?
+					AND enabled = "on"',
+					[$guest_user_id]);
+
+				if (cacti_sizeof($guest_user)) {
+					$_SESSION['sess_user_id'] = $guest_user_id;
+					$current_user             = $guest_user;
+
+					return true;
+				}
+			} else {
+				$current_user = db_fetch_row_prepared('SELECT *
+					FROM user_auth
+					WHERE id = ?',
+					[$_SESSION['sess_user_id']]);
+
+				/* Allow explicit guest-page pass-through only for an enabled guest
+				 * session; non-guest accounts still fall through to per-page realm
+				 * authorization below. */
+				if ((int) $_SESSION['sess_user_id'] === $guest_user_id) {
+					if (cacti_sizeof($current_user) && ($current_user['enabled'] ?? '') == 'on') {
+						return true;
+					}
+
+					kill_session_var('sess_user_id');
+					cacti_session_destroy();
+					cacti_session_start(true);
+				}
 			}
-
-			$current_user = db_fetch_row_prepared('SELECT *
-				FROM user_auth
-				WHERE id = ?',
-				array($_SESSION['sess_user_id']));
-
-			return true;
 		}
 	}
 

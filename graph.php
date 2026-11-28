@@ -586,6 +586,14 @@ case 'zoom':
 
 	break;
 case 'properties':
+	if (!is_realm_allowed(27)) {
+		if (!headers_sent()) {
+			http_response_code(403);
+		}
+		print '<strong><font class="txtErrorTextBox">' . __('You are not permitted to access this section of Cacti.') . '</font></strong>';
+		exit;
+	}
+
 	$graph_data_array['print_source'] = true;
 
 	/* override: graph start time (unix time) */
