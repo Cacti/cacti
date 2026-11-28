@@ -58,7 +58,7 @@ function themeReady() {
 	$('.cactiConsoleNavigationArea').find('#navigation > table').remove();
 
 	$('.maintabs nav ul li a.lefttab').each( function() {
-		id = $(this).attr('id');
+		const id = $(this).attr('id');
 
 		if (id == 'tab-graphs' && $(this).parent().hasClass('maintabs-has-submenu') == 0 ) {
 			$(this).parent().addClass('maintabs-has-submenu');
@@ -86,13 +86,13 @@ function themeReady() {
 
 		$('<div class="dropdownMenu">'
 			+'<ul id="submenu-user-help" class="submenuoptions right" style="display:none;">'
-				+'<li><a href="https://www.cacti.net" target="_blank"><span>'+cactiHome+'</span></a></li>'
-				+'<li><a href="https://github.com/cacti" target="_blank"><span>'+cactiProjectPage+'</span></a></li>'
+				+'<li><a href="https://www.cacti.net" target="_blank" rel="noopener"><span>'+cactiHome+'</span></a></li>'
+				+'<li><a href="https://github.com/cacti" target="_blank" rel="noopener"><span>'+cactiProjectPage+'</span></a></li>'
 				+'<li><hr class="menu"></li>'
-				+'<li><a href="https://forums.cacti.net/" target="_blank"><span>'+cactiCommunityForum+'</span></a></li>'
-				+'<li><a href="https://github.com/Cacti/documentation/blob/develop/README.md" target="_blank"><span>'+cactiDocumentation+'</span></a></li>'
+				+'<li><a href="https://forums.cacti.net/" target="_blank" rel="noopener"><span>'+cactiCommunityForum+'</span></a></li>'
+				+'<li><a href="https://github.com/Cacti/documentation/blob/develop/README.md" target="_blank" rel="noopener"><span>'+cactiDocumentation+'</span></a></li>'
 				+'<li><hr class="menu"></li>'
-				+'<li><a href="https://github.com/Cacti/cacti/issues/new" target="_blank"><span>'+reportABug+'</span></a></li>'
+				+'<li><a href="https://github.com/Cacti/cacti/issues/new" target="_blank" rel="noopener"><span>'+reportABug+'</span></a></li>'
 				+'<li><a href="'+urlPath+'about.php"><span>'+aboutCacti+'</span></a></li>'
 			+'</ul>'
 		+'</div>').appendTo('body');
@@ -122,9 +122,9 @@ function themeReady() {
 	$('.tableHeader th').has('i.fa-sort').removeClass('tableHeaderColumnHover tableHeaderColumnSelected');
 	$('.tableHeader th').has('i.fa-sort-up').addClass('tableHeaderColumnSelected');
 	$('.tableHeader th').has('i.fa-sort-down').addClass('tableHeaderColumnSelected');
-	$('.tableHeader th').has('i.fa-sort').on('mouseenter', function() {
+	$('.tableHeader th').has('i.fa-sort').rebind('mouseenter.theme', function() {
 			$(this).addClass('tableHeaderColumnHover');
-		}).on('mouseleave', function() {
+		}).rebind('mouseleave.theme', function() {
 			$(this).removeClass('tableHeaderColumnHover');
 		});
 

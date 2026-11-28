@@ -7,8 +7,7 @@ midwinter.navigationBox.filter = {
     // Internal constants for decoupling
     _selectors: {
         cactiTable:      '.cactiTable',
-        cactiFilterTable: '.filterTable',
-        filterTopTarget:  '#filterTableOnTop'
+        cactiFilterTable: '.filterTable'
     },
 
     // internal helper to notify the Cacti theme (e.g. that content is empty)
@@ -56,16 +55,6 @@ midwinter.navigationBox.filter = {
             // Find the surrounding cacti table container and detach it
             const $filterContainer = $filterSource.closest(sel.cactiTable).detach();
             $box.data('filterSource', { element: $main[0], version: version });
-
-            /* Legacy support for cacti breaks/titles */
-            const $mainFirstDiv = $("#main > div:first");
-            if ($mainFirstDiv.find(sel.cactiFilterTable).closest('div').length === 1) {
-                const $topTarget = $(sel.filterTopTarget);
-
-                $(".break:first").detach().appendTo($topTarget);
-                $topTarget.find('.cactiTableTitle').remove();
-                $topTarget.removeClass('hide');
-            }
 
             return $filterContainer;
         }

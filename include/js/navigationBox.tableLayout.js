@@ -207,9 +207,11 @@ midwinter.navigationBox.table = {
         const storageKey = 'cactiTable_' + tableHash; // Updated prefix
         let storageData = Storages.localStorage.get(storageKey);
         let settings = (typeof storageData === 'string') ? JSON.parse(storageData) : storageData;
+        const locale = (typeof sessionLocale !== 'undefined' ? sessionLocale : 'en-US');
 
-        // init storage if missing
-        if (!settings || !settings[1]) {
+        // init storage if missing, and read the titles again after a language change
+        if (!settings || !settings[1] || settings[2] !== locale) {
+            const previous = (settings && Array.isArray(settings[1])) ? settings[1] : [];
             let cArray = [];
             $headerRow.find('th').each(function(index) {
                 const $th = $(this);
@@ -224,11 +226,17 @@ midwinter.navigationBox.table = {
                     cTitle = $th.text().trim();
                     cHideable = 1;
                 }
-                cArray.push([cIndex, cName, cTitle, cHideable, 1]);
+                // keep the visibility chosen before a language change
+                cArray.push([cIndex, cName, cTitle, cHideable, (previous[index] && previous[index][4] === 0) ? 0 : 1]);
             });
 
-            settings = [[], cArray, (typeof sessionLocale !== 'undefined' ? sessionLocale : 'en-US')];
+            settings = [(settings && Array.isArray(settings[0])) ? settings[0] : [], cArray, locale];
             Storages.localStorage.set(storageKey, JSON.stringify(settings));
+        }
+
+        // hide the columns that were hidden for this table before
+        if (Array.isArray(settings[0])) {
+            $currentTable.addClass(settings[0].filter((name) => /^no-col\d+$/.test(name)).join(' '));
         }
 
         // 3. Render HTML
@@ -236,7 +244,10 @@ midwinter.navigationBox.table = {
         const columns = settings[1]; // Correct index for column definitions
 
         columns.forEach((col) => {
-            const [index, name, title, hideable, visible] = col;
+            const [storedIndex, name, storedTitle, hideable, visible] = col;
+            // column titles are read from the page and kept in local storage; encode them for the markup below
+            const index = Number.parseInt(storedIndex, 10) || 0;
+            const title = midwinter.navigationBox._escape(storedTitle);
             if (hideable) {
                 const inputID = `cacti_col_${index}`;
                 html += `

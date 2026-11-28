@@ -66,7 +66,7 @@ function themeReady() {
 	}
 
 	$('.maintabs nav ul li a.lefttab').each( function() {
-		id = $(this).attr('id');
+		const id = $(this).attr('id');
 		if (id == 'tab-graphs' && $(this).parent().hasClass('maintabs-has-submenu') == 0) {
 			$(this).parent().addClass('maintabs-has-submenu');
 			$('<div class="dropdownMenu">'
@@ -133,9 +133,9 @@ function themeReady() {
 	$('.tableHeader th').has('i.fa-sort').removeClass('tableHeaderColumnHover tableHeaderColumnSelected');
 	$('.tableHeader th').has('i.fa-sort-up').addClass('tableHeaderColumnSelected');
 	$('.tableHeader th').has('i.fa-sort-down').addClass('tableHeaderColumnSelected');
-	$('.tableHeader th').has('i.fa-sort').on('mouseenter', function() {
+	$('.tableHeader th').has('i.fa-sort').rebind('mouseenter.theme', function() {
 			$(this).addClass("tableHeaderColumnHover");
-		}).on('mouseleave', function() {
+		}).rebind('mouseleave.theme', function() {
 			$(this).removeClass("tableHeaderColumnHover");
 		});
 
@@ -145,8 +145,8 @@ function themeReady() {
 
 	// Turn file buttons into jQueryUI buttons
 	$('.import_label').button();
-	$('.import_button').on('change', function() {
-		text=this.value;
+	$('.import_button').rebind('change.theme', function() {
+		const text = this.value;
 		setImportFile(text);
 	});
 
