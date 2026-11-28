@@ -619,7 +619,7 @@ function form_save() : void {
 				// sort the tree using the algorithm chosen by the user
 				if ($save['sort_type'] != $prev_order) {
 					if ($save['sort_type'] != TREE_ORDERING_NONE) {
-						sort_recursive(0, $tree_id);
+						api_tree_sort_branch(0, $tree_id);
 					}
 				}
 
@@ -639,45 +639,6 @@ function form_save() : void {
 
 		exit;
 	}
-}
-
-function sort_recursive(int $branch, int $tree_id) : void {
-	$leaves = db_fetch_assoc_prepared('SELECT *
-		FROM graph_tree_items
-		WHERE graph_tree_id = ?
-		AND parent = ?
-		AND local_graph_id = 0
-		AND host_id = 0',
-		[$tree_id, $branch]);
-
-	if (cacti_sizeof($leaves)) {
-		foreach ($leaves as $leaf) {
-			if ($leaf['sort_children_type'] == TREE_ORDERING_INHERIT) {
-				$first_child = db_fetch_cell_prepared('SELECT id
-					FROM graph_tree_items
-					WHERE parent = ?',
-					[$leaf['id']]);
-
-				if (!empty($first_child)) {
-					api_tree_sort_branch($first_child, $tree_id);
-
-					if (leaves_exist($leaf['id'], $tree_id)) {
-						sort_recursive($first_child, $tree_id);
-					}
-				}
-			}
-		}
-	}
-}
-
-function leaves_exist(int $parent, int $tree_id) : int {
-	return (int) db_fetch_cell_prepared('SELECT COUNT(*)
-		FROM graph_tree_items
-		WHERE graph_tree_id = ?
-		AND parent = ?
-		AND local_graph_id = 0
-		AND host_id = 0',
-		[$tree_id, $parent]);
 }
 
 function form_actions() : void {
