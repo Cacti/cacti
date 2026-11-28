@@ -93,6 +93,13 @@ if [[ -f tests/fixtures/Core/TableColumnSizing.php ]]; then
 	done
 fi
 
+run_probe RrdInfoHtmlEscape.php RrdInfoHtmlEscape
+run_probe GraphItemsListMarkup.php GraphItemsListMarkup
+if [[ -f tests/fixtures/Core/GraphItemLabelMarkup.php ]]; then
+	run_probe GraphItemLabelMarkup.php graph-item-label-aggregate label '<em>Literal label</em>'
+	run_probe GraphItemLabelMarkup.php graph-item-label-graph graph '<em>Literal label</em>'
+fi
+
 if [[ -f tests/fixtures/Core/UserSettingsAndRealtimeHardening.php ]]; then
 	for mode in core auth-guest-exit auth-disable-2fa auth-enable-2fa auth-verify-2fa realtime-denied realtime-view-denied; do
 		run_probe UserSettingsAndRealtimeHardening.php "user-settings-realtime-$mode" "$mode"

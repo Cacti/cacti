@@ -2003,13 +2003,13 @@ function draw_aggregate_graph_items_list(int $_graph_id = 0, int $_graph_templat
 			print "<td style='$this_row_style'>" . $consolidation_functions[$item['consolidation_function_id']] . '</td>';
 
 			// column 'GPrint'
-			print "<td style='$this_row_style'>" . $item['gprint_name'] . '</td>';
+			print "<td style='$this_row_style'>" . htmle($item['gprint_name']) . '</td>';
 
 			// column 'CDEF'
-			print "<td style='$this_row_style'>" . $item['cdef_name'] . '</td>';
+			print "<td style='$this_row_style'>" . htmle($item['cdef_name']) . '</td>';
 
 			// column 'CDEF'
-			print "<td style='$this_row_style'>" . $item['vdef_name'] . '</td>';
+			print "<td style='$this_row_style'>" . htmle($item['vdef_name']) . '</td>';
 
 			// column 'Item Color'
 			print "<td style='width:1%;" . ((!empty($item['hex'])) ? 'background-color:#' . $item['hex'] . ";'" : "'") . '>&nbsp;</td>';
