@@ -50,6 +50,18 @@ if (!defined('RRDTOOL_OUTPUT_GRAPH_DATA')) {
 	define('RRDTOOL_OUTPUT_GRAPH_DATA', 2);
 }
 
+if (!defined('GT_LAST_DAY')) {
+	define('GT_LAST_DAY', 7);
+}
+
+if (!defined('GTS_1_DAY')) {
+	define('GTS_1_DAY', 86400);
+}
+
+if (!defined('WD_MONDAY')) {
+	define('WD_MONDAY', 1);
+}
+
 function check(bool $condition, string $message) : void {
 	if (!$condition) {
 		throw new \RuntimeException($message);
@@ -112,6 +124,14 @@ function grow_right_pane_tree(mixed $tree_id, mixed $leaf_id, string $host_group
 
 function read_config_option(string $name, bool $force = false) : mixed {
 	return $GLOBALS['fixture_config'][$name] ?? '';
+}
+
+function get_new_user_default_language() : string {
+	return 'en-US';
+}
+
+function get_installed_locales() : array {
+	return ['en-US' => 'English'];
 }
 
 function read_user_setting(string $name, mixed $default = false) : mixed {
@@ -342,18 +362,65 @@ check(\cacti_validate_user_setting_value('x', 'invalid', ['method' => 'checkbox'
 check(\cacti_validate_user_setting_value('x', 'a', ['method' => 'drop_array']) === false, 'drop_array missing array');
 check(\cacti_validate_user_setting_value('x', 'a', ['method' => 'drop_array', 'array' => ['a' => 'A']]) === 'a', 'drop_array string');
 check(\cacti_validate_user_setting_value('x', '10', ['method' => 'drop_array', 'array' => [10 => 'Ten']]) === '10', 'drop_array int');
+check(\cacti_validate_user_setting_value('x', '010', ['method' => 'drop_array', 'array' => [10 => 'Ten']]) === '10', 'drop_array leading-zero int');
 check(\cacti_validate_user_setting_value('x', '99', ['method' => 'drop_array', 'array' => [10 => 'Ten']]) === false, 'drop_array miss');
 check(\cacti_validate_user_setting_value('x', '-1', ['method' => 'drop_sql']) === false, 'drop_sql neg');
 check(\cacti_validate_user_setting_value('x', '5', ['method' => 'drop_sql']) === '5', 'drop_sql ok');
-check(\cacti_validate_user_setting_value('day_shift_start', '08:00', ['method' => 'textbox']) === '08:00', 'time ok');
-check(\cacti_validate_user_setting_value('day_shift_start', '99:99', ['method' => 'textbox']) === false, 'time bad');
-check(\cacti_validate_user_setting_value('min_tree_width', '200', ['method' => 'textbox', 'default' => '100']) === '200', 'numeric ok');
-check(\cacti_validate_user_setting_value('min_tree_width', 'bad', ['method' => 'textbox', 'default' => '100']) === false, 'numeric bad');
-check(\cacti_validate_user_setting_value('note', 'ok', ['method' => 'textbox', 'max_length' => 5]) === 'ok', 'text ok');
-check(\cacti_validate_user_setting_value('note', 'toolong', ['method' => 'textbox', 'max_length' => 5]) === false, 'text long');
+check(\cacti_validate_user_setting_value('x', '5', ['method' => 'drop_color']) === '5', 'drop_color ok');
+check(\cacti_validate_user_setting_value('x', 'modern', ['method' => 'themes', 'array' => ['modern' => 'Modern']]) === 'modern', 'themes ok');
+check(\cacti_validate_user_setting_value('x', 'en-US', ['method' => 'drop_language', 'array' => ['en-US' => 'English']]) === 'en-US', 'drop_language ok');
+check(\cacti_validate_user_setting_value('day_shift_start', '08:00', ['method' => 'textbox', 'value_type' => 'time']) === '08:00', 'time ok');
+check(\cacti_validate_user_setting_value('day_shift_start', '99:99', ['method' => 'textbox', 'value_type' => 'time']) === false, 'time bad');
+check(\cacti_validate_user_setting_value('offset', '-42', ['method' => 'textbox', 'value_type' => 'int', 'min' => -50, 'max' => 50]) === '-42', 'int ok');
+check(\cacti_validate_user_setting_value('offset', '51', ['method' => 'textbox', 'value_type' => 'int', 'min' => -50, 'max' => 50]) === false, 'int max');
+check(\cacti_validate_user_setting_value('offset', 'bad', ['method' => 'textbox', 'value_type' => 'int']) === false, 'int bad');
+check(\cacti_validate_user_setting_value('min_tree_width', '200', ['method' => 'textbox', 'value_type' => 'positive_int', 'min' => 1, 'max' => 10000]) === '200', 'positive_int ok');
+check(\cacti_validate_user_setting_value('min_tree_width', '0', ['method' => 'textbox', 'value_type' => 'positive_int', 'min' => 0]) === false, 'positive_int floor');
+check(\cacti_validate_user_setting_value('count', '0', ['method' => 'textbox', 'value_type' => 'non_negative_int']) === '0', 'non_negative_int ok');
+check(\cacti_validate_user_setting_value('count', '-1', ['method' => 'textbox', 'value_type' => 'non_negative_int', 'min' => -5]) === false, 'non_negative_int floor');
+check(\cacti_validate_user_setting_value('ratio', '3.14', ['method' => 'textbox', 'value_type' => 'double', 'min' => 0.0, 'max' => 10.0]) === '3.14', 'double ok');
+check(\cacti_validate_user_setting_value('ratio', '10.5', ['method' => 'textbox', 'value_type' => 'float', 'min' => 0.0, 'max' => 10.0]) === false, 'float max');
+check(\cacti_validate_user_setting_value('ratio', '1e309', ['method' => 'textbox', 'value_type' => 'double']) === false, 'double inf');
+check(\cacti_validate_user_setting_value('ratio', 'bad', ['method' => 'textbox', 'value_type' => 'double']) === false, 'double bad');
+check(\cacti_validate_user_setting_value('note', 'ok', ['method' => 'textbox', 'value_type' => 'string', 'max_length' => 5]) === 'ok', 'string ok');
+check(\cacti_validate_user_setting_value('note', 'toolong', ['method' => 'textbox', 'value_type' => 'string', 'max_length' => 5]) === false, 'string long');
+check(\cacti_validate_user_setting_value('unknown_vt', '1', ['method' => 'textbox', 'value_type' => 'bogus']) === false, 'unknown value_type');
+check(\cacti_validate_user_setting_value('plugin_int', '200', ['method' => 'textbox', 'default' => '100']) === '200', 'fallback int ok');
+check(\cacti_validate_user_setting_value('plugin_int', 'bad', ['method' => 'textbox', 'default' => '100']) === false, 'fallback int bad');
+check(\cacti_validate_user_setting_value('plugin_dbl', '2.5', ['method' => 'textbox', 'default' => '1.5']) === '2.5', 'fallback double ok');
+check(\cacti_validate_user_setting_value('plugin_str', 'ok', ['method' => 'textbox', 'max_length' => 5]) === 'ok', 'fallback string ok');
 check(\cacti_validate_user_setting_value('title_font', 'DejaVuSans', ['method' => 'font', 'max_length' => 50]) === 'DejaVuSans', 'font ok');
+check(\cacti_validate_user_setting_value('title_font', 'DejaVuSans', ['method' => 'font']) === 'DejaVuSans', 'font default max_length');
 check(\cacti_validate_user_setting_value('title_font', 'bad;font', ['method' => 'font', 'max_length' => 50]) === false, 'font bad');
 check(\cacti_validate_user_setting_value('x', 'v', ['method' => 'unsupported']) === false, 'unknown method');
+
+// 1b. Cover $settings_user typed textbox declarations in include/global_settings.php
+$settingsUserBlock = \cacti_fixture_source_block(
+	$root . '/include/global_settings.php',
+	__NAMESPACE__,
+	'/(\$settings_user = \[.*?^\];)/ms',
+	[
+		'themes'           => ['modern' => 'Modern'],
+		'graph_views'      => ['1' => 'Tree View'],
+		'dateformats'      => ['0' => 'Default'],
+		'datechar'         => ['0' => '-'],
+		'graphs_per_page'  => ['10' => '10', '20' => '20'],
+		'graph_timespans'  => [GT_LAST_DAY => 'Last Day'],
+		'graph_timeshifts' => [GTS_1_DAY => '1 Day'],
+		'graph_weekdays'   => [WD_MONDAY => 'Monday'],
+	]
+);
+$typedTextboxes = 0;
+
+foreach ($settingsUserBlock['settings_user'] as $sectionFields) {
+	foreach ($sectionFields as $settingKey => $settingField) {
+		if (($settingField['method'] ?? '') === 'textbox') {
+			check(isset($settingField['value_type']), 'textbox missing value_type: ' . $settingKey);
+			$typedTextboxes++;
+		}
+	}
+}
+check($typedTextboxes === 10, 'expected 10 typed textbox settings in $settings_user');
 check(\cacti_sanitize_positive_int_setting('15', 10, 1, 100) === 15, 'pos int ok');
 check(\cacti_sanitize_positive_int_setting('bad', 10, 1, 100) === 10, 'pos int fallback');
 check(\cacti_sanitize_realtime_interval('10', [10 => '10s'], 5) === 10, 'interval ok');
