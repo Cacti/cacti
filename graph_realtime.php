@@ -34,7 +34,7 @@ get_filter_request_var('graph_start');
 get_filter_request_var('graph_end');
 get_filter_request_var('graph_height');
 get_filter_request_var('graph_width');
-get_filter_request_var('graph_nolegend', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^(true|false)$/')));
+get_filter_request_var('graph_nolegend', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^(true|false)$/']]);
 get_filter_request_var('local_graph_id');
 get_filter_request_var('size');
 get_filter_request_var('ds_step');
@@ -53,7 +53,7 @@ if (read_config_option('realtime_enabled') != 'on') {
 	exit;
 }
 
-if (!isset($_SESSION['sess_realtime_hash']) || !is_string($_SESSION['sess_realtime_hash']) || !preg_match('/^[a-fA-F0-9]+$/', $_SESSION['sess_realtime_hash'])) {
+if (!is_string($_SESSION['sess_realtime_hash'] ?? null) || !preg_match('/^[a-fA-F0-9]+$/', $_SESSION['sess_realtime_hash'])) {
 	$_SESSION['sess_realtime_hash'] = generate_hash();
 }
 
@@ -225,16 +225,14 @@ case 'countdown':
 	if ($local_graph_id <= 0 || !is_graph_allowed($local_graph_id)) {
 		ob_end_clean();
 		http_response_code(403);
-		print json_encode(array('error' => 'GRAPH ACCESS DENIED'));
+		print json_encode(['error' => 'GRAPH ACCESS DENIED']);
 		exit;
 	}
 
 	$ds_step = (int) $graph_data_array['ds_step'];
 	if ($ds_step < 1) {
 		$ds_step = (int) read_user_setting('realtime_interval', 10);
-	}
-	if ($ds_step < 1) {
-		$ds_step = 10;
+		$ds_step = $ds_step > 0 ? $ds_step : 10;
 	}
 	$graph_data_array['ds_step'] = $ds_step;
 

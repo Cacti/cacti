@@ -157,7 +157,7 @@ case 'ajax_search':
 
 	break;
 case 'ajax_reports':
-	if (!isset($_SERVER['REQUEST_METHOD']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
+	if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
 		header('Allow: POST');
 		http_response_code(405);
 		exit;

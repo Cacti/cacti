@@ -1259,12 +1259,12 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $sql_o
 	);
 
 	if (!cacti_sizeof($trees)) {
-		return array();
+		return [];
 	}
 
 	if ($tree_id > 0) {
 		if (!isset($trees[(int) $tree_id])) {
-			return array();
+			return [];
 		}
 
 		$sql_where .= " AND gt.enabled = 'on' AND gt.id IN (" . implode(', ', array_keys($trees)) . ')';
@@ -2641,7 +2641,7 @@ function get_allowed_branches($sql_where = '', $sql_order = 'name', $sql_limit =
 	if (!cacti_sizeof($trees)) {
 		$total_rows = 0;
 
-		return array();
+		return [];
 	}
 
 	$simple_perms = get_simple_device_perms($user_id);
@@ -2654,12 +2654,7 @@ function get_allowed_branches($sql_where = '', $sql_order = 'name', $sql_limit =
 	if (!$simple_perms) {
 		$host_rows = -1;
 		$hosts     = get_allowed_devices('', 'description', '', $host_rows, $user_id);
-
-		if (cacti_sizeof($hosts)) {
-			$hosts = array_rekey($hosts, 'id', 'description');
-		} else {
-			$hosts = array();
-		}
+		$hosts     = cacti_sizeof($hosts) ? array_rekey($hosts, 'id', 'description') : [];
 
 		$tree_hosts = db_fetch_assoc("SELECT DISTINCT h.id, h.description
 			FROM graph_tree_items AS gti
@@ -2670,19 +2665,12 @@ function get_allowed_branches($sql_where = '', $sql_order = 'name', $sql_limit =
 			WHERE gti.host_id > 0" .
 			($sql_where != '' ? " AND $sql_where" : ''), false);
 
-		if (cacti_sizeof($tree_hosts)) {
-			$tree_hosts = array_rekey($tree_hosts, 'id', 'description');
-		} else {
-			$tree_hosts = array();
-		}
+		$tree_hosts = cacti_sizeof($tree_hosts) ? array_rekey($tree_hosts, 'id', 'description') : [];
+		$hosts      = array_intersect_key($hosts, $tree_hosts);
 
-		$hosts = array_intersect_key($hosts, $tree_hosts);
-
-		if (cacti_sizeof($hosts) > 0) {
-			$sql_hosts_where = 'AND h.id IN (' . implode(',', array_keys($hosts)) . ')';
-		} else {
-			$sql_hosts_where = 'AND 1 = 0';
-		}
+		$sql_hosts_where = cacti_sizeof($hosts) > 0
+			? 'AND h.id IN (' . implode(',', array_keys($hosts)) . ')'
+			: 'AND 1 = 0';
 	}
 
 	if ($auth_method != 0) {
@@ -2935,29 +2923,25 @@ function get_allowed_sites($sql_where = '', $sql_order = 'name', $sql_limit = ''
 	}
 
 	if ($auth_method > 0 && $user_id === 0) {
-		if (isset($_SESSION['sess_user_id'])) {
-			$user_id = $_SESSION['sess_user_id'];
-		} else {
-			return array();
+		if (!isset($_SESSION['sess_user_id'])) {
+			return [];
 		}
+
+		$user_id = $_SESSION['sess_user_id'];
 	}
 
-	if ($auth_method != 0) {
-		$simple_perms = get_simple_device_perms($user_id);
+	if ($auth_method != 0 && !get_simple_device_perms($user_id)) {
+		$host_rows = -1;
+		$hosts     = get_allowed_devices('', 'id', '', $host_rows, $user_id);
 
-		if (!$simple_perms) {
-			$host_rows = -1;
-			$hosts     = get_allowed_devices('', 'id', '', $host_rows, $user_id);
+		if (!cacti_sizeof($hosts)) {
+			$total_rows = 0;
 
-			if (!cacti_sizeof($hosts)) {
-				$total_rows = 0;
-
-				return array();
-			}
-
-			$host_ids   = array_map('intval', array_column($hosts, 'id'));
-			$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'h.id IN (' . implode(', ', $host_ids) . ')';
+			return [];
 		}
+
+		$host_ids   = array_map('intval', array_column($hosts, 'id'));
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'h.id IN (' . implode(', ', $host_ids) . ')';
 	}
 
 	$sites = db_fetch_assoc("SELECT s.id, s.name
@@ -5225,7 +5209,7 @@ function cacti_authorize_has_realm($user_id, $realm_id) {
 		AND ugr.realm_id = ?
 		AND uag.enabled = 'on'
 		LIMIT 1",
-		array($user_id, $realm_id, $user_id, $realm_id)
+		[$user_id, $realm_id, $user_id, $realm_id]
 	);
 
 	$realm_cache[$key] = $has;
@@ -5270,12 +5254,12 @@ function cacti_authorize_is_admin($user_id) {
  * cacti_automation_is_sensitive_host_field - returns true when an automation
  * rule field targets a sensitive host SNMP credential column.
  *
- * @param string $field Field name, optionally prefixed with a table alias.
+ * @param string|null $field Field name, optionally prefixed with a table alias.
  *
  * @return bool
  */
-function cacti_automation_is_sensitive_host_field($field) {
-	static $sensitive_host_columns = array(
+function cacti_automation_is_sensitive_host_field(?string $field) : bool {
+	static $sensitive_host_columns = [
 		'snmp_community',
 		'snmp_username',
 		'snmp_password',
@@ -5283,11 +5267,13 @@ function cacti_automation_is_sensitive_host_field($field) {
 		'snmp_priv_passphrase',
 		'snmp_priv_protocol',
 		'snmp_context',
-		'snmp_engine_id'
-	);
+		'snmp_engine_id',
+	];
 
-	$normalized = strtolower(trim((string) $field));
-	$column     = strpos($normalized, '.') !== false ? substr($normalized, strrpos($normalized, '.') + 1) : $normalized;
+	$normalized = strtolower(trim($field ?? ''));
+	$column     = str_contains($normalized, '.')
+		? substr($normalized, strrpos($normalized, '.') + 1)
+		: $normalized;
 
 	return in_array($column, $sensitive_host_columns, true);
 }

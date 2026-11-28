@@ -539,17 +539,17 @@ function form_save() {
 				if ($target_user_id > 0) {
 					db_execute_prepared('DELETE FROM user_auth_cache
 						WHERE user_id = ?',
-						array($target_user_id));
+						[$target_user_id]);
 
-					if (isset($_SESSION['sess_user_id']) && (int) $_SESSION['sess_user_id'] === $target_user_id && session_id() != '') {
+					if ((int) ($_SESSION['sess_user_id'] ?? 0) === $target_user_id && session_id() !== '') {
 						db_execute_prepared('DELETE FROM sessions
 							WHERE user_id = ?
 							AND id != ?',
-							array($target_user_id, session_id()));
+							[$target_user_id, session_id()]);
 					} else {
 						db_execute_prepared('DELETE FROM sessions
 							WHERE user_id = ?',
-							array($target_user_id));
+							[$target_user_id]);
 					}
 				}
 			}

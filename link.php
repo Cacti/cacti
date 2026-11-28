@@ -35,7 +35,7 @@ $page = db_fetch_row_prepared("SELECT
 	FROM external_links AS el
 	WHERE id = ?
 	AND enabled = 'on'",
-	array(get_filter_request_var('id')));
+	[get_filter_request_var('id')]);
 
 if (!cacti_sizeof($page)) {
 	raise_message('page_not_defined');
