@@ -15,16 +15,7 @@
 $root = dirname(__DIR__, 4);
 
 require_once $root . '/lib/user_setting_validation.php';
-
-if (!function_exists('_test_html_graph_validate_columns')) {
-	$htmlGraphSource = file_get_contents($root . '/lib/html_graph.php');
-	preg_match('/^function html_graph_validate_columns\([^)]*\)\s*\{.*?^\}/sm', $htmlGraphSource, $colMatch);
-	preg_match('/^function html_graph_validate_page_size\([^)]*\)\s*\{.*?^\}/sm', $htmlGraphSource, $pageMatch);
-	$colSrc  = preg_replace('/^function html_graph_validate_columns\(/m', 'function _test_html_graph_validate_columns(', $colMatch[0]);
-	$pageSrc = preg_replace('/^function html_graph_validate_page_size\(/m', 'function _test_html_graph_validate_page_size(', $pageMatch[0]);
-	eval($colSrc);  // nosemgrep: php.lang.security.eval-use.eval-use
-	eval($pageSrc); // nosemgrep: php.lang.security.eval-use.eval-use
-}
+require_once $root . '/lib/html_graph.php';
 
 test('cacti_user_is_guest_account identifies active guest sessions safely', function () {
 	expect(cacti_user_is_guest_account(3, 3))->toBeTrue();
@@ -103,18 +94,18 @@ test('cacti_validate_realtime_hash accepts only bounded hexadecimal strings', fu
 });
 
 test('html_graph_validate_columns and html_graph_validate_page_size reject non-integer settings', function () {
-	expect(_test_html_graph_validate_columns('4'))->toBe(4);
-	expect(_test_html_graph_validate_columns('0'))->toBeFalse();
-	expect(_test_html_graph_validate_columns('99'))->toBeFalse();
-	expect(_test_html_graph_validate_columns('2, invalid'))->toBeFalse();
+	expect(html_graph_validate_columns('4'))->toBe(4);
+	expect(html_graph_validate_columns('0'))->toBeFalse();
+	expect(html_graph_validate_columns('99'))->toBeFalse();
+	expect(html_graph_validate_columns('2, invalid'))->toBeFalse();
 
 	$GLOBALS['graphs_per_page'] = array(10 => '10 Graphs', 20 => '20 Graphs', 25 => '25 Graphs');
 	$GLOBALS['item_rows']       = array(10 => '10', 20 => '20');
 
-	expect(_test_html_graph_validate_page_size('25'))->toBe(25);
-	expect(_test_html_graph_validate_page_size('0'))->toBeFalse();
-	expect(_test_html_graph_validate_page_size('5000'))->toBeFalse();
-	expect(_test_html_graph_validate_page_size('20, extra'))->toBeFalse();
+	expect(html_graph_validate_page_size('25'))->toBe(25);
+	expect(html_graph_validate_page_size('0'))->toBeFalse();
+	expect(html_graph_validate_page_size('5000'))->toBeFalse();
+	expect(html_graph_validate_page_size('20, extra'))->toBeFalse();
 });
 
 test('auth_profile, graph_realtime, graph_view, and html_tree enforce hardening guards', function () use ($root) {
