@@ -932,6 +932,30 @@ msgid "2FA Settings"
 msgstr ""
 
 #: auth_profile.php
+msgid "Confirm your identity in the 2FA settings tab."
+msgstr ""
+
+#: auth_profile.php login_sso.php
+msgid "Unable to confirm your identity."
+msgstr ""
+
+#: auth_profile.php
+msgid "Try Again"
+msgstr ""
+
+#: auth_profile.php
+msgid "Your sign-in provider cannot confirm a recent authentication for changes to 2FA settings."
+msgstr ""
+
+#: auth_profile.php
+msgid "Confirm your identity to change your 2FA settings."
+msgstr ""
+
+#: auth_profile.php
+msgid "Confirm"
+msgstr ""
+
+#: auth_profile.php
 msgid "2FA Enabled"
 msgstr ""
 

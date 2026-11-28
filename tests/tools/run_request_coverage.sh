@@ -102,6 +102,18 @@ run_probe tests/e2e/basic_auth_identity_docker.sh '^(include/(auth|global)\.php|
 
 run_php_probe tests/Unit/fixtures/document_direction_probe.php '^(include/global_languages\.php|include/top_general_header\.php|lib/auth\.php|tests/Unit/fixtures/(document_direction_probe|i18n_probe_bootstrap)\.php)'
 
+mfa_files='^(lib/Auth/(FreshAuthentication|OpenIdLoginProvider|SamlLoginProvider)\.php|tests/(e2e/mfa-settings\.sh|fixtures/Mfa(ProviderRequest|SsoCallback)\.php))$'
+run_probe tests/e2e/mfa-settings.sh "$mfa_files" 18419
+for provider in oidc saml; do
+	for request in login challenge; do
+		run_php_probe tests/fixtures/MfaProviderRequest.php "$mfa_files" "$provider" "$request"
+	done
+done
+for mode in success wrong-account stale cancelled failed; do
+	run_php_probe tests/fixtures/MfaSsoCallback.php "$mfa_files" "$mode"
+done
+run_php_probe tests/fixtures/SamlCallbackProbe.php "$mfa_files" success
+
 user_settings_realtime_files='^(auth_profile\.php|graph_realtime\.php|lib/(functions|html_tree|user_setting_validation)\.php|tests/fixtures/Core/UserSettingsAndRealtimeHardening\.php)$'
 for mode in core auth-guest-exit auth-disable-2fa auth-enable-2fa auth-verify-2fa realtime-denied realtime-view-denied; do
 	run_php_probe tests/fixtures/Core/UserSettingsAndRealtimeHardening.php "$user_settings_realtime_files" "$mode"

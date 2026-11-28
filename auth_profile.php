@@ -26,6 +26,29 @@ $guest_account = true;
 require('./include/auth.php');
 require_once(CACTI_PATH_LIBRARY . '/user_setting_validation.php');
 
+use Cacti\Auth\CredentialLoginProviderInterface;
+use Cacti\Auth\FreshAuthentication;
+use Cacti\Auth\LocalAuthLoginProvider;
+use Cacti\Auth\LoginProviderFactory;
+use Cacti\Auth\OpenIdLoginProvider;
+use Cacti\Auth\SamlLoginProvider;
+
+if (grv('action') === 'confirm_mfa_identity') {
+	auth_profile_require_post();
+	auth_profile_deny_guest_write();
+	auth_profile_confirm_mfa_identity();
+	exit;
+}
+
+if (in_array(grv('action'), ['enable_2fa', 'disable_2fa', 'verify_2fa'], true)
+	&& !FreshAuthentication::isFresh((int) $_SESSION[SESS_USER_ID])) {
+	auth_profile_require_post();
+	auth_profile_deny_guest_write();
+	http_response_code(403);
+	print json_encode(['status' => 403, 'text' => __('Confirm your identity in the 2FA settings tab.')]);
+	exit;
+}
+
 // set default action
 set_default_action();
 
@@ -580,6 +603,53 @@ function settings() : bool {
 	return true;
 }
 
+/** Resolve a challenge from the signed-in account's registered realm. */
+function auth_profile_confirm_mfa_identity() : void {
+	if (filter_has_var(INPUT_POST, 'cancel_confirmation')) {
+		unset($_SESSION['sess_mfa_challenge']);
+		cacti_redirect(CACTI_PATH_URL . 'graph_view.php');
+	}
+
+	$user = db_fetch_row_prepared('SELECT id, username, realm, enabled, locked FROM user_auth WHERE id = ?', [$_SESSION[SESS_USER_ID]]);
+
+	if (!is_array($user) || !$user || $user['enabled'] !== 'on' || $user['locked'] === 'on') {
+		http_response_code(403);
+
+		return;
+	}
+
+	$user_id  = (int) $user['id'];
+	$realm    = (int) $user['realm'];
+	$provider = $realm === 0 ? new LocalAuthLoginProvider() : LoginProviderFactory::fromRealm($realm);
+
+	if ($provider instanceof OpenIdLoginProvider || $provider instanceof SamlLoginProvider) {
+		$provider->challenge(FreshAuthentication::begin($user_id, $realm));
+	}
+
+	$password = filter_input(INPUT_POST, 'confirmation_password', FILTER_UNSAFE_RAW, FILTER_REQUIRE_SCALAR);
+
+	if ($provider instanceof CredentialLoginProviderInterface && is_string($password) && $password !== '') {
+		auth_checkclear_lockout($user['username'], $realm);
+
+		if (!auth_process_lockout_check($user['username'], $realm)) {
+			$result = $provider->authenticate($user['username'], $password);
+
+			if ($result->success && $result->username === $user['username']) {
+				FreshAuthentication::record($user_id, time());
+				cacti_redirect(CACTI_PATH_URL . 'auth_profile.php', ['tab' => '2fa']);
+			}
+
+			if ($result->isCredentialFailure && $realm !== 0) {
+				auth_process_lockout($user['username'], $realm);
+			}
+		}
+	}
+
+	http_response_code(403);
+	print __esc('Unable to confirm your identity.');
+	print ' <a href="auth_profile.php?tab=2fa">' . __esc('Try Again') . '</a>';
+}
+
 function settings_2fa() : bool {
 	global $tabs_graphs, $settings_user, $current_user, $graph_views, $current_user;
 
@@ -604,6 +674,30 @@ function settings_2fa() : bool {
 		}
 	} elseif (!isset($_SESSION['profile_referer'])) {
 		$_SESSION['profile_referer'] = 'graph_view.php';
+	}
+
+	if (!FreshAuthentication::isFresh((int) $_SESSION[SESS_USER_ID])) {
+		$realm    = (int) db_fetch_cell_prepared('SELECT realm FROM user_auth WHERE id = ?', [$_SESSION[SESS_USER_ID]]);
+		$provider = $realm === 0 ? new LocalAuthLoginProvider() : LoginProviderFactory::fromRealm($realm);
+
+		if (!$provider instanceof CredentialLoginProviderInterface && !$provider instanceof OpenIdLoginProvider && !$provider instanceof SamlLoginProvider) {
+			print '<p>' . __esc('Your sign-in provider cannot confirm a recent authentication for changes to 2FA settings.') . '</p>';
+
+			return false;
+		}
+
+		form_start('auth_profile.php', 'mfa_identity');
+		form_hidden_box('action', 'confirm_mfa_identity', '');
+		print '<p>' . __esc('Confirm your identity to change your 2FA settings.') . '</p>';
+
+		if ($provider instanceof CredentialLoginProviderInterface) {
+			print '<label>' . __esc('Password') . ' <input type="password" name="confirmation_password" autocomplete="current-password" required></label> ';
+		}
+		print '<button type="submit">' . __esc('Confirm') . '</button> ';
+		print '<button type="submit" name="cancel_confirmation" value="1" formnovalidate>' . __esc('Cancel') . '</button>';
+		form_end(false);
+
+		return true;
 	}
 
 	form_start('auth_profile.php', 'chk');
@@ -701,6 +795,12 @@ function settings_2fa() : bool {
 			$('#' + id).html('<div id=\'' + id + '\'' + cls + '>' + text + '</div>');
 		}
 
+		function reloadMfaSettings(xhr) {
+			if (xhr.status === 403) {
+				window.location.assign('auth_profile.php?tab=2fa');
+			}
+		}
+
 		$(function() {
 			$('#row_tfa_token,#row_tfa_verify').hide();
 			$('#tfa_qr_code').parent().parent().html('<div id=\'tfa_qr_code\'></div>');
@@ -724,7 +824,7 @@ function settings_2fa() : bool {
 							} else {
 								set2FAText(data.status + ' - ' + data.text);
 							}
-						}, 'json');
+						}, 'json').fail(reloadMfaSettings);
 					} else {
 						$('#tfa_enabled').prop('disabled', false);
 					}
@@ -733,7 +833,7 @@ function settings_2fa() : bool {
 						$('#tfa_enabled').prop('disabled', false);
 						set2FAText('<?php print __('Disabled') ?>');
 						$('#row_tfa_token,#row_tfa_verify').hide();
-					}, 'json');
+					}, 'json').fail(reloadMfaSettings);
 				}
 			});
 			$('#tfa_verify').click(function(e) {
@@ -748,7 +848,7 @@ function settings_2fa() : bool {
 						data.text = '';
 					}
 					set2FAText(data.text, 'tfa_error', 'textError');
-				}, 'json');
+				}, 'json').fail(reloadMfaSettings);
 			});
 		});
 	</script>

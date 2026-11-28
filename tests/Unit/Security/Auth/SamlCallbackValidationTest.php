@@ -11,7 +11,7 @@ test('SAML callback exemption preserves signature and request-ID validation', fu
 	$result = json_decode($output, true, 512, JSON_THROW_ON_ERROR);
 	$exempt = !in_array($mode, ['inactive', 'disabled', 'openid', 'other-page'], true);
 	expect($result['exempt'])->toBe($exempt)->and($result['csrf'])->toBe($exempt);
-	expect($result['login'])->toBe($mode === 'success')->and($result['replay'])->toBeFalse();
+	expect($result['login'])->toBe($mode === 'success')->and($result['replay'])->toBeFalse()->and($result['evidence'])->toBe($mode === 'success');
 
 	if ($mode === 'success') {
 		expect($result['username'])->toBe('alice@example.test');

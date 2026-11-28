@@ -55,6 +55,7 @@ if ($samlPost) {
 
 require_once('./include/auth.php');
 
+use Cacti\Auth\FreshAuthentication;
 use Cacti\Auth\LoginProviderFactory;
 use Cacti\Auth\RedirectLoginProviderInterface;
 use Cacti\Auth\SamlLoginProvider;
@@ -130,7 +131,13 @@ try {
 
 	cacti_log('LOGIN FAILED: SSO Provider \'' . $providerName . '\' threw ' . get_class($e) . ': ' . $e->getMessage(), false, 'AUTH');
 
-	auth_display_custom_error_message(__('Access Denied!  Login Failed.'));
+	if (($_SESSION['sess_mfa_challenge']['realm'] ?? null) === (int) $realm) {
+		unset($_SESSION['sess_mfa_challenge']);
+		http_response_code(403);
+		print __esc('Unable to confirm your identity.');
+	} else {
+		auth_display_custom_error_message(__('Access Denied!  Login Failed.'));
+	}
 
 	exit;
 }
@@ -146,6 +153,13 @@ function login_sso_complete(RedirectLoginProviderInterface $provider, int $realm
 	$result = $provider->complete();
 
 	if (!$result->success) {
+		if (($_SESSION['sess_mfa_challenge']['realm'] ?? null) === $realm) {
+			unset($_SESSION['sess_mfa_challenge']);
+			http_response_code(403);
+			print __esc('Unable to confirm your identity.');
+
+			return;
+		}
 		cacti_log(sprintf("LOGIN FAILED: SSO Provider '%s' Error from IP address %s: %s", $provider->getName(), get_client_addr(), $result->error), false, 'AUTH');
 
 		auth_display_custom_error_message($result->error !== '' ? $result->error : __('Access Denied!  Login Failed.'));
@@ -160,6 +174,18 @@ function login_sso_complete(RedirectLoginProviderInterface $provider, int $realm
 		[$result->username, $realm]);
 
 	$user = is_array($user) ? $user : [];
+
+	if ($result->mfaChallenge !== '') {
+		if (!$user || $user['enabled'] !== 'on' || $user['locked'] === 'on' || !auth_user_has_access($user)
+			|| !FreshAuthentication::complete($result->mfaChallenge, (int) $user['id'], $realm, $result->authenticatedAt)) {
+			http_response_code(403);
+			print __esc('Unable to confirm your identity.');
+
+			return;
+		}
+
+		cacti_redirect(CACTI_PATH_URL . 'auth_profile.php', ['tab' => '2fa']);
+	}
 
 	$templateUserId = method_exists($provider, 'getTemplateUserId') ? $provider->getTemplateUserId() : 0;
 
@@ -234,6 +260,8 @@ function login_sso_complete(RedirectLoginProviderInterface $provider, int $realm
 		(username, user_id, result, ip, time)
 		VALUES (?, ?, 1, ?, NOW())',
 		[$user['username'], $user['id'], $client_addr]);
+
+	FreshAuthentication::record((int) $user['id'], $result->authenticatedAt);
 
 	$_SESSION[SESS_USER_ID]     = $user['id'];
 	$_SESSION[SESS_USER_AGENT]  = $_SERVER['HTTP_USER_AGENT'] ?? '';

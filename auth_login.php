@@ -23,6 +23,7 @@
 */
 
 use Cacti\Auth\BasicAuthLoginProvider;
+use Cacti\Auth\FreshAuthentication;
 use Cacti\Auth\LocalAuthLoginProvider;
 
 // include ldap support
@@ -71,6 +72,8 @@ if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 
 	cacti_log("DEBUG: User '" . $username . "' attempting to login with realm " . $frv_realm . ', using method ' . $auth_method, false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
+	$credential_time = 0;
+
 	switch ($auth_method) {
 		case AUTH_METHOD_NONE: // No authentication, should not be reachable
 			$error     = true;
@@ -83,7 +86,12 @@ if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 		case AUTH_METHOD_CACTI: // Local authentication
 			cacti_log("DEBUG: Local User '" . $username . "' to attempt login.", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
-			$user = (new LocalAuthLoginProvider())->authenticate($username, gnrv('login_password'))->user ?? [];
+			$result = (new LocalAuthLoginProvider())->authenticate($username, gnrv('login_password'));
+			$user   = $result->user ?? [];
+
+			if ($result->success && $user && gnrv('login_password') !== '') {
+				$credential_time = time();
+			}
 
 			break;
 		case AUTH_METHOD_BASIC: // Basic authentication
@@ -97,6 +105,10 @@ if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 			cacti_log("DEBUG: Provider User '" . $username . "' to attempt login.", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
 			$user = login_providers_login_process($username);
+
+			if (!$error && $user && (int) $user['realm'] >= 1000) {
+				$credential_time = time();
+			}
 
 			break;
 		default: // Login Realm not determined
@@ -212,6 +224,8 @@ if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 		}
 
 		if (!$error) {
+			FreshAuthentication::record((int) $user['id'], $credential_time);
+
 			// set the php session
 			$_SESSION[SESS_USER_ID]     = $user['id'];
 			$_SESSION[SESS_USER_AGENT]  = $_SERVER['HTTP_USER_AGENT'];

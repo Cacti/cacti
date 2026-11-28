@@ -44,7 +44,13 @@ final class LoginResult {
 		public readonly array $claims = [],
 		public readonly bool $rememberMe = false,
 		public readonly bool $isCredentialFailure = false,
+		public readonly int $authenticatedAt = 0,
+		public readonly string $mfaChallenge = '',
 	) {
+	}
+
+	public static function fromVerifiedAssertion(string $username, array $claims, bool $rememberMe, int $authenticatedAt, string $mfaChallenge): self {
+		return new self(true, null, '', $username, $claims, $rememberMe, authenticatedAt: $authenticatedAt, mfaChallenge: $mfaChallenge);
 	}
 
 	public static function failure(string $error, bool $isCredentialFailure = false): self {
