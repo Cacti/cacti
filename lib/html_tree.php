@@ -1083,30 +1083,33 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	$host_group_data_array = explode(':', $host_group_data);
 
 	if ($host_group_data_array[0] == 'gt') {
+		$graph_template_id = intval($host_group_data_array[1] ?? 0);
+
 		$name = db_fetch_cell_prepared('SELECT name
 			FROM graph_templates
 			WHERE id = ?',
-			array($host_group_data_array[1]));
+			array($graph_template_id));
 
 		$host_group_data_name = '<strong>' . __('Graph Template:'). '</strong> ' . html_escape($name);
-		$graph_template_id    = $host_group_data_array[1];
 	} elseif ($host_group_data_array[0] == 'dq') {
+		$data_query_id = intval($host_group_data_array[1] ?? 0);
+
 		$name = db_fetch_cell_prepared('SELECT name
 			FROM snmp_query
 			WHERE id = ?',
-			array($host_group_data_array[1]));
+			array($data_query_id));
 
-		$host_group_data_name = '<strong>' . __('Graph Template:') . '</strong> ' . (empty($host_group_data_array[1]) ? __('Non Query Based') : html_escape($name));
-		$data_query_id        = $host_group_data_array[1];
+		$host_group_data_name = '<strong>' . __('Graph Template:') . '</strong> ' . (empty($data_query_id) ? __('Non Query Based') : html_escape($name));
 	} elseif ($host_group_data_array[0] == 'dqi') {
+		$data_query_id    = intval($host_group_data_array[1] ?? 0);
+		$data_query_index = $host_group_data_array[2] ?? '';
+
 		$name = db_fetch_cell_prepared('SELECT name
 			FROM snmp_query
 			WHERE id = ?',
-			array($host_group_data_array[1]));
+			array($data_query_id));
 
-		$host_group_data_name = '<strong>' . __('Graph Template:') . '</strong> ' . (empty($host_group_data_array[1]) ? __('Non Query Based') : html_escape($name)) . '-> ' . (empty($host_group_data_array[2]) ? __('Template Based') : html_escape(get_formatted_data_query_index($leaf['host_id'], $host_group_data_array[1], $host_group_data_array[2])));
-		$data_query_id    = $host_group_data_array[1];
-		$data_query_index = $host_group_data_array[2];
+		$host_group_data_name = '<strong>' . __('Graph Template:') . '</strong> ' . (empty($data_query_id) ? __('Non Query Based') : html_escape($name)) . '-> ' . (empty($data_query_index) ? __('Template Based') : html_escape(get_formatted_data_query_index($leaf['host_id'], $data_query_id, $data_query_index)));
 	}
 
 	if ($tree_name != '') {
@@ -1720,22 +1723,29 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 			}
 		}
 	} elseif ($host_grouping_type == HOST_GROUPING_DATA_QUERY_INDEX) {
+		$host_id       = intval($host_id);
+		$data_query_id = ($data_query_id === '' || $data_query_id === null) ? -1 : intval($data_query_id);
+		$sql_params    = array();
+
 		/* data query index grouping */
 		if ($host_id > 0) {
-			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . 'gl.host_id=' . $host_id;
+			$sql_where   .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'gl.host_id = ?';
+			$sql_params[] = $host_id;
 		}
 
 		if ($data_query_id >= 0) {
-			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . 'sq.id=' . $data_query_id;
+			$sql_where   .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'sq.id = ?';
+			$sql_params[] = $data_query_id;
 		}
 
-		$data_queries = db_fetch_assoc("SELECT sq.id, sq.name
+		$data_queries = db_fetch_assoc_prepared("SELECT sq.id, sq.name
 			FROM graph_local AS gl
 			INNER JOIN snmp_query AS sq
-			ON gl.snmp_query_id=sq.id
+			ON gl.snmp_query_id = sq.id
 			$sql_where
 			GROUP BY sq.id
-			ORDER BY sq.name");
+			ORDER BY sq.name",
+			$sql_params);
 
 		/* for graphs without a data query */
 		if ($data_query_id <= 0) {
