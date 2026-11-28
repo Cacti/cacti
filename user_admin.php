@@ -72,7 +72,7 @@ if (isrv('update_policy')) {
 		case 'checkpass':
 			$error = secpass_check_pass(gnrv('password'));
 
-			if ($error == '') {
+			if ($error != '') {
 				print $error;
 			} else {
 				print 'ok';

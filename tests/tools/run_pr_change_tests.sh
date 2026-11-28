@@ -53,6 +53,9 @@ fi
 if [[ -f tests/fixtures/Core/Boost/FailedDataSourceIsolation.php ]]; then
 	run_probe Boost/FailedDataSourceIsolation.php boost-failed-data-source-isolation
 fi
+if [[ -f tests/fixtures/Core/StoredTextAndPasswordHint.php ]]; then
+	run_probe StoredTextAndPasswordHint.php stored-text-password-hint
+fi
 if [[ -f tests/fixtures/BoostBulkDrainFailureProbe.php ]]; then
 	for scenario in middle boundary tail none; do
 		run_probe ../BoostBulkDrainFailureProbe.php "boost-bulk-drain-$scenario" "$scenario" > /dev/null

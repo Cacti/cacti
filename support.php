@@ -1525,28 +1525,30 @@ function show_tech_summary() : void {
 	print '</td>';
 	form_end_row();
 
-	$processes = db_fetch_cell('SELECT
-		GROUP_CONCAT(
-			CONCAT(' . db_qstr(__('Name: ')) . ', name, ' . db_qstr(', ' . __('Procs: ')) . ', processes) SEPARATOR "<br>"
-		) AS poller
+	$pollers = db_fetch_assoc('SELECT name, processes, threads
 		FROM poller
-		WHERE disabled=""');
+		WHERE disabled=""
+		ORDER BY id');
 
-	$threads = db_fetch_cell('SELECT
-		GROUP_CONCAT(
-			CONCAT(' . db_qstr(__('Name: ')) . ', name, ' . db_qstr(', ' . __('Threads: ')) . ', threads) SEPARATOR "<br>"
-		) AS poller
-		FROM poller
-		WHERE disabled=""');
+	$processes = [];
+	$threads   = [];
+
+	// Data Collector names are stored text, so print them as text
+	if (is_array($pollers)) {
+		foreach ($pollers as $poller) {
+			$processes[] = __('Name: ') . html_escape($poller['name']) . ', ' . __('Procs: ') . html_escape($poller['processes']);
+			$threads[]   = __('Name: ') . html_escape($poller['name']) . ', ' . __('Threads: ') . html_escape($poller['threads']);
+		}
+	}
 
 	form_alternate_row();
 	print '<td>' . __('Concurrent Processes') . '</td>';
-	print '<td>' . $processes . '</td>';
+	print '<td>' . implode('<br>', $processes) . '</td>';
 	form_end_row();
 
 	form_alternate_row();
 	print '<td>' . __('Max Threads') . '</td>';
-	print '<td>' . $threads . '</td>';
+	print '<td>' . implode('<br>', $threads) . '</td>';
 	form_end_row();
 
 	$script_servers = read_config_option('php_servers');

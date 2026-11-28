@@ -111,7 +111,7 @@ function form_save() : void {
 	} else {
 		top_header();
 		print __('WARNING: Export Errors Encountered. Refresh Browser Window for Details!') . "\n";
-		print $xml_data;
+		print html_escape($xml_data);
 		bottom_footer();
 
 		exit;
