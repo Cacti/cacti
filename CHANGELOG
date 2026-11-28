@@ -230,6 +230,7 @@ Cacti CHANGELOG
 -issue#8581: Log the missing-RRD-file permission-assignment notice at medium poller verbosity instead of always
 -issue#8581: Bound Boost archive draining, isolate RRD failures, and make cleanup predictable
 -issue#8584: Only add the theme search filter icon when the filter input is visible
+-issue#8591: Keep a nested command substitution intact when a field follows it, and log and skip a script data source whose input string cannot be substituted safely
 -issue#8596: Discard stray output from Script Server functions and keep each response on one line
 -issue#8596: Keep device credentials out of cmd.php recache log messages
 -issue#8596: Keep host CPU and partition query values on one output line
