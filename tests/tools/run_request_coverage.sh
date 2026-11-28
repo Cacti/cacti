@@ -39,17 +39,6 @@ run_php_probe tests/fixtures/Core/ConfiguredCommands.php "$command_files" deprec
 validation_files='^((data_input|data_sources|pollers|sites)\.php|lib/(clog_webapi|functions|html|import|plugins)\.php|tests/fixtures/Core/DisplayAndValidation\.php)'
 run_php_probe tests/fixtures/Core/DisplayAndValidation.php "$validation_files"
 run_php_probe tests/fixtures/Core/DisplayAndValidation.php "$validation_files" save
-sort_lookup_files='^((graph_realtime|user_group_admin)\.php|lib/(html|html_tree|html_utility)\.php|tests/fixtures/Core/SortLookupChecks\.php)$'
-for scenario in first-view unregistered-page listed-column unsortable-column unlisted-column listed-credential-column no-default other-action-unlisted other-action-listed other-script single-column single-column-refused default-outside-header wrapped-column stale-stored-sort orphan-stored-sort stored-sort remove-column remove-column-unlisted remove-last-column; do
-	run_php_probe tests/fixtures/Core/SortLookupChecks.php "$sort_lookup_files" sort "$scenario" > /dev/null
-done
-run_php_probe tests/fixtures/Core/SortLookupChecks.php "$sort_lookup_files" helpers > /dev/null
-for case in allowed denied; do
-	run_php_probe tests/fixtures/Core/SortLookupChecks.php "$sort_lookup_files" realtime "$case" > /dev/null
-done
-for case in root-allowed root-denied branch-allowed branch-denied lookup-denied default-denied tree-list; do
-	run_php_probe tests/fixtures/Core/SortLookupChecks.php "$sort_lookup_files" tree "$case" > /dev/null
-done
 
 run_php_probe tests/fixtures/Core/Auth/BoundaryContracts.php '^(auth_changepassword\.php|include/global\.php|lib/auth\.php|package_import\.php|tests/fixtures/Core/Auth/BoundaryContracts\.php)'
 
@@ -87,6 +76,18 @@ run_php_probe tests/fixtures/Core/GraphViewCrossFilterCoverage.php '^(lib/html\.
 
 run_php_probe tests/fixtures/Core/HtmlGraphMarkup.php '^(lib/html_graph\.php|tests/fixtures/Core/HtmlGraphMarkup\.php)'
 
+sort_lookup_files='^((graph_realtime|user_group_admin)\.php|lib/(html|html_tree|html_utility)\.php|tests/fixtures/Core/SortLookupChecks\.php)$'
+for scenario in first-view unregistered-page listed-column unsortable-column unlisted-column listed-credential-column no-default other-action-unlisted other-action-listed other-script single-column single-column-refused default-outside-header wrapped-column stale-stored-sort orphan-stored-sort stored-sort remove-column remove-column-unlisted remove-last-column; do
+	run_php_probe tests/fixtures/Core/SortLookupChecks.php "$sort_lookup_files" sort "$scenario" > /dev/null
+done
+run_php_probe tests/fixtures/Core/SortLookupChecks.php "$sort_lookup_files" helpers > /dev/null
+for case in allowed denied; do
+	run_php_probe tests/fixtures/Core/SortLookupChecks.php "$sort_lookup_files" realtime "$case" > /dev/null
+done
+for case in root-allowed root-denied branch-allowed branch-denied lookup-denied default-denied tree-list; do
+	run_php_probe tests/fixtures/Core/SortLookupChecks.php "$sort_lookup_files" tree "$case" > /dev/null
+done
+
 run_php_probe tests/fixtures/Core/TreeFilterDeviceTemplateCoverage.php '^(lib/html_tree\.php|tests/fixtures/Core/TreeFilterDeviceTemplateCoverage\.php)'
 
 run_php_probe tests/fixtures/Core/DataSourceRrdRepairCoverage.php '^(data_sources\.php|tests/fixtures/Core/DataSourceRrdRepairCoverage\.php)'
@@ -112,3 +113,8 @@ run_php_probe tests/Unit/fixtures/graph_group_probe.php '^(lib/functions\.php|te
 run_probe tests/e2e/basic_auth_identity_docker.sh '^(include/(auth|global)\.php|lib/auth\.php|tests/e2e/basic_auth_identity_docker\.sh)' 18392
 
 run_php_probe tests/Unit/fixtures/document_direction_probe.php '^(include/global_languages\.php|include/top_general_header\.php|lib/auth\.php|tests/Unit/fixtures/(document_direction_probe|i18n_probe_bootstrap)\.php)'
+
+user_settings_realtime_files='^(auth_profile\.php|graph_realtime\.php|lib/(functions|html_tree|user_setting_validation)\.php|tests/fixtures/Core/UserSettingsAndRealtimeHardening\.php)$'
+for mode in core auth-guest-exit auth-disable-2fa auth-enable-2fa auth-verify-2fa realtime-denied realtime-view-denied; do
+	run_php_probe tests/fixtures/Core/UserSettingsAndRealtimeHardening.php "$user_settings_realtime_files" "$mode"
+done

@@ -29,7 +29,7 @@ test('a realtime request for a viewable graph starts the realtime poller', funct
 	expect(lookup_probe('realtime', 'allowed'))->toBe(['allowed' => true, 'poller_started' => true]);
 });
 
-test('a realtime request for a graph the user may not view is redirected before the poller starts', function () {
+test('a realtime request for a graph the user may not view receives a denial before the poller starts', function () {
 	expect(lookup_probe('realtime', 'denied'))->toBe(['allowed' => false, 'poller_started' => false]);
 });
 

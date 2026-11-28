@@ -494,11 +494,22 @@ if ($mode === 'helpers') {
 }
 
 if ($mode === 'realtime') {
+	require_once $root . '/lib/user_setting_validation.php';
+	ob_start();
 	$allowed  = $case === 'allowed';
 	$_REQUEST = ['local_graph_id' => $allowed ? '12' : '13'];
+	ob_start();
 	register_shutdown_function(static function () use ($allowed) : void {
 		$commands = $GLOBALS['fixture_commands'];
-		check($GLOBALS['fixture_headers'] === ($allowed ? [] : ['Location: permission_denied.php']), 'Unexpected realtime redirect');
+		$body     = ob_get_clean();
+
+		if ($allowed) {
+			ob_end_clean();
+		}
+
+		if (!$allowed) {
+			check(http_response_code() === 403 && json_decode($body, true) === ['error' => 'GRAPH ACCESS DENIED'], 'Unexpected realtime denial');
+		}
 		check(count($commands) === ($allowed ? 1 : 0), 'Unexpected realtime poller start');
 		check(!$allowed || str_contains($commands[0], '--graph=12 --interval=5 --poller_id='), 'Unexpected realtime poller arguments');
 		verdict(['allowed' => $allowed, 'poller_started' => count($commands) === 1]);
