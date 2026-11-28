@@ -36,6 +36,7 @@ use Symfony\Component\Mime\Part\File;
 
 require_once __DIR__ . '/remote_agent_transport.php';
 require_once __DIR__ . '/client_address.php';
+require_once __DIR__ . '/ip.php';
 
 /**
  * Performs an SSRF-hardened outbound HTTP request.
