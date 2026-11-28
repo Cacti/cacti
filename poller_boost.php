@@ -341,7 +341,7 @@ function boost_kill_running_processes() {
 		foreach ($processes as $p) {
 			if (cacti_process_still_running($p['pid'])) {
 				cacti_log(sprintf('WARNING: Killing Boost %s PID %s due to another boost process starting.', ucfirst($p['taskname']), cacti_process_pid_for_log($p['pid'])), true, 'BOOST');
-				cacti_process_kill($p['pid'], SIGTERM, 'BOOST');
+				cacti_process_kill($p['pid'], null, 'BOOST');
 			}
 
 			unregister_process($p['tasktype'], $p['taskname'], $p['taskid'], $p['pid']);

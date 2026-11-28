@@ -253,8 +253,15 @@ test('lib/poller.php hardens resource_cache_out, recursion guard, and process re
 	algo_assert_contract(
 		$pollerSrc,
 		'resource_cache_out',
-		['resource_cache_resolve_path(', 'cacti_path_is_within(dirname($mypath)', "cacti_exec(\$php_path, ['-l', \$tmpfile], \$syntax_output)"],
-		['system($php_path', "mkdir('./'"]
+		['resource_cache_resolve_path(', 'cacti_path_is_within(dirname($mypath)', 'resource_cache_lint_php_file($php_path, $tmpfile)', 'if ($exit === 0)'],
+		['system($php_path', "mkdir('./'", 'cacti_exec($php_path', 'if ($exit == 0)']
+	);
+
+	algo_assert_contract(
+		$pollerSrc,
+		'cacti_process_kill',
+		['?int $signal = null', "\$signal ??= defined('SIGTERM') ? SIGTERM : 15;"],
+		['int $signal = SIGTERM']
 	);
 
 	algo_assert_contract(
@@ -266,14 +273,14 @@ test('lib/poller.php hardens resource_cache_out, recursion guard, and process re
 	algo_assert_contract(
 		$pollerSrc,
 		'timeout_kill_registered_processes',
-		['if ($taskid != 0)', 'if ($pid != -1)', 'WHERE UNIX_TIMESTAMP() > UNIX_TIMESTAMP(started) + timeout', 'if (is_system_pid($proc_pid))', 'elseif (cacti_process_still_running($proc_pid))', 'cacti_process_kill($proc_pid, SIGTERM);'],
+		['if ($taskid != 0)', 'if ($pid != -1)', 'WHERE UNIX_TIMESTAMP() > UNIX_TIMESTAMP(started) + timeout', 'if (is_system_pid($proc_pid))', 'elseif (cacti_process_still_running($proc_pid))', 'cacti_process_kill($proc_pid);'],
 		["if (\$taskid != '')", "if (\$pid != '')", 'FROM_UNIXTIME(started)', "posix_kill(\$r['pid']"]
 	);
 
 	algo_assert_contract(
 		$pollerSrc,
 		'register_process_start',
-		['if (is_system_pid($timeout_pid))', 'if (cacti_process_still_running($timeout_pid))', 'cacti_process_kill($timeout_pid, SIGTERM);', "elseif (cacti_process_still_running(\$r['pid']))"],
+		['if (is_system_pid($timeout_pid))', 'if (cacti_process_still_running($timeout_pid))', 'cacti_process_kill($timeout_pid);', "elseif (cacti_process_still_running(\$r['pid']))"],
 		["posix_kill(\$r['pid']"]
 	);
 });
@@ -283,6 +290,7 @@ test('lib/dsstats.php fixes quadratic batch length and non-blocking RRDtool read
 
 	algo_assert_contract($dsstatsSrc, 'dsstats_write_buffer', ['$outbuf     .= $row;', '$out_length += strlen($row);'], ['$out_length += strlen($outbuf);']);
 	algo_assert_contract($dsstatsSrc, 'dsstats_poller_output', ['$cachebuf   .= $row;', '$out_length += strlen($row);', '$lastbuf     .= $row;', '$last_length += strlen($row);'], ['$out_length += strlen($cachebuf);', '$last_length += strlen($lastbuf);']);
+	algo_assert_contract($dsstatsSrc, 'dsstats_rrdtool_execute', ['if (!is_resource($pipes[0]) || !is_resource($pipes[1]))', 'if (@fwrite($pipes[0], $command . "\r\n") === false)']);
 	algo_assert_contract($dsstatsSrc, 'dsstats_rrdtool_read_pipe', ['stream_select($read, $write, $except,', 'dsstats_rrdtool_is_status_line($line)'], ["substr_count(\$stdout, 'OK')", "substr_count(\$stdout, 'ERROR')"]);
 	algo_assert_contract($dsstatsSrc, 'dsstats_rrdtool_is_status_line', ["str_starts_with(\$line, 'OK u:')", "str_starts_with(\$line, 'ERROR:')"]);
 	algo_assert_contract($dsstatsSrc, 'dsstats_rrdtool_close', ['proc_terminate($process);', 'proc_close($process);']);
@@ -307,7 +315,7 @@ test('lib/boost.php and poller_boost.php fix stale timestamps, undefined vars, a
 		['if ($time < $last_update', '$nt_rrd_field_names', '$reset_template', '$tv_tmpl[$field]', '$buflen += 2']
 	);
 
-	algo_assert_contract($pollerBoostSrc, 'boost_kill_running_processes', ["if (cacti_process_still_running(\$p['pid']))", "cacti_process_kill(\$p['pid'], SIGTERM, 'BOOST');"], ["posix_kill(\$p['pid']"]);
+	algo_assert_contract($pollerBoostSrc, 'boost_kill_running_processes', ["if (cacti_process_still_running(\$p['pid']))", "cacti_process_kill(\$p['pid'], null, 'BOOST');"], ["posix_kill(\$p['pid']"]);
 	algo_assert_contract($pollerBoostSrc, 'boost_process_local_data_ids', ["cacti_version_compare(\$rrdtool_version, '1.5', '<') && \$current_lock !== false", "SELECT RELEASE_LOCK('boost.single_ds.\$current_lock')", "if (\$item['timestamp'] <= \$last_update && cacti_version_compare(get_rrdtool_version(), '1.5', '<'))"], ["SELECT RELEASE_LOCK('boost.single_ds.\$local_data_id')", 'if ($time < $last_update']);
 });
 
@@ -493,6 +501,33 @@ test('process PID helpers validate pid_t bounds, reject system PID 1, and saniti
 
 	expect(cacti_process_kill(1))->toBeFalse();
 	expect(cacti_process_kill('4294967295'))->toBeFalse();
+
+	$ref    = new ReflectionFunction('cacti_process_kill');
+	$params = $ref->getParameters();
+	expect($params[1]->allowsNull())->toBeTrue();
+	expect($params[1]->getDefaultValue())->toBeNull();
+});
+
+test('resource_cache_lint_php_file returns real exit codes for valid and invalid PHP', function () : void {
+	$validFile   = tempnam(sys_get_temp_dir(), 'cacti_lint_ok_');
+	$invalidFile = tempnam(sys_get_temp_dir(), 'cacti_lint_bad_');
+
+	file_put_contents((string) $validFile, "<?php\n\$ok = 1 + 1;\n");
+	file_put_contents((string) $invalidFile, "<?php\nfunction broken( {\n");
+
+	try {
+		$validResult = resource_cache_lint_php_file(PHP_BINARY, (string) $validFile);
+		expect($validResult['exit'])->toBe(0);
+
+		$invalidResult = resource_cache_lint_php_file(PHP_BINARY, (string) $invalidFile);
+		expect($invalidResult['exit'])->toBeInt()->not->toBe(0);
+
+		$missingBinary = resource_cache_lint_php_file('', (string) $validFile);
+		expect($missingBinary['exit'])->toBe(-1);
+	} finally {
+		@unlink((string) $validFile);
+		@unlink((string) $invalidFile);
+	}
 });
 
 test('data_query_index_lookup matches loose numeric and exact string indexes in O(1)', function () : void {
@@ -554,6 +589,10 @@ test('dsstats_rrdtool_execute waits via stream_select and stops only at complete
 	expect(is_resource($pipes[1]))->toBeFalse();
 
 	fclose($pair[1]);
+
+	// Closed or broken write pipe short-circuits immediately instead of waiting on read pipe.
+	$brokenPipes = [0 => $pair[1], 1 => $pair[0]];
+	expect(dsstats_rrdtool_execute('info broken.rrd', $brokenPipes, 2))->toBeNull();
 });
 
 test('poller_boost sig_handler releases locks before exiting and gates status on master', function () use ($repoRoot) : void {

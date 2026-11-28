@@ -1235,11 +1235,18 @@ function dsstats_rrdtool_execute($command, &$pipes, $timeout = 60) {
 		return;
 	}
 
-	fwrite($pipes[0], $command . "\r\n");
-
-	if (!is_resource($pipes[1])) {
+	if (!is_resource($pipes[0]) || !is_resource($pipes[1])) {
 		if (!$broken) {
 			cacti_log('ERROR: RRDtool was unable to fork.  Likely RRDtool can not be found or system out of resources.  Blocking subsequent messages.', false, 'POLLER');
+			$broken = true;
+		}
+
+		return;
+	}
+
+	if (@fwrite($pipes[0], $command . "\r\n") === false) {
+		if (!$broken) {
+			cacti_log('ERROR: Unable to write command to RRDtool pipe.  Blocking subsequent messages.', false, 'DSSTATS');
 			$broken = true;
 		}
 

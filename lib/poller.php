@@ -1295,6 +1295,47 @@ function resource_cache_resolve_path(string $relative_path, string $base_path) :
 }
 
 /**
+ * resource_cache_lint_php_file - syntax-check a staged PHP file shell-free
+ *   and return the real integer process exit code and combined output.
+ *
+ * @param string $php_path Path to the PHP CLI binary.
+ * @param string $tmpfile  Path to the temporary file to lint.
+ *
+ * @return array{exit: int, output: string}
+ */
+function resource_cache_lint_php_file(string $php_path, string $tmpfile) : array {
+	if ($php_path === '' || $tmpfile === '') {
+		return ['exit' => -1, 'output' => 'Missing PHP binary or temporary file path'];
+	}
+
+	$descriptors = [
+		0 => ['pipe', 'r'],
+		1 => ['pipe', 'w'],
+		2 => ['pipe', 'w'],
+	];
+
+	$pipes = [];
+	$proc  = @proc_open([$php_path, '-l', $tmpfile], $descriptors, $pipes);
+
+	if (!is_resource($proc)) {
+		return ['exit' => -1, 'output' => 'Unable to start PHP syntax check process'];
+	}
+
+	fclose($pipes[0]);
+	$stdout = stream_get_contents($pipes[1]);
+	$stderr = stream_get_contents($pipes[2]);
+	fclose($pipes[1]);
+	fclose($pipes[2]);
+
+	$status = proc_get_status($proc);
+	$closed = proc_close($proc);
+	$exit   = (!$status['running'] && $status['exitcode'] !== -1) ? (int) $status['exitcode'] : $closed;
+	$output = trim((string) $stdout . "\n" . (string) $stderr);
+
+	return ['exit' => $exit, 'output' => $output];
+}
+
+/**
  * resource_cache_out - push the cache from the cacti database to the
  *   remote database.  Check PHP files for errors before placing
  *   them on the remote pollers file system.
@@ -1376,11 +1417,11 @@ function resource_cache_out($type, $path) {
 							if ((is_writeable($tmpdir) && !file_exists($tmpfile)) || (file_exists($tmpfile) && is_writable($tmpfile))) {
 								if (file_put_contents($tmpfile, $contents) !== false) {
 									// Execute path_php_binary shell-free with discrete args so extra options cannot be injected.
-									$syntax_output = [];
-									$exit          = cacti_exec($php_path, ['-l', $tmpfile], $syntax_output);
-									$output        = implode("\n", $syntax_output);
+									$lint   = resource_cache_lint_php_file($php_path, $tmpfile);
+									$exit   = $lint['exit'];
+									$output = $lint['output'];
 
-									if ($exit == 0) {
+									if ($exit === 0) {
 										cacti_log("INFO: Updating '$mypath' from Cache!", false, 'REPLICATE');
 
 										if (is_writable($mypath) || (!file_exists($mypath) && is_writable(dirname($mypath)))) {
@@ -2752,13 +2793,15 @@ function is_system_pid($pid) : bool {
 /**
  * cacti_process_kill - signal a validated, non-system PID from a process table.
  *
- * @param mixed  $pid     The PID read from a process table.
- * @param int    $signal  The POSIX signal to send.
- * @param string $environ Log environment to record refusals under.
+ * @param mixed    $pid     The PID read from a process table.
+ * @param int|null $signal  The POSIX signal to send (defaults to SIGTERM).
+ * @param string   $environ Log environment to record refusals under.
  *
  * @return bool True when the signal was sent.
  */
-function cacti_process_kill($pid, int $signal = SIGTERM, string $environ = 'POLLER') : bool {
+function cacti_process_kill($pid, ?int $signal = null, string $environ = 'POLLER') : bool {
+	$signal ??= defined('SIGTERM') ? SIGTERM : 15;
+
 	if (!cacti_process_pid_is_valid($pid) || is_system_pid($pid)) {
 		$logged_pid = cacti_process_pid_for_log($pid);
 		cacti_log(sprintf('WARNING: Refusing to signal PID %s from a process table, which does not name a process a Cacti task can own!', $logged_pid), false, $environ);
@@ -2819,7 +2862,7 @@ function register_process_start($tasktype, $taskname, $taskid = 0, $timeout = 30
 			if (cacti_process_still_running($timeout_pid)) {
 				cacti_log(sprintf('ERROR: Process being killed due to timeout! (%s, %s, %s, Process %s, Time %s, Timeout %s, Timestamp %s)', $tasktype, $taskname, $taskid, $logged_timeout_pid, $r['timeout_exceeded'], $r['timeout'], $r['current_timestamp']), false, 'POLLER');
 
-				cacti_process_kill($timeout_pid, SIGTERM);
+				cacti_process_kill($timeout_pid);
 			}
 
 			unregister_process($tasktype, $taskname, $taskid);
@@ -2971,7 +3014,7 @@ function timeout_kill_registered_processes($tasktype = '', $taskname = '', $task
 				cacti_log(sprintf('WARNING: Refusing to kill registered process with a reserved system PID! (%s, %s, %s, %s)', $r['tasktype'], $r['taskname'], $r['taskid'], $logged_pid), false, 'POLLER');
 			} elseif (cacti_process_still_running($proc_pid)) {
 				cacti_log(sprintf('ERROR: Process killed due to timeout! (%s, %s, %s, %s)', $r['tasktype'], $r['taskname'], $r['taskid'], $logged_pid), false, 'POLLER');
-				cacti_process_kill($proc_pid, SIGTERM);
+				cacti_process_kill($proc_pid);
 			} else {
 				cacti_log(sprintf('ERROR: Detected process that is gone and did not unregister first! (%s, %s, %s, %s)', $r['tasktype'], $r['taskname'], $r['taskid'], $logged_pid), false, 'POLLER');
 			}
