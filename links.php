@@ -599,7 +599,7 @@ function edit_page() {
 			'method' => 'checkbox',
 			'description' => __('If checked, the page will be available immediately to the admin user.'),
 			'default' => 'on',
-			'value' => (isset($data['enabled']) ? 'on':'')
+			'value' => (isset($data['enabled']) ? $data['enabled']:'')
 		),
 		'refresh' => array(
 			'friendly_name' => __('Automatic Page Refresh'),

@@ -718,7 +718,7 @@ function performStep(installStep, suppressRefresh, forceReload, csrfRetry) {
 				debugData.Html = '';
 				debug = $('#installDebug');
 				debug.empty();
-				debug.html('<h5 style="border: 1px dashed grey">' + JSON.stringify(debugData) + '</h5>');
+				debug.append($('<h5>').css('border', '1px dashed grey').text(JSON.stringify(debugData)));
  			}
 
 			setButtonData('Previous',data.Prev);

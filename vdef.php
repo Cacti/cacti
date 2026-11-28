@@ -128,6 +128,8 @@ function draw_vdef_preview($vdef_id) {
  */
 
 function vdef_form_save() {
+	global $vdef_item_types, $vdef_functions, $custom_vdef_data_source_types;
+
 	csrf_require_post();
 
 	if (isset_request_var('save_component_vdef')) {
@@ -153,8 +155,28 @@ function vdef_form_save() {
 		$save['hash']     = get_hash_vdef(get_request_var('id'), 'vdef_item');
 		$save['vdef_id']  = get_filter_request_var('vdef_id');
 		$save['sequence'] = $sequence;
-		$save['type']     = get_nfilter_request_var('type');
+		$save['type']     = get_filter_request_var('type');
 		$save['value']    = get_nfilter_request_var('value');
+
+		if (!array_key_exists($save['type'], $vdef_item_types)) {
+			raise_message(3);
+			$_SESSION['sess_error_fields']['type'] = 'type';
+		} elseif ($save['type'] == CVDEF_ITEM_TYPE_FUNCTION) {
+			if (!array_key_exists($save['value'], $vdef_functions)) {
+				raise_message(3);
+				$_SESSION['sess_error_fields']['value'] = 'value';
+			}
+		} elseif ($save['type'] == CVDEF_ITEM_TYPE_SPEC_DS) {
+			if (!array_key_exists($save['value'], $custom_vdef_data_source_types)) {
+				raise_message(3);
+				$_SESSION['sess_error_fields']['value'] = 'value';
+			}
+		} elseif ($save['type'] == CVDEF_ITEM_TYPE_STRING) {
+			if (!is_string($save['value']) || $save['value'] === '' || preg_match('/[\x00-\x1f\x7f]/', $save['value'])) {
+				raise_message(3);
+				$_SESSION['sess_error_fields']['value'] = 'value';
+			}
+		}
 
 		if (!is_error_message()) {
 			$vdef_item_id = sql_save($save, 'vdef_items');
@@ -412,12 +434,14 @@ function vdef_item_remove_confirm() {
  */
 function vdef_item_remove() {
 	/* ================= input validation ================= */
+	get_filter_request_var('id');
 	get_filter_request_var('vdef_id');
 	/* ==================================================== */
 
 	db_execute_prepared('DELETE FROM vdef_items
-		WHERE id = ?',
-		array(get_request_var('id')));
+		WHERE id = ?
+		AND vdef_id = ?',
+		array(get_request_var('id'), get_request_var('vdef_id')));
 }
 
 /**

@@ -203,7 +203,44 @@ function dsstats_get_and_store_ds_avgpeak_values($interval, $type, $thread_id = 
  *
  * @return void NULL.
  */
+/**
+ * Validates and formats a numeric metric value for SQL bulk inserts.
+ *
+ * @param mixed $value Raw metric value.
+ *
+ * @return string Safe SQL literal (numeric string or NULL).
+ */
+function dsstats_format_sql_numeric($value) {
+	if ($value === null || $value === '' || $value === '-') {
+		return 'NULL';
+	}
+
+	if (is_int($value) || is_float($value)) {
+		return is_finite((float) $value) ? (string) $value : 'NULL';
+	}
+
+	if (!is_string($value)) {
+		return 'NULL';
+	}
+
+	$trimmed = trim($value);
+	if ($trimmed === '' || $trimmed === '-' || strcasecmp($trimmed, 'U') === 0 || strcasecmp($trimmed, 'NaN') === 0 || strcasecmp($trimmed, '-nan') === 0 || strcasecmp($trimmed, 'NULL') === 0) {
+		return 'NULL';
+	}
+
+	if (is_numeric($trimmed)) {
+		$float_val = (float) $trimmed;
+		return is_finite($float_val) ? $trimmed : 'NULL';
+	}
+
+	return 'NULL';
+}
+
 function dsstats_write_buffer(&$stats_array, $interval) {
+	if (!in_array($interval, array('daily', 'weekly', 'monthly', 'yearly'), true)) {
+		return;
+	}
+
 	/* initialize some variables */
 	$sql_prefix = "INSERT INTO data_source_stats_$interval (local_data_id, rrd_name, average, peak) VALUES";
 	$sql_suffix = ' ON DUPLICATE KEY UPDATE average=VALUES(average), peak=VALUES(peak)';
@@ -219,10 +256,12 @@ function dsstats_write_buffer(&$stats_array, $interval) {
 			/* some additional sanity checking */
 			if (is_array($stats) && cacti_sizeof($stats)) {
 				foreach($stats as $rrd_name => $avgpeak_stats) {
-					$row = ($i == 1 ? ' ':', ') . "('" . $local_data_id . "','" .
-						$rrd_name . "','" .
-						$avgpeak_stats['AVG'] . "','" .
-						$avgpeak_stats['MAX'] . "')";
+					$avg = dsstats_format_sql_numeric(isset($avgpeak_stats['AVG']) ? $avgpeak_stats['AVG'] : null);
+					$max = dsstats_format_sql_numeric(isset($avgpeak_stats['MAX']) ? $avgpeak_stats['MAX'] : null);
+					$row = ($i == 1 ? ' ':', ') . '(' . (int) $local_data_id . ',' .
+						db_qstr((string) $rrd_name) . ',' .
+						$avg . ',' .
+						$max . ')';
 
 					/* count only the row just appended to the batch */
 					$outbuf     .= $row;
@@ -471,9 +510,19 @@ function dsstats_obtain_data_source_avgpeak_values($local_data_id, $rrdfile, $in
 
 								break;
 							} else {
-								if (isset($position[$index]) && cacti_sizeof($position[$index])) {
-									foreach($position[$index] as $dsname => $stat) {
-										$dsvalues[$dsname][$stat] = trim($line);
+								$trimmed_line = trim($line);
+								if (stripos($trimmed_line, 'ERROR:') === 0) {
+									continue;
+								}
+
+								if (is_numeric($trimmed_line) ||
+									strcasecmp($trimmed_line, 'nan') === 0 ||
+									strcasecmp($trimmed_line, '-nan') === 0 ||
+									strcasecmp($trimmed_line, 'u') === 0) {
+									if (isset($position[$index]) && cacti_sizeof($position[$index])) {
+										foreach($position[$index] as $dsname => $stat) {
+											$dsvalues[$dsname][$stat] = $trimmed_line;
+										}
 									}
 								}
 							}
@@ -919,16 +968,14 @@ function dsstats_poller_output(&$rrd_update_array) {
 								$last_delim = ', ';
 							}
 
-							if ($currentval == '' || $currentval == '-') {
-								$currentval = 'NULL';
-							}
+							$currentval = dsstats_format_sql_numeric($currentval);
 
 							/* setup the output buffer for the cache first, counting only the row just appended */
 							$row =
 								$cache_delim . '(' .
-								$result['local_data_id'] . ", '" .
-								$result['rrd_name'] . "', '" .
-								$result['time'] . "', " .
+								(int) $result['local_data_id'] . ', ' .
+								db_qstr((string) $result['rrd_name']) . ', ' .
+								db_qstr((string) $result['time']) . ', ' .
 								$currentval . ')';
 
 							$cachebuf   .= $row;
@@ -936,11 +983,12 @@ function dsstats_poller_output(&$rrd_update_array) {
 
 							/* now do the last value, if applicable */
 							if ($lastval != '') {
+								$safe_lastval = dsstats_format_sql_numeric($lastval);
 								$row =
 									$last_delim . '(' .
-									$result['local_data_id'] . ", '" .
-									$result['rrd_name'] . "', " .
-									$lastval . ', ' .
+									(int) $result['local_data_id'] . ', ' .
+									db_qstr((string) $result['rrd_name']) . ', ' .
+									$safe_lastval . ', ' .
 									$currentval . ')';
 
 								$lastbuf     .= $row;

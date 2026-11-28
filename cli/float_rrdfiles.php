@@ -308,10 +308,15 @@ exit(0);
  * @return bool True if successful otherwise false.
  */
 function float_rrdfile($rrd_path, $local_data_id, $step, $start_time, $end_time) {
-	global $seebug;
+	global $config, $seebug;
 
 	static $rrdtool_bin = false;
 	static $tmp_dir     = false;
+
+	if (!data_source_path_within_rra($rrd_path) || strtolower(substr($rrd_path, -4)) !== '.rrd') {
+		cacti_log(sprintf('WARNING: Refusing to float RRDfile outside RRA directory: %s', (string) $rrd_path), false, 'RFLOAT');
+		return false;
+	}
 
 	if ($rrdtool_bin === false) {
 		$rrdtool_bin = (string) read_config_option('path_rrdtool');
@@ -328,7 +333,11 @@ function float_rrdfile($rrd_path, $local_data_id, $step, $start_time, $end_time)
 	$delta_time = $end_time - $start_time;
 	$return     = 0;
 	$output     = array();
-	$command    = cacti_escapeshellarg($rrdtool_bin) . ' dump ' . cacti_escapeshellarg($rrd_path);
+	if (isset($config['cacti_server_os']) && $config['cacti_server_os'] == 'win32') {
+		$command = cacti_escapeshellarg_cmd($rrdtool_bin) . ' dump ' . cacti_escapeshellarg_cmd($rrd_path);
+	} else {
+		$command = cacti_escapeshellarg($rrdtool_bin) . ' dump ' . cacti_escapeshellarg($rrd_path);
+	}
 	$db_prefix  = '                       ';
 
 	if (file_exists($rrd_path)) {
@@ -448,7 +457,11 @@ function float_rrdfile($rrd_path, $local_data_id, $step, $start_time, $end_time)
 				/* restore the file */
 				$return  = 0;
 				$output  = array();
-				$command = cacti_escapeshellarg($rrdtool_bin) . ' restore -f ' . cacti_escapeshellarg($tmp_file) . ' ' . cacti_escapeshellarg($rrd_path);
+				if (isset($config['cacti_server_os']) && $config['cacti_server_os'] == 'win32') {
+					$command = cacti_escapeshellarg_cmd($rrdtool_bin) . ' restore -f ' . cacti_escapeshellarg_cmd($tmp_file) . ' ' . cacti_escapeshellarg_cmd($rrd_path);
+				} else {
+					$command = cacti_escapeshellarg($rrdtool_bin) . ' restore -f ' . cacti_escapeshellarg($tmp_file) . ' ' . cacti_escapeshellarg($rrd_path);
+				}
 
 				$response = exec($command, $output, $return);
 

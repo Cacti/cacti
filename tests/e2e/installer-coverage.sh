@@ -49,7 +49,8 @@ fail() {
 # Every PHP process, including the ones the installer starts, publishes request coverage.
 export CACTI_PR_RAW_COVERAGE="$CACTI_PR_COVERAGE_OUTPUT"
 export XDEBUG_MODE=coverage
-for kind in php:"$php_command" php-child:"$child_command"; do
+mkdir -p "$work/child"
+for kind in php:"$php_command" child/php:"$child_command"; do
 	cat > "$work/${kind%%:*}" << WRAPPER
 #!/bin/sh
 exec ${kind#*:} -d memory_limit=2G -d display_errors=stderr -d auto_prepend_file=$root/tests/Helpers/RequestCoverage.php "\$@"
@@ -78,7 +79,7 @@ install_cacti() {
 			args+=("--path=$tool:/usr/bin/true")
 		fi
 	done
-	php_cacti cli/install_cacti.php --accept-eula --install --force --path=php_binary:"$work/php-child" "${args[@]}" "$@"
+	php_cacti cli/install_cacti.php --accept-eula --install --force --path=php_binary:"$work/child/php" "${args[@]}" "$@"
 }
 
 reset_database() {

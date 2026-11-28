@@ -126,7 +126,7 @@ if (empty($maxdirs) || $maxdirs < 0 || !is_numeric($maxdirs)) {
 
 if ($pattern == '' || $pattern == 'device') {
 	$pattern1  = "CONCAT('<path_rra>/', host_id, '/', local_data_id, '.rrd') AS new_data_source_path,";
-	$pattern2  = "REPLACE(CONCAT('<path_rra>/', '/', host_id, '/', local_data_id, '.rrd'), '<path_rra>', '$base_rra_path') AS new_rrd_path";
+	$pattern2  = "REPLACE(CONCAT('<path_rra>/', host_id, '/', local_data_id, '.rrd'), '<path_rra>', '$base_rra_path') AS new_rrd_path";
 	$sql_where = "WHERE dtd.data_source_path != CONCAT('<path_rra>/', dl.host_id, '/', dtd.local_data_id, '.rrd')";
 } elseif ($pattern == 'device_dq') {
 	$pattern1  = "CONCAT('<path_rra>/', host_id, '/', snmp_query_id, '/', local_data_id, '.rrd') AS new_data_source_path,";
@@ -195,6 +195,17 @@ foreach ($data_sources as $info) {
     while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds.$local_data_id', 1)")) {
         usleep(50000);
     }
+
+	/* Validate destination path stays within RRA root and contains no symlinks */
+	if (!data_source_path_within_rra($new_rrd_path) || strtolower(substr($new_rrd_path, -4)) !== '.rrd') {
+		$warn_count++;
+
+		print "WARNING: Destination RRD Path '$new_rrd_path' is outside the RRA directory or is a symlink, Skipping" . PHP_EOL;
+
+		db_fetch_cell("SELECT RELEASE_LOCK('boost.single_ds.$local_data_id')");
+
+		continue;
+	}
 
 	/* create one subfolder for every host */
 	if (!is_dir($new_base_path)) {
@@ -362,17 +373,34 @@ function update_database($info) {
 function sp_recursive_chown($path, $user) {
 	$directory = rtrim($path, '/');
 
-	if ($items = glob($path . '/*')) {
+	if (is_link($directory)) {
+		return false;
+	}
+
+	$ok = true;
+
+	if (is_dir($directory) && ($items = glob($directory . '/*'))) {
 		foreach ($items as $item) {
+			if (is_link($item)) {
+				$ok = false;
+				continue;
+			}
+
 			if (is_dir($item)) {
-				return sp_recursive_chown($item, $user);
-			} else {
-				return chown($item, $user);
+				if (!sp_recursive_chown($item, $user)) {
+					$ok = false;
+				}
+			} elseif (!chown($item, $user)) {
+				$ok = false;
 			}
 		}
 	}
 
-	return chown($path, $user);
+	if (is_link($directory)) {
+		return false;
+	}
+
+	return chown($directory, $user) && $ok;
 }
 
 /**
@@ -386,17 +414,34 @@ function sp_recursive_chown($path, $user) {
 function sp_recursive_chgrp($path, $group) {
 	$directory = rtrim($path, '/');
 
-	if ($items = glob($path . '/*')) {
+	if (is_link($directory)) {
+		return false;
+	}
+
+	$ok = true;
+
+	if (is_dir($directory) && ($items = glob($directory . '/*'))) {
 		foreach ($items as $item) {
+			if (is_link($item)) {
+				$ok = false;
+				continue;
+			}
+
 			if (is_dir($item)) {
-				return sp_recursive_chgrp($item, $group);
-			} else {
-				return chgrp($item, $group);
+				if (!sp_recursive_chgrp($item, $group)) {
+					$ok = false;
+				}
+			} elseif (!chgrp($item, $group)) {
+				$ok = false;
 			}
 		}
 	}
 
-	return chgrp($path, $group);
+	if (is_link($directory)) {
+		return false;
+	}
+
+	return chgrp($directory, $group) && $ok;
 }
 
 /**

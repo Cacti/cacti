@@ -262,7 +262,7 @@ if ($child == 0) {
 		INNER JOIN data_template_rrd AS dtr
 		ON gti.task_item_id = dtr.id
 		INNER JOIN data_template_data AS dtd
-		ON dtd.id = dtr.local_data_id
+		ON dtd.local_data_id = dtr.local_data_id
 		$sql_where");
 
 	$rrdfiles = db_affected_rows();
@@ -378,11 +378,25 @@ if ($child == 0) {
 		$output     = array();
 		$return_var = 0;
 
+		if (!data_source_path_within_rra($rrdfile['data_source_path']) || strtolower(substr($rrdfile['data_source_path'], -4)) !== '.rrd') {
+			printf("FAILED:  Skipping RRDfile outside RRA path:%s" . PHP_EOL, $rrdfile['data_source_path']);
+			db_execute_prepared('UPDATE graph_local_spikekill
+				SET started = NOW(), ended = NOW(), exit_code = 1
+				WHERE id = ?',
+				array($rrdfile['id']));
+			$failed++;
+			continue;
+		}
+
+		$escaped_rrd = ($config['cacti_server_os'] == 'win32')
+			? cacti_escapeshellarg_cmd($rrdfile['data_source_path'])
+			: cacti_escapeshellarg($rrdfile['data_source_path']);
+
 		// Format the command
 		$command = sprintf('%s -q %s --rrdfile=%s --outlier-start=%s --outlier-end=%s --method=%s --avgnan=%s',
 			cacti_escapeshellarg($php_bin),
 			cacti_escapeshellarg($config['base_path'] . '/cli/removespikes.php'),
-			cacti_escapeshellarg($rrdfile['data_source_path']),
+			$escaped_rrd,
 			cacti_escapeshellarg($start_date),
 			cacti_escapeshellarg($end_date),
 			cacti_escapeshellarg($method),
@@ -408,7 +422,7 @@ if ($child == 0) {
 			printf("SUCCESS: Gap Fills for RRDfile:%s" . PHP_EOL, $rrdfile['data_source_path']);
 			$succeeded++;
 		} else {
-			printf("FAILED:  Gap Fills failed for RRDfile:%s" . PHP_EOL, $graph['data_source_path']);
+			printf("FAILED:  Gap Fills failed for RRDfile:%s" . PHP_EOL, $rrdfile['data_source_path']);
 			$failed++;
 		}
 	}

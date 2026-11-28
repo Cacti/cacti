@@ -202,12 +202,34 @@ function form_actions() {
 
 		if ($selected_items != false) {
 			if (get_nfilter_request_var('drp_action') == '1') { // delete
-				db_execute('DELETE FROM host_template WHERE ' . array_to_sql_or($selected_items, 'id'));
-				db_execute('DELETE FROM host_template_snmp_query WHERE ' . array_to_sql_or($selected_items, 'host_template_id'));
-				db_execute('DELETE FROM host_template_graph WHERE ' . array_to_sql_or($selected_items, 'host_template_id'));
+				$in_use_rows = db_fetch_assoc('SELECT DISTINCT host_template_id
+					FROM host
+					WHERE deleted = ""
+					AND ' . array_to_sql_or($selected_items, 'host_template_id'));
 
-				/* "undo" any device that is currently using this template */
-				db_execute('UPDATE host SET host_template_id = 0 WHERE deleted = "" AND ' . array_to_sql_or($selected_items, 'host_template_id'));
+				$in_use_ids = array();
+				if (cacti_sizeof($in_use_rows)) {
+					foreach ($in_use_rows as $row) {
+						$in_use_ids[(int) $row['host_template_id']] = true;
+					}
+				}
+
+				$deletable_items = array();
+				foreach ($selected_items as $item_id) {
+					if (!isset($in_use_ids[(int) $item_id])) {
+						$deletable_items[] = (int) $item_id;
+					}
+				}
+
+				if (cacti_sizeof($in_use_ids)) {
+					raise_message('host_template_in_use', __('One or more selected Device Templates are in use by existing Devices and cannot be deleted.'), MESSAGE_LEVEL_ERROR);
+				}
+
+				if (cacti_sizeof($deletable_items)) {
+					db_execute('DELETE FROM host_template WHERE ' . array_to_sql_or($deletable_items, 'id'));
+					db_execute('DELETE FROM host_template_snmp_query WHERE ' . array_to_sql_or($deletable_items, 'host_template_id'));
+					db_execute('DELETE FROM host_template_graph WHERE ' . array_to_sql_or($deletable_items, 'host_template_id'));
+				}
 			} elseif (get_nfilter_request_var('drp_action') == '2') { // duplicate
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					api_duplicate_device_template($selected_items[$i], get_nfilter_request_var('title_format'));

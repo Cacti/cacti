@@ -344,7 +344,26 @@ function pushout_launch_child($thread_id, $threads) {
 
 	cacti_log(sprintf('NOTE: Launching Push out hosts Number %s for Type %s', $thread_id, 'child'), true, 'PUSHOUT', POLLER_VERBOSITY_MEDIUM);
 
-	exec_background($php_binary, $config['base_path'] . "/cli/push_out_hosts.php --type=child --threads=$threads --child=$thread_id " . ($debug ? " --debug":"") . ($host_template_id ? " --host-template-id=$host_template_id":"") . ($data_template_id ? " --data-template-id=$data_template_id":""));
+	$args = array(
+		$config['base_path'] . '/cli/push_out_hosts.php',
+		'--type=child',
+		'--threads=' . (int) $threads,
+		'--child=' . (int) $thread_id
+	);
+
+	if ($debug) {
+		$args[] = '--debug';
+	}
+
+	if ($host_template_id) {
+		$args[] = '--host-template-id=' . (int) $host_template_id;
+	}
+
+	if ($data_template_id) {
+		$args[] = '--data-template-id=' . (int) $data_template_id;
+	}
+
+	exec_background($php_binary, $args);
 }
 
 /**

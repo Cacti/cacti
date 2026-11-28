@@ -157,7 +157,11 @@ if ($audit) {
 		WHERE input_string != ""');
 
 	if (file_exists($config['input_whitelist'])) {
-		$input_ws = json_decode(file_get_contents($config['input_whitelist']), true);
+		$input_ws = json_decode((string) file_get_contents($config['input_whitelist']), true);
+		if (!is_array($input_ws)) {
+			print 'ERROR: Failed to parse existing Data Input whitelist file \'' . $config['input_whitelist'] . '\'.' . PHP_EOL;
+			exit(1);
+		}
 	} else {
 		$input_ws = array();
 	}
@@ -176,16 +180,26 @@ if ($audit) {
 				}
 
 				$input[$value['hash']] = $value['input_string'];
-			} else {
-				if (isset($input_ws[$value['hash']])) {
-					$input[$value['hash']] = $input_ws[$value['hash']];
-				} else {
-					$input[$value['hash']] = $value['input_string'];
-				}
+			} elseif (isset($input_ws[$value['hash']])) {
+				$input[$value['hash']] = $input_ws[$value['hash']];
 			}
 		}
 
-		file_put_contents($config['input_whitelist'], json_encode($input));
+		$encoded = json_encode($input);
+		if ($encoded === false) {
+			print 'ERROR: Failed to encode Data Input whitelist JSON.' . PHP_EOL;
+			exit(1);
+		}
+
+		$tmp_file = tempnam(dirname($config['input_whitelist']), 'whitelist_');
+		if ($tmp_file === false || file_put_contents($tmp_file, $encoded, LOCK_EX) === false || !rename($tmp_file, $config['input_whitelist'])) {
+			if ($tmp_file !== false && file_exists($tmp_file)) {
+				@unlink($tmp_file);
+			}
+			print 'ERROR: Failed to write Data Input whitelist file \'' . $config['input_whitelist'] . '\'.' . PHP_EOL;
+			exit(1);
+		}
+
 		print 'SUCCESS: Data Input Whitelist file \'' . $config['input_whitelist'] . '\' successfully updated.' . PHP_EOL;
 
 		if (cacti_sizeof($pushes)) {

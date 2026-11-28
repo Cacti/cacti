@@ -181,7 +181,15 @@ function cache_refresh() {
 			$cache = NULL;
 			gc_collect_cycles();
 			$cache_last_refresh = $cache_refresh_time;
-			include( $path_mibcache );
+			if (!is_link($path_mibcache) && is_file($path_mibcache) && is_readable($path_mibcache)) {
+				$raw_cache = @file_get_contents($path_mibcache);
+				if (is_string($raw_cache) && $raw_cache !== '') {
+					$decoded_cache = json_decode($raw_cache, true);
+					if (is_array($decoded_cache)) {
+						$cache = $decoded_cache;
+					}
+				}
+			}
 		}
 	}
 	return;

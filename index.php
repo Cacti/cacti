@@ -46,7 +46,12 @@ function render_external_links($style = 'FRONT') {
 		foreach($consoles as $page) {
 			if (is_realm_allowed($page['id']+10000)) {
 				if (preg_match('/^((((ht|f)tp(s?))\:\/\/){1}\S+)/i', $page['contentfile'])) {
-					print '<iframe class="content" src="' . html_escape($page['contentfile']) . '" frameborder="0"></iframe>';
+					$scheme = strtolower((string) parse_url($page['contentfile'], PHP_URL_SCHEME));
+					if (filter_var($page['contentfile'], FILTER_VALIDATE_URL) && in_array($scheme, array('http', 'https'), true)) {
+						print '<iframe class="content" src="' . html_escape($page['contentfile']) . '" sandbox="allow-scripts allow-popups allow-forms" frameborder="0"></iframe>';
+					} else {
+						cacti_log(sprintf('WARNING: External Link ID \'%d\' attempted to render an invalid URL and was blocked.', (int) $page['id']), false, 'SECURITY');
+					}
 				} else {
 					print '<div id="content">';
 

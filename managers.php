@@ -690,7 +690,21 @@ function manager_logs($id, $header_label) {
 		div.style.backgroundColor = '#EFFCF0';
 		div.style.border = 'solid 1px grey';
 		div.style.padding = '10px';
-		div.innerHTML = '<b>' + title + '</b><div style="padding-left:10px; padding-right:5px;"><pre>' + desc + '</pre></div>';
+		div.textContent = '';
+
+		var titleEl = document.createElement('b');
+		titleEl.textContent = title;
+		div.appendChild(titleEl);
+
+		var wrapEl = document.createElement('div');
+		wrapEl.style.paddingLeft = '10px';
+		wrapEl.style.paddingRight = '5px';
+
+		var preEl = document.createElement('pre');
+		preEl.textContent = desc;
+		wrapEl.appendChild(preEl);
+		div.appendChild(wrapEl);
+
 		div.style.left = e.clientX + 15 + 'px';
 		div.style.top = e.clientY + 15 + 'px';
 	}
@@ -816,14 +830,10 @@ function manager_logs($id, $header_label) {
 			print "<td class='nowrap'>" . date('Y/m/d H:i:s', $item['time']) . '</td>';
 
 			if ($item['description']) {
-				$description = '';
 				$lines = preg_split('/\r\n|\r|\n/', $item['description']);
+				$description = implode("\n", array_map('trim', $lines));
 
-				foreach ($lines as $line) {
-					$description .= html_escape(trim($line)) . '<br>';
-				}
-
-				print '<td><a href="#" onMouseOut="hideTooltip(snmpagentTooltip)" onMouseMove="showTooltip(event, snmpagentTooltip, \'' . html_escape($item['notification']) . '\', \'' . $description . '\')">' . html_escape($item['notification']) . '</a></td>';
+				print '<td><a href="#" class="snmpagent-log-tooltip" data-tooltip-title="' . html_escape($item['notification']) . '" data-tooltip-desc="' . html_escape($description) . '">' . html_escape($item['notification']) . '</a></td>';
 			} else {
 				print '<td>' . html_escape($item['notification']) . '</td>';
 			}
@@ -845,6 +855,20 @@ function manager_logs($id, $header_label) {
 	?>
 	<input type='hidden' name='id' value='<?php print get_filter_request_var('id'); ?>'>
 	<div style='display:none' id='snmpagentTooltip'></div>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
+	$(function() {
+		var tooltipDiv = document.getElementById('snmpagentTooltip');
+		if (tooltipDiv) {
+			$(document).off('mousemove.snmpagentTooltip mouseout.snmpagentTooltip', '.snmpagent-log-tooltip')
+				.on('mousemove.snmpagentTooltip', '.snmpagent-log-tooltip', function(e) {
+					showTooltip(e, tooltipDiv, $(this).attr('data-tooltip-title') || '', $(this).attr('data-tooltip-desc') || '');
+				})
+				.on('mouseout.snmpagentTooltip', '.snmpagent-log-tooltip', function() {
+					hideTooltip(tooltipDiv);
+				});
+		}
+	});
+	</script>
 	<?php
 }
 
@@ -877,6 +901,10 @@ function form_save() {
 			$save['id']                       = get_request_var('id');
 			$save['description']              = form_input_validate(trim(get_nfilter_request_var('description')), 'description', '', false, 3);
 			$save['hostname']                 = form_input_validate(trim(get_nfilter_request_var('hostname')), 'hostname', '', false, 3);
+			if ($save['hostname'] !== '' && ($save['hostname'][0] === '-' || preg_match('/[\x00-\x1f\x7f\s]/', $save['hostname']))) {
+				raise_message(3);
+				$_SESSION['sess_error_fields']['hostname'] = 'hostname';
+			}
 			$save['disabled']                 = form_input_validate(get_nfilter_request_var('disabled'), 'disabled', '^on$', true, 3);
 			$save['max_log_size']             = get_nfilter_request_var('max_log_size');
 

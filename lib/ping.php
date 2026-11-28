@@ -856,22 +856,36 @@ class Net_Ping
 	 * @return bool True on success, false otherwise.
 	 */
 	public function is_ipaddress($ip_address = '') {
+		if (!is_string($ip_address) || $ip_address === '') {
+			return false;
+		}
+
 		/* Strip IPv6 Scope ID (Zone Index) for validation, as
 		   filter_var rejects valid link-local addresses like fe80::1%eth0 */
 		$clean_ip = $ip_address;
+		$has_zone = false;
 		if (strpos($clean_ip, '%') !== false) {
 			$parts = explode('%', $clean_ip, 2);
 			$clean_ip = $parts[0];
+			$zone_id  = $parts[1];
+			if (preg_match('/^[A-Za-z0-9_.-]{1,64}$/D', $zone_id) !== 1) {
+				return false;
+			}
+			$has_zone = true;
 		}
 
 		/* check for ipv4/v6 */
 		if (function_exists('filter_var')) {
-			if (filter_var($clean_ip, FILTER_VALIDATE_IP) !== false) {
+			$flags = $has_zone ? FILTER_FLAG_IPV6 : 0;
+			if (filter_var($clean_ip, FILTER_VALIDATE_IP, $flags) !== false) {
 				return true;
 			} else {
 				return false;
 			}
 		} elseif (@inet_pton($clean_ip) !== false) {
+			if ($has_zone && strpos($clean_ip, ':') === false) {
+				return false;
+			}
 			return true;
 		} else {
 			return false;

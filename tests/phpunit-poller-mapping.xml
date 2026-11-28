@@ -14,6 +14,12 @@
             <file>Unit/DataCollection/Snmp/SnmpWalkEmptyOidTest.php</file>
             <file>Unit/DataCollection/Snmp/SnmpFormatAgentTest.php</file>
             <file>Unit/DataCollection/Poller/KilledProcessDbConnectionTest.php</file>
+            <file>Unit/Security/Auth/BulkAuthHardeningTest.php</file>
+            <file>Unit/Security/Auth/BulkPluginsHardeningTest.php</file>
+            <file>Unit/Security/Auth/RemoteAgentEffectiveUserTest.php</file>
+            <file>Unit/Security/InputValidation/BulkGraphingHardeningTest.php</file>
+            <file>Unit/Security/Misc/BulkDevicesAndInstallerHardeningTest.php</file>
+            <file>Unit/Security/PathTraversal/BulkCliHardeningTest.php</file>
         </testsuite>
         <testsuite name="ScriptServer">
             <file>Unit/Scripts/ScriptServerHardeningProbeTest.php</file>

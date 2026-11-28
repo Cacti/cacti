@@ -668,23 +668,63 @@ function api_reapply_suggested_data_source_data($local_data_id) {
 					continue;
 				}
 
-				if (db_column_exists('data_template_data', $sv['field_name'])) {
+				$allowed_table = api_data_source_suggested_value_target($sv['field_name'], $sv['text']);
+
+				if ($allowed_table === 'data_template_data') {
 					$matches[] = $sv['field_name'];
 					db_execute_prepared('UPDATE data_template_data
 						SET ' . $sv['field_name'] . ' = ?
 						WHERE local_data_id = ?',
 						array($sv['text'], $local_data_id));
-				} elseif (db_column_exists('data_template_rrd', $sv['field_name'])) {
+				} elseif ($allowed_table === 'data_template_rrd') {
 					$matches[] = $sv['field_name'];
 					db_execute_prepared('UPDATE data_template_rrd
 						SET ' . $sv['field_name'] . ' = ?
 						WHERE local_data_id = ?',
 						array($sv['text'], $local_data_id));
 				} else {
-					cacti_log('ERROR: Suggested value column error.  Column ' . $sv['field_name'] . ' for Data Template ID ' . $data_local['data_template_id'] . ' is not a compatible field name for tables data_template_data and data_template_rrd.  Please correct this suggested value mapping', false);
+					cacti_log('ERROR: Suggested value column error.  Column ' . $sv['field_name'] . ' for Data Template ID ' . $data_local['data_template_id'] . ' is not a permitted field name or value for tables data_template_data and data_template_rrd.  Please correct this suggested value mapping', false);
 				}
 			}
 		}
+	}
+}
+
+/**
+ * Validates that a Data Query suggested value targets an explicitly permitted column
+ * on data_template_data or data_template_rrd and conforms to that column's value constraints.
+ *
+ * @param string $field_name The target column name.
+ * @param mixed $value The candidate column value.
+ *
+ * @return string|false The target table name, or false if rejected.
+ */
+function api_data_source_suggested_value_target($field_name, $value) {
+	if (!is_string($field_name) || !is_scalar($value)) {
+		return false;
+	}
+
+	$value = (string) $value;
+
+	if (preg_match('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', $value)) {
+		return false;
+	}
+
+	switch ($field_name) {
+		case 'name':
+			return strlen($value) <= 250 ? 'data_template_data' : false;
+		case 'active':
+			return in_array($value, array('', 'on'), true) ? 'data_template_data' : false;
+		case 'rrd_step':
+			return preg_match('/^[1-9][0-9]{0,9}$/D', $value) === 1 ? 'data_template_data' : false;
+		case 'rrd_minimum':
+		case 'rrd_maximum':
+			return ($value === 'U' || is_numeric($value)) ? 'data_template_rrd' : false;
+		case 'rrd_heartbeat':
+		case 'data_source_type_id':
+			return preg_match('/^[1-9][0-9]{0,9}$/D', $value) === 1 ? 'data_template_rrd' : false;
+		default:
+			return false;
 	}
 }
 
