@@ -151,10 +151,13 @@ dsstats_memory_limit();
 // send a gentle message to the log and stdout
 dsstats_debug('Polling Starting');
 
-// clear the cache if there has been a change in key settings
+// clear the cache if there has been a change in key settings, and record the settings it is built for
 if (read_config_option('dsstats_mode') != read_config_option('dsstats_temp_mode') ||
 	read_config_option('dsstats_peak')    != read_config_option('dsstats_temp_peak')) {
 	db_execute('TRUNCATE TABLE data_source_stats_command_cache');
+
+	set_config_option('dsstats_temp_mode', read_config_option('dsstats_mode'));
+	set_config_option('dsstats_temp_peak', read_config_option('dsstats_peak'));
 }
 
 // silently end if the registered process is still running
@@ -181,13 +184,9 @@ switch ($type) {
 	case 'bmaster': // Launched at the end of boost
 	case 'dmaster': // Launched inside this script for daily processing
 		// run the daily stats
-		dsstats_launch_children($type);
+		$expected_children = dsstats_launch_children($type);
 
-		// Wait for all processes to continue
-		while ($running = dsstats_processes_running($type)) {
-			dsstats_debug(sprintf('%s Processes Running, Sleeping for 2 seconds.', $running));
-			sleep(2);
-		}
+		dsstats_wait_for_children($type, $expected_children);
 
 		break;
 	case 'child':  // Launched by the master process
@@ -234,12 +233,16 @@ function dsstats_purge_hourly_cache() : void {
 }
 
 function dsstats_insert_hourly_data_into_cache() : void {
-	// store the current averages into the hourly table
+	/**
+	 * Store the current averages into the hourly table.  AVG() and MAX()
+	 * already skip unknown samples, and a source whose window holds only
+	 * unknown samples must become NULL rather than keep its last average.
+	 * The cache was purged to the hourly window before this runs.
+	 */
 	db_execute('INSERT INTO data_source_stats_hourly
 		(local_data_id, rrd_name, average, peak)
 		SELECT local_data_id, rrd_name, AVG(`value`), MAX(`value`)
 		FROM data_source_stats_hourly_cache
-		WHERE `value` IS NOT NULL
 		GROUP BY local_data_id, rrd_name
 		ON DUPLICATE KEY UPDATE average=VALUES(average), peak=VALUES(peak)');
 }
@@ -306,13 +309,9 @@ function dsstats_master_handler(string $type, bool $force, bool $fpartition) : v
 			set_config_option('dsstats_last_daily_run_time', date('Y-m-d G:i:s', $current_time));
 
 			// run the daily stats
-			dsstats_launch_children($type);
+			$expected_children = dsstats_launch_children($type);
 
-			// Wait for all processes to continue
-			while ($running = dsstats_processes_running($type)) {
-				dsstats_debug(sprintf('%s Processes Running, Sleeping for 2 seconds.', $running));
-				sleep(2);
-			}
+			dsstats_wait_for_children($type, $expected_children);
 
 			dsstats_log_statistics('DAILY');
 		}
@@ -332,14 +331,10 @@ function dsstats_master_handler(string $type, bool $force, bool $fpartition) : v
 		// run the major stats, log first to keep other processes from running
 		set_config_option('dsstats_last_major_run_time', date('Y-m-d G:i:s', $current_time));
 
-		// run the daily stats
-		dsstats_launch_children('dmaster');
+		// run the major stats
+		$expected_children = dsstats_launch_children('dmaster');
 
-		// Wait for all processes to continue
-		while ($running = dsstats_processes_running('dmaster')) {
-			dsstats_debug(sprintf('%s Processes Running, Sleeping for 2 seconds.', $running));
-			sleep(2);
-		}
+		dsstats_wait_for_children('dmaster', $expected_children);
 
 		dsstats_log_statistics('MAJOR');
 	}
@@ -351,6 +346,9 @@ function dsstats_create_partitions(int $last_major_time, int $current_time, bool
 	$last_month   = date('n', $last_major_time);
 	$last_year    = date('Y', $last_major_time);
 
+	// an ISO week belongs to the ISO year, so the last days of December can be week 1
+	$last_week_year = date('o', $last_major_time);
+
 	// Create partition for daily numbers
 	if ($last_day != date('z', $current_time) || $fpartition) {
 		$last_day = substr('00' . $last_day, -3);
@@ -360,7 +358,7 @@ function dsstats_create_partitions(int $last_major_time, int $current_time, bool
 	// Create partition for weekly numbers
 	if ($last_week != date('W', $current_time) || $fpartition) {
 		$last_week = substr('00' . $last_week, -3);
-		dsstats_create_partition_from_table('data_source_stats_weekly', '_v' . "$last_year$last_week");
+		dsstats_create_partition_from_table('data_source_stats_weekly', '_v' . "$last_week_year$last_week");
 	}
 
 	// Create partition for monthly numbers
