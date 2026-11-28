@@ -88,6 +88,7 @@ define('DATA_INPUT_TYPE_PHP_SCRIPT_SERVER', 5);
 define('DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER', 6);
 define('DATA_INPUT_TYPE_STREAM', 7);
 define('DATA_INPUT_TYPE_STREAM_QUERY', 8);
+define('DATA_INPUT_TYPE_HTTP', 9);
 
 define('GRAPH_ITEM_TYPE_COMMENT',            1);
 define('GRAPH_ITEM_TYPE_HRULE',              2);
@@ -142,7 +143,12 @@ define('ACTION_CHANGE', 21);
 define('POLLER_ACTION_SNMP', 0);
 define('POLLER_ACTION_SCRIPT', 1);
 define('POLLER_ACTION_SCRIPT_PHP', 2);
+define('POLLER_ACTION_HTTP', 3);
 define('POLLER_ACTION_NONE', 99);
+
+/* the first spine release to include Cacti/spine#687, which leaves
+ * POLLER_ACTION_HTTP items to cmd.php --http-only instead of writing U for them */
+define('SPINE_HTTP_HANDOFF_MIN_VERSION', '1.3.0');
 
 /* used for reindexing only:
  * in case we do not have OID_NUM_INDEXES|ARG_NUM_INDEXES

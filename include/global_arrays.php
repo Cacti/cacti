@@ -526,7 +526,8 @@ $input_types = [
 	DATA_INPUT_TYPE_PHP_SCRIPT_SERVER   => __('Script Server'),
 	DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER => __('Script Server Query'),
 	DATA_INPUT_TYPE_STREAM              => __('Stream Data'),
-	DATA_INPUT_TYPE_STREAM_QUERY        => __('Stream Data Query')
+	DATA_INPUT_TYPE_STREAM_QUERY        => __('Stream Data Query'),
+	DATA_INPUT_TYPE_HTTP                => __('HTTP JSON Get')
 ];
 
 $input_types_script = [
@@ -1524,7 +1525,8 @@ $hash_system_data_inputs = [
 	'80e9e4c4191a5da189ae26d0e237f015', // Get Script Data (Indexed)
 	'332111d8b54ac8ce939af87a7eac0c06', // Get Script Server Data (Indexed)
 	'7ed649bfa9cd627d7482b7700e88db53', // Get Stream Data
-	'8489967af7ec4addacc6a67ca4e36c16'  // Get Stream Data (Indexed)
+	'8489967af7ec4addacc6a67ca4e36c16', // Get Stream Data (Indexed)
+	'5d4a0c2b7f8e41a69b3c1e07d2f6a8b4'  // Get HTTP JSON Data
 ];
 
 $host_struc = [
