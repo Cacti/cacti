@@ -49,11 +49,15 @@ final class LoginResult {
 	) {
 	}
 
+	public static function fromVerifiedAssertion(string $username, array $claims, bool $rememberMe, int $authenticatedAt, string $mfaChallenge): self {
+		return new self(true, null, '', $username, $claims, $rememberMe, authenticatedAt: $authenticatedAt, mfaChallenge: $mfaChallenge);
+	}
+
 	public static function failure(string $error, bool $isCredentialFailure = false): self {
 		return new self(false, null, $error, isCredentialFailure: $isCredentialFailure);
 	}
 
-	public static function authenticated(string $username, array $claims = [], ?array $user = null, bool $rememberMe = false, int $authenticatedAt = 0, string $mfaChallenge = ''): self {
-		return new self(true, $user, '', $username, $claims, $rememberMe, authenticatedAt: $authenticatedAt, mfaChallenge: $mfaChallenge);
+	public static function authenticated(string $username, array $claims = [], ?array $user = null, bool $rememberMe = false): self {
+		return new self(true, $user, '', $username, $claims, $rememberMe);
 	}
 }

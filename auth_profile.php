@@ -22,19 +22,16 @@
  +-------------------------------------------------------------------------+
 */
 
+$guest_account = true;
+require('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/user_setting_validation.php');
+
 use Cacti\Auth\CredentialLoginProviderInterface;
 use Cacti\Auth\FreshAuthentication;
 use Cacti\Auth\LocalAuthLoginProvider;
 use Cacti\Auth\LoginProviderFactory;
 use Cacti\Auth\OpenIdLoginProvider;
 use Cacti\Auth\SamlLoginProvider;
-
-$guest_account = true;
-require('./include/auth.php');
-require_once(CACTI_PATH_LIBRARY . '/user_setting_validation.php');
-
-// set default action
-set_default_action();
 
 if (grv('action') === 'confirm_mfa_identity') {
 	auth_profile_require_post();
@@ -51,6 +48,9 @@ if (in_array(grv('action'), ['enable_2fa', 'disable_2fa', 'verify_2fa'], true)
 	print json_encode(['status' => 403, 'text' => __('Confirm your identity in the 2FA settings tab.')]);
 	exit;
 }
+
+// set default action
+set_default_action();
 
 switch (grv('action')) {
 	case 'save':

@@ -205,13 +205,13 @@ class OpenIdLoginProvider extends AbstractLoginProvider implements RedirectLogin
 			return LoginResult::failure(__('Access Denied!  You are not a member of the required group.'));
 		}
 
-		return LoginResult::authenticated($username, [
+		return LoginResult::fromVerifiedAssertion($username, [
 			'full_name' => (string) ($claims[(string) $this->param('claim_full_name', 'name')] ?? ''),
 			'email'     => (string) ($claims[(string) $this->param('claim_email', 'email')] ?? ''),
 			// The OpenID group claim values feed automatic User Group
 			// assignment at login time (see AbstractLoginProvider::applyAutoAssignments()).
 			'groups'    => array_values(array_map('strval', $memberships)),
-		], null, (bool) ($saved['remember'] ?? false),
+		], (bool) ($saved['remember'] ?? false),
 			$authenticatedAt, $saved['challenge'] ?? '');
 	}
 

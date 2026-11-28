@@ -167,13 +167,13 @@ class SamlLoginProvider extends AbstractLoginProvider implements RedirectLoginPr
 			return LoginResult::failure(__('Access Denied!  You are not a member of the required group.'));
 		}
 
-		return LoginResult::authenticated($username, [
+		return LoginResult::fromVerifiedAssertion($username, [
 			'full_name' => (string) $this->firstAttribute($attributes, (string) $this->param('claim_full_name')),
 			'email'     => (string) $this->firstAttribute($attributes, (string) $this->param('claim_email')),
 			// The raw SAML2 group attribute values feed automatic User Group
 			// assignment at login time (see AbstractLoginProvider::applyAutoAssignments()).
 			'groups'    => array_values(array_map('strval', (array) $memberships)),
-		], null, (bool) ($saved['remember'] ?? false),
+		], (bool) ($saved['remember'] ?? false),
 			self::authenticationTime($auth->getLastResponseXML(), $auth->getLastAssertionId()), $saved['challenge'] ?? '');
 	}
 
