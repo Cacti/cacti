@@ -80,6 +80,9 @@ run_php_probe tests/fixtures/Core/HtmlGraphMarkup.php '^(lib/html_graph\.php|tes
 
 run_php_probe tests/fixtures/Core/TreeFilterDeviceTemplateCoverage.php '^(lib/html_tree\.php|tests/fixtures/Core/TreeFilterDeviceTemplateCoverage\.php)'
 
+run_php_probe tests/Unit/fixtures/aggregate_label_render_probe.php '^(lib/(api_aggregate|html)\.php|tests/Unit/fixtures/aggregate_label_render_probe\.php)'
+run_php_probe tests/Unit/fixtures/aggregate_label_render_probe.php '^(lib/(api_aggregate|html)\.php|tests/Unit/fixtures/aggregate_label_render_probe\.php)' graph '<em>Literal label</em>'
+
 run_php_probe tests/fixtures/Core/DataSourceRrdRepairCoverage.php '^(data_sources\.php|tests/fixtures/Core/DataSourceRrdRepairCoverage\.php)'
 
 run_php_probe tests/fixtures/Core/PackageArchive.php '^(lib/package\.php|tests/fixtures/Core/PackageArchive\.php)'
@@ -102,6 +105,9 @@ run_php_probe tests/Unit/fixtures/graph_group_probe.php '^(lib/functions\.php|te
 
 run_probe tests/e2e/basic_auth_identity_docker.sh '^(include/(auth|global)\.php|lib/auth\.php|tests/e2e/basic_auth_identity_docker\.sh)' 18392
 
-run_php_probe tests/Unit/fixtures/aggregate_label_render_probe.php '^(lib/(api_aggregate|html)\.php|tests/Unit/fixtures/aggregate_label_render_probe\.php)'
-run_php_probe tests/Unit/fixtures/aggregate_label_render_probe.php '^(lib/(api_aggregate|html)\.php|tests/Unit/fixtures/aggregate_label_render_probe\.php)' graph '<em>Literal label</em>'
 run_php_probe tests/Unit/fixtures/document_direction_probe.php '^(include/global_languages\.php|include/top_general_header\.php|lib/auth\.php|tests/Unit/fixtures/(document_direction_probe|i18n_probe_bootstrap)\.php)'
+
+user_settings_realtime_files='^(auth_profile\.php|graph_realtime\.php|lib/(functions|html_tree|user_setting_validation)\.php|tests/fixtures/Core/UserSettingsAndRealtimeHardening\.php)$'
+for mode in core auth-guest-exit auth-disable-2fa auth-enable-2fa auth-verify-2fa realtime-denied realtime-view-denied; do
+	run_php_probe tests/fixtures/Core/UserSettingsAndRealtimeHardening.php "$user_settings_realtime_files" "$mode"
+done
