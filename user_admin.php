@@ -548,31 +548,13 @@ function form_save() {
 			WHERE id = ?',
 			array(get_nfilter_request_var('id')));
 
+		$password_changed = false;
+
 		if ((get_nfilter_request_var('password') == '') && (get_nfilter_request_var('password_confirm') == '')) {
 			$password = $old_password;
 		} else {
-			$password = compat_password_hash(get_nfilter_request_var('password'), PASSWORD_DEFAULT);
-
-			if ($password != $old_password && get_nfilter_request_var('password') == get_nfilter_request_var('password_confirm')) {
-				$target_user_id = (int) get_nfilter_request_var('id');
-
-				if ($target_user_id > 0) {
-					db_execute_prepared('DELETE FROM user_auth_cache
-						WHERE user_id = ?',
-						[$target_user_id]);
-
-					if ((int) ($_SESSION['sess_user_id'] ?? 0) === $target_user_id && session_id() !== '') {
-						db_execute_prepared('DELETE FROM sessions
-							WHERE user_id = ?
-							AND id != ?',
-							[$target_user_id, session_id()]);
-					} else {
-						db_execute_prepared('DELETE FROM sessions
-							WHERE user_id = ?',
-							[$target_user_id]);
-					}
-				}
-			}
+			$password         = compat_password_hash(get_nfilter_request_var('password'), PASSWORD_DEFAULT);
+			$password_changed = ($password != $old_password && get_nfilter_request_var('password') == get_nfilter_request_var('password_confirm'));
 		}
 
 		/* check duplicate username */
@@ -644,6 +626,25 @@ function form_save() {
 			$user_id = sql_save($save, 'user_auth');
 
 			if ($user_id) {
+				if ($password_changed && (int) $save['id'] > 0) {
+					$target_user_id = (int) $save['id'];
+
+					db_execute_prepared('DELETE FROM user_auth_cache
+						WHERE user_id = ?',
+						[$target_user_id]);
+
+					if ((int) ($_SESSION['sess_user_id'] ?? 0) === $target_user_id && session_id() !== '') {
+						db_execute_prepared('DELETE FROM sessions
+							WHERE user_id = ?
+							AND id != ?',
+							[$target_user_id, session_id()]);
+					} else {
+						db_execute_prepared('DELETE FROM sessions
+							WHERE user_id = ?',
+							[$target_user_id]);
+					}
+				}
+
 				raise_message(1);
 			} else {
 				raise_message(2);

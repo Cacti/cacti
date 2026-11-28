@@ -104,8 +104,19 @@ if ($auth_method != 0) {
 				[sanitize_search_string($username)]);
 		}
 
-		/* Hold any existing Web Basic session to the current upstream identity. */
-		auth_basic_session_recheck($username, $current_user);
+		/* Skip upstream Basic Auth recheck for anonymous guest sessions (no bound
+		 * Basic Auth identity) so guest page requests do not thrash the session. */
+		$guest_user_id      = (int) get_guest_account();
+		$is_anon_guest_sess = $username === false
+			&& isset($_SESSION['sess_user_id'])
+			&& !isset($_SESSION['sess_basic_auth_user'])
+			&& $guest_user_id > 0
+			&& (int) $_SESSION['sess_user_id'] === $guest_user_id;
+
+		if (!$is_anon_guest_sess) {
+			/* Hold any existing Web Basic session to the current upstream identity. */
+			auth_basic_session_recheck($username, $current_user);
+		}
 
 		if (!isset($_SESSION['sess_user_id']) && $username !== false) {
 			if (cacti_sizeof($current_user) && $current_user['enabled'] != 'on') {
@@ -116,7 +127,7 @@ if ($auth_method != 0) {
 
 			if (cacti_sizeof($current_user)) {
 				/* Regenerate session id and verify lockout state on auth transition. */
-				if (!cacti_auth_transition((int) $current_user['id'], 'basic_auth')) {
+				if (!cacti_auth_transition((int)$current_user['id'], 'basic_auth')) {
 					auth_display_custom_error_message(__('Access Denied! User account locked.'));
 
 					exit;
@@ -152,23 +163,43 @@ if ($auth_method != 0) {
 	 * if that is the case, then use that valid accounts permissions and not
 	 * the guest account.
 	 */
-	if (isset($guest_account)) {
-		$guest_user_id = get_guest_account();
+	if (!empty($guest_account)) {
+		$guest_user_id = (int) get_guest_account();
 
 		/* find guest user */
-		if (!empty($guest_user_id)) {
+		if ($guest_user_id > 0) {
 			if (empty($_SESSION['sess_user_id'])) {
-				$_SESSION['sess_user_id'] = $guest_user_id;
+				$guest_user = db_fetch_row_prepared('SELECT *
+					FROM user_auth
+					WHERE id = ?
+					AND enabled = "on"',
+					[$guest_user_id]);
+
+				if (cacti_sizeof($guest_user)) {
+					$_SESSION['sess_user_id'] = $guest_user_id;
+					$current_user             = $guest_user;
+
+					return true;
+				}
+			} else {
+				$current_user = db_fetch_row_prepared('SELECT *
+					FROM user_auth
+					WHERE id = ?',
+					[$_SESSION['sess_user_id']]);
+
+				/* Allow explicit guest-page pass-through only for an enabled guest
+				 * session; non-guest accounts still fall through to per-page realm
+				 * authorization below. */
+				if ((int) $_SESSION['sess_user_id'] === $guest_user_id) {
+					if (cacti_sizeof($current_user) && ($current_user['enabled'] ?? '') == 'on') {
+						return true;
+					}
+
+					kill_session_var('sess_user_id');
+					cacti_session_destroy();
+					cacti_session_start(true);
+				}
 			}
-
-			$current_user = db_fetch_row_prepared('SELECT *
-				FROM user_auth
-				WHERE id = ?',
-				[$_SESSION['sess_user_id']]);
-
-			/* Fall through to the per-page realm check below instead of returning,
-			 * so the guest account's access to this page is authorized rather than
-			 * assumed. */
 		}
 	}
 

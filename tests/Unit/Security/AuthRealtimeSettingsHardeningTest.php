@@ -311,8 +311,16 @@ describe('graph source print_source realm 27 gating', function () use ($repoRoot
 describe('user_admin.php session invalidation, permission token expiry, and filter hardening', function () use ($repoRoot) {
 	$src = (string) file_get_contents($repoRoot . '/user_admin.php');
 
-	it('deletes active sessions for target user while preserving self session when resetting own password', function () use ($src) {
-		assert_source_slice_contains($src, '$old_password = db_fetch_cell_prepared', '/* check duplicate username */', [
+	it('deletes active sessions for target user only after validation passes and sql_save succeeds while preserving self session', function () use ($src) {
+		$beforeValidation = extract_source_slice($src, '$old_password = db_fetch_cell_prepared', '/* check duplicate username */');
+
+		expect($beforeValidation)->toContain('$password_changed = false;')
+			->and($beforeValidation)->not->toContain('DELETE FROM user_auth_cache')
+			->and($beforeValidation)->not->toContain('DELETE FROM sessions');
+
+		assert_source_slice_contains($src, 'if (!is_error_message()) {', "} elseif (isset_request_var('save_component_realm_perms'))", [
+			'sql_save($save, \'user_auth\')',
+			'if ($password_changed && (int) $save[\'id\'] > 0)',
 			'DELETE FROM user_auth_cache',
 			'DELETE FROM sessions',
 			'AND id != ?',
@@ -421,6 +429,30 @@ PHP);
 
 		expect(substr_count($src, 'cacti_automation_is_sensitive_host_field('))->toBeGreaterThanOrEqual(2);
 	})->with(['automation_tree_rules.php', 'automation_graph_rules.php']);
+
+	it('enforces strict identifier regex before db_column_exists() in automation_graph_rules.php rule item save', function () use ($repoRoot) {
+		$src   = (string) file_get_contents($repoRoot . '/automation_graph_rules.php');
+		$block = extract_source_slice($src, "isset_request_var('save_component_automation_graph_rule_item')", "isset_request_var('save_component_automation_match_item')");
+
+		expect($block)->not->toBe('')
+			->and($block)->not->toContain('db_qstr($field_name)')
+			->and($block)->toContain('/^[a-zA-Z0-9_]+(\.[a-zA-Z0-9_]+)?$/')
+			->and(strpos($block, 'preg_match($identifier_pattern, $field_name) !== 1'))
+			->toBeLessThan(strpos($block, "db_column_exists('host', \$field_name)"));
+	});
+
+	it('validates automation graph rule field identifiers against quote-free SQLi payloads', function (string $field, bool $expected) {
+		expect(preg_match('/^[a-zA-Z0-9_]+(\.[a-zA-Z0-9_]+)?$/', $field) === 1)->toBe($expected);
+	})->with([
+		'plain column'           => ['hostname', true],
+		'aliased column'         => ['h.description', true],
+		'graph template column'  => ['gtg.title_cache', true],
+		'quote-free OR payload'  => ['1 OR 1=1', false],
+		'quote-free UNION'       => ['id UNION SELECT 1', false],
+		'function call payload'  => ['SLEEP(5)', false],
+		'dangling alias prefix'  => ['h.', false],
+		'double dot identifier'  => ['h.h.hostname', false],
+	]);
 });
 
 describe('settings.php filepath validation persistence guard', function () use ($repoRoot) {
@@ -777,10 +809,14 @@ PHP);
 describe('include/auth.php Web Basic Auth and realm check enforcement', function () use ($repoRoot) {
 	$src = (string) file_get_contents($repoRoot . '/include/auth.php');
 
-	it('rechecks upstream Basic Auth identity, refuses disabled accounts, and halts on locked accounts', function () use ($src) {
-		$basicBlock = extract_source_slice($src, 'if ($auth_method == 2) {', 'if (isset($guest_account))');
+	it('rechecks upstream Basic Auth identity, skips anonymous guest session thrash, refuses disabled accounts, and halts on locked accounts', function () use ($src) {
+		$basicBlock = extract_source_slice($src, 'if ($auth_method == 2) {', 'if (!empty($guest_account))');
 
-		expect($basicBlock)->toContain('sanitize_search_string($username)')
+		expect($basicBlock)->not->toBe('')
+			->and($basicBlock)->toContain('sanitize_search_string($username)')
+			->and($basicBlock)->toContain('$is_anon_guest_sess = $username === false')
+			->and($basicBlock)->toContain("!isset(\$_SESSION['sess_basic_auth_user'])")
+			->and($basicBlock)->toContain('if (!$is_anon_guest_sess)')
 			->and($basicBlock)->toContain('auth_basic_session_recheck($username, $current_user)')
 			->and($basicBlock)->toContain("\$current_user['enabled'] != 'on'")
 			->and($basicBlock)->toContain("\$_SESSION['sess_basic_auth_user'] = \$username;")
@@ -789,10 +825,21 @@ describe('include/auth.php Web Basic Auth and realm check enforcement', function
 			->and($basicBlock)->not->toContain('return true;');
 	});
 
-	it('falls through to per-page realm authorization from the guest account branch', function () use ($src) {
-		$guestBlock = extract_source_slice($src, 'if (isset($guest_account))', 'if (!isset($guest_account)');
+	it('allows enabled guest pass-through on guest pages while enforcing per-page realm checks for non-guest users', function () use ($src) {
+		$guestBlock = extract_source_slice($src, 'if (!empty($guest_account))', 'if (!isset($guest_account)');
 
 		expect($guestBlock)->not->toBe('')
-			->and($guestBlock)->not->toContain('return true;');
+			->and($guestBlock)->toContain('AND enabled = "on"')
+			->and($guestBlock)->toContain('(int) $_SESSION[\'sess_user_id\'] === $guest_user_id')
+			->and($guestBlock)->toContain("(\$current_user['enabled'] ?? '') == 'on'")
+			->and($guestBlock)->toContain('return true;')
+			->and($guestBlock)->toContain('cacti_session_destroy();');
+
+		/* Non-guest users with an existing session must not hit return true inside the guest branch. */
+		$existingSessionBlock = extract_source_slice($guestBlock, '} else {', null);
+
+		expect($existingSessionBlock)->not->toBe('')
+			->and(strpos($existingSessionBlock, 'if ((int) $_SESSION[\'sess_user_id\'] === $guest_user_id)'))
+			->toBeLessThan(strpos($existingSessionBlock, 'return true;'));
 	});
 });

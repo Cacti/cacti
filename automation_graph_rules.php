@@ -146,22 +146,24 @@ function save() {
 			LIMIT 1',
 			array($field_name));
 
-		if (!$exists) {
+		if (!$exists && $save['field'] !== '') {
 			/* check the case where there is no entry in the host_snmp_cache table yet */
-			if ("'$field_name'" != db_qstr($field_name)) {
-			if (!db_column_exists('host', $field_name) &&
+			$identifier_pattern = '/^[a-zA-Z0-9_]+(\.[a-zA-Z0-9_]+)?$/';
+
+			if (preg_match($identifier_pattern, $save['field']) !== 1 ||
+				preg_match($identifier_pattern, $field_name) !== 1 ||
+				(!db_column_exists('host', $field_name) &&
 				!db_column_exists('host_template', $field_name) &&
 				!db_column_exists('graph_templates', $field_name) &&
 				!db_column_exists('graph_local', $field_name) &&
-				!db_column_exists('graph_templates_graph', $field_name)) {
-					raise_message('sql_injection', __('An attempt was made to perform a SQL injection in Graph automation'), MESSAGE_LEVEL_ERROR);
+				!db_column_exists('graph_templates_graph', $field_name))) {
+				raise_message('sql_injection', __('An attempt was made to perform a SQL injection in Graph automation'), MESSAGE_LEVEL_ERROR);
 
-					cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Graph Automation from client address \'%s\'', get_client_addr()), false, 'SECURITY');
+				cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Graph Automation from client address \'%s\'', get_client_addr()), false, 'SECURITY');
 
-					header('Location: automation_graph_rules.php?header=false&action=edit&id=' . get_request_var('id'));
+				header('Location: automation_graph_rules.php?header=false&action=edit&id=' . get_request_var('id'));
 
-					exit;
-				}
+				exit;
 			}
 		}
 
