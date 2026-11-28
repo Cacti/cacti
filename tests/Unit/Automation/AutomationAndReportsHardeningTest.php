@@ -469,8 +469,8 @@ describe('ALGO2-37: lib/html_reports.php fixes', function () use ($repoRoot) {
 		expect($htmlReportsSource)->toContain("WHERE graph_template_id = ?\n\t\t\t\t\t\t\tAND host_id = ?");
 	});
 
-	it('includes ? query delimiter in html_nav_bar() pagination URL', function () use ($htmlReportsSource) {
-		expect($htmlReportsSource)->toContain("html_nav_bar(get_reports_page() . '?filter='")
+	it('includes ? query delimiter and encodes query parameters in html_nav_bar() pagination URL', function () use ($htmlReportsSource) {
+		expect($htmlReportsSource)->toContain("html_nav_bar(get_reports_page() . '?filter=' . rawurlencode((string) get_request_var('filter')) . '&host_id=' . (int) get_request_var('host_id')")
 			->and($htmlReportsSource)->not->toContain("html_nav_bar(get_reports_page() . 'filter='");
 	});
 

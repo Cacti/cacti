@@ -1993,7 +1993,7 @@ function reports() {
 
 	form_start(get_reports_page(), 'chk');
 
-	$nav = html_nav_bar(get_reports_page() . '?filter=' . get_request_var('filter') . '&host_id=' . get_request_var('host_id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 10, __('Reports'), 'page', 'main');
+	$nav = html_nav_bar(get_reports_page() . '?filter=' . rawurlencode((string) get_request_var('filter')) . '&host_id=' . (int) get_request_var('host_id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 10, __('Reports'), 'page', 'main');
 
 	print $nav;
 
