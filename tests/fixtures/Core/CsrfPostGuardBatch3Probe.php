@@ -115,6 +115,11 @@ function handler_reached() : never {
 	throw new HandlerReached('The protected handler was reached');
 }
 
+// Reaching the profile's account guard proves the request passed its POST guard.
+function auth_profile_deny_guest_write() : void {
+	handler_reached();
+}
+
 /**
  * Request presence check. form_save() reads a request field right after the
  * guard, so in save mode the first read means the guard let the request in.
