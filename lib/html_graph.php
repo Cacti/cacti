@@ -110,17 +110,71 @@ function set_default_graph_action() {
 }
 
 /**
+ * Validates the number of graph columns accepted by the graph views.
+ *
+ * @param mixed $value The requested column count.
+ *
+ * @return int|false The validated count, or false when it is unsupported.
+ */
+function html_graph_validate_columns($value) {
+	$value = filter_var($value, FILTER_VALIDATE_INT);
+
+	if ($value === false || $value < 1 || $value > 6) {
+		return false;
+	}
+
+	return $value;
+}
+
+/**
+ * Validates a graph page size against the configured selector values.
+ *
+ * @param mixed $value The requested page size.
+ *
+ * @return int|false The validated page size, or false when it is unsupported.
+ */
+function html_graph_validate_page_size($value) {
+	global $graphs_per_page, $item_rows;
+
+	$value = filter_var($value, FILTER_VALIDATE_INT);
+
+	if ($value === false) {
+		return false;
+	}
+
+	if (is_array($graphs_per_page) && array_key_exists($value, $graphs_per_page)) {
+		return $value;
+	}
+
+	if (is_array($item_rows) && array_key_exists($value, $item_rows)) {
+		return $value;
+	}
+
+	return false;
+}
+
+/**
  * Wrapper for plugins - it is used in mactrack, microtic, hmib, ...
  *
  * @return void No value is returned.
  */
 function html_graph_validate_preview_request_vars() {
+	$default_graphs = html_graph_validate_page_size(read_user_setting('preview_graphs_per_page', 20));
+	if ($default_graphs === false || $default_graphs < 1) {
+		$default_graphs = 20;
+	}
+
+	$default_columns = html_graph_validate_columns(read_user_setting('num_columns', '2'));
+	if ($default_columns === false) {
+		$default_columns = 2;
+	}
+
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'graphs' => array(
 			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
-			'default' => read_user_setting('preview_graphs_per_page', 20)
+			'default' => $default_graphs
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT,
@@ -134,7 +188,7 @@ function html_graph_validate_preview_request_vars() {
 		'columns' => array(
 			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
-			'default' => read_user_setting('num_columns', '2')
+			'default' => $default_columns
 			),
 		'host_id' => array(
 			'filter' => FILTER_VALIDATE_INT,
@@ -478,7 +532,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 		$(function() {
 			refreshIsLogout = false;
 			refreshIsLogout = false;
-			refreshMSeconds = <?php print read_user_setting('page_refresh')*1000;?>;
+			refreshMSeconds = <?php print max(15, (int) read_user_setting('page_refresh', 300)) * 1000;?>;
 
 			setupPageTimeout();
 

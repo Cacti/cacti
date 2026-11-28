@@ -24,6 +24,7 @@
 
 $guest_account = true;
 include('./include/auth.php');
+include_once('./lib/user_setting_validation.php');
 
 /* set default action */
 set_default_action();
@@ -51,6 +52,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'update_data':
+		csrf_require_post();
 		$name  = get_nfilter_request_var('name');
 		$value = get_nfilter_request_var('value');
 
@@ -126,19 +128,23 @@ switch (get_request_var('action')) {
  */
 
 function api_auth_logout_everywhere() {
-	$user = $_SESSION['sess_user_id'];
+	$user = $_SESSION['sess_user_id'] ?? 0;
 
-	if (!empty($user)) {
-		db_execute_prepared('DELETE FROM user_auth_cache
-			WHERE user_id = ?',
-			array($user));
+	if (empty($user) || cacti_user_is_guest_account($user, get_guest_account())) {
+		http_response_code(403);
 
-		/* the user's other sessions end too, this one stays so the reply can be sent */
-		db_execute_prepared('DELETE FROM sessions
-			WHERE user_id = ?
-			AND id != ?',
-			array($user, session_id()));
+		return;
 	}
+
+	db_execute_prepared('DELETE FROM user_auth_cache
+		WHERE user_id = ?',
+		array($user));
+
+	/* the user's other sessions end too, this one stays so the reply can be sent */
+	db_execute_prepared('DELETE FROM sessions
+		WHERE user_id = ?
+		AND id != ?',
+		array($user, session_id()));
 }
 
 /**
@@ -148,21 +154,25 @@ function api_auth_logout_everywhere() {
  * @return void No value is returned.
  */
 function api_auth_clear_user_settings() {
-	$user = $_SESSION['sess_user_id'];
+	$user = $_SESSION['sess_user_id'] ?? 0;
 
-	if (!empty($user)) {
-		if (isset_request_var('tab') && get_nfilter_request_var('tab') == 'general') {
-			db_execute_prepared('DELETE FROM settings_user
-				WHERE user_id = ?',
-				array($user));
+	if (empty($user) || cacti_user_is_guest_account($user, get_guest_account()) || !is_view_allowed('graph_settings')) {
+		http_response_code(403);
 
-			kill_session_var('sess_user_config_array');
-		} elseif (isset_request_var('tab')) {
-			api_plugin_hook('auth_profile_reset');
-		}
-
-		raise_message('37');
+		return;
 	}
+
+	if (isset_request_var('tab') && get_nfilter_request_var('tab') == 'general') {
+		db_execute_prepared('DELETE FROM settings_user
+			WHERE user_id = ?',
+			array($user));
+
+		kill_session_var('sess_user_config_array');
+	} elseif (isset_request_var('tab')) {
+		api_plugin_hook('auth_profile_reset');
+	}
+
+	raise_message('37');
 }
 
 /**
@@ -176,38 +186,42 @@ function api_auth_clear_user_settings() {
 function api_auth_clear_user_setting($name) {
 	global $settings_user;
 
-	$user = $_SESSION['sess_user_id'];
+	$user = $_SESSION['sess_user_id'] ?? 0;
+
+	if (empty($user) || cacti_user_is_guest_account($user, get_guest_account()) || !is_view_allowed('graph_settings')) {
+		http_response_code(403);
+
+		return;
+	}
 
 	if (read_config_option('client_timezone_support') == '0') {
 		unset($settings_user['client_timezone_support']);
 	}
 
-	if (!empty($user)) {
-		if (isset_request_var('tab') && get_nfilter_request_var('tab') == 'general') {
-			db_execute_prepared('DELETE FROM settings_user
-				WHERE user_id = ?
-				AND name = ?',
-				array($user, $name));
+	if (isset_request_var('tab') && get_nfilter_request_var('tab') == 'general') {
+		db_execute_prepared('DELETE FROM settings_user
+			WHERE user_id = ?
+			AND name = ?',
+			array($user, $name));
 
-			foreach($settings_user as $tab => $settings) {
-				if (isset($settings[$name])) {
-					if (isset($settings[$name]['default'])) {
-						db_execute_prepared('INSERT INTO settings_user
-							(name, value, user_id)
-							VALUES (?, ?, ?)',
-							array($name, $settings[$name]['default'], $user));
+		foreach($settings_user as $tab => $settings) {
+			if (isset($settings[$name])) {
+				if (isset($settings[$name]['default'])) {
+					db_execute_prepared('INSERT INTO settings_user
+						(name, value, user_id)
+						VALUES (?, ?, ?)',
+						array($name, $settings[$name]['default'], $user));
 
-						print $settings[$name]['default'];
+					print html_escape($settings[$name]['default']);
 
-						kill_session_var('sess_user_config_array');
+					kill_session_var('sess_user_config_array');
 
-						break;
-					}
+					break;
 				}
 			}
-		} else {
-			api_plugin_hook_function('auth_profile_reset_value', $name);
 		}
+	} else {
+		api_plugin_hook_function('auth_profile_reset_value', $name);
 	}
 }
 
@@ -223,29 +237,55 @@ function api_auth_clear_user_setting($name) {
 function api_auth_update_user_setting($name, $value) {
 	global $settings_user;
 
-	$user = $_SESSION['sess_user_id'];
+	$user = $_SESSION['sess_user_id'] ?? 0;
 
-	if (!empty($user)) {
-		if ($name == 'full_name' || $name == 'email_address') {
-			db_execute_prepared("UPDATE user_auth
-				SET $name = ?
-				WHERE id = ?",
-				array($value, $user));
-		} else {
-			foreach($settings_user as $tab => $settings) {
-				if (isset($settings[$name])) {
-					db_execute_prepared('REPLACE INTO settings_user
-						(name, value, user_id)
-						VALUES (?, ?, ?)',
-						array($name, $value, $user));
+	if (empty($user) || cacti_user_is_guest_account($user, get_guest_account())) {
+		http_response_code(403);
 
-					kill_session_var('sess_user_config_array');
-					kill_session_var('selected_theme');
-					kill_session_var('sess_user_language');
+		return;
+	}
 
-					break;
-				}
+	if ($name == 'full_name' || $name == 'email_address') {
+		if (!is_string($value) || strlen($value) > 255 || preg_match('/[\x00-\x1F\x7F]/', $value) === 1) {
+			http_response_code(400);
+
+			return;
+		}
+
+		db_execute_prepared("UPDATE user_auth
+			SET $name = ?
+			WHERE id = ?",
+			array($value, $user));
+
+		return;
+	}
+
+	if (!is_view_allowed('graph_settings')) {
+		http_response_code(403);
+
+		return;
+	}
+
+	foreach($settings_user as $tab => $settings) {
+		if (isset($settings[$name])) {
+			$validated = cacti_validate_user_setting_value($name, $value, $settings[$name]);
+
+			if ($validated === false) {
+				http_response_code(400);
+
+				return;
 			}
+
+			db_execute_prepared('REPLACE INTO settings_user
+				(name, value, user_id)
+				VALUES (?, ?, ?)',
+				array($name, $validated, $user));
+
+			kill_session_var('sess_user_config_array');
+			kill_session_var('selected_theme');
+			kill_session_var('sess_user_language');
+
+			break;
 		}
 	}
 }
@@ -260,15 +300,23 @@ function form_save() {
 
 	global $settings_user;
 
+	$user = $_SESSION['sess_user_id'] ?? 0;
+
+	if (empty($user) || cacti_user_is_guest_account($user, get_guest_account())) {
+		http_response_code(403);
+
+		return;
+	}
+
 	// Save the users profile information
-	if (isset_request_var('full_name') && isset_request_var('email_address') && isset($_SESSION['sess_user_id'])) {
+	if (isset_request_var('full_name') && isset_request_var('email_address')) {
 		db_execute_prepared("UPDATE user_auth
 			SET full_name = ?, email_address = ?
 			WHERE id = ?",
 			array(
 				get_nfilter_request_var('full_name'),
 				get_nfilter_request_var('email_address'),
-				$_SESSION['sess_user_id']
+				$user
 			)
 		);
 	}

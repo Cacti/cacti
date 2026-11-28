@@ -891,12 +891,22 @@ function html_validate_tree_vars() {
 		return false;
 	}
 
+	$default_tree_graphs = filter_var(read_user_setting('treeview_graphs_per_page', 10), FILTER_VALIDATE_INT);
+	if ($default_tree_graphs === false || $default_tree_graphs < 1 || $default_tree_graphs > 1000) {
+		$default_tree_graphs = 10;
+	}
+
+	$default_tree_columns = filter_var(read_user_setting('num_columns_tree', '2'), FILTER_VALIDATE_INT);
+	if ($default_tree_columns === false || $default_tree_columns < 1 || $default_tree_columns > 6) {
+		$default_tree_columns = 2;
+	}
+
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'graphs' => array(
 			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
-			'default' => read_user_setting('treeview_graphs_per_page')
+			'default' => $default_tree_graphs
 			),
 		'graph_template_id' => array(
 			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST,
@@ -905,7 +915,7 @@ function html_validate_tree_vars() {
 			),
 		'columns' => array(
 			'filter' => FILTER_VALIDATE_INT,
-			'default' => read_user_setting('num_columns_tree', '2')
+			'default' => $default_tree_columns
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT,

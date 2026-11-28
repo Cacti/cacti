@@ -26,6 +26,7 @@ $guest_account = true;
 
 include('./include/auth.php');
 include_once('./lib/rrd.php');
+include_once('./lib/user_setting_validation.php');
 
 $config['force_storage_location_local'] = true;
 
@@ -34,7 +35,7 @@ get_filter_request_var('graph_start');
 get_filter_request_var('graph_end');
 get_filter_request_var('graph_height');
 get_filter_request_var('graph_width');
-get_filter_request_var('graph_nolegend', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '(true|false)')));
+get_filter_request_var('graph_nolegend', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^(true|false)$/')));
 get_filter_request_var('local_graph_id');
 get_filter_request_var('size');
 get_filter_request_var('ds_step');
@@ -43,7 +44,7 @@ get_filter_request_var('top');
 get_filter_request_var('left');
 /* ==================================================== */
 
-if (!isset($_SESSION['sess_realtime_hash'])) {
+if (!isset($_SESSION['sess_realtime_hash']) || !cacti_validate_realtime_hash($_SESSION['sess_realtime_hash'])) {
 	$_SESSION['sess_realtime_hash'] = generate_hash();
 }
 
@@ -210,11 +211,22 @@ case 'countdown':
 	$graph_data_array['image_format'] = $gtype;
 
 	/* call poller */
-	$local_graph_id = get_filter_request_var('local_graph_id');
+	$local_graph_id = (int) get_filter_request_var('local_graph_id');
+
+	if ($local_graph_id <= 0 || !is_graph_allowed($local_graph_id)) {
+		ob_end_clean();
+		http_response_code(403);
+		print json_encode(array('error' => __('GRAPH ACCESS DENIED')));
+		exit;
+	}
+
+	$ds_step = cacti_sanitize_realtime_interval($graph_data_array['ds_step'], $realtime_refresh ?? array(), 10);
+	$graph_data_array['ds_step'] = $ds_step;
+
 	$graph_rrd      = read_config_option('realtime_cache_path') . '/user_' . $hash . '_lgi_' . $local_graph_id . '.png';
 	$php_binary     = cacti_escapeshellcmd(read_config_option('path_php_binary'));
 	$script_path    = cacti_escapeshellarg($config['base_path'] . '/poller_realtime.php');
-	$args           = '--graph=' . $local_graph_id . ' --interval=' . $graph_data_array['ds_step'] . ' --poller_id=' . $hash;
+	$args           = '--graph=' . $local_graph_id . ' --interval=' . $ds_step . ' --poller_id=' . cacti_escapeshellarg($hash);
 
 	shell_exec($php_binary . ' -q ' . $script_path . ' ' . $args);
 
@@ -268,15 +280,21 @@ case 'countdown':
 	}
 
 	/* save user preferences */
-	set_user_setting('realtime_interval', get_request_var('ds_step'));
-	set_user_setting('realtime_gwindow', abs(get_request_var('graph_start')));
-	set_user_setting('realtime_size', get_request_var('size'));
-	set_user_setting('realtime_nolegend', get_request_var('graph_nolegend'));
+	$realtime_is_guest = cacti_user_is_guest_account($_SESSION['sess_user_id'] ?? 0, get_guest_account());
+	$safe_nolegend     = (get_request_var('graph_nolegend') == 'true') ? 'true' : 'false';
+	$safe_gwindow      = cacti_sanitize_positive_int_setting(abs((int) get_request_var('graph_start')), 60, 1, 86400);
 
-	$_SESSION['sess_realtime_ds_step']     = get_request_var('ds_step');
+	if (!$realtime_is_guest) {
+		set_user_setting('realtime_interval', $ds_step);
+		set_user_setting('realtime_gwindow', $safe_gwindow);
+		set_user_setting('realtime_size', $size);
+		set_user_setting('realtime_nolegend', $safe_nolegend);
+	}
+
+	$_SESSION['sess_realtime_ds_step']     = $ds_step;
 	$_SESSION['sess_realtime_graph_start'] = get_request_var('graph_start');
-	$_SESSION['sess_realtime_size']        = get_request_var('size');
-	$_SESSION['sess_realtime_nolegend']    = get_request_var('graph_nolegend');
+	$_SESSION['sess_realtime_size']        = $size;
+	$_SESSION['sess_realtime_nolegend']    = $safe_nolegend;
 
 	/* send text information back to browser as well as image information */
 	$return_array = array(
@@ -296,7 +314,14 @@ case 'countdown':
 	exit;
 	break;
 case 'view':
-	$graph_rrd = read_config_option('realtime_cache_path') . '/user_' . $hash . '_lgi_' . get_filter_request_var('local_graph_id') . '.png';
+	$local_graph_id = (int) get_filter_request_var('local_graph_id');
+
+	if ($local_graph_id <= 0 || !is_graph_allowed($local_graph_id)) {
+		http_response_code(403);
+		exit;
+	}
+
+	$graph_rrd = read_config_option('realtime_cache_path') . '/user_' . $hash . '_lgi_' . $local_graph_id . '.png';
 
 	if (file_exists($graph_rrd)) {
 		print base64_encode(file_get_contents($graph_rrd));
@@ -344,10 +369,12 @@ if (!isset($_SESSION['sess_realtime_graph_start'])) {
 }
 
 /* save user preferences */
-set_user_setting('realtime_interval', get_request_var('ds_step'));
-set_user_setting('realtime_gwindow', abs(get_request_var('graph_start')));
-set_user_setting('realtime_size', get_request_var('size'));
-set_user_setting('realtime_nolegend', get_request_var('graph_nolegend'));
+if (!cacti_user_is_guest_account($_SESSION['sess_user_id'] ?? 0, get_guest_account())) {
+	set_user_setting('realtime_interval', cacti_sanitize_realtime_interval(get_request_var('ds_step'), $realtime_refresh ?? array(), 10));
+	set_user_setting('realtime_gwindow', cacti_sanitize_positive_int_setting(abs((int) get_request_var('graph_start')), 60, 1, 86400));
+	set_user_setting('realtime_size', cacti_sanitize_positive_int_setting(get_request_var('size'), 100, 10, 100));
+	set_user_setting('realtime_nolegend', (get_request_var('graph_nolegend') == 'true') ? 'true' : 'false');
+}
 
 if (read_config_option('realtime_enabled') == '') {
 	print "<html>\n";
