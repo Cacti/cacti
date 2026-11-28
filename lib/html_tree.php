@@ -812,6 +812,7 @@ function html_validate_tree_vars() {
 	);
 
 	validate_store_request_vars($filters, 'sess_grt');
+	html_graph_normalize_filters('sess_grt', 10);
 	/* ================= input validation ================= */
 
 	$count = true;

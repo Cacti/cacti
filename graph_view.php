@@ -193,7 +193,7 @@ case 'update_timespan':
 
 	break;
 case 'save':
-	if (is_view_allowed('graph_settings')) {
+	if (cacti_user_can_save_own_settings() && is_view_allowed('graph_settings')) {
 		get_filter_request_var('columns');
 		get_filter_request_var('predefined_timespan');
 		get_filter_request_var('predefined_timeshift');
@@ -212,7 +212,7 @@ case 'save':
 			if (isset_request_var('columns')) {
 				set_graph_config_option('num_columns', get_request_var('columns'));
 			}
-			if (isset_request_var('graphs')) {
+			if (isset_request_var('graphs') && isset($graphs_per_page[get_request_var('graphs')])) {
 				set_graph_config_option('preview_graphs_per_page', get_request_var('graphs'));
 			}
 			if (isset_request_var('thumbnails')) {
@@ -222,7 +222,7 @@ case 'save':
 			if (isset_request_var('columns')) {
 				set_graph_config_option('num_columns_tree', get_request_var('columns'));
 			}
-			if (isset_request_var('graphs')) {
+			if (isset_request_var('graphs') && isset($graphs_per_page[get_request_var('graphs')])) {
 				set_graph_config_option('treeview_graphs_per_page', get_request_var('graphs'));
 			}
 			if (isset_request_var('thumbnails')) {
@@ -585,6 +585,9 @@ case 'list':
 	} else {
 		$rows = get_request_var('rows');
 	}
+
+	list($page, $rows) = cacti_graph_pagination(get_request_var('page'), $rows, 30);
+	set_request_var('page', $page);
 
 	/* check to see if site_id and location are mismatched */
 	if (get_request_var('site_id') >= 0) {

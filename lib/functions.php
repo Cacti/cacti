@@ -130,6 +130,49 @@ function read_graph_config_option($config_name, $force = false) {
 	return read_user_setting($config_name, false, $force);
 }
 
+/* A guest session shares its account with other visitors. */
+function cacti_user_can_save_own_settings() {
+	return !empty($_SESSION['sess_user_id']) && (int) $_SESSION['sess_user_id'] !== (int) get_guest_account();
+}
+
+/* Use the values offered by the form for settings with a fixed set of options. */
+function cacti_user_setting_value_allowed($setting, $value) {
+	if ((!is_string($value) && !is_int($value)) || !isset($setting['method'])) {
+		return false;
+	}
+
+	if ($setting['method'] === 'checkbox') {
+		return $value === '' || $value === 'on';
+	}
+
+	if ($setting['method'] === 'drop_array' || $setting['method'] === 'drop_language') {
+		return isset($setting['array'][$value]) || (!empty($setting['none_value']) && (string) $value === '0');
+	}
+
+	if (isset($setting['default']) && is_numeric($setting['default'])) {
+		return is_numeric($value);
+	}
+
+	return true;
+}
+
+/* Stored preferences and session filters can predate validation at write time. */
+function cacti_graph_pagination($page, $rows, $default_rows) {
+	$options = array('options' => array('min_range' => 1));
+	$rows = filter_var($rows, FILTER_VALIDATE_INT, $options);
+	$page = filter_var($page, FILTER_VALIDATE_INT, $options);
+
+	if ($rows === false) {
+		$rows = $default_rows;
+	}
+
+	if ($page === false || $page > intdiv(PHP_INT_MAX, $rows)) {
+		$page = 1;
+	}
+
+	return array($page, $rows);
+}
+
 /**
  * save_user_setting - sets/updates aLL user settings
  *
@@ -174,7 +217,7 @@ function save_user_settings($user = -1) {
 							set_user_setting($sub_field_name, get_nfilter_request_var($sub_field_name), $user);
 						}
 					}
-				} elseif (isset_request_var($field_name)) {
+				} elseif (isset_request_var($field_name) && cacti_user_setting_value_allowed($field_array, get_nfilter_request_var($field_name))) {
 					set_user_setting($field_name, get_nfilter_request_var($field_name), $user);
 				}
 			}

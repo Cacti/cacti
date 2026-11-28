@@ -28,7 +28,22 @@ include('./include/auth.php');
 /* set default action */
 set_default_action();
 
-switch (get_request_var('action')) {
+$action = get_request_var('action');
+
+if (in_array($action, array('save', 'update_data', 'clear_user_settings', 'reset_default', 'logout_everywhere'), true)) {
+	if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+		header('Allow: POST');
+		http_response_code(405);
+		exit;
+	}
+
+	if (!cacti_user_can_save_own_settings()) {
+		http_response_code(403);
+		exit;
+	}
+}
+
+switch ($action) {
 	case 'save':
 		form_save();
 
@@ -44,7 +59,9 @@ switch (get_request_var('action')) {
 	case 'reset_default':
 		$name  = get_nfilter_request_var('name');
 
-		api_auth_clear_user_setting($name);
+		if (is_string($name)) {
+			api_auth_clear_user_setting($name);
+		}
 
 		break;
 	case 'update_data':
@@ -187,15 +204,15 @@ function api_auth_update_user_setting($name, $value) {
 
 	$user = $_SESSION['sess_user_id'];
 
-	if (!empty($user)) {
-		if ($name == 'full_name' || $name == 'email_address') {
+	if (!empty($user) && is_string($name) && is_string($value)) {
+		if ($name === 'full_name' || $name === 'email_address') {
 			db_execute_prepared("UPDATE user_auth
 				SET $name = ?
 				WHERE id = ?",
 				array($value, $user));
-		} else {
+		} elseif ($name === 'enable_hscroll' || is_view_allowed('graph_settings')) {
 			foreach($settings_user as $tab => $settings) {
-				if (isset($settings[$name])) {
+				if (isset($settings[$name]) && cacti_user_setting_value_allowed($settings[$name], $value)) {
 					db_execute_prepared('REPLACE INTO settings_user
 						(name, value, user_id)
 						VALUES (?, ?, ?)',
@@ -458,7 +475,7 @@ function settings_javascript() {
 	var authMethod   = '<?php print read_config_option('auth_method');?>';
 
 	function clearUserSettings() {
-		$.get('auth_profile.php?action=clear_user_settings', function() {
+		$.post('auth_profile.php', {action: 'clear_user_settings', tab: currentTab, __csrf_magic: csrfMagicToken}, function() {
 			document.location = 'auth_profile.php?newtheme=1';
 			$('#clear_settings').blur();
 		});
@@ -489,7 +506,7 @@ function settings_javascript() {
 
 	function logoutEverywhere() {
 		$('#logout_everywhere').blur();
-		$.get('auth_profile.php?action=logout_everywhere', function(data) {
+		$.post('auth_profile.php', {action: 'logout_everywhere', __csrf_magic: csrfMagicToken}, function(data) {
 			$('body').append('<div style="display:none;" id="cleared" title="<?php print __esc('User Sessions Cleared');?>"><p><?php print __('All your login sessions have been cleared.');?></p></div>');
 
 			$('#cleared').dialog({
@@ -581,7 +598,7 @@ function settings_javascript() {
 							var id = $(this).attr('data-id');
 
 							if (id != undefined) {
-								$.get('auth_profile.php?tab='+currentTab+'&action=reset_default&name='+id, function(data) {
+								$.post('auth_profile.php', {action: 'reset_default', tab: currentTab, name: id, __csrf_magic: csrfMagicToken}, function(data) {
 									if (id != 'selected_theme' && id != 'user_language' && id != 'enable_hscroll') {
 										if ($('#'+id).is(':checkbox')) {
 											if (data == 'on') {
