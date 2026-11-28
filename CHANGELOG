@@ -269,6 +269,9 @@ Cacti CHANGELOG
 -issue#8777: Report a failed session cleanup from the session garbage collector
 -issue#8777: Check the sibling element before adding the theme filter search icon
 -issue#8777: Escape the graph id in the graph drilldown container id
+-issue#8778: Copy the permissions and realms of the source group when copying a user group
+-issue#8779: Reset cached user permissions after granting access with cli/add_perms.php
+-issue#8780: Clear cached row counts when user or group permissions change
 -issue#8783: Keep the scripts and resource files shipped with Cacti when the installer imports the bundled device template packages, whose embedded copies can be older and would undo fixes such as the bound queries in the MikroTik scripts
 -issue#8814: Show -n, the short option the parser accepts, for --number in the removespikes usage line
 -issue#8815: Escape stored names, log lines and tab titles for their output context in the aggregate migrate notice, graph thumbnails, data source repair steps, installer log, automation SNMP options, tree breadcrumb and tab overflow menu

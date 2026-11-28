@@ -115,11 +115,13 @@ beforeEach(function () {
 test('permission resets invalidate persistent authentication tokens', function () {
 	reset_user_perms_under_test(42);
 
-	expect($GLOBALS['auth_cache_queries'])->toHaveCount(2)
+	expect($GLOBALS['auth_cache_queries'])->toHaveCount(3)
 		->and($GLOBALS['auth_cache_queries'][0][0])->toBe('DELETE FROM user_auth_cache WHERE user_id = ?')
 		->and($GLOBALS['auth_cache_queries'][0][1])->toBe(array(42))
-		->and($GLOBALS['auth_cache_queries'][1][0])->toContain('UPDATE user_auth')
+		->and($GLOBALS['auth_cache_queries'][1][0])->toBe('DELETE FROM user_auth_row_cache WHERE user_id = ?')
 		->and($GLOBALS['auth_cache_queries'][1][1])->toBe(array(42))
+		->and($GLOBALS['auth_cache_queries'][2][0])->toContain('UPDATE user_auth')
+		->and($GLOBALS['auth_cache_queries'][2][1])->toBe(array(42))
 		->and($GLOBALS['auth_cache_session_kills'])->toBe(array());
 });
 
@@ -134,18 +136,37 @@ test('permission resets still clear the current user session caches', function (
 	));
 });
 
+test('permission resets run without a session from the command line', function () {
+	unset($_SESSION);
+
+	reset_user_perms_under_test(7);
+
+	expect($GLOBALS['auth_cache_queries'])->toHaveCount(3)
+		->and($GLOBALS['auth_cache_session_kills'])->toBe(array());
+});
+
+test('the add_perms command line resets each user it grants to', function () {
+	$source = file_get_contents(dirname(__DIR__, 4) . '/cli/add_perms.php');
+
+	expect($source)->not->toBeFalse()
+		->and($source)->toContain("VALUES (\$id, \$itemId, \$itemType)\");\n\n\t\treset_user_perms(\$id);");
+});
+
 test('group permission resets invalidate every member token', function () {
 	$GLOBALS['auth_cache_group_users'] = array(array('user_id' => 10), array('user_id' => 11));
 
 	reset_group_perms_under_test(5);
 
-	expect($GLOBALS['auth_cache_queries'])->toHaveCount(2)
+	expect($GLOBALS['auth_cache_queries'])->toHaveCount(3)
 		->and($GLOBALS['auth_cache_queries'][0][0])->toContain('DELETE FROM user_auth_cache')
 		->and($GLOBALS['auth_cache_queries'][0][0])->toContain('user_id IN (?,?)')
 		->and($GLOBALS['auth_cache_queries'][0][1])->toBe(array(10, 11))
-		->and($GLOBALS['auth_cache_queries'][1][0])->toContain('UPDATE user_auth')
-		->and($GLOBALS['auth_cache_queries'][1][0])->toContain('id IN (?,?)')
-		->and($GLOBALS['auth_cache_queries'][1][1])->toBe(array(10, 11));
+		->and($GLOBALS['auth_cache_queries'][1][0])->toContain('DELETE FROM user_auth_row_cache')
+		->and($GLOBALS['auth_cache_queries'][1][0])->toContain('user_id IN (?,?)')
+		->and($GLOBALS['auth_cache_queries'][1][1])->toBe(array(10, 11))
+		->and($GLOBALS['auth_cache_queries'][2][0])->toContain('UPDATE user_auth')
+		->and($GLOBALS['auth_cache_queries'][2][0])->toContain('id IN (?,?)')
+		->and($GLOBALS['auth_cache_queries'][2][1])->toBe(array(10, 11));
 });
 
 test('empty groups do not issue invalidation queries', function () {
