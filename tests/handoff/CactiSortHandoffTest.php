@@ -18,9 +18,8 @@ test('Data Handoff: sort parameters are neutralized before SQL generation', func
 
 	$_SESSION = [];
 	
-	// Page ID used by get_order_string_page()
-	// static $page_count = 0; 0_user_admin
-	$page = '0_user_admin';
+	// The sortable columns are listed per script
+	$page = '/user_admin.php';
 	$_SESSION['valid_sort_columns'][$page] = ['username', 'full_name'];
 	
 	set_request_var('sort_column', 'username` OR 1=1');

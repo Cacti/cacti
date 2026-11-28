@@ -641,6 +641,28 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 }
 
 /**
+ * Record the columns this table can be sorted by for validate_sort_column().
+ *
+ * The list is kept per script and columns are only added to it, so it covers
+ * every sortable table the script has drawn in this session whatever action,
+ * tab or filter state the request named.
+ */
+function html_header_sort_register(array $header_items) : void {
+	$page    = (string) get_current_page(false);
+	$columns = $_SESSION['valid_sort_columns'][$page] ?? [];
+
+	foreach (array_keys($header_items) as $column) {
+		$column = (string) $column;
+
+		if ($column !== '' && strpos($column, 'nosort') === false && !in_array($column, $columns, true)) {
+			$columns[] = $column;
+		}
+	}
+
+	$_SESSION['valid_sort_columns'][$page] = $columns;
+}
+
+/**
  * Retrieve the sort history for this renderer instance, action and tab.
  */
 function html_header_sort_order(int $page_count) : array {
@@ -723,23 +745,7 @@ function html_header_sort_column(array $display_array, string $db_column, string
 function html_header_sort($header_items, $sort_column, $sort_direction, $last_item_colspan = 1, $url = '', $return_to = '') {
 	static $page_count = 0;
 
-	$reg_page = $page_count . '_' . str_replace('.php', '', basename($_SERVER['SCRIPT_NAME']));
-
-	if (isset_request_var('action')) {
-		$reg_page .= '_' . get_nfilter_request_var('action');
-	}
-
-	if (isset_request_var('tab')) {
-		$reg_page .= '_' . get_nfilter_request_var('tab');
-	}
-
-	$valid_columns = [];
-	foreach (array_keys($header_items) as $key) {
-		if ($key !== '' && strpos((string)$key, 'nosort') === false) {
-			$valid_columns[] = $key;
-		}
-	}
-	$_SESSION['valid_sort_columns'][$reg_page] = $valid_columns;
+	html_header_sort_register($header_items);
 
 	$order_data = html_header_sort_order($page_count);
 	$primarySort = '';
@@ -795,23 +801,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 function html_header_sort_checkbox($header_items, $sort_column, $sort_direction, $include_form = true, $form_action = '', $return_to = '', $prefix = 'chk') {
 	static $page_count = 0;
 
-	$reg_page = $page_count . '_' . str_replace('.php', '', basename($_SERVER['SCRIPT_NAME']));
-
-	if (isset_request_var('action')) {
-		$reg_page .= '_' . get_nfilter_request_var('action');
-	}
-
-	if (isset_request_var('tab')) {
-		$reg_page .= '_' . get_nfilter_request_var('tab');
-	}
-
-	$valid_columns = [];
-	foreach (array_keys($header_items) as $key) {
-		if ($key !== '' && strpos((string)$key, 'nosort') === false) {
-			$valid_columns[] = $key;
-		}
-	}
-	$_SESSION['valid_sort_columns'][$reg_page] = $valid_columns;
+	html_header_sort_register($header_items);
 
 	$order_data = html_header_sort_order($page_count);
 	$primarySort = '';

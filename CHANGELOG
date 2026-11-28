@@ -280,6 +280,7 @@ Cacti CHANGELOG
 -issue#8859: Harmonize the MikroTik script server data collection scripts with the MikroTik plugin so they return U when there is no data, read the plugin RouterOS 7 health sensors when present, and validate every requested column
 -issue#8861: Do not flag a data source as an orphan while the device still reports its index, and clear that state on re-index
 -issue#8863: Clear a deleted site from removed devices and discovery networks, and count only current devices in the Sites list
+-issue#8865: Keep the list of sortable columns per script so the action or tab of a request cannot select it, sort on the page's default column until a table header has listed the others, rebuild stored list sorts without columns that are not listed, and do not sort by columns named like credentials
 -issue#8894: Require POST for the remaining device, tree, external link and report actions that change data: device re-index, data query and graph template changes, device debug and poller cache refresh, tree sorting, locking and node edits, external link deletion, and report send and item reordering
 -issue#8894: Require POST for the data query reload and saved defaults on the New Graphs page, color template and automation SNMP option reordering, the Data Source Troubleshooter Run All action, the test email, and user domain bulk actions
 -issue#8895: Encode the SNMP system strings and error text in the device test pane, and show the reply relayed from a remote data collector as text
