@@ -2923,6 +2923,10 @@ function cactiIsPostActionUrl(href) {
 		"reset_default"
 	],
 	"automation_templates.php": [
+		"item_movedown",
+		"item_moveup",
+		"movedown",
+		"moveup",
 		"ajax_dnd",
 		"graph_dnd",
 		"tree_dnd",

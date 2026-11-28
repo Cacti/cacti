@@ -19146,6 +19146,10 @@ msgid "You have been rate limited by Google.  Please create yourself a personal 
 msgstr ""
 
 #: lib/reports.php
+msgid "The report history entry could not be found."
+msgstr ""
+
+#: lib/reports.php
 #, php-format
 msgid "Device '%s' successfully added to Report."
 msgstr ""
