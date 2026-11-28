@@ -222,10 +222,26 @@ function draw_edit_control(string $field_name, array &$field_array) : void {
 
 			break;
 		case 'textbox_password':
+			$password_field  = $field_array;
+			$password_stored = false;
+
+			if (!empty($field_array['secret'])) {
+				// A stored secret is never written into the page. The save code
+				// reads it back with form_secret_value(), so a blank field keeps it.
+				$password_stored = form_secret_is_stored($field_array['value'], ($field_array['default'] ?? ''), ($field_array['form_id'] ?? ''));
+
+				$password_field['value']   = '';
+				$password_field['default'] = '';
+
+				unset($_SESSION[SESS_FIELD_VALUES][$field_name]);
+				unset($_SESSION[SESS_FIELD_VALUES][$field_name . '_confirm']);
+				unset($_SESSION[SESS_FIELD_VALUES][$field_name . '_clear']);
+			}
+
 			form_text_box(
 				$field_name,
-				$field_array['value'],
-				($field_array['default'] ?? ''),
+				$password_field['value'],
+				($password_field['default'] ?? ''),
 				$field_array['max_length'],
 				($field_array['size'] ?? '40'),
 				'password',
@@ -238,14 +254,20 @@ function draw_edit_control(string $field_name, array &$field_array) : void {
 
 				form_text_box(
 					$field_name . '_confirm',
-					$field_array['value'],
-					($field_array['default'] ?? ''),
+					$password_field['value'],
+					($password_field['default'] ?? ''),
 					$field_array['max_length'],
 					($field_array['size'] ?? '40'),
 					'password',
 					($field_array['form_id'] ?? ''),
 					'********'
 				);
+			}
+
+			if ($password_stored) {
+				print '<br><span class="formSecretStored">' . __esc('A value is stored. Leave the field blank to keep it.') . '</span> ';
+
+				form_checkbox($field_name . '_clear', '', __('Clear the stored value'), '', 0, '', '', __('Clear the stored value'), true);
 			}
 
 			break;
@@ -910,6 +932,45 @@ function form_text_box(string $form_name, mixed $prev_val, mixed $default_val, m
 	}
 
 	print " id='$form_name' " . ($placeholder != '' ? "placeholder='" . htmle($placeholder) . "'" : '') . " name='$form_name' size='$form_size'" . (!empty($max_length) ? " maxlength='$max_length'" : '') . " value='" . htmle($prev_val) . "'>";
+}
+
+/**
+ * Reports whether a password field drawn with 'secret' set has a stored value,
+ * using the same value/default rule as form_text_box().
+ *
+ * @param mixed $value      The stored value of the field
+ * @param mixed $default    The value used when there is no stored value
+ * @param mixed $current_id Non-empty when the record being edited already exists
+ *
+ * @return bool
+ */
+function form_secret_is_stored(mixed $value, mixed $default, mixed $current_id) : bool {
+	if ((string) $value === '' && empty($current_id)) {
+		$value = $default;
+	}
+
+	return (string) $value !== '';
+}
+
+/**
+ * Returns the value to save for a password field drawn with 'secret' set.
+ * The page never holds the stored value, so a blank submission keeps it, a
+ * typed value replaces it, and only the field's '_clear' checkbox blanks it.
+ *
+ * @param string $field_name The name of the password field
+ * @param string $stored     The value currently stored for the field
+ *
+ * @return string
+ */
+function form_secret_value(string $field_name, string $stored) : string {
+	// no-validation: a password is an arbitrary secret with no format to enforce
+	$submitted = (string) gnrv($field_name);
+
+	if ($submitted !== '') {
+		return $submitted;
+	}
+
+	return isrv($field_name . '_clear') ? '' : $stored;
 }
 
 /**
