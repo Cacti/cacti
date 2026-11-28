@@ -192,7 +192,8 @@ function dsdebug_poller_bottom() : bool {
 					boost_process_poller_output($c['datasource']);
 				}
 
-				$real_path = str_replace('<path_rra>', CACTI_PATH_RRA, $dtd['data_source_path']);
+				// the path the poller and RRDtool use, which stays inside the RRA directory
+				$real_path = get_data_source_path($c['datasource'], true);
 
 				// rrd_folder_writable
 				$info['rrd_folder_writable'] = (is_resource_writable(dirname($real_path) . '/') ? 1 : 0);
@@ -207,7 +208,9 @@ function dsdebug_poller_bottom() : bool {
 				$info['active'] = $dtd['active'];
 
 				// owner
-				if (CACTI_SERVER_OS == 'win32') {
+				if (!file_exists($real_path)) {
+					$info['owner'] = '';
+				} elseif (CACTI_SERVER_OS == 'win32') {
 					$info['owner'] = '<unable to determine on windows>';
 				} else {
 					$o             = posix_getpwuid(fileowner($real_path));

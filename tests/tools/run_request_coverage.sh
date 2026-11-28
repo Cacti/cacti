@@ -58,6 +58,12 @@ run_php_probe tests/fixtures/Core/SpikekillMutationMatrix.php '^(lib/spikekill\.
 run_php_probe tests/fixtures/Core/RemoveSpikesHelp.php '^(cli/removespikes\.php|tests/fixtures/Core/RemoveSpikesHelp\.php)$'
 run_php_probe tests/fixtures/Core/SpikekillRequestGate.php '^(spikekill\.php|tests/fixtures/Core/SpikekillRequestGate\.php)'
 
+output_encoding_files='^((graphs_new|package_import|poller_automation|settings|templates_import)\.php|lib/(clog_webapi|dsdebug|html_filter)\.php|tests/fixtures/Core/OutputEncodingPaths\.php)$'
+run_php_probe tests/fixtures/Core/OutputEncodingPaths.php "$output_encoding_files"
+for mode in filter purge-get purge-token purge-post rotate-get rotate-post; do
+	run_php_probe tests/fixtures/Core/OutputEncodingPaths.php "$output_encoding_files" "$mode"
+done
+
 run_php_probe tests/fixtures/Core/Boost/FailedDataSourceIsolation.php '^(poller_boost\.php|tests/fixtures/Core/Boost/FailedDataSourceIsolation\.php)'
 
 run_php_probe tests/fixtures/Core/Rrd/FallbackSourceIdentity.php '^(lib/rrd\.php|tests/fixtures/Core/Rrd/FallbackSourceIdentity\.php)'

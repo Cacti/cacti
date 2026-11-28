@@ -1294,7 +1294,7 @@ function import_display_package_data(array $templates, array $files, string $pac
 				}
 
 				if (cacti_sizeof($orphan_array)) {
-					$diff_details .= ($diff_details != '' ? '<br>' : '') . __('Orphans') . '<br>' . implode('<br>', $orphan_array);
+					$diff_details .= ($diff_details != '' ? '<br>' : '') . __('Orphans') . '<br>' . implode('<br>', array_map('html_escape', $orphan_array));
 				}
 
 				form_selectable_cell($diff_details, $id, '', 'white-space:pre-wrap');
