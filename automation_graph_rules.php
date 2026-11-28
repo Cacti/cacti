@@ -128,22 +128,9 @@ function save() {
 		$save['pattern']   = form_input_validate((isset_request_var('pattern') ? get_nfilter_request_var('pattern') : ''), 'pattern', '', true, 3);
 
 		/* Test for SQL injections and sensitive credential columns */
-		$sensitive_host_columns = array(
-			'snmp_community',
-			'snmp_username',
-			'snmp_password',
-			'snmp_auth_protocol',
-			'snmp_priv_passphrase',
-			'snmp_priv_protocol',
-			'snmp_context',
-			'snmp_engine_id'
-		);
+		$field_name = str_replace(array('ht.', 'h.', 'gt.', 'gtg.'), '', $save['field']);
 
-		$field_name       = str_replace(array('ht.', 'h.', 'gt.', 'gtg.'), '', $save['field']);
-		$normalized_field = strtolower(trim($save['field']));
-		$column_part      = strpos($normalized_field, '.') !== false ? substr($normalized_field, strrpos($normalized_field, '.') + 1) : $normalized_field;
-
-		if (in_array($column_part, $sensitive_host_columns, true)) {
+		if (cacti_automation_is_sensitive_host_field($save['field'])) {
 			raise_message('sql_injection', __('Invalid or restricted field specified in Graph automation'), MESSAGE_LEVEL_ERROR);
 
 			cacti_log(sprintf('ERROR: Restricted credential field specified in Graph Automation from client address \'%s\'', get_client_addr()), false, 'SECURITY');
@@ -210,21 +197,10 @@ function save() {
 		$save['pattern']   = form_input_validate((isset_request_var('pattern') ? get_nfilter_request_var('pattern') : ''), 'pattern', '', true, 3);
 
 		/* Test for SQL injections and sensitive credential columns */
-		$sensitive_host_columns = array(
-			'snmp_community',
-			'snmp_username',
-			'snmp_password',
-			'snmp_auth_protocol',
-			'snmp_priv_passphrase',
-			'snmp_priv_protocol',
-			'snmp_context',
-			'snmp_engine_id'
-		);
-
 		$field_name = str_replace(array('ht.', 'h.', 'gt.', 'gl.', 'gtg.'), '', $save['field']);
 
 		if (!preg_match('/^(?:(?:ht|h|gt|gl|gtg)\.)?[a-zA-Z0-9_]+$/', $save['field']) ||
-			in_array(strtolower($field_name), $sensitive_host_columns, true) ||
+			cacti_automation_is_sensitive_host_field($save['field']) ||
 			(!db_column_exists('host', $field_name) &&
 			!db_column_exists('host_template', $field_name) &&
 			!db_column_exists('graph_templates', $field_name) &&

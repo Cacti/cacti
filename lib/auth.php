@@ -5265,3 +5265,29 @@ function cacti_authorize_is_admin($user_id) {
 
 	return $is_admin;
 }
+
+/**
+ * cacti_automation_is_sensitive_host_field - returns true when an automation
+ * rule field targets a sensitive host SNMP credential column.
+ *
+ * @param string $field Field name, optionally prefixed with a table alias.
+ *
+ * @return bool
+ */
+function cacti_automation_is_sensitive_host_field($field) {
+	static $sensitive_host_columns = array(
+		'snmp_community',
+		'snmp_username',
+		'snmp_password',
+		'snmp_auth_protocol',
+		'snmp_priv_passphrase',
+		'snmp_priv_protocol',
+		'snmp_context',
+		'snmp_engine_id'
+	);
+
+	$normalized = strtolower(trim((string) $field));
+	$column     = strpos($normalized, '.') !== false ? substr($normalized, strrpos($normalized, '.') + 1) : $normalized;
+
+	return in_array($column, $sensitive_host_columns, true);
+}

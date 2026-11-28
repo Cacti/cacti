@@ -279,25 +279,35 @@ describe('automation rules sensitive host credential column rejection', function
 		'snmp_engine_id',
 	);
 
-	it('blocks all sensitive host credential columns in automation_tree_rules.php', function () use ($repoRoot, $sensitiveColumns) {
-		$src = file_get_contents($repoRoot . '/automation_tree_rules.php');
+	it('identifies all sensitive host credential columns in cacti_automation_is_sensitive_host_field()', function () use ($repoRoot, $sensitiveColumns) {
+		$fn = extract_php_function_source($repoRoot . '/lib/auth.php', 'cacti_automation_is_sensitive_host_field');
+
+		expect($fn)->not->toBe('')
+			->and($fn)->toContain('strtolower(trim((string) $field))')
+			->and($fn)->toContain("strrpos(\$normalized, '.')")
+			->and($fn)->toContain('in_array($column, $sensitive_host_columns, true)');
 
 		foreach ($sensitiveColumns as $col) {
-			expect(substr_count($src, "'" . $col . "'"))->toBeGreaterThanOrEqual(2);
+			expect($fn)->toContain("'" . $col . "'");
 		}
 
-		expect($src)->toContain("in_array(strtolower(\$field_name), \$sensitive_host_columns, true)");
+		if (function_exists('cacti_automation_is_sensitive_host_field')) {
+			foreach ($sensitiveColumns as $col) {
+				expect(cacti_automation_is_sensitive_host_field($col))->toBeTrue();
+				expect(cacti_automation_is_sensitive_host_field('h.' . $col))->toBeTrue();
+				expect(cacti_automation_is_sensitive_host_field('H.' . strtoupper($col)))->toBeTrue();
+			}
+
+			expect(cacti_automation_is_sensitive_host_field('h.description'))->toBeFalse();
+		}
 	});
 
-	it('blocks all sensitive host credential columns in automation_graph_rules.php', function () use ($repoRoot, $sensitiveColumns) {
-		$src = file_get_contents($repoRoot . '/automation_graph_rules.php');
+	it('enforces cacti_automation_is_sensitive_host_field() across tree and graph rule save handlers', function () use ($repoRoot) {
+		$treeSrc  = file_get_contents($repoRoot . '/automation_tree_rules.php');
+		$graphSrc = file_get_contents($repoRoot . '/automation_graph_rules.php');
 
-		foreach ($sensitiveColumns as $col) {
-			expect(substr_count($src, "'" . $col . "'"))->toBeGreaterThanOrEqual(2);
-		}
-
-		expect($src)->toContain("in_array(\$column_part, \$sensitive_host_columns, true)")
-			->and($src)->toContain("in_array(strtolower(\$field_name), \$sensitive_host_columns, true)");
+		expect(substr_count($treeSrc, 'cacti_automation_is_sensitive_host_field('))->toBeGreaterThanOrEqual(2);
+		expect(substr_count($graphSrc, 'cacti_automation_is_sensitive_host_field('))->toBeGreaterThanOrEqual(2);
 	});
 });
 
