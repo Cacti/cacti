@@ -347,8 +347,14 @@ function read_graph_config_option(string $config_name, bool $force = false) : st
 function save_user_settings(mixed $user = null) : void {
 	global $settings_user;
 
+	require_once(__DIR__ . '/user_setting_validation.php');
+
 	// Passed user id, or session id, or else 0
 	$user ??= $_SESSION[SESS_USER_ID] ?? 0;
+
+	if (cacti_user_is_guest_account($user, get_guest_account())) {
+		return;
+	}
 
 	foreach ($settings_user as $tab_fields) {
 		foreach ($tab_fields as $field_name => $field_array) {
@@ -377,11 +383,21 @@ function save_user_settings(mixed $user = null) : void {
 				} elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 					foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
 						if (isrv($sub_field_name)) {
-							set_user_setting($sub_field_name, gnrv($sub_field_name), $user);
+							$validated_sub = cacti_validate_user_setting_value($sub_field_name, gnrv($sub_field_name), $sub_field_array);
+
+							if ($validated_sub !== false) {
+								set_user_setting($sub_field_name, $validated_sub, $user);
+							}
 						}
 					}
 				} elseif (isrv($field_name)) {
-					set_user_setting($field_name, gnrv($field_name), $user);
+					$validated_val = cacti_validate_user_setting_value($field_name, gnrv($field_name), $field_array);
+
+					if ($validated_val !== false) {
+						set_user_setting($field_name, $validated_val, $user);
+					} elseif (isset($field_array['default'])) {
+						set_user_setting($field_name, $field_array['default'], $user);
+					}
 				}
 			}
 		}

@@ -206,8 +206,8 @@ function grow_dhtml_trees() : void {
 			return $(this).width();
 		}).get());
 
-		var minWidth = <?php print read_user_setting('min_tree_width'); ?>;
-		var maxWidth = <?php print read_user_setting('max_tree_width'); ?>;
+		var minWidth = <?php print max(0, (int) read_user_setting('min_tree_width', 100)); ?>;
+		var maxWidth = <?php print max(0, (int) read_user_setting('max_tree_width', 300)); ?>;
 
 		if (visWidth < minWidth) {
 			$('.cactiTreeNavigationArea').width(minWidth);
@@ -1347,9 +1347,15 @@ function grow_right_pane_tree(int $tree_id, int $leaf_id, string $host_group_dat
 	}
 
 	if (grv('graphs') == '-1') {
-		$graph_rows = read_user_setting('treeview_graphs_per_page', read_config_option('treeview_graphs_per_page') ?? 10);
+		$raw_graph_rows = read_user_setting('treeview_graphs_per_page', read_config_option('treeview_graphs_per_page') ?? 10);
 	} else {
-		$graph_rows = grv('graphs');
+		$raw_graph_rows = grv('graphs');
+	}
+
+	$graph_rows = filter_var($raw_graph_rows, FILTER_VALIDATE_INT);
+
+	if ($graph_rows === false || $graph_rows < 1 || $graph_rows > 1000) {
+		$graph_rows = 10;
 	}
 
 	?>
@@ -1937,8 +1943,8 @@ function html_tree_init() : void {
 
 	?>
 	<script type='text/javascript'>
-	minTreeWidth = <?php print read_user_setting('min_tree_width'); ?>;
-	maxTreeWidth = <?php print read_user_setting('max_tree_width'); ?>;
+	minTreeWidth = <?php print max(0, (int) read_user_setting('min_tree_width', 100)); ?>;
+	maxTreeWidth = <?php print max(0, (int) read_user_setting('max_tree_width', 300)); ?>;
 	</script>
 	<?php
 
@@ -2024,7 +2030,7 @@ function html_tree_get_content() : void {
 	<script type='text/javascript'>
 	refreshIsLogout = false;
 	refreshPage     = '<?php print str_replace('tree_content', 'tree', sanitize_uri($_SERVER['REQUEST_URI'])); ?>';
-	refreshMSeconds = <?php print read_user_setting('page_refresh') * 1000; ?>;
+	refreshMSeconds = <?php print max(15, (int) read_user_setting('page_refresh', 300)) * 1000; ?>;
 	refreshFunction = 'refreshGraphs()';
 	var graph_start     = <?php print get_current_graph_start(); ?>;
 	var graph_end       = <?php print get_current_graph_end(); ?>;
