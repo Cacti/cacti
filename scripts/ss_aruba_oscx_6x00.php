@@ -73,6 +73,10 @@ function ss_aruba_oscx_6x00(int $host_id = 0, string $object = 'fan', string $cm
 		WHERE id = ?',
 		[$host_id]);
 
+	if (!is_array($host) || !cacti_sizeof($host)) {
+		return 'U';
+	}
+
 	// is it standalone switch or VSF stack member?
 	if ($object == 'vsf') {
 		if (cacti_snmp_walk($host['hostname'],
@@ -88,6 +92,7 @@ function ss_aruba_oscx_6x00(int $host_id = 0, string $object = 'fan', string $cm
 			$host['snmp_port'],
 			$host['snmp_timeout'],
 			$host['snmp_retries'],
+			$host['max_oids'],
 			SNMP_POLLER,
 			$host['snmp_engine_id'])) { // it is standalone
 			$oids['vsf'] = $oids['vsf_standalone'];
@@ -114,6 +119,7 @@ function ss_aruba_oscx_6x00(int $host_id = 0, string $object = 'fan', string $cm
 				$host['snmp_port'],
 				$host['snmp_timeout'],
 				$host['snmp_retries'],
+				$host['max_oids'],
 				SNMP_POLLER,
 				$host['snmp_engine_id']);
 
@@ -150,6 +156,7 @@ function ss_aruba_oscx_6x00(int $host_id = 0, string $object = 'fan', string $cm
 				$host['snmp_port'],
 				$host['snmp_timeout'],
 				$host['snmp_retries'],
+				$host['max_oids'],
 				SNMP_POLLER,
 				$host['snmp_engine_id']));
 		}
@@ -171,6 +178,7 @@ function ss_aruba_oscx_6x00(int $host_id = 0, string $object = 'fan', string $cm
 				$host['snmp_port'],
 				$host['snmp_timeout'],
 				$host['snmp_retries'],
+				$host['max_oids'],
 				SNMP_POLLER,
 				$host['snmp_engine_id']);
 

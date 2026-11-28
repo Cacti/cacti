@@ -34,6 +34,17 @@ function rrdtool_execute(string $command, mixed ...$args) : string {
 	return '';
 }
 
+// Record the Script Server argv instead of starting a worker that must answer the startup banner.
+function proc_open(array|string $command, array $descriptors, mixed &$pipes, ?string $cwd = null, ?array $env = null, ?array $options = null) : mixed {
+	if (is_array($command) && in_array(CACTI_PATH_BASE . '/script_server.php', $command, true)) {
+		$GLOBALS['script_server_command'] = $command;
+
+		return false;
+	}
+
+	return \proc_open($command, $descriptors, $pipes, $cwd, $env, $options);
+}
+
 function process_args(mixed $process, array $pipes) : array {
 	check(is_resource($process), 'Unable to start configured binary');
 	fclose($pipes[0]);
@@ -78,7 +89,7 @@ register_shutdown_function(static function () use ($directory) : void {
 
 $settings = ['path_php_binary' => $php, 'path_rrdtool' => $rrdtool];
 
-foreach (['cli/push_out_hosts.php' => ['push_out_rebuild_cache'], 'lib/poller.php' => ['exec_poll_php'],
+foreach (['cli/push_out_hosts.php' => ['push_out_rebuild_cache'], 'lib/poller.php' => ['poller_php_binary', 'script_server_process_descriptors', 'script_server_open'],
 	'lib/dsstats.php'                 => ['dsstats_rrdtool_init'], 'lib/rrdcheck.php' => ['rrdcheck_rrdtool_init', 'rrdcheck_valid_tune_spec', 'rrdcheck_tune_rrdfile'],
 	'cli/rrdresize.php'               => ['rrdtool_pipe_init'], 'cli/splice_rrd.php' => ['createRRDFileFromXML']] as $file => $functions) {
 	foreach ($functions as $function) {
@@ -105,7 +116,6 @@ foreach (['', '-'] as $invalid) {
 	check(push_out_rebuild_cache([], $invalid) === 1, 'An incomplete executable setting must fail');
 	check(str_contains(end($GLOBALS['messages']), 'Rejected'), 'Missing configuration diagnostic');
 }
-check(exec_poll_php(escapeshellarg($directory . '/script_server.php') . ' 42', false, [], null) === '["42"]', 'Direct polling command split the executable path');
 
 foreach ([rrdtool_pipe_init($rrdtool), dsstats_rrdtool_init(), rrdcheck_rrdtool_init()] as [$process, $pipes]) {
 	check(process_args($process, $pipes) === ['-'], 'RRDtool must receive its pipe operand');
@@ -125,15 +135,15 @@ function exec(string $command, array &$output, ?int &$status) : string|false {
 createRRDFileFromXML('input file.xml', 'output file.rrd');
 check(json_decode(end($GLOBALS['command_output']), true, flags: JSON_THROW_ON_ERROR) === ['restore', '-f', '-r', 'input file.xml', 'output file.rrd'], 'RRD restore split its operands');
 
-$cactides = [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']];
-
-foreach (['cmd.php', 'cmd_realtime.php', 'remote_agent.php'] as $file) {
-	$pattern = $file === 'cmd.php' ? '~(\$php_path = .*?\$cactiphp = proc_open\([^;]+;)~s' : '~(\$command = cacti_escapeshellarg\(\(string\) read_config_option\(\x27path_php_binary\x27\)\) .*?\$cactiphp = proc_open\([^;]+;)~s';
-
-	foreach (['7', str_repeat('af', 32)] as $pollerId) {
-		$locals   = cacti_fixture_source_block($root . '/' . $file, __NAMESPACE__, $pattern, ['poller_id' => $pollerId, 'cactides' => $cactides]);
-		$expected = $file === 'cmd.php' ? ['--environ=cmd', '--poller=' . $pollerId, '--mode=online'] : ['realtime', $pollerId];
-		check(process_args($locals['cactiphp'], $locals['pipes']) === $expected, $file . ' split script-server operands');
+foreach (['cmd.php' => ['cmd', ['7']], 'cmd_realtime.php' => ['realtime', ['7', str_repeat('af', 32)]],
+	'remote_agent.php'  => ['realtime', ['7', str_repeat('af', 32)]]] as $file => [$environment, $pollerIds]) {
+	foreach ($pollerIds as $pollerId) {
+		unset($GLOBALS['script_server_command']);
+		$locals   = cacti_fixture_source_block($root . '/' . $file, __NAMESPACE__, '~(\[\$cactiphp, \$pipes, \$using_proc_function\] = script_server_open\([^;]+;)~',
+			['poller_id' => $pollerId, 'script_timeout' => 1.0]);
+		$expected = [$php, '-q', CACTI_PATH_BASE . '/script_server.php', '--environ=' . $environment, '--poller=' . $pollerId, '--mode=online'];
+		check(($GLOBALS['script_server_command'] ?? null) === $expected, $file . ' split script-server operands');
+		check($locals['using_proc_function'] === false && $locals['pipes'] === false, $file . ' used a worker that failed to start');
 	}
 }
 

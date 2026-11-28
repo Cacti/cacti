@@ -47,6 +47,10 @@ function ss_fortigate_ips(int $host_id = 0) : mixed {
 		WHERE id = ?',
 		[$host_id]);
 
+	if (!is_array($host) || !cacti_sizeof($host)) {
+		return 'ips_detected:U ips_blocked:U ips_crit:U ips_high:U ips_ano:U' . PHP_EOL;
+	}
+
 	$oids = [
 		'ips_detected' => '.1.3.6.1.4.1.12356.101.9.2.1.1.1.1',
 		'ips_blocked'  => '.1.3.6.1.4.1.12356.101.9.2.1.1.2.1',
@@ -77,7 +81,8 @@ function ss_fortigate_ips(int $host_id = 0) : mixed {
 		if (is_numeric($x)) {
 			$result .= $name . ':' . $x . ' ';
 		} else {
-			$result .= $name . ':0 ';
+			// a failed or non-numeric read is unknown, not zero
+			$result .= $name . ':U ';
 		}
 	}
 

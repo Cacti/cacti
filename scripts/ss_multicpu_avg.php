@@ -1,6 +1,9 @@
 <?php
 
-include_once(__DIR__ . '/../include/cli_check.php');
+if (!isset($called_by_script_server)) {
+	include_once(__DIR__ . '/../include/cli_check.php');
+}
+
 include_once(__DIR__ . '/../lib/snmp.php');
 
 if (!isset($called_by_script_server)) {
@@ -38,17 +41,28 @@ function ss_multicpu_avg(int $device_id) : string {
 		$snmp_retries
 	);
 
-	$load = 0;
+	return 'load:' . ss_multicpu_avg_load($array) . "\n";
+}
 
-	if (cacti_sizeof($array)) {
-		foreach ($array as $key=>$value) {
-			$load += $value['value'];
+/**
+ * ss_multicpu_avg_load - average the hrProcessorLoad rows
+ *
+ * Devices can return non-numeric rows, which are left out of the average.
+ *
+ * @param array $rows The walk result
+ *
+ * @return mixed The average load, or 0 when no row is numeric
+ */
+function ss_multicpu_avg_load(array $rows) : mixed {
+	$load  = 0;
+	$valid = 0;
+
+	foreach ($rows as $row) {
+		if (isset($row['value']) && is_numeric($row['value'])) {
+			$load += $row['value'];
+			$valid++;
 		}
-	} else {
-		return "load:0\n";
 	}
 
-	$load = $load / cacti_count($array);
-
-	return "load:$load\n";
+	return $valid ? $load / $valid : 0;
 }

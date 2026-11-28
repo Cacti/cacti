@@ -151,6 +151,18 @@ if (!function_exists('db_fetch_assoc')) {
 	}
 }
 
+if (!function_exists('db_fetch_row_prepared')) {
+	function db_fetch_row_prepared(string $sql, array $params = []) : array|bool {
+		if (str_contains($sql, 'FROM host')) {
+			$GLOBALS['snmp_coverage_host_queries'] = ($GLOBALS['snmp_coverage_host_queries'] ?? 0) + 1;
+
+			return $GLOBALS['snmp_coverage_host_by_id'][$params[0] ?? 0] ?? [];
+		}
+
+		return [];
+	}
+}
+
 if (!function_exists('cacti_encrypt_secret')) {
 	function cacti_encrypt_secret(string $plain) : string {
 		return 'enc:' . base64_encode($plain);
@@ -735,4 +747,65 @@ test('cached v3 auth assembly reuses pre-hardened credential args', function () 
 	expect(cacti_get_snmpv3_auth('BOGUS', 'user', 'secret', '[None]', '', '', ''))->toBe('');
 
 	$GLOBALS['snmp_coverage_config']['snmp_credential_cache'] = '';
+});
+
+test('script data query SNMP fields come from the device unless the cached argument carries them', function () : void {
+	$GLOBALS['snmp_coverage_host_by_id'] = [
+		7 => [
+			'snmp_community'       => 'public',
+			'snmp_username'        => 'user',
+			'snmp_password'        => 'auth:pass',
+			'snmp_auth_protocol'   => 'SHA',
+			'snmp_priv_passphrase' => 'priv pass',
+			'snmp_priv_protocol'   => 'AES',
+			'snmp_context'         => 'ctx',
+			'snmp_engine_id'       => '0x80001f88',
+		],
+	];
+
+	// the reduced argument loads every credential, including v3 fields that hold a colon
+	expect(snmp_script_auth_fields(7, '3:161:500:1:10'))->toBe([
+		'3', '161', '500', '1', '10', 'public', 'user', 'auth:pass', 'SHA', 'priv pass', 'AES', 'ctx', '0x80001f88'
+	]);
+
+	// a short argument is padded to the timing fields before the credentials
+	expect(snmp_script_auth_fields(7, '2:161'))->toBe([
+		'2', '161', '', '', '', 'public', 'user', 'auth:pass', 'SHA', 'priv pass', 'AES', 'ctx', '0x80001f88'
+	]);
+
+	// a cached argument in the old layout is used as passed, without a lookup
+	expect(snmp_script_auth_fields(7, '2:161:500:1:10:cached'))
+		->toBe(['2', '161', '500', '1', '10', 'cached', '', '', '', '', '', '', '']);
+
+	// no device id, or a device that no longer exists, leaves the credentials empty
+	expect(snmp_script_auth_fields(0, '2:161:500:1:10'))->toBe(array_pad(['2', '161', '500', '1', '10'], 13, ''))
+		->and(snmp_script_auth_fields(99, '2:161:500:1:10'))->toBe(array_pad(['2', '161', '500', '1', '10'], 13, ''));
+
+	unset($GLOBALS['snmp_coverage_host_by_id']);
+});
+
+test('script data query SNMP fields read each device once per worker', function () : void {
+	$GLOBALS['snmp_coverage_host_by_id']   = [
+		8 => array_fill_keys(['snmp_username', 'snmp_password', 'snmp_auth_protocol', 'snmp_priv_passphrase',
+			'snmp_priv_protocol', 'snmp_context', 'snmp_engine_id'], '') + ['snmp_community' => 'c8'],
+	];
+	$GLOBALS['snmp_coverage_host_queries'] = 0;
+
+	// every data source of a device, and a device that does not exist, cost one lookup each
+	for ($i = 0; $i < 50; $i++) {
+		expect(snmp_script_auth_fields(8, '2:161:500:1:10')[5])->toBe('c8')
+			->and(snmp_script_auth_fields(98, '2:161:500:1:10')[5])->toBe('');
+	}
+
+	expect($GLOBALS['snmp_coverage_host_queries'])->toBe(2);
+
+	// After a worker visits enough devices to evict its first row, reuse must fetch its current fields.
+	for ($id = 1000; $id <= 2024; $id++) {
+		snmp_script_auth_fields($id, '2:161:500:1:10');
+	}
+	$GLOBALS['snmp_coverage_host_by_id'][8]['snmp_community'] = 'updated';
+	expect(snmp_script_auth_fields(8, '2:161:500:1:10')[5])->toBe('updated');
+	expect($GLOBALS['snmp_coverage_host_queries'])->toBe(1028);
+
+	unset($GLOBALS['snmp_coverage_host_by_id'], $GLOBALS['snmp_coverage_host_queries']);
 });

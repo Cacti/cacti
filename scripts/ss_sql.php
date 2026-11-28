@@ -32,26 +32,76 @@ if (!isset($called_by_script_server)) {
 }
 
 function ss_sql() : string {
-	global $database_username;
-	global $database_password;
-	global $database_hostname;
+	$status = ss_sql_status();
 
-	$cmd = 'mysqladmin --host=' . cacti_escapeshellarg($database_hostname) . ' --user=' . cacti_escapeshellarg($database_username);
-
-	if ($database_password != '') {
-		$cmd .= ' --password=' . cacti_escapeshellarg($database_password);
+	if (!cacti_sizeof($status)) {
+		return 'U';
 	}
 
-	$cmd .= ' status';
+	return ss_sql_format($status);
+}
 
-	$result = shell_exec($cmd) ?? '';
+/**
+ * ss_sql_status - read the server counters that mysqladmin status reports
+ *
+ * Reading them over the existing connection avoids starting mysqladmin with
+ * the database password on its command line.
+ *
+ * @return array The status values keyed by variable name, empty on failure
+ */
+function ss_sql_status() : array {
+	$rows = db_fetch_assoc("SHOW GLOBAL STATUS
+		WHERE Variable_name IN ('Uptime', 'Threads_connected', 'Queries', 'Questions',
+		'Slow_queries', 'Opened_tables', 'Flush_commands', 'Open_tables')");
 
-	$result = preg_replace('/: /', ':', (string) $result);
-	$result = preg_replace('/  /', ' ', (string) $result);
-	$result = preg_replace('/Slow queries/', 'SlowQueries', (string) $result);
-	$result = preg_replace('/Open tables/', 'OpenTables', (string) $result);
-	$result = preg_replace('/Queries per second avg/', 'QPS', (string) $result);
-	$result = preg_replace('/Flush tables/', 'FlushTables', (string) $result);
+	$status = [];
 
-	return trim((string) $result) ?: 'U';
+	if (is_array($rows)) {
+		foreach ($rows as $row) {
+			if (isset($row['Variable_name'], $row['Value'])) {
+				$status[$row['Variable_name']] = $row['Value'];
+			}
+		}
+	}
+
+	return $status;
+}
+
+/**
+ * ss_sql_format - format status values the way ss_sql() has always reported them
+ *
+ * The server's own status line counts statements by query id, which is the
+ * Queries counter, and truncates the average rate to three decimals. MariaDB
+ * omits the flush count, so it is only reported when the server has one.
+ *
+ * @param array $status Status values keyed by variable name
+ *
+ * @return string The status line, or 'U' when a counter is missing
+ */
+function ss_sql_format(array $status) : string {
+	$queries = $status['Queries'] ?? ($status['Questions'] ?? null);
+
+	foreach ([$status['Uptime'] ?? null, $status['Threads_connected'] ?? null, $queries, $status['Slow_queries'] ?? null, $status['Opened_tables'] ?? null, $status['Open_tables'] ?? null] as $value) {
+		if ($value === null || !ctype_digit((string) $value)) {
+			return 'U';
+		}
+	}
+
+	$uptime = (int) $status['Uptime'];
+	$qps    = ($uptime > 0 ? intdiv((int) $queries * 1000, $uptime) : 0);
+
+	$result = 'Uptime:' . $status['Uptime'] .
+		' Threads:' . $status['Threads_connected'] .
+		' Questions:' . $queries .
+		' SlowQueries:' . $status['Slow_queries'] .
+		' Opens:' . $status['Opened_tables'];
+
+	if (isset($status['Flush_commands']) && ctype_digit((string) $status['Flush_commands'])) {
+		$result .= ' FlushTables:' . $status['Flush_commands'];
+	}
+
+	$result .= ' OpenTables:' . $status['Open_tables'] .
+		' QPS:' . sprintf('%d.%03d', intdiv($qps, 1000), $qps % 1000);
+
+	return $result;
 }

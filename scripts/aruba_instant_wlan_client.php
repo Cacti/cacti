@@ -40,7 +40,7 @@ $host = db_fetch_row_prepared('SELECT *
 	WHERE id = ?',
 	[$host_id]);
 
-if (!cacti_sizeof($host)) {
+if (!is_array($host) || !cacti_sizeof($host)) {
 	print '';
 	exit;
 }
@@ -74,6 +74,7 @@ if ($cmd == 'index') {
 		$host['snmp_port'],
 		$host['snmp_timeout'],
 		$host['snmp_retries'],
+		$host['max_oids'],
 		SNMP_POLLER,
 		$host['snmp_engine_id']);
 
@@ -95,6 +96,7 @@ if ($cmd == 'index') {
 			$host['snmp_port'],
 			$host['snmp_timeout'],
 			$host['snmp_retries'],
+			$host['max_oids'],
 			SNMP_POLLER,
 			$host['snmp_engine_id']));
 
@@ -118,6 +120,7 @@ if ($cmd == 'index') {
 			$host['snmp_port'],
 			$host['snmp_timeout'],
 			$host['snmp_retries'],
+			$host['max_oids'],
 			SNMP_POLLER,
 			$host['snmp_engine_id']));
 
@@ -144,6 +147,7 @@ if ($cmd == 'index') {
 			$host['snmp_port'],
 			$host['snmp_timeout'],
 			$host['snmp_retries'],
+			$host['max_oids'],
 			SNMP_POLLER,
 			$host['snmp_engine_id']));
 

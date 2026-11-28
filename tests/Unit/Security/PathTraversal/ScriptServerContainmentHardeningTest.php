@@ -15,110 +15,99 @@
 /**
  * Tests for the script-server path containment hardening.
  *
- * The script server validates the include file and the resolved source file
- * of the dispatched function against the configured Cacti script roots
- * (CACTI_PATH_BASE and CACTI_PATH_SCRIPTS) via script_server_path_is_allowed().
+ * The script server validates the include file against the configured Cacti
+ * script roots (CACTI_PATH_SCRIPTS and CACTI_PATH_PLUGINS) via
+ * script_server_path_is_allowed(), and only dispatches a user function defined
+ * by that resolved include file.
  *
  * get_script_query_path() sanitizes the base script path to block command
  * injection from malicious templates. It must NOT run the path through
  * cacti_escapeshellcmd() on Windows, which replaces every backslash (the path
  * separator) with a space and corrupts 'C:\path\script.php' into
  * 'C: path script.php'; the script server then truncates the include file at
- * the first space to 'C:' and the containment check rejects it. On Windows the
- * shell metacharacters are stripped while the backslash separator is preserved.
+ * the first space to 'C:' and the containment check rejects it. On Windows a
+ * path carrying a shell metacharacter is refused and any other path is kept
+ * intact, backslash separators included.
  *
  * Two suites:
  *   1. Source-scan: verifies the guard structure is textually present.
- *   2. Runtime: exercises replicated containment/sanitization logic in
- *      isolation using a real temporary directory tree.
+ *   2. Runtime: exercises the unchanged production functions, the
+ *      containment helper against a real temporary directory tree and
+ *      get_script_query_path() in a child process per platform.
  */
+
+namespace CactiScriptServerContainmentTests;
+
+require_once dirname(__DIR__, 3) . '/Helpers/SourceSlice.php';
+require_once dirname(__DIR__, 3) . '/Helpers/IsolatedProbe.php';
+
+if (!function_exists(__NAMESPACE__ . '\\script_server_path_is_allowed')) {
+	\cacti_fixture_source_function(dirname(__DIR__, 4) . '/lib/script_server.php', 'script_server_path_is_allowed', __NAMESPACE__);
+}
 
 // ---------------------------------------------------------------------------
 // Source-scan suite (secondary lint — does NOT substitute for runtime tests)
 // ---------------------------------------------------------------------------
 
-$ss = file_get_contents(__DIR__ . '/../../../../script_server.php');
-$dq = file_get_contents(__DIR__ . '/../../../../lib/data_query.php');
+$ss  = file_get_contents(__DIR__ . '/../../../../script_server.php');
+$lss = file_get_contents(__DIR__ . '/../../../../lib/script_server.php');
+$dq  = file_get_contents(__DIR__ . '/../../../../lib/data_query.php');
 
-test('script_server defines the path containment helper', function () use ($ss) {
-	expect($ss)->toContain('function script_server_path_is_allowed(');
+test('script_server defines the path containment helper', function () use ($lss) {
+	expect($lss)->toContain('function script_server_path_is_allowed(');
 });
 
-test('script_server builds the allowed roots from base and scripts path', function () use ($ss) {
-	expect($ss)->toContain('$allowed_roots = [CACTI_PATH_BASE]')
-		->and($ss)->toContain('CACTI_PATH_SCRIPTS');
+test('script_server builds the allowed roots from the scripts and plugins paths', function () use ($ss, $lss) {
+	$start = strpos($lss, 'function script_server_allowed_roots(');
+	$body  = substr($lss, $start, strpos($lss, "\n}\n", $start) - $start);
+
+	expect($ss)->toContain('$allowed_roots     = script_server_allowed_roots();')
+		->and($body)->toContain('CACTI_PATH_SCRIPTS')
+		->and($body)->toContain('CACTI_PATH_PLUGINS')
+		->and($body)->not->toContain('CACTI_PATH_BASE');
 });
 
-test('script_server validates the include file against the allowed roots before loading', function () use ($ss) {
-	$guard = strpos($ss, 'script_server_path_is_allowed($real_include, $allowed_roots)');
+test('script_server validates the include file against the allowed roots before loading', function () use ($ss, $lss) {
+	$guard = strpos($ss, 'script_server_validate_request($input_string, $allowed_roots)');
 	$load  = strpos($ss, 'require_once($include_file)');
 
 	expect($guard)->not->toBeFalse()
 		->and($load)->not->toBeFalse()
-		->and($guard)->toBeLessThan($load);
+		->and($guard)->toBeLessThan($load)
+		->and($lss)->toContain('script_server_path_is_allowed($real_include, $roots)');
 });
 
-test('script_server refuses PHP internal functions and validates the function source file', function () use ($ss) {
-	expect($ss)->toContain('$ref->isInternal()')
-		->and($ss)->toContain('script_server_path_is_allowed(realpath($fn_file), $allowed_roots)');
+test('script_server refuses PHP internal functions and validates the function source file', function () use ($lss) {
+	expect($lss)->toContain('$ref->isInternal()')
+		->and($lss)->toContain('$resolved_file === $resolved_include');
 });
 
-test('get_script_query_path preserves Windows path separators while sanitizing', function () use ($dq) {
+test('get_script_query_path preserves Windows path separators while rejecting cmd.exe metacharacters', function () use ($dq) {
 	$start = strpos($dq, 'function get_script_query_path(');
 	$body  = substr($dq, $start, 3200);
 
 	expect($body)->toContain("CACTI_SERVER_OS == 'win32'")
-		->and($body)->toContain("str_replace(['#', '&', ';'")
-		->and($body)->toContain("], '', \$parsed_script_path)")
+		->and($body)->toContain("preg_match('/[&|<>^%;$`#*?\\[\\]{}]/', \$base_command)")
+		->and($body)->toContain('$base_command = $parsed_script_path;')
 		->and($body)->toContain('cacti_escapeshellcmd($parsed_script_path)');
 });
 
-test('get_script_query_path rejects path traversal', function () use ($dq) {
+test('get_script_query_path checks for traversal after sanitizing', function () use ($dq) {
 	$start = strpos($dq, 'function get_script_query_path(');
 	$body  = substr($dq, $start, 3200);
 
-	expect(str_contains($body, "strpos(\$parsed_script_path, '..')"))->toBeTrue();
+	$check = strpos($body, "str_contains(str_replace(['\"', \"'\"], '', \$base_command), '..')");
+	$build = strpos($body, '$base_command = cacti_escapeshellcmd($parsed_script_path);');
+
+	expect($build)->not->toBeFalse()
+		->and($check)->not->toBeFalse()
+		->and($check)->toBeGreaterThan($build)
+		->and($body)->not->toContain("strpos(\$parsed_script_path, '..')");
 });
 
 // ---------------------------------------------------------------------------
-// Runtime suite — exercises replicated containment / sanitization logic
+// Runtime suite — exercises the unchanged production functions
 // ---------------------------------------------------------------------------
-
-/* Replicates script_server_path_is_allowed() so it can be exercised without
- * running script_server.php (which has top-level bootstrap code). */
-function ssContainmentAllowed($resolved_path, array $roots): bool {
-	if ($resolved_path === false || !is_string($resolved_path)) {
-		return false;
-	}
-
-	$resolved_path    = rtrim(str_replace('\\', '/', $resolved_path), '/');
-	$case_insensitive = (DIRECTORY_SEPARATOR === '\\');
-
-	foreach ($roots as $root) {
-		$root = realpath($root);
-
-		if ($root === false) {
-			continue;
-		}
-
-		$prefix = rtrim(str_replace('\\', '/', $root), '/') . '/';
-
-		if ($case_insensitive) {
-			if (stripos($resolved_path, $prefix) === 0) {
-				return true;
-			}
-		} elseif (strpos($resolved_path, $prefix) === 0) {
-			return true;
-		}
-	}
-
-	return false;
-}
-
-/* Replicates the Windows script-path sanitization from get_script_query_path(). */
-function ssWin32PathStrip(string $path): string {
-	return str_replace(['#', '&', ';', '`', '|', '*', '?', '<', '>', '^', '(', ')', '[', ']', '{', '}', '$'], '', $path);
-}
 
 test('containment accepts a file inside the configured root', function () {
 	$base = sys_get_temp_dir() . '/ss_contain_' . uniqid();
@@ -126,7 +115,7 @@ test('containment accepts a file inside the configured root', function () {
 	$script = $base . '/scripts/ss_host_disk.php';
 	file_put_contents($script, "<?php\n");
 
-	expect(ssContainmentAllowed(realpath($script), [$base]))->toBeTrue();
+	expect(script_server_path_is_allowed(realpath($script), [$base]))->toBeTrue();
 
 	unlink($script);
 	rmdir($base . '/scripts');
@@ -139,25 +128,46 @@ test('containment rejects a file outside every configured root', function () {
 
 	$outside = tempnam(sys_get_temp_dir(), 'ss_outside_');
 
-	expect(ssContainmentAllowed(realpath($outside), [$base]))->toBeFalse();
+	expect(script_server_path_is_allowed(realpath($outside), [$base]))->toBeFalse();
 
 	unlink($outside);
 	rmdir($base);
 });
 
 test('containment rejects an unresolved path', function () {
-	expect(ssContainmentAllowed(false, [sys_get_temp_dir()]))->toBeFalse();
+	expect(script_server_path_is_allowed(false, [sys_get_temp_dir()]))->toBeFalse();
 });
 
-test('win32 sanitization keeps a backslash path intact', function () {
-	$path = 'C:\\Apache24\\htdocs\\cacti\\scripts\\ss_host_disk.php';
+/* get_script_query_path() reads CACTI_SERVER_OS, a constant, so each case
+ * runs the production function in its own process. */
+test('get_script_query_path builds the command and rejects traversal', function (string $os, string $path, string $args, string $expected) {
+	$result = \cacti_test_isolated_probe(dirname(__DIR__, 4) . '/tests/fixtures/Core/ScriptQueryPath.php', [$os, $path, $args]);
 
-	expect(ssWin32PathStrip($path))->toBe($path);
-});
-
-test('win32 sanitization strips injected command chaining', function () {
-	$evil = 'C:\\x\\ss.php & calc.exe';
-
-	expect(ssWin32PathStrip($evil))->not->toContain('&')
-		->and(ssWin32PathStrip($evil))->toContain('C:\\x\\ss.php');
-});
+	expect($result['command'])->toBe($expected)
+		->and($result['rejected'])->toBe($expected === '');
+})->with([
+	'win32 backslash path is kept'        => ['win32', 'C:\\Apache24\\htdocs\\cacti\\scripts\\ss_host_disk.php ss_host_disk', 'get total 2', 'C:\\Apache24\\htdocs\\cacti\\scripts\\ss_host_disk.php ss_host_disk "get" "total" "2"'],
+	'win32 placeholder path'              => ['win32', '|path_cacti|/scripts/ss_host_cpu.php ss_host_cpu', '', 'C:\\Apache24\\htdocs\\cacti\\scripts\\ss_host_cpu.php ss_host_cpu '],
+	'win32 Program Files (x86) is kept'   => ['win32', '"C:\\Program Files (x86)\\cacti\\scripts\\ss_host_disk.php" ss_host_disk', '', '"C:\\Program Files (x86)\\cacti\\scripts\\ss_host_disk.php" ss_host_disk '],
+	'win32 command chaining rejected'     => ['win32', 'C:\\x\\ss.php & calc.exe', '', ''],
+	'win32 percent rejected'              => ['win32', 'C:\\x\\%COMSPEC%ss.php', '', ''],
+	'win32 caret rejected'                => ['win32', 'C:\\x\\a^b.php', '', ''],
+	'win32 POSIX shell syntax rejected'   => ['win32', 'C:\\x\\ss.php;id', '', ''],
+	'win32 dollar rejected'               => ['win32', 'C:\\x\\$x.php', '', ''],
+	'win32 unpaired quote rejected'       => ['win32', 'C:\\x\\ss.php" x', '', ''],
+	'win32 line break rejected'           => ['win32', "C:\\x\\ss.php\ncalc.exe", '', ''],
+	'win32 quoted path with spaces'       => ['win32', '"C:\\Program Files\\Cacti\\scripts\\test.php" test', '"two words"', '"C:\\Program Files\\Cacti\\scripts\\test.php" test "two words"'],
+	'win32 traversal'                     => ['win32', 'C:\\x\\scripts\\..\\ss.php', '', ''],
+	'win32 dots split by ;'               => ['win32', 'C:\\x\\scripts\\.;.\\ss.php', '', ''],
+	'win32 dots split by %'               => ['win32', 'C:\\x\\scripts\\.%.\\ss.php', '', ''],
+	'win32 traversal split by quotes'     => ['win32', '/cacti/scripts/."."/x.php', '', ''],
+	'win32 nested split dots'             => ['win32', 'C:\\x\\scripts\\.^.\\.#.\\ss.php', '', ''],
+	'win32 drive relative traversal'      => ['win32', 'C:..\\ss.php', '', ''],
+	'win32 dots inside a name'            => ['win32', 'C:\\x\\scripts..old\\ss.php', '', ''],
+	'unix placeholder path'               => ['unix', '|path_cacti|/scripts/ss_host_disk.php ss_host_disk', 'get total 2', "/srv/cacti/scripts/ss_host_disk.php ss_host_disk 'get' 'total' '2'"],
+	'unix metacharacters are escaped'     => ['unix', '/srv/cacti/scripts/label;literal', '', '/srv/cacti/scripts/label\\;literal '],
+	'unix traversal split by quotes'      => ['unix', '/srv/cacti/scripts/."."/x.php', '', ''],
+	'unix traversal split by apostrophes' => ['unix', "/srv/cacti/scripts/.'.'/x.php", '', ''],
+	'unix line break rejected'            => ['unix', "/srv/cacti/scripts/x.php\nid", '', ''],
+	'unix traversal'                      => ['unix', '/srv/cacti/scripts/../ss.php', '', ''],
+]);
