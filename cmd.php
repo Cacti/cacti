@@ -593,21 +593,29 @@ function open_snmp_session($host_id, &$item) {
 		$item['max_oids'] = read_config_option('max_get_size');
 	}
 
-	if (!isset($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']]) && !isset($downhosts[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']])) {
-		$sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']] = cacti_snmp_session($item['hostname'], $item['snmp_community'], $item['snmp_version'],
+	$key = $host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port'];
+
+	/* A host already marked down this run has no cached session, so return
+	   false instead of falling through to an unset $sessions[$key] (null). */
+	if (isset($downhosts[$key])) {
+		return false;
+	}
+
+	if (!isset($sessions[$key])) {
+		$sessions[$key] = cacti_snmp_session($item['hostname'], $item['snmp_community'], $item['snmp_version'],
 			$item['snmp_username'], $item['snmp_password'], $item['snmp_auth_protocol'], $item['snmp_priv_passphrase'],
 			$item['snmp_priv_protocol'], $item['snmp_context'], $item['snmp_engine_id'], $item['snmp_port'],
 			$item['snmp_timeout'], read_config_option('snmp_retries'), $item['max_oids']);
 
-		if ($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']] === false) {
-			unset($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']]);
-			$downhosts[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']] = true;
+		if ($sessions[$key] === false) {
+			unset($sessions[$key]);
+			$downhosts[$key] = true;
 
 			return false;
 		}
 	}
 
-	return $sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']];
+	return $sessions[$key];
 }
 
 function snmp_mark_host_down($host_id, &$item) {
