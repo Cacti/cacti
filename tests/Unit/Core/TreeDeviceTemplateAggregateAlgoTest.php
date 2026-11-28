@@ -39,7 +39,30 @@ function pr4RunPhpProbe(string $phpBody) : array {
 	$tmpFile = tempnam(sys_get_temp_dir(), 'cacti_pr4_probe_');
 	expect($tmpFile)->not->toBeFalse();
 
-	file_put_contents($tmpFile, "<?php\nerror_reporting(E_ALL);\n" . $phpBody . "\n");
+	$commonHelpers = <<<'PHP'
+if (!function_exists('cacti_sizeof')) {
+	function cacti_sizeof($v) { return is_array($v) ? count($v) : 0; }
+}
+if (!function_exists('array_rekey')) {
+	function array_rekey($array, $key, $value) {
+		$ret = array();
+		if (is_array($array)) {
+			foreach ($array as $item) {
+				if (is_array($value)) {
+					foreach ($value as $v) {
+						$ret[$item[$key]][$v] = $item[$v];
+					}
+				} else {
+					$ret[$item[$key]] = $item[$value];
+				}
+			}
+		}
+		return $ret;
+	}
+}
+PHP;
+
+	file_put_contents($tmpFile, "<?php\nerror_reporting(E_ALL);\n" . $commonHelpers . "\n" . $phpBody . "\n");
 
 	try {
 		$cmd = array(PHP_BINARY, '-d', 'display_errors=1', $tmpFile);
@@ -101,9 +124,6 @@ function is_view_allowed(\$view = 'show_tree') {
 }
 function is_tree_allowed(\$tree_id, \$user_id = 0) {
 	return \$GLOBALS['tree_allowed'];
-}
-function cacti_sizeof(\$v) {
-	return is_array(\$v) ? count(\$v) : 0;
 }
 function html_escape(\$s) {
 	return htmlspecialchars((string) \$s, ENT_QUOTES, 'UTF-8');
@@ -186,7 +206,6 @@ define('TREE_ORDERING_NATURAL', 4);
 
 function input_validate_input_number(&\$v) { return true; }
 function cacti_log(\$msg, \$out = false) {}
-function cacti_sizeof(\$v) { return is_array(\$v) ? count(\$v) : 0; }
 function set_config_option(\$k, \$v) {}
 function db_fetch_cell_prepared(\$sql, \$params = array()) {
 	if (strpos(\$sql, 'SELECT parent') !== false) {
@@ -244,11 +263,13 @@ PHP);
 	));
 	expect(count($siblingUpdates))->toBeGreaterThanOrEqual(3);
 
-	// Also verify both branches of api_tree_move_node in source
+	// Also verify both branches of api_tree_move_node call api_tree_renumber_siblings
 	$apiTreeSrc = file_get_contents($repoRoot . '/lib/api_tree.php');
+	$renumberBody = pr4ExtractFunctionBody($apiTreeSrc, 'function api_tree_renumber_siblings(');
+	expect($renumberBody)->toContain('ORDER BY position ASC');
+	expect($renumberBody)->toContain("WHERE graph_tree_id = ?\n\t\tAND parent = ?");
 	$moveBody = pr4ExtractFunctionBody($apiTreeSrc, 'function api_tree_move_node(');
-	expect(substr_count($moveBody, 'ORDER BY position ASC'))->toBe(2);
-	expect(substr_count($moveBody, "WHERE graph_tree_id = ?\n\t\t\tAND parent = ?"))->toBe(2);
+	expect(substr_count($moveBody, 'api_tree_renumber_siblings($tree_id, $pdata[\'leaf_id\'], $data[\'leaf_id\'], $new_position)'))->toBe(2);
 	expect(substr_count($moveBody, 'api_tree_sort_branch($data[\'leaf_id\'], $tree_id, true, false)'))->toBe(2);
 });
 
@@ -267,7 +288,6 @@ define('TREE_ORDERING_NATURAL', 4);
 \$GLOBALS['sort_queries'] = array();
 \$GLOBALS['batch_updates'] = array();
 
-function cacti_sizeof(\$v) { return is_array(\$v) ? count(\$v) : 0; }
 function cacti_log(\$msg, \$out = false) {}
 function set_config_option(\$k, \$v) {
 	if (\$k === 'time_last_change_branch') {
@@ -385,7 +405,6 @@ define('HOST_GROUPING_DATA_QUERY_INDEX', 2);
 \$GLOBALS['captured_where'] = array();
 
 function __(\$s) { return \$s; }
-function cacti_sizeof(\$v) { return is_array(\$v) ? count(\$v) : 0; }
 function get_request_var(\$k) { return ''; }
 function read_user_setting(\$k, \$default = '') { return 'off'; }
 function naturally_sort_graphs(\$a, \$b) { return strnatcasecmp(\$a['title_cache'], \$b['title_cache']); }
@@ -451,19 +470,9 @@ define('HOST_ERROR', 4);
 file_put_contents(sys_get_temp_dir() . '/lib/data_query.php', "<?php\n");
 
 function __(\$s) { return \$s; }
-function cacti_sizeof(\$v) { return is_array(\$v) ? count(\$v) : 0; }
 function html_escape(\$s) { return htmlspecialchars((string) \$s, ENT_QUOTES, 'UTF-8'); }
 function strip_domain(\$s) { return \$s; }
 function read_user_setting(\$k, \$default = '') { return 'off'; }
-function array_rekey(\$array, \$key, \$value) {
-	\$ret = array();
-	if (is_array(\$array)) {
-		foreach (\$array as \$item) {
-			\$ret[\$item[\$key]] = \$item[\$value];
-		}
-	}
-	return \$ret;
-}
 function get_allowed_tree_content(\$tree_id, \$parent) {
 	return array(
 		array('id' => 10, 'site_id' => 0, 'host_id' => 0, 'title' => 'Branch A'),
@@ -538,7 +547,6 @@ test('api_device_enable_devices checks integer poller cache count and batches up
 \$GLOBALS['cache_count'] = '5';
 \$GLOBALS['ds_count'] = 1200;
 
-function cacti_sizeof(\$v) { return is_array(\$v) ? count(\$v) : 0; }
 function db_fetch_cell_prepared(\$sql, \$params = array()) {
 	if (strpos(\$sql, 'SELECT poller_id') !== false) {
 		return 1;
@@ -632,18 +640,8 @@ test('api_delete_graphs fixes SQL 3VL orphan cleanup, moves local_data_id to WHE
 \$GLOBALS['disassoc_calls'] = 0;
 \$GLOBALS['ds_removed'] = array();
 
-function cacti_sizeof(\$v) { return is_array(\$v) ? count(\$v) : 0; }
 function set_config_option(\$k, \$v) {}
 function api_plugin_hook_function(\$hook, \$args = array()) {}
-function array_rekey(\$array, \$key, \$value) {
-	\$ret = array();
-	if (is_array(\$array)) {
-		foreach (\$array as \$item) {
-			\$ret[\$item[\$key]] = \$item[\$value];
-		}
-	}
-	return \$ret;
-}
 function array_to_sql_or(\$arr, \$col) {
 	return \$col . ' IN (' . implode(', ', array_map('intval', \$arr)) . ')';
 }
@@ -734,15 +732,7 @@ test('resequence_graphs preserves $local_graph_id = 0 across repair loop so all 
 \$_SESSION = array();
 \$GLOBALS['updates'] = array();
 
-function cacti_sizeof(\$v) { return is_array(\$v) ? count(\$v) : 0; }
 function cacti_log(\$msg, \$out = false) {}
-function array_rekey(\$array, \$key, \$value) {
-	\$ret = array();
-	foreach (\$array as \$item) {
-		\$ret[\$item[\$key]] = \$item[\$value];
-	}
-	return \$ret;
-}
 function db_fetch_assoc_prepared(\$sql, \$params = array()) {
 	if (strpos(\$sql, 'AND local_graph_id = 0') !== false) {
 		return array(
@@ -788,23 +778,7 @@ test('push_out_data_source_custom_data indexes input fields by data_template_dat
 define('VALID_HOST_FIELDS', '(hostname|host_id)');
 \$GLOBALS['inserts'] = array();
 
-function cacti_sizeof(\$v) { return is_array(\$v) ? count(\$v) : 0; }
 function db_qstr(\$s) { return "'" . \$s . "'"; }
-function array_rekey(\$array, \$key, \$value) {
-	\$ret = array();
-	if (is_array(\$array)) {
-		foreach (\$array as \$item) {
-			if (is_array(\$value)) {
-				foreach (\$value as \$v) {
-					\$ret[\$item[\$key]][\$v] = \$item[\$v];
-				}
-			} else {
-				\$ret[\$item[\$key]] = \$item[\$value];
-			}
-		}
-	}
-	return \$ret;
-}
 function db_fetch_row_prepared(\$sql, \$params = array()) {
 	return array('id' => 1, 'data_input_id' => 7);
 }
@@ -866,16 +840,6 @@ define('GRAPH_ITEM_TYPE_STACK', 8);
 \$GLOBALS['deletes'] = array();
 
 function cacti_log(\$msg, \$out = false, \$fac = '', \$lvl = 0) {}
-function cacti_sizeof(\$v) { return is_array(\$v) ? count(\$v) : 0; }
-function array_rekey(\$array, \$key, \$value) {
-	\$ret = array();
-	if (is_array(\$array)) {
-		foreach (\$array as \$item) {
-			\$ret[\$item[\$key]] = \$item[\$value];
-		}
-	}
-	return \$ret;
-}
 function db_fetch_row_prepared(\$sql, \$params = array()) {
 	\$GLOBALS['queries'][] = array('fn' => 'row', 'sql' => \$sql, 'params' => \$params);
 	if (strpos(\$sql, 'FROM color_template_items') !== false && \$params[0] == 42) {
