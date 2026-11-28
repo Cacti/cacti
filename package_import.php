@@ -380,7 +380,7 @@ function form_actions() : void {
 					</tr>";
 				}
 
-				$save_html = "<button type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo()'>" . __esc('Cancel') . "</button><button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' title='" . __n('Import Package', 'Import Packages', cacti_sizeof($pkg_array)) . "'>" . __esc('Continue') . '</button>';
+				$save_html = "<button type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo()'>" . __esc('Cancel') . "</button><button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' title='" . __esc_n('Import Package', 'Import Packages', cacti_sizeof($pkg_array)) . "'>" . __esc('Continue') . '</button>';
 			} else {
 				raise_message('no_selection', __('You must select either a File or a Template Item to import before proceeding'), MESSAGE_LEVEL_ERROR);
 				header('Location: package_import.php');
