@@ -561,6 +561,180 @@ PHP);
 		$rrd_source = (string) file_get_contents($repo_root . '/lib/rrd.php');
 		expect(substr_count($rrd_source, 'SELECT rrd_step FROM data_template_data WHERE local_data_id = ?'))->toBe(1);
 	});
+
+	it('strips CR/LF in escape_command(), validates TEXTALIGN, and quotes dashes/alpha/SHIFT/TICK arguments', function () use ($repo_root, $rrd_file) {
+		$res = run_isolated_php_json(<<<PHP
+define('RRD_ALIGN_LEFT', 'left');
+define('RRD_ALIGN_RIGHT', 'right');
+define('RRD_ALIGN_JUSTIFIED', 'justified');
+define('RRD_ALIGN_CENTER', 'center');
+function read_config_option(\$n) : string { return ''; }
+require_once {$rrd_file};
+
+echo json_encode([
+	'lf'        => escape_command("graph - --title='ok'\ngraph /tmp/pwn.png DEF:x=/rra/1.rrd:a:AVERAGE"),
+	'crlf'      => escape_command("update /rra/1.rrd 100:1\r\ninfo /rra/2.rrd"),
+	'cr'        => escape_command("fetch /rra/1.rrd AVERAGE\rquit"),
+	'align_ok'  => rrd_graph_item_textalign(' left '),
+	'align_ctr' => rrd_graph_item_textalign('center'),
+	'align_bad' => rrd_graph_item_textalign('left DEF:x=/etc/passwd:a:AVERAGE'),
+	'align_arr' => rrd_graph_item_textalign(['left']),
+]);
+PHP);
+
+		expect($res['lf'])->not->toContain("\n")
+			->and($res['crlf'])->not->toContain("\r")
+			->and($res['crlf'])->not->toContain("\n")
+			->and($res['cr'])->not->toContain("\r")
+			->and($res['align_ok'])->toBe('left')
+			->and($res['align_ctr'])->toBe('center')
+			->and($res['align_bad'])->toBe('')
+			->and($res['align_arr'])->toBe('');
+
+		$rrd_source = (string) file_get_contents($repo_root . '/lib/rrd.php');
+		expect($rrd_source)->toContain("cacti_escapeshellarg(\$graph_item['alpha'])")
+			->and($rrd_source)->toContain("cacti_escapeshellarg(\$graph_item['dashes'])")
+			->and($rrd_source)->toContain("cacti_escapeshellarg(\$graph_item['dash_offset'])")
+			->and($rrd_source)->toContain("'SHIFT:' . \$data_source_name . ':' . (float) \$graph_item['value']")
+			->and($rrd_source)->toContain("(':' . (float) \$graph_item['value'])")
+			->and($rrd_source)->toContain("rrd_graph_item_textalign(\$graph_item['textalign'])");
+	});
+
+	it('batch-prefetches update metadata in rrdtool_function_update() to eliminate 2N per-RRD queries', function () use ($rrd_file) {
+		$res = run_isolated_php_json(<<<PHP
+define('RRDTOOL_OUTPUT_BOOLEAN', 1);
+define('RRDTOOL_OUTPUT_STDOUT', 2);
+define('RRDTOOL_OUTPUT_STDERR', 3);
+define('RRDTOOL_OUTPUT_RETURN_STDERR', 4);
+define('POLLER_VERBOSITY_DEBUG', 5);
+
+\$config        = ['cacti_server_os' => 'unix', 'force_storage_location_local' => true];
+\$cell_queries  = 0;
+\$assoc_queries = [];
+\$tmp_rrds      = [];
+
+for (\$i = 1; \$i <= 5; \$i++) {
+	\$p = tempnam(sys_get_temp_dir(), 'cacti_upd_');
+	touch(\$p);
+	\$tmp_rrds[\$i] = \$p;
+}
+
+function read_config_option(\$n) : mixed { return 0; }
+function cacti_log(\$m, \$o = false, \$f = '', \$l = 0) : void {}
+function get_rrdtool_version() : string { return '1.8.0'; }
+function cacti_version_compare(\$a, \$b, \$op) : bool { return version_compare(\$a, \$b, \$op); }
+function db_fetch_cell_prepared(\$sql, \$params = []) : mixed {
+	global \$cell_queries;
+	\$cell_queries++;
+	return 0;
+}
+function db_fetch_assoc_prepared(\$sql, \$params = []) : array {
+	global \$assoc_queries;
+	\$assoc_queries[] = ['sql' => \$sql, 'params' => \$params];
+	if (str_contains(\$sql, 'FROM data_local')) {
+		return [
+			['id' => 101, 'data_template_id' => 10],
+			['id' => 102, 'data_template_id' => 10],
+			['id' => 103, 'data_template_id' => 20],
+			['id' => 104, 'data_template_id' => 0],
+			['id' => 105, 'data_template_id' => 20],
+		];
+	}
+	if (str_contains(\$sql, 'FROM data_template_rrd')) {
+		return [
+			['local_data_id' => 101, 'data_source_name' => 'unused_ds'],
+			['local_data_id' => 103, 'data_source_name' => 'orphan_ds'],
+		];
+	}
+	return [];
+}
+
+require_once {$rrd_file};
+
+\$batch = [
+	\$tmp_rrds[1] => ['local_data_id' => 101, 'times' => [1700000000 => ['traffic_in' => 10, 'unused_ds' => 99]]],
+	\$tmp_rrds[2] => ['local_data_id' => 102, 'times' => [1700000000 => ['traffic_in' => 20]]],
+	\$tmp_rrds[3] => ['local_data_id' => 103, 'times' => [1700000000 => ['traffic_in' => 30, 'orphan_ds' => 88]]],
+	\$tmp_rrds[4] => ['local_data_id' => 104, 'times' => [1700000000 => ['manual_ds'  => 40]]],
+	\$tmp_rrds[5] => ['local_data_id' => 105, 'times' => [1700000000 => ['traffic_in' => 50]]],
+];
+
+\$pipe1       = fopen('php://temp', 'r+');
+\$processed_1 = rrdtool_function_update(\$batch, \$pipe1);
+\$q_batch_1   = count(\$assoc_queries);
+rewind(\$pipe1);
+\$cmds_1      = array_values(array_filter(array_map('trim', explode("\n", (string) stream_get_contents(\$pipe1)))));
+fclose(\$pipe1);
+
+\$assoc_queries = [];
+\$batch_pre = [
+	\$tmp_rrds[1] => ['local_data_id' => 101, 'data_template_id' => 10, 'times' => [1700000300 => ['traffic_in' => 11, 'unused_ds' => 77]]],
+];
+\$pipe2       = fopen('php://temp', 'r+');
+\$processed_2 = rrdtool_function_update(\$batch_pre, \$pipe2, [101 => ['unused_ds' => 'unused_ds']]);
+\$q_batch_2   = count(\$assoc_queries);
+rewind(\$pipe2);
+\$cmds_2      = array_values(array_filter(array_map('trim', explode("\n", (string) stream_get_contents(\$pipe2)))));
+fclose(\$pipe2);
+
+foreach (\$tmp_rrds as \$p) {
+	@unlink(\$p);
+}
+
+echo json_encode([
+	'cell_queries' => \$cell_queries,
+	'q_batch_1'    => \$q_batch_1,
+	'processed_1'  => \$processed_1,
+	'cmds_1'       => \$cmds_1,
+	'q_batch_2'    => \$q_batch_2,
+	'processed_2'  => \$processed_2,
+	'cmds_2'       => \$cmds_2,
+]);
+PHP);
+
+		expect($res['cell_queries'])->toBe(0)
+			->and($res['q_batch_1'])->toBe(2)
+			->and($res['processed_1'])->toBe(5)
+			->and($res['cmds_1'][0])->toContain('--template traffic_in 1700000000:10')
+			->and($res['cmds_1'][0])->not->toContain('unused_ds')
+			->and($res['cmds_1'][2])->toContain('--template traffic_in 1700000000:30')
+			->and($res['cmds_1'][2])->not->toContain('orphan_ds')
+			->and($res['cmds_1'][3])->toContain('--template manual_ds 1700000000:40')
+			->and($res['q_batch_2'])->toBe(0)
+			->and($res['processed_2'])->toBe(1)
+			->and($res['cmds_2'][0])->toContain('--template traffic_in 1700000300:11')
+			->and($res['cmds_2'][0])->not->toContain('unused_ds');
+	});
+
+	it('allows repeated rrdtool_tune() calls without redeclaring print_leaves() and escapes HTML output', function () use ($rrd_file) {
+		$res = run_isolated_php_json(<<<PHP
+define('CACTI_CLI', false);
+function read_config_option(\$n) : string { return '/usr/bin/rrdtool'; }
+function html_escape(\$s) : string { return htmlspecialchars((string) \$s, ENT_QUOTES, 'UTF-8'); }
+function html_header(\$h) : void {}
+function html_end_box() : void {}
+require_once {$rrd_file};
+
+\$diff = [
+	'ds'   => ['<script>alert(1)</script>' => ['error' => 'Bad <b>DS</b>']],
+	'tune' => ['/rra/a.rrd --heartbeat <img src=x>:600'],
+];
+
+ob_start();
+rrdtool_tune('/rra/a<b>.rrd', \$diff, true);
+rrdtool_tune('/rra/a<b>.rrd', \$diff, true);
+\$html = ob_get_clean();
+
+echo json_encode(['html' => \$html]);
+PHP);
+
+		expect($res['html'])->not->toContain('<script>')
+			->and($res['html'])->not->toContain('<b>DS</b>')
+			->and($res['html'])->not->toContain('<img src=x>')
+			->and($res['html'])->toContain('&lt;b&gt;DS&lt;/b&gt;')
+			->and($res['html'])->toContain('&lt;img src=x&gt;')
+			->and(substr_count($res['html'], 'Bad &lt;b&gt;DS&lt;/b&gt;'))->toBe(2);
+	});
 });
 
 describe('lib/spikekill.php validation and comment timestamp extraction', function () use ($repo_root) {
@@ -626,6 +800,120 @@ PHP);
 				'<row><timestamp> 1795831200 </timestamp><v>1.23e+02</v></row>',
 				'<row><timestamp> 1795831500 </timestamp><v>4.56e+02</v></row>',
 			]);
+	});
+
+	it('skips NaN samples in PHP 8 comparisons, bounds numspike across rows, aligns windowed mean, and formats CLI stats', function () use ($spikekill_file) {
+		$res = run_isolated_php_json(<<<PHP
+\$tmp_rrd = tempnam(sys_get_temp_dir(), 'cacti_sk2_');
+touch(\$tmp_rrd);
+
+function get_execution_user() : string { return 'test'; }
+function read_config_option(\$name, \$force = false) : mixed { return ''; }
+function read_user_setting(\$name, \$default = '', \$force = false) : mixed { return \$default; }
+function number_format_i18n(\$num, \$dec = 0) : string { return number_format((float) \$num, (int) \$dec); }
+function cacti_log(\$m, \$o = false, \$f = '', \$l = 0) : void {}
+
+require_once {$spikekill_file};
+
+\$sk = new spikekill(\$tmp_rrd, 'stddev', 'nan', 2, 1700001000, 1700002000, 1, 500, 1);
+\$sk->html = false;
+
+\$setProp = function (object \$obj, string \$name, mixed \$val) : void {
+	\$p = new ReflectionProperty(\$obj, \$name);
+	if (PHP_VERSION_ID < 80100) {
+		\$p->setAccessible(true);
+	}
+	\$p->setValue(\$obj, \$val);
+};
+\$getProp = function (object \$obj, string \$name) : mixed {
+	\$p = new ReflectionProperty(\$obj, \$name);
+	if (PHP_VERSION_ID < 80100) {
+		\$p->setAccessible(true);
+	}
+	return \$p->getValue(\$obj);
+};
+
+\$setProp(\$sk, 'method', SPIKE_METHOD_STDDEV);
+\$setProp(\$sk, 'ds_min', [0 => 'NaN']);
+\$setProp(\$sk, 'ds_max', [0 => 'NaN']);
+\$setProp(\$sk, 'ds_name', [0 => 'traffic_in']);
+\$setProp(\$sk, 'rra_cf', [0 => 'AVERAGE']);
+\$setProp(\$sk, 'rra_pdp', [0 => 1]);
+\$setProp(\$sk, 'step', 300);
+
+\$samples = [
+	0 => [
+		0 => [
+			1700000100 => '10',
+			1700000400 => '12',
+			1700000700 => '11',
+			1700001200 => 'NaN',
+			1700001500 => '5000',
+			1700001800 => '6000',
+			1700002300 => '11',
+		],
+	],
+];
+\$rra = [
+	0 => [
+		0 => [
+			'totalsamples' => 7,
+			'numsamples'   => 6,
+			'sumofsamples' => 11044,
+			'max_value'    => 6000,
+			'min_value'    => 10,
+			'variance_avg' => 'NAN',
+		],
+	],
+];
+
+\$calc = new ReflectionMethod('spikekill', 'calculateOverallStatistics');
+if (PHP_VERSION_ID < 80100) {
+	\$calc->setAccessible(true);
+}
+\$calc->invokeArgs(\$sk, [&\$rra, &\$samples]);
+
+\$output_lines = [
+	'<row><timestamp> 1700000100 </timestamp><v> 10 </v></row>',
+	'<row><timestamp> 1700001200 </timestamp><v> NaN </v></row>',
+	'<row><timestamp> 1700001500 </timestamp><v> 5000 </v></row>',
+	'<row><timestamp> 1700001800 </timestamp><v> 6000 </v></row>',
+];
+
+\$upd = new ReflectionMethod('spikekill', 'updateXML');
+if (PHP_VERSION_ID < 80100) {
+	\$upd->setAccessible(true);
+}
+\$updated = \$upd->invokeArgs(\$sk, [&\$output_lines, &\$rra]);
+
+\$outStats = new ReflectionMethod('spikekill', 'outputStatistics');
+if (PHP_VERSION_ID < 80100) {
+	\$outStats->setAccessible(true);
+}
+\$outStats->invoke(\$sk, \$rra);
+
+@unlink(\$tmp_rrd);
+
+echo json_encode([
+	'average'       => \$rra[0][0]['average'],
+	'min_cutoff'    => \$rra[0][0]['min_cutoff'],
+	'max_cutoff'    => \$rra[0][0]['max_cutoff'],
+	'stddev_killed' => \$rra[0][0]['stddev_killed'],
+	'total_kills'   => \$getProp(\$sk, 'total_kills'),
+	'updated'       => \$updated,
+	'cli_stats'     => \$getProp(\$sk, 'strout'),
+]);
+PHP);
+
+		expect($res['average'])->toBe(11)
+			->and($res['min_cutoff'])->not->toBe('NaN')
+			->and($res['max_cutoff'])->not->toBe('NaN')
+			->and($res['stddev_killed'])->toBe(2)
+			->and($res['total_kills'])->toBe(1)
+			->and($res['updated'][1])->toContain('<v> NaN</v>')
+			->and($res['updated'][2])->toContain('<v> NaN</v>')
+			->and($res['updated'][3])->toContain('<v> 6000</v>')
+			->and($res['cli_stats'])->toContain('traffic_in');
 	});
 });
 

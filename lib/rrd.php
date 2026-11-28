@@ -31,9 +31,11 @@ if (read_config_option('storage_location')) {
 }
 
 function escape_command($command) {
-	return $command;		# we escape every single argument now, no need for 'special' escaping
-	#return preg_replace("/(\\\$|`)/", "", $command); # current cacti code
-	#TODO return preg_replace((\\\$(?=\w+|\*|\@|\#|\?|\-|\\\$|\!|\_|[0-9]|\(.*\))|`(?=.*(?=`)))","$2", $command);  #suggested by ldevantier to allow for a single $
+	/* The rrdtool pipe protocol (rrdtool -) is newline-delimited. RRD_NL
+	 * line-continuations are collapsed to spaces before this point, so any
+	 * CR/LF remaining here comes from interpolated data and would inject an
+	 * extra rrdtool command. Replace them with spaces. */
+	return str_replace(["\r", "\n"], ' ', (string) $command);
 }
 
 /** set the language environment variable for rrdtool functions
@@ -860,14 +862,102 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = f
 	}
 }
 
-function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false) {
+/**
+ * Batch-prefetches data_template_id values for update cache entries that did not
+ * carry data_template_id inline.
+ *
+ * @param array $update_cache_array The update cache array.
+ *
+ * @return array<int, int> Map of local_data_id => data_template_id.
+ */
+function rrdtool_prefetch_data_template_ids(array $update_cache_array) : array {
+	$data_template_ids   = [];
+	$missing_template_id = [];
+
+	foreach ($update_cache_array as $rrd_fields) {
+		$local_data_id = (int) ($rrd_fields['local_data_id'] ?? 0);
+
+		if ($local_data_id <= 0 || !isset($rrd_fields['times']) || !cacti_sizeof($rrd_fields['times'])) {
+			continue;
+		}
+
+		if (isset($rrd_fields['data_template_id'])) {
+			$data_template_ids[$local_data_id] = (int) $rrd_fields['data_template_id'];
+		} elseif (!array_key_exists($local_data_id, $data_template_ids)) {
+			$missing_template_id[$local_data_id] = $local_data_id;
+		}
+	}
+
+	foreach (array_chunk(array_values($missing_template_id), 500) as $chunk) {
+		$placeholders = implode(',', array_fill(0, count($chunk), '?'));
+		$rows         = db_fetch_assoc_prepared(
+			"SELECT id, data_template_id FROM data_local WHERE id IN ($placeholders)",
+			$chunk
+		);
+
+		foreach ($chunk as $id) {
+			$data_template_ids[$id] = 0;
+		}
+
+		foreach (is_array($rows) ? $rows : [] as $row) {
+			$data_template_ids[(int) $row['id']] = (int) $row['data_template_id'];
+		}
+	}
+
+	return $data_template_ids;
+}
+
+/**
+ * Batch-prefetches unused data-source names for templated local_data_ids not
+ * already supplied by the caller.
+ *
+ * @param array<int, int>                    $data_template_ids Map of local_data_id => data_template_id.
+ * @param array<int, array<string, string>>  $unused_by_id      Optional caller-prefetched map.
+ *
+ * @return array<int, array<string, string>> Map of local_data_id => [ds_name => ds_name].
+ */
+function rrdtool_prefetch_unused_ds_names(array $data_template_ids, array $unused_by_id = []) : array {
+	$templated_ids = [];
+
+	foreach ($data_template_ids as $local_data_id => $data_template_id) {
+		if ($data_template_id > 0 && !array_key_exists($local_data_id, $unused_by_id)) {
+			$templated_ids[]              = $local_data_id;
+			$unused_by_id[$local_data_id] = [];
+		}
+	}
+
+	foreach (array_chunk($templated_ids, 500) as $chunk) {
+		$placeholders = implode(',', array_fill(0, count($chunk), '?'));
+		$rows         = db_fetch_assoc_prepared(
+			"SELECT DISTINCT dtr.local_data_id, dtr.data_source_name
+				FROM data_template_rrd AS dtr
+				LEFT JOIN graph_templates_item AS gti
+				ON dtr.id = gti.task_item_id
+				WHERE dtr.local_data_id IN ($placeholders)
+				AND gti.task_item_id IS NULL",
+			$chunk
+		);
+
+		foreach (is_array($rows) ? $rows : [] as $row) {
+			$unused_by_id[(int) $row['local_data_id']][$row['data_source_name']] = $row['data_source_name'];
+		}
+	}
+
+	return $unused_by_id;
+}
+
+function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false, $unused_data_source_names_by_id = []) {
 	/* lets count the number of rrd files processed */
 	$rrds_processed = 0;
+
+	$data_template_ids = rrdtool_prefetch_data_template_ids(is_array($update_cache_array) ? $update_cache_array : []);
+	$unused_by_id      = rrdtool_prefetch_unused_ds_names($data_template_ids, is_array($unused_data_source_names_by_id) ? $unused_data_source_names_by_id : []);
+	$update_options    = cacti_version_compare(get_rrdtool_version(), '1.5', '>=') ? '--skip-past-updates' : '';
 
 	foreach ($update_cache_array as $rrd_path => $rrd_fields) {
 		$create_rrd_file = false;
 
-		if (is_array($rrd_fields['times']) && cacti_sizeof($rrd_fields['times'])) {
+		if (isset($rrd_fields['times']) && cacti_sizeof($rrd_fields['times'])) {
 			/* create the rrd if one does not already exist */
 			if (read_config_option('storage_location') > 0) {
 				$file_exists = rrdtool_execute("file_exists $rrd_path", true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER');
@@ -883,28 +973,13 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false) {
 				$create_rrd_file = true;
 			}
 
-			if (isset($rrd_fields['data_template_id'])) {
-				$data_template_id = $rrd_fields['data_template_id'];
-			} else {
-				$data_template_id = db_fetch_cell_prepared('SELECT data_template_id
-					FROM data_local
-					WHERE id = ?',
-					array($rrd_fields['local_data_id']));
-			}
+			$local_data_id    = (int) ($rrd_fields['local_data_id'] ?? 0);
+			$data_template_id = $data_template_ids[$local_data_id] ?? 0;
 
 			if ($data_template_id > 0) {
-				$unused_data_source_names = array_rekey(
-					db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
-						FROM data_template_rrd AS dtr
-						LEFT JOIN graph_templates_item AS gti
-						ON dtr.id = gti.task_item_id
-						WHERE dtr.local_data_id = ?
-						AND gti.task_item_id IS NULL',
-						array($rrd_fields['local_data_id'])),
-					'data_source_name', 'data_source_name'
-				);
+				$unused_data_source_names = $unused_by_id[$local_data_id] ?? [];
 			} else {
-				$unused_data_source_names = array();
+				$unused_data_source_names = [];
 			}
 
 			foreach ($rrd_fields['times'] as $update_time => $field_array) {
@@ -942,12 +1017,6 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false) {
 						   bugs without truncating 64-bit counter precision */
 						$rrd_update_values .= str_replace(',', '.', (string)$value);
 					}
-				}
-
-				if (cacti_version_compare(get_rrdtool_version(), '1.5', '>=')) {
-					$update_options = '--skip-past-updates';
-				} else {
-					$update_options = '';
 				}
 
 				if (isset($rrd_fields['template']) && $rrd_update_template == '') {
@@ -2313,8 +2382,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			/* initialize color support */
 			$graph_item_color_code = '';
 			if (!empty($graph_item['hex'])) {
-				$graph_item_color_code = '#' . $graph_item['hex'];
-				$graph_item_color_code .= $graph_item['alpha'];
+				$graph_item_color_code = '#' . $graph_item['hex'] . cacti_escapeshellarg($graph_item['alpha']);
 			}
 
 			/* initialize dash support */
@@ -2326,11 +2394,11 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				$graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_HRULE ||
 				$graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_VRULE) {
 				if (!empty($graph_item['dashes'])) {
-					$dash .= ':dashes=' . $graph_item['dashes'];
+					$dash .= ':dashes=' . cacti_escapeshellarg($graph_item['dashes']);
 				}
 
 				if (!empty($graph_item['dash_offset'])) {
-					$dash .= ':dash-offset=' . $graph_item['dash_offset'];
+					$dash .= ':dash-offset=' . cacti_escapeshellarg($graph_item['dash_offset']);
 				}
 			}
 
@@ -2366,8 +2434,10 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					break;
 				case GRAPH_ITEM_TYPE_TEXTALIGN:
 					if (!isset($graph_data_array['graph_nolegend'])) {
-						if (!empty($graph_item['textalign'])) {
-							$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $graph_item['textalign'];
+						$textalign = rrd_graph_item_textalign($graph_item['textalign']);
+
+						if ($textalign !== '') {
+							$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $textalign;
 						}
 					}
 
@@ -2441,9 +2511,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 						$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]) . ' ';
 					}
 
-					if ($graph_item['shift'] == CHECKED && abs($graph_item['value']) > 0) {
-						/* create a SHIFT statement */
-						$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . $graph_item['value'];
+					if ($graph_item['shift'] == CHECKED && abs((float) $graph_item['value']) > 0) {
+						/* create a SHIFT statement (numeric-only to prevent RRDtool argument injection) */
+						$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . (float) $graph_item['value'];
 					}
 
 					break;
@@ -2452,8 +2522,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 					$txt_graph_items .= 'AREA:' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]) . ':STACK';
 
-					if ($graph_item['shift'] == CHECKED && $graph_item['value'] > 0) {      # create a SHIFT statement
-						$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . $graph_item['value'];
+					if ($graph_item['shift'] == CHECKED && (float) $graph_item['value'] > 0) {
+						$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . (float) $graph_item['value'];
 					}
 
 					break;
@@ -2464,8 +2534,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 					$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]) . $dash;
 
-					if ($graph_item['shift'] == CHECKED && $graph_item['value'] > 0) {      # create a SHIFT statement
-						$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . $graph_item['value'];
+					if ($graph_item['shift'] == CHECKED && (float) $graph_item['value'] > 0) {
+						$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . (float) $graph_item['value'];
 					}
 
 					break;
@@ -2474,13 +2544,13 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 					$txt_graph_items .= 'LINE' . $graph_item['line_width'] . ':' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]) . ':STACK' . $dash;
 
-					if ($graph_item['shift'] == CHECKED && $graph_item['value'] > 0) {      # create a SHIFT statement
-						$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . $graph_item['value'];
+					if ($graph_item['shift'] == CHECKED && (float) $graph_item['value'] > 0) {
+						$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . (float) $graph_item['value'];
 					}
 
 					break;
 				case GRAPH_ITEM_TYPE_TIC:
-					$_fraction = (empty($graph_item['graph_type_id']) ? '' : (':' . $graph_item['value']));
+					$_fraction = (empty($graph_item['graph_type_id']) ? '' : (':' . (float) $graph_item['value']));
 					$_legend   = ':' . cacti_escapeshellarg(rrdtool_escape_string(html_escape($graph_variables['text_format'][$graph_item_id])) . $hardreturn[$graph_item_id]);
 					$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $data_source_name . $graph_item_color_code . $_fraction . $_legend;
 
@@ -3433,6 +3503,45 @@ function rrdtool_info2html($info_array, $diff=array()) {
 }
 
 /**
+ * Returns a graph item text alignment keyword accepted by RRDtool TEXTALIGN,
+ * or an empty string when the stored value is not on the allowlist.
+ *
+ * @param mixed $textalign The stored text alignment.
+ *
+ * @return string The validated alignment keyword, or an empty string.
+ */
+function rrd_graph_item_textalign(mixed $textalign) : string {
+	$textalign = is_scalar($textalign) ? trim((string) $textalign) : '';
+
+	if (in_array($textalign, [RRD_ALIGN_LEFT, RRD_ALIGN_RIGHT, RRD_ALIGN_JUSTIFIED, RRD_ALIGN_CENTER], true)) {
+		return $textalign;
+	}
+
+	return '';
+}
+
+/**
+ * Recursively outputs the leaf nodes of an rrdtool 'diff' array for rrdtool_tune().
+ *
+ * @param array $array The array of leaves.
+ * @param bool  $html  Emit table rows for the web UI, or plain text for the CLI.
+ *
+ * @return void
+ */
+function rrdtool_tune_print_leaves(array $array, bool $html = true) : void {
+	foreach ($array as $key => $line) {
+		if (is_array($line)) {
+			if ($key !== 'tune' && $key !== 'resize') {
+				rrdtool_tune_print_leaves($line, $html);
+			}
+			continue;
+		}
+
+		print $html ? '<tr><td>' . html_escape((string) $line) . '</td></tr>' : $line . PHP_EOL;
+	}
+}
+
+/**
  * rrdtool_tune - create rrdtool tune/resize commands html+cli enabled
  *
  * @param (string) $rrd_file - rrd file name
@@ -3442,31 +3551,12 @@ function rrdtool_info2html($info_array, $diff=array()) {
 function rrdtool_tune($rrd_file, $diff, $show_source = true) {
 	$rrd_path = read_config_option('path_rrdtool');
 
-	function print_leaves($array) {
-		foreach ($array as $key => $line) {
-			if (!is_array($line)) {
-				if (CACTI_CLI) {
-					print $line . PHP_EOL;
-				} else {
-					print '<tr><td>' . $line . '</td></tr>';
-				}
-			} else {
-				if ($key === 'tune') continue;
-				if ($key === 'resize') continue;
-				print_leaves($line);
-			}
-		}
-
-	}
-
-	$cmd = array();
-
 	if ($show_source && cacti_sizeof($diff)) {
 		if (!CACTI_CLI) {
-			html_header(array(__('Errors Found')));
+			html_header([__('Errors Found')]);
 		}
 
-		print_leaves($diff);
+		rrdtool_tune_print_leaves($diff, !CACTI_CLI);
 
 		if (!CACTI_CLI) {
 			html_end_box();
@@ -3475,7 +3565,7 @@ function rrdtool_tune($rrd_file, $diff, $show_source = true) {
 
 	if (isset($diff['tune']) || isset($diff['resize'])) {
 		if (!CACTI_CLI) {
-			html_header(array(__('Optional Tuning Recommendations')));
+			html_header([__('Optional Tuning Recommendations')]);
 		}
 	}
 
@@ -3486,7 +3576,7 @@ function rrdtool_tune($rrd_file, $diff, $show_source = true) {
 				if (CACTI_CLI) {
 					print $rrd_path . ' tune ' . $line . PHP_EOL;
 				} else {
-					print '<tr><td>' . $rrd_path . ' tune ' . $line . '</td></tr>';
+					print '<tr><td>' . html_escape($rrd_path . ' tune ' . $line) . '</td></tr>';
 				}
 			} else {
 				rrdtool_execute("tune $line", true, RRDTOOL_OUTPUT_STDOUT);
@@ -3499,11 +3589,11 @@ function rrdtool_tune($rrd_file, $diff, $show_source = true) {
 		foreach ($diff['resize'] as $line) {
 			if ($show_source == true) {
 				if (CACTI_CLI) {
-					print read_config_option('path_rrdtool') . ' resize ' . $line . PHP_EOL;
+					print $rrd_path . ' resize ' . $line . PHP_EOL;
 					print __('rename %s to %s', dirname($rrd_file) . '/resize.rrd', $rrd_file) . PHP_EOL;
 				} else {
-					print '<tr><td>' . read_config_option('path_rrdtool') . ' resize ' . $line . '</td></tr>';
-					print '<tr><td>' . __('rename %s to %s', dirname($rrd_file) . '/resize.rrd', $rrd_file) . '</td></tr>';
+					print '<tr><td>' . html_escape($rrd_path . ' resize ' . $line) . '</td></tr>';
+					print '<tr><td>' . __('rename %s to %s', html_escape(dirname($rrd_file) . '/resize.rrd'), html_escape($rrd_file)) . '</td></tr>';
 				}
 			} else {
 				rrdtool_execute("resize $line", true, RRDTOOL_OUTPUT_STDOUT);
