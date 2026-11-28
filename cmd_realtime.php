@@ -163,7 +163,7 @@ if (cacti_sizeof($idbyhost)) {
 
 			if (cacti_sizeof($poller_items)) {
 				$host_cache    = null;
-				$snmp_sessions = array();
+				$snmp_sessions = [];
 
 				foreach($poller_items as $item) {
 					/* Reset between iterations: a poller_item action that
@@ -181,28 +181,30 @@ if (cacti_sizeof($idbyhost)) {
 								$host_cache = db_fetch_row_prepared('SELECT ping_retries, max_oids
 									FROM host
 									WHERE id = ?',
-									array($host_id));
+									[$host_id]);
 
 								if (!cacti_sizeof($host_cache)) {
-									$host_cache = array(
+									$host_cache = [
 										'ping_retries' => 1,
-										'max_oids'     => 1
-									);
+										'max_oids'     => 1,
+									];
 								}
 							}
 
-							$session_key = $item['hostname'] . '|' .
-								$item['snmp_community'] . '|' .
-								$item['snmp_version'] . '|' .
-								$item['snmp_username'] . '|' .
-								$item['snmp_password'] . '|' .
-								$item['snmp_auth_protocol'] . '|' .
-								$item['snmp_priv_passphrase'] . '|' .
-								$item['snmp_priv_protocol'] . '|' .
-								$item['snmp_context'] . '|' .
-								$item['snmp_engine_id'] . '|' .
-								$item['snmp_port'] . '|' .
-								$item['snmp_timeout'];
+							$session_key = implode("\0", [
+								$item['hostname'],
+								$item['snmp_community'],
+								$item['snmp_version'],
+								$item['snmp_username'],
+								$item['snmp_password'],
+								$item['snmp_auth_protocol'],
+								$item['snmp_priv_passphrase'],
+								$item['snmp_priv_protocol'],
+								$item['snmp_context'],
+								$item['snmp_engine_id'],
+								$item['snmp_port'],
+								$item['snmp_timeout'],
+							]);
 
 							if (!array_key_exists($session_key, $snmp_sessions)) {
 								$snmp_sessions[$session_key] = cacti_snmp_session($item['hostname'], $item['snmp_community'], $item['snmp_version'],
@@ -212,12 +214,7 @@ if (cacti_sizeof($idbyhost)) {
 							}
 
 							$session = $snmp_sessions[$session_key];
-
-							if ($session === false) {
-								$output = 'U';
-							} else {
-								$output = cacti_snmp_session_get($session, $item['arg1']);
-							}
+							$output  = ($session === false) ? 'U' : cacti_snmp_session_get($session, $item['arg1']);
 
 							if (prepare_validate_result($output) === false) {
 								if (strlen($output) > 20) {
@@ -275,7 +272,7 @@ if (cacti_sizeof($idbyhost)) {
 				}
 
 				foreach ($snmp_sessions as $session) {
-					if ($session !== false && is_object($session)) {
+					if (is_object($session)) {
 						$session->close();
 					}
 				}

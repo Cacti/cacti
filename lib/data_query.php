@@ -528,29 +528,25 @@ function query_check_suitable($new_sort_field, $old_sort_field, $host_id, $snmp_
 }
 
 function data_query_remap_indexes($local_data) {
-	if (cacti_sizeof($local_data)) {
-		$ids = array();
+	if (!cacti_sizeof($local_data)) {
+		return;
+	}
 
-		foreach ($local_data as $id) {
-			$id = (int) $id;
-			if ($id > 0) {
-				$ids[$id] = $id;
-			}
-		}
+	$ids = array_values(array_unique(array_filter(
+		array_map('intval', $local_data),
+		static fn (int $id) : bool => $id > 0
+	)));
 
-		if (cacti_sizeof($ids)) {
-			foreach (array_chunk(array_values($ids), 1000) as $id_chunk) {
-				db_execute('UPDATE graph_local AS gl
-					INNER JOIN graph_templates_item AS gti
-					ON gti.local_graph_id = gl.id
-					INNER JOIN data_template_rrd AS dtr
-					ON gti.task_item_id = dtr.id
-					INNER JOIN data_local AS dl
-					ON dl.id = dtr.local_data_id
-					SET gl.snmp_index = dl.snmp_index
-					WHERE dtr.local_data_id IN (' . implode(', ', $id_chunk) . ')');
-			}
-		}
+	foreach (array_chunk($ids, 1000) as $id_chunk) {
+		db_execute('UPDATE graph_local AS gl
+			INNER JOIN graph_templates_item AS gti
+			ON gti.local_graph_id = gl.id
+			INNER JOIN data_template_rrd AS dtr
+			ON gti.task_item_id = dtr.id
+			INNER JOIN data_local AS dl
+			ON dl.id = dtr.local_data_id
+			SET gl.snmp_index = dl.snmp_index
+			WHERE dtr.local_data_id IN (' . implode(', ', $id_chunk) . ')');
 	}
 }
 
@@ -1148,7 +1144,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 					}
 
 					if ($value_output_format !== SNMP_STRING_OUTPUT_GUESS) {
-						$results = array();
+						$results = [];
 						foreach ($oids as $oid) {
 							$results[$oid] = cacti_snmp_get($host['hostname'], $host['snmp_community'], $oid, $host['snmp_version'],
 								$host['snmp_username'], $host['snmp_password'], $host['snmp_auth_protocol'],
