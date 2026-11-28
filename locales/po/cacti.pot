@@ -14275,6 +14275,10 @@ msgid "Automation Network Rule Import data is either for another object type or 
 msgstr ""
 
 #: lib/api_automation.php
+msgid "Automation import contains an invalid match field."
+msgstr ""
+
+#: lib/api_automation.php
 #, php-format
 msgid "The Cacti install does not include the Data Query with the hash '%s'!"
 msgstr ""
