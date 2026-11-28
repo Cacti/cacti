@@ -35,6 +35,10 @@ run_php_probe() {
 }
 
 command_files='^((cmd|cmd_realtime|remote_agent)\.php|cli/(audit_database|push_out_hosts|rrdresize|splice_rrd)\.php|lib/(dsstats|poller|rrdcheck|functions)\.php|tests/fixtures/Core/ConfiguredCommands\.php)'
+for mode in disconnected invalid-address begin write; do
+	run_php_probe tests/fixtures/LoginThrottleAvailability.php '^(lib/Auth/LoginThrottle|tests/fixtures/LoginThrottleAvailability)\.php$' "$mode"
+done
+
 run_php_probe tests/fixtures/Core/ConfiguredCommands.php "$command_files"
 run_php_probe tests/fixtures/Core/ConfiguredCommands.php "$command_files" deprecated
 validation_files='^((data_input|data_sources|pollers|sites)\.php|lib/(clog_webapi|functions|html|import|plugins)\.php|tests/fixtures/Core/DisplayAndValidation\.php)'
