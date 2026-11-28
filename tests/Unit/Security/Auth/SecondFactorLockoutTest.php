@@ -40,3 +40,26 @@ test('second-factor submissions reject non-POST and invalid-token requests befor
 	expect($r['status'])->toBe($status)->and($r['authenticated'])->toBeFalse()->and($r['token_checks'])->toBe(0);
 	expect($r['user']['failed_attempts'])->toBe(1)->and($r['user']['locked'])->toBe('');
 })->with([['get', 405], ['tokenless', 403]]);
+
+test('verification shares the account retry budget across sessions and workers behind a single proxy', function () {
+	$database = tempnam(sys_get_temp_dir(), 'cacti-mfa-');
+	$probe    = dirname(__DIR__, 3) . '/fixtures/AuthSecondFactorProbe.php';
+	$request  = static fn (string $mode, int $id) => cacti_test_isolated_probe($probe, [$mode, $database, (string) $id]);
+
+	try {
+		expect($request('enroll-invalid', 1)['enrollment']['status'])->toBe(301);
+		expect($request('invalid', 1)['user']['locked'])->toBe('on');
+		$blocked = $request('enroll-valid', 1);
+		expect($blocked['enrollment']['status'])->toBe(429)->and($blocked['token_checks'])->toBe(0);
+		expect($request('valid', 1)['authenticated'])->toBeFalse();
+		expect($request('enroll-valid', 2)['enrollment']['status'])->toBe(200);
+		expect($request('valid', 2)['authenticated'])->toBeTrue();
+
+		$db = new PDO('sqlite:' . $database);
+		$db->prepare('UPDATE user_auth SET lastfail = ? WHERE id = 1')->execute([time() - 120]);
+		expect($request('enroll-valid', 1)['enrollment']['status'])->toBe(200);
+		expect($request('valid', 1)['user']['failed_attempts'])->toBe(0);
+	} finally {
+		unlink($database);
+	}
+});

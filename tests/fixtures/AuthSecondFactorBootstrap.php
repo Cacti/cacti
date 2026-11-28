@@ -34,18 +34,22 @@ namespace {
 	$mode                      = $argv[1] ?? 'valid';
 	$_SERVER['REQUEST_METHOD'] = $mode === 'get' ? 'GET' : 'POST';
 	$realm                     = str_starts_with($mode,'external') ? 2 : 0;
-	$pdo                       = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION]);
-	$pdo->exec('CREATE TABLE user_auth(id INTEGER PRIMARY KEY, username TEXT, realm INTEGER, tfa_enabled TEXT, tfa_secret TEXT, login_opts INTEGER, enabled TEXT, lastfail INTEGER, failed_attempts INTEGER, locked TEXT, password TEXT)');
-	$pdo->exec('CREATE TABLE user_log(username TEXT, user_id INTEGER, result INTEGER, ip TEXT, time TEXT)');
+	$pdo                       = new PDO('sqlite:' . ($argv[2] ?? ':memory:'), null, null, [PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION]);
+	$pdo->exec('CREATE TABLE IF NOT EXISTS user_auth(id INTEGER PRIMARY KEY, username TEXT, realm INTEGER, tfa_enabled TEXT, tfa_secret TEXT, login_opts INTEGER, enabled TEXT, lastfail INTEGER, failed_attempts INTEGER, locked TEXT, password TEXT)');
+	$pdo->exec('CREATE TABLE IF NOT EXISTS user_log(username TEXT, user_id INTEGER, result INTEGER, ip TEXT, time TEXT)');
 
 	// Inside the one-minute unlock window, but never equal to a fresh time().
 	$lastfail_before = str_contains($mode,'expired') ? time() - 120 : time() - 30;
 
-	if ($mode !== 'missing') {
-		$statement = $pdo->prepare('INSERT INTO user_auth VALUES (1,?,?,?,?,?,?,?,?,?,?)');
-		$statement->execute(['fixture', $realm, 'on', 'fixture', 1, 'on', $lastfail_before, 1, str_contains($mode,'locked') || str_contains($mode,'expired') ? 'on' : '', '']);
+	$user_id  = (int) ($argv[3] ?? 1);
+	$existing = $pdo->prepare('SELECT COUNT(*) FROM user_auth WHERE id = ?');
+	$existing->execute([$user_id]);
+
+	if ($mode !== 'missing' && !$existing->fetchColumn()) {
+		$statement = $pdo->prepare('INSERT INTO user_auth VALUES (?,?,?,?,?,?,?,?,?,?,?)');
+		$statement->execute([$user_id, 'fixture' . $user_id, $realm, 'on', 'fixture', 1, 'on', $lastfail_before, isset($argv[2]) ? 0 : 1, str_contains($mode,'locked') || str_contains($mode,'expired') ? 'on' : '', '']);
 	}
-	$_SESSION                   = [SESS_USER_ID=>1];
+	$_SESSION                   = [SESS_USER_ID=>$user_id];
 	$_COOKIE                    = [];
 	$_SERVER['HTTP_USER_AGENT'] = 'Fixture';
 	$token_checks               = 0;
@@ -108,11 +112,13 @@ namespace {
 		cacti_fixture_source_function($root . '/lib/auth.php',$function,'');
 	}
 	register_shutdown_function(static function () {
-		$user = $GLOBALS['pdo']->query('SELECT realm,failed_attempts,locked,lastfail FROM user_auth')->fetch(PDO::FETCH_ASSOC);
+		$statement = $GLOBALS['pdo']->prepare('SELECT realm,failed_attempts,locked,lastfail FROM user_auth WHERE id = ?');
+		$statement->execute([$GLOBALS['user_id']]);
+		$user = $statement->fetch(PDO::FETCH_ASSOC);
 
 		if (is_array($user)) {
 			$user['lastfail_before'] = $GLOBALS['lastfail_before'];
 		}
-		print json_encode(['status'=>http_response_code() ?: 200, 'user'=>$user, 'token_checks'=>$GLOBALS['token_checks'], 'authenticated'=>!empty($_SESSION[SESS_USER_2FA]), 'message'=>$GLOBALS['message'] ?? ''],JSON_THROW_ON_ERROR) . "\n";
+		print json_encode(['status'=>http_response_code() ?: 200, 'user'=>$user, 'token_checks'=>$GLOBALS['token_checks'], 'authenticated'=>!empty($_SESSION[SESS_USER_2FA]), 'message'=>$GLOBALS['message'] ?? '', 'enrollment'=>$GLOBALS['enrollment'] ?? null],JSON_THROW_ON_ERROR) . "\n";
 	});
 }

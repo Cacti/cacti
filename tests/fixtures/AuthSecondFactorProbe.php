@@ -17,6 +17,14 @@ if (PHP_SAPI !== 'cli') {
 }
 
 $root        = dirname(__DIR__,2);
+
+if (str_starts_with($argv[1] ?? '', 'enroll-')) {
+	require __DIR__ . '/AuthSecondFactorBootstrap.php';
+	cacti_fixture_source_function($root . '/lib/auth.php', 'verify_2fa', '');
+	$enrollment = json_decode(verify_2fa($user_id, gnrv('token')), true, 512, JSON_THROW_ON_ERROR);
+
+	return;
+}
 $source      = file_get_contents($root . '/auth_2fa.php');
 $bootstrap   = __DIR__ . '/AuthSecondFactorBootstrap.php';
 $replacement = 'require ' . var_export($bootstrap,true) . ';';
