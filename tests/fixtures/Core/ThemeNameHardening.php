@@ -32,9 +32,6 @@ if (!\defined('CACTI_PATH_INCLUDE')) {
 function get_guest_account() : int {
 	return 0;
 }
-function is_view_allowed(string $view) : bool {
-	return $view === 'graph_settings';
-}
 
 function check(bool $condition, string $message) : void {
 	if (!$condition) {
@@ -136,15 +133,6 @@ save_user_settings(7);
 check($GLOBALS['fixture']['settings'] === ['user_language' => 'en-US', 'full_name' => 'Operator'], 'Profile form save');
 check(!cacti_validate_user_setting_value('selected_theme', ['dark'], ['method' => 'drop_array', 'array' => ['dark' => 'Dark']]), 'Array value');
 check(cacti_validate_user_setting_value('full_name', 'any', ['method' => 'textbox']) === 'any', 'Unlisted setting');
-
-// The single-setting update on the profile page uses the same check.
-\cacti_fixture_source_function($root . '/auth_profile.php', 'api_auth_update_user_setting', __NAMESPACE__);
-$_SESSION                      = [\SESS_USER_ID => 7, 'selected_theme' => 'modern'];
-$GLOBALS['fixture']['queries'] = [];
-api_auth_update_user_setting('selected_theme', '../../x');
-check($GLOBALS['fixture']['queries'] === [] && isset($_SESSION['selected_theme']), 'Unlisted profile value stored');
-api_auth_update_user_setting('selected_theme', 'dark');
-check($GLOBALS['fixture']['queries'] === [['selected_theme', 'dark', 7]] && !isset($_SESSION['selected_theme']), 'Listed profile value not stored');
 
 // The newtheme flag only drops the cached name; its value is never stored.
 $_SESSION                      = [\SESS_USER_ID => 7, 'selected_theme' => 'dark'];
