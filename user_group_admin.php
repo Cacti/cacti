@@ -1992,6 +1992,11 @@ function user_group() : void {
 		$sql_where",
 		$sql_params);
 
+	// keep the sort key on a displayed column, like the user list in user_admin.php
+	$sort_column = cacti_validate_sort_column(grv('sort_column'),
+		['name', 'members', 'description', 'policy_graphs', 'policy_hosts', 'policy_graph_templates', 'enabled'],
+		'name');
+
 	$group_list = db_fetch_assoc_prepared("SELECT uag.id, uag.name, uag.description,
 		uag.policy_graphs, uag.policy_hosts, uag.policy_graph_templates,
 		uag.enabled, count(uagm.group_id) AS members
@@ -2000,7 +2005,7 @@ function user_group() : void {
 		ON uag.id = uagm.group_id
 		$sql_where
 		GROUP BY uag.id
-		ORDER BY " . sanitize_sql_column(grv('sort_column'), 'name') . ' ' . (strtoupper(grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') .
+		ORDER BY " . $sort_column . ' ' . (strtoupper(grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') .
 		' LIMIT ' . ($rows * (grv('page') - 1) . ',' . $rows),
 		$sql_params);
 

@@ -541,6 +541,7 @@ header_redirect	./lib/html_reports.php			header('Location: ' . get_reports_page(
 header_redirect	./lib/html_reports.php			header('Location: ' . reports_redirect_url(get_reports_page(), (empty($id) ? $post['id'] : $id)));
 header_redirect	./lib/html_tree.php				header('Location: permission_denied.php');
 header_redirect	./lib/html_tree.php			header('Location: permission_denied.php');
+header_redirect	./lib/html_tree.php			header('Location: permission_denied.php');
 header_redirect	./lib/index.php	header('Location:../index.php');
 header_redirect	./lib/plugins.php											header('Location: plugins.php');
 header_redirect	./lib/plugins.php											header('Location: plugins.php');

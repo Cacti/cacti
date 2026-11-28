@@ -732,6 +732,28 @@ function html_nav_bar(string $base_url, int $max_pages, int $current_page, int $
 }
 
 /**
+ * Record the columns this table can be sorted by for validate_sort_column().
+ *
+ * The list is kept per script and columns are only added to it, so it covers
+ * every sortable table the script has drawn in this session whatever action,
+ * tab or filter state the request named.
+ */
+function html_header_sort_register(array $header_items) : void {
+	$page    = (string) get_current_page(false);
+	$columns = $_SESSION['valid_sort_columns'][$page] ?? [];
+
+	foreach (array_keys($header_items) as $column) {
+		$column = (string) $column;
+
+		if ($column !== '' && !str_contains($column, 'nosort') && !in_array($column, $columns, true)) {
+			$columns[] = $column;
+		}
+	}
+
+	$_SESSION['valid_sort_columns'][$page] = $columns;
+}
+
+/**
  * Retrieve the sort history for this renderer instance, action and tab.
  */
 function html_header_sort_order(int $page_count) : array {
@@ -817,6 +839,8 @@ function html_header_sort(array $header_items, string $sort_column, string $sort
 
 	$header_items = form_process_visible_display_text($table_id, $header_items);
 
+	html_header_sort_register($header_items);
+
 	$order_data = html_header_sort_order($page_count);
 
 	$primarySort = '';
@@ -888,6 +912,8 @@ function html_header_sort_checkbox(array $header_items, string $sort_column, str
 	$table_id = form_get_table_id();
 
 	$header_items = form_process_visible_display_text($table_id, $header_items);
+
+	html_header_sort_register($header_items);
 
 	$order_data = html_header_sort_order($page_count);
 

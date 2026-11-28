@@ -1245,6 +1245,28 @@ function validate_store_request_vars(array $filters, string $sess_prefix = '') :
 			}
 		}
 
+		/* The page's own default sort is always usable, and it replaces a
+		 * stored or requested column that the page does not list. Before a
+		 * table header has been drawn there is no other column. */
+		if (isset($filters['sort_column']['default'])) {
+			$sort_page    = (string) get_current_page(false);
+			$sort_default = $filters['sort_column']['default'];
+
+			if (!in_array($sort_default, $_SESSION['valid_sort_columns'][$sort_page] ?? [], true)) {
+				$_SESSION['valid_sort_columns'][$sort_page][] = $sort_default;
+			}
+
+			if (validate_sort_column(get_request_var('sort_column')) === '') {
+				foreach (['sort_column' => $sort_default, 'sort_direction' => $filters['sort_direction']['default'] ?? 'ASC'] as $variable => $value) {
+					set_request_var($variable, $value);
+
+					if ($sess_prefix != '') {
+						$_SESSION[$filters[$variable]['session'] ?? $sess_prefix . '_' . $variable] = $value;
+					}
+				}
+			}
+		}
+
 		update_order_string();
 	}
 
@@ -1289,14 +1311,14 @@ function update_order_string(bool $inplace = false) : void {
 	}
 
 	if ($inplace) {
-		$_SESSION['sort_string'][$page] = 'ORDER BY ';
-
-		foreach ($_SESSION['sort_data'][$page] as $column => $direction) {
+		foreach ($_SESSION['sort_data'][$page] as $stored_column => $direction) {
 			/* Re-validate keys at read time; write-time sanitization may have
 			 * been bypassed by older session data stored before this fix. */
-			$column = sanitize_sql_column($column, '');
+			$column = validate_sort_column($stored_column);
 
 			if ($column === '') {
+				unset($_SESSION['sort_data'][$page][$stored_column]);
+
 				continue;
 			}
 
@@ -1311,7 +1333,11 @@ function update_order_string(bool $inplace = false) : void {
 			}
 		}
 
-		$_SESSION['sort_string'][$page] .= $order;
+		if ($order !== '') {
+			$_SESSION['sort_string'][$page] = 'ORDER BY ' . $order;
+		} else {
+			unset($_SESSION['sort_string'][$page]);
+		}
 	} else {
 		if (isset_request_var('clear')) {
 			unset($_SESSION['sort_data'][$page]);
@@ -1321,7 +1347,7 @@ function update_order_string(bool $inplace = false) : void {
 			unset($_SESSION['sort_string'][$page]);
 
 			$safe_direction = strtoupper(get_request_var('sort_direction')) === 'DESC' ? 'DESC' : 'ASC';
-			$sort_column    = sanitize_sql_column(get_request_var('sort_column'), '');
+			$sort_column    = validate_sort_column(get_request_var('sort_column'));
 
 			if ($sort_column === '') {
 				return;
@@ -1351,17 +1377,17 @@ function update_order_string(bool $inplace = false) : void {
 				unset($_SESSION['sort_string'][$page]);
 			}
 
-			$sort_column = sanitize_sql_column(get_request_var('sort_column'), '');
+			$sort_column = validate_sort_column(get_request_var('sort_column'));
 
-			if ($sort_column === '') {
-				return;
+			/* A refused column is not added, but the stored sort is still rebuilt
+			 * below so that it is rechecked against the page's sortable columns. */
+			if ($sort_column !== '') {
+				$_SESSION['sort_data'][$page][$sort_column] = strtoupper(get_nfilter_request_var('sort_direction')) === 'DESC' ? 'DESC' : 'ASC';
 			}
 
-			$_SESSION['sort_data'][$page][$sort_column] = strtoupper(get_nfilter_request_var('sort_direction')) === 'DESC' ? 'DESC' : 'ASC';
+			$sort_data = $_SESSION['sort_data'][$page] ?? [];
 
-			$_SESSION['sort_string'][$page] = 'ORDER BY ';
-
-			foreach ($_SESSION['sort_data'][$page] as $column => $direction) {
+			foreach ($sort_data as $column => $direction) {
 				if (!str_contains($column, '(') && !str_contains($column, '`')) {
 					$del = '`';
 				} else {
@@ -1371,10 +1397,12 @@ function update_order_string(bool $inplace = false) : void {
 				}
 			}
 
-			foreach ($_SESSION['sort_data'][$page] as $column => $direction) {
-				$column = sanitize_sql_column($column, '');
+			foreach ($sort_data as $stored_column => $direction) {
+				$column = validate_sort_column($stored_column);
 
 				if ($column === '') {
+					unset($_SESSION['sort_data'][$page][$stored_column]);
+
 					continue;
 				}
 
@@ -1389,7 +1417,11 @@ function update_order_string(bool $inplace = false) : void {
 				}
 			}
 
-			$_SESSION['sort_string'][$page] .= $order;
+			if ($order !== '') {
+				$_SESSION['sort_string'][$page] = 'ORDER BY ' . $order;
+			} else {
+				unset($_SESSION['sort_string'][$page]);
+			}
 		} else {
 			unset($_SESSION['sort_data'][$page]);
 			unset($_SESSION['sort_string'][$page]);
@@ -1410,12 +1442,31 @@ function get_order_string() : string {
 	$page = get_order_string_page(true);
 
 	if (isset($_SESSION['sort_string'][$page])) {
-		return $_SESSION['sort_string'][$page];
+		/* A stored sort is rechecked on use. update_order_string() normally
+		 * rebuilt it earlier in this request, but a sort that holds a column
+		 * the page does not list, or one left without its columns, is dropped
+		 * here in favor of the requested column. */
+		$stored = $_SESSION['sort_data'][$page] ?? [];
+		$usable = cacti_sizeof($stored) > 0;
+
+		foreach (array_keys($stored) as $column) {
+			if (validate_sort_column((string) $column) === '') {
+				$usable = false;
+
+				break;
+			}
+		}
+
+		if ($usable) {
+			return $_SESSION['sort_string'][$page];
+		}
+
+		unset($_SESSION['sort_data'][$page], $_SESSION['sort_string'][$page]);
 	}
 
 	/* Allowlist: identifiers are word chars and dots only; backtick in
 	 * the payload would escape the quoting even with $del='`'. */
-	$sort_column = sanitize_sql_column(get_request_var('sort_column'), '');
+	$sort_column = validate_sort_column(get_request_var('sort_column'));
 
 	if ($sort_column === '') {
 		return '';
@@ -1430,6 +1481,63 @@ function get_order_string() : string {
 	}
 
 	return 'ORDER BY ' . $del . implode($del . '.' . $del, explode('.', $sort_column)) . $del . ' ' . $sort_dir;
+}
+
+/**
+ * Checks a sort column before it is used in an ORDER BY clause.
+ *
+ * html_header_sort() and html_header_sort_checkbox() record the columns a
+ * table can be sorted by when they draw its header, and
+ * validate_store_request_vars() adds the page's default sort column. The
+ * list is kept in the session per script, because the sort is validated
+ * before the header is drawn. It is not kept per action or tab: those come
+ * from the request, which could then select a key that has no list. A column
+ * that is not on the list is refused, so a page that has not drawn a header
+ * yet sorts on its default column only. The list covers every table of the
+ * script, so a column whose name marks it as a credential is refused even
+ * when it is listed.
+ *
+ * @param string $column The requested or stored sort column.
+ *
+ * @return string The column when it may be sorted on, otherwise ''.
+ */
+function validate_sort_column(string $column) : string {
+	$column = sanitize_sql_column($column, '');
+
+	if ($column === '' || !in_array($column, $_SESSION['valid_sort_columns'][(string) get_current_page(false)] ?? [], true)) {
+		return '';
+	}
+
+	// the column itself, without a table alias or a sort function around it
+	$name = (string) preg_replace('/(?:^.*[.(])|(?:\)$)/', '', $column);
+
+	if (preg_match('/password|passwd|passphrase|dbpass|_pass$|secret|community|token|hash|_key$|sslkey|authkey|apikey|privatekey/i', $name)) {
+		return '';
+	}
+
+	return $column;
+}
+
+/**
+ * Returns the sort column when it is one the caller allows.
+ *
+ * For pages that build their own ORDER BY clause from a fixed set of columns
+ * rather than through get_order_string(). The comparison is strict, so only
+ * the exact SQL fragments the caller lists are returned.
+ *
+ * @param string $column  The requested sort column.
+ * @param array  $allowed The columns or SQL fragments the page can sort by.
+ * @param string $default Returned when $column is not allowed. Falls back to
+ *                        the first allowed entry when empty.
+ *
+ * @return string An entry of $allowed, or $default.
+ */
+function cacti_validate_sort_column(string $column, array $allowed, string $default = '') : string {
+	if (in_array($column, $allowed, true)) {
+		return $column;
+	}
+
+	return $default !== '' ? $default : (string) ($allowed[0] ?? 'id');
 }
 
 /**

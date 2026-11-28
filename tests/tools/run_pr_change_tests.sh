@@ -68,6 +68,17 @@ if [[ -f tests/fixtures/BoostSourceExistenceProbe.php ]]; then
 		run_probe ../BoostSourceExistenceProbe.php "boost-source-existence-$scenario" "$scenario" > /dev/null
 	done
 fi
+for scenario in first-view unregistered-page listed-column unsortable-column unlisted-column listed-credential-column no-default other-action-unlisted other-action-listed other-script single-column single-column-refused default-outside-header wrapped-column stale-stored-sort orphan-stored-sort stored-sort remove-column remove-column-unlisted remove-last-column; do
+	run_probe SortLookupChecks.php "sort-lookup-$scenario" sort "$scenario" > /dev/null
+done
+run_probe SortLookupChecks.php sort-lookup-helpers helpers > /dev/null
+for case in allowed denied; do
+	run_probe SortLookupChecks.php "sort-lookup-realtime-$case" realtime "$case" > /dev/null
+done
+for case in root-allowed root-denied branch-allowed branch-denied lookup-denied default-denied tree-list; do
+	run_probe SortLookupChecks.php "sort-lookup-tree-$case" tree "$case" > /dev/null
+done
+
 if [[ -f tests/fixtures/Core/DocumentDirectionShells.php ]]; then
 	run_probe DocumentDirectionShells.php document-shells
 	run_probe DocumentDirectionShells.php document-shells-rtl he-IL rtl-fixture
