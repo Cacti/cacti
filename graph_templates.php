@@ -47,6 +47,8 @@ $actions = [
 // set default action
 set_default_action();
 
+// Reordering template items and removing a template input change stored
+// data, so they must arrive by POST with a CSRF token.
 if (in_array(grv('action'), ['ajax_dnd', 'input_remove'], true)) {
 	csrf_require_post();
 }

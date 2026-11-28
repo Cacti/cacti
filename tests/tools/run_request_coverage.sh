@@ -86,6 +86,12 @@ run_php_probe tests/fixtures/Core/PackageRepositoryWorkspace.php '^((package_imp
 run_php_probe tests/fixtures/Core/PackageImportFileStatus.php '^(lib/(import|package)\.php|tests/fixtures/Core/PackageImportFileStatus\.php)'
 run_php_probe tests/fixtures/Core/PackageDiffBoundary.php '^(package_import\.php|tests/fixtures/Core/PackageDiffBoundary\.php)'
 
+run_php_probe tests/fixtures/CoreBulkActionPostGuardCoverage.php '^(aggregate_graphs\.php|aggregate_templates\.php|cdef\.php|color\.php|color_templates\.php|data_input\.php|data_queries\.php|data_source_profiles\.php|data_sources\.php|data_templates\.php|gprint_presets\.php|graph_templates\.php|graphs\.php|host_templates\.php|pollers\.php|sites\.php|vdef\.php|tests/fixtures/(CoreBulkActionPostGuardCoverage|BulkActionPostGuardProbe)\.php)'
+
+run_php_probe tests/fixtures/AdministrationBulkActionPostGuardCoverage.php '^(host\.php|layouts\.php|lib/html_reports\.php|links\.php|login_providers\.php|managers\.php|package_keys\.php|package_repos\.php|tree\.php|user_admin\.php|user_group_admin\.php|tests/fixtures/(AdministrationBulkActionPostGuardCoverage|BulkActionPostGuardProbe)\.php)'
+
+run_php_probe tests/fixtures/Core/CsrfPostGuardBatch3Coverage.php '^((aggregate_graphs|auth_profile|automation_graph_rules|automation_networks|automation_snmp|automation_templates|automation_tree_rules|cdef|color|color_templates|data_input|data_queries|data_source_profiles|data_sources|data_templates|gprint_presets|graph_templates|graphs|host|host_templates|links|login_providers|managers|package_repos|pollers|sites|tree|user_admin|user_group_admin|vdef)\.php|include/csrf\.php|tests/fixtures/Core/CsrfPostGuardBatch3(Probe|Coverage)\.php)'
+
 row_guard_files='^(aggregate_graphs|auth_changepassword|auth_profile|color|data_input|data_source_profiles|graph_templates)\.php|^cli/add_device\.php|^lib/(api_tree|auth|dsstats|html_reports|plugins|poller|reports|template)\.php|^tests/fixtures/Core/RowGuardMatrix\.php'
 run_php_probe tests/fixtures/Core/RowGuardMatrix.php "$row_guard_files"
 for row_guard_mode in auth-changepassword add-device reports-edit; do
@@ -100,9 +106,9 @@ run_php_probe tests/Unit/fixtures/graph_group_probe.php '^(lib/functions\.php|te
 
 run_probe tests/e2e/basic_auth_identity_docker.sh '^(include/(auth|global)\.php|lib/auth\.php|tests/e2e/basic_auth_identity_docker\.sh)' 18392
 
-run_php_probe tests/fixtures/CoreBulkActionPostGuardCoverage.php '^(aggregate_graphs\.php|aggregate_templates\.php|cdef\.php|color\.php|color_templates\.php|data_input\.php|data_queries\.php|data_source_profiles\.php|data_sources\.php|data_templates\.php|gprint_presets\.php|graph_templates\.php|graphs\.php|host_templates\.php|pollers\.php|sites\.php|vdef\.php|tests/fixtures/(CoreBulkActionPostGuardCoverage|BulkActionPostGuardProbe)\.php)'
-
-run_php_probe tests/fixtures/AdministrationBulkActionPostGuardCoverage.php '^(host\.php|layouts\.php|lib/html_reports\.php|links\.php|login_providers\.php|managers\.php|package_keys\.php|package_repos\.php|tree\.php|user_admin\.php|user_group_admin\.php|tests/fixtures/(AdministrationBulkActionPostGuardCoverage|BulkActionPostGuardProbe)\.php)'
-
-run_php_probe tests/fixtures/Core/CsrfPostGuardBatch3Coverage.php '^((aggregate_graphs|auth_profile|automation_graph_rules|automation_networks|automation_snmp|automation_templates|automation_tree_rules|cdef|color|color_templates|data_input|data_queries|data_source_profiles|data_sources|data_templates|gprint_presets|graph_templates|graphs|host|host_templates|links|login_providers|managers|package_repos|pollers|sites|tree|user_admin|user_group_admin|vdef)\.php|include/csrf\.php|tests/fixtures/Core/CsrfPostGuardBatch3(Probe|Coverage)\.php)'
 run_php_probe tests/Unit/fixtures/document_direction_probe.php '^(include/global_languages\.php|include/top_general_header\.php|lib/auth\.php|tests/Unit/fixtures/(document_direction_probe|i18n_probe_bootstrap)\.php)'
+
+user_settings_realtime_files='^(auth_profile\.php|graph_realtime\.php|lib/(functions|html_tree|user_setting_validation)\.php|tests/fixtures/Core/UserSettingsAndRealtimeHardening\.php)$'
+for mode in core auth-guest-exit auth-disable-2fa auth-enable-2fa auth-verify-2fa realtime-denied realtime-view-denied; do
+	run_php_probe tests/fixtures/Core/UserSettingsAndRealtimeHardening.php "$user_settings_realtime_files" "$mode"
+done

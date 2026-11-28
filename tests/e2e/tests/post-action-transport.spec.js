@@ -34,7 +34,7 @@ test('every POST-only action in the transport map is sent by POST', async ({ pag
 
 test('logging out everywhere posts the session token and confirms completion', async ({ page }) => {
 	const profile = fs.readFileSync(path.join(root, 'auth_profile.php'), 'utf8');
-	const start = profile.indexOf('\t\tfunction logoutEverywhere()');
+	const start = profile.indexOf('\t\tfunction logoutEverywhere(fields = {})');
 	const end = profile.indexOf('\n\t\t}', start);
 	expect(start).toBeGreaterThan(-1);
 	expect(end).toBeGreaterThan(start);
@@ -48,17 +48,19 @@ test('logging out everywhere posts the session token and confirms completion', a
 		contentType: 'text/html',
 		body: '<button id="logout_everywhere" onclick="logoutEverywhere()">Log out everywhere</button>',
 	}));
-	await page.route('http://cacti-fixture/auth_profile.php?action=logout_everywhere', route => route.fulfill({ body: '' }));
+	await page.route('http://cacti-fixture/auth_profile.php', (route) => route.request().method() === 'POST' ? route.fulfill({ body: '' }) : route.fallback());
 	await page.goto('http://cacti-fixture/auth_profile.php');
 	await page.addScriptTag({ path: path.join(root, 'include/js/jquery.js') });
 	await page.addScriptTag({ path: path.join(root, 'include/js/jquery-ui.js') });
+	const layout = fs.readFileSync(path.join(root, 'include/layout.js'), 'utf8');
+	await page.addScriptTag({ content: layout.slice(layout.indexOf('function cactiPreparePostRequest('), layout.indexOf('function cactiPreparePostRequestFromUrl(')) });
 	await page.addScriptTag({ content: script + '\n//# sourceURL=http://cacti-fixture/auth_profile.php' });
 	await page.evaluate(() => { window.csrfMagicToken = 'profile-fixture-token'; });
 	const [request] = await Promise.all([
-		page.waitForRequest(req => new URL(req.url()).searchParams.get('action') === 'logout_everywhere'),
+		page.waitForRequest(req => req.method() === 'POST' && new URL(req.url()).pathname === '/auth_profile.php'),
 		page.getByRole('button', { name: 'Log out everywhere' }).click(),
 	]);
 	expect(request.method()).toBe('POST');
-	expect(request.postDataJSON()).toEqual({ __csrf_magic: 'profile-fixture-token' });
+	expect(request.postDataJSON()).toEqual({ action: 'logout_everywhere', __csrf_magic: 'profile-fixture-token' });
 	await expect(page.getByRole('dialog')).toContainText('All your login sessions have been cleared.');
 });

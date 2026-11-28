@@ -40,7 +40,14 @@ $actions = [
 // set default action
 set_default_action();
 
-if (in_array(grv('action'), ['item_movedown', 'item_moveup', 'movedown', 'moveup', 'item_add_agr', 'item_add_atr', 'item_add_ttr', 'item_remove_agr', 'item_remove_atr', 'item_remove_ttr', 'ajax_dnd', 'graph_dnd', 'tree_dnd', 'exitonchange'], true)) {
+// Every action below that adds, removes, reorders or toggles a rule changes
+// stored data, so it must arrive by POST with a CSRF token.
+if (in_array(grv('action'), [
+	'item_movedown', 'item_moveup', 'movedown', 'moveup',
+	'ajax_dnd', 'graph_dnd', 'tree_dnd', 'exitonchange',
+	'item_add_agr', 'item_add_atr', 'item_add_ttr',
+	'item_remove_agr', 'item_remove_atr', 'item_remove_ttr',
+], true)) {
 	csrf_require_post();
 }
 
