@@ -638,7 +638,7 @@
     }
 
     html {
-        background: rgba(0,0,0,99.99);
+        background: rgba(0,0,0,1);
     }
     html[data-theme-color="light"] {
         background: rgba(0,0,0,0.01);

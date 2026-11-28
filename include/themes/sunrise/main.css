@@ -41,7 +41,6 @@ body, table, tr, td, textarea {
 
 body {
 	margin: 0px;
-	background-color: white;
 	background-repeat: repeat-y;
 	overflow: hidden;
 	background-color: #000000;
@@ -49,7 +48,7 @@ body {
 	background-image: -moz-radial-gradient(85% 145%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
 	background-image: -o-radial-gradient(85% 145%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
 	background-image: -ms-radial-gradient(85% 145%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
-	background-image: radial-gradient(85% 145%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
+	background-image: radial-gradient(ellipse farthest-corner at 85% 145%, #ffa254 1%, #04335b 35%, #000000 65%);
 }
 
 table {
@@ -479,7 +478,7 @@ label.ui-state-hover > span {
 
 .spikeKillMenuItem {
 	display: block;
-	width: 100%:;
+	width: 100%;
 }
 
 .deviceUp {
@@ -848,11 +847,8 @@ label.ui-state-hover > span {
 	width: 100%;
 	padding: 0px;
 	border-color: rgba(255,255,255,0.2);
-	*/
 	box-shadow: inset 0 1px 0 rgba(255,255,255,.09);
-	*/
 	background-color: #000000;
-	*/
 	background-image: -webkit-gradient(linear, left 0%, left 100%, from(#3a3b3c), to(#000000));
 	background-image: -webkit-linear-gradient(top, #3a3b3c 0%, #000000 100%);
 	background-image: -moz-linear-gradient(top, #3a3b3c 0%, #000000 100%);
@@ -1130,7 +1126,6 @@ legend {
 	color: #93CEFF;
 	background: #100000;
 	border: 1px solid #3a3b3c;
-	;
 	margin: 0px;
 	padding: 10px 0px 10px 0px !important;
 	line-height: 1.5em;
@@ -1171,7 +1166,6 @@ legend {
 	padding: 10px 3px;
 	display: inline-block;
 	vertical-align: top;
-	align-self: left;
 	z-index: 4;
 	height: 100%;
 	height: 200px;
@@ -1951,7 +1945,6 @@ table.cactiTable {
 }
 
 .graphSubHeaderColumn {
-	color: #white;
 	font-size: 12px;
 	vertical-align: middle;
 	text-align: left;
@@ -2652,7 +2645,6 @@ tr#realtime td:first-child {
 
 .darkblue {
 	background: #2d4ca8;
- /* Old browsers */;
 }
 
 .ui-corner-all {
@@ -2886,7 +2878,7 @@ tr#realtime td:first-child {
 	background-image: -moz-radial-gradient(85% 145%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
 	background-image: -o-radial-gradient(85% 145%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
 	background-image: -ms-radial-gradient(85% 145%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
-	background-image: radial-gradient(85% 145%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
+	background-image: radial-gradient(ellipse farthest-corner at 85% 145%, #ffa254 1%, #04335b 35%, #000000 65%);
 }
 
 /* New Checkbox Stuff */
@@ -2915,7 +2907,7 @@ tr#realtime td:first-child {
 	background-image: -moz-linear-gradient(left, rgba(147, 206, 255, 0.2) 0%, rgba(147, 206, 255, 0.2) 60%, black 100%) !important;
 	background-image: -o-linear-gradient(left, rgba(147, 206, 255, 0.2) 0%, rgba(147, 206, 255, 0.2) 60%, black 100%) !important;
 	background-image: -ms-linear-gradient(left, rgba(147, 206, 255, 0.2) 0%, rgba(147, 206, 255, 0.2) 60%, black 100%) !important;
-	background-image: linear-gradient(left, rgba(147, 206, 255, 0.2) 0%, rgba(147, 206, 255, 0.2) 60%, black 100%) !important;
+	background-image: linear-gradient(to right, rgba(147, 206, 255, 0.2) 0%, rgba(147, 206, 255, 0.2) 60%, black 100%) !important;
 	-webkit-transition: .4s;
 	transition: .4s;
 	border: 1px solid #7F83A2;
@@ -2939,10 +2931,6 @@ tr#realtime td:first-child {
 
 input:checked + .checkboxSlider {
 	background-color: rgba(255, 170, 0, 0.5) !important;
-	background-image: -webkit-linear-gradient(to right, black, rgba(255, 170, 0, 0.5)) !important;
-	background-image: -moz-linear-gradient(to right, black, rgba(255, 170, 0, 0.5)) !important;
-	background-image: -o-linear-gradient(to right, black, rgba(255, 170, 0, 0.5)) !important;
-	background-image: -ms-linear-gradient(to right, black, rgba(255, 170, 0, 0.5)) !important;
 	background-image: linear-gradient(to right, black, rgba(255, 170, 0, 0.5)) !important;
 }
 
@@ -3004,7 +2992,7 @@ input:checked + .checkboxSlider:before {
 	background-image: -moz-radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
 	background-image: -o-radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
 	background-image: -ms-radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
-	background-image: radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
+	background-image: radial-gradient(ellipse farthest-corner at 50% 50%, #000000 1%, #04335b 35%, #000000 65%);
 }
 
 .radioSlider:before {
@@ -3029,7 +3017,7 @@ input:checked + .radioSlider {
 	background-image: -moz-radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
 	background-image: -o-radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
 	background-image: -ms-radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
-	background-image: radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
+	background-image: radial-gradient(ellipse farthest-corner at 50% 50%, #ffa254 1%, #04335b 35%, #000000 65%);
 }
 
 input:focus + .radioSlider {
@@ -3641,7 +3629,7 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 /* scoped to non-loading nodes so the AJAX loading throbber is preserved  */
 .jstree-default .jstree-node:not(.jstree-loading) > .jstree-ocl {
 	background: none !important;
-	font-family: "tabler-icons";
+	font-family: "tabler-icons", sans-serif;
 	font-size: 14px;
 	display: inline-flex;
 	align-items: center;

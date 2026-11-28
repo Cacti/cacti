@@ -282,8 +282,48 @@ label {
 	display: none;
 }
 
+.cols1 {
+	width: 100%;
+	display:table-cell;
+}
+
+.cols2 {
+	width: 50%;
+	display:table-cell;
+}
+
+.cols3 {
+	width: 33%;
+	display:table-cell;
+}
+
+.cols4 {
+	width: 25%;
+	display:table-cell;
+}
+
+.cols5 {
+	width: 20%;
+	display:table-cell;
+}
+
+.cols6 {
+	width: 16.6%;
+	display:table-cell;
+}
+
+.graphPage {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
+
 .nowrap {
 	white-space: nowrap;
+}
+
+.prewrap {
+	white-space: pre-wrap;
 }
 
 .wrap {
@@ -1773,6 +1813,73 @@ legend {
 
 .cactiNavBarBottom {
 	background-color: var(--dp-accent);
+}
+
+.settingsFilter {
+	display: table;
+	white-space: nowrap;
+}
+
+.settingsFilter div {
+	display: table-cell;
+	padding: 5px 0px 5px 5px;
+	vertical-align: middle;
+}
+
+.pingRow {
+	padding-left: 5px;
+	min-height: 50px;
+	vertical-align: text-top;
+	display: table-cell;
+	margin: 0px;
+}
+
+.confirm_actions .formColumnLeft {
+	min-width: 10%;
+	max-width: 45%;
+	width: initial;
+	display: table-cell;
+	float: initial;
+	vertical-align: middle;
+}
+
+.confirm_actions .formColumnRight {
+	display: table-cell;
+	float: initial;
+}
+
+.confirm_actions label {
+	white-space: wrap;
+}
+
+.formConfirmRadio {
+	width: 10px;
+}
+
+.formConfirmRow {
+	margin: 3px;
+}
+
+.formConfirmRow td {
+	padding: 3px 8px;
+}
+
+.formConfirmRow td:first-child {
+	width: 1%;
+}
+
+.ui-selectmenu-search input {
+	width: 100%;
+}
+
+.tableHeaderGraph {
+	background: var(--dp-overlay);
+}
+
+.tableHeaderGraph span {
+	padding: 3px;
+	line-height: 25px;
+	color: var(--dp-text);
 }
 
 .tableHeader {

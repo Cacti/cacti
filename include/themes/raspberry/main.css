@@ -208,6 +208,10 @@ label {
 	white-space: pre-wrap;
 }
 
+.wrap {
+	white-space: normal !important;
+}
+
 .top {
 	vertical-align: top;
 }
@@ -222,6 +226,21 @@ label {
 
 .center {
 	text-align: center !important;
+}
+
+.flexContainer {
+	display: flex;
+	flex-wrap: wrap;
+	margin-left: auto;
+	margin-right: auto;
+	justify-content: flex-start;
+}
+
+.flexChild {
+	display: inline-block;
+	margin-top: 5px;
+	flex-basis: 20%;
+	min-width: 200px;
 }
 
 .usermenudown {
@@ -499,7 +518,7 @@ label {
 .submenuoptions {
 	background: white;
 	border-width: 0px 3px 3px 3px;
-	border-color: rgba(119,119,0,119.7);
+	border-color: rgba(119,0,119,0.7);
 	border-style: solid;
 	position: absolute;
 	top: 45px;
@@ -514,19 +533,19 @@ label {
 	padding: 2px 15px 2px 15px;
 	font-size: 14px;
 	font-weight: lighter;
-	color: rgba(119,119,0,119.9);
+	color: rgba(119,0,119,0.9);
 	text-decoration: none;
 }
 
 .submenuoptions li a:hover {
 	display: block;
-	background: rgba(119,119,0,119.1);
+	background: rgba(119,0,119,0.1);
 }
 
 .menuoptions {
 	background: white;
 	border-width: 0px 3px 3px 3px;
-	border-color: rgba(119,119,0,119.7);
+	border-color: rgba(119,0,119,0.7);
 	border-style: solid;
 	display: block;
 	float: right;
@@ -544,13 +563,13 @@ label {
 	padding: 2px 15px 2px 15px;
 	font-size: 14px;
 	font-weight: lighter;
-	color: rgba(119,119,0,119.9);
+	color: rgba(119,0,119,0.9);
 	text-decoration: none;
 }
 
 .menuoptions li a:hover {
 	display: block;
-	background: rgba(119,119,0,119.1);
+	background: rgba(119,0,119,0.1);
 }
 
 .import_label {
@@ -729,7 +748,7 @@ label {
 }
 
 .cactiPageBottom {
-	background-color: rgba(119,119,0,119.7);
+	background-color: rgba(119,0,119,0.7);
 	height: 15px;
 	width: 100%;
 	position: fixed;
@@ -819,7 +838,7 @@ label {
 }
 
 .cactiAuthLogo {
-	display: hidden;
+	display: none;
 	position: relative;
 	background: none;
 	#background: transparent url('./images/cacti_logo.svg') no-repeat 30px;
@@ -1160,7 +1179,7 @@ legend {
 }
 
 .templateHeader {
-	background: rgba(119,119,0,119.55);
+	background: rgba(119,0,119,0.55);
 }
 
 .templateHeader td {
@@ -1189,7 +1208,7 @@ legend {
 }
 
 .cactiInstallLoaderSpinnerTheme {
-	border-top-color: rgba(119,119,0,119.9) !important;
+	border-top-color: rgba(119,0,119,0.9) !important;
 }
 
 .cactiTableTitleRow {
@@ -1642,7 +1661,7 @@ legend {
 }
 
 .cactiNavBarTop {
-	border-bottom: 1px solid rgba(119,119,0,119.5);
+	border-bottom: 1px solid rgba(119,0,119,0.5);
 }
 
 .cactiNavBarBottom {
@@ -1681,7 +1700,7 @@ th.sortable {
 }
 
 .tableHeaderColumnHover {
-	background: rgba(119,119,0,119.4);
+	background: rgba(119,0,119,0.4);
 }
 
 .tableSubHeaderColumn, .tableSubHeaderColumnCenter, .tableSubHeaderColumnRight {
@@ -1748,7 +1767,7 @@ th.sortable {
 
 .navBarNavigation {
 	display: table;
-	color: rgba(119,119,0,119.9);
+	color: rgba(119,0,119,0.9);
 	width: 100%;
 	text-align: center;
 	height: 20px;
@@ -1909,7 +1928,7 @@ th.sortable {
 }
 
 .deleteMarker {
-	color: rgba(119,119,0,119.6);
+	color: rgba(119,0,119,0.6);
 	vertical-align: middle;
 	text-decoration: none !important;
 	display: inline-block !important;
@@ -1921,7 +1940,7 @@ th.sortable {
 }
 
 .deleteMarkerDisabled {
-	color: rgba(119,119,0,119.6);
+	color: rgba(119,0,119,0.6);
 	vertical-align: middle;
 	text-decoration: none !important;
 	display: inline-block !important;
@@ -2484,7 +2503,7 @@ tr#realtime td:first-child {
 
 .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active, a.ui-button:active, .ui-button:active, .ui-button.ui-state-active:hover {
 	color: white;
-	background: rgba(119,119,0,119.9);
+	background: rgba(119,0,119,0.9);
 }
 
 /* New Checkbox Stuff */
@@ -2613,7 +2632,7 @@ input:checked + .checkboxSlider:before {
 }
 
 input:checked + .radioSlider {
-	background-color: rgba(119,119,0,119.9);
+	background-color: rgba(119,0,119,0.9);
 }
 
 input:disabled + .radioSlider {
@@ -2941,7 +2960,7 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 }
 
 .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
-	background: rgba(119,119,0,119.9);
+	background: rgba(119,0,119,0.9);
 	color: white;
 }
 /* ======================================================================== */

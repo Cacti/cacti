@@ -208,6 +208,10 @@ label {
 	white-space: pre-wrap;
 }
 
+.wrap {
+	white-space: normal !important;
+}
+
 .top {
 	vertical-align: top;
 }
@@ -222,6 +226,21 @@ label {
 
 .center {
 	text-align: center !important;
+}
+
+.flexContainer {
+	display: flex;
+	flex-wrap: wrap;
+	margin-left: auto;
+	margin-right: auto;
+	justify-content: flex-start;
+}
+
+.flexChild {
+	display: inline-block;
+	margin-top: 5px;
+	flex-basis: 20%;
+	min-width: 200px;
 }
 
 .usermenudown {
@@ -364,7 +383,7 @@ label {
 
 .spikeKillMenuItem {
 	display: block;
-	width: 100%:;
+	width: 100%;
 }
 
 .deviceUp {
@@ -513,14 +532,13 @@ label {
 	display: block;
 	padding: 2px 15px 2px 15px;
 	font-size: 14px;
-	font-weight: light;
 	color: rgba(0,0,0,0.9);
 	text-decoration: none;
 }
 
 .submenuoptions li a:hover {
 	display: block;
-	background: rgba(0,119,0,0.3);;
+	background: rgba(0,119,0,0.3);
 }
 
 .menuoptions {
@@ -543,14 +561,13 @@ label {
 	display: block;
 	padding: 2px 15px 2px 15px;
 	font-size: 14px;
-	font-weight: light;
 	color: rgba(0,0,0,0.9);
 	text-decoration: none;
 }
 
 .menuoptions li a:hover {
 	display: block;
-	background: rgba(0,119,0,0.3);;
+	background: rgba(0,119,0,0.3);
 }
 
 .import_label {
@@ -896,7 +913,6 @@ label {
 	-moz-border-radius: 10px;
 	border-radius: 10px;
 	padding: 15px;
-	background-color: white;
 	top: 30%;
 	width: 360px;
 	max-height: 300px;
@@ -975,7 +991,6 @@ legend {
 	padding: 10px 3px;
 	display: inline-block;
 	vertical-align: top;
-	align-self: left;
 	z-index: 4;
 	height: 100%;
 	height: 200px;
@@ -1511,7 +1526,7 @@ legend {
 	width: 100%;
 	text-align: left;
 	line-height: 25px;
-	background: rgba(0, 119, 0, 0.55) none repeat scroll 0 0;
+	background: rgba(0,119,0,1) none repeat scroll 0 0;
 	color: white;
 	font-weight: bold;
 }
@@ -1636,7 +1651,7 @@ legend {
 .tableHeader {
 	display: table-row;
 	color: white;
-	background: rgba(0,109,0,0.55);
+	background: rgba(0,119,0,1);
 }
 
 th.sortable {
@@ -1693,7 +1708,6 @@ th.secondarySort {
 }
 
 .graphSubHeaderColumn {
-	color: #white;
 	font-size: 12px;
 	vertical-align: middle;
 	text-align: left;
@@ -2082,7 +2096,7 @@ div.submenu span {
 .tabs nav a.selected {
 	color: white;
 	border-bottom: 1px solid rgba(162,117,63,0.8);
-	background: rgba(117,162,63,0.8);
+	background: rgba(0,119,0,1);
 }
 
 .tabs li {
@@ -2975,7 +2989,7 @@ select.select2-multi-count.select2-hidden-accessible + .select2-container:not(.s
 /* scoped to non-loading nodes so the AJAX loading throbber is preserved  */
 .jstree-default .jstree-node:not(.jstree-loading) > .jstree-ocl {
 	background: none !important;
-	font-family: "tabler-icons";
+	font-family: "tabler-icons", sans-serif;
 	font-size: 14px;
 	display: inline-flex;
 	align-items: center;
