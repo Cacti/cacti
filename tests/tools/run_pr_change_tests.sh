@@ -93,6 +93,12 @@ if [[ -f tests/fixtures/Core/TableColumnSizing.php ]]; then
 	done
 fi
 
+if [[ -f tests/fixtures/Core/UserSettingsAndRealtimeHardening.php ]]; then
+	for mode in core auth-guest-exit auth-disable-2fa auth-enable-2fa auth-verify-2fa realtime-denied realtime-view-denied; do
+		run_probe UserSettingsAndRealtimeHardening.php "user-settings-realtime-$mode" "$mode"
+	done
+fi
+
 run_probe ConfiguredCommands.php configured-commands
 run_probe ConfiguredCommands.php deprecated-rebuild deprecated
 run_probe DisplayAndValidation.php display-validation
