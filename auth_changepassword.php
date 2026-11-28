@@ -96,6 +96,8 @@ if ($user['password_change'] != 'on') {
 	/* destroy session information */
 	kill_session_var('sess_user_id');
 
+	/* revoke the server-side remember-me token as well as the browser cookie */
+	clear_auth_cookie();
 	cacti_cookie_logout();
 
 	cacti_header('index.php');
@@ -359,7 +361,7 @@ if ($skip_current) {
 						<tr>
 <?php if ($skip_current) { ?>
 							<td><?php print __('Username');?></td>
-							<td class='nowrap'><input type='hidden' id='current' name='current_password' autocomplete='current-password' value=''><?php print $user['username'];?></td>
+							<td class='nowrap'><input type='hidden' id='current' name='current_password' autocomplete='current-password' value=''><?php print html_escape($user['username']);?></td>
 <?php } else { ?>
 							<td><?php print __('Current password');?></td>
 							<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='current' name='current_password' autocomplete='current-password' size='20' placeholder='********'></td>

@@ -25,6 +25,58 @@
 /* include ldap support */
 include_once(__DIR__ . '/lib/ldap.php');
 
+if (!function_exists('auth_login_session_cookie_failure')) {
+	/**
+	 * Fail closed when a browser submits a login without returning the session cookie.
+	 *
+	 * @param bool $write_log Whether to log the missing-cookie failure.
+	 *
+	 * @return void
+	 */
+	function auth_login_session_cookie_failure(bool $write_log = true) : void {
+		global $config;
+
+		if (function_exists('cacti_session_cookie_failure')) {
+			cacti_session_cookie_failure($write_log);
+
+			return;
+		}
+
+		if ($write_log) {
+			cacti_log('ERROR: Browser did not return the Cacti session cookie during login; verify url_path and cacti_cookie_domain.', false, 'AUTH');
+		}
+
+		while (ob_get_level()) {
+			ob_end_clean();
+		}
+
+		http_response_code(403);
+		header('Content-Type: text/plain; charset=UTF-8');
+		print __('The browser did not return the Cacti session cookie. Ensure cookies are enabled and verify the configured URL path and cookie domain.') . PHP_EOL;
+		print __('Return to Cacti: %s', $config['url_path'] . 'index.php') . PHP_EOL;
+		exit;
+	}
+}
+
+if (!function_exists('auth_login_is_valid_domain_realm')) {
+	/**
+	 * Verify that a submitted domain realm belongs to an enabled LDAP domain.
+	 *
+	 * @param int $realm The submitted realm identifier.
+	 *
+	 * @return bool True when the realm belongs to an enabled domain.
+	 */
+	function auth_login_is_valid_domain_realm(int $realm) : bool {
+		if ($realm < 1001) {
+			return false;
+		}
+
+		$valid_realms = get_auth_realms(true);
+
+		return is_array($valid_realms) && array_key_exists($realm, $valid_realms);
+	}
+}
+
 /* set default action */
 set_default_action();
 
@@ -42,13 +94,24 @@ $user          = array();                             // An array that will incl
 $user_enabled  = true;                                // A variable to let plugins know that the user is enabled
 $guest_user    = false;                               // Indicates the Guest account is being used
 $realm         = 0;                                   // The compensated realm used for template and user validation
-$frv_realm     = get_nfilter_request_var('realm', 0); // The dropdown value for realm
+$frv_realm     = isset_request_var('realm') ? (int) get_filter_request_var('realm') : 0; // The dropdown value for realm
 $auth_method   = read_config_option('auth_method');   // The authentication method for Cacti
 $error         = false;                               // Global variable, will be true if any errors occur
 $error_msg     = '';                                  // The errors message in case there was a login error
 
 /* global variables for exception handling */
 global $error, $error_msg;
+
+/* The IP fallback can validate a login CSRF token when a clean browser rejects
+ * a mis-scoped session cookie. Stop before authenticating so that successful
+ * credentials do not redirect back to a fresh unauthenticated session. */
+if ($auth_method != 2 && get_nfilter_request_var('action') == 'login') {
+	$session_name = session_name();
+
+	if ($session_name !== '' && !isset($_COOKIE[$session_name])) {
+		auth_login_session_cookie_failure(!empty($_COOKIE));
+	}
+}
 
 if (get_nfilter_request_var('action') == 'login' || $auth_method == 2) {
 	if ($auth_method > 2 && $frv_realm <= 1) {
@@ -102,7 +165,14 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == 2) {
 		case '4': // LDAP Domains login
 			cacti_log("DEBUG: Domains User '" . $username . "' to attempt login.", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
-			$user = domains_login_process($username);
+			if (!auth_login_is_valid_domain_realm($frv_realm) || get_nfilter_request_var('login_password') == '') {
+				$error     = true;
+				$error_msg = __('Invalid User Name/Password Please Retype');
+
+				cacti_log("LOGIN FAILED: Domains Login Failed for user '" . $username . "' with realm '" . $frv_realm . "'.", false, 'AUTH');
+			} else {
+				$user = domains_login_process($username);
+			}
 
 			break;
 		default: // Login Realm not determined
@@ -199,13 +269,6 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == 2) {
 			}
 		}
 
-		/* remember me support.  Not for guest of basic auth */
-		if ($auth_method != 2 && $user['id'] !== get_guest_account()) {
-			if (!$error && isset_request_var('remember_me') && read_config_option('auth_cache_enabled') == 'on') {
-				set_auth_cookie($user);
-			}
-		}
-
 			if (!$error) {
 				/* avoid session fixation */
 				cacti_session_start(true);
@@ -229,6 +292,13 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == 2) {
 
 					header('Location: auth_login.php');
 					exit;
+				}
+
+				/* Mint a persistent credential only after the login transition succeeds. */
+				if ($auth_method != 2 && $user['id'] !== get_guest_account()
+					&& isset_request_var('remember_me')
+					&& read_config_option('auth_cache_enabled') == 'on') {
+					set_auth_cookie($user);
 				}
 
 				/* handle 'force change password' */
