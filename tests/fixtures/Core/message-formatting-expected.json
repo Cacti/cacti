@@ -43,6 +43,7 @@
   ],
   "lib/api_automation.php": [
     ["automation_message", 3, "ERROR: Network &apos;Lab &amp; Office&apos; is Invalid."],
+    ["automation_message", 3, "ERROR: The Subnet Ranges contain 70000 IP Addresses, more than the Automation limit of 65536.  Split the Network or raise &apos;Maximum Addresses per Network&apos; under Configuration &gt; Settings &gt; General."],
     ["rule_missing", 3, "Can not find the Tree Rule with the ID 25"],
     ["sql_injection", 3, "Attempted SQL Injection found in Tree Automation for the field variable Building &amp; Floor."],
     ["sql_injection", 3, "Attempted SQL Injection found in Tree Automation for the field variable Rack &amp; Unit."]

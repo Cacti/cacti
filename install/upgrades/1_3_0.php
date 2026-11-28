@@ -123,6 +123,10 @@ function upgrade_to_1_3_0() : void {
 	db_install_add_key('sessions', 'INDEX', 'user_id', ['user_id']);
 	db_install_add_key('sessions', 'INDEX', 'access', ['access']);
 
+	// automation_ips is a MEMORY table, where a HASH index on these mostly
+	// equal values degrades to a scan; BTREE keeps each worker claim O(log n)
+	db_install_add_key('automation_ips', 'INDEX', 'network_status_pid', ['network_id', 'status', 'pid'], 'BTREE');
+
 	upgrade_boost_process_table();
 
 	// poller_output_boost_local_data_ids is a MEMORY table; its indexes default
