@@ -228,7 +228,8 @@
   ],
   "pollers.php": [
     ["dupe_dbhost", 3, "You have already used this database hostname &apos;edge.example&apos;.  Please enter a non-duplicate database hostname."],
-    ["dupe_hostname", 3, "You have already used this hostname &apos;edge.example&apos;.  Please enter a non-duplicate hostname."]
+    ["dupe_hostname", 3, "You have already used this hostname &apos;edge.example&apos;.  Please enter a non-duplicate hostname."],
+    ["poller_sync_permission", 3, "Permission Denied"]
   ],
   "settings.php": [
     ["cacti_settings_Field & Name", 3, "Setting &apos;Field &amp; Name&apos;: Required &amp; missing"],

@@ -169,7 +169,7 @@ $cases = [
 	'package_import.php'        => 'import_fail_ import_success_ repo_exists repo_missing',
 	'package_repos.php'         => 'repo_exists repo_missing',
 	'plugins.php'               => 'force_remove_present force_remove_required invalid_plugin invalid_plugin_action plugin_good',
-	'pollers.php'               => 'dupe_dbhost dupe_hostname',
+	'pollers.php'               => 'dupe_dbhost dupe_hostname poller_sync_permission',
 	'settings.php'              => 'cacti_settings_ poller_',
 	'support.php'               => 'lockout lockout_user',
 ];

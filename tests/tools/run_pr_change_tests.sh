@@ -103,6 +103,18 @@ run_probe ConfiguredCommands.php configured-commands
 run_probe ConfiguredCommands.php deprecated-rebuild deprecated
 run_probe DisplayAndValidation.php display-validation
 run_probe DisplayAndValidation.php input-method-save save
+run_probe RrdCleanerProxyQueue.php rrd-cleaner-proxy-queue
+run_probe RrdCleanerLocalSource.php rrd-cleaner-local-source
+for mode in escape collector post queue-rejection; do
+	run_probe CollectorCleanupGates.php "collector-cleanup-$mode" "$mode"
+done
+for action in 4 6; do
+	run_probe CollectorCleanupGates.php "collector-cleanup-sync-$action" sync-denied "$action"
+done
+for page in user_admin user_group_admin rrdcleaner; do
+	run_probe CollectorCleanupGates.php "collector-cleanup-get-$page" refused "$page.php"
+done
+run_probe CollectorCleanupGates.php collector-cleanup-token refused rrdcleaner.php POST
 
 browser_specs=()
 for spec in graph-drilldown graph-spikekill filter-dialog-theme table-column-widths; do

@@ -56,6 +56,9 @@ switch (grv('action')) {
 		break;
 	case 'remall':
 	case 'arcall':
+		// Both queue every unknown RRDfile for the next maintenance run.
+		csrf_require_post();
+
 		top_header();
 		// fill files name table
 		remove_all_rrds();
@@ -523,20 +526,20 @@ function create_rrdcleaner_filter() : array {
 				'url'     => 'rrdcleaner.php?action=rescan'
 			],
 			'remall' => [
-				'method'  => 'button',
-				'display' => __('Delete All'),
-				'action'  => 'default',
-				'title'   => __('Delete All RRDfiles'),
-				'status'  => __('Scheduling Purging of All Unknowns'),
-				'url'     => 'rrdcleaner.php?action=remall&raction=3&clear=1'
+				'method'   => 'button',
+				'display'  => __('Delete All'),
+				'action'   => 'default',
+				'title'    => __('Delete All RRDfiles'),
+				'status'   => __('Scheduling Purging of All Unknowns'),
+				'callback' => 'postUrl({ url: \'rrdcleaner.php?action=remall&raction=3&clear=1\', funcEnd: \'finishFinalize\' }, { __csrf_magic: csrfMagicToken })'
 			],
 			'arcall' => [
-				'method'  => 'button',
-				'display' => __('Archive All'),
-				'action'  => 'default',
-				'title'   => __('Archive All RRDfiles'),
-				'status'  => __('Scheduling Archiving of All Unknowns'),
-				'url'     => 'rrdcleaner.php?action=arcall&raction=3&clear=1'
+				'method'   => 'button',
+				'display'  => __('Archive All'),
+				'action'   => 'default',
+				'title'    => __('Archive All RRDfiles'),
+				'status'   => __('Scheduling Archiving of All Unknowns'),
+				'callback' => 'postUrl({ url: \'rrdcleaner.php?action=arcall&raction=3&clear=1\', funcEnd: \'finishFinalize\' }, { __csrf_magic: csrfMagicToken })'
 			]
 		],
 		'sort' => [
