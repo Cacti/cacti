@@ -12377,6 +12377,30 @@ msgid "Lock Accounts"
 msgstr ""
 
 #: include/global_settings.php
+msgid "Login Attempt Interval"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Duration in seconds for client login attempt limits."
+msgstr ""
+
+#: include/global_settings.php
+msgid "Login Attempts per Address"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Maximum password login attempts from one client address per interval."
+msgstr ""
+
+#: include/global_settings.php
+msgid "Login Attempts per Account and Address"
+msgstr ""
+
+#: include/global_settings.php
+msgid "Maximum attempts for one login name from the same client address per interval."
+msgstr ""
+
+#: include/global_settings.php
 msgid "Lock an account after this many failed attempts in 1 hour."
 msgstr ""
 

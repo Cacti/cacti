@@ -52,7 +52,14 @@ $error_msg     = '';                                  // The errors message in c
 // global variables for exception handling
 global $error, $error_msg;
 
-if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
+$password_attempt  = gnrv('action') === 'login' && $auth_method != AUTH_METHOD_BASIC;
+$login_reservation = $password_attempt ? \Cacti\Auth\LoginThrottle::reserve((string) get_client_addr(), $username) : null;
+
+if ($password_attempt && $login_reservation === null) {
+	$error     = true;
+	$error_msg = __('Access Denied! Login Failed.');
+	auth_log_failure($username, auth_realm_token((int) $frv_realm), 'rate_limited');
+} elseif (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 	if ($auth_method > AUTH_METHOD_BASIC && $frv_realm <= 1) {
 		// User picked 'local' from dropdown;
 		$auth_method = AUTH_METHOD_CACTI;
@@ -109,6 +116,8 @@ if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 
 			exit;
 	}
+
+	$verified_credentials = !$error && cacti_sizeof($user);
 
 	// Create user from template if available
 	if (!$error && !cacti_sizeof($user) && get_template_account($username) > 0 && $username != '') {
@@ -235,6 +244,10 @@ if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 			}
 
 			cacti_log("DEBUG: User '" . $username . "' about to re-direct to preferred login page", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+
+			if ($verified_credentials && !$guest_user) {
+				$login_reservation?->completeSuccessfulLogin();
+			}
 
 			auth_login_redirect($user['login_opts']);
 		}

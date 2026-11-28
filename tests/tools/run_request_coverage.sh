@@ -19,6 +19,7 @@ run_probe() {
 run_probe tests/e2e/aggregate-item-overrides.sh '^(aggregate_(graphs|templates)\.php|lib/api_aggregate\.php|install/upgrades/1_3_0\.php|tests/e2e/aggregate-item-overrides)' 18273
 CACTI_AGGREGATE_TEST_BROWSER=1 run_probe tests/e2e/aggregate-automation.sh '^(automation_aggregates\.php|lib/(api_automation|automation|api_aggregate)\.php|install/upgrades/1_3_0\.php|tests/e2e/aggregate-automation)' 18274
 run_probe tests/e2e/accessibility-coverage.sh '^((about|aggregate_graphs|auth_changepassword|auth_resetpassword|automation_templates|color|data_queries|data_templates|graph_realtime|graph_xport|graphs_new|host|host_templates|index|package|permission_denied|plugins|tree|user_admin|user_group_admin|utilities)\.php|include/top_(general_|graph_)?header\.php|install/install\.php|lib/html(_form|_graph)?\.php|tests/e2e/accessibility)' 18275
+run_probe tests/e2e/login-throttle.sh '^(lib/Auth/LoginThrottle\.php|tests/(e2e/login-throttle\.sh|integration/LoginThrottleTest\.php))$' 18421
 run_probe tests/e2e/queue/run.sh '^(lib/api_queue\.php|cli/queue_(admin|worker)\.php|include/global_settings\.php|install/upgrades/1_3_0\.php|tests/e2e/queue/)' 18276
 
 run_php_probe() {
@@ -34,6 +35,10 @@ run_php_probe() {
 }
 
 command_files='^((cmd|cmd_realtime|remote_agent)\.php|cli/(audit_database|push_out_hosts|rrdresize|splice_rrd)\.php|lib/(dsstats|poller|rrdcheck|functions)\.php|tests/fixtures/Core/ConfiguredCommands\.php)'
+for mode in disconnected invalid-address begin write read increment release; do
+	run_php_probe tests/fixtures/LoginThrottleAvailability.php '^(lib/Auth/LoginThrottle|tests/fixtures/LoginThrottleAvailability)\.php$' "$mode"
+done
+
 run_php_probe tests/fixtures/Core/ConfiguredCommands.php "$command_files"
 run_php_probe tests/fixtures/Core/ConfiguredCommands.php "$command_files" deprecated
 validation_files='^((data_input|data_sources|pollers|sites)\.php|lib/(clog_webapi|functions|html|import|plugins)\.php|tests/fixtures/Core/DisplayAndValidation\.php)'

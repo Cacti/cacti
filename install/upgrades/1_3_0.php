@@ -683,6 +683,14 @@ function upgrade_to_1_3_0() : void {
 		}
 	}
 
+	db_install_execute('CREATE TABLE IF NOT EXISTS auth_login_windows (
+		bucket char(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+		attempts int unsigned NOT NULL,
+		expires_at bigint unsigned NOT NULL,
+		PRIMARY KEY (bucket),
+		KEY expires_at (expires_at)
+	) ENGINE=InnoDB');
+
 	upgrade_reports();
 
 	if (db_table_exists('user_domains') && !db_column_exists('user_domains', 'debug')) {
