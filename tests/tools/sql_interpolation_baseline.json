@@ -52,7 +52,7 @@
     "poller_recovery.php": 2,
     "poller_spikekill.php": 1,
     "rrdcleaner.php": 3,
-    "support.php": 3,
+    "support.php": 1,
     "tree.php": 3,
     "user_admin.php": 3,
     "user_group_admin.php": 1,
