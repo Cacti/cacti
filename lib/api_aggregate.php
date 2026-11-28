@@ -1938,7 +1938,8 @@ function draw_aggregate_template_graph_config($aggregate_template_id, $graph_tem
 
 	$graph_templates_graph = db_fetch_row_prepared('SELECT *
 		FROM graph_templates_graph
-		WHERE graph_template_id = ?',
+		WHERE graph_template_id = ?
+		AND local_graph_id = 0',
 		array($graph_template_id));
 
 	$form_array = array();

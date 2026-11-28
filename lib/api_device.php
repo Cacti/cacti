@@ -63,7 +63,7 @@ function api_device_remove($device_id) {
 	db_execute_prepared('DELETE FROM poller_item      WHERE host_id = ?', array($device_id));
 	db_execute_prepared('DELETE FROM poller_reindex   WHERE host_id = ?', array($device_id));
 	db_execute_prepared('DELETE FROM graph_tree_items WHERE host_id = ?', array($device_id));
-	db_execute_prepared('DELETE FROM reports_items    WHERE host_id = ?', array($device_id . ':%'));
+	db_execute_prepared('DELETE FROM reports_items    WHERE host_id = ?', array($device_id));
 	db_execute_prepared('DELETE FROM poller_command   WHERE command LIKE ?', array($device_id . ':%'));
 
 	if ($poller_id > 1) {
@@ -158,7 +158,7 @@ function api_device_purge_deleted_devices() {
 			db_execute_prepared('DELETE FROM poller_item      WHERE host_id = ?', array($d['id']));
 			db_execute_prepared('DELETE FROM poller_reindex   WHERE host_id = ?', array($d['id']));
 			db_execute_prepared('DELETE FROM graph_tree_items WHERE host_id = ?', array($d['id']));
-			db_execute_prepared('DELETE FROM reports_items    WHERE host_id = ?', array($d['id'] . ':%'));
+			db_execute_prepared('DELETE FROM reports_items    WHERE host_id = ?', array($d['id']));
 			db_execute_prepared('DELETE FROM poller_command   WHERE command LIKE ?', array($d['id'] . ':%'));
 			db_execute_prepared('DELETE FROM data_local       WHERE host_id = ?', array($d['id']));
 			db_execute_prepared('DELETE FROM graph_local      WHERE host_id = ?', array($d['id']));
@@ -360,19 +360,32 @@ function api_device_enable_devices($device_ids) {
 		 * Only reprime poller cache if empty this allows support for pre 1.2.16
 		 * enable behavior.
 		 */
-		if (!cacti_sizeof($poller_cache)) {
+		if ((int) $poller_cache === 0) {
 			/* update poller cache */
 			$data_sources = db_fetch_assoc_prepared('SELECT id
 				FROM data_local
 				WHERE host_id = ?',
 				array($device_id));
 
-			$poller_items = $local_data_ids = array();
+			$poller_items   = array();
+			$local_data_ids = array();
 
 			if (cacti_sizeof($data_sources)) {
 				foreach ($data_sources as $data_source) {
 					$local_data_ids[] = $data_source['id'];
-					$poller_items     = array_merge($poller_items, update_poller_cache($data_source['id']));
+					$items            = update_poller_cache($data_source['id']);
+
+					if (cacti_sizeof($items)) {
+						foreach ($items as $item) {
+							$poller_items[] = $item;
+						}
+					}
+
+					if (cacti_sizeof($local_data_ids) >= 500) {
+						poller_update_poller_cache_from_buffer($local_data_ids, $poller_items, $poller_id);
+						$poller_items   = array();
+						$local_data_ids = array();
+					}
 				}
 			}
 
@@ -1364,10 +1377,11 @@ function api_device_update_host_template($device_id, $device_template_id) {
 			WHERE htg.host_template_id = ?
 		) AS result
 		ON hg.graph_template_id=result.gtid
-		WHERE gt.id NOT IN (SELECT graph_template_id FROM snmp_query_graph)
+		WHERE hg.host_id = ?
+		AND gt.id NOT IN (SELECT graph_template_id FROM snmp_query_graph)
 	    HAVING gtid IS NULL
 	    ORDER BY gt.name',
-	    array($device_id, $device_template_id)
+	    array($device_id, $device_template_id, $device_id)
 	);
 
 	if (cacti_sizeof($unused_graph_templates)) {
@@ -2753,8 +2767,10 @@ function api_clone_device_template($template_id, $template_name, $include_gt, $c
 
 										db_execute_prepared('UPDATE graph_templates_item
 											SET task_item_id = ?
-											WHERE task_item_id = ?',
-											array($dt_rrd_id, $rrd['data_template_rrd_id']));
+											WHERE task_item_id = ?
+											AND graph_template_id = ?
+											AND local_graph_id = 0',
+											array($dt_rrd_id, $rrd['data_template_rrd_id'], $new_gt));
 									}
 								}
 

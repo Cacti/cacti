@@ -423,8 +423,10 @@ function get_tree_path() {
 	}
 }
 
-function get_device_leaf_class($host_id) {
-	$status = db_fetch_cell_prepared('SELECT status FROM host WHERE id = ?', array($host_id));
+function get_device_leaf_class($host_id, $status = null) {
+	if ($status === null) {
+		$status = db_fetch_cell_prepared('SELECT status FROM host WHERE id = ?', array($host_id));
+	}
 	switch($status) {
 		case HOST_DOWN:
 			$class = 'deviceDown';
@@ -484,15 +486,56 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 
 	if (cacti_sizeof($hierarchy)) {
 		if ($tree_id > 0) {
+			$branch_ids = array();
+			$host_ids   = array();
+
+			foreach ($hierarchy as $leaf) {
+				if ($leaf['site_id'] > 0) {
+					continue;
+				} elseif ($leaf['host_id'] > 0) {
+					$host_ids[] = (int) $leaf['host_id'];
+				} else {
+					$branch_ids[] = (int) $leaf['id'];
+				}
+			}
+
+			$branch_children = array();
+			if (cacti_sizeof($branch_ids)) {
+				$branch_children = array_rekey(
+					db_fetch_assoc('SELECT parent, COUNT(*) AS totals
+						FROM graph_tree_items
+						WHERE parent IN (' . implode(', ', array_unique($branch_ids)) . ')
+						AND local_graph_id = 0
+						GROUP BY parent'),
+					'parent', 'totals'
+				);
+			}
+
+			$host_statuses = array();
+			if (cacti_sizeof($host_ids)) {
+				$host_statuses = array_rekey(
+					db_fetch_assoc('SELECT id, status
+						FROM host
+						WHERE id IN (' . implode(', ', array_unique($host_ids)) . ')'),
+					'id', 'status'
+				);
+			}
+
 			$dhtml_tree[] = "\t\t\t<ul>\n";
 
 			foreach ($hierarchy as $leaf) {
 				if ($leaf['site_id'] > 0) {  // It's a site
-					$dhtml_tree = array_merge($dhtml_tree, create_site_branch($leaf));
+					$sub_items = create_site_branch($leaf);
 				} elseif ($leaf['host_id'] > 0) {  // It's a host
-					$dhtml_tree = array_merge($dhtml_tree, create_host_branch($leaf));
+					$status    = isset($host_statuses[$leaf['host_id']]) ? $host_statuses[$leaf['host_id']] : null;
+					$sub_items = create_host_branch($leaf, -1, -1, $status);
 				} else { //It's not a host
-					$dhtml_tree = array_merge($dhtml_tree, create_branch($leaf));
+					$children  = isset($branch_children[$leaf['id']]) ? (int) $branch_children[$leaf['id']] : 0;
+					$sub_items = create_branch($leaf, $children);
+				}
+
+				foreach ($sub_items as $item) {
+					$dhtml_tree[] = $item;
 				}
 			}
 
@@ -539,7 +582,10 @@ function create_site_branch($leaf) {
 			$hleaf['hostname'] = strip_domain($d['description']);
 			$hleaf['host_id']  = $d['id'];
 
-			$dhtml_tree = array_merge($dhtml_tree, create_host_branch($hleaf, $leaf['site_id'], $d['host_template_id']));
+			$host_status = isset($d['status']) ? $d['status'] : null;
+			foreach (create_host_branch($hleaf, $leaf['site_id'], $d['host_template_id'], $host_status) as $item) {
+				$dhtml_tree[] = $item;
+			}
 
 			$ht_name = $d['host_template_name'];
 		}
@@ -572,50 +618,61 @@ function create_site_branch($leaf) {
 	return $dhtml_tree;
 }
 
-function create_branch($leaf) {
+function create_branch($leaf, $children = null) {
 	global $config;
 
 	$dhtml_tree = array();
 
-	$children = db_fetch_cell_prepared('SELECT COUNT(*)
-		FROM graph_tree_items
-		WHERE parent = ?
-		AND local_graph_id=0',
-		array($leaf['id']));
+	if ($children === null) {
+		$children = db_fetch_cell_prepared('SELECT COUNT(*)
+			FROM graph_tree_items
+			WHERE parent = ?
+			AND local_graph_id=0',
+			array($leaf['id']));
+	}
 
 	$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' " . ($children > 0 ? "class='jstree-closed'":"") . "><a href=\"" . html_escape($config['url_path'] . 'graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&site_id=-1&host_id=-1&host_template_id=-1&hgd=') . '">' . html_escape($leaf['title']) . "</a></li>\n";
 
 	return $dhtml_tree;
 }
 
-function create_host_branch($leaf, $site_id = -1, $ht = -1) {
+function create_host_branch($leaf, $site_id = -1, $ht = -1, $host_status = null) {
 	global $config, $unique_id;
 
 	$unique_id++;
 
 	if (isset($leaf['host_id']) && $leaf['host_id'] > 0) {
-		$class = get_device_leaf_class($leaf['host_id']);
+		$class = get_device_leaf_class($leaf['host_id'], $host_status);
 	} else {
 		$class = '';
 	}
 
+	$dhtml_tree   = array();
 	$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . ($site_id > 0 ? '-site-' . $site_id:'') . ($ht > 0 ? '-ht-' . $ht:'') . '-host-' . $leaf['host_id'] . '-uid-' . $unique_id . "' data-jstree='{ \"type\" : \"device\" }'><a class='$class' href=\"" . html_escape($config['url_path'] . 'graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&host_id=' . $leaf['host_id'] . '&site_id=' . $site_id . '&host_template_id=' . $ht .'&hgd=') . '">' . html_escape(strip_domain($leaf['hostname'])) . "</a>\n";
 
 	if (read_user_setting('expand_hosts') == 'on') {
 		if ($leaf['host_grouping_type'] == HOST_GROUPING_DATA_QUERY_INDEX) {
 			$dhtml_tree[] = "\t\t\t\t\t<ul>\n";
-			$dhtml_tree = array_merge($dhtml_tree, create_data_query_branch($leaf, $site_id, $ht));
+			foreach (create_data_query_branch($leaf, $site_id, $ht) as $item) {
+				$dhtml_tree[] = $item;
+			}
 			$dhtml_tree[] = "\t\t\t\t\t</ul>\n";
 		} elseif ($leaf['host_grouping_type'] == HOST_GROUPING_GRAPH_TEMPLATE) {
 			$dhtml_tree[] = "\t\t\t\t\t<ul>\n";
-			$dhtml_tree = array_merge($dhtml_tree, create_graph_template_branch($leaf, $site_id, $ht));
+			foreach (create_graph_template_branch($leaf, $site_id, $ht) as $item) {
+				$dhtml_tree[] = $item;
+			}
 			$dhtml_tree[] = "\t\t\t\t\t</ul>\n";
 		} else {
 			$dhtml_tree[] = "\t\t\t\t\t<ul>\n";
-			$dhtml_tree = array_merge($dhtml_tree, create_graph_template_branch($leaf, $site_id, $ht));
+			foreach (create_graph_template_branch($leaf, $site_id, $ht) as $item) {
+				$dhtml_tree[] = $item;
+			}
 			$dhtml_tree[] = "\t\t\t\t\t</ul>\n";
 			$dhtml_tree[] = "\t\t\t\t\t<ul>\n";
-			$dhtml_tree = array_merge($dhtml_tree, create_data_query_branch($leaf, $site_id, $ht));
+			foreach (create_data_query_branch($leaf, $site_id, $ht) as $item) {
+				$dhtml_tree[] = $item;
+			}
 			$dhtml_tree[] = "\t\t\t\t\t</ul>\n";
 		}
 	}
@@ -1001,14 +1058,15 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							$graph_templates = get_allowed_graph_templates('', 'name', '', $total_rows);
 
 							if (cacti_sizeof($graph_templates)) {
-								$selected    = explode(',', get_request_var('graph_template_id'));
-								foreach ($graph_templates as $gt) {
-									$found = db_fetch_cell_prepared('SELECT id
-										FROM graph_local
-										WHERE graph_template_id = ? LIMIT 1',
-										array($gt['id']));
+								$selected         = explode(',', get_request_var('graph_template_id'));
+								$active_templates = array_rekey(
+									db_fetch_assoc('SELECT DISTINCT graph_template_id
+										FROM graph_local'),
+									'graph_template_id', 'graph_template_id'
+								);
 
-									if ($found) {
+								foreach ($graph_templates as $gt) {
+									if (isset($active_templates[$gt['id']])) {
 										print "<option value='" . $gt['id'] . "'";
 										if (cacti_sizeof($selected)) {
 											if (in_array($gt['id'], $selected)) {
@@ -1449,12 +1507,18 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 		// suppress total rows collection
 		$total_rows = -1;
 
-		$graph_templates = get_allowed_graph_templates('', 'name', '', $total_rows);
-		$final_templates = array();
+		$graph_templates      = get_allowed_graph_templates('', 'name', '', $total_rows);
+		$final_templates      = array();
+		$include_non_template = false;
 		if ($graph_template_id != '' && $graph_template_id != '-1' && $graph_template_id != '0') {
-			$templates = explode(',', $graph_template_id);
+			$templates  = explode(',', $graph_template_id);
+			$ptemplates = array();
 			foreach($templates as $id) {
+				$id = trim($id);
 				$ptemplates[$id]['id'] = $id;
+				if ($id === '0') {
+					$include_non_template = true;
+				}
 			}
 
 			foreach($graph_templates as $template) {
@@ -1464,18 +1528,20 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 				}
 			}
 		} elseif ($graph_template_id == '0') {
-			$final_templates = array();
+			$final_templates      = array();
+			$include_non_template = true;
 		} else {
-			$final_templates = $graph_templates;
+			$final_templates      = $graph_templates;
+			$include_non_template = true;
 		}
 
 		/* for graphs without a template */
-		array_push(
-			$final_templates, array(
+		if ($include_non_template) {
+			$final_templates[] = array(
 				'id'   => '0',
 				'name' => __('(Non Graph Template)')
-			)
-		);
+			);
+		}
 
 		if (cacti_sizeof($final_templates)) {
 			$sql_where = '';
@@ -1487,10 +1553,12 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 				$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.host_id=' . $host_id;
 			}
 
-			$graph_template_ids = [];
+			$graph_template_ids = array();
+			$template_names     = array();
 
 			foreach ($final_templates as $graph_template) {
-				array_push($graph_template_ids, $graph_template['id']);
+				$graph_template_ids[]                  = (int) $graph_template['id'];
+				$template_names[$graph_template['id']] = $graph_template['name'];
 			}
 
 			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.graph_template_id IN (' . implode(', ', $graph_template_ids) . ')';
@@ -1509,8 +1577,15 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 
 			if (cacti_sizeof($graphs)) {
 				foreach ($graphs as $graph) {
-					$graph['graph_template_name'] = $graph_template['name'];
-					array_push($graph_list, $graph);
+					if (isset($graph['template_name']) && $graph['template_name'] != '') {
+						$graph['graph_template_name'] = $graph['template_name'];
+					} elseif (isset($graph['graph_template_id']) && isset($template_names[$graph['graph_template_id']])) {
+						$graph['graph_template_name'] = $template_names[$graph['graph_template_id']];
+					} else {
+						$graph['graph_template_name'] = __('(Non Graph Template)');
+					}
+
+					$graph_list[] = $graph;
 				}
 			}
 		}
