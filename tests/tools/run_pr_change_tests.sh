@@ -46,6 +46,9 @@ fi
 for fixture in PackageArchive PackageDiffBoundary PackageRepositoryWorkspace PackageImportFileStatus; do
 	run_probe "$fixture.php" "$fixture"
 done
+if [[ -f tests/fixtures/Core/Poller/KilledProcessDbConnection.php ]]; then
+	run_probe Poller/KilledProcessDbConnection.php killed-process-db-connection
+fi
 if [[ -f tests/fixtures/Core/RraContainmentMatrix.php ]]; then
 	run_probe RraContainmentMatrix.php rra-normal normal
 	run_probe RraContainmentMatrix.php rra-missing missing
