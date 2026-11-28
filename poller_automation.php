@@ -488,7 +488,7 @@ function discoverDevices($network_id, $thread) {
 						db_execute_prepared('UPDATE automation_ips
 							SET hostname = ?
 							WHERE ip_address = ?',
-							array($netbios, $device['ip_address']));
+							[$netbios, $device['ip_address']]);
 
 						$device['hostname']      = $netbios;
 						$device['dnsname']       = $netbios;
@@ -530,7 +530,7 @@ function discoverDevices($network_id, $thread) {
 						db_execute_prepared('UPDATE automation_ips
 							SET hostname = ?
 							WHERE ip_address = ?',
-							array($netbios, $device['ip_address']));
+							[$netbios, $device['ip_address']]);
 
 						$device['hostname']      = $netbios;
 						$device['dnsname']       = $netbios;
@@ -667,18 +667,15 @@ function discoverDevices($network_id, $thread) {
 								$hostname = gethostbyaddr($device['ip_address']);
 								if ($hostname === false) {
 									$hostname = $device['ip_address'];
-								} elseif ($hostname != $device['ip_address']) {
-									$dot_pos = strpos($hostname, '.');
-									if ($dot_pos !== false) {
-										$hostname = substr($hostname, 0, $dot_pos);
-									}
+								} elseif ($hostname !== $device['ip_address'] && str_contains($hostname, '.')) {
+									$hostname = strstr($hostname, '.', true);
 								}
 
 								$isCactiSysName = db_fetch_cell_prepared('SELECT COUNT(*)
 									FROM host
 									WHERE snmp_sysName = ?
 									AND (hostname = ? OR hostname = ? OR hostname LIKE ?)',
-									array($snmp_sysName, $device['ip_address'], $hostname, $hostname . '.%'));
+									[$snmp_sysName, $device['ip_address'], $hostname, $hostname . '.%']);
 
 								if ($isCactiSysName) {
 									automation_debug(", Skipping sysName '" . $snmp_sysName . "' already in Cacti!\n");
@@ -1170,7 +1167,7 @@ function clearTask($network_id, $pid) {
 		FROM automation_ips
 		WHERE pid = ?
 		AND network_id = ?',
-		array($pid, $network_id));
+		[$pid, $network_id]);
 }
 
 function clearAllTasks($network_id) {

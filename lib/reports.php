@@ -186,7 +186,7 @@ function reports_add_graphs($report_id, $local_graph_id, $timespan, $align) {
 				$host_template_id = db_fetch_cell_prepared('SELECT host_template_id
 					FROM host
 					WHERE id = ?',
-					array($gd['host_id']));
+					[$gd['host_id']]);
 
 				db_execute_prepared('INSERT INTO reports_items
 					(report_id, item_type, host_template_id, host_id, graph_template_id, local_graph_id, timespan, align, sequence)
@@ -265,137 +265,119 @@ function reports_date_time_format() {
 	return $graph_date;
 }
 
-function reports_interval_step($interval, $count, $offset, $timestamp, $multiplier = 1) {
+function reports_interval_month_weekday(int $timestamp, int $step_count, int $offset) : int {
+	/* Anchor to the 1st of the target month so Jan 29-31 never overflows into March */
+	$weekday      = (int) date('w', $timestamp);
+	$nth_weekday  = (int) ceil((int) date('j', $timestamp) / 7);
+	$hour         = (int) date('H', $timestamp);
+	$minute       = (int) date('i', $timestamp);
+	$second       = (int) date('s', $timestamp);
+	$first_of_new = mktime($hour, $minute, $second, (int) date('n', $timestamp) + $step_count, 1, (int) date('Y', $timestamp));
+	$target_month = (int) date('n', $first_of_new);
+	$target_year  = (int) date('Y', $first_of_new);
+	$days_in_mon  = (int) date('t', $first_of_new);
+	$first_wday   = (int) date('w', $first_of_new);
+	$target_day   = 1 + (($weekday - $first_wday + 7) % 7) + ($nth_weekday - 1) * 7;
+
+	while ($target_day > $days_in_mon) {
+		$target_day -= 7;
+	}
+
+	return mktime($hour, $minute, $second + $offset, $target_month, $target_day, $target_year);
+}
+
+function reports_interval_step(int $interval, int $count, int $offset, int $timestamp, int $multiplier = 1) : int {
 	$step_count = $count * $multiplier;
 
-	switch ($interval) {
-		case REPORTS_SCHED_INTVL_MINUTE:
-			# add $step_count minutes to current mailtime
-			return utime_add($timestamp, 0, 0, 0, 0, $step_count, $offset);
-		case REPORTS_SCHED_INTVL_HOUR:
-			# add $step_count hours to current mailtime
-			return utime_add($timestamp, 0, 0, 0, $step_count, 0, $offset);
-		case REPORTS_SCHED_INTVL_DAY:
-			# add $step_count days to current mailtime
-			return utime_add($timestamp, 0, 0, $step_count, 0, 0, $offset);
-		case REPORTS_SCHED_INTVL_WEEK:
-			# add $step_count weeks = 7*$step_count days to current mailtime
-			return utime_add($timestamp, 0, 0, 7 * $step_count, 0, 0, $offset);
-		case REPORTS_SCHED_INTVL_MONTH_DAY:
-			# add $step_count months to current mailtime
-			return utime_add($timestamp, 0, $step_count, 0, 0, 0, $offset);
-		case REPORTS_SCHED_INTVL_MONTH_WEEKDAY:
-			# add $step_count months to current mailtime, preserving the nth weekday of the month
-			# anchored to the 1st of the target month so Jan 29-31 never overflows into March
-			$weekday      = (int) date('w', $timestamp);
-			$day_of_month = (int) date('j', $timestamp);
-			$nth_weekday  = (int) ceil($day_of_month / 7);
-
-			$hour         = (int) date('H', $timestamp);
-			$minute       = (int) date('i', $timestamp);
-			$second       = (int) date('s', $timestamp);
-			$cur_month    = (int) date('n', $timestamp);
-			$cur_year     = (int) date('Y', $timestamp);
-
-			$first_of_new_month = mktime($hour, $minute, $second, $cur_month + $step_count, 1, $cur_year);
-			$target_month       = (int) date('n', $first_of_new_month);
-			$target_year        = (int) date('Y', $first_of_new_month);
-			$days_in_month      = (int) date('t', $first_of_new_month);
-			$first_weekday      = (int) date('w', $first_of_new_month);
-
-			$day_offset = ($weekday - $first_weekday + 7) % 7;
-			$target_day = 1 + $day_offset + ($nth_weekday - 1) * 7;
-
-			while ($target_day > $days_in_month) {
-				$target_day -= 7;
-			}
-
-			return mktime($hour, $minute, $second + $offset, $target_month, $target_day, $target_year);
-		case REPORTS_SCHED_INTVL_YEAR:
-			# add $step_count years to current mailtime
-			return utime_add($timestamp, $step_count, 0, 0, 0, 0, $offset);
-		default:
-			return 0;
-	}
+	return match ($interval) {
+		REPORTS_SCHED_INTVL_MINUTE        => utime_add($timestamp, 0, 0, 0, 0, $step_count, $offset),
+		REPORTS_SCHED_INTVL_HOUR          => utime_add($timestamp, 0, 0, 0, $step_count, 0, $offset),
+		REPORTS_SCHED_INTVL_DAY           => utime_add($timestamp, 0, 0, $step_count, 0, 0, $offset),
+		REPORTS_SCHED_INTVL_WEEK          => utime_add($timestamp, 0, 0, 7 * $step_count, 0, 0, $offset),
+		REPORTS_SCHED_INTVL_MONTH_DAY     => utime_add($timestamp, 0, $step_count, 0, 0, 0, $offset),
+		REPORTS_SCHED_INTVL_MONTH_WEEKDAY => reports_interval_month_weekday($timestamp, $step_count, $offset),
+		REPORTS_SCHED_INTVL_YEAR          => utime_add($timestamp, $step_count, 0, 0, 0, 0, $offset),
+		default                           => 0,
+	};
 }
 
 /**
  * reports_interval_start - computes the next start time for the given set of parameters
  *
- * @param int $interval  - given interval
- * @param int $count     - given repeat count
- * @param int $offset    - offset in seconds to be added to the new start time
- * @param int $timestamp - current start time for report
- * @param int|null $now  - optional reference timestamp (defaults to current time)
+ * @param int      $interval  - given interval
+ * @param int      $count     - given repeat count
+ * @param int      $offset    - offset in seconds to be added to the new start time
+ * @param int      $timestamp - current start time for report
+ * @param int|null $now       - optional reference timestamp (defaults to current time)
  *
  * @return int - new timestamp
  */
 function reports_interval_start($interval, $count, $offset, $timestamp, $now = null) {
 	global $reports_interval;
-	reports_log(__FUNCTION__ . ', interval: ' . (isset($reports_interval[$interval]) ? $reports_interval[$interval] : $interval) . ' count: ' . $count . ' offset: ' . $offset . ' timestamp: ' . date('Y/m/d H:i:s', $timestamp), false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
+	reports_log(__FUNCTION__ . ', interval: ' . ($reports_interval[$interval] ?? $interval) . ' count: ' . $count . ' offset: ' . $offset . ' timestamp: ' . date('Y/m/d H:i:s', $timestamp), false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 
-	$count  = max(1, (int) $count);
-	$offset = (int) $offset;
+	$interval  = (int) $interval;
+	$count     = max(1, (int) $count);
+	$offset    = (int) $offset;
+	$timestamp = (int) $timestamp;
+	$now     ??= time();
 
-	if ($now === null) {
-		$now = time();
-	}
-
-	$unit_seconds = array(
+	$unit_seconds = match ($interval) {
 		REPORTS_SCHED_INTVL_MINUTE        => 60,
 		REPORTS_SCHED_INTVL_HOUR          => 3600,
 		REPORTS_SCHED_INTVL_DAY           => 86400,
 		REPORTS_SCHED_INTVL_WEEK          => 604800,
-		REPORTS_SCHED_INTVL_MONTH_DAY     => 28 * 86400,
+		REPORTS_SCHED_INTVL_MONTH_DAY,
 		REPORTS_SCHED_INTVL_MONTH_WEEKDAY => 28 * 86400,
 		REPORTS_SCHED_INTVL_YEAR          => 365 * 86400,
-	);
+		default                           => null,
+	};
 
-	if (!isset($unit_seconds[$interval])) {
+	if ($unit_seconds === null) {
 		return 0;
 	}
 
 	$multiplier = 1;
 	$ts         = reports_interval_step($interval, $count, $offset, $timestamp, $multiplier);
 
-	if ($ts <= $now) {
-		$approx_step = $unit_seconds[$interval] * $count;
-		$est_steps   = (int) floor(($now - $timestamp - $offset) / $approx_step);
-		if ($est_steps > 1) {
-			$multiplier = $est_steps;
-			$ts         = reports_interval_step($interval, $count, $offset, $timestamp, $multiplier);
+	if ($ts > $now) {
+		return $ts;
+	}
+
+	$est_steps = (int) floor(($now - $timestamp - $offset) / ($unit_seconds * $count));
+	if ($est_steps > 1) {
+		$multiplier = $est_steps;
+		$ts         = reports_interval_step($interval, $count, $offset, $timestamp, $multiplier);
+	}
+
+	/* Step back if conservative estimate overshot slightly on shorter months */
+	while ($multiplier > 1) {
+		$prev_ts = reports_interval_step($interval, $count, $offset, $timestamp, $multiplier - 1);
+		if ($prev_ts <= $now) {
+			break;
 		}
 
-		/* Step back if conservative estimate overshot slightly on shorter months */
-		while ($multiplier > 1) {
-			$prev_ts = reports_interval_step($interval, $count, $offset, $timestamp, $multiplier - 1);
-			if ($prev_ts > $now) {
-				$multiplier--;
-				$ts = $prev_ts;
-			} else {
-				break;
-			}
-		}
+		$multiplier--;
+		$ts = $prev_ts;
+	}
 
-		/* Advance whole intervals until strictly past $now */
-		$guard = 0;
-		while ($ts <= $now && $guard < 1000) {
-			$multiplier++;
-			$ts = reports_interval_step($interval, $count, $offset, $timestamp, $multiplier);
-			$guard++;
-		}
+	/* Advance whole intervals until strictly past $now */
+	for ($guard = 0; $ts <= $now && $guard < 1000; $guard++) {
+		$multiplier++;
+		$ts = reports_interval_step($interval, $count, $offset, $timestamp, $multiplier);
 	}
 
 	return $ts;
 }
 
-function reports_parse_graph_tags($body) {
-	$graphs = array();
+function reports_parse_graph_tags(mixed $body) : array {
+	if (!is_string($body) || !preg_match_all('/<GRAPH:(\d+):(-?\d+)>/', $body, $matches, PREG_SET_ORDER)) {
+		return [];
+	}
 
-	if (is_string($body) && preg_match_all('/<GRAPH:(\d+):(-?\d+)>/', $body, $matches, PREG_SET_ORDER)) {
-		foreach ($matches as $match) {
-			$graphs[$match[1] . ':' . $match[2]] = $match[1];
-		}
+	$graphs = [];
+	foreach ($matches as $match) {
+		$graphs[$match[1] . ':' . $match[2]] = $match[1];
 	}
 
 	return $graphs;
@@ -1257,7 +1239,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 		$leaves = array();
 	}
 
-	$nested_graphs = array();
+	$nested_graphs = [];
 	$nested_title  = '';
 
 	if (cacti_sizeof($leaves)) {
@@ -1461,7 +1443,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 									AND gl.host_id = ?
 									$sql_where
 									ORDER BY gtg.title_cache",
-									array($id, $leaf['host_id']));
+									[$id, $leaf['host_id']]);
 
 								if (cacti_sizeof($graphs)) {
 									foreach($graphs as $key => $graph) {
@@ -1519,7 +1501,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 						$i = 0;
 						if (cacti_sizeof($data_queries)) {
 							foreach ($data_queries as $data_query) {
-								$snmp_index_to_graph = array();
+								$snmp_index_to_graph = [];
 
 								/* fetch a list of field names that are sorted by the preferred sort field */
 								$sort_field_data = get_formatted_data_query_indexes($leaf['host_id'], $data_query['id']);
