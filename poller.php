@@ -213,8 +213,14 @@ $poller_interval = read_config_option('poller_interval');
 $poller_lastrun  = read_config_option('poller_lastrun_' . $poller_id);
 $poller_lastrun  = is_numeric($poller_lastrun) ? (float) $poller_lastrun : 0;
 
+// check the last time a mibs run was executed
+$poller_mibsrun  = read_config_option('poller_mibsrun_' . $poller_id);
+$poller_mibsrun  = is_numeric($poller_mibsrun) ? (int) $poller_mibsrun : 0;
+
 // collect the system mibs every 4 hours
-if ((int) $poller_lastrun % 14440 < $current_time % 14440 || empty($poller_lastrun)) {
+if (empty($poller_mibsrun) || ($current_time - $poller_mibsrun > 14400)) {
+	set_config_option('poller_mibsrun_' . $poller_id, $current_time);
+
 	$mibs = true;
 }
 

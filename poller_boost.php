@@ -66,7 +66,13 @@ if (cacti_sizeof($parms)) {
 
 		switch ($arg) {
 			case '--child':
-				$child = $value;
+				if (preg_match('/^[1-9]\d*$/D', $value) !== 1) {
+					print "ERROR: Child identifier must be a positive integer.\n\n";
+					display_help();
+					exit(1);
+				}
+
+				$child = (int) $value;
 				break;
 			case '-d':
 			case '--debug':
@@ -137,7 +143,8 @@ if ($child == false) {
 		$next_run_time = $boost_next_run_time;
 	}
 
-	$seconds_offset = read_config_option('boost_rrd_update_interval') * 60;
+	$interval_minutes = (int) read_config_option('boost_rrd_update_interval');
+	$seconds_offset   = ($interval_minutes > 0 ? $interval_minutes : 120) * 60;
 
 	$run_now = boost_time_to_run($forcerun, $current_time, $last_run_time, $next_run_time);
 
@@ -301,27 +308,25 @@ function sig_handler($signo) {
 		case SIGINT:
 			cacti_log('WARNING: Boost Poller terminated by user', true, 'BOOST');
 
-			/* tell the main poller that we are done */
-			set_config_option('boost_poller_status', 'terminated - end time:' . date('Y-m-d H:i:s'));
-
 			if ($child) {
 				unregister_process('boost', 'child', $child, getmypid());
 			} else {
+				/* only the master owns the global Boost lifecycle status */
+				set_config_option('boost_poller_status', 'terminated - end time:' . date('Y-m-d H:i:s'));
 				unregister_process('boost', 'master', $config['poller_id'], getmypid());
 			}
 
-			exit;
-			break;
+			if (cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
+				if ($current_lock !== false && $child) {
+					db_execute("SELECT RELEASE_LOCK('boost.single_ds.$current_lock')");
+				} elseif (!$child) {
+					db_execute('SELECT RELEASE_ALL_LOCKS()');
+				}
+			}
+
+			exit(1);
 		default:
 			/* ignore all other signals */
-	}
-
-	if (cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
-		if ($current_lock !== false && $child) {
-			db_execute("SELECT RELEASE_LOCK('boost.single_ds.$current_lock')");
-		} elseif (!$child) {
-			db_execute("SELECT RELEASE_ALL_LOCKS()");
-		}
 	}
 }
 
@@ -330,13 +335,14 @@ function boost_kill_running_processes() {
 		FROM processes
 		WHERE tasktype = "boost"
 		AND pid != ?',
-		array(getmypid()));
+		[getmypid()]);
 
 	if (cacti_sizeof($processes)) {
-		foreach($processes as $p) {
-			cacti_log(sprintf('WARNING: Killing Boost %s PID %d due to another boost process starting.', ucfirst($p['taskname']), $p['pid']), true, 'BOOST');
-
-			posix_kill($p['pid'], SIGTERM);
+		foreach ($processes as $p) {
+			if (cacti_process_still_running($p['pid'])) {
+				cacti_log(sprintf('WARNING: Killing Boost %s PID %s due to another boost process starting.', ucfirst($p['taskname']), cacti_process_pid_for_log($p['pid'])), true, 'BOOST');
+				cacti_process_kill($p['pid'], SIGTERM, 'BOOST');
+			}
 
 			unregister_process($p['tasktype'], $p['taskname'], $p['taskid'], $p['pid']);
 		}
@@ -534,7 +540,8 @@ function boost_time_to_run($forcerun, $current_time, $last_run_time, $next_run_t
 			set_config_option('boost_rrd_update_system_enable', 'on');
 		}
 
-		$seconds_offset = read_config_option('boost_rrd_update_interval') * 60;
+		$interval_minutes = (int) read_config_option('boost_rrd_update_interval');
+		$seconds_offset   = ($interval_minutes > 0 ? $interval_minutes : 120) * 60;
 
 		/* Initialize seconds offset, if not set to 2 hours */
 		if (empty($seconds_offset)) {
@@ -862,8 +869,8 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 				}
 
 				/* release the previous lock */
-				if (cacti_version_compare($rrdtool_version, '1.5', '<')) {
-					db_execute("SELECT RELEASE_LOCK('boost.single_ds.$local_data_id')");
+				if (cacti_version_compare($rrdtool_version, '1.5', '<') && $current_lock !== false) {
+					db_execute("SELECT RELEASE_LOCK('boost.single_ds.$current_lock')");
 				}
 
 				$current_lock = false;
@@ -931,8 +938,8 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 			}
 
 			/* don't generate error messages if the RRD has already been updated */
-			if ($time < $last_update && cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
-				cacti_log("WARNING: Stale Poller Data Found! Item Time:'" . $time . "', RRD Time:'" . $last_update . "' Ignoring Value!", true, 'BOOST', POLLER_VERBOSITY_HIGH);
+			if ($item['timestamp'] <= $last_update && cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
+				cacti_log("WARNING: Stale Poller Data Found! Item Time:'" . $item['timestamp'] . "', RRD Time:'" . $last_update . "' Ignoring Value!", true, 'BOOST', POLLER_VERBOSITY_HIGH);
 
 				$value = 'DNP';
 			} else {
@@ -1173,8 +1180,8 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 		}
 
 		/* release the last lock */
-		if (cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
-			db_execute("SELECT RELEASE_LOCK('boost.single_ds." . $item['local_data_id'] . "')");
+		if (cacti_version_compare(get_rrdtool_version(), '1.5', '<') && $current_lock !== false) {
+			db_execute("SELECT RELEASE_LOCK('boost.single_ds.$current_lock')");
 		}
 
 		$current_lock = false;

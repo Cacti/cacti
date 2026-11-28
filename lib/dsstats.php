@@ -205,16 +205,18 @@ function dsstats_write_buffer(&$stats_array, $interval) {
 
 	/* don't attempt to process an empty array */
 	if (cacti_sizeof($stats_array)) {
-		foreach($stats_array as $local_data_id => $stats) {
+		foreach ($stats_array as $local_data_id => $stats) {
 			/* some additional sanity checking */
-			if (is_array($stats) && cacti_sizeof($stats)) {
-				foreach($stats as $rrd_name => $avgpeak_stats) {
-					$outbuf .= ($i == 1 ? ' ':', ') . "('" . $local_data_id . "','" .
+			if (cacti_sizeof($stats)) {
+				foreach ($stats as $rrd_name => $avgpeak_stats) {
+					$row = ($i == 1 ? ' ' : ', ') . "('" . $local_data_id . "','" .
 						$rrd_name . "','" .
 						$avgpeak_stats['AVG'] . "','" .
 						$avgpeak_stats['MAX'] . "')";
 
-					$out_length += strlen($outbuf);
+					/* count only the row just appended to the batch */
+					$outbuf     .= $row;
+					$out_length += strlen($row);
 
 					if (($out_length + $overhead) > $max_packet) {
 						db_execute($sql_prefix . $outbuf . $sql_suffix);
@@ -967,27 +969,29 @@ function dsstats_poller_output(&$rrd_update_array) {
 								$currentval = 'NULL';
 							}
 
-							/* setup the output buffer for the cache first */
-							$cachebuf .=
+							/* setup the output buffer for the cache first, counting only the row just appended */
+							$row =
 								$cache_delim . '(' .
 								$result['local_data_id'] . ", '" .
 								$result['rrd_name'] . "', '" .
 								$result['time'] . "', " .
 								$currentval . ')';
 
-							$out_length += strlen($cachebuf);
+							$cachebuf   .= $row;
+							$out_length += strlen($row);
 
 							/* now do the last value, if applicable */
 							if ($lastval != '') {
-								$lastbuf .=
+								$row =
 									$last_delim . '(' .
 									$result['local_data_id'] . ", '" .
 									$result['rrd_name'] . "', " .
-									$lastval . ", " .
+									$lastval . ', ' .
 									$currentval . ')';
 
+								$lastbuf     .= $row;
+								$last_length += strlen($row);
 								$last_i++;
-								$last_length += strlen($lastbuf);
 							}
 
 							/* if we exceed our output buffer, it's time to write */
@@ -1040,13 +1044,6 @@ function dsstats_poller_output(&$rrd_update_array) {
  */
 function dsstats_boost_bottom() {
 	global $config;
-
-	global $total_user, $total_system, $total_real, $total_dsses;
-
-	$total_user   = 0;
-	$total_system = 0;
-	$total_real   = 0;
-	$total_dsses  = 0;
 
 	if (read_config_option('dsstats_enable') == 'on') {
 		include_once($config['base_path'] . '/lib/rrd.php');
@@ -1161,34 +1158,99 @@ function dsstats_rrdtool_init() {
  *
  * @returns - (string) The output from RRDtool
  */
-function dsstats_rrdtool_execute($command, &$pipes) {
-	static $broken = false;
+/**
+ * dsstats_rrdtool_is_status_line - check whether a complete RRDtool output line
+ *   terminates a command response.
+ *
+ * @param string $line Complete line ending in LF.
+ *
+ * @return bool True when $line is an RRDtool 'OK', 'OK u:...', or 'ERROR:' status line.
+ */
+function dsstats_rrdtool_is_status_line(string $line) : bool {
+	return rtrim($line, "\r\n") === 'OK' || str_starts_with($line, 'OK u:') || str_starts_with($line, 'ERROR:');
+}
 
-	$stdout = '';
+/**
+ * dsstats_rrdtool_read_pipe - read from a non-blocking RRDtool stdout pipe using
+ *   stream_select() until a complete status line arrives or the timeout expires.
+ *
+ * @param resource  $pipe    Non-blocking RRDtool stdout stream.
+ * @param int|float $timeout Maximum seconds to wait for each chunk.
+ * @param bool      &$broken Set true when RRDtool stops responding and the pipe is closed.
+ *
+ * @return string|null Accumulated stdout, or null on timeout.
+ */
+function dsstats_rrdtool_read_pipe($pipe, int|float $timeout, bool &$broken) : ?string {
+	$stdout   = '';
+	$line     = '';
+	$deadline = microtime(true) + $timeout;
 
-	if ($command == '') return;
+	while (!feof($pipe)) {
+		$wait = $deadline - microtime(true);
 
-	$command .= "\r\n";
-	$return_code = fwrite($pipes[0], $command);
+		if ($wait <= 0) {
+			cacti_log(sprintf('ERROR: RRDtool did not respond within %d seconds.  The remaining Data Sources of this DSStats process are skipped.', (int) $timeout), false, 'DSSTATS');
+			fclose($pipe);
+			$broken = true;
 
-	if (is_resource($pipes[1])) {
-		while (!feof($pipes[1])) {
-			$stdout .= fgets($pipes[1], 4096);
-
-			if (substr_count($stdout, 'OK')) {
-				break;
-			}
-
-			if (substr_count($stdout, 'ERROR')) {
-				break;
-			}
+			return null;
 		}
-	} elseif (!$broken) {
-		cacti_log("ERROR: RRDtool was unable to fork.  Likely RRDtool can not be found or system out of resources.  Blocking subsequent messages.", false, 'POLLER');
-		$broken = true;
+
+		$read   = [$pipe];
+		$write  = null;
+		$except = null;
+
+		if (stream_select($read, $write, $except, (int) $wait, (int) (fmod($wait, 1) * 1000000)) === false) {
+			break;
+		}
+
+		$chunk = $read !== [] ? fgets($pipe, 4096) : false;
+
+		if ($chunk === false || $chunk === '') {
+			continue;
+		}
+
+		$deadline = microtime(true) + $timeout;
+		$stdout  .= $chunk;
+		$line    .= $chunk;
+
+		if (!str_ends_with($line, "\n")) {
+			continue;
+		}
+
+		if (dsstats_rrdtool_is_status_line($line)) {
+			break;
+		}
+
+		$line = '';
 	}
 
-	if (strlen($stdout)) return $stdout;
+	return $stdout;
+}
+
+function dsstats_rrdtool_execute($command, &$pipes, $timeout = 60) {
+	static $broken = false;
+
+	if ($command == '') {
+		return;
+	}
+
+	fwrite($pipes[0], $command . "\r\n");
+
+	if (!is_resource($pipes[1])) {
+		if (!$broken) {
+			cacti_log('ERROR: RRDtool was unable to fork.  Likely RRDtool can not be found or system out of resources.  Blocking subsequent messages.', false, 'POLLER');
+			$broken = true;
+		}
+
+		return;
+	}
+
+	$stdout = dsstats_rrdtool_read_pipe($pipes[1], $timeout, $broken);
+
+	if ($stdout !== null && $stdout !== '') {
+		return $stdout;
+	}
 }
 
 /**
@@ -1198,6 +1260,8 @@ function dsstats_rrdtool_execute($command, &$pipes) {
  * @return - NULL
  */
 function dsstats_rrdtool_close($process) {
+	/* an RRDtool that stopped answering would block proc_close() forever */
+	proc_terminate($process);
 	proc_close($process);
 }
 
