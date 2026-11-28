@@ -184,8 +184,7 @@ function login_sso_complete(RedirectLoginProviderInterface $provider, int $realm
 			return;
 		}
 
-		header('Location: ' . CACTI_PATH_URL . 'auth_profile.php?tab=2fa');
-		exit;
+		cacti_redirect(CACTI_PATH_URL . 'auth_profile.php', ['tab' => '2fa']);
 	}
 
 	$templateUserId = method_exists($provider, 'getTemplateUserId') ? $provider->getTemplateUserId() : 0;

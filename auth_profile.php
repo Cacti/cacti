@@ -605,11 +605,9 @@ function settings() : bool {
 
 /** Resolve a challenge from the signed-in account's registered realm. */
 function auth_profile_confirm_mfa_identity() : void {
-	if (isset($_POST['cancel_confirmation'])) {
+	if (filter_has_var(INPUT_POST, 'cancel_confirmation')) {
 		unset($_SESSION['sess_mfa_challenge']);
-		header('Location: ' . CACTI_PATH_URL . 'graph_view.php');
-
-		return;
+		cacti_redirect(CACTI_PATH_URL . 'graph_view.php');
 	}
 
 	$user = db_fetch_row_prepared('SELECT id, username, realm, enabled, locked FROM user_auth WHERE id = ?', [$_SESSION[SESS_USER_ID]]);
@@ -628,7 +626,7 @@ function auth_profile_confirm_mfa_identity() : void {
 		$provider->challenge(FreshAuthentication::begin($user_id, $realm));
 	}
 
-	$password = $_POST['confirmation_password'] ?? null;
+	$password = filter_input(INPUT_POST, 'confirmation_password', FILTER_UNSAFE_RAW, FILTER_REQUIRE_SCALAR);
 
 	if ($provider instanceof CredentialLoginProviderInterface && is_string($password) && $password !== '') {
 		auth_checkclear_lockout($user['username'], $realm);
@@ -638,9 +636,7 @@ function auth_profile_confirm_mfa_identity() : void {
 
 			if ($result->success && $result->username === $user['username']) {
 				FreshAuthentication::record($user_id, time());
-				header('Location: ' . CACTI_PATH_URL . 'auth_profile.php?tab=2fa');
-
-				return;
+				cacti_redirect(CACTI_PATH_URL . 'auth_profile.php', ['tab' => '2fa']);
 			}
 
 			if ($result->isCredentialFailure && $realm !== 0) {
