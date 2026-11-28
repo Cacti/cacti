@@ -35,6 +35,13 @@ $user_actions = array(
 set_default_action();
 
 if (isset_request_var('update_policy')) {
+	/* update_policy is handled before the action dispatcher, so require POST for CSRF protection. */
+	if (strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
+		header('Allow: POST');
+		http_response_code(405);
+		exit;
+	}
+
 	update_policies();
 } else {
 	switch (get_request_var('action')) {
@@ -86,9 +93,11 @@ function update_policies() {
 
 	foreach ($policies as $p) {
 		if (isset_request_var($p)) {
-			db_execute_prepared("UPDATE `user_auth` SET `$p` = ? WHERE `id` = ?", array(get_filter_request_var($p), get_filter_request_var('id')));
+			db_execute_prepared("UPDATE `user_auth` SET `$p` = ? WHERE `id` = ?", [get_filter_request_var($p), get_filter_request_var('id')]);
 		}
 	}
+
+	reset_user_perms(get_filter_request_var('id'));
 
 	header('Location: user_admin.php?action=user_edit&header=false&tab=' .  get_nfilter_request_var('tab') . '&id=' . get_filter_request_var('id'));
 	exit;
@@ -120,6 +129,8 @@ function form_actions() {
 			}
 		}
 
+		reset_user_perms(get_nfilter_request_var('id'));
+
 		header('Location: user_admin.php?action=user_edit&header=false&tab=permsd&id=' . get_nfilter_request_var('id'));
 		exit;
 	} elseif (isset_request_var('associate_graph')) {
@@ -143,6 +154,8 @@ function form_actions() {
 				}
 			}
 		}
+
+		reset_user_perms(get_nfilter_request_var('id'));
 
 		header('Location: user_admin.php?action=user_edit&header=false&tab=permsg&id=' . get_nfilter_request_var('id'));
 		exit;
@@ -168,6 +181,8 @@ function form_actions() {
 			}
 		}
 
+		reset_user_perms(get_nfilter_request_var('id'));
+
 		header('Location: user_admin.php?action=user_edit&header=false&tab=permste&id=' . get_nfilter_request_var('id'));
 		exit;
 	} elseif (isset_request_var('associate_groups')) {
@@ -190,6 +205,8 @@ function form_actions() {
 				}
 			}
 		}
+
+		reset_user_perms(get_nfilter_request_var('id'));
 
 		header('Location: user_admin.php?action=user_edit&header=false&tab=permsgr&id=' . get_nfilter_request_var('id'));
 		exit;
@@ -214,6 +231,8 @@ function form_actions() {
 				}
 			}
 		}
+
+		reset_user_perms(get_nfilter_request_var('id'));
 
 		header('Location: user_admin.php?action=user_edit&header=false&tab=permstr&id=' . get_nfilter_request_var('id'));
 		exit;
@@ -509,6 +528,8 @@ function form_save() {
 		}
 
 		if ($add_button_clicked == true) {
+			reset_user_perms(get_nfilter_request_var('id'));
+
 			header('Location: user_admin.php?action=user_edit&header=false&tab=graph_perms_edit&id=' . get_nfilter_request_var('id'));
 			exit;
 		}
@@ -607,8 +628,15 @@ function form_save() {
 
 		/* remove any stored tokens in case of account take over */
 		if ($save['must_change_password'] == 'on') {
-			db_execute_prepared('DELETE FROM user_auth_cache WHERE user_id = ?', array($save['id']));
-			db_execute_prepared('DELETE FROM sessions WHERE user_id = ?', array($save['id']));
+			db_execute_prepared('DELETE FROM user_auth_cache WHERE user_id = ?', [$save['id']]);
+			db_execute_prepared('DELETE FROM sessions WHERE user_id = ?', [$save['id']]);
+		}
+
+		/* Disabling an account here must revoke tokens and sessions just like user_disable(). */
+		if (!empty($save['id']) && $save['enabled'] != 'on') {
+			db_execute_prepared('DELETE FROM user_auth_cache WHERE user_id = ?', [$save['id']]);
+			db_execute_prepared('DELETE FROM user_auth_row_cache WHERE user_id = ?', [$save['id']]);
+			db_execute_prepared('DELETE FROM sessions WHERE user_id = ?', [$save['id']]);
 		}
 
 		$save = api_plugin_hook_function('user_admin_setup_sql_save', $save);
@@ -681,6 +709,8 @@ function form_save() {
 				get_nfilter_request_var('id')
 			)
 		);
+
+		reset_user_perms(get_nfilter_request_var('id'));
 	} else {
 		api_plugin_hook('user_admin_user_save');
 
@@ -722,6 +752,8 @@ function perm_remove() {
 			AND item_id = ?',
 			array(get_request_var('user_id'), get_request_var('id')));
 	}
+
+	reset_user_perms(get_request_var('user_id'));
 
 	header('Location: user_admin.php?action=user_edit&header=false&tab=graph_perms_edit&id=' . get_request_var('user_id'));
 }
@@ -938,7 +970,8 @@ function graph_perms_edit($tab, $header_label) {
 			$(document).tooltip({
 				items: '[data-tooltip]',
 				content: function() {
-					return $(this).attr('data-tooltip');
+					// Render tooltip text as escaped content to prevent HTML injection.
+					return $('<div>').text($(this).attr('data-tooltip') || '').html();
 				}
 			});
 		});
@@ -2095,12 +2128,11 @@ function user() {
 			'pageset' => true,
 			'default' => ''
 		),
-		'group' => array(
-			'filter' => FILTER_CALLBACK,
+		'group' => [
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '-1',
 			'pageset' => true,
-			'options' => array('options' => 'sanitize_search_string')
-		),
+		],
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
 			'default' => 'username',
@@ -2114,6 +2146,13 @@ function user() {
 	);
 
 	validate_store_request_vars($filters, 'sess_usera');
+
+	/* Constrain sort_column to displayed columns so ORDER BY cannot target sensitive user_auth columns. */
+	set_request_var('sort_column', cacti_validate_sort_column(
+		get_request_var('sort_column'),
+		['username', 'id', 'full_name', 'enabled', 'realm', 'policy_graphs', 'policy_hosts', 'policy_graph_templates', 'dtime'],
+		'username'
+	));
 	/* ================= input validation ================= */
 
 	?>
@@ -2271,8 +2310,10 @@ function user() {
 		}
 	}
 
-	if (get_request_var('group') > 0) {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' ug.group_id = ' . get_request_var('group');
+	$group_id = (int) get_request_var('group');
+
+	if ($group_id > 0) {
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' ug.group_id = ' . $group_id;
 	}
 
 	if (get_request_var('login') > 0) {

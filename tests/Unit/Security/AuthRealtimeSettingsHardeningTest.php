@@ -292,15 +292,58 @@ describe('graph source print_source realm 27 gating', function () use ($repoRoot
 	})->with(['graph_image.php', 'graph_json.php', 'graph_xport.php', 'graph_realtime.php']);
 });
 
-describe('user_admin.php session invalidation on password reset', function () use ($repoRoot) {
-	it('deletes active sessions for target user while preserving self session when resetting own password', function () use ($repoRoot) {
-		$src   = (string) file_get_contents($repoRoot . '/user_admin.php');
+describe('user_admin.php session invalidation, permission token expiry, and filter hardening', function () use ($repoRoot) {
+	$src = (string) file_get_contents($repoRoot . '/user_admin.php');
+
+	it('deletes active sessions for target user while preserving self session when resetting own password', function () use ($src) {
 		$block = extract_source_slice($src, '$old_password = db_fetch_cell_prepared', '/* check duplicate username */');
 
 		expect($block)->toContain('DELETE FROM user_auth_cache')
 			->and($block)->toContain('DELETE FROM sessions')
 			->and($block)->toContain('AND id != ?')
 			->and($block)->toContain('session_id()');
+	});
+
+	it('requires POST on pre-dispatch update_policy and revokes tokens/sessions when disabling a user', function () use ($src) {
+		$dispatchBlock = extract_source_slice($src, "if (isset_request_var('update_policy'))", 'switch (get_request_var');
+		$saveBlock     = extract_source_slice($src, "if (\$save['must_change_password'] == 'on')", 'user_admin_setup_sql_save');
+
+		expect($dispatchBlock)->toContain("strtoupper(\$_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST'")
+			->and($dispatchBlock)->toContain('http_response_code(405)')
+			->and($saveBlock)->toContain("!empty(\$save['id']) && \$save['enabled'] != 'on'")
+			->and($saveBlock)->toContain('DELETE FROM user_auth_cache WHERE user_id = ?')
+			->and($saveBlock)->toContain('DELETE FROM user_auth_row_cache WHERE user_id = ?')
+			->and($saveBlock)->toContain('DELETE FROM sessions WHERE user_id = ?');
+	});
+
+	it('calls reset_user_perms() on policy, permission, and group mutations and escapes tooltip text', function () use ($src) {
+		$updatePolicies = extract_source_slice($src, 'function update_policies()', 'function form_actions()');
+		$formActions    = extract_source_slice($src, 'function form_actions()', 'isset_request_var(\'selected_items\')');
+		$permRemove     = extract_source_slice($src, 'function perm_remove()', 'function graph_perms_edit(');
+		$graphPermsSave = extract_source_slice($src, "isset_request_var('save_component_graph_perms')", 'api_plugin_hook(\'user_admin_user_save\')');
+
+		expect($updatePolicies)->toContain("reset_user_perms(get_filter_request_var('id'));")
+			->and(substr_count($formActions, "reset_user_perms(get_nfilter_request_var('id'));"))->toBe(5)
+			->and($permRemove)->toContain("reset_user_perms(get_request_var('user_id'));")
+			->and($graphPermsSave)->toContain("reset_user_perms(get_nfilter_request_var('id'));")
+			->and($src)->toContain("return $('<div>').text($(this).attr('data-tooltip') || '').html();");
+	});
+
+	it('validates group filter as integer and constrains sort_column to an allowlist', function () use ($repoRoot) {
+		$userFn = extract_php_function_source($repoRoot . '/user_admin.php', 'user');
+
+		expect($userFn)->toMatch("/'group'\s*=>\s*\[\s*'filter'\s*=>\s*FILTER_VALIDATE_INT/s")
+			->and($userFn)->toContain("\$group_id = (int) get_request_var('group');")
+			->and($userFn)->toContain("' ug.group_id = ' . \$group_id;")
+			->and($userFn)->toContain("set_request_var('sort_column', cacti_validate_sort_column(");
+
+		$allowed = ['username', 'id', 'full_name', 'enabled', 'realm', 'policy_graphs', 'policy_hosts', 'policy_graph_templates', 'dtime'];
+
+		expect(cacti_validate_sort_column('full_name', $allowed, 'username'))->toBe('full_name')
+			->and(cacti_validate_sort_column('dtime', $allowed, 'username'))->toBe('dtime')
+			->and(cacti_validate_sort_column('password', $allowed, 'username'))->toBe('username')
+			->and(cacti_validate_sort_column('tfa_secret', $allowed, 'username'))->toBe('username')
+			->and(cacti_validate_sort_column('username; DROP TABLE user_auth', $allowed, 'username'))->toBe('username');
 	});
 });
 
