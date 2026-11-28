@@ -176,11 +176,19 @@ test('snmp_format_agent formats IPv4, hostname, IPv6, and transport targets with
 	'hostname non-default port'      => ['router.example.com', '1161', 'router.example.com:1161'],
 	'bare IPv6 default port'         => ['2001:db8::1', 161, '[2001:db8::1]:161'],
 	'bare IPv6 non-default port'     => ['2001:db8::1', 1161, '[2001:db8::1]:1161'],
+	'link-local IPv6 with zone ID'   => ['fe80::1%eth0', 1161, '[fe80::1%eth0]:1161'],
 	'bracketed IPv6 without port'    => ['[2001:db8::1]', 1161, '[2001:db8::1]:1161'],
 	'bracketed IPv6 with port'       => ['[2001:db8::1]:2161', 1161, '[2001:db8::1]:2161'],
+	'udp IPv4 without port'          => ['udp:192.0.2.1', 1161, 'udp:192.0.2.1:1161'],
+	'tcp hostname without port'      => ['tcp:router.example.com', 1161, 'tcp:router.example.com:1161'],
+	'udp6 bracketed IPv6 no port'    => ['udp6:[2001:db8::1]', 1161, 'udp6:[2001:db8::1]:1161'],
+	'udp6 bare IPv6 without port'    => ['udp6:2001:db8::1', 1161, 'udp6:[2001:db8::1]:1161'],
+	'udp6 link-local IPv6 with zone' => ['udp6:fe80::1%eth0', 1161, 'udp6:[fe80::1%eth0]:1161'],
+	'explicit udp IPv4 with port'    => ['udp:192.0.2.1:1610', 1161, 'udp:192.0.2.1:1610'],
 	'explicit udp6 transport'        => ['udp6:[2001:db8::1]:161', 1161, 'udp6:[2001:db8::1]:161'],
 	'explicit tcp transport'         => ['tcp:192.0.2.1:1161', 161, 'tcp:192.0.2.1:1161'],
 	'explicit unix transport'        => ['unix:/var/run/snmpd.sock', 161, 'unix:/var/run/snmpd.sock'],
+	'explicit unix transport alt'    => ['unix:/tmp/snmp.sock', 1161, 'unix:/tmp/snmp.sock'],
 ]);
 
 test('cacti_snmp_walk skips empty or whitespace OIDs and logs a warning', function (string $emptyOid) : void {
@@ -399,12 +407,13 @@ test('cmd.php and poller_recovery.php backport regression contracts hold', funct
 		],
 		['!isset($downhosts['],
 	],
-	'poller_recovery.php recovery_flush_output_batch enforces packet limit and checks execution' => [
+	'poller_recovery.php recovery_flush_output_batch enforces packet limit with framing margin and checks execution' => [
 		'poller_recovery.php',
 		'recovery_flush_output_batch',
 		[
+			'$packet_limit = max(1024, $max_allowed_packet - 1024);',
 			'INSERT IGNORE INTO poller_output_boost',
-			'($out_length + $overhead + $tuple_length) > $max_allowed_packet',
+			'($out_length + $overhead + $tuple_length) > $packet_limit',
 			'recovery_execute_boost_insert(',
 		],
 		[],
@@ -419,13 +428,15 @@ test('cmd.php and poller_recovery.php backport regression contracts hold', funct
 		],
 		['WHERE time <= ?'],
 	],
-	'poller_recovery.php bounds SELECT with LIMIT and retains local rows on unacknowledged batch' => [
+	'poller_recovery.php bounds SELECT with LIMIT, guards DB read errors, and retains local rows on unacknowledged batch' => [
 		'poller_recovery.php',
 		null,
 		[
+			'if ($max_time === false) {',
 			'ORDER BY time ASC, local_data_id ASC, rrd_name ASC',
 			'LIMIT \' . (int) $record_limit',
 			'[$max_time], true, $local_db_cnn_id',
+			'if ($rows === false) {',
 			'if (!recovery_flush_output_batch($sql_array, $remote_db_cnn_id, $max_allowed_packet))',
 			'if (!recovery_delete_acknowledged_rows($rows, $local_db_cnn_id))',
 			'if (!$transfer_failed)',

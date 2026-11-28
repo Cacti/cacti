@@ -1105,7 +1105,7 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
  * Build the agent target for php-snmp calls. An IPv6 literal is always bracketed
  * so the trailing :port is not read as another hextet. An IPv4 address or DNS name
  * takes a plain host:port because php-snmp treats a bracketed target as IPv6 only.
- * An explicit transport or a pre-bracketed target is left untouched.
+ * A unix: socket or a target that already carries an explicit :port is left untouched.
  *
  * @param string $hostname Device hostname or IP (may already carry a transport).
  * @param mixed  $port     SNMP port.
@@ -1122,25 +1122,42 @@ function snmp_format_agent($hostname, $port) : string {
 		$port = '161';
 	}
 
-	/* An explicit transport prefix carries its own target; leave it untouched. */
-	if (preg_match('/^(udp6?|tcp6?|unix):/i', $hostname)) {
+	/* Unix domain sockets do not take a port. */
+	if (preg_match('/^unix:/i', $hostname)) {
 		return $hostname;
+	}
+
+	$transport = '';
+	$target    = $hostname;
+
+	if (preg_match('/^((?:udp|tcp)6?:)(.+)$/i', $hostname, $matches)) {
+		$transport = $matches[1];
+		$target    = $matches[2];
 	}
 
 	/* Already bracketed (IPv6): keep an embedded port, or attach the configured one. */
-	if (str_contains($hostname, '[')) {
-		return preg_match('/\]:\d+$/', $hostname) ? $hostname : $hostname . ':' . $port;
+	if (str_contains($target, '[')) {
+		return preg_match('/\]:\d+$/', $target) ? $hostname : $transport . $target . ':' . $port;
 	}
 
-	if (filter_var($hostname, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-		return '[' . $hostname . ']:' . $port;
+	/* Bare IPv6 (including link-local with optional %zone): always bracket and attach port. */
+	$zone_pos   = strpos($target, '%');
+	$ip_no_zone = $zone_pos !== false ? substr($target, 0, $zone_pos) : $target;
+
+	if (filter_var($ip_no_zone, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false) {
+		return $transport . '[' . $target . ']:' . $port;
 	}
 
-	if ((int) $port === 161) {
+	/* Non-IPv6 target that already specifies an explicit :port: leave untouched. */
+	if (preg_match('/:\d+$/', $target)) {
 		return $hostname;
 	}
 
-	return $hostname . ':' . $port;
+	if ($transport === '' && (int) $port === 161) {
+		return $target;
+	}
+
+	return $transport . $target . ':' . $port;
 }
 
 /**

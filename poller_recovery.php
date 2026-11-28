@@ -110,15 +110,17 @@ function recovery_flush_output_batch(array $value_tuples, $conn, int $max_allowe
 		return true;
 	}
 
-	$sql_prefix = 'INSERT IGNORE INTO poller_output_boost (local_data_id, rrd_name, time, output) VALUES ';
-	$overhead   = strlen($sql_prefix) + 1;
-	$out_buffer = '';
-	$out_length = 0;
+	/* Reserve framing margin for the MySQL COM_QUERY packet header. */
+	$packet_limit = max(1024, $max_allowed_packet - 1024);
+	$sql_prefix   = 'INSERT IGNORE INTO poller_output_boost (local_data_id, rrd_name, time, output) VALUES ';
+	$overhead     = strlen($sql_prefix) + 1;
+	$out_buffer   = '';
+	$out_length   = 0;
 
 	foreach ($value_tuples as $tuple) {
 		$tuple_length = strlen($tuple);
 
-		if ($out_length > 0 && ($out_length + $overhead + $tuple_length) > $max_allowed_packet) {
+		if ($out_length > 0 && ($out_length + $overhead + $tuple_length) > $packet_limit) {
 			if (!recovery_execute_boost_insert($sql_prefix . $out_buffer, $conn)) {
 				return false;
 			}
@@ -293,7 +295,11 @@ if ($run) {
 				LIMIT $record_limit
 			) AS rs", '', true, $local_db_cnn_id);
 
-		if (empty($max_time)) {
+		if ($max_time === false) {
+			cacti_log('RECOVERY ERROR: Unable to read local Boost watermark; aborting recovery.', false, 'POLLER');
+			$transfer_failed = true;
+			break;
+		} elseif (empty($max_time)) {
 			db_execute("DELETE FROM settings WHERE name='recovery_pid'", true, $local_db_cnn_id);
 
 			break;
@@ -306,6 +312,12 @@ if ($run) {
 				ORDER BY time ASC, local_data_id ASC, rrd_name ASC
 				LIMIT ' . (int) $record_limit,
 				[$max_time], true, $local_db_cnn_id);
+
+			if ($rows === false) {
+				cacti_log('RECOVERY ERROR: Unable to fetch local Boost records; aborting recovery.', false, 'POLLER');
+				$transfer_failed = true;
+				break;
+			}
 
 			if (cacti_sizeof($rows)) {
 				$sql_array = [];
