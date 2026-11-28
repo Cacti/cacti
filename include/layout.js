@@ -2025,6 +2025,11 @@ function resizeTreePanel() {
 		$('#jstree').height(jsTreeHeight + 30);
 		$('.cactiTreeNavigationArea').height(treeAreaHeight+searchHeight);
 
+		// a page can carry the tree area without a tree; there is no width to fit then
+		if ($('#jstree').length === 0) {
+			return;
+		}
+
 		var treeLeft = $('#jstree').offset().left;
 		var visWidth = Math.max.apply(Math, $('#jstree').find('.jstree-anchor:visible').map(function() {
 			return this.getBoundingClientRect().right - treeLeft;
@@ -2833,6 +2838,141 @@ function loadPage(href, force) {
 	}
 
 	return false;
+}
+
+/* Host filter, menu section and file import handling that the themes with a navigation
+ * menu share. A theme calls these from its own setup. */
+function setImportFields() {
+	// Turn file buttons into jQueryUI buttons
+	$('.import_label').button();
+	$('.import_button').change(function() {
+		var text = this.value;
+		setImportFile(text);
+	});
+
+	setImportFile(noFileSelected);
+
+	function setImportFile(fileText) {
+		$('.import_text').text(fileText);
+	}
+}
+
+function setHostAutocomplete() {
+	var page = basename($(location).attr('pathname'));
+	var hostTimer = false;
+	var clickTimeout = false;
+	var hostOpen = false;
+
+	$('#host').off().autocomplete({
+		source: page+'?action=ajax_hosts',
+		autoFocus: true,
+		minLength: 0,
+		select: function(event,ui) {
+			$('#host_id').val(ui.item.id);
+			let callBack = $('#call_back').val();
+			if (typeof callBack === 'string') {
+				if (callBack.indexOf('applyFilter') >= 0) {
+					applyFilter();
+				} else if (callBack.indexOf('applyGraphFilter') >= 0) {
+					applyGraphFilter();
+				}
+			} else if (typeof applyGraphFilter === 'function') {
+				applyGraphFilter();
+			} else {
+				applyFilter();
+			}
+		}
+	}).addClass('ui-state-default ui-selectmenu-text').css('border', 'none').css('background-color', 'transparent');
+
+	$('#host_click').css('z-index', '4');
+	$('#host_wrapper').off().dblclick(function() {
+		hostOpen = false;
+		clearTimeout(hostTimer);
+		clearTimeout(clickTimeout);
+		$('#host').autocomplete('close').select();
+	}).click(function() {
+		if (hostOpen) {
+			$('#host').autocomplete('close');
+			clearTimeout(hostTimer);
+			hostOpen = false;
+		} else {
+			clickTimeout = setTimeout(function() {
+				$('#host').autocomplete('search', '');
+				clearTimeout(hostTimer);
+				hostOpen = true;
+			}, 200);
+		}
+		$('#host').select();
+	}).on('mouseenter', function() {
+		$(this).addClass('ui-state-hover');
+		$('input#host').addClass('ui-state-hover');
+	}).on('mouseleave', function() {
+		$(this).removeClass('ui-state-hover');
+		$('#host').removeClass('ui-state-hover');
+		hostTimer = setTimeout(function() { $('#host').autocomplete('close'); }, 800);
+		hostOpen = false;
+	});
+
+	var hostPrefix = '';
+	$('#host').autocomplete('widget').each(function() {
+		hostPrefix=$(this).attr('id');
+
+		if (hostPrefix != '') {
+			$('ul[id="'+hostPrefix+'"]').on('mouseenter', function() {
+				clearTimeout(hostTimer);
+			}).on('mouseleave', function() {
+				hostTimer = setTimeout(function() { $('#host').autocomplete('close'); }, 800);
+				$(this).removeClass('ui-state-hover');
+				$('input#host').removeClass('ui-state-hover');
+			});
+		}
+	});
+}
+
+function setMenuVisibility() {
+	let storage = Storages.localStorage;
+
+	// Initialize the navigation settings
+	// This will setup the initial visibility of the menu: the section holding the selected page is open
+	$('li.menuitem').each(function() {
+		if ($(this).find('a.selected').length === 0) {
+			$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false').hide();
+			$(this).next('a').hide();
+		} else {
+			$(this).find('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true').show();
+			$(this).next('a').show();
+		}
+	});
+
+	// Function to give life to the Navigation pane
+	$('#nav li:has(ul) a.active').off().on('click', function(event) {
+		event.preventDefault();
+
+		let id = $(this).closest('.menuitem').attr('id');
+
+		if ($(this).next().is(':visible')) {
+			$(this).next('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false');
+			$(this).next().slideUp( { duration: 200, easing: 'swing' } );
+			storage.set(id, 'collapsed');
+		} else {
+			$(this).next('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true');
+			$(this).next().slideToggle( { duration: 200, easing: 'swing' } );
+			if ($(this).next().is(':visible')) {
+				storage.set($(this).closest('.menuitem').attr('id'), 'active');
+			} else {
+				storage.set(id, 'collapsed');
+			}
+		}
+
+		$('li.menuitem').not('#'+id).each(function() {
+			let text = $(this).attr('id');
+			let id   = $(this).attr('id');
+
+			$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false');
+			$(this).find('ul').slideUp( { duration: 200, easing: 'swing' } );
+			storage.set($(this).attr('id'), 'collapsed');
+		});
+	});
 }
 
 function setNavigationScroll() {

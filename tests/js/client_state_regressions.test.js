@@ -149,7 +149,7 @@ test('fullscreen entry and exit handle both fulfilled and rejected browser promi
 				});
 				context.toggleFullscreen(element);
 				await new Promise((resolve) => setImmediate(resolve));
-				assert.deepEqual(calls, [fullscreen && !element ? 'exit' : element && !fullscreen ? 'graph' : 'document']);
+				assert.deepEqual(calls, [fullscreen ? 'exit' : element ? 'graph' : 'document']);
 				assert.deepEqual(errors, reject ? ['Denied by browser'] : []);
 			}
 		}
@@ -183,14 +183,17 @@ test('realtime image requests stop Pace for every request mode', () => {
 
 test('Sunrise scroll indicator handles each horizontal and vertical position', () => {
 	const source = sources['include/themes/sunrise/main.js'];
-	const start = source.indexOf('.scroll(function (event) {') + '.scroll('.length;
-	const end = source.indexOf('\n    });', start);
-	assert.ok(start > 0 && end > start);
+	const marker = ".on('scroll.sunrise', ";
+	const start = source.indexOf(marker) + marker.length;
+	const end = source.indexOf('\n\t});', start);
+	assert.ok(start > marker.length && end > start);
 	const callbackSource = source.slice(start, end) + '\n}';
 	for (const x of [0, 10]) {
 		for (const y of [0, 10]) {
 			let color;
 			const callback = vm.runInNewContext(`(${callbackSource})`, {
+				scrollPending: false,
+				window: { requestAnimationFrame: (fn) => fn() },
 				$: (selector) => selector === '#navigation_right'
 					? { scrollLeft: () => x, scrollTop: () => y }
 					: { css: (styles) => { color = styles.color; } },

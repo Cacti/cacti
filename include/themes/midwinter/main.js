@@ -25,38 +25,52 @@
 themeLoader('on');
 let themeInitialized = false;
 let themeUserMenu
+let midwinterHotKeysRequested = false;
+let midwinterMarkRequested = false;
+let midwinterSystemColorWatched = false;
+let midwinterConsoleMenuMissing = false;
+
+// themeReady() runs again after every partial page load, so document level listeners are added here once
+document.addEventListener("dblclick", () => {
+	toggleFullscreen();
+});
 
 function themeReady() {
-	/* load default values */
-	initStorageItem('midWinter_GUI_Mode', 'compact');
-	initStorageItem('midWinter_Color_Mode', 'dark');
-	initStorageItem('midWinter_Color_Mode_Auto', 'on');
-	initStorageItem('midWinter_Font_Size', 'regular', 'zoom-level');
+	try {
+		/* load default values */
+		initStorageItem('midWinter_GUI_Mode', 'compact');
+		initStorageItem('midWinter_Color_Mode', 'dark');
+		initStorageItem('midWinter_Color_Mode_Auto', 'on');
+		initStorageItem('midWinter_Font_Size', 'regular', 'zoom-level');
 
-	themeInitialized = midwinterInitialized();
-	setThemeColor();
-	setupTheme();
-	setupTree();
-	setupDefaultElements();
-	setMenuVisibility();
-	setHotKeys();
-	ajaxAnchors();
-	extendAnchorActions();
-	searchToHighlight();
-	updateNavigation();
-	themeLoader('off');
-	document.addEventListener("dblclick", () => {
-		toggleFullscreen();
-	})
+		themeInitialized = midwinterInitialized();
+		setThemeColor();
+		setupTheme();
+		setupTree();
+		setupDefaultElements();
+		setMenuVisibility();
+		setHotKeys();
+		ajaxAnchors();
+		extendAnchorActions();
+		searchToHighlight();
+		updateNavigation();
+	} finally {
+		// the page stays hidden until the loader is switched off, even when a step above fails
+		themeLoader('off');
+	}
 }
 
 function checkConsoleMenu() {
-	if ( $('#cactiContent').length !== 0 && $('#menu').length === 0  ) {
+	// accounts without the console get no menu back, so do not ask again on every page load
+	if (midwinterConsoleMenuMissing === false && $('#cactiContent').length !== 0 && $('#menu').length === 0  ) {
 		$.ajax({
 			url: urlPath + 'about.php',
 			global : false
 		}).done(function(html) {
 			let menu = $(html).find('#menu');
+			if (menu.length === 0) {
+				midwinterConsoleMenuMissing = true;
+			}
 			redesignConsoleMenu(menu);
 			ajaxAnchors();
 			extendAnchorActions();
@@ -72,7 +86,7 @@ function midwinterInitialized() {
 }
 
 function extendAnchorActions() {
-	$('a[role="menuitem"]').on('click', function() {
+	$('a[role="menuitem"]').off('click.midwinter').on('click.midwinter', function() {
 		/* update MidWinter's BreadCrumb Navigation */
 		midWinterNavigation( $(this) );
 		/* close the Navigation Menu Box afterwards */
@@ -95,19 +109,21 @@ function updateNavigation() {
 	if (themeInitialized === false) {
 		// Search using different patterns until we have a valid location to populate the navigation
 		// Use the easy matches first.
-		var menu_element = $('.cactiConsoleNavigationArea a[href$="'+window.location.pathname+window.location.search+'"').first();
+		var path = midwinterSelectorValue(window.location.pathname);
+		var search = midwinterSelectorValue(window.location.search);
+		var menu_element = $('.cactiConsoleNavigationArea a[href$="'+path+search+'"]').first();
 		if (menu_element.length !== 0) return midWinterNavigation(menu_element);
-		var menu_element = $('.cactiConsoleNavigationArea a[href$="'+window.location.pathname+'"').first();
+		var menu_element = $('.cactiConsoleNavigationArea a[href$="'+path+'"]').first();
 		if (menu_element.length !== 0) return midWinterNavigation(menu_element);
-		var menu_element = $('.cactiConsoleNavigationArea a[href$="'+window.location.pathname+'index.php"').first();
+		var menu_element = $('.cactiConsoleNavigationArea a[href$="'+path+'index.php"]').first();
 		if (menu_element.length !== 0) return midWinterNavigation(menu_element);
 
 		// Append an action if the user did not provide one based upon the cactiAction variable
-		var menu_element = $('.cactiConsoleNavigationArea a[href^="'+window.location.pathname+'?action='+cactiAction+'"').first();
+		var menu_element = $('.cactiConsoleNavigationArea a[href^="'+path+'?action='+midwinterSelectorValue(cactiAction)+'"]').first();
 		if (menu_element.length !== 0) return midWinterNavigation(menu_element);
 
 		// Choose what fits best in situations where users have cleared their settings
-		var menu_element = $('.cactiConsoleNavigationArea a[href^="'+window.location.pathname+'"').first();
+		var menu_element = $('.cactiConsoleNavigationArea a[href^="'+path+'"]').first();
 		if (menu_element.length !== 0) return midWinterNavigation(menu_element);
 	}
 
@@ -193,7 +209,7 @@ function setupTheme() {
 			+'<li><a href="#" class="toggleGuiMode">'+compactGraphicalUserInterface+'</a></li>'
 			+'<li><a href="#" class="toggleColorMode">'+(midWinter_Color_Mode === 'light' ? darkColorMode : lightColorMode)+'</a></li>'
 			+'<li><a href="#" class="toggleColorModeAuto">'+(midWinter_Color_Mode_Auto === 'on' ? ignorePreferredColorTheme : usePreferredColorTheme)+'</a></li>'
-			+'<li><a href="#" class="toggleGuiFontSize">Font Size: '+ midWinter_Font_Size +'</a></li>'
+			+'<li><a href="#" class="toggleGuiFontSize">Font Size: '+ midwinterEscape(midWinter_Font_Size) +'</a></li>'
 			+'<li><hr class="menu"></li>';
 
 		$('.menuoptions').find('li').eq(2).after(theme_switches);
@@ -269,7 +285,8 @@ function setupTheme() {
 
 			$('<div class="dropdownMenu">' + submenu_tab_graphs_content + '</div>').appendTo('body');
 		} else if ($(this).attr('href') !== urlPath + 'index.php') {
-			compact_tab_menu_content += '<li><a class="pic" role="menuitem" href="' + $(this).attr('href') + '">' + $('.text_' + id).text() + '</a></li>';
+			// attr() and text() return decoded values, so encode them again before they become markup
+			compact_tab_menu_content += '<li><a class="pic" role="menuitem" href="' + midwinterEscape($(this).attr('href')) + '">' + midwinterEscape($('.text_' + id).text()) + '</a></li>';
 		}
 	});
 	compact_tab_menu_content += '</ul></li></ul></div>';
@@ -294,21 +311,17 @@ function setupTheme() {
 			redesignConsoleMenu(menu);
 
 			// -- duplicate the console tab items and add them to the console navigation area for compact mode
-			if ($.trim($('compact_tab_menu').html()) === '') {
-				$('<div class="compact_nav_icon" data-helper="dashboards">'+
-						'<i class="fas fa-th-large"></i>'+
-						'<span>'+cactiDashboards+'</span>'+
-					'</div>').appendTo('#compact_tab_menu');
-			}
+			$('<div class="compact_nav_icon" data-helper="dashboards">'+
+					'<i class="fas fa-th-large"></i>'+
+					'<span>'+cactiDashboards+'</span>'+
+				'</div>').appendTo('#compact_tab_menu');
 
 			if (cactiConsoleAllowed) {
-				if ($.trim($('compact_tab_menu').html()) === '') {
-					$('<div class="compact_nav_icon" data-helper="settings">'+
-							'<i class="fas fa-cogs"></i>'+
-							'<span>'+zoom_i18n_settings+'</span>'+
-						'</div>'
-					).appendTo('#compact_tab_menu');
-				}
+				$('<div class="compact_nav_icon" data-helper="settings">'+
+						'<i class="fas fa-cogs"></i>'+
+						'<span>'+zoom_i18n_settings+'</span>'+
+					'</div>'
+				).appendTo('#compact_tab_menu');
 			}
 
 			$(compact_tab_menu_content).appendTo('#compact_tab_menu');
@@ -362,7 +375,7 @@ function setupTheme() {
 				+           '<li><a href="#" class="dialog_client">'+cactiShortcuts+'</a></li>'
 				+       '</ul>'
 				+   '</li>'
-				+   '<li class="menuitem" id="menu_user_help">'
+				+   '<li class="menuitem" id="menu_user_contribute">'
 				+       '<a class="menu_parent active" href="#">'
 				+           '<i class="menu_glyph fas fa-hands-helping"></i>'
 				+           '<span>'+cactiContributeTo+'</span>'
@@ -377,7 +390,7 @@ function setupTheme() {
 				+   '</ul>'
 				+   '</div>'
 				+   '<div class="cactiConsoleNavigationUserBox hide" data-helper="user">'
-				+   '<div class="header compact"><div></div><div><span>'+ $('.loggedInAs').text() +'</span></div></div>'
+				+   '<div class="header compact"><div></div><div><span>'+ midwinterEscape($('.loggedInAs').text()) +'</span></div></div>'
 				+   '<ul class="nav">'
 				+   '<li class="menuitem" id="menu_user_action">'
 				+       '<a class="menu_parent active" href="#">'
@@ -389,7 +402,7 @@ function setupTheme() {
 				+           '<li><a href="'+urlPath+'auth_changepassword.php" style="">'+changePassword+'</a></li>'
 				+       '</ul>'
 				+   '</li>'
-				+   '<li class="menuitem" id="menu_user_action">'
+				+   '<li class="menuitem" id="menu_user_theme">'
 				+       '<a class="menu_parent active" href="#">'
 				+           '<i class="menu_glyph fas fa-palette"></i>'
 				+           '<span>'+cactiTheme+'</span>'
@@ -398,7 +411,7 @@ function setupTheme() {
 				+           '<li><a href="#" class="toggleGuiMode">'+standardGraphicalUserInterface+'</a></li>'
 				+           '<li><a href="#" class="toggleColorMode">'+(midWinter_Color_Mode === 'light' ? darkColorMode : lightColorMode)+'</a></li>'
 				+           '<li><a href="#" class="toggleColorModeAuto">'+(midWinter_Color_Mode_Auto === 'on' ? ignorePreferredColorTheme : usePreferredColorTheme)+'</a></li>'
-				+           '<li><a href="#" class="toggleGuiFontSize">Font Size: '+ midWinter_Font_Size +'</a></li>'
+				+           '<li><a href="#" class="toggleGuiFontSize">Font Size: '+ midwinterEscape(midWinter_Font_Size) +'</a></li>'
 				+       '</ul>'
 				+   '</li>'
 				+   '<li class="menuitem" id="menu_user_client">'
@@ -436,7 +449,7 @@ function setupTheme() {
 		return false;
 	});
 
-	$('.submenuoptions, .menuoptions').on('click', function() {
+	$('.submenuoptions, .menuoptions').off('click.midwinter').on('click.midwinter', function() {
 		if ($(window).width() < 640) {
 			$(this).stop().delay(100).slideUp(0);
 		} else {
@@ -454,7 +467,7 @@ function setupTheme() {
 	$('.toggleColorModeAuto').off().on('click', toggleColorModeAuto);
 	$('.toggleGuiFontSize').off().on('click',toggleGuiFontSize);
 
-	$('.cactiConsoleContentArea, .cactiGraphContentArea').on('mouseenter', toggleCactiNavigationBox);
+	$('.cactiConsoleContentArea, .cactiGraphContentArea').off('mouseenter.midwinter').on('mouseenter.midwinter', toggleCactiNavigationBox);
 }
 
 function redesignConsoleMenu(menu) {
@@ -496,11 +509,6 @@ function toggleCactiNavigationBox(event) {
 }
 
 function setupDefaultElements() {
-	var pageName = basename($(location).attr('pathname'));
-	var hostTimer = false;
-	var clickTimeout = false;
-	var hostOpen = false;
-
 	// duplicate cactiConsolePageHeadBackdrop for compact mode
 	if ($('#cactiConsoleBackdrop').length === 0 ) {
 		$('<div id="cactiConsoleBackdrop"></div>'+
@@ -531,7 +539,8 @@ function setupDefaultElements() {
 	// ensure that filter table and 1st navBar will stay on top
 	if ($('#filterTableOnTop').length !== 0 ) $('#filterTableOnTop').remove();
 
-	if ($(".filterTable").length !== 0) {
+	// pages without the content pane, such as the real-time popup, keep their filter in place
+	if ($(".filterTable").length !== 0 && $('#navigation_right').length !== 0) {
 		$('<div id="filterTableOnTop">').prependTo('#navigation_right');
 		$(".filterTable:first").closest('div').detach().prependTo('#filterTableOnTop');
 		$(".break:first").detach().appendTo('#filterTableOnTop');
@@ -560,27 +569,12 @@ function setupDefaultElements() {
 
 	//$('td:nth-child(2), th:nth-child(2)').hide;
 
-	$('input#filter, input#rfilter').addClass('ui-state-default ui-corner-all');
-
-	$('input[type="text"], input[type="password"], input[type="checkbox"], textarea').not('image').addClass('ui-state-default ui-corner-all');
-
 	// really shitty workaround to make custom row checkboxes clickable again. :(
 	$('tr[id*="line"]:not(.disabled_row)').each(function(data) {
 		$(this).find('.formCheckboxLabel').attr('for', '');
 	});
 
-	// Turn file buttons into jQueryUI buttons
-	$('.import_label').button();
-	$('.import_button').change(function() {
-		text=this.value;
-		setImportFile(text);
-	});
-
-	setImportFile(noFileSelected);
-
-	function setImportFile(fileText) {
-		$('.import_text').text(fileText);
-	}
+	setImportFields();
 
 	$('select.colordropdown').dropcolor();
 
@@ -590,77 +584,38 @@ function setupDefaultElements() {
 		return $(this).prop('multiple') === true;
 	}).addClass('ui-state-default ui-corner-all');
 
-	$('#host').off().autocomplete({
-		source: pageName+'?action=ajax_hosts',
-		autoFocus: true,
-		minLength: 0,
-		select: function(event,ui) {
-			$('#host_id').val(ui.item.id);
-			callBack = $('#call_back').val();
-			if (callBack != 'undefined') {
-				if (callBack.indexOf('applyFilter') >= 0) {
-					applyFilter();
-				} else if (callBack.indexOf('applyGraphFilter') >= 0) {
-					applyGraphFilter();
-				}
-			} else if (typeof applyGraphFilter === 'function') {
-				applyGraphFilter();
-			} else {
-				applyFilter();
-			}
-		}
-	}).addClass('ui-state-default ui-selectmenu-text').css('border', 'none').css('background-color', 'transparent');
-
-	$('#host_click').css('z-index', '4');
-	$('#host_wrapper').off().dblclick(function() {
-		hostOpen = false;
-		clearTimeout(hostTimer);
-		clearTimeout(clickTimeout);
-		$('#host').autocomplete('close').select();
-	}).click(function() {
-		if (hostOpen) {
-			$('#host').autocomplete('close');
-			clearTimeout(hostTimer);
-			hostOpen = false;
-		} else {
-			clickTimeout = setTimeout(function() {
-				$('#host').autocomplete('search', '');
-				clearTimeout(hostTimer);
-				hostOpen = true;
-			}, 200);
-		}
-		$('#host').select();
-	}).on('mouseenter', function() {
-		$(this).addClass('ui-state-hover');
-		$('input#host').addClass('ui-state-hover');
-	}).on('mouseleave', function() {
-		$(this).removeClass('ui-state-hover');
-		$('#host').removeClass('ui-state-hover');
-		hostTimer = setTimeout(function() { $('#host').autocomplete('close'); }, 800);
-		hostOpen = false;
-	});
-
-	var hostPrefix = '';
-	$('#host').autocomplete('widget').each(function() {
-		hostPrefix=$(this).attr('id');
-
-		if (hostPrefix != '') {
-			$('ul[id="'+hostPrefix+'"]').on('mouseenter', function() {
-				clearTimeout(hostTimer);
-			}).on('mouseleave', function() {
-				hostTimer = setTimeout(function() { $('#host').autocomplete('close'); }, 800);
-				$(this).removeClass('ui-state-hover');
-				$('input#host').removeClass('ui-state-hover');
-			});
-		}
-	});
+	setHostAutocomplete();
 
 	setNavigationScroll();
+}
+
+// Values the theme itself writes for each stored preference. Anything else found
+// in local storage is replaced by the default before it is used.
+const midwinterStorageValues = {
+	midWinter_GUI_Mode:        ['compact', 'standard'],
+	midWinter_Color_Mode:      ['dark', 'light'],
+	midWinter_Color_Mode_Auto: ['on', 'off'],
+	midWinter_Font_Size:       ['small', 'regular', 'large']
+};
+
+function midwinterEscape(value) {
+	const entityMap = {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;', '`': '&#x60;'};
+
+	return String(value === undefined || value === null ? '' : value).replace(/[&<>"'`]/g, function(character) {
+		return entityMap[character];
+	});
+}
+
+// Quote a value for use inside a double quoted attribute selector.
+function midwinterSelectorValue(value) {
+	return String(value === undefined || value === null ? '' : value).replace(/["\\]/g, '\\$&');
 }
 
 function initStorageItem(name, default_value, data_attribute= '') {
 	let storage = Storages.localStorage;
 	if (storage.isSet(name) === false) {
+		storage.set(name, default_value);
+	} else if (Object.prototype.hasOwnProperty.call(midwinterStorageValues, name) && midwinterStorageValues[name].indexOf(storage.get(name)) === -1) {
 		storage.set(name, default_value);
 	}
 	if (data_attribute !=='') {
@@ -767,17 +722,24 @@ function setThemeColor() {
 function detectSystemColorSetup() {
 	const systemColorMode = window.matchMedia("(prefers-color-scheme: dark)");
 
-	try {
-		systemColorMode.addEventListener('change', (e) => {
-			checkThemeColorSetup((e.matches) ? 'dark' : 'light')
-		});
-    } catch (e1) {
-		try {
-			systemColorMode.addListener((e) => {
+	// one listener per page; it follows the system only while the user keeps that option on
+	if (midwinterSystemColorWatched === false) {
+		midwinterSystemColorWatched = true;
+
+		const followSystemColor = (e) => {
+			if (Storages.localStorage.get('midWinter_Color_Mode_Auto') === 'on') {
 				checkThemeColorSetup((e.matches) ? 'dark' : 'light')
-			});
-		} catch (e2) {
-			console.error(e2);
+			}
+		};
+
+		try {
+			systemColorMode.addEventListener('change', followSystemColor);
+		} catch (e1) {
+			try {
+				systemColorMode.addListener(followSystemColor);
+			} catch (e2) {
+				console.error(e2);
+			}
 		}
 	}
 	checkThemeColorSetup(systemColorMode.matches === true ? 'dark' : 'light');
@@ -787,90 +749,42 @@ function checkThemeColorSetup(color_mode) {
 	let document_color_mode = document.documentElement.getAttribute('data-theme-color');
 	let cookie_color_mode = getCookieValue('CactiColorMode');
 
-	if (document_color_mode !== color_mode || cookie_color_mode !== color_mode) {
+	if (document_color_mode !== color_mode) {
 		setDocumentAttribute('theme-color', color_mode)
+	}
+
+	// graphs are rendered with the colors named by the cookie, so only a changed cookie needs a reload
+	if (cookie_color_mode !== color_mode) {
 		setCookieValue('CactiColorMode', color_mode);
 		initializeGraphs(true);
 	}
 }
 
-function setMenuVisibility() {
-	storage=Storages.localStorage;
+function searchToHighlight() {
+	// mark.js is loaded once per page, the menu search box is bound again whenever it was rebuilt
+	if (typeof $.fn.mark === 'function') {
+		bindMenuSearch();
+	} else if (midwinterMarkRequested === false) {
+		midwinterMarkRequested = true;
 
-	// Initialize the navigation settings
-	// This will setup the initial visibility of the menu
-	$('li.menuitem').each(function() {
-		var id = $(this).attr('id');
-
-		if (storage.isSet(id)) {
-			var active = storage.get(id);
-		} else {
-			var active = null;
-		}
-
-		if (active != null && active === 'active') {
-			$(this).find('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true').show();
-			$(this).next('a').show();
-		} else {
-			$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false').hide();
-			$(this).next('a').hide();
-		}
-
-		if ($(this).find('a.selected').length === 0) {
-			//console.log('hiding1:'+$(this).closest('.menuitem').attr('id'));
-			$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false').hide();
-			$(this).next('a').hide();
-			storage.set($(this).closest('.menuitem').attr('id'), 'collapsed');
-		} else {
-			$(this).find('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true').show();
-			$(this).next('a').show();
-			storage.set($(this).closest('.menuitem').attr('id'), 'active');
-		}
-	});
-
-	// Function to give life to the Navigation pane
-	$('#nav li:has(ul) a.active').off().on('click', function(event) {
-		event.preventDefault();
-
-		let id = $(this).closest('.menuitem').attr('id');
-
-		if ($(this).next().is(':visible')) {
-			$(this).next('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false');
-			$(this).next().slideUp( { duration: 200, easing: 'swing' } );
-			storage.set(id, 'collapsed');
-		} else {
-			$(this).next('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true');
-			$(this).next().slideToggle( { duration: 200, easing: 'swing' } );
-			if ($(this).next().is(':visible')) {
-				storage.set($(this).closest('.menuitem').attr('id'), 'active');
-			} else {
-				storage.set(id, 'collapsed');
+		$.cachedScript(urlPath + 'include/themes/midwinter/vendor/mark/jquery.mark.js').done(function (script, textStatus) {
+			if (textStatus === 'success') {
+				bindMenuSearch();
 			}
-		}
-
-		$('li.menuitem').not('#'+id).each(function() {
-			let text = $(this).attr('id');
-			let id   = $(this).attr('id');
-
-			$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false');
-			$(this).find('ul').slideUp( { duration: 200, easing: 'swing' } );
-			storage.set($(this).attr('id'), 'collapsed');
+		}).fail(function () {
+			midwinterMarkRequested = false;
 		});
-	});
+	}
 }
 
-function searchToHighlight() {
-	$.cachedScript(urlPath + 'include/themes/midwinter/vendor/mark/jquery.mark.js').done(function (script, textStatus) {
-		if (textStatus === 'success') {
-			$("input[name='keyword']").on("input", highlight);
-		}
-	});
+function bindMenuSearch() {
+	$("#menu input[name='keyword']").off('input.midwinter').on('input.midwinter', highlight);
 }
 
 function highlight() {
 	// Read the keyword
-	let keyword = $("input[name='keyword']").val();
-	pattern = '.*' + keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '.*';
+	let keyword = $("#menu input[name='keyword']").val();
+	let pattern = '.*' + keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '.*';
 	let re = new RegExp(pattern,'gmiu');
 
 	$("ul[role='menu'] a[role='menuitem']").unmark({
@@ -887,9 +801,16 @@ function highlight() {
 
 
 function setHotKeys() {
+	// every evaluation of hotkeys.js adds its own document listeners, so load and bind it once per page
+	if (midwinterHotKeysRequested) {
+		return;
+	}
+
+	midwinterHotKeysRequested = true;
+
 	$.cachedScript(urlPath + 'include/themes/midwinter/vendor/hotkeys/hotkeys.js').done(function (script, textStatus) {
 		if (textStatus === 'success') {
-			hotkeys('SHIFT+c,c+t,c+l,c+p,c+F1,F5,SHIFT+m+d, SHIFT+g, SHIFT+p, ESC, SHIFT+k', function (event, handler) {
+			hotkeys('SHIFT+c,c+t,c+l,c+p,F5,SHIFT+m+d, SHIFT+g, SHIFT+p, SHIFT+k', function (event, handler) {
 				event.preventDefault();
 				switch (handler.key) {
 					case 'SHIFT+c':
@@ -920,15 +841,13 @@ function setHotKeys() {
 						//kiosk_mode('');
 						toggleFullscreen('navigation_right');
 						break;
-					case 'ESC':
-						toggleFullscreen('');
-						break;
-					default: alert(event);
                 }
 
 				return false;
 			});
 		}
+	}).fail(function () {
+		midwinterHotKeysRequested = false;
 	});
 }
 
@@ -936,7 +855,8 @@ jQuery.cachedScript = function(url, options) {
 	options = $.extend(options||{}, {
 		dataType: "script",
 		cache: true,
-		url: url
+		// the version changes the URL on upgrade, so a cached copy of an older library is not reused
+		url: url + (url.indexOf('?') === -1 ? '?' : '&') + 'v=' + encodeURIComponent(cactiVersion)
 	})
 
 	return jQuery.ajax(options);
@@ -956,23 +876,16 @@ function kiosk_mode(state='toggle') {
 function getFullscreenElement() {
 	return document.fullscreenElement
 			|| document.webkitFullscreenElement
-			|| document.mozFullscreenElement
-			|| document.msmFullscreenElement
+			|| document.mozFullScreenElement
+			|| document.msFullscreenElement
 }
 
 function toggleFullscreen(element = false){
 	if(getFullscreenElement()){
-		if(element === false) {
-			document.exitFullscreen().catch(console.log);
-		}else {
-			document.documentElement.requestFullscreen().catch(console.log);
-		}
+		document.exitFullscreen().catch(console.log);
 	}else {
-		if(element === false) {
-			document.documentElement.requestFullscreen().catch(console.log);
-		}else {
-			document.getElementById(element).requestFullscreen().catch(console.log);
-		}
+		let target = (element === false) ? null : document.getElementById(element);
+		(target || document.documentElement).requestFullscreen().catch(console.log);
 	}
 }
 
@@ -1093,25 +1006,25 @@ function dialog_client(event) {
 			content += '<div class="cactiFlexBoxContentBox">'
 				+             '<div class="header"><span>Browser</span></div>'
 				+             '<div class="content"><i class="'+env.browser.icon+'"></i></div>'
-				+             '<div class="footer"><span>'+ env.browser.name +'</span><span>'+ env.browser.version +'</span></div>'
+				+             '<div class="footer"><span>'+ midwinterEscape(env.browser.name) +'</span><span>'+ midwinterEscape(env.browser.version) +'</span></div>'
 				+ '</div>';
 
 			content += '<div class="cactiFlexBoxContentBox">'
 				+             '<div class="header"><span>OS</span></div>'
 				+             '<div class="content"><i class="'+env.os.icon+'"></i></div>'
-				+             '<div class="footer"><span>'+ env.os.name +'</span><span>'+ env.os.version +'</span></div>'
+				+             '<div class="footer"><span>'+ midwinterEscape(env.os.name) +'</span><span>'+ midwinterEscape(env.os.version) +'</span></div>'
 				+ '</div>';
 
 			content += '<div class="cactiFlexBoxContentBox">'
 				+             '<div class="header"><span>Type</span></div>'
 				+             '<div class="content"><i class="'+env.device.icon+'"></i></div>'
-				+             '<div class="footer"><span>'+ ((env.device.type == undefined) ? '-' : env.device.type) +'</span></div>'
+				+             '<div class="footer"><span>'+ ((env.device.type == undefined) ? '-' : midwinterEscape(env.device.type)) +'</span></div>'
 				+ '</div>';
 
 			content += '<div class="cactiFlexBoxContentBox">'
 				+             '<div class="header"><span>Network</span></div>'
 				+             '<div class="content"><i class="fas fa-network-wired"></i></div>'
-				+             '<div class="footer"><span>'+ ((env.device.type == undefined) ? '-' : env.device.type) +'</span></div>'
+				+             '<div class="footer"><span>'+ ((env.device.type == undefined) ? '-' : midwinterEscape(env.device.type)) +'</span></div>'
 				+ '</div>';
 
 			content += '</div>';
@@ -1128,8 +1041,6 @@ function dialog_client(event) {
 				maxHeight: 1200,
 				title: title
 			});
-
-			console.log('loaded');
 		}
 	});
 }

@@ -282,7 +282,7 @@ jobs:
 
       - name: Run client state browser regressions
         working-directory: tests/e2e
-        run: node ./node_modules/@playwright/test/cli.js test tests/client-state.spec.ts
+        run: node ./node_modules/@playwright/test/cli.js test tests/client-state.spec.ts tests/theme-shared-wiring.spec.ts
 
       - name: Run consolidated accessibility browser regressions
         working-directory: tests/e2e
