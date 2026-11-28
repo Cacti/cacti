@@ -135,14 +135,14 @@ function reports_add_devices($report_id, $device_ids, $timespan, $align) {
 						)
 					);
 
-					raise_message('reports_add_device_' . $device_id, __('Device \'%s\' successfully added to Report.', $description), MESSAGE_LEVEL_INFO);
+					raise_message('reports_add_device_' . $device_id, __esc('Device \'%s\' successfully added to Report.', $description), MESSAGE_LEVEL_INFO);
 				} else {
 					$errors++;
 					raise_message('reports_device_not_found', __('Device not found! Unable to add to Report'), MESSAGE_LEVEL_ERROR);
 				}
 			} else {
 				$errors++;
-				raise_message('reports_no_add_device_' . $device_id, __('Device \'%s\' not added to Report as it already exists on report.', $description), MESSAGE_LEVEL_WARN);
+				raise_message('reports_no_add_device_' . $device_id, __esc('Device \'%s\' not added to Report as it already exists on report.', $description), MESSAGE_LEVEL_WARN);
 			}
 		}
 
@@ -157,6 +157,10 @@ function reports_add_devices($report_id, $device_ids, $timespan, $align) {
 function reports_add_graphs($report_id, $local_graph_id, $timespan, $align) {
 	if (!cacti_authorize_resource($_SESSION['sess_user_id'], (int) $report_id, 'reports')) {
 		raise_message('reports_not_owner');
+
+		return false;
+	} elseif (!is_graph_allowed((int) $local_graph_id, $_SESSION['sess_user_id'])) {
+		raise_message('reports_graph_not_found');
 
 		return false;
 	} else {
@@ -178,12 +182,12 @@ function reports_add_graphs($report_id, $local_graph_id, $timespan, $align) {
 				WHERE id = ?',
 				array($local_graph_id));
 
-			$host_template_id = db_fetch_cell_prepared('SELECT host_template_id
-				FROM host
-				WHERE id = ?',
-				array($gd['host_id']));
-
 			if (cacti_sizeof($gd)) {
+				$host_template_id = db_fetch_cell_prepared('SELECT host_template_id
+					FROM host
+					WHERE id = ?',
+					[$gd['host_id']]);
+
 				db_execute_prepared('INSERT INTO reports_items
 					(report_id, item_type, host_template_id, host_id, graph_template_id, local_graph_id, timespan, align, sequence)
 					VALUES (?, 1, ?, ?, ?, ?, ?, ?, ?)',
@@ -261,72 +265,122 @@ function reports_date_time_format() {
 	return $graph_date;
 }
 
+function reports_interval_month_weekday(int $timestamp, int $step_count, int $offset) : int {
+	/* Anchor to the 1st of the target month so Jan 29-31 never overflows into March */
+	$weekday      = (int) date('w', $timestamp);
+	$nth_weekday  = (int) ceil((int) date('j', $timestamp) / 7);
+	$hour         = (int) date('H', $timestamp);
+	$minute       = (int) date('i', $timestamp);
+	$second       = (int) date('s', $timestamp);
+	$first_of_new = mktime($hour, $minute, $second, (int) date('n', $timestamp) + $step_count, 1, (int) date('Y', $timestamp));
+	$target_month = (int) date('n', $first_of_new);
+	$target_year  = (int) date('Y', $first_of_new);
+	$days_in_mon  = (int) date('t', $first_of_new);
+	$first_wday   = (int) date('w', $first_of_new);
+	$target_day   = 1 + (($weekday - $first_wday + 7) % 7) + ($nth_weekday - 1) * 7;
+
+	while ($target_day > $days_in_mon) {
+		$target_day -= 7;
+	}
+
+	return mktime($hour, $minute, $second + $offset, $target_month, $target_day, $target_year);
+}
+
+function reports_interval_step(int $interval, int $count, int $offset, int $timestamp, int $multiplier = 1) : int {
+	$step_count = $count * $multiplier;
+
+	return match ($interval) {
+		REPORTS_SCHED_INTVL_MINUTE        => utime_add($timestamp, 0, 0, 0, 0, $step_count, $offset),
+		REPORTS_SCHED_INTVL_HOUR          => utime_add($timestamp, 0, 0, 0, $step_count, 0, $offset),
+		REPORTS_SCHED_INTVL_DAY           => utime_add($timestamp, 0, 0, $step_count, 0, 0, $offset),
+		REPORTS_SCHED_INTVL_WEEK          => utime_add($timestamp, 0, 0, 7 * $step_count, 0, 0, $offset),
+		REPORTS_SCHED_INTVL_MONTH_DAY     => utime_add($timestamp, 0, $step_count, 0, 0, 0, $offset),
+		REPORTS_SCHED_INTVL_MONTH_WEEKDAY => reports_interval_month_weekday($timestamp, $step_count, $offset),
+		REPORTS_SCHED_INTVL_YEAR          => utime_add($timestamp, $step_count, 0, 0, 0, 0, $offset),
+		default                           => 0,
+	};
+}
+
 /**
  * reports_interval_start - computes the next start time for the given set of parameters
  *
- * @param int $interval  - given interval
- * @param int $count     - given repeat count
- * @param int $offset    - offset in seconds to be added to the new start time
- * @param int $timestamp - current start time for report
+ * @param int      $interval  - given interval
+ * @param int      $count     - given repeat count
+ * @param int      $offset    - offset in seconds to be added to the new start time
+ * @param int      $timestamp - current start time for report
+ * @param int|null $now       - optional reference timestamp (defaults to current time)
  *
- * @return - new timestamp
+ * @return int - new timestamp
  */
-function reports_interval_start($interval, $count, $offset, $timestamp) {
+function reports_interval_start($interval, $count, $offset, $timestamp, $now = null) {
 	global $reports_interval;
-	reports_log(__FUNCTION__ . ', interval: ' . $reports_interval[$interval] . ' count: ' . $count . ' offset: ' . $offset . ' timestamp: ' . date('Y/m/d H:i:s', $timestamp), false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
+	reports_log(__FUNCTION__ . ', interval: ' . ($reports_interval[$interval] ?? $interval) . ' count: ' . $count . ' offset: ' . $offset . ' timestamp: ' . date('Y/m/d H:i:s', $timestamp), false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 
-	switch ($interval) {
-		case REPORTS_SCHED_INTVL_MINUTE:
-			# add $count minutes to current mailtime
-			$ts = utime_add($timestamp, 0, 0, 0, 0, $count, $offset);
-			break;
-		case REPORTS_SCHED_INTVL_HOUR:
-			# add $count hours to current mailtime
-			$ts = utime_add($timestamp, 0, 0, 0, $count, 0, $offset);
-			break;
-		case REPORTS_SCHED_INTVL_DAY:
-			# add $count days to current mailtime
-			$ts = utime_add($timestamp, 0, 0, $count, 0, 0, $offset);
-			break;
-		case REPORTS_SCHED_INTVL_WEEK:
-			# add $count weeks = 7*$count days to current mailtime
-			$ts = utime_add($timestamp, 0, 0, 7*$count, 0, 0, $offset);
-			break;
-		case REPORTS_SCHED_INTVL_MONTH_DAY:
-			# add $count months to current mailtime
-			$ts = utime_add($timestamp, 0, $count, 0, 0, 0, $offset);
-			break;
-		case REPORTS_SCHED_INTVL_MONTH_WEEKDAY:
-			# add $count months to current mailtime, but if this is the nth weekday, it must be the same nth weekday in the new month
-			# e.g. if this is currently the 3rd Monday of current month
-			# ist must be the 3rd Monday of the new month as well
-			$weekday      = date('l', $timestamp);
-			$day_of_month = date('j', $timestamp);
-			$nth_weekday  = ceil($day_of_month / 7);
+	$interval  = (int) $interval;
+	$count     = max(1, (int) $count);
+	$offset    = (int) $offset;
+	$timestamp = (int) $timestamp;
+	$now     ??= time();
 
-			$date_str     = '+' . $count . ' months';
-			$month_base   = strtotime($date_str, $timestamp);
-			$new_month    = mktime(date('H', $month_base), date('i', $month_base), date('s', $month_base), date('m', $month_base), 1, date('Y', $month_base));
+	$unit_seconds = match ($interval) {
+		REPORTS_SCHED_INTVL_MINUTE        => 60,
+		REPORTS_SCHED_INTVL_HOUR          => 3600,
+		REPORTS_SCHED_INTVL_DAY           => 86400,
+		REPORTS_SCHED_INTVL_WEEK          => 604800,
+		REPORTS_SCHED_INTVL_MONTH_DAY,
+		REPORTS_SCHED_INTVL_MONTH_WEEKDAY => 28 * 86400,
+		REPORTS_SCHED_INTVL_YEAR          => 365 * 86400,
+		default                           => null,
+	};
 
-			$date_str     = '+' . ($nth_weekday - 1) . ' week ' . $weekday;
-			$base         = strtotime($date_str, $new_month);
-			$ts           = mktime(date('H', $month_base), date('i', $month_base), date('s', $month_base), date('m', $base), date('d', $base), date('Y', $base));
-			break;
-		case REPORTS_SCHED_INTVL_YEAR:
-			# add $count years to current mailtime
-			$ts = utime_add($timestamp, $count, 0, 0, 0, 0, $offset);
-			break;
-		default:
-			$ts = 0;
-			break;
+	if ($unit_seconds === null) {
+		return 0;
 	}
 
-	$now = time();
-	if ($ts < $now) {
-		$ts = $now;
+	$multiplier = 1;
+	$ts         = reports_interval_step($interval, $count, $offset, $timestamp, $multiplier);
+
+	if ($ts > $now) {
+		return $ts;
+	}
+
+	$est_steps = (int) floor(($now - $timestamp - $offset) / ($unit_seconds * $count));
+	if ($est_steps > 1) {
+		$multiplier = $est_steps;
+		$ts         = reports_interval_step($interval, $count, $offset, $timestamp, $multiplier);
+	}
+
+	/* Step back if conservative estimate overshot slightly on shorter months */
+	while ($multiplier > 1) {
+		$prev_ts = reports_interval_step($interval, $count, $offset, $timestamp, $multiplier - 1);
+		if ($prev_ts <= $now) {
+			break;
+		}
+
+		$multiplier--;
+		$ts = $prev_ts;
+	}
+
+	/* Advance whole intervals until strictly past $now */
+	for ($guard = 0; $ts <= $now && $guard < 1000; $guard++) {
+		$multiplier++;
+		$ts = reports_interval_step($interval, $count, $offset, $timestamp, $multiplier);
 	}
 
 	return $ts;
+}
+
+function reports_parse_graph_tags(mixed $body) : array {
+	if (!is_string($body) || !preg_match_all('/<GRAPH:(\d+):(-?\d+)>/', $body, $matches, PREG_SET_ORDER)) {
+		return [];
+	}
+
+	$graphs = [];
+	foreach ($matches as $match) {
+		$graphs[$match[1] . ':' . $match[2]] = $match[1];
+	}
+
+	return $graphs;
 }
 
 /**
@@ -411,25 +465,8 @@ function generate_report($report, $force = false) {
 	# get config option for first-day-of-the-week
 	$first_weekdayid = read_user_setting('first_weekdayid', false, false, $report['user_id']);
 
-	$offset      = 0;
-	$graphs      = array();
+	$graphs      = reports_parse_graph_tags($body);
 	$attachments = array();
-	while (true) {
-		$pos = strpos($body, '<GRAPH:', $offset);
-
-		if ($pos) {
-			$offset         = $pos+7;
-			$graph          = substr($body, $pos+7, 10);
-			$arr            = explode(':', $graph);
-			$arr1           = explode('>', $arr[1]);
-			$local_graph_id = $arr[0];
-			$timespan       = $arr1[0];
-
-			$graphs[$local_graph_id . ':' . $timespan] = $local_graph_id;
-		} else {
-			break;
-		}
-	}
 
 	$user = $report['user_id'];
 
@@ -896,7 +933,7 @@ function reports_generate_html($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$t
 				/* start a new section */
 				$column = 0;
 			} elseif ($item['item_type'] == REPORTS_ITEM_HOST) {
-				if (is_tree_allowed($item['host_id'], $report['user_id'])) {
+				if (is_device_allowed($item['host_id'], $report['user_id'])) {
 					$outstr .= reports_expand_device($report, $item, $item['host_id'], $output, $format_ok, $theme);
 				}
 			} elseif ($item['item_type'] == REPORTS_ITEM_TREE) {
@@ -1063,12 +1100,7 @@ function reports_expand_device(&$report, $item, $device_id, $output, $format_ok,
 		);
 
 		/* for graphs without a template */
-		array_push($graph_templates,
-			array(
-				'id' => '0',
-				'name' => __('(No Graph Template)')
-			)
-		);
+		$graph_templates[0] = __('(No Graph Template)');
 	} else {
 		$graph_templates = array_rekey(
 			db_fetch_assoc_prepared('SELECT DISTINCT
@@ -1089,13 +1121,13 @@ function reports_expand_device(&$report, $item, $device_id, $output, $format_ok,
 		}
 	}
 
+	if ($item['graph_name_regexp'] != '') {
+		$sql_where = ' AND title_cache ' . db_qstr_rlike($item['graph_name_regexp']);
+	}
+
 	$outgraphs = array();
 	if (cacti_sizeof($graph_templates)) {
 		foreach ($graph_templates as $id => $name) {
-			if ($item['graph_name_regexp'] != '') {
-				$sql_where .= ' AND title_cache ' . db_qstr_rlike($item['graph_name_regexp']);
-			}
-
 			$graphs = db_fetch_assoc_prepared("SELECT
 				gtg.local_graph_id, gtg.title_cache
 				FROM graph_local AS gl
@@ -1207,7 +1239,8 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 		$leaves = array();
 	}
 
-	$graphs = array();
+	$nested_graphs = [];
+	$nested_title  = '';
 
 	if (cacti_sizeof($leaves)) {
 		foreach ($leaves as $leaf) {
@@ -1337,7 +1370,8 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 
 				if (cacti_sizeof($graph)) {
 					if (is_graph_allowed($graph['local_graph_id'], $user)) {
-						$graphs[$graph['local_graph_id']] = $graph;
+						$nested_graphs[$graph['local_graph_id']] = $graph;
+						$nested_title                            = $title;
 					}
 				}
 			} elseif ($leaf_type == 'graph') {
@@ -1386,6 +1420,9 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 							'id', 'name'
 						);
 
+						/* for graphs without a template */
+						$graph_templates[0] = __('(No Graph Template)');
+
 						if (cacti_sizeof($graph_templates)) {
 							foreach($graph_templates AS $id => $name) {
 								if (!is_graph_template_allowed($id, $user)) {
@@ -1394,26 +1431,19 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 							}
 						}
 
-						/* for graphs without a template */
-						array_push($graph_templates,
-							array(
-								'id' => '0',
-								'name' => __('(No Graph Template)')
-							)
-						);
-
 						$outgraphs = array();
 						if (cacti_sizeof($graph_templates)) {
 							foreach ($graph_templates as $id => $name) {
-								$graphs = db_fetch_assoc('SELECT
+								$graphs = db_fetch_assoc_prepared("SELECT
 									gtg.local_graph_id, gtg.title_cache
 									FROM graph_local AS gl
 									INNER JOIN graph_templates_graph AS gtg
 									ON gtg.local_graph_id=gl.id
-									WHERE gl.graph_template_id=' . $id . '
-									AND gl.host_id=' . $leaf['host_id'] . "
+									WHERE gl.graph_template_id = ?
+									AND gl.host_id = ?
 									$sql_where
-									ORDER BY gtg.title_cache");
+									ORDER BY gtg.title_cache",
+									[$id, $leaf['host_id']]);
 
 								if (cacti_sizeof($graphs)) {
 									foreach($graphs as $key => $graph) {
@@ -1471,6 +1501,8 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 						$i = 0;
 						if (cacti_sizeof($data_queries)) {
 							foreach ($data_queries as $data_query) {
+								$snmp_index_to_graph = [];
+
 								/* fetch a list of field names that are sorted by the preferred sort field */
 								$sort_field_data = get_formatted_data_query_indexes($leaf['host_id'], $data_query['id']);
 
@@ -1586,21 +1618,21 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 			}
 		}
 
-		if (cacti_sizeof($graphs)) {
+		if (cacti_sizeof($nested_graphs)) {
 			/* start graph display */
-			if ($title != '') {
+			if ($nested_title != '') {
 				$outstr .= "\t\t<tr class='text_row'>" . PHP_EOL;
 				if ($format_ok) {
 					$outstr .= "\t\t\t<td class='text'>" . PHP_EOL;
 				} else {
 					$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ";font-size: " . $item['font_size'] . "pt;'>" . PHP_EOL;
 				}
-				$outstr .= "\t\t\t\t$title" . PHP_EOL;
+				$outstr .= "\t\t\t\t$nested_title" . PHP_EOL;
 				$outstr .= "\t\t\t</td>" . PHP_EOL;
 				$outstr .= "\t\t</tr>" . PHP_EOL;
 			}
 
-			$outstr .= reports_graph_area($graphs, $report, $item, $timespan, $output, $format_ok, $theme);
+			$outstr .= reports_graph_area($nested_graphs, $report, $item, $timespan, $output, $format_ok, $theme);
 		}
 	}
 
@@ -1689,44 +1721,56 @@ function reports_graph_area($graphs, &$report, $item, $timespan, $output, $forma
 }
 
 /**
+ * Convert a PNG image stream in memory to JPEG or GIF using php-gd without
+ * touching temporary files on disk.
+ *
+ * @param string $png_data The PNG image as a byte stream.
+ * @param string $format   Target image format ('jpeg' or 'gif').
+ *
+ * @return string The converted image as a byte stream, or empty string when empty.
+ */
+function reports_convert_png_image(string $png_data, string $format) : string {
+	if ($png_data === '') {
+		return '';
+	}
+
+	/* Decode the graph from memory so no scratch file is needed. Only valid
+	 * PNG data is decoded; anything else renders the fallback error image. */
+	$im = false;
+
+	if (str_starts_with($png_data, "\x89PNG\r\n\x1a\n")) {
+		$im = @imagecreatefromstring($png_data);
+	}
+
+	if (!$im) {
+		$im  = imagecreate(150, 30);
+		$bgc = imagecolorallocate($im, 255, 255, 255);
+		$tc  = imagecolorallocate($im, 0, 0, 0);
+		imagefilledrectangle($im, 0, 0, 150, 30, $bgc);
+		imagestring($im, 1, 5, 5, 'Error while decoding PNG data', $tc);
+	}
+
+	ob_start();
+	if ($format === 'gif') {
+		imagegif($im);
+	} else {
+		imagejpeg($im);
+	}
+	$image_data = (string) ob_get_contents();
+	ob_end_clean();
+	unset($im);
+
+	return $image_data;
+}
+
+/**
  * convert png images stream to jpeg using php-gd
  *
  * @param string $png_data	- the png image as a stream
  * @return string			- the jpeg image as a stream
  */
-function png2jpeg ($png_data) {
-	global $config;
-
-	if ($png_data != '') {
-		$fn = '/tmp/' . time() . '.png';
-
-		/* write rrdtool's png file to scratch dir */
-		$f = fopen($fn, 'wb');
-		fwrite($f, $png_data);
-		fclose($f);
-
-		/* create php-gd image object from file */
-		$im = imagecreatefrompng($fn);
-		if (!$im) {								/* check for errors */
-			$im = ImageCreate (150, 30);		/* create an empty image */
-			$bgc = ImageColorAllocate ($im, 255, 255, 255);
-			$tc  = ImageColorAllocate ($im, 0, 0, 0);
-			ImageFilledRectangle ($im, 0, 0, 150, 30, $bgc);
-			/* print error message */
-			ImageString($im, 1, 5, 5, "Error while opening: $fn", $tc);
-		}
-
-        ob_start(); // start a new output buffer to capture jpeg image stream
-		imagejpeg($im);	// output to buffer
-		$ImageData = ob_get_contents(); // fetch image from buffer
-		$ImageDataLength = ob_get_length();
-		ob_end_clean(); // stop this output buffer
-		imagedestroy($im); //clean up
-
-		unlink($fn); // delete scratch file
-	}
-
-	return $ImageData;
+function png2jpeg($png_data) {
+	return reports_convert_png_image((string) $png_data, 'jpeg');
 }
 
 /**
@@ -1735,39 +1779,8 @@ function png2jpeg ($png_data) {
  * @param string $png_data	- the png image as a stream
  * @return string			- the gif image as a stream
  */
-function png2gif ($png_data) {
-	global $config;
-
-	if ($png_data != '') {
-		$fn = '/tmp/' . time() . '.png';
-
-		/* write rrdtool's png file to scratch dir */
-		$f = fopen($fn, 'wb');
-		fwrite($f, $png_data);
-		fclose($f);
-
-		/* create php-gd image object from file */
-		$im = imagecreatefrompng($fn);
-		if (!$im) {								/* check for errors */
-			$im = ImageCreate (150, 30);		/* create an empty image */
-			$bgc = ImageColorAllocate ($im, 255, 255, 255);
-			$tc  = ImageColorAllocate ($im, 0, 0, 0);
-			ImageFilledRectangle ($im, 0, 0, 150, 30, $bgc);
-			/* print error message */
-			ImageString($im, 1, 5, 5, "Error while opening: $fn", $tc);
-		}
-
-        ob_start(); // start a new output buffer to capture gif image stream
-		imagegif($im);	// output to buffer
-		$ImageData = ob_get_contents(); // fetch image from buffer
-		$ImageDataLength = ob_get_length();
-		ob_end_clean(); // stop this output buffer
-		imagedestroy($im); //clean up
-
-		unlink($fn); // delete scratch file
-	}
-
-	return $ImageData;
+function png2gif($png_data) {
+	return reports_convert_png_image((string) $png_data, 'gif');
 }
 
 /**

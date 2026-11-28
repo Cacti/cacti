@@ -488,8 +488,9 @@ function discoverDevices($network_id, $thread) {
 						db_execute_prepared('UPDATE automation_ips
 							SET hostname = ?
 							WHERE ip_address = ?',
-							array($device['hostname'], $device['ip_address']));
+							[$netbios, $device['ip_address']]);
 
+						$device['hostname']      = $netbios;
 						$device['dnsname']       = $netbios;
 						$device['dnsname_short'] = $netbios;
 					}
@@ -529,8 +530,9 @@ function discoverDevices($network_id, $thread) {
 						db_execute_prepared('UPDATE automation_ips
 							SET hostname = ?
 							WHERE ip_address = ?',
-							array($device['hostname'], $device['ip_address']));
+							[$netbios, $device['ip_address']]);
 
+						$device['hostname']      = $netbios;
 						$device['dnsname']       = $netbios;
 						$device['dnsname_short'] = $netbios;
 					}
@@ -663,17 +665,17 @@ function discoverDevices($network_id, $thread) {
 
 							if ($snmp_sysName != '') {
 								$hostname = gethostbyaddr($device['ip_address']);
-								if ($hostname != $device['ip_address']) {
-									if (strpos($hostname, '.')) {
-										$hostname = substr($hostname, 0, strpos($hostname, '.') - 1);
-									}
+								if ($hostname === false) {
+									$hostname = $device['ip_address'];
+								} elseif ($hostname !== $device['ip_address'] && str_contains($hostname, '.')) {
+									$hostname = strstr($hostname, '.', true);
 								}
 
 								$isCactiSysName = db_fetch_cell_prepared('SELECT COUNT(*)
 									FROM host
 									WHERE snmp_sysName = ?
-									AND (hostname = ? OR hostname LIKE "' . $hostname . '%")',
-									array($snmp_sysName, $device['ip_address']));
+									AND (hostname = ? OR hostname = ? OR hostname LIKE ?)',
+									[$snmp_sysName, $device['ip_address'], $hostname, $hostname . '.%']);
 
 								if ($isCactiSysName) {
 									automation_debug(", Skipping sysName '" . $snmp_sysName . "' already in Cacti!\n");
@@ -1010,7 +1012,7 @@ function reportNetworkStatus($network_id, $old_devices) {
 						return false;
 					}
 
-					$details = db_fetch_cell_prepared('SELECT email_address AS notification_email, full_name
+					$details = db_fetch_row_prepared('SELECT email_address AS notification_email, full_name
 						FROM user_auth
 						WHERE id = ?',
 						array($admin_user));
@@ -1163,8 +1165,9 @@ function clearTask($network_id, $pid) {
 
 	db_execute_prepared('DELETE
 		FROM automation_ips
-		WHERE network_id = ?',
-		array($network_id));
+		WHERE pid = ?
+		AND network_id = ?',
+		[$pid, $network_id]);
 }
 
 function clearAllTasks($network_id) {
