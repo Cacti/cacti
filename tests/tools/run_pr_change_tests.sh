@@ -103,6 +103,9 @@ run_probe ConfiguredCommands.php configured-commands
 run_probe ConfiguredCommands.php deprecated-rebuild deprecated
 run_probe DisplayAndValidation.php display-validation
 run_probe DisplayAndValidation.php input-method-save save
+for mode in requests denied reorder oauth; do
+	run_probe AuthorizedActions.php "authorized-actions-$mode" "$mode"
+done
 
 browser_specs=()
 for spec in graph-drilldown graph-spikekill filter-dialog-theme table-column-widths; do
@@ -120,6 +123,7 @@ for spec in develop-theme-correctness develop-theme-cleanup; do
 		theme_specs+=("tests/e2e/tests/$spec.spec.ts")
 	fi
 done
+browser_specs+=("tests/authorized-post-actions.spec.js")
 theme_coverage=0
 if (( ${#theme_specs[@]} )); then
 	while IFS= read -r changed; do

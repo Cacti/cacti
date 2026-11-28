@@ -37,8 +37,14 @@ set_default_action();
 
 draw_data_debug_filter(false);
 
-if (in_array(grv('action'), ['run_repair', 'run_debug'], true)) {
+if (in_array(grv('action'), ['run_repair', 'run_debug', 'purge'], true)) {
 	csrf_require_post();
+}
+
+// The Purge button clears every stored check, so it is POST only. The list
+// is rendered by the default case below once the table is empty.
+if (grv('action') === 'purge') {
+	db_execute('TRUNCATE TABLE data_debug');
 }
 
 switch (grv('action')) {
@@ -454,10 +460,6 @@ function debug_wizard() : void {
 			'tip'     => __('Summary of issues found for the Data Source.'),
 		]
 	];
-
-	if (isrv('purge')) {
-		db_execute('TRUNCATE TABLE data_debug');
-	}
 
 	// fill in the current date for printing in the log
 	if (defined('CACTI_DATE_TIME_FORMAT')) {

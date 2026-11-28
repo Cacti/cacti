@@ -78,3 +78,15 @@ test('filter_value still escapes markup and the grave accent', function () {
 	expect(filter_value('a<b>c', ''))->toBe('a&lt;b&gt;c')
 		->and(filter_value('a`b', ''))->toContain('&#96;');
 });
+
+test('filter_value links follow the address, or post it when the link changes data', function () {
+	$url = 'automation_templates.php?action=exitonchange&id=1&current=0';
+
+	expect(filter_value('No', '', $url))
+		->toBe('<a class="linkEditMain" href="automation_templates.php?action=exitonchange&amp;id=1&amp;current=0" title="">No</a>')
+		->and(filter_value('No', '', $url, '', true))
+		->toBe('<a class="linkEditMain cactiPostAction" href="#" data-url="automation_templates.php?action=exitonchange&amp;id=1&amp;current=0" title="">No</a>')
+		->and(filter_value('<b>', '', $url . '"x', '', true))
+		->toContain('data-url="automation_templates.php?action=exitonchange&amp;id=1&amp;current=0&quot;x"')
+		->toContain('>&lt;b&gt;</a>');
+});

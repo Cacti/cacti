@@ -250,10 +250,12 @@ function title_trim(string $text, int $max_length) : string {
  * @param string $filter The search term to filter for
  * @param string $href   The href if you wish to have an anchor returned
  * @param string $title  The title of the resulting anchor
+ * @param bool   $post   Send the link as a CSRF-checked POST instead of following it, for
+ *                       a link that changes stored data
  *
  * @return string the filtered string
  */
-function filter_value(mixed $value, string $filter, string $href = '', string $title = '') : string {
+function filter_value(mixed $value, string $filter, string $href = '', string $title = '', bool $post = false) : string {
 	if ($value == '') {
 		return '';
 	}
@@ -267,7 +269,10 @@ function filter_value(mixed $value, string $filter, string $href = '', string $t
 		$value = preg_replace('#(' . preg_quote($filter) . ')#i', "<span class='filteredValue'>\\1</span>", $value) ?? $value;
 	}
 
-	if ($href != '') {
+	if ($href != '' && $post) {
+		// include/layout.js posts the data-url of a cactiPostAction link with the CSRF token
+		$value = '<a class="linkEditMain cactiPostAction" href="#" data-url="' . htmle($href) . '" title="' . htmle($title) . '">' . $value . '</a>';
+	} elseif ($href != '') {
 		$value = '<a class="linkEditMain" href="' . htmle($href) . '" title="' . htmle($title) . '">' . $value . '</a>';
 	}
 
@@ -6080,20 +6085,6 @@ function sanitize_uri(string $uri) : string {
 		$uri = urldecode($uri);
 	}
 
-	/* a network-path reference (//host or /\host) would redirect off-site.
-	 * Browsers strip leading C0 controls and whitespace (WHATWG: tab, LF, FF,
-	 * CR and space) before resolving the URL, so "\x0C//evil.com" reaches the
-	 * browser as "//evil.com". Drop those leading bytes ourselves before the
-	 * slash-collapse check, then collapse any leading slash/backslash run to a
-	 * single '/' so the URI stays a local path. */
-	$trimmed = preg_replace('/^[\x00-\x20]+/', '', $uri) ?? $uri;
-
-	if (preg_match('/^[\/\\\\]{2,}/', $trimmed)) {
-		$uri = '/' . ltrim($trimmed, '/\\');
-	} else {
-		$uri = $trimmed;
-	}
-
 	if (str_contains($uri, 'graph_view.php')) {
 		/* Both tests were written against strpos(), which returns 0 for a match
 		 * at the start of the string. A URI beginning 'action=' therefore read
@@ -6104,7 +6095,25 @@ function sanitize_uri(string $uri) : string {
 		}
 	}
 
-	return str_replace($drop_char_match, $drop_char_replace, strip_tags($uri));
+	$uri = str_replace($drop_char_match, $drop_char_replace, strip_tags($uri));
+
+	/* a network-path reference (//host or /\host) would redirect off-site.
+	 * Browsers strip leading C0 controls and whitespace (WHATWG: tab, LF, FF,
+	 * CR and space) before resolving the URL, so "\x0C//evil.com" reaches the
+	 * browser as "//evil.com". The check runs after the character stripping
+	 * above because removing a character can itself join two slashes
+	 * ("/|/host"). Drop the leading bytes, then collapse any leading
+	 * slash/backslash run to a single '/' so the URI stays a local path. */
+	$uri = preg_replace('/^[\x00-\x20]+/', '', $uri) ?? $uri;
+
+	/* Browsers also remove tab characters anywhere in a URL, so "/\t/host"
+	 * resolves as "//host"; treat C0 controls and spaces between the leading
+	 * separators as part of the separator run. */
+	if (preg_match('/^[\/\\\\][\x00-\x20\/\\\\]*[\/\\\\]/', $uri)) {
+		$uri = '/' . ltrim($uri, "/\\\x00..\x20");
+	}
+
+	return $uri;
 }
 
 /**

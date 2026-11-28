@@ -649,6 +649,7 @@ header_redirect	./tree.php			header('Location: tree.php?action=edit&id=' . (isse
 header_redirect	./tree.php		header('Location: tree.php');
 header_redirect	./tree.php		header('Location: tree.php');
 header_redirect	./tree.php		header('Location: tree.php');
+header_redirect	./tree.php		header('Location: tree.php');
 header_redirect	./user_admin.php					header('Location: user_admin.php');
 header_redirect	./user_admin.php					header('Location: user_admin.php');
 header_redirect	./user_admin.php					header('Location: user_admin.php');

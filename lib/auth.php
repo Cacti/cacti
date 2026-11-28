@@ -5157,3 +5157,31 @@ function remote_agent_validate_effective_user(mixed $value, ?callable $lookup = 
 
 	return $user_id;
 }
+
+/**
+ * Checks whether a user may modify a specific resource row.
+ *
+ * Endpoints that accept a resource id from the request must confirm that the
+ * acting user owns the row, or holds the Users/Groups administration realm
+ * (1), before changing it. The check is deliberately strict: an unknown
+ * resource type, a missing row or a user that is neither the owner nor an
+ * administrator all return false.
+ *
+ * @param int    $user_id       The acting user, normally $_SESSION[SESS_USER_ID]
+ * @param int    $resource_id   The id of the row being acted on
+ * @param string $resource_type The kind of resource, currently only 'graph_tree'
+ *
+ * @return bool True when the user may modify the resource
+ */
+function cacti_authorize_resource(int $user_id, int $resource_id, string $resource_type) : bool {
+	if ($user_id <= 0 || $resource_id <= 0 || $resource_type !== 'graph_tree') {
+		return false;
+	}
+
+	$owner = db_fetch_cell_prepared('SELECT user_id
+		FROM graph_tree
+		WHERE id = ?',
+		[$resource_id]);
+
+	return $owner !== false && $owner !== null && ((int) $owner === $user_id || is_realm_allowed(1, $user_id));
+}

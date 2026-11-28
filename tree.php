@@ -92,6 +92,13 @@ if (in_array(grv('action'), [
 	csrf_require_post();
 }
 
+$action  = grv('action');
+$tree_id = (int) grv('id');
+
+if (in_array($action, ['tree_up', 'tree_down', 'lock', 'unlock'], true) || ($action === 'edit' && $tree_id > 0)) {
+	tree_require_edit_permission($tree_id);
+}
+
 switch (grv('action')) {
 	case 'save':
 		form_save();
@@ -353,15 +360,41 @@ function tree_up() : void {
 	exit;
 }
 
+function tree_require_edit_permission(int $tree_id) : void {
+	if (cacti_authorize_resource((int) $_SESSION[SESS_USER_ID], $tree_id, 'graph_tree')) {
+		return;
+	}
+
+	raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
+	header('Location: tree.php');
+
+	exit;
+}
+
+function tree_require_item_edit_permission(int $branch_id) : void {
+	$tree_id = db_fetch_cell_prepared('SELECT graph_tree_id
+		FROM graph_tree_items
+		WHERE id = ?',
+		[$branch_id]);
+
+	tree_require_edit_permission((int) $tree_id);
+}
+
 function tree_dnd() : void {
 	if (isrv('tree_ids') && is_array(gnrv('tree_ids'))) {
-		$tids     = gnrv('tree_ids');
-		$sequence = 1;
+		$tids          = gnrv('tree_ids');
+		$validated_ids = [];
+		$sequence      = 1;
 
 		foreach ($tids as $id) {
 			$id = str_replace('line', '', $id);
 			input_validate_input_number($id, 'id');
 
+			tree_require_edit_permission((int) $id);
+			$validated_ids[] = $id;
+		}
+
+		foreach ($validated_ids as $id) {
 			db_execute_prepared('UPDATE graph_tree
 				SET sequence = ?
 				WHERE id = ?',
@@ -429,6 +462,8 @@ function set_host_sort_type() : void {
 				if ($parts[0] == 'tbranch') {
 					$branch = $parts[1];
 					input_validate_input_number($branch, 'branch');
+
+					tree_require_item_edit_permission((int) $branch);
 
 					if (grv('type') == 'hsgt') {
 						$type = HOST_GROUPING_GRAPH_TEMPLATE;
@@ -522,6 +557,8 @@ function set_branch_sort_type() : void {
 					$branch = $parts[1];
 					input_validate_input_number($branch, 'branch');
 
+					tree_require_item_edit_permission((int) $branch);
+
 					switch(grv('type')) {
 						case 'inherit':
 							$type = TREE_ORDERING_INHERIT;
@@ -583,6 +620,11 @@ function form_save() : void {
 		gfrv('id');
 		gfrv('sequence');
 		// ====================================================
+
+		// Block edits to trees the caller does not own (Users/Groups administrators bypass).
+		if (gfrv('id') > 0) {
+			tree_require_edit_permission((int) grv('id'));
+		}
 
 		if (gfrv('id') > 0) {
 			$prev_order = db_fetch_cell_prepared('SELECT sort_type
@@ -689,7 +731,22 @@ function form_actions() : void {
 
 	// if we are to save this form, instead of display it
 	if (isrv('selected_items')) {
+		csrf_require_post();
+
 		$selected_items = sanitize_unserialize_selected_items(gnrv('selected_items'));
+
+		// Drop every tree the caller does not own so each action below runs
+		// only on trees the caller may modify. Administrators keep them all.
+		if (is_array($selected_items)) {
+			$selected_items = array_values(array_filter(
+				$selected_items,
+				static fn ($tree_id) : bool => cacti_authorize_resource((int) $_SESSION[SESS_USER_ID], (int) $tree_id, 'graph_tree')
+			));
+
+			if (cacti_sizeof($selected_items) === 0) {
+				$selected_items = false;
+			}
+		}
 
 		if ($selected_items != false) {
 			if (gnrv('drp_action') == '1') { // delete

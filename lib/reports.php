@@ -869,14 +869,41 @@ function reports_generate_history_html(int $history_id, int $output = REPORTS_OU
 	return '';
 }
 
+/**
+ * reports_remove_history - remove one stored report history row
+ *
+ * The owner check is made against the report the history row itself belongs
+ * to, never against a caller supplied report id, so the history of one report
+ * cannot be removed by quoting the id of a report the caller owns.
+ *
+ * @param int $history_id The id of the reports_log row to remove
+ * @param int $report_id  Unused, kept for call compatibility. The report is
+ *                        always resolved from the history row.
+ *
+ * @return void
+ */
 function reports_remove_history(int $history_id, int $report_id = 0) : void {
-	if ($report_id == 0) {
-		$report_id = db_fetch_cell_prepared('SELECT source_id FROM reports_log WHERE id = ?', [$history_id]);
+	$history = db_fetch_row_prepared('SELECT source, source_id
+		FROM reports_log
+		WHERE id = ?',
+		[$history_id]);
+
+	$report = false;
+
+	if (is_array($history) && cacti_sizeof($history) && $history['source'] === 'reports') {
+		$report = db_fetch_row_prepared('SELECT *
+			FROM reports
+			WHERE id = ?',
+			[$history['source_id']]);
 	}
 
-	$report = db_fetch_row_prepared('SELECT * FROM reports WHERE id = ?', [$report_id]);
+	if (!is_array($report) || !cacti_sizeof($report)) {
+		raise_message('remove_error', __('The report history entry could not be found.'), MESSAGE_LEVEL_ERROR);
 
-	if (is_reports_admin() || $report['user_id'] == SESS_USER_ID) {
+		return;
+	}
+
+	if (is_reports_admin() || (int) $report['user_id'] === (int) $_SESSION[SESS_USER_ID]) {
 		db_execute_prepared('DELETE FROM reports_log WHERE id = ?', [$history_id]);
 
 		raise_message('remove_message', __('Report \'%s\' History Removed by user \'%s\' or a Report Administrator can remove the report.', $report['name'], get_username($_SESSION[SESS_USER_ID])), MESSAGE_LEVEL_INFO);
