@@ -90,6 +90,27 @@ switch (get_request_var('action')) {
     The Save Function
    -------------------------- */
 
+/**
+ * Return the validation regex for graph_templates_item.value when that field
+ * is interpolated directly into RRDtool SHIFT or TICK arguments.
+ *
+ * @param int    $graph_type_id Graph item type constant.
+ * @param string $shift         Whether SHIFT is enabled ('on' or '').
+ *
+ * @return string Regular expression for form_input_validate(), or empty string.
+ */
+function graphs_items_value_pattern(int $graph_type_id, string $shift) : string {
+	if ($shift === 'on') {
+		return '^-?[0-9]+$';
+	}
+
+	if ($graph_type_id === GRAPH_ITEM_TYPE_TIC) {
+		return '^-?[0-9]+(?:\.[0-9]+)?$';
+	}
+
+	return '';
+}
+
 function form_save() {
 	if (isset_request_var('save_component_item')) {
 		global $graph_item_types;
@@ -184,7 +205,7 @@ function form_save() {
 				set_request_var('alpha', get_nfilter_request_var('invisible_alpha'));
 			}
 
-			$save['alpha']          = form_input_validate((isset($item['alpha']) ? $item['alpha'] : get_nfilter_request_var('alpha')), 'alpha', '', true, 3);
+			$save['alpha']          = form_input_validate((isset($item['alpha']) ? $item['alpha'] : get_nfilter_request_var('alpha')), 'alpha', '^[0-9A-Fa-f]{2}$', true, 3);
 			$save['graph_type_id']  = form_input_validate((isset($item['graph_type_id']) ? $item['graph_type_id'] : get_nfilter_request_var('graph_type_id')), 'graph_type_id', '^[0-9]+$', true, 3);
 
 			if (isset_request_var('line_width') || isset($item['line_width'])) {
@@ -205,16 +226,17 @@ function form_save() {
 				}
    			}
 
-			$save['dashes']         = form_input_validate((isset_request_var('dashes') ? get_nfilter_request_var('dashes') : ''), 'dashes', '', true, 3);
+			$save['dashes']         = form_input_validate((isset_request_var('dashes') ? get_nfilter_request_var('dashes') : ''), 'dashes', '^[0-9]+(?:\.[0-9]+)?(?:,[0-9]+(?:\.[0-9]+)?)*$', true, 3);
 			$save['dash_offset']    = form_input_validate((isset_request_var('dash_offset') ? get_nfilter_request_var('dash_offset') : ''), 'dash_offset', '^[0-9]+$', true, 3);
 			$save['cdef_id']        = form_input_validate(get_nfilter_request_var('cdef_id'), 'cdef_id', '^[0-9]+$', true, 3);
 			$save['vdef_id']        = form_input_validate(get_nfilter_request_var('vdef_id'), 'vdef_id', '^[0-9]+$', true, 3);
 			$save['shift']          = form_input_validate((isset_request_var('shift') ? get_nfilter_request_var('shift') : ''), 'shift', '^((on)|)$', true, 3);
 			$save['consolidation_function_id'] = form_input_validate((isset($item['consolidation_function_id']) ? $item['consolidation_function_id'] : get_nfilter_request_var('consolidation_function_id')), 'consolidation_function_id', '^[0-9]+$', true, 3);
-			$save['textalign']      = form_input_validate((isset_request_var('textalign') ? get_nfilter_request_var('textalign') : ''), 'textalign', '^[a-z]+$', true, 3);
+			$save['textalign']      = form_input_validate((isset_request_var('textalign') ? get_nfilter_request_var('textalign') : ''), 'textalign', '^(left|right|justified|center)$', true, 3);
 			$save['text_format']    = form_input_validate((isset($item['text_format']) ? $item['text_format'] : get_nfilter_request_var('text_format')), 'text_format', '', true, 3);
-			$save['value']          = form_input_validate(get_nfilter_request_var('value'), 'value', '', true, 3);
-			$save['hard_return']    = form_input_validate(((isset($item['hard_return']) ? $item['hard_return'] : (isset_request_var('hard_return') ? get_nfilter_request_var('hard_return') : ''))), 'hard_return', '', true, 3);
+			$value_pattern          = graphs_items_value_pattern((int) $save['graph_type_id'], (string) $save['shift']);
+			$save['value']          = form_input_validate(get_nfilter_request_var('value'), 'value', $value_pattern, true, 3);
+			$save['hard_return']    = form_input_validate(((isset($item['hard_return']) ? $item['hard_return'] : (isset_request_var('hard_return') ? get_nfilter_request_var('hard_return') : ''))), 'hard_return', '^((on)|)$', true, 3);
 			$save['gprint_id']      = form_input_validate(get_nfilter_request_var('gprint_id'), 'gprint_id', '^[0-9]+$', true, 3);
 			$save['sequence']       = $sequence;
 

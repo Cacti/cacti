@@ -41,13 +41,18 @@ if (isset_request_var('method')) {
 	}
 }
 
-if (is_realm_allowed(1043)) {
+$local_graph_id = get_filter_request_var('local_graph_id');
+
+/* The Spike Kill realm (1043) only grants use of the feature, not access to a
+ * specific graph. Authorize the target graph as well so a user cannot modify
+ * RRD files for graphs their permissions deny. */
+if (is_realm_allowed(1043) && is_graph_allowed($local_graph_id)) {
 	$local_data_ids = db_fetch_assoc_prepared('SELECT DISTINCT data_template_rrd.local_data_id
 		FROM graph_templates_item
 		LEFT JOIN data_template_rrd
 		ON graph_templates_item.task_item_id=data_template_rrd.id
 		WHERE graph_templates_item.local_graph_id = ?',
-		array(get_filter_request_var('local_graph_id')));
+		[$local_graph_id]);
 
 	$results = '';
 	if (cacti_sizeof($local_data_ids)) {
@@ -101,17 +106,13 @@ if (is_realm_allowed(1043)) {
 						cacti_log("NOTICE: SpikeKill succeeded for $rrdfile.  Message is " . $spiker->get_output(), false, 'SPIKEKILL');
 					}
 				} else {
-					if (!$result) {
-						$results = $spiker->get_errors();
-					} else {
-						$results = $spiker->get_output();
-					}
+					$results .= ($results !== '' ? "\n" : '') . ($result ? $spiker->get_output() : $spiker->get_errors());
 				}
 			}
 		}
 	}
 
-	print json_encode(array('local_graph_id' => get_request_var('local_graph_id'), 'results' => $results));
+	print json_encode(['local_graph_id' => $local_graph_id, 'results' => $results]);
 } else {
 	print __("FATAL: Spike Kill Not Allowed") . PHP_EOL;
 }

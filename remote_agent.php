@@ -151,8 +151,11 @@ function remote_agent_auth_cache_set($key, $value, $ttl = 30) {
 function remote_client_authorized() {
 	global $config, $poller_db_cnn_id;
 
-	/* don't allow to run from the command line */
-	$client_addr = get_client_addr();
+	/* Authorize on the TCP peer address rather than get_client_addr(),
+	 * which honours client-settable proxy headers (X-Forwarded-For, etc.).
+	 * A remote data collector connects directly; proxied deployments must
+	 * register the proxy's own address as a poller. */
+	$client_addr = $_SERVER['REMOTE_ADDR'] ?? false;
 	if ($client_addr === false) {
 		return false;
 	}
@@ -249,6 +252,26 @@ function remote_client_authorized() {
 	return true;
 }
 
+/**
+ * Checks that the user a Remote Agent graph request is made for is an existing, enabled user.
+ *
+ * @param mixed $user_id The user id from the request.
+ *
+ * @return int|false The user id, or false when there is no such enabled user.
+ */
+function remote_agent_validate_effective_user($user_id) {
+	if (!is_numeric($user_id) || (int) $user_id < 1) {
+		return false;
+	}
+
+	$enabled = db_fetch_cell_prepared('SELECT enabled
+		FROM user_auth
+		WHERE id = ?',
+		[(int) $user_id]);
+
+	return $enabled === 'on' ? (int) $user_id : false;
+}
+
 function get_graph_data() {
 	get_filter_request_var('graph_start');
 	get_filter_request_var('graph_end');
@@ -305,9 +328,16 @@ function get_graph_data() {
 		$graph_data_array['graph_theme'] = cacti_validate_theme(get_request_var('graph_theme'));
 	}
 
-	/* set the theme */
+	/* validate the delegated effective user */
 	if (isset_request_var('effective_user')) {
-		$user = get_request_var('effective_user');
+		$user = remote_agent_validate_effective_user(get_request_var('effective_user'));
+
+		if ($user === false) {
+			http_response_code(403);
+			cacti_log('WARNING: Rejected a Remote Agent graph request for an unknown or disabled effective user.', false, 'SECURITY');
+
+			return false;
+		}
 	} else {
 		$user = 0;
 	}
