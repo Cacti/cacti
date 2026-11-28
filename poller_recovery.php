@@ -80,15 +80,101 @@ function debug($string) {
 	}
 }
 
+/**
+ * Execute one Boost INSERT batch against the main collector database.
+ *
+ * @param string $sql  Complete INSERT IGNORE statement.
+ * @param mixed  $conn Remote database connection handle.
+ *
+ * @return bool True when the database acknowledged the batch.
+ */
+function recovery_execute_boost_insert(string $sql, $conn) : bool {
+	try {
+		return db_execute($sql, true, $conn) !== false;
+	} catch (Throwable $e) {
+		return false;
+	}
+}
+
+/**
+ * Flush quoted Boost output value tuples to the main collector in bounded SQL packets.
+ *
+ * @param array<int, string> $value_tuples       Quoted SQL value tuples.
+ * @param mixed              $conn               Remote database connection handle.
+ * @param int                $max_allowed_packet Maximum SQL packet size in bytes.
+ *
+ * @return bool True when every packet was acknowledged.
+ */
+function recovery_flush_output_batch(array $value_tuples, $conn, int $max_allowed_packet) : bool {
+	if ($value_tuples === []) {
+		return true;
+	}
+
+	$sql_prefix = 'INSERT IGNORE INTO poller_output_boost (local_data_id, rrd_name, time, output) VALUES ';
+	$overhead   = strlen($sql_prefix) + 1;
+	$out_buffer = '';
+	$out_length = 0;
+
+	foreach ($value_tuples as $tuple) {
+		$tuple_length = strlen($tuple);
+
+		if ($out_length > 0 && ($out_length + $overhead + $tuple_length) > $max_allowed_packet) {
+			if (!recovery_execute_boost_insert($sql_prefix . $out_buffer, $conn)) {
+				return false;
+			}
+
+			$out_buffer = $tuple;
+			$out_length = $tuple_length;
+		} else {
+			$out_buffer .= ($out_buffer !== '' ? ',' : '') . $tuple;
+			$out_length += $tuple_length + ($out_length > 0 ? 1 : 0);
+		}
+	}
+
+	if ($out_buffer !== '') {
+		return recovery_execute_boost_insert($sql_prefix . $out_buffer, $conn);
+	}
+
+	return true;
+}
+
+/**
+ * Delete only the local Boost rows acknowledged by the main collector.
+ *
+ * @param array<int, array<string, mixed>> $rows Rows transferred in the current batch.
+ * @param mixed                            $conn Local database connection handle.
+ *
+ * @return bool True when all chunks were deleted successfully.
+ */
+function recovery_delete_acknowledged_rows(array $rows, $conn) : bool {
+	foreach (array_chunk($rows, 500) as $chunk) {
+		$clauses = [];
+		$params  = [];
+
+		foreach ($chunk as $row) {
+			$clauses[] = '(local_data_id = ? AND rrd_name = ? AND time = ?)';
+			$params[]  = (int) $row['local_data_id'];
+			$params[]  = $row['rrd_name'];
+			$params[]  = $row['time'];
+		}
+
+		if (db_execute_prepared('DELETE FROM poller_output_boost WHERE ' . implode(' OR ', $clauses), $params, true, $conn) === false) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
 global $local_db_cnn_id, $remote_db_cnn_id;
 
 $recovery_pid = db_fetch_cell("SELECT value FROM settings WHERE name='recovery_pid'", '', true, $local_db_cnn_id);
 $packet_data  = db_fetch_row("SHOW GLOBAL VARIABLES LIKE 'max_allowed_packet'", true, $remote_db_cnn_id);
 
-if (isset($packet_data['Value'])) {
-	$max_allowed_packet = $packet_data['Value'];
+if (isset($packet_data['Value']) && (int) $packet_data['Value'] > 0) {
+	$max_allowed_packet = (int) $packet_data['Value'];
 } else {
-	$max_allowed_packet = 1E6;
+	$max_allowed_packet = 1048576;
 }
 
 /* process calling arguments */
@@ -160,6 +246,7 @@ $sleep_time   = 1;
 
 /* global counter variables */
 $records_inserted = 0;
+$transfer_failed  = false;
 
 debug('About to start recovery processing');
 
@@ -184,19 +271,19 @@ if ($run) {
 
 	db_execute_prepared('REPLACE INTO settings
 		(name, value)
-		VALUES ("recovery_pid", ?)',
-		array($my_pid), true, $local_db_cnn_id);
+		VALUES (\'recovery_pid\', ?)',
+		[$my_pid], true, $local_db_cnn_id);
 
 	/* let the console know you are in recovery mode */
 	db_execute_prepared('UPDATE poller
-		SET status = "5"
+		SET status = 5
 		WHERE id = ?',
-		array($poller_id), true, $remote_db_cnn_id);
+		[$poller_id], true, $remote_db_cnn_id);
 
 	poller_push_reindex_data_to_poller(0, 0, true);
 
 	while (true) {
-		cacti_log('RECOVERY: Getting max_time for '. $record_limit . ' records.', false, 'POLLER');
+		cacti_log('RECOVERY: Getting max_time for ' . $record_limit . ' records.', false, 'POLLER');
 
 		$max_time = db_fetch_cell("SELECT MAX(time)
 			FROM (
@@ -216,65 +303,50 @@ if ($run) {
 			$rows = db_fetch_assoc_prepared('SELECT *
 				FROM poller_output_boost
 				WHERE time <= ?
-				ORDER BY time ASC, local_data_id ASC',
-				array($max_time));
+				ORDER BY time ASC, local_data_id ASC, rrd_name ASC
+				LIMIT ' . (int) $record_limit,
+				[$max_time], true, $local_db_cnn_id);
 
 			if (cacti_sizeof($rows)) {
-				$packet_size = 0;
-				$sql_array   = array();
+				$sql_array = [];
 
-				foreach($rows as $r) {
-					$sql = '(' . $r['local_data_id'] . ',' . db_qstr($r['rrd_name']) . ',' . db_qstr($r['time']) . ',' . db_qstr($r['output']) . ')';
-					$sql_size = strlen($sql);
-
-					/* if adding a new row would exceed max_allowed_packet, send the current frame to the main poller and start a new frame */
-					if (($packet_size + $sql_size) >= $max_allowed_packet) {
-						$record_count = cacti_sizeof($sql_array);
-
-						cacti_log('RECOVERY: Writing ' . $record_count . ' records (' . $packet_size . ' bytes) to main (partial).', false, 'POLLER');
-
-						db_execute('INSERT IGNORE INTO poller_output_boost
-							(local_data_id, rrd_name, time, output)
-							VALUES ' . implode(',', $sql_array), true, $remote_db_cnn_id);
-
-						$records_inserted += $record_count;
-						$sql_array = array();
-						$packet_size = 0;
-					}
-
-					$sql_array[] = $sql;
-					$packet_size += $sql_size;
+				foreach ($rows as $r) {
+					$sql_array[] = '(' . (int) $r['local_data_id'] . ',' .
+						db_qstr($r['rrd_name'], $remote_db_cnn_id) . ',' .
+						db_qstr($r['time'], $remote_db_cnn_id) . ',' .
+						db_qstr($r['output'], $remote_db_cnn_id) . ')';
 				}
 
-				/* if there is data in the last frame, send it to main poller as well and finalize */
-				if ($packet_size > 0) {
-					$record_count = cacti_sizeof($sql_array);
+				$record_count = cacti_sizeof($sql_array);
+				cacti_log('RECOVERY: Writing ' . $record_count . ' records to main.', false, 'POLLER');
 
-					cacti_log('RECOVERY: Writing ' . $record_count . ' records (' . $packet_size . ' bytes) to main (last slice).', false, 'POLLER');
-
-					db_execute("INSERT IGNORE INTO poller_output_boost
-						(local_data_id, rrd_name, time, output)
-						VALUES " . implode(',', $sql_array), true, $remote_db_cnn_id);
-
-					$records_inserted += $record_count;
+				if (!recovery_flush_output_batch($sql_array, $remote_db_cnn_id, $max_allowed_packet)) {
+					cacti_log('RECOVERY ERROR: Main collector did not acknowledge the Boost batch; retaining local rows.', false, 'POLLER');
+					$transfer_failed = true;
+					break;
 				}
 
-				/* remove the recovery records */
-				if (is_object($local_db_cnn_id)) {
-					db_execute_prepared('DELETE FROM poller_output_boost
-						WHERE time <= ?',
-						array($max_time), true, $local_db_cnn_id);
+				if (!recovery_delete_acknowledged_rows($rows, $local_db_cnn_id)) {
+					cacti_log('RECOVERY ERROR: Unable to remove acknowledged local Boost rows; they will be retried idempotently.', false, 'POLLER');
+					$transfer_failed = true;
+					break;
 				}
+
+				$records_inserted += $record_count;
 			}
 
 			sleep($sleep_time);
 		}
 	}
 
-	/* let the console know you are in online mode */
-	db_execute_prepared('UPDATE poller
-		SET status="2"
-		WHERE id= ?', array($poller_id), false, $remote_db_cnn_id);
+	db_execute("DELETE FROM settings WHERE name='recovery_pid'", true, $local_db_cnn_id);
+
+	if (!$transfer_failed) {
+		/* let the console know you are in online mode */
+		db_execute_prepared('UPDATE poller
+			SET status = 2
+			WHERE id = ?', [$poller_id], false, $remote_db_cnn_id);
+	}
 } else {
 	debug('Recovery process still running, exiting');
 	cacti_log('RECOVERY: Recovery process still running for Poller ' . $poller_id . '.  PID is ' . $recovery_pid, false, 'POLLER');
@@ -285,4 +357,4 @@ $end = microtime(true);
 
 cacti_log('RECOVERY STATS: Time:' . round($end - $start, 2) . ' Records:' . $records_inserted, false, 'SYSTEM');
 
-exit(0);
+exit($transfer_failed ? 1 : 0);
