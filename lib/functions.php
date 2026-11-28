@@ -293,11 +293,7 @@ function user_setting_exists($config_name, $user_id, $reset = false) {
 				array($config_name, $user_id));
 		}
 
-		if ($value !== false && $value > 0) {
-			$user_setting_values[$user_id][$config_name] = true;
-		} else {
-			$user_setting_values[$user_id][$config_name] = false;
-		}
+		$user_setting_values[$user_id][$config_name] = ($value !== false && $value > 0);
 	}
 
 	return $user_setting_values[$user_id][$config_name];
@@ -518,14 +514,14 @@ function set_config_option($config_name, $value, $remote = false) {
 
 	// Store the value back in the config cache array for later retrieval
 	if ($config['is_web']) {
-		if (!isset($_SESSION['sess_config_array']) || !is_array($_SESSION['sess_config_array'])) {
-			$_SESSION['sess_config_array'] = array();
+		if (!is_array($_SESSION['sess_config_array'] ?? null)) {
+			$_SESSION['sess_config_array'] = [];
 		}
 
 		$_SESSION['sess_config_array'][$config_name] = $value;
 	} else {
-		if (!isset($config['config_options_array']) || !is_array($config['config_options_array'])) {
-			$config['config_options_array'] = array();
+		if (!is_array($config['config_options_array'] ?? null)) {
+			$config['config_options_array'] = [];
 		}
 
 		$config['config_options_array'][$config_name] = $value;
@@ -699,17 +695,14 @@ function prime_common_config_settings() {
 		'name', 'value'
 	);
 
-	if (isset($_SESSION['sess_config_array']) && is_array($_SESSION['sess_config_array'])) {
-		$sess = true;
-	} else {
-		$sess = false;
-		if (!isset($config['config_options_array']) || !is_array($config['config_options_array'])) {
-			$config['config_options_array'] = array();
-		}
+	$sess = is_array($_SESSION['sess_config_array'] ?? null);
+
+	if (!$sess && !is_array($config['config_options_array'] ?? null)) {
+		$config['config_options_array'] = [];
 	}
 
 	if (cacti_sizeof($settings)) {
-		foreach ($settings as $name => $value) {
+		foreach($settings as $name => $value) {
 			if ($sess) {
 				$_SESSION['sess_config_array'][$name] = $value;
 			} else {
@@ -1481,52 +1474,43 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 	$fp = fopen($file_name, 'r');
 
 	if ($fp === false) {
-		return array(__('Error %s is not readable', $file_name));
+		return [__('Error %s is not readable', $file_name)];
 	}
 
-	/* Single forward pass: count matching rows, keep the tail page in a
-	 * bounded ring buffer, and record byte offsets (or sparse checkpoints)
-	 * when an earlier page is requested so determine_display_log_entry()
-	 * is not evaluated across the entire file twice. */
+	/* Single forward pass: count matching rows, retain the tail page in a ring
+	 * buffer, and record byte offsets (or sparse checkpoints) for earlier pages
+	 * so determine_display_log_entry() does not scan the entire file twice. */
 	$total_rows        = 0;
-	$tail_buffer       = array();
-	$page_offsets      = array();
-	$checkpoints       = array();
+	$tail_buffer       = [];
+	$page_offsets      = [];
+	$checkpoints       = [];
 	$checkpoint_stride = 1000;
 	$window_size       = ($page_nr > 1 && $number_of_lines > 0) ? ($page_nr * $number_of_lines) : 0;
 	$track_offsets     = ($window_size > 0 && $window_size <= 100000);
 
-	if ($window_size > 0) {
-		while (true) {
-			$offset = ftell($fp);
-			$line   = fgets($fp);
+	while (true) {
+		$offset = $window_size > 0 ? ftell($fp) : 0;
+		$line   = fgets($fp);
 
-			if ($line === false) {
-				break;
-			}
-
-			if (determine_display_log_entry($message_type, $line, $filter, $matches)) {
-				$tail_buffer[$total_rows % $number_of_lines] = array($total_rows + 1, $line);
-
-				if ($track_offsets) {
-					$page_offsets[$total_rows % $window_size] = $offset;
-				} elseif (($total_rows % $checkpoint_stride) === 0) {
-					$checkpoints[$total_rows] = $offset;
-				}
-
-				++$total_rows;
-			}
+		if ($line === false) {
+			break;
 		}
-	} else {
-		while (($line = fgets($fp)) !== false) {
-			if (determine_display_log_entry($message_type, $line, $filter, $matches)) {
-				if ($number_of_lines > 0) {
-					$tail_buffer[$total_rows % $number_of_lines] = array($total_rows + 1, $line);
-				}
 
-				++$total_rows;
-			}
+		if (!determine_display_log_entry($message_type, $line, $filter, $matches)) {
+			continue;
 		}
+
+		if ($number_of_lines > 0) {
+			$tail_buffer[$total_rows % $number_of_lines] = [$total_rows + 1, $line];
+		}
+
+		if ($track_offsets) {
+			$page_offsets[$total_rows % $window_size] = $offset;
+		} elseif ($window_size > 0 && ($total_rows % $checkpoint_stride) === 0) {
+			$checkpoints[$total_rows] = $offset;
+		}
+
+		++$total_rows;
 	}
 
 	// Reset the page count to 1 if the number of lines is exceeded
@@ -1537,24 +1521,21 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 
 	force_session_data();
 
-	$file_array = array();
+	$file_array = [];
 
 	if ($total_rows === 0 || $number_of_lines <= 0) {
 		fclose($fp);
 		return $file_array;
 	}
 
-	$start = $total_rows - ($page_nr * $number_of_lines);
-	$end   = $start + $number_of_lines;
-
-	if ($start < 0) {
-		$start = 0;
-	}
+	$raw_start = $total_rows - ($page_nr * $number_of_lines);
+	$start     = max(0, $raw_start);
+	$end       = $raw_start + $number_of_lines;
 
 	if ($page_nr == 1) {
 		for ($idx = $start; $idx < $end; $idx++) {
-			$entry = $tail_buffer[$idx % $number_of_lines];
-			$file_array[$entry[0]] = $entry[1];
+			[$line_no, $line_text] = $tail_buffer[$idx % $number_of_lines];
+			$file_array[$line_no]  = $line_text;
 		}
 	} elseif ($page_nr > 1 && $track_offsets) {
 		for ($idx = $start; $idx < $end; $idx++) {
@@ -1566,13 +1547,11 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 		}
 	} elseif ($page_nr > 1) {
 		$cp_idx = (int) (floor($start / $checkpoint_stride) * $checkpoint_stride);
-		fseek($fp, isset($checkpoints[$cp_idx]) ? $checkpoints[$cp_idx] : 0);
+		fseek($fp, $checkpoints[$cp_idx] ?? 0);
 
 		$i = $cp_idx;
 		while (($line = fgets($fp)) !== false) {
-			$display = determine_display_log_entry($message_type, $line, $filter, $matches);
-
-			if ($display === false) {
+			if (!determine_display_log_entry($message_type, $line, $filter, $matches)) {
 				continue;
 			}
 			if ($i < $start) {
@@ -2867,7 +2846,7 @@ function get_data_source_path($local_data_id, $expand_paths) {
 		}
 
 		if (cacti_sizeof($data_source_path_cache) >= 4096) {
-			$data_source_path_cache = array();
+			$data_source_path_cache = [];
 		}
 
 		$data_source_path_cache[$cache_key] = $data_source_path;
@@ -5863,7 +5842,7 @@ function get_dns_from_ip ($ip, $dns, $timeout = 1000) {
 	/* parse the response and find the response type (RFC 1035 PTR = 0x000C) */
 	$type = @unpack('n', substr($response, $requestsize + 2, 2));
 
-	if (isset($type[1]) && $type[1] === 0x000C) {
+	if (($type[1] ?? null) === 0x000C) {
 		$host = cacti_dns_decode_name($response, $requestsize + 12);
 
 		if ($host !== false && $host !== '') {
@@ -5885,14 +5864,12 @@ function get_dns_from_ip ($ip, $dns, $timeout = 1000) {
  *
  * @return string|false Decoded domain name without trailing dot, or false on invalid/truncated data
  */
-function cacti_dns_decode_name($response, $position) {
+function cacti_dns_decode_name(string $response, int $position) : string|false {
 	$response_len = strlen($response);
 	$host         = '';
-	$visited      = array();
+	$visited      = [];
 	$jumps        = 0;
-	$max_jumps    = 16;
 	$labels       = 0;
-	$max_labels   = 128;
 
 	while ($position >= 0 && $position < $response_len) {
 		if (isset($visited[$position])) {
@@ -5900,40 +5877,20 @@ function cacti_dns_decode_name($response, $position) {
 		}
 
 		$visited[$position] = true;
-
-		$unpacked = unpack('C', substr($response, $position, 1));
-		if ($unpacked === false || !isset($unpacked[1])) {
-			return false;
-		}
-
-		$len = $unpacked[1];
+		$len                = ord($response[$position]);
 
 		/* null terminator ends the domain name */
 		if ($len === 0) {
-			if ($host === '') {
-				return false;
-			}
-
-			return rtrim($host, '.');
+			return $host !== '' ? rtrim($host, '.') : false;
 		}
 
 		/* RFC 1035 compression pointer (top two bits set: 0xC0) */
 		if (($len & 0xC0) === 0xC0) {
-			if ($position + 1 >= $response_len) {
+			if ($position + 1 >= $response_len || ++$jumps > 16) {
 				return false;
 			}
 
-			$jumps++;
-			if ($jumps > $max_jumps) {
-				return false;
-			}
-
-			$next = unpack('C', substr($response, $position + 1, 1));
-			if ($next === false || !isset($next[1])) {
-				return false;
-			}
-
-			$pointer = (($len & 0x3F) << 8) | $next[1];
+			$pointer = (($len & 0x3F) << 8) | ord($response[$position + 1]);
 			if ($pointer >= $response_len) {
 				return false;
 			}
@@ -5942,22 +5899,12 @@ function cacti_dns_decode_name($response, $position) {
 			continue;
 		}
 
-		/* Reject reserved/invalid label types */
-		if (($len & 0xC0) !== 0) {
+		/* Reject reserved label types, truncated payloads, or excessive labels */
+		if (($len & 0xC0) !== 0 || $position + 1 + $len > $response_len || ++$labels > 128) {
 			return false;
 		}
 
-		/* Ensure label payload fits inside response buffer */
-		if ($position + 1 + $len > $response_len) {
-			return false;
-		}
-
-		$labels++;
-		if ($labels > $max_labels) {
-			return false;
-		}
-
-		$host .= substr($response, $position + 1, $len) . '.';
+		$host     .= substr($response, $position + 1, $len) . '.';
 		$position += $len + 1;
 	}
 
@@ -6111,12 +6058,12 @@ function calculate_percentiles($data, $percentile = 95, $whisker = false) {
 		);
 	}
 
-	$results = array();
+	$results  = array();
 
 	/* sort the array to return */
 	sort($data);
 
-	foreach ($tiles as $index => $p) {
+	foreach($tiles as $index => $p) {
 		/* calculate offsets into the array */
 		$allindex    = ($elements - 1) * $p;
 		$intvalindex = (int) floor($allindex);
@@ -7278,10 +7225,8 @@ function recursive_chown($path, $uid, $gid) {
 		return false;
 	}
 
-	$success = true;
-
 	while (($file = readdir($d)) !== false) {
-		if ($file == '.' || $file == '..') {
+		if ($file === '.' || $file === '..') {
 			continue;
 		}
 
@@ -7292,27 +7237,15 @@ function recursive_chown($path, $uid, $gid) {
 				closedir($d);
 				return false;
 			}
-		} else {
-			$success = @chown($fullpath, $uid);
-			if ($success) {
-				$success = @chgrp($fullpath, $gid);
-			}
-
-			if (!$success) {
-				closedir($d);
-				return false;
-			}
+		} elseif (!@chown($fullpath, $uid) || !@chgrp($fullpath, $gid)) {
+			closedir($d);
+			return false;
 		}
 	}
 
 	closedir($d);
 
-	$success = @chown($path, $uid);
-	if ($success) {
-		$success = @chgrp($path, $gid);
-	}
-
-	return $success;
+	return @chown($path, $uid) && @chgrp($path, $gid);
 }
 
 function get_validated_theme($theme, $defaultTheme) {

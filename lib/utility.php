@@ -325,7 +325,7 @@ function update_poller_cache($data_source, $commit = false) {
 					);
 
 					if (cacti_sizeof($host_field_data) >= 1000) {
-						$host_field_data = array();
+						$host_field_data = [];
 					}
 
 					$host_field_data[$data_input['data_template_data_id']] = $host_fields;
@@ -407,7 +407,7 @@ function update_poller_cache($data_source, $commit = false) {
 					);
 
 					if (cacti_sizeof($host_field_data) >= 1000) {
-						$host_field_data = array();
+						$host_field_data = [];
 					}
 
 					$host_field_data[$data_input['data_template_data_id']] = $host_fields;
@@ -499,7 +499,7 @@ function update_poller_cache($data_source, $commit = false) {
 					);
 
 					if (cacti_sizeof($host_field_data) >= 1000) {
-						$host_field_data = array();
+						$host_field_data = [];
 					}
 
 					$host_field_data[$data_input['data_template_data_id']] = $host_fields;
@@ -1914,8 +1914,9 @@ function utilities_get_system_memory() {
 }
 
 function utility_php_sort_extensions($a, $b) {
-	$name_a = is_array($a) ? (isset($a['name']) ? $a['name'] : '') : (string) $a;
-	$name_b = is_array($b) ? (isset($b['name']) ? $b['name'] : '') : (string) $b;
+	$name_a = is_array($a) ? ($a['name'] ?? '') : (string) $a;
+	$name_b = is_array($b) ? ($b['name'] ?? '') : (string) $b;
+
 	return strcasecmp($name_a, $name_b);
 }
 
@@ -2025,7 +2026,7 @@ function utility_get_formatted_bytes($input_value, $wanted_type, &$output_value,
 
 	if ($input_value > 0 && preg_match('/([0-9.]+)([BKMG]){0,1}/i', $input_value, $matches)) {
 		$input_value = $matches[1];
-		if (isset($matches[2]) && $matches[2] !== '') {
+		if (($matches[2] ?? '') !== '') {
 			$default_type = strtoupper($matches[2]);
 		}
 

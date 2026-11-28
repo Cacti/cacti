@@ -227,78 +227,56 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 					return false;
 				}
 
-				switch($type) {
-				case 'graph_template':
-					$cache_add = xml_to_graph_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $dep_hash_cache[$type][$i]['version'], $remove_orphans);
-					if (is_array($cache_add)) {
-						$hash_cache += $cache_add;
-					}
-					break;
-				case 'data_template':
-					$cache_add = xml_to_data_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $import_as_new, $profile_id);
-					if (is_array($cache_add)) {
-						$hash_cache += $cache_add;
-					}
-					$repair++;
-					break;
-				case 'host_template':
-					$cache_add = xml_to_host_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $host_template_data, $class);
-					if (is_array($cache_add)) {
-						$hash_cache += $cache_add;
-					}
-					break;
-				case 'data_input_method':
-					$cache_add = xml_to_data_input_method($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
-					if (is_array($cache_add)) {
-						$hash_cache += $cache_add;
-					}
-					$repair++;
-					break;
-				case 'data_query':
-					$cache_add = xml_to_data_query($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $files, $replace_svalues);
-					if (is_array($cache_add)) {
-						$hash_cache += $cache_add;
-					}
-					break;
-				case 'gprint_preset':
-					$cache_add = xml_to_gprint_preset($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
-					if (is_array($cache_add)) {
-						$hash_cache += $cache_add;
-					}
-					break;
-				case 'cdef':
-					$cache_add = xml_to_cdef($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
-					if (is_array($cache_add)) {
-						$hash_cache += $cache_add;
-					}
-					break;
-				case 'vdef':
-					$cache_add = xml_to_vdef($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
-					if (is_array($cache_add)) {
-						$hash_cache += $cache_add;
-					}
-					break;
-				case 'data_source_profile':
-					$cache_add = xml_to_data_source_profile($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $import_as_new, $profile_id);
-					if (is_array($cache_add)) {
-						$hash_cache += $cache_add;
-					}
-					break;
-				case 'round_robin_archive':
-					// Deprecated
-					break;
-				default:
-					$param = array();
-					$param['hash']       = $dep_hash_cache[$type][$i]['hash'];
-					$param['xml_array']  = $hash_array;
-					$param['hash_cache'] = $hash_cache;
-					$param['type']       = $type;
-					$param['version']    = $dep_hash_cache[$type][$i]['version'];
-					$param = api_plugin_hook_function('import_action', $param);
-					if (isset($param['hash_cache']) && is_array($param['hash_cache'])) {
-						$hash_cache += $param['hash_cache'];
-					}
-					break;
+				$entry     = $dep_hash_cache[$type][$i];
+				$cache_add = null;
+
+				switch ($type) {
+					case 'graph_template':
+						$cache_add = xml_to_graph_template($entry['hash'], $hash_array, $hash_cache, $entry['version'], $remove_orphans);
+						break;
+					case 'data_template':
+						$cache_add = xml_to_data_template($entry['hash'], $hash_array, $hash_cache, $import_as_new, $profile_id);
+						$repair++;
+						break;
+					case 'host_template':
+						$cache_add = xml_to_host_template($entry['hash'], $hash_array, $hash_cache, $host_template_data, $class);
+						break;
+					case 'data_input_method':
+						$cache_add = xml_to_data_input_method($entry['hash'], $hash_array, $hash_cache);
+						$repair++;
+						break;
+					case 'data_query':
+						$cache_add = xml_to_data_query($entry['hash'], $hash_array, $hash_cache, $files, $replace_svalues);
+						break;
+					case 'gprint_preset':
+						$cache_add = xml_to_gprint_preset($entry['hash'], $hash_array, $hash_cache);
+						break;
+					case 'cdef':
+						$cache_add = xml_to_cdef($entry['hash'], $hash_array, $hash_cache);
+						break;
+					case 'vdef':
+						$cache_add = xml_to_vdef($entry['hash'], $hash_array, $hash_cache);
+						break;
+					case 'data_source_profile':
+						$cache_add = xml_to_data_source_profile($entry['hash'], $hash_array, $hash_cache, $import_as_new, $profile_id);
+						break;
+					case 'round_robin_archive':
+						// Deprecated
+						break;
+					default:
+						$param = api_plugin_hook_function('import_action', [
+							'hash'       => $entry['hash'],
+							'xml_array'  => $hash_array,
+							'hash_cache' => $hash_cache,
+							'type'       => $type,
+							'version'    => $entry['version'],
+						]);
+						$cache_add = is_array($param) ? ($param['hash_cache'] ?? null) : null;
+						break;
+				}
+
+				if (is_array($cache_add)) {
+					$hash_cache += $cache_add;
 				}
 
 				if (cacti_sizeof($import_debug_info)) {

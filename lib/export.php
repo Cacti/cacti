@@ -926,8 +926,8 @@ function resolve_dependencies($type, $id, $dep_array) {
 
 				/* in case we found any */
 				if (cacti_sizeof($inherited_cdef_items) > 0) {
-					$new_cdef_items  = array();
-					$next_search_ids = array();
+					$new_cdef_items  = [];
+					$next_search_ids = [];
 
 					foreach ($inherited_cdef_items as $inherited_item) {
 						$inherited_id = $inherited_item['cdef_id'];
@@ -938,21 +938,21 @@ function resolve_dependencies($type, $id, $dep_array) {
 						}
 					}
 
-					if (cacti_sizeof($new_cdef_items) > 0) {
-						/* join all cdef's found
-						 * ATTENTION!
-						 * sequence of parameters matters!
-						 * we must place the newly found inherited items first
-						 * reason is, that during import, the leaves have to be tackled first,
-						 * that is, the inherited items must be placed first so that they are "resolved" (decoded)
-						 * first during re-import */
-						$cdef_items = array_merge($new_cdef_items, $cdef_items);
-						/* for the next turn, search only new cdef's */
-						$search_cdef_items = $next_search_ids;
-					} else {
+					if (!cacti_sizeof($new_cdef_items)) {
 						/* all discovered cdef's were already visited; stop recursion */
-						$recursive = false;
+						break;
 					}
+
+					/* join all cdef's found
+					 * ATTENTION!
+					 * sequence of parameters matters!
+					 * we must place the newly found inherited items first
+					 * reason is, that during import, the leaves have to be tackled first,
+					 * that is, the inherited items must be placed first so that they are "resolved" (decoded)
+					 * first during re-import */
+					$cdef_items        = array_merge($new_cdef_items, $cdef_items);
+					/* for the next turn, search only new cdef's */
+					$search_cdef_items = $next_search_ids;
 				} else {
 					/* else stop recursion */
 					$recursive = false;
