@@ -341,8 +341,8 @@ describe('user_admin.php session invalidation, permission token expiry, and filt
 		$graphPermsSave = extract_source_slice($src, "isset_request_var('save_component_graph_perms')", 'api_plugin_hook(\'user_admin_user_save\')');
 
 		expect($updatePolicies)->toContain("reset_user_perms(get_filter_request_var('id'));")
-			->and(substr_count($formActions, "reset_user_perms(get_nfilter_request_var('id'));"))->toBe(5)
-			->and($permRemove)->toContain("reset_user_perms(get_request_var('user_id'));")
+			->and(substr_count($formActions, "reset_user_perms(get_filter_request_var('id'));"))->toBe(5)
+			->and($permRemove)->toContain("reset_user_perms(get_filter_request_var('user_id'));")
 			->and($graphPermsSave)->toContain("reset_user_perms(get_nfilter_request_var('id'));")
 			->and($src)->toContain("return $('<div>').text($(this).attr('data-tooltip') || '').html();");
 	});
