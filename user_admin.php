@@ -34,14 +34,13 @@ $user_actions = array(
 
 set_default_action();
 
-if (isset_request_var('update_policy')) {
-	/* update_policy is handled before the action dispatcher, so require POST for CSRF protection. */
-	if (strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
-		header('Allow: POST');
-		http_response_code(405);
-		exit;
-	}
+if (isset_request_var('update_policy') && strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
+	header('Allow: POST');
+	http_response_code(405);
+	exit;
+}
 
+if (isset_request_var('update_policy')) {
 	update_policies();
 } else {
 	switch (get_request_var('action')) {

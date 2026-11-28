@@ -321,7 +321,7 @@ describe('user_admin.php session invalidation, permission token expiry, and filt
 	});
 
 	it('requires POST on pre-dispatch update_policy and revokes tokens/sessions when disabling a user', function () use ($src) {
-		assert_source_slice_contains($src, "if (isset_request_var('update_policy'))", 'switch (get_request_var', [
+		assert_source_slice_contains($src, "if (isset_request_var('update_policy') &&", 'switch (get_request_var', [
 			"strtoupper(\$_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST'",
 			'http_response_code(405)',
 		]);
