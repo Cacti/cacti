@@ -820,6 +820,8 @@ function data_query_to_xml(int $data_query_id) : string {
 
 			if (cacti_sizeof($snmp_query_graph_rrd) > 0) {
 				foreach ($snmp_query_graph_rrd as $item2) {
+					$item2['snmp_field_name'] = xml_character_encode($item2['snmp_field_name']);
+
 					$xml_text .= "\t\t\t\t<item_" . str_pad(strval($i), 3, '0', STR_PAD_LEFT) . ">\n";
 
 					$xml_text .= "\t\t\t\t\t<snmp_field_name>" . $item2['snmp_field_name'] . "</snmp_field_name>\n";

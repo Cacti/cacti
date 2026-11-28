@@ -235,7 +235,7 @@ function automation_import_process() : void {
 
 	if (is_array($json_data) && cacti_sizeof($json_data) && isset($json_data['snmp'])) {
 		foreach ($json_data['snmp'] as $snmp) {
-			$return_data += automation_snmp_option_import($snmp);
+			$return_data = array_merge_recursive($return_data, automation_snmp_option_import($snmp));
 		}
 	}
 

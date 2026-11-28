@@ -244,13 +244,13 @@ function profile_import_execute(mixed $json_data) : array {
 
 			if (!cacti_sizeof($data['cfs'])) {
 				$error                  = true;
-				$debug_data['errors'][] = __('The Data Source Profile export %s did not include any CFs!', $data['name']);
+				$debug_data['errors'][] = __esc('The Data Source Profile export %s did not include any CFs!', $data['name']);
 				$perror                 = true;
 			}
 
 			if (!cacti_sizeof($data['rras'])) {
 				$error                  = true;
-				$debug_data['errors'][] = __('The Data Source Profile export %s did not include any RRAs!', $data['name']);
+				$debug_data['errors'][] = __esc('The Data Source Profile export %s did not include any RRAs!', $data['name']);
 				$perror                 = true;
 			}
 
@@ -370,7 +370,7 @@ function profile_validate_import_columns(string $table, array &$data, array &$de
 	if (cacti_sizeof($data)) {
 		foreach ($data as $column => $cdata) {
 			if (!db_column_exists($table, $column) && !in_array($column, $exclude, true)) {
-				$debug_data['errors'][] = __('Template column \'' . $column . '\' is not valid column.');
+				$debug_data['errors'][] = __('Template column \'' . html_escape($column) . '\' is not valid column.');
 
 				cacti_log('Template column \'' . $column . '\' is not valid column.', false, 'AUTOM8');
 

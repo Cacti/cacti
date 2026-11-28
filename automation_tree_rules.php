@@ -213,7 +213,7 @@ function automation_import() : void {
 	print "	<tr><td><hr/></td></tr><tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='save'>
-			<button type='submit' value='import' title='" . __esc('Import Tree Rules') . "' class='ui-button ui-corner-all ui-widget ui-state-active'>" . __esc('Import') . "</butotn>
+			<button type='submit' value='import' title='" . __esc('Import Tree Rules') . "' class='ui-button ui-corner-all ui-widget ui-state-active'>" . __esc('Import') . "</button>
 		</td>
 		<script type='text/javascript'>
 		$(function() {

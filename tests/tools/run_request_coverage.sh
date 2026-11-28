@@ -85,6 +85,16 @@ run_php_probe tests/fixtures/Core/PackageArchive.php '^(lib/package\.php|tests/f
 run_php_probe tests/fixtures/Core/PackageRepositoryWorkspace.php '^((package_import|lib/package)\.php|tests/fixtures/Core/PackageRepositoryWorkspace\.php)'
 run_php_probe tests/fixtures/Core/PackageImportFileStatus.php '^(lib/(import|package)\.php|tests/fixtures/Core/PackageImportFileStatus\.php)'
 run_php_probe tests/fixtures/Core/PackageDiffBoundary.php '^(package_import\.php|tests/fixtures/Core/PackageDiffBoundary\.php)'
+import_export_files='^((data_source_profiles|templates_import|templates_export|package_import|automation_snmp|automation_tree_rules)\.php|cli/import_(template|package)\.php|tests/fixtures/Core/ImportExportPages\.php)'
+for mode in profile-messages public-key-details template-import-result template-dependencies package-preview-failure package-details-failure repository-import-selection export-type snmp-option-results template-temp-directory package-temp-directory package-diff-link tree-rule-import-form import-flags; do
+	run_php_probe tests/fixtures/Core/ImportExportPages.php "$import_export_files" "$mode"
+done
+run_php_probe tests/fixtures/Core/PackageTemplateResults.php '^(lib/import\.php|tests/fixtures/Core/PackageTemplateResults\.php)'
+run_php_probe tests/fixtures/Core/PackageMissingFile.php '^(lib/package\.php|tests/fixtures/Core/PackageMissingFile\.php)'
+for mode in template-profile package-info; do
+	run_php_probe tests/fixtures/Core/CliImportArguments.php '^(cli/import_(template|package)\.php|tests/fixtures/Core/CliImportArguments\.php)' "$mode"
+done
+run_php_probe tests/fixtures/Core/ImportExportLibraries.php '^(lib/(api_automation|export|import|package)\.php|tests/fixtures/Core/ImportExportLibraries\.php)'
 
 row_guard_files='^(aggregate_graphs|auth_changepassword|auth_profile|color|data_input|data_source_profiles|graph_templates)\.php|^cli/add_device\.php|^lib/(api_tree|auth|dsstats|html_reports|plugins|poller|reports|template)\.php|^tests/fixtures/Core/RowGuardMatrix\.php'
 run_php_probe tests/fixtures/Core/RowGuardMatrix.php "$row_guard_files"

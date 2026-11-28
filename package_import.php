@@ -106,8 +106,8 @@ function form_actions() : void {
 	gfrv('drp_action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-zA-Z0-9_]+)$/']]);
 	gfrv('data_source_profile');
 	gfrv('package_location');
-	gfrv('remove_orphans', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/(on)/']]);
-	gfrv('replace_svalues', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/(on)/']]);
+	gfrv('remove_orphans', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^on$/']]);
+	gfrv('replace_svalues', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^on$/']]);
 
 	if (isrv('import_state')) {
 		gfrv('import_state', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^[a-f0-9]{32}$/']]);
@@ -164,7 +164,7 @@ function form_actions() : void {
 						$import_packages[$file] = $file;
 					}
 				} else {
-					$import_hashes[$h['files']][] = $h['files'];
+					$import_hashes[$h['files']][] = $h['hash'];
 					$import_packages[$h['files']] = $h['files'];
 				}
 			}
@@ -208,6 +208,14 @@ function form_actions() : void {
 						$files = $import_files[$filename];
 					} else {
 						$files = [];
+					}
+
+					// import_package() reads an empty list as the whole Package, so
+					// name the part that was not selected, as the upload form does.
+					if (cacti_sizeof($files) && !cacti_sizeof($hashes)) {
+						$hashes[] = 'dont import';
+					} elseif (cacti_sizeof($hashes) && !cacti_sizeof($files)) {
+						$files[] = 'dont import';
 					}
 
 					if ($data !== false) {
@@ -585,7 +593,9 @@ function form_save() : void {
 		// obtain debug information if it's set
 		$data = import_package($xmlfile, $profile_id, $remove_orphans, $replace_svalues, $preview_only, false, false, $hashes, $files);
 
-		if ($preview_only) {
+		if ($preview_only && $data === false) {
+			raise_message_javascript(__('Error in Package'), __('The package "%s" download or validation failed', $package_name), __('See the cacti.log for more information.  It could be that you had either an API Key error or the package was tamered with, or the location is not available.'));
+		} elseif ($preview_only) {
 			package_prepare_import_array($templates, $files, $package_name, $xmlfile, $data);
 
 			import_display_package_data($templates, $files, $package_name, $xmlfile, $data, false);
@@ -999,7 +1009,13 @@ function package_get_details() : void {
 
 				$data = import_package($xmlfile, $profile_id, $remove_orphans, $replace_svalues, $preview);
 
-				package_prepare_import_array($templates, $files, $package_name, $filename, $data);
+				if ($data === false) {
+					raise_message_javascript(__('Error in Package'), __('The package "%s" download or validation failed', $package_name), __('See the cacti.log for more information.  It could be that you had either an API Key error or the package was tamered with, or the location is not available.'));
+
+					$data = [];
+				} else {
+					package_prepare_import_array($templates, $files, $package_name, $filename, $data);
+				}
 
 				unlink($xmlfile);
 			} else {
@@ -1039,11 +1055,17 @@ function import_validate_public_key(string $xmlfile, bool $accept = false) : mix
 				return $info['pubkey'];
 			}
 
+			// The built in key is trusted without a stored row, and the author
+			// details beside it come from a file whose signature is not checked yet.
 			if ($public_key1 == $info['pubkey']) {
-				$insert = true;
-			} elseif ($public_key2 == $info['pubkey']) {
-				$insert = true;
-			} elseif ($accept) {
+				return $info['pubkey'];
+			}
+
+			if ($public_key2 == $info['pubkey']) {
+				return $info['pubkey'];
+			}
+
+			if ($accept) {
 				$insert = true;
 			}
 
@@ -1161,12 +1183,13 @@ function import_display_package_data(array $templates, array $files, string $pac
 					$s = trim($s);
 
 					if ($s == 'differences') {
-						$url = 'package_import.php' .
-							'?action=diff' .
-							'&package_location=' . grv('package_location') .
-							'&package_file=' . $file_package_file .
-							'&package_name=' . $file_package_name .
-							'&filename=' . str_replace(CACTI_PATH_BASE . '/', '', $pfile);
+						$url = 'package_import.php?' . http_build_query([
+							'action'           => 'diff',
+							'package_location' => grv('package_location'),
+							'package_file'     => $file_package_file,
+							'package_name'     => $file_package_name,
+							'filename'         => str_replace(CACTI_PATH_BASE . '/', '', $pfile),
+						], '', '&', PHP_QUERY_RFC3986);
 
 						$nstatus .= ($nstatus != '' ? ', ' : '') .
 							"<a class='diffme linkEditMain' href='" . htmle($url) . "'>" . __('Differences') . '</a>';
@@ -2045,7 +2068,7 @@ function get_repo_manifest_file(string $repo_id) : string {
 function is_tmp_writable() : bool {
 	$tmp_dir  = sys_get_temp_dir();
 	$tmp_len  = strlen($tmp_dir);
-	$tmp_dir .= ($tmp_len !== 0 && substr($tmp_dir, -$tmp_len) === '/') ? '' : '/';
+	$tmp_dir .= ($tmp_len !== 0 && str_ends_with($tmp_dir, '/')) ? '' : '/';
 	$is_tmp   = is_resource_writable($tmp_dir);
 
 	return $is_tmp;

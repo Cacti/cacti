@@ -220,18 +220,14 @@ function get_package_contents(string $export_type, int $export_item_id, bool $in
 
 			break;
 		case 'data_query':
-			$queries = db_fetch_assoc_prepared('SELECT sq.*
-				FROM host_template_snmp_query AS htsq
-				INNER JOIN snmp_query AS sq
-				ON sq.id = htsq.snmp_query_id
-				WHERE host_template_id = ?',
+			$queries = db_fetch_assoc_prepared('SELECT *
+				FROM snmp_query
+				WHERE id = ?',
 				[$export_item_id]);
 
-			$query_graph_templates = db_fetch_assoc_prepared('SELECT sqg.graph_template_id, sqg.name
-				FROM host_template_snmp_query AS htsq
-				INNER JOIN snmp_query_graph AS sqg
-				ON htsq.snmp_query_id = sqg.snmp_query_id
-				WHERE host_template_id = ?',
+			$query_graph_templates = db_fetch_assoc_prepared('SELECT graph_template_id, name
+				FROM snmp_query_graph
+				WHERE snmp_query_id = ?',
 				[$export_item_id]);
 
 			break;
@@ -330,7 +326,7 @@ function get_package_contents(string $export_type, int $export_item_id, bool $in
 		$output .= '<div class="flexChild" style="50%;vertical-align:top;width:24%;padding:0px 5px;">';
 		$output .= '<div class="formHeader"><div class="formHeaderText">' . __('Data Query Graph Templates') . '</div></div>';
 
-		foreach ($graph_templates as $t) {
+		foreach ($query_graph_templates as $t) {
 			$output .= '<div class="formRow"><div class="formColumnLeft nowrap">' . htmle($t['name']) . '</div></div>';
 		}
 
@@ -761,10 +757,15 @@ function package_template(string &$template, array &$info, array &$files, string
 			$xml .= "           <type>template</type>\n";
 		}
 
-		if (file_exists($name)) {
-			$data = file_get_contents($name);
-		} else {
-			$data = 'Not Found';
+		$data = is_readable($name) ? file_get_contents($name) : false;
+
+		// A missing dependent file would otherwise be packaged as the text 'Not Found'.
+		if ($data === false) {
+			$debug .= "ERROR: Dependent file not found: $name\n";
+
+			unlink($files['template']['file']);
+
+			return false;
 		}
 
 		openssl_sign((string) $data, $binary_signature, $private_key, OPENSSL_ALGO_SHA256);

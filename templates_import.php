@@ -36,7 +36,7 @@ $is_save = isrv('save_component_import');
 
 $tmp_dir  = sys_get_temp_dir();
 $tmp_len  = strlen($tmp_dir);
-$tmp_dir .= ($tmp_len !== 0 && substr($tmp_dir, -$tmp_len) === '/') ? '' : '/';
+$tmp_dir .= ($tmp_len !== 0 && str_ends_with($tmp_dir, '/')) ? '' : '/';
 $is_tmp   = is_tmp_writable();
 
 if ($is_tmp && $is_save && $action == 'save') {
@@ -112,7 +112,7 @@ function form_save() : void {
 		// obtain debug information if it's set
 		$debug_data = import_xml_data($xml_data, $import_as_new, $profile_id, $remove_orphans, $replace_svalues, $import_hashes);
 
-		if (!$preview_only) {
+		if (!$preview_only && $debug_data !== false) {
 			raise_message('import_success', __('The Template Import Succeeded.'), MESSAGE_LEVEL_INFO);
 
 			header('Location: templates_import.php');
@@ -195,7 +195,7 @@ function prepare_template_display(array &$import_info) : array {
 				unset($vals['type']);
 
 				if (isset($vals['dep'])) {
-					$template[$hash]['deps'] = $vals['dep'];
+					$templates[$hash]['deps'] = $vals['dep'];
 				}
 
 				if (cacti_sizeof($vals)) {
@@ -537,7 +537,7 @@ function is_tmp_writable(string $tmp_dir = '') : bool {
 	}
 
 	$tmp_len  = strlen($tmp_dir);
-	$tmp_dir .= ($tmp_len !== 0 && substr($tmp_dir, -$tmp_len) === '/') ? '' : '/';
+	$tmp_dir .= ($tmp_len !== 0 && str_ends_with($tmp_dir, '/')) ? '' : '/';
 
 	$is_tmp = is_resource_writable($tmp_dir);
 
