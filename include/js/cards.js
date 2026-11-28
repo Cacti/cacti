@@ -122,27 +122,46 @@ window.CactiCards = window.CactiCards || (function() {
 	/* The insertion reference for a drop: the first card that follows the pointer
 	 * in reading order. Resolve the pointer's row before comparing horizontal
 	 * centres so dragging over a later card in a row no longer snaps the
-	 * insertion point back to the start of that row. */
+	 * insertion point back to the start of that row.
+	 *
+	 * The row is the nearest row start (card top) at or above the pointer, not
+	 * any card whose box spans y: a .ccH2/.ccH3 card begins in an earlier row
+	 * but covers the bands below it, and must not capture the drop there. Grid
+	 * auto-placement keeps DOM order monotonic in row start, so the first card
+	 * that starts below the pointer's row ends it. */
 	function dragReference(grid, adapter, x, y) {
 		var cards = Array.prototype.slice.call(grid.querySelectorAll(cardSel(adapter) + ':not(.ccCardDragging)'));
-		var rowMatch = null;   // first card in the pointer's row whose centre is past x
-		var belowMatch = null; // first card that begins in a row below the pointer
+		var boxes = cards.map(function(card) {
+			return card.getBoundingClientRect();
+		});
+		var rowTop = -Infinity;
+		var bottom = -Infinity;
 
-		cards.forEach(function(card) {
-			var box = card.getBoundingClientRect();
-			if (y >= box.top && y <= box.bottom) {
-				// Pointer is within this card's row band: compare horizontally.
-				if (rowMatch === null && x < box.left + box.width / 2) {
-					rowMatch = card;
-				}
-			} else if (y < box.top && belowMatch === null) {
-				// This card starts in a row below the pointer; it ends the
-				// pointer's row when nothing in that row is past the pointer.
-				belowMatch = card;
+		boxes.forEach(function(box) {
+			if (box.top <= y && box.top > rowTop) {
+				rowTop = box.top;
 			}
+			bottom = Math.max(bottom, box.bottom);
 		});
 
-		return rowMatch || belowMatch;
+		// Below every card: append.
+		if (y > bottom) {
+			return null;
+		}
+
+		for (var i = 0; i < cards.length; i++) {
+			var box = boxes[i];
+			// Sub-pixel layout can leave cards in one row a fraction apart.
+			if (Math.abs(box.top - rowTop) < 1) {
+				if (x < box.left + box.width / 2) {
+					return cards[i];
+				}
+			} else if (box.top > rowTop) {
+				return cards[i];
+			}
+		}
+
+		return null;
 	}
 
 	/* Decide, mirroring normalizeState(), whether a fresh card will be
@@ -206,7 +225,9 @@ window.CactiCards = window.CactiCards || (function() {
 	/* A per-card-id request generation shared by refresh and resize so a slow
 	 * response cannot overwrite the markup of a newer request for the same card
 	 * (for example a refresh that lands after a later grow). The most recently
-	 * started request for an id wins; earlier in-flight responses are discarded. */
+	 * started request for an id wins; earlier in-flight responses are discarded.
+	 * A refresh never starts while a resize is in flight (see refreshCard), so
+	 * only a later resize can supersede a resize. */
 	function startRequest(grid, id) {
 		if (!grid.__ccReq) {
 			grid.__ccReq = {};
@@ -219,8 +240,37 @@ window.CactiCards = window.CactiCards || (function() {
 		return !!grid.__ccReq && grid.__ccReq[id] !== token;
 	}
 
+	/* Resizes are mutations and refreshes are reads whose state (data-height) is
+	 * captured when they start. A refresh started while a resize for the same
+	 * card is in flight would read the pre-resize height, supersede the resize
+	 * and render (and later persist) the old size. Track in-flight resizes per
+	 * id, and defer such a refresh until they settle so it reads the new state. */
+	function resizePending(grid, id) {
+		return !!grid.__ccResizing && grid.__ccResizing[id] > 0;
+	}
+
+	function resizeSettled(grid, adapter, id) {
+		grid.__ccResizing[id]--;
+		if (grid.__ccResizing[id] > 0 || !grid.__ccRefreshQueued || !grid.__ccRefreshQueued[id]) {
+			return;
+		}
+		delete grid.__ccRefreshQueued[id];
+		var live = findCard(grid, adapter, id);
+		if (live) {
+			refreshCard(grid, adapter, live);
+		}
+	}
+
 	function refreshCard(grid, adapter, card) {
 		var id = cardId(card, adapter);
+		if (resizePending(grid, id)) {
+			// Coalesce: one refresh runs once every pending resize has settled.
+			if (!grid.__ccRefreshQueued) {
+				grid.__ccRefreshQueued = {};
+			}
+			grid.__ccRefreshQueued[id] = true;
+			return;
+		}
 		// Hosts that inject into an inner body (rather than replacing the whole
 		// card) provide onRefresh and keep ownership of the swap.
 		if (typeof adapter.onRefresh === 'function') {
@@ -236,8 +286,8 @@ window.CactiCards = window.CactiCards || (function() {
 		};
 		var token = startRequest(grid, id);
 		Promise.resolve(adapter.fetchCard(id, state)).then(function(html) {
-			// A newer refresh/resize for this card superseded us; discard the
-			// stale markup instead of reverting the card to an older state.
+			// A newer resize for this card superseded us; discard the stale
+			// markup instead of reverting the card to an older state.
 			if (html != null && !requestSuperseded(grid, id, token)) {
 				replaceCard(grid, adapter, card, html, state.expanded);
 			}
@@ -270,9 +320,16 @@ window.CactiCards = window.CactiCards || (function() {
 		if (typeof adapter.onResize === 'function') {
 			var token = startRequest(grid, id);
 			var capturedExpanded = card.classList.contains('ccCardExpanded');
-			Promise.resolve(adapter.onResize(id, dir, card)).then(function(html) {
-				// A newer refresh/resize for this card has superseded us; leave
-				// its markup and layout in place rather than reverting them.
+			if (!grid.__ccResizing) {
+				grid.__ccResizing = {};
+			}
+			grid.__ccResizing[id] = (grid.__ccResizing[id] || 0) + 1;
+			new Promise(function(resolve) {
+				// A synchronous throw from the host must still settle the count.
+				resolve(adapter.onResize(id, dir, card));
+			}).then(function(html) {
+				// A newer resize for this card has superseded us; leave its
+				// markup and layout in place rather than reverting them.
 				if (requestSuperseded(grid, id, token)) {
 					return;
 				}
@@ -280,7 +337,13 @@ window.CactiCards = window.CactiCards || (function() {
 					replaceCard(grid, adapter, card, html, capturedExpanded);
 				}
 				saveLayout(grid, adapter);
-			}).catch(function() { /* fire-and-forget: the host surfaces adapter errors */ });
+			}).catch(function() {
+				/* fire-and-forget: the host surfaces adapter errors */
+			}).then(function() {
+				resizeSettled(grid, adapter, id);
+			}).catch(function() {
+				/* fire-and-forget: the host surfaces adapter errors */
+			});
 		} else {
 			saveLayout(grid, adapter);
 		}
@@ -367,6 +430,7 @@ window.CactiCards = window.CactiCards || (function() {
 				return;
 			}
 			dragging = card;
+			grid.__ccDragRef = undefined;
 			card.classList.add('ccCardDragging');
 		});
 		card.addEventListener('dragend', function() {
@@ -406,6 +470,13 @@ window.CactiCards = window.CactiCards || (function() {
 				event.dataTransfer.dropEffect = 'move';
 			}
 			var before = dragReference(grid, adapter, event.clientX, event.clientY);
+			// Moving the node can shift the layout under a stationary pointer;
+			// only move again once the computed reference actually changes, so
+			// the insertion point does not flip back and forth between events.
+			if (before === grid.__ccDragRef) {
+				return;
+			}
+			grid.__ccDragRef = before;
 			if (before == null) {
 				grid.appendChild(dragging);
 			} else if (before !== dragging) {
@@ -451,37 +522,48 @@ window.CactiCards = window.CactiCards || (function() {
 		});
 
 		// Optional "add card" control referenced by adapter.addControl (an element or id).
+		// A host may re-render its grid and call init() on the new grid while the
+		// control survives, so bind its listener once and always dispatch to the
+		// most recently initialised grid and adapter.
 		var add = adapter.addControl;
 		if (typeof add === 'string') {
 			add = document.getElementById(add);
 		}
 		if (add) {
-			add.addEventListener('change', function() {
-				var id = this.value;
-				this.value = '';
-				if (id && typeof adapter.onAddCard === 'function') {
-					Promise.resolve(adapter.onAddCard(id)).then(function(html) {
-						if (html == null) {
-							return;
-						}
-						var tmp = document.createElement('div');
-						tmp.innerHTML = String(html).trim();
-						var fresh = tmp.querySelector(cardSel(adapter)) || tmp.firstElementChild;
-						// A second add of the same card can resolve while the first
-						// is still pending (the option stays selectable until the
-						// debounced catalogue sync), so skip ids already on the grid
-						// to avoid appending a duplicate the server then dedupes.
-						if (fresh && findCard(grid, adapter, cardId(fresh, adapter)) === null) {
-							grid.appendChild(fresh);
-							bindCard(grid, adapter, fresh);
-							if (typeof adapter.applyTheme === 'function') {
-								adapter.applyTheme(grid);
-							}
-							saveLayout(grid, adapter);
-						}
-					}).catch(function() { /* fire-and-forget: the host surfaces adapter errors */ });
+			add.__ccTarget = { grid: grid, adapter: adapter };
+			if (!add.__ccInit) {
+				add.__ccInit = true;
+				add.addEventListener('change', onAddChange);
+			}
+		}
+	}
+
+	function onAddChange() {
+		var grid = this.__ccTarget.grid;
+		var adapter = this.__ccTarget.adapter;
+		var id = this.value;
+		this.value = '';
+		if (id && typeof adapter.onAddCard === 'function') {
+			Promise.resolve(adapter.onAddCard(id)).then(function(html) {
+				if (html == null) {
+					return;
 				}
-			});
+				var tmp = document.createElement('div');
+				tmp.innerHTML = String(html).trim();
+				var fresh = tmp.querySelector(cardSel(adapter)) || tmp.firstElementChild;
+				// A second add of the same card can resolve while the first
+				// is still pending (the option stays selectable until the
+				// debounced catalogue sync), so skip ids already on the grid
+				// to avoid appending a duplicate the server then dedupes.
+				if (fresh && findCard(grid, adapter, cardId(fresh, adapter)) === null) {
+					grid.appendChild(fresh);
+					bindCard(grid, adapter, fresh);
+					if (typeof adapter.applyTheme === 'function') {
+						adapter.applyTheme(grid);
+					}
+					saveLayout(grid, adapter);
+				}
+			}).catch(function() { /* fire-and-forget: the host surfaces adapter errors */ });
 		}
 	}
 
