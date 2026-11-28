@@ -1,0 +1,320 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://www.cacti.net/schemas/interface-catalog-v1.json",
+  "title": "Cacti IF-MIB interface catalog v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "family_id",
+    "query",
+    "package",
+    "identities",
+    "dependencies",
+    "metrics",
+    "sources"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "family_id": {
+      "const": "if_mib_interfaces"
+    },
+    "query": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256",
+        "root",
+        "header",
+        "fields"
+      ],
+      "properties": {
+        "path": {
+          "const": "resource/snmp_queries/interface.xml"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "root": {
+          "const": "interface"
+        },
+        "header": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "key",
+              "value"
+            ],
+            "properties": {
+              "key": {
+                "enum": [
+                  "name",
+                  "description",
+                  "oid_index",
+                  "oid_num_indexes",
+                  "index_order",
+                  "index_order_type",
+                  "index_title_format"
+                ]
+              },
+              "value": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "key": {
+                      "enum": [
+                        "oid",
+                        "oid_index",
+                        "oid_num_indexes"
+                      ]
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "value": {
+                      "pattern": "^\\.[0-2](?:\\.(?:0|[1-9][0-9]*))+$"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "fields": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "properties"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+              },
+              "properties": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "key",
+                    "value"
+                  ],
+                  "properties": {
+                    "key": {
+                      "enum": [
+                        "name",
+                        "method",
+                        "source",
+                        "direction",
+                        "oid",
+                        "output_format"
+                      ]
+                    },
+                    "value": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "allOf": [
+                    {
+                      "if": {
+                        "properties": {
+                          "key": {
+                            "enum": [
+                              "oid",
+                              "oid_index",
+                              "oid_num_indexes"
+                            ]
+                          }
+                        }
+                      },
+                      "then": {
+                        "properties": {
+                          "value": {
+                            "pattern": "^\\.[0-2](?:\\.(?:0|[1-9][0-9]*))+$"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "package": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256",
+        "template_file",
+        "embedded_query_path",
+        "embedded_query_sha256"
+      ],
+      "properties": {
+        "path": {
+          "const": "install/templates/Generic_SNMP_Device.xml.gz"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "template_file": {
+          "const": "Generic_SNMP_Device.xml"
+        },
+        "embedded_query_path": {
+          "const": "resource/snmp_queries/interface.xml"
+        },
+        "embedded_query_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "identities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/hash"
+      },
+      "uniqueItems": true
+    },
+    "dependencies": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "from",
+          "to"
+        ],
+        "properties": {
+          "from": {
+            "$ref": "#/$defs/hash"
+          },
+          "to": {
+            "$ref": "#/$defs/hash"
+          }
+        }
+      },
+      "uniqueItems": true
+    },
+    "metrics": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "data_template",
+          "rrd_item",
+          "query_fields",
+          "unit",
+          "rrd_type",
+          "minimum",
+          "maximum",
+          "heartbeat"
+        ],
+        "properties": {
+          "name": {
+            "enum": [
+              "traffic_in",
+              "traffic_out"
+            ]
+          },
+          "data_template": {
+            "$ref": "#/$defs/hash"
+          },
+          "rrd_item": {
+            "$ref": "#/$defs/hash"
+          },
+          "query_fields": {
+            "type": "array",
+            "minItems": 2,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "name",
+                "counter_width"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+                },
+                "counter_width": {
+                  "enum": [
+                    32,
+                    64
+                  ]
+                }
+              }
+            },
+            "maxItems": 2,
+            "uniqueItems": true
+          },
+          "unit": {
+            "const": "octets"
+          },
+          "rrd_type": {
+            "const": "COUNTER"
+          },
+          "minimum": {
+            "type": "string",
+            "minLength": 1
+          },
+          "maximum": {
+            "type": "string",
+            "minLength": 1
+          },
+          "heartbeat": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      },
+      "maxItems": 2
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^https://"
+      }
+    }
+  },
+  "$defs": {
+    "hash": {
+      "type": "string",
+      "pattern": "^hash_[a-f0-9]{38}$"
+    }
+  }
+}
