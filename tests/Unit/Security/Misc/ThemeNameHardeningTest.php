@@ -118,35 +118,18 @@ test('the newtheme request flag only clears the cached theme', function () use (
 		->and($global)->not->toContain('$newtheme');
 });
 
-test('a setting chosen from a fixed list accepts only values from that list', function () {
-	$setting = ['method' => 'drop_array', 'array' => ['modern' => 'Modern', 'dark' => 'Dark', 5 => 'Five']];
+test('a fixed dropdown accepts only its declared keys', function () use ($root) {
+	require_once $root . '/lib/user_setting_validation.php';
 
-	expect(cacti_user_setting_value_allowed($setting, 'modern'))->toBeTrue()
-		->and(cacti_user_setting_value_allowed($setting, '5'))->toBeTrue()
-		->and(cacti_user_setting_value_allowed($setting, 5))->toBeTrue()
-		->and(cacti_user_setting_value_allowed($setting, 'dark/../dark'))->toBeFalse()
-		->and(cacti_user_setting_value_allowed($setting, 'Modern'))->toBeFalse()
-		->and(cacti_user_setting_value_allowed($setting, ''))->toBeFalse()
-		->and(cacti_user_setting_value_allowed($setting, ['modern']))->toBeFalse()
-		->and(cacti_user_setting_value_allowed($setting, null))->toBeFalse()
-		->and(cacti_user_setting_value_allowed($setting, 1.5))->toBeFalse()
-		->and(cacti_user_setting_value_allowed($setting, true))->toBeFalse();
-});
+	$field = ['method' => 'drop_array', 'array' => ['modern' => 'Modern', 5 => 'Five']];
 
-test('settings without a fixed list are not restricted by the value check', function () {
-	expect(cacti_user_setting_value_allowed(['method' => 'textbox'], 'anything'))->toBeTrue()
-		->and(cacti_user_setting_value_allowed(['method' => 'checkbox'], 'on'))->toBeTrue()
-		->and(cacti_user_setting_value_allowed(['method' => 'drop_array'], 'x'))->toBeTrue()
-		->and(cacti_user_setting_value_allowed(['method' => 'drop_array', 'array' => []], 'x'))->toBeTrue()
-		->and(cacti_user_setting_value_allowed(['method' => 'drop_sql', 'array' => ['a' => 'A']], 'x'))->toBeTrue();
-});
+	foreach (['modern', '5', 5] as $value) {
+		expect(cacti_validate_user_setting_value('selected_theme', $value, $field))->toBe((string) $value);
+	}
 
-test('the profile form save and the single-setting update both use the value check', function () use ($root) {
-	$functions = file_get_contents($root . '/lib/functions.php');
-	$profile   = file_get_contents($root . '/auth_profile.php');
-
-	expect($functions)->toContain('if (!cacti_user_setting_value_allowed($field_array, gnrv($field_name))) {')
-		->and($profile)->toContain('if (!cacti_user_setting_value_allowed($settings[$name], $value)) {');
+	foreach (['Modern', '05', ['modern'], null, 5.0, true] as $value) {
+		expect(cacti_validate_user_setting_value('selected_theme', $value, $field))->toBeFalse();
+	}
 });
 
 test('the theme name is encoded where pages print it into script', function () use ($root) {

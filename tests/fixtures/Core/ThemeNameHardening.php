@@ -27,6 +27,15 @@ if (!\defined('CACTI_PATH_INCLUDE')) {
 	\define('CACTI_PATH_INCLUDE', $root . '/include');
 }
 
+\define('CACTI_PATH_LIBRARY', $root . '/lib');
+
+function get_guest_account() : int {
+	return 0;
+}
+function is_view_allowed(string $view) : bool {
+	return $view === 'graph_settings';
+}
+
 function check(bool $condition, string $message) : void {
 	if (!$condition) {
 		throw new \RuntimeException($message);
@@ -72,7 +81,7 @@ function http_response_code(int $code) : void {
 	$GLOBALS['fixture']['status'] = $code;
 }
 
-foreach (['cacti_is_theme_name', 'cacti_user_setting_value_allowed', 'cacti_sizeof', 'is_valid_theme', 'get_selected_theme', 'cacti_validate_theme', 'cacti_js_encode', 'save_user_settings', 'get_md5_include_css'] as $function) {
+foreach (['cacti_is_theme_name', 'cacti_sizeof', 'is_valid_theme', 'get_selected_theme', 'cacti_validate_theme', 'cacti_js_encode', 'save_user_settings', 'get_md5_include_css'] as $function) {
 	\cacti_fixture_source_function($root . '/lib/functions.php', $function, __NAMESPACE__);
 }
 
@@ -125,8 +134,8 @@ $GLOBALS['settings_user'] = ['general' => [
 $GLOBALS['fixture']['request'] = ['selected_theme' => '../../x', 'user_language' => 'en-US', 'full_name' => 'Operator'];
 save_user_settings(7);
 check($GLOBALS['fixture']['settings'] === ['user_language' => 'en-US', 'full_name' => 'Operator'], 'Profile form save');
-check(!cacti_user_setting_value_allowed(['method' => 'drop_array', 'array' => ['dark' => 'Dark']], ['dark']), 'Array value');
-check(cacti_user_setting_value_allowed(['method' => 'textbox'], 'any'), 'Unlisted setting');
+check(!cacti_validate_user_setting_value('selected_theme', ['dark'], ['method' => 'drop_array', 'array' => ['dark' => 'Dark']]), 'Array value');
+check(cacti_validate_user_setting_value('full_name', 'any', ['method' => 'textbox']) === 'any', 'Unlisted setting');
 
 // The single-setting update on the profile page uses the same check.
 \cacti_fixture_source_function($root . '/auth_profile.php', 'api_auth_update_user_setting', __NAMESPACE__);

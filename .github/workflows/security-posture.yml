@@ -39,7 +39,7 @@ jobs:
           persist-credentials: false
 
       - name: TruffleHog scan
-        uses: trufflesecurity/trufflehog@3bd2b5887eb0efb8fa18bfd1d296032924e4ffdc # v3.99.9
+        uses: trufflesecurity/trufflehog@d232362a64a09a9e7d58267b8f5acef00ae90e23 # v3.100.0
         with:
           extra_args: --only-verified
 
@@ -201,7 +201,7 @@ jobs:
           persist-credentials: false
 
       - name: Block newly introduced vulnerable runtime dependencies
-        uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
+        uses: actions/dependency-review-action@bbc44d14a204704ccc493733616cd1e93a0321ec # v5.0.1
         with:
           fail-on-severity: high
           fail-on-scopes: runtime

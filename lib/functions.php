@@ -347,8 +347,14 @@ function read_graph_config_option(string $config_name, bool $force = false) : st
 function save_user_settings(mixed $user = null) : void {
 	global $settings_user;
 
+	require_once(CACTI_PATH_LIBRARY . '/user_setting_validation.php');
+
 	// Passed user id, or session id, or else 0
 	$user ??= $_SESSION[SESS_USER_ID] ?? 0;
+
+	if (cacti_user_is_guest_account($user, get_guest_account())) {
+		return;
+	}
 
 	foreach ($settings_user as $tab_fields) {
 		foreach ($tab_fields as $field_name => $field_array) {
@@ -377,15 +383,21 @@ function save_user_settings(mixed $user = null) : void {
 				} elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 					foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
 						if (isrv($sub_field_name)) {
-							set_user_setting($sub_field_name, gnrv($sub_field_name), $user);
+							$validated_sub = cacti_validate_user_setting_value($sub_field_name, gnrv($sub_field_name), $sub_field_array);
+
+							if ($validated_sub !== false) {
+								set_user_setting($sub_field_name, $validated_sub, $user);
+							}
 						}
 					}
 				} elseif (isrv($field_name)) {
-					if (!cacti_user_setting_value_allowed($field_array, gnrv($field_name))) {
-						continue;
-					}
+					$validated_val = cacti_validate_user_setting_value($field_name, gnrv($field_name), $field_array);
 
-					set_user_setting($field_name, gnrv($field_name), $user);
+					if ($validated_val !== false) {
+						set_user_setting($field_name, $validated_val, $user);
+					} elseif (isset($field_array['default'])) {
+						set_user_setting($field_name, $field_array['default'], $user);
+					}
 				}
 			}
 		}
@@ -1053,14 +1065,6 @@ function cacti_validate_theme(string $requested) : string {
 }
 
 /**
- * Returns true if a theme is valid
- *
- * @param mixed $theme
- * @param int   $set_user
- *
- * @return bool
- */
-/**
  * cacti_is_theme_name - checks that a value names an installed theme
  *
  * The name becomes part of file paths and of page output, so it must be a
@@ -1079,24 +1083,13 @@ function cacti_is_theme_name(mixed $theme) : bool {
 }
 
 /**
- * cacti_user_setting_value_allowed - checks a value against the setting it is for
+ * Returns true if a theme is valid
  *
- * A setting chosen from a fixed list accepts only values from that list.
- * Other kinds of setting are not restricted here.
+ * @param mixed $theme
+ * @param int   $set_user
  *
- * @param array $setting - the setting's definition from $settings_user
- * @param mixed $value   - the value to store
- *
- * @return bool true when the value may be stored
+ * @return bool
  */
-function cacti_user_setting_value_allowed(array $setting, mixed $value) : bool {
-	if (isset($setting['method'], $setting['array']) && $setting['method'] == 'drop_array' && is_array($setting['array']) && cacti_sizeof($setting['array'])) {
-		return (is_string($value) || is_int($value)) && isset($setting['array'][$value]);
-	}
-
-	return true;
-}
-
 function is_valid_theme(mixed &$theme, int $set_user = 0) : bool {
 	global $themes;
 
