@@ -1397,22 +1397,20 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
  * rrdtool_select_best_fit_rra - selects the highest-resolution RRA whose timespan covers
  *   the requested graph start/end window, normalizing negative (relative) timestamps.
  *
- * @param array    $rras        - associated RRAs for the graph
- * @param int|float $ds_step    - data source step in seconds
- * @param int      $graph_start - graph start timestamp (absolute unix time or negative relative offset)
- * @param int      $graph_end   - graph end timestamp (absolute unix time or negative relative offset)
- * @param int|null $now         - reference current timestamp (defaults to time())
+ * @param array|false|null $rras        - associated RRAs for the graph
+ * @param int|float        $ds_step     - data source step in seconds
+ * @param int|float        $graph_start - graph start timestamp (absolute unix time or negative relative offset)
+ * @param int|float        $graph_end   - graph end timestamp (absolute unix time or negative relative offset)
+ * @param int|null         $now         - reference current timestamp (defaults to time())
  *
  * @return array|null - best matching RRA row or null if none fits
  */
-function rrdtool_select_best_fit_rra($rras, $ds_step, $graph_start, $graph_end, $now = null) {
+function rrdtool_select_best_fit_rra(array|false|null $rras, int|float $ds_step, int|float $graph_start, int|float $graph_end, ?int $now = null) : ?array {
 	if (!cacti_sizeof($rras)) {
 		return null;
 	}
 
-	if ($now === null) {
-		$now = time();
-	}
+	$now ??= time();
 
 	$effective_start = ($graph_start < 0) ? ($now + $graph_start) : $graph_start;
 	$effective_end   = ($graph_end < 0) ? ($now + $graph_end) : $graph_end;
@@ -1422,14 +1420,11 @@ function rrdtool_select_best_fit_rra($rras, $ds_step, $graph_start, $graph_end, 
 
 	foreach ($rras as $unchosen_rra) {
 		/* the timespan specified in the RRA "timespan" field may not be accurate */
-		$real_timespan = ($ds_step * $unchosen_rra['steps'] * $unchosen_rra['rows']);
+		$real_timespan = $ds_step * $unchosen_rra['steps'] * $unchosen_rra['rows'];
 
 		/* make sure the current start/end times fit within each RRA's timespan */
 		if ($window_span <= $real_timespan && $age_span <= $real_timespan) {
-			/* is this RRA better than the already chosen one? */
-			if ($selected_rra !== null && $unchosen_rra['steps'] < $selected_rra['steps']) {
-				$selected_rra = $unchosen_rra;
-			} elseif ($selected_rra === null) {
+			if ($selected_rra === null || $unchosen_rra['steps'] < $selected_rra['steps']) {
 				$selected_rra = $unchosen_rra;
 			}
 		}
@@ -1448,32 +1443,86 @@ function rrdtool_select_best_fit_rra($rras, $ds_step, $graph_start, $graph_end, 
  *
  * @return string - RRDtool RPN expression
  */
-function rrdtool_build_cdef_magic_rpn($defs, $time_threshold, $is_count = false) {
-	$count = cacti_sizeof($defs);
+function rrdtool_build_cdef_magic_rpn(array $defs, int $time_threshold, bool $is_count = false) : string {
+	$count = count($defs);
 
 	if ($count === 0) {
 		return '';
 	}
 
-	$parts = array();
+	$parts = [];
 
-	if ($is_count) {
-		foreach ($defs as $def_name) {
-			$parts[] = 'TIME,' . $time_threshold . ',GT,1,' . $def_name . ',UN,0,1,IF,IF';
-		}
-	} else {
-		foreach ($defs as $def_name) {
-			$parts[] = 'TIME,' . $time_threshold . ',GT,' . $def_name . ',' . $def_name . ',UN,0,' . $def_name . ',IF,IF';
-		}
+	foreach ($defs as $def_name) {
+		$value   = $is_count ? '1' : $def_name;
+		$parts[] = "TIME,{$time_threshold},GT,{$value},{$def_name},UN,0,{$value},IF,IF";
 	}
 
 	$rpn = implode(',', $parts);
 
-	if ($count > 1) {
-		$rpn .= str_repeat(',+', $count - 1);
+	return $count > 1 ? $rpn . str_repeat(',+', $count - 1) : $rpn;
+}
+
+/**
+ * rrdtool_index_cdef_magic_defs - pre-indexes graphable DEF names by CF and
+ *   data source name so CDEF magic variables resolve in O(N) total time.
+ *
+ * @param array $graph_items      - graph items for the current graph
+ * @param array $graph_item_types - map of graph_type_id => type name
+ * @param array $cf_ds_cache      - map of data_template_rrd_id => [cf_id => def_id]
+ *
+ * @return array - indexed DEF buckets (all_dups, all_nodups, sim_dups, sim_nodups)
+ */
+function rrdtool_index_cdef_magic_defs(array $graph_items, array $graph_item_types, array $cf_ds_cache) : array {
+	$graphable_types = [];
+
+	foreach ($graph_item_types as $gi_type_id => $gi_type_name) {
+		if (preg_match('/(AREA|STACK|LINE[123])/', $gi_type_name)) {
+			$graphable_types[$gi_type_id] = true;
+		}
 	}
 
-	return $rpn;
+	$index = [
+		'all_dups'   => [],
+		'all_nodups' => [],
+		'sim_dups'   => [],
+		'sim_nodups' => [],
+	];
+	$all_seen = [];
+	$sim_seen = [];
+
+	foreach ($graph_items as $gi_check) {
+		if (!isset($graphable_types[$gi_check['graph_type_id']]) || empty($gi_check['data_template_rrd_id'])) {
+			continue;
+		}
+
+		$check_dtr_id = $gi_check['data_template_rrd_id'];
+
+		if (empty($cf_ds_cache[$check_dtr_id])) {
+			continue;
+		}
+
+		$check_ds_name = (string) ($gi_check['data_source_name'] ?? '');
+
+		foreach ($cf_ds_cache[$check_dtr_id] as $check_cf_id => $check_def_id) {
+			$def_name = generate_graph_def_name((string) $check_def_id);
+
+			$index['all_dups'][$check_cf_id][] = $def_name;
+
+			if (!isset($all_seen[$check_cf_id][$def_name])) {
+				$all_seen[$check_cf_id][$def_name]   = true;
+				$index['all_nodups'][$check_cf_id][] = $def_name;
+			}
+
+			$index['sim_dups'][$check_cf_id][$check_ds_name][] = $def_name;
+
+			if (!isset($sim_seen[$check_cf_id][$check_ds_name][$check_dtr_id])) {
+				$sim_seen[$check_cf_id][$check_ds_name][$check_dtr_id] = true;
+				$index['sim_nodups'][$check_cf_id][$check_ds_name][]   = $def_name;
+			}
+		}
+	}
+
+	return $index;
 }
 
 function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rrdtool_pipe = false, &$xport_meta = array(), $user = 0) {
@@ -1567,10 +1616,11 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			$rra = rrdtool_select_best_fit_rra($rras, $ds_step, $graph_data_array['graph_start'], $graph_data_array['graph_end']);
 
 			if ($rra === null) {
-				$rra             = array();
-				$rra['rows']     = 600;
-				$rra['steps']    = 1;
-				$rra['timespan'] = 86400;
+				$rra = [
+					'rows'     => 600,
+					'steps'    => 1,
+					'timespan' => 86400,
+				];
 			}
 		}
 	} else {
@@ -1968,10 +2018,10 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	/* hack for rrdtool 1.2.x support */
 	$graph_item_stack_type = '';
 
-	$rrd_step_cache   = array();
+	$rrd_step_cache   = [];
 	$poller_interval  = null;
 	$cdef_magic_index = null;
-	$cdef_rpn_cache   = array();
+	$cdef_rpn_cache   = [];
 	$cdef_time_now    = null;
 
 	if (cacti_sizeof($graph_items)) {
@@ -2025,160 +2075,76 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 			if ((!empty($graph_item['cdef_id'])) && (!isset($cdef_cache[$graph_item['cdef_id']][$graph_item['data_template_rrd_id']][$cf_id]))) {
 				$cdef_string = $graph_variables['cdef_cache'][$graph_item['graph_templates_item_id']];
-				$magic_item  = array();
+				$magic_item  = [];
 
 				/* allow automatic rate calculations on raw gauge data */
-				if (strpos($cdef_string, '_PI') !== false) {
+				if (str_contains($cdef_string, '_PI')) {
 					if (isset($graph_item['local_data_id'])) {
 						$cdef_ldi = $graph_item['local_data_id'];
 
 						if (!array_key_exists($cdef_ldi, $rrd_step_cache)) {
-							$rrd_step_cache[$cdef_ldi] = db_fetch_cell_prepared('SELECT rrd_step FROM data_template_data WHERE local_data_id = ?', array($cdef_ldi));
+							$rrd_step_cache[$cdef_ldi] = db_fetch_cell_prepared('SELECT rrd_step FROM data_template_data WHERE local_data_id = ?', [$cdef_ldi]);
 						}
 
 						$cdef_rrd_step = (string) $rrd_step_cache[$cdef_ldi];
 					} else {
-						if ($poller_interval === null) {
-							$poller_interval = (string) read_config_option('poller_interval');
-						}
-
-						$cdef_rrd_step = $poller_interval;
+						$poller_interval ??= (string) read_config_option('poller_interval');
+						$cdef_rrd_step     = $poller_interval;
 					}
 
 					$cdef_string = str_replace(
-						array(
+						[
 							'CURRENT_DATA_SOURCE_PI',
 							'ALL_DATA_SOURCES_DUPS_PI',
 							'ALL_DATA_SOURCES_NODUPS_PI',
 							'SIMILAR_DATA_SOURCES_DUPS_PI',
-							'SIMILAR_DATA_SOURCES_NODUPS_PI'
-						),
+							'SIMILAR_DATA_SOURCES_NODUPS_PI',
+						],
 						$cdef_rrd_step,
 						$cdef_string
 					);
 				}
 
 				/* if any of those magic variables are requested ... */
-				if (strpos($cdef_string, '_DATA_SOURCES_') !== false || strpos($cdef_string, 'COUNT_') !== false) {
+				if (str_contains($cdef_string, '_DATA_SOURCES_') || str_contains($cdef_string, 'COUNT_')) {
 					if ($cdef_magic_index === null) {
 						$cdef_time_now    = time() - $rra_seconds;
-						$graphable_types  = array();
-						$cdef_magic_index = array(
-							'all_dups'   => array(),
-							'all_nodups' => array(),
-							'sim_dups'   => array(),
-							'sim_nodups' => array()
-						);
-						$all_seen = array();
-						$sim_seen = array();
-
-						foreach ($graph_item_types as $gi_type_id => $gi_type_name) {
-							if (preg_match('/(AREA|STACK|LINE[123])/', $gi_type_name)) {
-								$graphable_types[$gi_type_id] = true;
-							}
-						}
-
-						foreach ($graph_items as $gi_check) {
-							if (isset($graphable_types[$gi_check['graph_type_id']]) && !empty($gi_check['data_template_rrd_id'])) {
-								$check_dtr_id = $gi_check['data_template_rrd_id'];
-
-								if (!empty($cf_ds_cache[$check_dtr_id])) {
-									$check_ds_name = (string) $gi_check['data_source_name'];
-
-									foreach ($cf_ds_cache[$check_dtr_id] as $check_cf_id => $check_def_id) {
-										$def_name = generate_graph_def_name(strval($check_def_id));
-
-										$cdef_magic_index['all_dups'][$check_cf_id][] = $def_name;
-
-										if (!isset($all_seen[$check_cf_id][$def_name])) {
-											$all_seen[$check_cf_id][$def_name] = true;
-											$cdef_magic_index['all_nodups'][$check_cf_id][] = $def_name;
-										}
-
-										$cdef_magic_index['sim_dups'][$check_cf_id][$check_ds_name][] = $def_name;
-
-										if (!isset($sim_seen[$check_cf_id][$check_ds_name][$check_dtr_id])) {
-											$sim_seen[$check_cf_id][$check_ds_name][$check_dtr_id] = true;
-											$cdef_magic_index['sim_nodups'][$check_cf_id][$check_ds_name][] = $def_name;
-										}
-									}
-								}
-							}
-						}
+						$cdef_magic_index = rrdtool_index_cdef_magic_defs($graph_items, $graph_item_types, $cf_ds_cache);
 					}
 
-					$item_ds_name = isset($graph_item['data_source_name']) ? (string) $graph_item['data_source_name'] : '';
+					$item_ds_name = (string) ($graph_item['data_source_name'] ?? '');
 
-					if (strpos($cdef_string, 'ALL_DATA_SOURCES_DUPS') !== false) {
-						if (!isset($cdef_rpn_cache[$cf_id]['ALL_DATA_SOURCES_DUPS'])) {
-							$defs = isset($cdef_magic_index['all_dups'][$cf_id]) ? $cdef_magic_index['all_dups'][$cf_id] : array();
-							$cdef_rpn_cache[$cf_id]['ALL_DATA_SOURCES_DUPS'] = rrdtool_build_cdef_magic_rpn($defs, $cdef_time_now, false);
+					static $cdef_magic_specs = [
+						'ALL_DATA_SOURCES_DUPS'       => ['all_dups',   false, false],
+						'ALL_DATA_SOURCES_NODUPS'     => ['all_nodups', false, false],
+						'SIMILAR_DATA_SOURCES_DUPS'   => ['sim_dups',   true,  false],
+						'SIMILAR_DATA_SOURCES_NODUPS' => ['sim_nodups', true,  false],
+						'COUNT_ALL_DS_DUPS'           => ['all_dups',   false, true],
+						'COUNT_ALL_DS_NODUPS'         => ['all_nodups', false, true],
+						'COUNT_SIMILAR_DS_DUPS'       => ['sim_dups',   true,  true],
+						'COUNT_SIMILAR_DS_NODUPS'     => ['sim_nodups', true,  true],
+					];
+
+					foreach ($cdef_magic_specs as $token => [$bucket, $by_ds, $is_count]) {
+						if (!str_contains($cdef_string, $token)) {
+							continue;
 						}
 
-						$magic_item['ALL_DATA_SOURCES_DUPS'] = $cdef_rpn_cache[$cf_id]['ALL_DATA_SOURCES_DUPS'];
-					}
-
-					if (strpos($cdef_string, 'ALL_DATA_SOURCES_NODUPS') !== false) {
-						if (!isset($cdef_rpn_cache[$cf_id]['ALL_DATA_SOURCES_NODUPS'])) {
-							$defs = isset($cdef_magic_index['all_nodups'][$cf_id]) ? $cdef_magic_index['all_nodups'][$cf_id] : array();
-							$cdef_rpn_cache[$cf_id]['ALL_DATA_SOURCES_NODUPS'] = rrdtool_build_cdef_magic_rpn($defs, $cdef_time_now, false);
+						if ($by_ds) {
+							$cdef_rpn_cache[$cf_id][$token][$item_ds_name] ??= rrdtool_build_cdef_magic_rpn(
+								$cdef_magic_index[$bucket][$cf_id][$item_ds_name] ?? [],
+								$cdef_time_now,
+								$is_count
+							);
+							$magic_item[$token] = $cdef_rpn_cache[$cf_id][$token][$item_ds_name];
+						} else {
+							$cdef_rpn_cache[$cf_id][$token] ??= rrdtool_build_cdef_magic_rpn(
+								$cdef_magic_index[$bucket][$cf_id] ?? [],
+								$cdef_time_now,
+								$is_count
+							);
+							$magic_item[$token] = $cdef_rpn_cache[$cf_id][$token];
 						}
-
-						$magic_item['ALL_DATA_SOURCES_NODUPS'] = $cdef_rpn_cache[$cf_id]['ALL_DATA_SOURCES_NODUPS'];
-					}
-
-					if (strpos($cdef_string, 'SIMILAR_DATA_SOURCES_DUPS') !== false) {
-						if (!isset($cdef_rpn_cache[$cf_id]['SIMILAR_DATA_SOURCES_DUPS'][$item_ds_name])) {
-							$defs = isset($cdef_magic_index['sim_dups'][$cf_id][$item_ds_name]) ? $cdef_magic_index['sim_dups'][$cf_id][$item_ds_name] : array();
-							$cdef_rpn_cache[$cf_id]['SIMILAR_DATA_SOURCES_DUPS'][$item_ds_name] = rrdtool_build_cdef_magic_rpn($defs, $cdef_time_now, false);
-						}
-
-						$magic_item['SIMILAR_DATA_SOURCES_DUPS'] = $cdef_rpn_cache[$cf_id]['SIMILAR_DATA_SOURCES_DUPS'][$item_ds_name];
-					}
-
-					if (strpos($cdef_string, 'SIMILAR_DATA_SOURCES_NODUPS') !== false) {
-						if (!isset($cdef_rpn_cache[$cf_id]['SIMILAR_DATA_SOURCES_NODUPS'][$item_ds_name])) {
-							$defs = isset($cdef_magic_index['sim_nodups'][$cf_id][$item_ds_name]) ? $cdef_magic_index['sim_nodups'][$cf_id][$item_ds_name] : array();
-							$cdef_rpn_cache[$cf_id]['SIMILAR_DATA_SOURCES_NODUPS'][$item_ds_name] = rrdtool_build_cdef_magic_rpn($defs, $cdef_time_now, false);
-						}
-
-						$magic_item['SIMILAR_DATA_SOURCES_NODUPS'] = $cdef_rpn_cache[$cf_id]['SIMILAR_DATA_SOURCES_NODUPS'][$item_ds_name];
-					}
-
-					if (strpos($cdef_string, 'COUNT_ALL_DS_DUPS') !== false) {
-						if (!isset($cdef_rpn_cache[$cf_id]['COUNT_ALL_DS_DUPS'])) {
-							$defs = isset($cdef_magic_index['all_dups'][$cf_id]) ? $cdef_magic_index['all_dups'][$cf_id] : array();
-							$cdef_rpn_cache[$cf_id]['COUNT_ALL_DS_DUPS'] = rrdtool_build_cdef_magic_rpn($defs, $cdef_time_now, true);
-						}
-
-						$magic_item['COUNT_ALL_DS_DUPS'] = $cdef_rpn_cache[$cf_id]['COUNT_ALL_DS_DUPS'];
-					}
-
-					if (strpos($cdef_string, 'COUNT_ALL_DS_NODUPS') !== false) {
-						if (!isset($cdef_rpn_cache[$cf_id]['COUNT_ALL_DS_NODUPS'])) {
-							$defs = isset($cdef_magic_index['all_nodups'][$cf_id]) ? $cdef_magic_index['all_nodups'][$cf_id] : array();
-							$cdef_rpn_cache[$cf_id]['COUNT_ALL_DS_NODUPS'] = rrdtool_build_cdef_magic_rpn($defs, $cdef_time_now, true);
-						}
-
-						$magic_item['COUNT_ALL_DS_NODUPS'] = $cdef_rpn_cache[$cf_id]['COUNT_ALL_DS_NODUPS'];
-					}
-
-					if (strpos($cdef_string, 'COUNT_SIMILAR_DS_DUPS') !== false) {
-						if (!isset($cdef_rpn_cache[$cf_id]['COUNT_SIMILAR_DS_DUPS'][$item_ds_name])) {
-							$defs = isset($cdef_magic_index['sim_dups'][$cf_id][$item_ds_name]) ? $cdef_magic_index['sim_dups'][$cf_id][$item_ds_name] : array();
-							$cdef_rpn_cache[$cf_id]['COUNT_SIMILAR_DS_DUPS'][$item_ds_name] = rrdtool_build_cdef_magic_rpn($defs, $cdef_time_now, true);
-						}
-
-						$magic_item['COUNT_SIMILAR_DS_DUPS'] = $cdef_rpn_cache[$cf_id]['COUNT_SIMILAR_DS_DUPS'][$item_ds_name];
-					}
-
-					if (strpos($cdef_string, 'COUNT_SIMILAR_DS_NODUPS') !== false) {
-						if (!isset($cdef_rpn_cache[$cf_id]['COUNT_SIMILAR_DS_NODUPS'][$item_ds_name])) {
-							$defs = isset($cdef_magic_index['sim_nodups'][$cf_id][$item_ds_name]) ? $cdef_magic_index['sim_nodups'][$cf_id][$item_ds_name] : array();
-							$cdef_rpn_cache[$cf_id]['COUNT_SIMILAR_DS_NODUPS'][$item_ds_name] = rrdtool_build_cdef_magic_rpn($defs, $cdef_time_now, true);
-						}
-
-						$magic_item['COUNT_SIMILAR_DS_NODUPS'] = $cdef_rpn_cache[$cf_id]['COUNT_SIMILAR_DS_NODUPS'][$item_ds_name];
 					}
 				}
 
@@ -3920,22 +3886,18 @@ function rrd_append_cdp_prep_ds($dom, $version) {
 
 	/* rrdtool version dependencies */
 	if ($version === RRD_FILE_VERSION3) {
-		if (($node = $new_ds->getElementsByTagName('primary_value')->item(0)) !== null) {
-			$node->nodeValue = ' NaN ';
-		}
-
-		if (($node = $new_ds->getElementsByTagName('secondary_value')->item(0)) !== null) {
-			$node->nodeValue = ' NaN ';
+		foreach (['primary_value', 'secondary_value'] as $tag) {
+			if (($node = $new_ds->getElementsByTagName($tag)->item(0)) !== null) {
+				$node->nodeValue = ' NaN ';
+			}
 		}
 	}
 
 	/* the new node always has default entries */
-	if (($node = $new_ds->getElementsByTagName('value')->item(0)) !== null) {
-		$node->nodeValue = ' NaN ';
-	}
-
-	if (($node = $new_ds->getElementsByTagName('unknown_datapoints')->item(0)) !== null) {
-		$node->nodeValue = ' 0 ';
+	foreach (['value' => ' NaN ', 'unknown_datapoints' => ' 0 '] as $tag => $default) {
+		if (($node = $new_ds->getElementsByTagName($tag)->item(0)) !== null) {
+			$node->nodeValue = $default;
+		}
 	}
 
 	/* append a distinct cloned <ds> entry to every <rra>'s <cdp_prep> */
@@ -3954,15 +3916,11 @@ function rrd_append_cdp_prep_ds($dom, $version) {
 function rrd_append_value($dom) {
 	/* get all <row> entries across every <rra><database> */
 	$itemList = $dom->getElementsByTagName('row');
-
-	/* create <V> entry to preserve RRDtool notation */
-	$new_v = $dom->createElement('v', ' NaN ');
+	$new_v    = $dom->createElement('v', ' NaN ');
 
 	/* append a distinct cloned <v> entry to every <row> */
-	if ($itemList->length) {
-		foreach ($itemList as $item) {
-			$item->appendChild($new_v->cloneNode(true));
-		}
+	foreach ($itemList as $item) {
+		$item->appendChild($new_v->cloneNode(true));
 	}
 }
 

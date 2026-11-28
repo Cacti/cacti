@@ -1306,20 +1306,19 @@ class spikekill {
 						/* do nothing no line */
 					} else {
 						$comment_end = strpos($line, '-->', $comment_start + 4);
-						if ($comment_end !== false) {
-							if ($comment_start == 0) {
-								$line = trim(substr($line, $comment_end + 3));
-							} else {
-								$line = trim(substr($line, 0, $comment_start) . substr($line, $comment_end + 3));
-							}
 
-							if (strpos($line, '<row>') !== false) {
+						if ($comment_end !== false) {
+							$line = $comment_start === 0
+								? trim(substr($line, $comment_end + 3))
+								: trim(substr($line, 0, $comment_start) . substr($line, $comment_end + 3));
+
+							if (str_contains($line, '<row>')) {
 								/* capture the timestamp */
-								$stamp = trim(substr($oline, $comment_start + 4, $comment_end - $comment_start - 4));
-								$stamp = explode('/', $stamp);
+								$stamp = explode('/', trim(substr($oline, $comment_start + 4, $comment_end - $comment_start - 4)));
+
 								if (isset($stamp[1])) {
 									$timestamp = trim($stamp[1]);
-									$line = str_replace('<row><v>', "<row><timestamp> $timestamp </timestamp><v>", $line);
+									$line      = str_replace('<row><v>', "<row><timestamp> $timestamp </timestamp><v>", $line);
 								}
 							}
 						}

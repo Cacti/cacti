@@ -29,7 +29,7 @@ function get_rrdfiles($thread_id = 1, $max_threads = 1) {
 	static $newrows = array();
 
 	if (cacti_sizeof($newrows)) {
-		return isset($newrows[$thread_id - 1]) ? $newrows[$thread_id - 1] : array();
+		return $newrows[$thread_id - 1] ?? [];
 	}
 
 	$rows = db_fetch_assoc_prepared('SELECT dtd.data_source_profile_id, dtd.local_data_id,
@@ -57,23 +57,19 @@ function get_rrdfiles($thread_id = 1, $max_threads = 1) {
 	$total_rows = cacti_sizeof($rows);
 
 	if (!$total_rows) {
-		return array();
+		return [];
 	}
 
 	if ($max_threads <= 1) {
 		$newrows[0] = $rows;
 
 		return $rows;
-	} else {
-		$chunk_size = max(1, (int) ceil($total_rows / $max_threads));
-		$newrows    = array_chunk($rows, $chunk_size);
-
-		if (isset($newrows[$thread_id - 1])) {
-			return $newrows[$thread_id - 1];
-		} else {
-			return array();
-		}
 	}
+
+	$chunk_size = max(1, (int) ceil($total_rows / $max_threads));
+	$newrows    = array_chunk($rows, $chunk_size);
+
+	return $newrows[$thread_id - 1] ?? [];
 }
 
 /**
@@ -438,11 +434,11 @@ function do_rrdcheck($thread_id = 1) {
 						}
 					}
 
-					$notified = array();
+					$notified = [];
 
 					// 24 hour statistics
 					foreach	($nan_24 as $index=>$count) {
-						$ds_name = isset($data_source_names[$index]) ? $data_source_names[$index] : $index;
+						$ds_name = $data_source_names[$index] ?? $index;
 
 						if ($lines_24 > 0) {
 							$ratio = $count/$lines_24;
@@ -485,7 +481,7 @@ function do_rrdcheck($thread_id = 1) {
 					// 1 hour statistics
 
 					foreach	($nan_1 as $index=>$count) {
-						$ds_name = isset($data_source_names[$index]) ? $data_source_names[$index] : $index;
+						$ds_name = $data_source_names[$index] ?? $index;
 
 						if (!empty($notified[$ds_name])) {
 							// 24hour notified, skipping
@@ -880,7 +876,7 @@ function rrdcheck_rrdtool_execute($command, &$pipes) {
 				break;
 			}
 
-			$read   = array($pipes[1]);
+			$read   = [$pipes[1]];
 			$write  = null;
 			$except = null;
 			$sec    = (int) floor($remaining);
@@ -902,11 +898,11 @@ function rrdcheck_rrdtool_execute($command, &$pipes) {
 				$stdout      .= $chunk;
 				$line_buffer .= $chunk;
 
-				if (substr($chunk, -1) === "\n") {
+				if (str_ends_with($chunk, "\n")) {
 					$trimmed     = ltrim($line_buffer);
 					$line_buffer = '';
 
-					if (strncmp($trimmed, 'OK u:', 5) === 0 || strncmp($trimmed, 'ERROR:', 6) === 0) {
+					if (str_starts_with($trimmed, 'OK u:') || str_starts_with($trimmed, 'ERROR:')) {
 						$done = true;
 
 						break;
