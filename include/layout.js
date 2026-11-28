@@ -2938,16 +2938,16 @@ function cactiIsPostActionUrl(href) {
 		"item_moveup",
 		"movedown",
 		"moveup",
+		"ajax_dnd",
+		"graph_dnd",
+		"tree_dnd",
+		"exitonchange",
 		"item_add_agr",
 		"item_add_atr",
 		"item_add_ttr",
 		"item_remove_agr",
 		"item_remove_atr",
-		"item_remove_ttr",
-		"ajax_dnd",
-		"graph_dnd",
-		"tree_dnd",
-		"exitonchange"
+		"item_remove_ttr"
 	],
 	"automation_graph_rules.php": [
 		"qedit"
