@@ -48,7 +48,8 @@ if (cacti_sizeof($parms)) {
 	$siteId     = 0;   # The ID of the site to add
 
 	$sortMethods = array('manual' => 1, 'alpha' => 2, 'natural' => 4, 'numeric' => 3);
-	$nodeTypes   = array('header' => 1, 'graph' => 2, 'host' => 3);
+	/* 'site' reuses the host type id; api_tree_item_save() only uses the type to gate the title requirement */
+	$nodeTypes   = array('header' => 1, 'graph' => 2, 'host' => 3, 'site' => 3);
 
 	$hostId         = 0;
 	$hostGroupStyle = 1; # 1 = Graph Template,  2 = Data Query Index
@@ -103,6 +104,10 @@ if (cacti_sizeof($parms)) {
 				break;
 			case '--host-id':
 				$hostId = $value;
+
+				break;
+			case '--site-id':
+				$siteId = $value;
 
 				break;
 			case '--quiet':
@@ -290,6 +295,12 @@ if (cacti_sizeof($parms)) {
 			$graphId        = 0;
 			$hostId         = 0;
 			$name           = '';
+
+			if (!ctype_digit((string) $siteId) || $siteId < 1) {
+				print "ERROR: site-id $siteId must be numeric > 0\n";
+				display_help();
+				exit(1);
+			}
 
 			if (!isset($sites[$siteId])) {
 				print "ERROR: No such site-id ($siteId) exists. Try --list-sites\n";
