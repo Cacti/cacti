@@ -337,8 +337,8 @@ function get_next_sequence($id, $field, $table_name, $group_query, $key_field='i
 			return $data['seq'];
 		}
 	} else {
-		$data = db_fetch_row_prepared("SELECT $field FROM $table_name WHERE $key_field = ?", array($id));
-		return isset($data[$field]) ? $data[$field] : 1;
+		$data = db_fetch_row_prepared("SELECT $field FROM $table_name WHERE $key_field = ?", [$id]);
+		return $data[$field] ?? 1;
 	}
 }
 
@@ -862,7 +862,7 @@ function aggregate_prune_graphs($local_graph_id = 0) {
 	$aggregate_graphs = array();
 	$local_graph_ids  = array();
 
-	$sql_params       = array();
+	$sql_params       = [];
 	$sql_where        = '';
 	if ($local_graph_id > 0) {
 		$sql_where    = 'AND ag.local_graph_id = ?';
@@ -890,14 +890,12 @@ function aggregate_prune_graphs($local_graph_id = 0) {
 	}
 
 	if (cacti_sizeof($local_graph_ids)) {
-		if ($local_graph_id > 0 && cacti_sizeof($aggregate_graphs)) {
-			db_execute('DELETE FROM aggregate_graphs_items
-				WHERE aggregate_graph_id IN (' . implode(',', $aggregate_graphs) . ')
-				AND local_graph_id IN (' . implode(',', $local_graph_ids) . ')');
-		} else {
-			db_execute('DELETE FROM aggregate_graphs_items
-				WHERE local_graph_id IN (' . implode(',', $local_graph_ids) . ')');
-		}
+		$scope = ($local_graph_id > 0 && cacti_sizeof($aggregate_graphs))
+			? 'aggregate_graph_id IN (' . implode(',', $aggregate_graphs) . ') AND '
+			: '';
+
+		db_execute('DELETE FROM aggregate_graphs_items
+			WHERE ' . $scope . 'local_graph_id IN (' . implode(',', $local_graph_ids) . ')');
 	}
 
 	if (cacti_sizeof($aggregate_graphs) || $local_graph_id > 0) {

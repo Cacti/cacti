@@ -107,7 +107,7 @@ function push_out_data_source_custom_data($data_template_id) {
 		AND (dtd.local_data_template_data_id = ?)",
 		array($data_template_data['id']));
 
-	$input_fields_by_dtd = array();
+	$input_fields_by_dtd = [];
 	if (cacti_sizeof($input_fields)) {
 		foreach ($input_fields as $input_field) {
 			if (isset($template_input_fields[$input_field['id']])) {
@@ -122,21 +122,19 @@ function push_out_data_source_custom_data($data_template_id) {
 	$did_vals  = '';
 	if (cacti_sizeof($data_sources)) {
 		foreach ($data_sources as $data_source) {
-			if (isset($input_fields_by_dtd[$data_source['id']])) {
-				foreach ($input_fields_by_dtd[$data_source['id']] as $input_field) {
-					/**
-					 * do not push out 'host fields'.  This list should never match as we have already
-					 * excluded these special types codes.  However, we will maintain for reference.
-					 */
-					if (!preg_match('/^' . VALID_HOST_FIELDS . '$/i', $input_field['type_code'])) {
-						/* this is not a 'host field', so we should either push out the value if it is templated */
-						$did_vals .= ($did_cnt == 0 ? '':',') . '(' . $input_field['id'] . ', ' . $data_source['id'] . ', ' . db_qstr($template_input_fields[$input_field['id']]['value']) . ')';
-						$did_cnt++;
-					} elseif ($template_input_fields[$input_field['id']]['value'] != $input_field['value']) {
-						/* templated input field deviates from current data source, so update required */
-						$did_vals .= ($did_cnt == 0 ? '':',') . '(' . $input_field['id'] . ', ' . $data_source['id'] . ', ' . db_qstr($template_input_fields[$input_field['id']]['value']) . ')';
-						$did_cnt++;
-					}
+			foreach ($input_fields_by_dtd[$data_source['id']] ?? [] as $input_field) {
+				/**
+				 * do not push out 'host fields'.  This list should never match as we have already
+				 * excluded these special types codes.  However, we will maintain for reference.
+				 */
+				if (!preg_match('/^' . VALID_HOST_FIELDS . '$/i', $input_field['type_code'])) {
+					/* this is not a 'host field', so we should either push out the value if it is templated */
+					$did_vals .= ($did_cnt == 0 ? '':',') . '(' . $input_field['id'] . ', ' . $data_source['id'] . ', ' . db_qstr($template_input_fields[$input_field['id']]['value']) . ')';
+					$did_cnt++;
+				} elseif ($template_input_fields[$input_field['id']]['value'] != $input_field['value']) {
+					/* templated input field deviates from current data source, so update required */
+					$did_vals .= ($did_cnt == 0 ? '':',') . '(' . $input_field['id'] . ', ' . $data_source['id'] . ', ' . db_qstr($template_input_fields[$input_field['id']]['value']) . ')';
+					$did_cnt++;
 				}
 			}
 
@@ -783,7 +781,7 @@ function resequence_graphs($graph_template_id, $local_graph_id = 0, $force = fal
 					FROM graph_templates_item
 					WHERE local_graph_id = ?
 					ORDER BY sequence, id',
-					array($lgid));
+					[$lgid]);
 
 				$deletes = array();
 
@@ -826,7 +824,7 @@ function resequence_graphs($graph_template_id, $local_graph_id = 0, $force = fal
 						db_execute_prepared('DELETE FROM graph_templates_item
 							WHERE id IN (' . implode(',', $deletes) . ')
 							AND local_graph_id = ?',
-							array($lgid));
+							[$lgid]);
 					}
 				}
 			}
