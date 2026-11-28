@@ -57,7 +57,7 @@ test('single-value lm-sensors reads use query-path scaling', function (): void {
 
 test('theme validation marks the configured theme valid', function (): void {
 	$source = consolidatedSource('lib/functions.php');
-	$probe  = strpos($source, "file_exists(CACTI_PATH_INCLUDE . '/themes/' . \$theme . '/main.css')");
+	$probe  = strpos($source, "\$theme = read_config_option('selected_theme', true);\n\n\t\tif (cacti_is_theme_name(\$theme)) {");
 
 	expect($probe)->not->toBeFalse()
 		->and(strpos($source, '$valid = true;', $probe))->not->toBeFalse();

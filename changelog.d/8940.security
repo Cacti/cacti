@@ -1,0 +1,1 @@
+Accept only installed theme names for the selected theme, treat the newtheme request value as a flag, and store drop-down user settings only when the value is one of the choices

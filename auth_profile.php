@@ -764,9 +764,9 @@ function settings_javascript() : void {
 	<script type='text/javascript'>
 		var themeFonts = <?php print read_config_option('font_method'); ?>;
 		var currentTab = <?php print json_encode((string) grv('tab')); ?>;
-		var currentTheme = '<?php print get_selected_theme(); ?>';
-		var currentLang = '<?php print read_config_option('user_language'); ?>';
-		var authMethod = '<?php print read_config_option('auth_method'); ?>';
+		var currentTheme = <?php print cacti_js_encode(get_selected_theme()); ?>;
+		var currentLang = <?php print cacti_js_encode((string) read_config_option('user_language')); ?>;
+		var authMethod = <?php print cacti_js_encode((string) read_config_option('auth_method')); ?>;
 
 		function clearUserSettings() {
 			$('#clear_settings').blur();

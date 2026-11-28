@@ -3310,7 +3310,6 @@ function html_common_header(string $title, string $selectedTheme = '') : void {
 	print get_md5_include_css('include/css/', theme: $selectedTheme, file: 'pace.css');
 	print get_md5_include_css('include/css/', theme: $selectedTheme, file: 'Diff.css');
 	print get_md5_include_css('include/css/', theme: $selectedTheme, file: 'jquery.toast.css');
-	print get_md5_include_css('include/css/', theme: $selectedTheme, file: 'main.css');
 
 	// Global styles
 	print get_md5_include_css('include/themes/' . $selectedTheme . '/main.css');

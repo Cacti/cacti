@@ -48,6 +48,7 @@ if ($i18n_theme !== '') {
 	$GLOBALS['i18n_probe_options']['selected_theme'] = $i18n_theme;
 
 	require_once dirname(__DIR__, 2) . '/Helpers/SourceSlice.php';
+	cacti_fixture_source_function($root . '/lib/functions.php', 'cacti_is_theme_name', '');
 	cacti_fixture_source_function($root . '/lib/functions.php', 'get_selected_theme', '');
 }
 

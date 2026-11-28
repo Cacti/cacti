@@ -99,6 +99,8 @@ if [[ -f tests/fixtures/Core/UserSettingsAndRealtimeHardening.php ]]; then
 	done
 fi
 
+run_probe ThemeNameHardening.php theme-name-hardening
+run_probe ThemeNameHardening.php theme-name-web-guard web-guard
 run_probe ConfiguredCommands.php configured-commands
 run_probe ConfiguredCommands.php deprecated-rebuild deprecated
 run_probe DisplayAndValidation.php display-validation

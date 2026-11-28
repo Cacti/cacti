@@ -82,6 +82,10 @@ function cacti_validate_user_setting_value(string $name, mixed $value, array $fi
 
 		$allowed = $field_array['array'];
 
+		if ($method === 'drop_array' && $allowed && ((!is_string($value) && !is_int($value)) || !array_key_exists($value, $allowed))) {
+			return false;
+		}
+
 		if (array_key_exists($str, $allowed)) {
 			return $str;
 		}
