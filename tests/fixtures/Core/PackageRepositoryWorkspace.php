@@ -151,6 +151,8 @@ foreach (['form_actions', 'package_file_get_contents', 'package_verify_key', 'pa
 	\cacti_fixture_source_function($controller, $handler, __NAMESPACE__);
 }
 \cacti_fixture_source_function($root . '/lib/package.php', 'find_paths', __NAMESPACE__);
+// package_accept_key() asks the authorization chokepoint, which routes to the realm stub above.
+\cacti_fixture_source_function($root . '/lib/auth.php', 'auth_authorize', __NAMESPACE__);
 
 $_SESSION               = [];
 $GLOBALS['workspace']   = \package_private_tmpdir();
