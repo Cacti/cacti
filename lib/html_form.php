@@ -1507,12 +1507,10 @@ function form_color_dropdown(string $form_name, mixed $prev_val, string $none_en
 
 	$on_change = " onChange='this.style.backgroundColor=this.options[this.selectedIndex].style.backgroundColor;$on_change'";
 
+	// red, then green, then blue: the six digit hex sorts in that order by itself
 	$colors_sql = 'SELECT *
 		FROM colors
-		ORDER BY
-			SUBSTRING(hex,0,2) ASC,
-			SUBSTRING(hex,2,2) ASC,
-			SUBSTRING(hex,4,2) ASC';
+		ORDER BY hex ASC';
 
 	$colors_list = db_fetch_assoc($colors_sql);
 
@@ -1530,7 +1528,7 @@ function form_color_dropdown(string $form_name, mixed $prev_val, string $none_en
 				$display = $color['name'] . ' (' . $color['hex'] . ')';
 			}
 
-			print "<option data-color='" . $color['hex'] . "' style='background-color: #" . $color['hex'] . ";' value='" . $color['id'] . "'";
+			print "<option data-color='" . htmle($color['hex']) . "' style='background-color: #" . htmle($color['hex']) . ";' value='" . $color['id'] . "'";
 
 			if ($prev_val == $color['id']) {
 				print ' selected';

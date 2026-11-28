@@ -147,9 +147,9 @@ function draw_color_template_items_list(array $item_list, string $filename, stri
 
 			print "</td>\n";
 
-			print "<td style='" . ((isset($item['hex'])) ? 'background-color:#' . $item['hex'] . ";'" : '') . "></td>\n";
+			print "<td style='" . ((isset($item['hex'])) ? 'background-color:#' . htmle($item['hex']) . ';' : '') . "'></td>\n";
 
-			print '<td>' . $item['hex'] . "</td>\n";
+			print '<td>' . htmle($item['hex'] ?? '') . "</td>\n";
 
 			if ($disable_controls == false) {
 				print "<td class='right nowrap'>";
@@ -396,8 +396,14 @@ function color_item_movedown() : void {
 
 	$current_sequence = db_fetch_row_prepared('SELECT color_template_item_id, sequence
 		FROM color_template_items
-		WHERE color_template_item_id = ?',
-		[grv('color_template_item_id')]);
+		WHERE color_template_item_id = ?
+		AND color_template_id = ?',
+		[grv('color_template_item_id'), grv('color_template_id')]);
+
+	// an unknown item, or one of another template, has nothing to swap with
+	if (!cacti_sizeof($current_sequence)) {
+		return;
+	}
 
 	cacti_log('movedown Id: ' . $current_sequence['color_template_item_id'] . ' Seq:' . $current_sequence['sequence'],
 		false, 'WEBUI', POLLER_VERBOSITY_DEBUG);
@@ -408,6 +414,11 @@ function color_item_movedown() : void {
 		AND color_template_id = ?
 		ORDER BY sequence ASC limit 1',
 		[$current_sequence['sequence'], grv('color_template_id')]);
+
+	// the last item cannot move down
+	if (!cacti_sizeof($next_sequence)) {
+		return;
+	}
 
 	cacti_log('movedown Id: ' . $next_sequence['color_template_item_id'] . ' Seq:' . $next_sequence['sequence'],
 		false, 'WEBUI', POLLER_VERBOSITY_DEBUG);
@@ -436,8 +447,14 @@ function color_item_moveup() : void {
 
 	$current_sequence = db_fetch_row_prepared('SELECT color_template_item_id, sequence
 		FROM color_template_items
-		WHERE color_template_item_id = ?',
-		[grv('color_template_item_id')]);
+		WHERE color_template_item_id = ?
+		AND color_template_id = ?',
+		[grv('color_template_item_id'), grv('color_template_id')]);
+
+	// an unknown item, or one of another template, has nothing to swap with
+	if (!cacti_sizeof($current_sequence)) {
+		return;
+	}
 
 	cacti_log('moveup Id: ' . $current_sequence['color_template_item_id'] . ' Seq:' . $current_sequence['sequence'],
 		false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
@@ -448,6 +465,11 @@ function color_item_moveup() : void {
 		AND color_template_id = ?
 		ORDER BY sequence DESC limit 1',
 		[$current_sequence['sequence'], grv('color_template_id')]);
+
+	// the first item cannot move up
+	if (!cacti_sizeof($previous_sequence)) {
+		return;
+	}
 
 	cacti_log('moveup Id: ' . $previous_sequence['color_template_item_id'] . ' Seq:' . $previous_sequence['sequence'],
 		false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
@@ -562,16 +584,22 @@ function color_item_edit() : void {
 		WHERE color_template_id = ?',
 		[grv('color_template_id')]);
 
+	$template_name = is_array($template) ? $template['name'] : '';
+
 	if (isrv('color_template_item_id') && (grv('color_template_item_id') > 0)) {
 		$template_item = db_fetch_row_prepared('SELECT *
 			FROM color_template_items
 			WHERE color_template_item_id = ?',
 			[grv('color_template_item_id')]);
 
-		$header_label = __esc('Color Template Items [edit Report Item: %s]', $template['name']);
+		if (!is_array($template_item)) {
+			$template_item = [];
+		}
+
+		$header_label = __esc('Color Template Items [edit Item: %s]', $template_name);
 	} else {
 		$template_item = [];
-		$header_label  = __esc('Color Template Items [new Report Item: %s]', $template['name']);
+		$header_label  = __esc('Color Template Items [new Item: %s]', $template_name);
 	}
 
 	form_start('color_templates.php', 'aggregate_color_item_edit');
@@ -685,8 +713,8 @@ function color_template_edit() : void {
 	// ====================================================
 
 	if (!ierv('color_template_id')) {
-		$template     = db_fetch_row_prepared('SELECT * FROM color_templates WHERE color_template_id = ?', [grv('color_template_id')]);
-		$header_label = __esc('Color Template [edit: %s]', $template['name']);
+		$template     = db_fetch_row_prepared('SELECT * FROM color_templates WHERE color_template_id = ?', [grv('color_template_id')]) ?: [];
+		$header_label = __esc('Color Template [edit: %s]', $template['name'] ?? '');
 	} else {
 		$header_label = __('Color Template [new]');
 	}
@@ -747,13 +775,17 @@ function sync_color_templates(int $color_template) : void {
 		}
 	}
 
-	$aggregate_graphs = db_fetch_assoc_prepared('SELECT DISTINCT ag.aggregate_template_id, ag.local_graph_id
+	/*
+	 * Aggregates that keep their own items, either without a template or with template
+	 * propagation off, and that use this color template.  They are pushed out from their
+	 * own items, as aggregate_graphs.php does when one of them is saved.
+	 */
+	$aggregate_graphs = db_fetch_assoc_prepared("SELECT DISTINCT ag.local_graph_id
 		FROM aggregate_graphs_graph_item AS agi
-		LEFT JOIN aggregate_graphs AS ag
-		ON ag.id=agi.aggregate_graph_id
-		WHERE (ag.aggregate_template_id > 0 AND ag.template_propogation = "")
-		OR ag.aggregate_template_id = 0
-		AND agi.color_template = ?',
+		INNER JOIN aggregate_graphs AS ag
+		ON ag.id = agi.aggregate_graph_id
+		WHERE (ag.aggregate_template_id = 0 OR ag.template_propogation = '')
+		AND agi.color_template = ?",
 		[$color_template]);
 
 	if (cacti_sizeof($aggregate_graphs)) {
@@ -761,7 +793,7 @@ function sync_color_templates(int $color_template) : void {
 		$graphs = cacti_sizeof($aggregate_graphs);
 
 		foreach ($aggregate_graphs as $id) {
-			if (!push_out_aggregates($id['aggregate_template_id'], $id['local_graph_id'])) {
+			if (!push_out_aggregates(0, $id['local_graph_id'])) {
 				$failed++;
 			}
 		}
@@ -772,7 +804,7 @@ function sync_color_templates(int $color_template) : void {
 	} elseif ($found) {
 		raise_message('color_template_sync', __('Color Template \'%s\' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out', $name, $templates, $graphs), MESSAGE_LEVEL_INFO);
 	} else {
-		raise_message('color_template_sync', __('Color Template \'%s\' had no Aggregate Templates or Graphs using this Color Template.', $name, $templates, $graphs), MESSAGE_LEVEL_INFO);
+		raise_message('color_template_sync', __('Color Template \'%s\' had no Aggregate Templates or Graphs using this Color Template.', $name), MESSAGE_LEVEL_INFO);
 	}
 }
 

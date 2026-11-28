@@ -2893,6 +2893,20 @@ msgid "Version %s"
 msgstr ""
 
 #: color.php
+msgid "Named Colors are read only and cannot be changed."
+msgstr ""
+
+#: color.php
+#, php-format
+msgid "Another Color already uses the Hex value %s."
+msgstr ""
+
+#: color.php
+#, php-format
+msgid "%d of the selected Colors were not deleted because they are Named Colors or still in use."
+msgstr ""
+
+#: color.php
 msgid "Unnamed Color"
 msgstr ""
 
@@ -3096,12 +3110,12 @@ msgstr ""
 
 #: color_templates.php
 #, php-format
-msgid "Color Template Items [edit Report Item: %s]"
+msgid "Color Template Items [edit Item: %s]"
 msgstr ""
 
 #: color_templates.php
 #, php-format
-msgid "Color Template Items [new Report Item: %s]"
+msgid "Color Template Items [new Item: %s]"
 msgstr ""
 
 #: color_templates.php

@@ -1,0 +1,1 @@
+Enforce Named Colors as read only, keep colors in use on delete, require six hex digits, and repair the Colors import, export, color template sync and item ordering
