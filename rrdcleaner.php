@@ -214,13 +214,9 @@ function get_files() : void {
 			$files = explode("\n", $scan);            // Split based on \n
 
 			foreach ($files as $file) {
-				// Split from the right so a comma stays part of the file name, and
-				// skip incomplete records such as the listing's trailing blank line.
-				if (!preg_match('/^(.+),([0-9]+),([0-9]+)$/D', $file, $parts)) {
-					continue;
-				}
+				[$pathname, $size, $mtime] = explode(',', $file);
 
-				$sql[] = '(' . db_qstr(str_replace($rra_path, '', $parts[1])) . ', ' . (int) $parts[2] . ', ' . db_qstr(date('Y-m-d H:i:s', (int) $parts[3])) . ',0)';
+				$sql[] = "('" . str_replace($rra_path, '', $pathname) . "', " . $size . ", '" . date('Y-m-d H:i:s', intval($mtime)) . "',0)";
 				$size++;
 
 				if ($size == 400) {
@@ -240,7 +236,7 @@ function get_files() : void {
 
 		foreach ($iterator as $file) {
 			if (substr($file->getPathname(), -3) == 'rrd' && !($archive && strstr($file->getPathname(), $arcbase . '/') !== false)) {
-				$sql[] = '(' . db_qstr(str_replace($rra_path, '', $file->getPathname())) . ', ' . $file->getSize() . ', ' . db_qstr(date('Y-m-d H:i:s', $file->getMTime())) . ',0)';
+				$sql[] = "('" . str_replace($rra_path, '', $file->getPathname()) . "', " . $file->getSize() . ", '" . date('Y-m-d H:i:s', $file->getMTime()) . "',0)";
 				$size++;
 
 				if ($size == 400) {

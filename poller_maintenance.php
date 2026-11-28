@@ -853,28 +853,29 @@ function secpass_check_expired() : void {
 }
 
 /**
- * rrdclean_file_is_removable - checks a queued file before it is removed or archived
- *
- * Only location is checked. A name with a space or a quote is still accepted,
- * because the cleaner must be able to remove such files.
- *
- * @param mixed $name      The file name as queued in data_source_purge_action
- * @param mixed $real_file The expanded local file name
- * @param bool  $proxy     Whether the file is handled by the RRDproxy
- *
- * @return bool True when the file may be removed or archived
+ * Resolve a queued local name using the same placeholders as the poller.
+ * An unavailable file or a path outside the RRA root cannot be removed.
  */
-function rrdclean_file_is_removable(mixed $name, mixed $real_file, bool $proxy) : bool {
-	if (!is_string($name) || !is_string($real_file)) {
+function rrdclean_queue_local_source(mixed $name, string $root) : ?string {
+	if (!is_string($name)) {
+		return null;
+	}
+
+	$source = str_replace(['<path_rra>', '<path_cacti>'], [$root, CACTI_PATH_BASE], $name);
+
+	if ($source === $name) {
+		$source = $root . '/' . $name;
+	}
+
+	return data_source_path_within_rra($source) ? $source : null;
+}
+
+/** The RRDproxy reads one command per line and resolves each relative name itself. */
+function rrdclean_proxy_name_is_allowed(mixed $name) : bool {
+	if (!is_string($name)) {
 		return false;
 	}
 
-	if (!$proxy) {
-		return data_source_path_within_rra($real_file);
-	}
-
-	// The RRDproxy resolves the name itself and reads one command per line, so
-	// only a name without control characters or dot segments is passed on.
 	if ($name === '' || preg_match('/[\x00-\x1f\x7f]/', $name)) {
 		return false;
 	}
@@ -898,7 +899,9 @@ function remove_files(array $file_array) : void {
 	$rrdtool_pipe = null;
 	$rrd_archive  = '';
 
-	if (read_config_option('storage_location')) {
+	$proxy = (bool) read_config_option('storage_location');
+
+	if ($proxy) {
 		$rrdtool_pipe = rrd_init();
 
 		rrdtool_execute('setcnn timeout off', false, RRDTOOL_OUTPUT_NULL, $rrdtool_pipe, $logopt = 'POLLER');
@@ -916,27 +919,17 @@ function remove_files(array $file_array) : void {
 
 	// now scan the files
 	foreach ($file_array as $file) {
-		// the variables shouldn't be here, but I'm keeping them just in case
-		$real_file = str_replace('<path_rra>', $rra_path, $file['name']);
-		$real_file = str_replace('<path_cacti>', CACTI_PATH_BASE, $real_file);
+		$real_file = $proxy ? '' : rrdclean_queue_local_source($file['name'], $rra_path);
 
-		if ($real_file == $file['name']) {
-			$real_file = $rra_path . '/' . $file['name'];
+		if ($real_file === null) {
+			cacti_log('WARNING: RRDfile Maintenance skipped ' . json_encode($file['name']), true, 'MAINT');
+			db_execute_prepared('DELETE FROM data_source_purge_action WHERE name = ?', [$file['name']]);
+
+			continue;
 		}
 
 		$base_file = str_replace('<path_rra>', '', $file['name']);
 		$base_file = str_replace('<path_cacti>', '', $base_file);
-
-		if (!rrdclean_file_is_removable($file['name'], $real_file, read_config_option('storage_location') != 0)) {
-			cacti_log('WARNING: RRDfile Maintenance skipped ' . rrd_strip_control_chars($file['name']) . ': not a file below the RRA directory', true, 'MAINT');
-
-			// drop the entry, or the purge would fetch it again forever
-			db_execute_prepared('DELETE FROM `data_source_purge_action`
-				WHERE name = ?',
-				[$file['name']]);
-
-			continue;
-		}
 
 		if (read_config_option('storage_location') == 0) {
 			switch ($file['action']) {
@@ -971,6 +964,13 @@ function remove_files(array $file_array) : void {
 					break;
 			}
 		} else {
+			if (!rrdclean_proxy_name_is_allowed($file['name'])) {
+				cacti_log('WARNING: RRDfile Maintenance skipped ' . rrd_strip_control_chars($file['name']), true, 'MAINT');
+				db_execute_prepared('DELETE FROM data_source_purge_action WHERE name = ?', [$file['name']]);
+
+				continue;
+			}
+
 			switch($file['action']) {
 				case '1':
 					if (rrdtool_execute('unlink ' . $file['name'], false, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, $logopt = 'MAINT')) {
@@ -1039,7 +1039,7 @@ function remove_files(array $file_array) : void {
 		}
 	}
 
-	if (read_config_option('storage_location')) {
+	if ($proxy) {
 		rrd_close($rrdtool_pipe);
 	}
 
