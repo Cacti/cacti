@@ -211,6 +211,15 @@ foreach ($data_sources as $info) {
 	$old_rrd_path  = $info['rrd_path'];
 	$local_data_id = $info['local_data_id'];
 
+	// A manual RRD can live outside the managed tree, even when its storage is offline.
+	if (\Symfony\Component\Filesystem\Path::isAbsolute((string) $info['data_source_path'])
+		&& str_ends_with(strtolower($old_rrd_path), '.rrd')
+		&& !data_source_path_within_rra($old_rrd_path)) {
+		$skip_count++;
+
+		continue;
+	}
+
 	// acquire lock in order to prevent race conditions
 	while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds.$local_data_id', 1)")) {
 		usleep(50000);
@@ -303,6 +312,19 @@ foreach ($data_sources as $info) {
 
 		// alter database
 		update_database($info);
+	}
+
+	/* The old path comes from the data source's stored path.  Only move an
+	 * RRD file that is inside the RRA directory; anything else is left where
+	 * it is, so a stored path cannot pull another file into the RRA tree. */
+	if (file_exists($old_rrd_path) && (!data_source_path_within_rra($old_rrd_path) || strtolower(substr($old_rrd_path, -4)) !== '.rrd')) {
+		$warn_count++;
+
+		print "WARNING: RRD Path '$old_rrd_path' is not an RRD file inside the RRA directory, Skipping" . PHP_EOL;
+
+		db_fetch_cell_prepared('SELECT RELEASE_LOCK(?)', ['boost.single_ds.' . $local_data_id]);
+
+		continue;
 	}
 
 	/**
