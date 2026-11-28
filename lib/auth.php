@@ -597,6 +597,12 @@ function user_copy(string $template_user, string $new_user, int $template_realm 
 
 	api_plugin_hook_function('copy_user', ['template_id' => $template_id, 'new_id' => $new_id]);
 
+	// the copied row carries the template's reset_perms, which can equal the
+	// overwritten user's, so expire that user's cached permissions explicitly
+	if ($overwrite === true && is_array($user_exist) && isset($user_exist['id'])) {
+		reset_user_perms($user_exist['id']);
+	}
+
 	return $new_id;
 }
 
@@ -4441,6 +4447,56 @@ function cacti_decrypt_secret_with_key(string $ciphertext, string $key) : string
 	$ciphertext = substr($raw, $iv_length + $tag_length);
 
 	return openssl_decrypt($ciphertext, CACTI_SECRET_CIPHER, $key, OPENSSL_RAW_DATA, $iv, $tag, '');
+}
+
+/** @return array{0: string, 1: string} Grant and removal statements for a fixed association kind. */
+function auth_permission_association_queries(int $permission_type, bool $group) : array {
+	if ($permission_type === 0) {
+		if ($group) {
+			return ['REPLACE INTO user_auth_group_members (group_id, user_id) VALUES (?, ?)', 'DELETE FROM user_auth_group_members WHERE group_id = ? AND user_id = ?'];
+		}
+
+		return ['REPLACE INTO user_auth_group_members (user_id, group_id) VALUES (?, ?)', 'DELETE FROM user_auth_group_members WHERE user_id = ? AND group_id = ?'];
+	}
+
+	if ($group) {
+		return ['REPLACE INTO user_auth_group_perms (group_id, item_id, type) VALUES (?, ?, ?)', 'DELETE FROM user_auth_group_perms WHERE group_id = ? AND item_id = ? AND type = ?'];
+	}
+
+	return ['REPLACE INTO user_auth_perms (user_id, item_id, type) VALUES (?, ?, ?)', 'DELETE FROM user_auth_perms WHERE user_id = ? AND item_id = ? AND type = ?'];
+}
+
+/**
+ * Apply checked permission or membership associations, then expire affected caches.
+ * A zero permission type selects membership rows; the page supplies all types.
+ */
+function auth_update_permission_associations(int $permission_type, bool $group = false) : void {
+	$queries = auth_permission_association_queries($permission_type, $group);
+	$query   = $queries[gnrv('drp_action') == '1' ? 0 : 1];
+
+	foreach ($_POST as $var => $val) {
+		if (!preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
+			continue;
+		}
+		input_validate_input_number($matches[1], 'chk[1]');
+		$params = [gnrv('id'), $matches[1]];
+
+		if ($permission_type !== 0) {
+			$params[] = $permission_type;
+		}
+		db_execute_prepared($query, $params);
+
+		if ($group && $permission_type === 0) {
+			// Removed members are no longer found by reset_group_perms().
+			reset_user_perms((int) $matches[1]);
+		}
+	}
+
+	if (!$group) {
+		reset_user_perms(gfrv('id'));
+	} elseif ($permission_type !== 0) {
+		reset_group_perms(gfrv('id'));
+	}
 }
 
 /**
