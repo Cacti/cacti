@@ -910,8 +910,10 @@ function resolve_dependencies($type, $id, $dep_array) {
 		$recursive = true;
 		/* in the first turn, search all inherited cdef items related to all cdef's known on highest recursion level */
 		$search_cdef_items = array_rekey($cdef_items, 'cdef_id', 'cdef_id');
+		$visited_cdefs     = $search_cdef_items;
+
 		if (cacti_sizeof($cdef_items) > 0) {
-			while ($recursive) {
+			while ($recursive && cacti_sizeof($search_cdef_items) > 0) {
 				/* are there any inherited cdef's within those referenced by any graph item?
 				 * search for all cdef_items of type = 5 (inherited cdef)
 				 * but fetch only those related to already given cdef's */
@@ -924,16 +926,33 @@ function resolve_dependencies($type, $id, $dep_array) {
 
 				/* in case we found any */
 				if (cacti_sizeof($inherited_cdef_items) > 0) {
-					/* join all cdef's found
-					 * ATTENTION!
-					 * sequence of parameters matters!
-					 * we must place the newly found inherited items first
-					 * reason is, that during import, the leaves have to be tackled first,
-					 * that is, the inherited items must be placed first so that they are "resolved" (decoded)
-					 * first during re-import */
-					$cdef_items = array_merge_recursive($inherited_cdef_items, $cdef_items);
-					/* for the next turn, search only new cdef's */
-					$search_cdef_items = $inherited_cdef_items;
+					$new_cdef_items  = array();
+					$next_search_ids = array();
+
+					foreach ($inherited_cdef_items as $inherited_item) {
+						$inherited_id = $inherited_item['cdef_id'];
+						if (!isset($visited_cdefs[$inherited_id])) {
+							$visited_cdefs[$inherited_id]   = $inherited_id;
+							$next_search_ids[$inherited_id] = $inherited_id;
+							$new_cdef_items[]               = $inherited_item;
+						}
+					}
+
+					if (cacti_sizeof($new_cdef_items) > 0) {
+						/* join all cdef's found
+						 * ATTENTION!
+						 * sequence of parameters matters!
+						 * we must place the newly found inherited items first
+						 * reason is, that during import, the leaves have to be tackled first,
+						 * that is, the inherited items must be placed first so that they are "resolved" (decoded)
+						 * first during re-import */
+						$cdef_items = array_merge($new_cdef_items, $cdef_items);
+						/* for the next turn, search only new cdef's */
+						$search_cdef_items = $next_search_ids;
+					} else {
+						/* all discovered cdef's were already visited; stop recursion */
+						$recursive = false;
+					}
 				} else {
 					/* else stop recursion */
 					$recursive = false;

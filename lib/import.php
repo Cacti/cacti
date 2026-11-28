@@ -120,7 +120,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 		'vdef_item' => array(
 			'table' => 'vdef_items',
 		),
-		'data_source_profiles' => array(
+		'data_source_profile' => array(
 			'table' => 'data_source_profiles',
 		),
 		'data_source_profile_rra' => array(
@@ -229,37 +229,58 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 
 				switch($type) {
 				case 'graph_template':
-					$hash_cache += xml_to_graph_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $dep_hash_cache[$type][$i]['version'], $remove_orphans);
+					$cache_add = xml_to_graph_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $dep_hash_cache[$type][$i]['version'], $remove_orphans);
+					if (is_array($cache_add)) {
+						$hash_cache += $cache_add;
+					}
 					break;
 				case 'data_template':
-					$hash_cache += xml_to_data_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $import_as_new, $profile_id);
+					$cache_add = xml_to_data_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $import_as_new, $profile_id);
+					if (is_array($cache_add)) {
+						$hash_cache += $cache_add;
+					}
 					$repair++;
 					break;
 				case 'host_template':
-					$hash_cache += xml_to_host_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $host_template_data, $class);
+					$cache_add = xml_to_host_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $host_template_data, $class);
+					if (is_array($cache_add)) {
+						$hash_cache += $cache_add;
+					}
 					break;
 				case 'data_input_method':
-					$hash_cache += xml_to_data_input_method($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
+					$cache_add = xml_to_data_input_method($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
+					if (is_array($cache_add)) {
+						$hash_cache += $cache_add;
+					}
 					$repair++;
 					break;
 				case 'data_query':
-					$hash_cache += xml_to_data_query($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $files, $replace_svalues);
+					$cache_add = xml_to_data_query($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $files, $replace_svalues);
+					if (is_array($cache_add)) {
+						$hash_cache += $cache_add;
+					}
 					break;
 				case 'gprint_preset':
-					$hash_cache += xml_to_gprint_preset($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
+					$cache_add = xml_to_gprint_preset($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
+					if (is_array($cache_add)) {
+						$hash_cache += $cache_add;
+					}
 					break;
 				case 'cdef':
-					$return = xml_to_cdef($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
-					if ($return !== false) {
-						$hash_cache += $return;
+					$cache_add = xml_to_cdef($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
+					if (is_array($cache_add)) {
+						$hash_cache += $cache_add;
 					}
 					break;
 				case 'vdef':
-					$hash_cache += xml_to_vdef($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
+					$cache_add = xml_to_vdef($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
+					if (is_array($cache_add)) {
+						$hash_cache += $cache_add;
+					}
 					break;
 				case 'data_source_profile':
 					$cache_add = xml_to_data_source_profile($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $import_as_new, $profile_id);
-					if ($cache_add !== false) {
+					if (is_array($cache_add)) {
 						$hash_cache += $cache_add;
 					}
 					break;
@@ -274,7 +295,9 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 					$param['type']       = $type;
 					$param['version']    = $dep_hash_cache[$type][$i]['version'];
 					$param = api_plugin_hook_function('import_action', $param);
-					$hash_cache += $param['hash_cache'];
+					if (isset($param['hash_cache']) && is_array($param['hash_cache'])) {
+						$hash_cache += $param['hash_cache'];
+					}
 					break;
 				}
 
@@ -1634,7 +1657,7 @@ function xml_to_data_source_profile($hash, &$xml_array, &$hash_cache, $import_as
 					array($dsp_id, $import_template_id));
 			}
 
-			$hash_cache['data_source_profiles'][$hash] = $dsp_id;
+			$hash_cache['data_source_profile'][$hash] = $dsp_id;
 
 			/* import into: data_source_profiles_cf */
 			$hash_items = explode('|', $xml_array['cf_items']);
@@ -1950,12 +1973,12 @@ function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 						}
 
 						if (!$damaged_item) {
-							$_cdef_id = db_fetch_cell_prepared('SELECT id
+							$inherited_cdef_id = db_fetch_cell_prepared('SELECT id
 								FROM cdef
 								WHERE hash = ?',
 								array($parsed_item_hash['hash']));
 
-							$save[$field_name] = $_cdef_id;
+							$save[$field_name] = $inherited_cdef_id;
 						}
 					} else {
 						$save[$field_name] = xml_character_decode($item_array[$field_name]);
@@ -2449,7 +2472,7 @@ function hash_to_friendly_name($hash, $display_type_name) {
 			array($parsed_hash['hash'])));
 		case 'data_source_profile':
 			return $prepend . html_escape(db_fetch_cell_prepared('SELECT name
-			FROM data_source_profile
+			FROM data_source_profiles
 			WHERE hash = ?',
 			array($parsed_hash['hash'])));
 		case 'round_robin_archive':

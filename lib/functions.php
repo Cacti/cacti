@@ -260,6 +260,7 @@ function set_user_setting($config_name, $value, $user = -1) {
 			array($user, $config_name, $value));
 
 		unset($_SESSION['sess_user_config_array']);
+		user_setting_exists($config_name, $user, true);
 		$settings_user[$config_name]['value'] = $value;
 	}
 }
@@ -270,13 +271,19 @@ function set_user_setting($config_name, $value, $user = -1) {
  * @param $config_name - the name of the configuration setting as specified $settings_user array
  *   in 'include/global_settings.php'
  * @param $user_id - the id of the user to check the configuration value for
+ * @param $reset - if true, clears the cached entry for this user/setting pair
  *
  * @return (bool) - true if a value exists, false if a value does not exist
  */
-function user_setting_exists($config_name, $user_id) {
+function user_setting_exists($config_name, $user_id, $reset = false) {
 	static $user_setting_values = array();
 
-	if (!isset($user_setting_values[$config_name])) {
+	if ($reset) {
+		unset($user_setting_values[$user_id][$config_name]);
+		return false;
+	}
+
+	if (!isset($user_setting_values[$user_id][$config_name])) {
 		$value = 0;
 		if (db_table_exists('settings_user')) {
 			$value = db_fetch_cell_prepared('SELECT COUNT(*)
@@ -287,13 +294,13 @@ function user_setting_exists($config_name, $user_id) {
 		}
 
 		if ($value !== false && $value > 0) {
-			$user_setting_values[$config_name] = true;
+			$user_setting_values[$user_id][$config_name] = true;
 		} else {
-			$user_setting_values[$config_name] = false;
+			$user_setting_values[$user_id][$config_name] = false;
 		}
 	}
 
-	return $user_setting_values[$config_name];
+	return $user_setting_values[$user_id][$config_name];
 }
 
 /**
@@ -318,6 +325,7 @@ function clear_user_setting($config_name, $user = -1) {
 	}
 
 	unset($_SESSION['sess_user_config_array']);
+	user_setting_exists($config_name, $user, true);
 }
 
 /**
@@ -508,18 +516,19 @@ function set_config_option($config_name, $value, $remote = false) {
 		}
 	}
 
-	$config_array = array();
+	// Store the value back in the config cache array for later retrieval
 	if ($config['is_web']) {
-		$sess = true;
-	} else {
-		$sess = false;
-	}
+		if (!isset($_SESSION['sess_config_array']) || !is_array($_SESSION['sess_config_array'])) {
+			$_SESSION['sess_config_array'] = array();
+		}
 
-	// Store the array back for later retrieval
-	if ($sess) {
-		$_SESSION['sess_config_array']  = $value;
+		$_SESSION['sess_config_array'][$config_name] = $value;
 	} else {
-		$config['config_options_array'] = $value;
+		if (!isset($config['config_options_array']) || !is_array($config['config_options_array'])) {
+			$config['config_options_array'] = array();
+		}
+
+		$config['config_options_array'][$config_name] = $value;
 	}
 
 	if (!empty($config['DEBUG_SET_CONFIG_OPTION'])) {
@@ -690,14 +699,17 @@ function prime_common_config_settings() {
 		'name', 'value'
 	);
 
-	if (isset($_SESSION['sess_config_array'])) {
+	if (isset($_SESSION['sess_config_array']) && is_array($_SESSION['sess_config_array'])) {
 		$sess = true;
 	} else {
 		$sess = false;
+		if (!isset($config['config_options_array']) || !is_array($config['config_options_array'])) {
+			$config['config_options_array'] = array();
+		}
 	}
 
 	if (cacti_sizeof($settings)) {
-		foreach($settings as $name => $value) {
+		foreach ($settings as $name => $value) {
 			if ($sess) {
 				$_SESSION['sess_config_array'][$name] = $value;
 			} else {
@@ -1468,11 +1480,52 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 
 	$fp = fopen($file_name, 'r');
 
-	/* Count all lines in the logfile */
-	$total_rows = 0;
-	while (($line = fgets($fp)) !== false) {
-		if (determine_display_log_entry($message_type, $line, $filter, $matches)) {
-			++$total_rows;
+	if ($fp === false) {
+		return array(__('Error %s is not readable', $file_name));
+	}
+
+	/* Single forward pass: count matching rows, keep the tail page in a
+	 * bounded ring buffer, and record byte offsets (or sparse checkpoints)
+	 * when an earlier page is requested so determine_display_log_entry()
+	 * is not evaluated across the entire file twice. */
+	$total_rows        = 0;
+	$tail_buffer       = array();
+	$page_offsets      = array();
+	$checkpoints       = array();
+	$checkpoint_stride = 1000;
+	$window_size       = ($page_nr > 1 && $number_of_lines > 0) ? ($page_nr * $number_of_lines) : 0;
+	$track_offsets     = ($window_size > 0 && $window_size <= 100000);
+
+	if ($window_size > 0) {
+		while (true) {
+			$offset = ftell($fp);
+			$line   = fgets($fp);
+
+			if ($line === false) {
+				break;
+			}
+
+			if (determine_display_log_entry($message_type, $line, $filter, $matches)) {
+				$tail_buffer[$total_rows % $number_of_lines] = array($total_rows + 1, $line);
+
+				if ($track_offsets) {
+					$page_offsets[$total_rows % $window_size] = $offset;
+				} elseif (($total_rows % $checkpoint_stride) === 0) {
+					$checkpoints[$total_rows] = $offset;
+				}
+
+				++$total_rows;
+			}
+		}
+	} else {
+		while (($line = fgets($fp)) !== false) {
+			if (determine_display_log_entry($message_type, $line, $filter, $matches)) {
+				if ($number_of_lines > 0) {
+					$tail_buffer[$total_rows % $number_of_lines] = array($total_rows + 1, $line);
+				}
+
+				++$total_rows;
+			}
 		}
 	}
 
@@ -1482,8 +1535,14 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 		$page_nr = 1;
 	}
 
-	/* rewind file pointer, to start all over */
-	rewind($fp);
+	force_session_data();
+
+	$file_array = array();
+
+	if ($total_rows === 0 || $number_of_lines <= 0) {
+		fclose($fp);
+		return $file_array;
+	}
 
 	$start = $total_rows - ($page_nr * $number_of_lines);
 	$end   = $start + $number_of_lines;
@@ -1492,27 +1551,41 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 		$start = 0;
 	}
 
-	force_session_data();
-
-	/* load up the lines into an array */
-	$file_array = array();
-	$i = 0;
-	while (($line = fgets($fp)) !== false) {
-		$display = determine_display_log_entry($message_type, $line, $filter, $matches);
-
-		if ($display === false) {
-			continue;
+	if ($page_nr == 1) {
+		for ($idx = $start; $idx < $end; $idx++) {
+			$entry = $tail_buffer[$idx % $number_of_lines];
+			$file_array[$entry[0]] = $entry[1];
 		}
-		if ($i < $start) {
+	} elseif ($page_nr > 1 && $track_offsets) {
+		for ($idx = $start; $idx < $end; $idx++) {
+			fseek($fp, $page_offsets[$idx % $window_size]);
+			$line = fgets($fp);
+			if ($line !== false) {
+				$file_array[$idx + 1] = $line;
+			}
+		}
+	} elseif ($page_nr > 1) {
+		$cp_idx = (int) (floor($start / $checkpoint_stride) * $checkpoint_stride);
+		fseek($fp, isset($checkpoints[$cp_idx]) ? $checkpoints[$cp_idx] : 0);
+
+		$i = $cp_idx;
+		while (($line = fgets($fp)) !== false) {
+			$display = determine_display_log_entry($message_type, $line, $filter, $matches);
+
+			if ($display === false) {
+				continue;
+			}
+			if ($i < $start) {
+				++$i;
+				continue;
+			}
+			if ($i >= $end) {
+				break;
+			}
+
 			++$i;
-			continue;
+			$file_array[$i] = $line;
 		}
-		if ($i >= $end) {
-			break;
-		}
-
-		++$i;
-		$file_array[$i] = $line;
 	}
 
 	fclose($fp);
@@ -2767,8 +2840,10 @@ function get_data_source_path($local_data_id, $expand_paths) {
 		return '';
 	}
 
-	if (isset($data_source_path_cache[$local_data_id])) {
-		return $data_source_path_cache[$local_data_id];
+	$cache_key = $local_data_id . ':' . ($expand_paths ? '1' : '0');
+
+	if (isset($data_source_path_cache[$cache_key])) {
+		return $data_source_path_cache[$cache_key];
 	}
 
 	$data_source = db_fetch_row_prepared('SELECT name, data_source_path
@@ -2791,7 +2866,11 @@ function get_data_source_path($local_data_id, $expand_paths) {
 			$data_source_path = str_replace('<path_rra>/', $config['rra_path'] . '/', $data_source_path);
 		}
 
-		$data_source_path_cache[$local_data_id] = $data_source_path;
+		if (cacti_sizeof($data_source_path_cache) >= 4096) {
+			$data_source_path_cache = array();
+		}
+
+		$data_source_path_cache[$cache_key] = $data_source_path;
 
 		return $data_source_path;
 	}
@@ -5744,11 +5823,20 @@ function get_dns_from_ip ($ip, $dns, $timeout = 1000) {
 	/* create UDP socket */
 	$handle = @fsockopen("udp://$dns", 53);
 
-	@stream_set_timeout($handle, floor($timeout/1000), ($timeout*1000)%1000000);
-	@stream_set_blocking($handle, 1);
+	if ($handle === false) {
+		return strtoupper($ip);
+	}
+
+	@stream_set_timeout($handle, (int) floor($timeout / 1000), ($timeout * 1000) % 1000000);
+	@stream_set_blocking($handle, true);
 
 	/* send our request (and store request size so we can cheat later) */
 	$requestsize = @fwrite($handle, $data);
+
+	if ($requestsize === false) {
+		@fclose($handle);
+		return strtoupper($ip);
+	}
 
 	/* get the response */
 	$response = @fread($handle, 1000);
@@ -5759,50 +5847,121 @@ function get_dns_from_ip ($ip, $dns, $timeout = 1000) {
 	/* close the socket */
 	@fclose($handle);
 
-	if ($info['timed_out']) {
+	if (!empty($info['timed_out'])) {
 		return 'timed_out';
 	}
 
 	/* more error handling */
-	if ($response == '') { return $ip; }
+	if ($response === false || $response === '') {
+		return $ip;
+	}
 
-	/* parse the response and find the response type */
-	$type = @unpack('s', substr($response, $requestsize+2));
-
-	if (isset($type[1]) && $type[1] == 0x0C00) {
-		/* set up our variables */
-		$host = '';
-		$len = 0;
-
-		/* set our pointer at the beginning of the hostname uses the request
-		   size from earlier rather than work it out.
-		*/
-		$position = $requestsize + 12;
-
-		/* reconstruct the hostname */
-		do {
-			/* get segment size */
-			$len = unpack('c', substr($response, $position));
-
-			/* null terminated string, so length 0 = finished */
-			if ($len[1] == 0) {
-				/* return the hostname, without the trailing '.' */
-				return strtoupper(substr($host, 0, strlen($host) -1));
-			}
-
-			/* add the next segment to our host */
-			$host .= substr($response, $position+1, $len[1]) . '.';
-
-			/* move pointer on to the next segment */
-			$position += $len[1] + 1;
-		} while ($len != 0);
-
-		/* error - return the hostname we constructed (without the . on the end) */
+	if (strlen($response) < $requestsize + 12) {
 		return strtoupper($ip);
+	}
+
+	/* parse the response and find the response type (RFC 1035 PTR = 0x000C) */
+	$type = @unpack('n', substr($response, $requestsize + 2, 2));
+
+	if (isset($type[1]) && $type[1] === 0x000C) {
+		$host = cacti_dns_decode_name($response, $requestsize + 12);
+
+		if ($host !== false && $host !== '') {
+			return strtoupper($host);
+		}
 	}
 
 	/* error - return the hostname */
 	return strtoupper($ip);
+}
+
+/**
+ * cacti_dns_decode_name - decodes a DNS wire-format domain name starting at
+ * the given byte offset, supporting RFC 1035 compression pointers with
+ * bounds, cycle, and hop-count guards.
+ *
+ * @param string $response Raw DNS response bytes
+ * @param int    $position Starting offset in $response
+ *
+ * @return string|false Decoded domain name without trailing dot, or false on invalid/truncated data
+ */
+function cacti_dns_decode_name($response, $position) {
+	$response_len = strlen($response);
+	$host         = '';
+	$visited      = array();
+	$jumps        = 0;
+	$max_jumps    = 16;
+	$labels       = 0;
+	$max_labels   = 128;
+
+	while ($position >= 0 && $position < $response_len) {
+		if (isset($visited[$position])) {
+			return false;
+		}
+
+		$visited[$position] = true;
+
+		$unpacked = unpack('C', substr($response, $position, 1));
+		if ($unpacked === false || !isset($unpacked[1])) {
+			return false;
+		}
+
+		$len = $unpacked[1];
+
+		/* null terminator ends the domain name */
+		if ($len === 0) {
+			if ($host === '') {
+				return false;
+			}
+
+			return rtrim($host, '.');
+		}
+
+		/* RFC 1035 compression pointer (top two bits set: 0xC0) */
+		if (($len & 0xC0) === 0xC0) {
+			if ($position + 1 >= $response_len) {
+				return false;
+			}
+
+			$jumps++;
+			if ($jumps > $max_jumps) {
+				return false;
+			}
+
+			$next = unpack('C', substr($response, $position + 1, 1));
+			if ($next === false || !isset($next[1])) {
+				return false;
+			}
+
+			$pointer = (($len & 0x3F) << 8) | $next[1];
+			if ($pointer >= $response_len) {
+				return false;
+			}
+
+			$position = $pointer;
+			continue;
+		}
+
+		/* Reject reserved/invalid label types */
+		if (($len & 0xC0) !== 0) {
+			return false;
+		}
+
+		/* Ensure label payload fits inside response buffer */
+		if ($position + 1 + $len > $response_len) {
+			return false;
+		}
+
+		$labels++;
+		if ($labels > $max_labels) {
+			return false;
+		}
+
+		$host .= substr($response, $position + 1, $len) . '.';
+		$position += $len + 1;
+	}
+
+	return false;
 }
 
 function poller_maintenance () {
@@ -5927,9 +6086,14 @@ function cacti_debug_backtrace($entry = '', $html = false, $record = true, $limi
 function calculate_percentiles($data, $percentile = 95, $whisker = false) {
 	if ($percentile > 0 && $percentile < 1) {
 		$p = $percentile;
-	} elseif ($percentile > 1 && $percentile <= 100) {
+	} elseif ($percentile >= 1 && $percentile <= 100) {
 		$p = $percentile * .01;
 	} else {
+		return false;
+	}
+
+	$elements = cacti_sizeof($data);
+	if (!$elements) {
 		return false;
 	}
 
@@ -5947,16 +6111,15 @@ function calculate_percentiles($data, $percentile = 95, $whisker = false) {
 		);
 	}
 
-	$results  = array();
-	$elements = cacti_sizeof($data);
+	$results = array();
 
 	/* sort the array to return */
 	sort($data);
 
-	foreach($tiles as $index => $p) {
+	foreach ($tiles as $index => $p) {
 		/* calculate offsets into the array */
 		$allindex    = ($elements - 1) * $p;
-		$intvalindex = floor($allindex);
+		$intvalindex = (int) floor($allindex);
 		$floatval    = $allindex - $intvalindex;
 
 		if (!is_float($floatval)) {
@@ -6048,14 +6211,13 @@ function get_daysfromtime($time, $secs = false, $pad = '', $format = DAYS_FORMAT
 }
 
 function padleft($pad = '', $value = '', $min = 2) {
-	$result = "$value";
-	if (strlen($result) < $min && $pad != '') {
-		$padded = $pad . $result;
-		while ($padded != $result && strlen($result) < $min) {
-			$padded = $pad . $result;
-		}
-		$result = $padded;
+	$result = (string) $value;
+	$pad    = (string) $pad;
+
+	if (strlen($result) < $min && $pad !== '') {
+		$result = str_pad($result, (int) $min, $pad, STR_PAD_LEFT);
 	}
+
 	return $result;
 }
 
@@ -7110,28 +7272,47 @@ function is_resource_writable($path) {
 }
 
 function recursive_chown($path, $uid, $gid) {
-    $d = opendir($path);
+	$d = @opendir($path);
 
-	while(($file = readdir($d)) !== false) {
-		if ($file != '.' && $file != '..') {
-			$fullpath = $path . '/' . $file ;
+	if ($d === false) {
+		return false;
+	}
 
-			if (filetype($fullpath) == 'dir') {
-				return recursive_chown($fullpath, $uid, $gid);
-			}
+	$success = true;
 
-			$success = chown($fullpath, $uid);
-			if ($success) {
-				$success = chgrp($fullpath, $gid);
-			}
-        }
-
-		if (!$success) {
-			return false;
+	while (($file = readdir($d)) !== false) {
+		if ($file == '.' || $file == '..') {
+			continue;
 		}
-    }
 
-	return true;
+		$fullpath = $path . '/' . $file;
+
+		if (is_dir($fullpath) && !is_link($fullpath)) {
+			if (!recursive_chown($fullpath, $uid, $gid)) {
+				closedir($d);
+				return false;
+			}
+		} else {
+			$success = @chown($fullpath, $uid);
+			if ($success) {
+				$success = @chgrp($fullpath, $gid);
+			}
+
+			if (!$success) {
+				closedir($d);
+				return false;
+			}
+		}
+	}
+
+	closedir($d);
+
+	$success = @chown($path, $uid);
+	if ($success) {
+		$success = @chgrp($path, $gid);
+	}
+
+	return $success;
 }
 
 function get_validated_theme($theme, $defaultTheme) {

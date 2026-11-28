@@ -77,7 +77,9 @@ function repopulate_poller_cache() {
 			}
 
 			$poller_prev      = $poller_id;
-			$poller_items     = array_merge($poller_items, update_poller_cache($data));
+			foreach (update_poller_cache($data) as $poller_item) {
+				$poller_items[] = $poller_item;
+			}
 			$local_data_ids[] = $data['id'];
 
 			$i++;
@@ -148,7 +150,9 @@ function update_poller_cache_from_query($host_id, $data_query_id, $local_data_id
 
 	if (cacti_sizeof($poller_data)) {
 		foreach ($poller_data as $data) {
-			$poller_items     = array_merge($poller_items, update_poller_cache($data));
+			foreach (update_poller_cache($data) as $poller_item) {
+				$poller_items[] = $poller_item;
+			}
 			$local_data_ids[] = $data['id'];
 			$i++;
 
@@ -320,6 +324,10 @@ function update_poller_cache($data_source, $commit = false) {
 						'type_code', 'value'
 					);
 
+					if (cacti_sizeof($host_field_data) >= 1000) {
+						$host_field_data = array();
+					}
+
 					$host_field_data[$data_input['data_template_data_id']] = $host_fields;
 				} else {
 					$host_fields = $host_field_data[$data_input['data_template_data_id']];
@@ -397,6 +405,10 @@ function update_poller_cache($data_source, $commit = false) {
 							AND did.value != ""', array($data_input['data_template_data_id'])),
 						'type_code', 'value'
 					);
+
+					if (cacti_sizeof($host_field_data) >= 1000) {
+						$host_field_data = array();
+					}
 
 					$host_field_data[$data_input['data_template_data_id']] = $host_fields;
 				} else {
@@ -485,6 +497,10 @@ function update_poller_cache($data_source, $commit = false) {
 							AND did.value != ""', array($data_input['data_template_data_id'])),
 						'type_code', 'value'
 					);
+
+					if (cacti_sizeof($host_field_data) >= 1000) {
+						$host_field_data = array();
+					}
 
 					$host_field_data[$data_input['data_template_data_id']] = $host_fields;
 				} else {
@@ -626,14 +642,16 @@ function push_out_data_input_method($data_input_id) {
 			 * first data source for every non-first poller was dropped:
 			 * it never made it into the new buffer and never got
 			 * rebuilt. */
-			if ($prev_poller > 0 && $data_source['poller_id'] != $prev_poller) {
+			if ($prev_poller > 0 && ($data_source['poller_id'] != $prev_poller || cacti_sizeof($_my_local_data_ids) >= 500)) {
 				poller_update_poller_cache_from_buffer($_my_local_data_ids, $poller_items, $prev_poller);
 				$_my_local_data_ids = array();
 				$poller_items = array();
 			}
 
 			$_my_local_data_ids[] = $data_source['id'];
-			$poller_items = array_merge($poller_items, update_poller_cache($data_source));
+			foreach (update_poller_cache($data_source) as $poller_item) {
+				$poller_items[] = $poller_item;
+			}
 
 			$prev_poller = $data_source['poller_id'];
 		}
@@ -982,7 +1000,9 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 			$data = $data_source;
 			$data['id'] = $data['local_data_id'];
 
-			$poller_items = array_merge($poller_items, update_poller_cache($data));
+			foreach (update_poller_cache($data) as $poller_item) {
+				$poller_items[] = $poller_item;
+			}
 		}
 	}
 
@@ -1694,7 +1714,7 @@ function utilities_get_mysql_recommendations() {
 				$recommendation = $maxConnections > 0 ? $remainingMem / $maxConnections : 0;
 
 				$compare = '<=';
-				$passed = ($variables[$name] >= ($recommendation/1024/1024)) && $recommendation > 0;
+				$passed = ($variables[$name] <= $recommendation) && $recommendation > 0;
 				$value_display = round($variables[$name]/1024/1024, 2) . ' M';
 				$value_recommend = round($recommendation/1024/1024, 2) . ' M';
 
@@ -1894,8 +1914,8 @@ function utilities_get_system_memory() {
 }
 
 function utility_php_sort_extensions($a, $b) {
-	$name_a = isset($a['name']) ? $a['name'] : '';
-	$name_b = isset($b['name']) ? $b['name'] : '';
+	$name_a = is_array($a) ? (isset($a['name']) ? $a['name'] : '') : (string) $a;
+	$name_b = is_array($b) ? (isset($b['name']) ? $b['name'] : '') : (string) $b;
 	return strcasecmp($name_a, $name_b);
 }
 
@@ -1994,6 +2014,7 @@ function utility_php_recommends() {
 
 function utility_get_formatted_bytes($input_value, $wanted_type, &$output_value, $default_type = 'B') {
 
+	$wanted_type  = strtoupper($wanted_type);
 	$default_type = strtoupper($default_type);
 	$multiplier = array(
 		'B' => 1,
@@ -2002,10 +2023,10 @@ function utility_get_formatted_bytes($input_value, $wanted_type, &$output_value,
 		'G' => 1024*1024*1024,
 	);
 
-	if ($input_value > 0 && preg_match('/([0-9.]+)([BKMG]){0,1}/i',$input_value,$matches)) {
+	if ($input_value > 0 && preg_match('/([0-9.]+)([BKMG]){0,1}/i', $input_value, $matches)) {
 		$input_value = $matches[1];
-		if (isset($matches[2])) {
-			$default_type = $matches[2];
+		if (isset($matches[2]) && $matches[2] !== '') {
+			$default_type = strtoupper($matches[2]);
 		}
 
 		if (isset($multiplier[$default_type])) {
