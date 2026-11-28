@@ -48,8 +48,13 @@ body {
     width: 100vw !important;
 }
 
+/* Fallback: show the page even if the script that sets data-theme-state never runs. */
+body {
+    animation: fadeInAnimation 0s linear 3s forwards;
+}
+
 html[data-theme-state='ready'] body {
-    animation: fadeInAnimation ease 1.5s;
+    animation: fadeInAnimation ease .2s;
     animation-iteration-count: 1;
     animation-fill-mode: forwards;
 }
@@ -171,11 +176,8 @@ input[type="checkbox"]:not([name^="multiselect"]), input[type="radio"]:not([name
     position: fixed;
 }
 
-input[type="checkbox"]:focus + label:before {
-    #outline: -webkit-focus-ring-color auto 1px !important;
-    #outline-color: -webkit-focus-ring-color;
-    #outline-style: auto;
-    #outline-width: 1px;
+input[type="checkbox"]:focus-visible + label:before {
+    outline: 2px solid currentColor;
 }
 
 input[type="checkbox"] + label:before {
@@ -519,6 +521,11 @@ label.ui-state-hover > span {
 
 .deviceUnknown {
     color: #0000ff !important;
+}
+
+/* #0000ff is unreadable on the dark surfaces; reuse the .deviceStatus.deviceUnknown colour. */
+html:not([data-theme-color='light']) .deviceUnknown {
+    color: #8fb6e8 !important;
 }
 
 .deviceDisabled {

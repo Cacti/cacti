@@ -22,7 +22,7 @@
   +-------------------------------------------------------------------------+
 */
 
-$rrdcolors['back']   = '04335b00';
+$rrdcolors['back']   = '04335b';
 $rrdcolors['canvas'] = '060606';
 $rrdcolors['shadea'] = '0B0B0B';
 $rrdcolors['shadeb'] = '292929';
