@@ -23,6 +23,7 @@
 */
 
 function upgrade_to_1_3_0() : void {
+	upgrade_aggregate_item_overrides();
 	db_install_execute("CREATE TABLE IF NOT EXISTS process_locks (
 		key_id varchar(64) NOT NULL,
 		key_token varchar(44) NOT NULL,
@@ -124,6 +125,7 @@ function upgrade_to_1_3_0() : void {
 	db_install_add_key('sessions', 'INDEX', 'access', ['access']);
 
 	upgrade_boost_process_table();
+	upgrade_aggregate_automation_schema();
 
 	// poller_output_boost_local_data_ids is a MEMORY table; its indexes default
 	// to HASH unless USING BTREE is specified. Range/ORDER BY access against
@@ -736,6 +738,30 @@ function upgrade_boost_process_table() : void {
 	db_install_add_key('poller_output_boost_processes', 'UNIQUE', 'run_child', ['run_id', 'child_id']);
 }
 
+/** Install aggregate automation settings and ownership without enabling existing templates. */
+function upgrade_aggregate_automation_schema() : void {
+	$columns = [
+		['name' => 'automation_enabled', 'type' => 'char(2)', 'default' => ''],
+		['name' => 'automation_pattern', 'type' => 'varchar(512)', 'default' => ''],
+		['name' => 'automation_title', 'type' => 'varchar(255)', 'default' => '|host_description| - |aggregate_template_name|'],
+		['name' => 'automation_host_template_id', 'type' => 'int(10)', 'unsigned' => true, 'default' => '0'],
+		['name' => 'automation_max_members', 'type' => 'int(10)', 'unsigned' => true, 'default' => '1000'],
+	];
+
+	foreach ($columns as $column) {
+		$column['NULL'] = false;
+		db_install_add_column('aggregate_graph_templates', $column);
+	}
+	db_install_execute("CREATE TABLE IF NOT EXISTS automation_aggregate_graphs (
+		aggregate_template_id int(10) unsigned NOT NULL,
+		host_id int(10) unsigned NOT NULL,
+		local_graph_id int(10) unsigned NOT NULL,
+		configuration_hash char(64) NOT NULL,
+		PRIMARY KEY (aggregate_template_id, host_id),
+		UNIQUE KEY local_graph_id (local_graph_id)
+	) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Aggregate Automation Ownership'");
+}
+
 function upgrade_reports() : void {
 	require_once(CACTI_PATH_BASE . '/lib/api_scheduler.php');
 
@@ -1272,4 +1298,28 @@ function upgrade_retired_themes_1_3_0() : void {
 
 	db_install_execute('UPDATE settings SET value = ? WHERE name = ? AND value IN (?, ?)', $params);
 	db_install_execute('UPDATE settings_user SET value = ? WHERE name = ? AND value IN (?, ?)', $params);
+}
+
+/**
+ * Adds persistent legend overrides to both aggregate item editors.
+ *
+ * Earlier releases stored a checked CDEF override set to None as cdef_id 0 and
+ * the rebuild ignored it, so the item kept the template CDEF. The rebuild now
+ * applies a checked None as no CDEF, which is what the editor label says. Rows
+ * saved before the override columns existed are reset to inherit once, so
+ * upgraded graphs render as before; later rows keep an explicit None.
+ *
+ * @return void
+ */
+function upgrade_aggregate_item_overrides() : void {
+	foreach (['aggregate_graph_templates_item', 'aggregate_graphs_graph_item'] as $table) {
+		if (!db_column_exists($table, 't_text_format')) {
+			db_install_execute("UPDATE $table SET t_cdef_id = '' WHERE t_cdef_id = 'on' AND (cdef_id = 0 OR cdef_id IS NULL)");
+		}
+
+		db_install_add_column($table, ['name' => 't_text_format', 'type' => 'char(2)', 'NULL' => false, 'default' => '', 'after' => 'cdef_id']);
+		db_install_add_column($table, ['name' => 'text_format', 'type' => 'varchar(255)', 'NULL' => false, 'default' => '', 'after' => 't_text_format']);
+		db_install_add_column($table, ['name' => 't_legend', 'type' => 'char(2)', 'NULL' => false, 'default' => '', 'after' => 'text_format']);
+		db_install_add_column($table, ['name' => 'legend', 'type' => 'varchar(30)', 'NULL' => false, 'default' => '', 'after' => 't_legend']);
+	}
 }

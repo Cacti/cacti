@@ -44,10 +44,24 @@ CREATE TABLE `aggregate_graph_templates` (
   `created` timestamp NOT NULL default CURRENT_TIMESTAMP,
   `user_id` int(10) unsigned NOT NULL,
   `graphs` int(10) unsigned NOT NULL default '0',
+  `automation_enabled` char(2) NOT NULL default '',
+  `automation_pattern` varchar(512) NOT NULL default '',
+  `automation_title` varchar(255) NOT NULL default '|host_description| - |aggregate_template_name|',
+  `automation_host_template_id` int(10) unsigned NOT NULL default '0',
+  `automation_max_members` int(10) unsigned NOT NULL default '1000',
   PRIMARY KEY (`id`),
   KEY `graph_template_id` (`graph_template_id`),
   KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Template Definitions for Aggregate Graphs';
+
+CREATE TABLE `automation_aggregate_graphs` (
+  `aggregate_template_id` int(10) unsigned NOT NULL,
+  `host_id` int(10) unsigned NOT NULL,
+  `local_graph_id` int(10) unsigned NOT NULL,
+  `configuration_hash` char(64) NOT NULL,
+  PRIMARY KEY (`aggregate_template_id`,`host_id`),
+  UNIQUE KEY `local_graph_id` (`local_graph_id`)
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Aggregate Automation Ownership';
 
 --
 -- Table structure for table `aggregate_graph_templates_graph`
@@ -139,6 +153,10 @@ CREATE TABLE `aggregate_graph_templates_item` (
   `graph_type_id` tinyint(3) unsigned NOT NULL default '0',
   `t_cdef_id` char(2) default '',
   `cdef_id` mediumint(8) unsigned default NULL,
+  `t_text_format` char(2) NOT NULL default '',
+  `text_format` varchar(255) NOT NULL default '',
+  `t_legend` char(2) NOT NULL default '',
+  `legend` varchar(30) NOT NULL default '',
   `item_skip` char(2) NOT NULL,
   `item_total` char(2) NOT NULL,
   PRIMARY KEY (`aggregate_template_id`,`graph_templates_item_id`)
@@ -184,6 +202,10 @@ CREATE TABLE `aggregate_graphs_graph_item` (
   `graph_type_id` tinyint(3) unsigned NOT NULL default '0',
   `t_cdef_id` char(2) default '',
   `cdef_id` mediumint(8) unsigned default NULL,
+  `t_text_format` char(2) NOT NULL default '',
+  `text_format` varchar(255) NOT NULL default '',
+  `t_legend` char(2) NOT NULL default '',
+  `legend` varchar(30) NOT NULL default '',
   `item_skip` char(2) NOT NULL,
   `item_total` char(2) NOT NULL,
   PRIMARY KEY (`aggregate_graph_id`,`graph_templates_item_id`)
