@@ -60,7 +60,7 @@ test('left-to-right and unknown locales report ltr', function () {
 });
 
 test('only the locales flagged rtl in the language table are rtl', function () {
-	expect(document_direction_verdict()['rtl_locales'])->toBe(['ar-SA', 'he-IL']);
+	expect(document_direction_verdict()['rtl_locales'])->toBe(['ar-SA', 'ar-EG', 'ar-MA', 'he-IL']);
 });
 
 test('a right-to-left locale mirrors only a theme that supports it', function () {
