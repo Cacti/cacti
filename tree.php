@@ -865,7 +865,7 @@ function tree_edit(bool $partial = false) : void {
 		$lockdiv = "<div style='padding:5px 5px 5px 0px'><table><tr>
 			<td><button type='button' class='ui-button ui-corner-all ui-widget' id='unlock'>" . __esc('Finish Editing Tree') . "</button></td>
 			<td><button type='button' class='ui-button ui-corner-all ui-widget' id='addbranch' onClick='createNode()'>" . __esc('Add Root Branch') . "</button></td>
-			<td style='font-weight:bold;'>" . __('This tree has been locked for Editing on %s by %s.', $tree['locked_date'], get_username($tree['modified_by']));
+			<td style='font-weight:bold;'>" . __('This tree has been locked for Editing on %s by %s.', $tree['locked_date'], html_escape(get_username($tree['modified_by'])));
 
 		if ($tree['modified_by'] == $_SESSION[SESS_USER_ID]) {
 			$lockdiv .= '</td></tr></table></div>';
@@ -2281,10 +2281,10 @@ function tree() : void {
 			form_selectable_cell($tree['id'], $tree['id'], '', 'right');
 			form_selectable_cell($tree['enabled'] == 'on' ? __('Yes') : __('No'), $tree['id']);
 			form_selectable_cell($tree['locked'] == '1' ? __('Yes') : __('No'), $tree['id']);
-			form_selectable_cell(get_username($tree['user_id']), $tree['id']);
+			form_selectable_ecell(get_username($tree['user_id']), $tree['id']);
 			form_selectable_cell($sequence, $tree['id'], '', 'nowrap center');
 			form_selectable_cell(substr($tree['last_modified'],0,16), $tree['id'], '', 'right');
-			form_selectable_cell(get_username($tree['modified_by']), $tree['id'], '', 'right');
+			form_selectable_ecell(get_username($tree['modified_by']), $tree['id'], '', 'right');
 			form_selectable_cell($tree['sites'] > 0 ? number_format_i18n($tree['sites'], -1) : '-', $tree['id'], '', 'right');
 			form_selectable_cell($tree['branches'] > 0 ? number_format_i18n($tree['branches'], -1) : '-', $tree['id'], '', 'right');
 			form_selectable_cell($tree['hosts'] > 0 ? number_format_i18n($tree['hosts'], -1) : '-', $tree['id'], '', 'right');

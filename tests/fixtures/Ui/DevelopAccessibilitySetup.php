@@ -70,7 +70,21 @@ db_execute_prepared('INSERT INTO aggregate_graphs
 		SELECT 1 FROM aggregate_graphs AS ag WHERE ag.local_graph_id = gl.id
 	)', ['Disposable browser aggregate', '', '', $graph_id]);
 $aggregate_id = (int) db_fetch_cell_prepared('SELECT id FROM aggregate_graphs WHERE local_graph_id = ?', [$graph_id]);
-file_put_contents('/tmp/cacti-accessibility-fixture.json', json_encode(['graph_id' => $graph_id, 'aggregate_id' => $aggregate_id], JSON_THROW_ON_ERROR));
+// A tree owned and locked by a disabled account whose stored name carries markup,
+// so the tree pages show whether they print user names as text.
+$tree_owner = 'Disposable <i class="treeOwnerMarkup">owner</i>';
+db_execute_prepared('INSERT INTO user_auth (username, realm, full_name, enabled)
+	SELECT ?, 0, ?, ? FROM DUAL
+	WHERE NOT EXISTS (SELECT 1 FROM user_auth WHERE username = ?)',
+	[$tree_owner, 'Disposable tree owner', '', $tree_owner]);
+$tree_owner_id = (int) db_fetch_cell_prepared('SELECT id FROM user_auth WHERE username = ?', [$tree_owner]);
+db_execute_prepared('INSERT INTO graph_tree (name, sequence, enabled, locked, locked_date, user_id, modified_by, last_modified)
+	SELECT ?, 2, ?, 1, NOW(), ?, ?, NOW() FROM DUAL
+	WHERE NOT EXISTS (SELECT 1 FROM graph_tree WHERE name = ?)',
+	['Disposable locked tree', 'on', $tree_owner_id, $tree_owner_id, 'Disposable locked tree']);
+$tree_id = (int) db_fetch_cell_prepared('SELECT id FROM graph_tree WHERE name = ?', ['Disposable locked tree']);
+
+file_put_contents('/tmp/cacti-accessibility-fixture.json', json_encode(['graph_id' => $graph_id, 'aggregate_id' => $aggregate_id, 'tree_id' => $tree_id], JSON_THROW_ON_ERROR));
 db_execute_prepared('UPDATE user_auth SET must_change_password = ?, password_change = ?, policy_graphs = ? WHERE id = ?', ['', 'on', 2, 1]);
 db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', ['auth_method', '1']);
 db_execute_prepared('REPLACE INTO settings_user (user_id, name, value) VALUES (?, ?, ?)', [1, 'hide_disabled', '']);

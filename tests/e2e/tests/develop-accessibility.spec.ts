@@ -88,6 +88,16 @@ for (const [route, minimum] of [
 	});
 }
 
+test('tree pages print a stored user name as text', async ({ page }) => {
+	test.skip(!fixture.tree_id, 'Requires the disposable locked tree fixture');
+	await login(page);
+	for (const route of ['/tree.php', `/tree.php?action=edit&id=${fixture.tree_id}`]) {
+		await page.goto(route);
+		await expect(page.getByText('Disposable <i class="treeOwnerMarkup">owner</i>').first(), route).toBeVisible();
+		await expect(page.locator('.treeOwnerMarkup'), route).toHaveCount(0);
+	}
+});
+
 for (const pageName of ['user_admin', 'user_group_admin']) {
 	for (const tab of ['permsg', 'permsd', 'permste', 'permstr']) {
 		test(`${pageName} ${tab} exposes policy controls as a layout`, async ({ page }) => {
