@@ -61,6 +61,14 @@ class OpenIdLoginProvider extends AbstractLoginProvider implements RedirectLogin
 	}
 
 	public function initiate(): never {
+		$this->startAuthorization('');
+	}
+
+	public function challenge(string $challengeId): never {
+		$this->startAuthorization($challengeId);
+	}
+
+	private function startAuthorization(string $challengeId): never {
 		$discovery = $this->discover();
 
 		$verifier  = rtrim(strtr(base64_encode(random_bytes(64)), '+/', '-_'), '=');
@@ -69,15 +77,16 @@ class OpenIdLoginProvider extends AbstractLoginProvider implements RedirectLogin
 		$nonce     = bin2hex(random_bytes(16));
 
 		$_SESSION['sess_oidc_' . $this->getId()] = [
-			'state'    => $state,
-			'nonce'    => $nonce,
-			'verifier' => $verifier,
+			'challenge' => $challengeId,
+			'state'     => $state,
+			'nonce'     => $nonce,
+			'verifier'  => $verifier,
 			// Carried across the IdP redirect since the login form's checkbox
 			// state cannot otherwise survive the round trip.
 			'remember' => isrv('remember_me'),
 		];
 
-		$query = http_build_query([
+		$parameters = [
 			'response_type'         => 'code',
 			'client_id'             => $this->param('client_id'),
 			'redirect_uri'          => $this->redirectUri(),
@@ -86,7 +95,14 @@ class OpenIdLoginProvider extends AbstractLoginProvider implements RedirectLogin
 			'nonce'                 => $nonce,
 			'code_challenge'        => $challenge,
 			'code_challenge_method' => 'S256',
-		]);
+		];
+
+		if ($challengeId !== '') {
+			$parameters['prompt']  = 'login';
+			$parameters['max_age'] = 0;
+		}
+
+		$query = http_build_query($parameters);
 
 		header('Location: ' . $discovery['authorization_endpoint'] . '?' . $query);
 
@@ -154,6 +170,9 @@ class OpenIdLoginProvider extends AbstractLoginProvider implements RedirectLogin
 			return LoginResult::failure(__('Access Denied!  Login Failed.'));
 		}
 
+		// Only the signed ID token supplies authentication-time evidence.
+		$authenticatedAt = is_int($claims['auth_time'] ?? null) ? $claims['auth_time'] : 0;
+
 		if (!empty($tokens['access_token']) && !empty($discovery['userinfo_endpoint'])) {
 			$userinfo = cacti_http('GET', $discovery['userinfo_endpoint'], [
 				'headers' => ['Authorization: Bearer ' . $tokens['access_token']],
@@ -192,7 +211,8 @@ class OpenIdLoginProvider extends AbstractLoginProvider implements RedirectLogin
 			// The OpenID group claim values feed automatic User Group
 			// assignment at login time (see AbstractLoginProvider::applyAutoAssignments()).
 			'groups'    => array_values(array_map('strval', $memberships)),
-		], null, (bool) ($saved['remember'] ?? false));
+		], null, (bool) ($saved['remember'] ?? false),
+			$authenticatedAt, $saved['challenge'] ?? '');
 	}
 
 	/**

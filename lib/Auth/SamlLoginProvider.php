@@ -100,16 +100,25 @@ class SamlLoginProvider extends AbstractLoginProvider implements RedirectLoginPr
 	}
 
 	public function initiate(): never {
+		$this->startAuthorization('');
+	}
+
+	public function challenge(string $challengeId): never {
+		$this->startAuthorization($challengeId);
+	}
+
+	private function startAuthorization(string $challengeId): never {
 		$auth = new SamlAuth($this->buildSettings());
 
 		// Capture the AuthnRequest ID so complete() can require the IdP's
 		// response carry a matching InResponseTo, closing the unsolicited-
 		// assertion login CSRF window (logging a browser in as whatever account
 		// the IdP names, even without that browser having requested it).
-		$redirectUrl = $auth->login(null, [], false, false, true);
+		$redirectUrl = $auth->login(null, [], $challengeId !== '', false, true);
 
 		$_SESSION['sess_saml_request_' . $this->getId()] = [
 			'request_id' => $auth->getLastRequestID(),
+			'challenge'  => $challengeId,
 			// Carried across the IdP redirect since the login form's checkbox
 			// state cannot otherwise survive the round trip.
 			'remember'   => isrv('remember_me'),
@@ -164,7 +173,38 @@ class SamlLoginProvider extends AbstractLoginProvider implements RedirectLoginPr
 			// The raw SAML2 group attribute values feed automatic User Group
 			// assignment at login time (see AbstractLoginProvider::applyAutoAssignments()).
 			'groups'    => array_values(array_map('strval', (array) $memberships)),
-		], null, (bool) ($saved['remember'] ?? false));
+		], null, (bool) ($saved['remember'] ?? false),
+			self::authenticationTime($auth->getLastResponseXML(), $auth->getLastAssertionId()), $saved['challenge'] ?? '');
+	}
+
+	/** Read only the assertion the SAML toolkit has validated and selected. */
+	public static function authenticationTime(?string $xml, ?string $assertionId): int {
+		if (!$xml || !$assertionId) {
+			return 0;
+		}
+
+		$document = new \DOMDocument();
+
+		if (!$document->loadXML($xml, LIBXML_NONET)) {
+			return 0;
+		}
+
+		$xpath = new \DOMXPath($document);
+		$xpath->registerNamespace('p', 'urn:oasis:names:tc:SAML:2.0:protocol');
+		$xpath->registerNamespace('a', 'urn:oasis:names:tc:SAML:2.0:assertion');
+		$statements = $xpath->query('/p:Response/a:Assertion/a:AuthnStatement');
+		$statement  = $statements && $statements->length === 1 ? $statements->item(0) : null;
+
+		if (!$statement instanceof \DOMElement || !$statement->parentNode instanceof \DOMElement
+			|| $statement->parentNode->getAttribute('ID') !== $assertionId) {
+			return 0;
+		}
+
+		try {
+			return (int) \OneLogin\Saml2\Utils::parseSAML2Time($statement->getAttribute('AuthnInstant'));
+		} catch (\Exception) {
+			return 0;
+		}
 	}
 
 	/**

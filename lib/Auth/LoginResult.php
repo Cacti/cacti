@@ -44,6 +44,8 @@ final class LoginResult {
 		public readonly array $claims = [],
 		public readonly bool $rememberMe = false,
 		public readonly bool $isCredentialFailure = false,
+		public readonly int $authenticatedAt = 0,
+		public readonly string $mfaChallenge = '',
 	) {
 	}
 
@@ -51,7 +53,7 @@ final class LoginResult {
 		return new self(false, null, $error, isCredentialFailure: $isCredentialFailure);
 	}
 
-	public static function authenticated(string $username, array $claims = [], ?array $user = null, bool $rememberMe = false): self {
-		return new self(true, $user, '', $username, $claims, $rememberMe);
+	public static function authenticated(string $username, array $claims = [], ?array $user = null, bool $rememberMe = false, int $authenticatedAt = 0, string $mfaChallenge = ''): self {
+		return new self(true, $user, '', $username, $claims, $rememberMe, authenticatedAt: $authenticatedAt, mfaChallenge: $mfaChallenge);
 	}
 }

@@ -73,7 +73,7 @@ $response = '<samlp:Response xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" 
 $_POST    = ['SAMLResponse' => base64_encode($response)];
 
 if ($mode !== 'missing') {
-	$_SESSION['sess_saml_request_1'] = ['request_id' => $mode === 'mismatch' ? '_other_request' : '_fixture_request', 'remember' => false];
+	$_SESSION['sess_saml_request_1'] = ['request_id' => $mode === 'mismatch' ? '_other_request' : '_fixture_request', 'remember' => false, 'challenge' => 'fixture-reauth'];
 }
 require $root . '/include/csrf.php';
 $exempt   = csrf_is_saml_callback();
@@ -81,12 +81,14 @@ $csrf     = csrf_check(false);
 $login    = false;
 $username = '';
 $replay   = false;
+$evidence = false;
 
 if ($exempt && !in_array($mode, ['openid', 'disabled', 'inactive', 'other-page'], true)) {
 	$provider = new Cacti\Auth\SamlLoginProvider($providerRow);
 	$result   = $provider->complete();
 	$login    = $result->success;
 	$username = $result->username;
+	$evidence = $result->authenticatedAt === strtotime($now) && $result->mfaChallenge === 'fixture-reauth';
 	$replay   = $provider->complete()->success;
 }
-print json_encode(['exempt' => $exempt, 'csrf' => $csrf, 'login' => $login, 'username' => $username, 'replay' => $replay]);
+print json_encode(['exempt' => $exempt, 'csrf' => $csrf, 'login' => $login, 'username' => $username, 'replay' => $replay, 'evidence' => $evidence]);

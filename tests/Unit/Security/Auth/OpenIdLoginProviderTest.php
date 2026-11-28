@@ -384,21 +384,23 @@ namespace {
 		$discoveryUrl              = 'https://idp.example.test/.well-known/openid-configuration';
 
 		$_SESSION['sess_oidc_' . $provider->getId()] = [
-			'state'    => 'expected-state',
-			'nonce'    => 'expected-nonce',
-			'verifier' => 'verifier-value',
-			'remember' => true,
+			'state'     => 'expected-state',
+			'nonce'     => 'expected-nonce',
+			'verifier'  => 'verifier-value',
+			'remember'  => true,
+			'challenge' => 'fixture-reauth',
 		];
 
 		$_REQUEST['state'] = 'expected-state';
 		$_REQUEST['code']  = 'auth-code';
 
 		$idToken = JWT::encode([
-			'iss'   => 'https://idp.example.test',
-			'aud'   => 'test-client',
-			'sub'   => 'user-1',
-			'nonce' => 'expected-nonce',
-			'exp'   => time() + 300,
+			'iss'       => 'https://idp.example.test',
+			'aud'       => 'test-client',
+			'sub'       => 'user-1',
+			'auth_time' => 1700000000,
+			'nonce'     => 'expected-nonce',
+			'exp'       => time() + 300,
 		], $privateKey, 'RS256', 'kid-1');
 
 		$GLOBALS['__oidc_test_http_responses'] = [
@@ -447,6 +449,8 @@ namespace {
 		expect($result->success)->toBeTrue()
 			->and($result->username)->toBe('user-1')
 			->and($result->claims['full_name'])->toBe('')
-			->and($result->rememberMe)->toBeTrue();
+			->and($result->rememberMe)->toBeTrue()
+			->and($result->authenticatedAt)->toBe(1700000000)
+			->and($result->mfaChallenge)->toBe('fixture-reauth');
 	});
 }

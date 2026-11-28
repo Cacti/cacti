@@ -278,6 +278,7 @@ function cacti_auth_transition(int $user_id, string $reason = 'login') : bool {
 		}
 	}
 
+	unset($_SESSION['sess_fresh_auth'], $_SESSION['sess_mfa_challenge']);
 	kill_session_var(SESS_USER_REALMS);
 	kill_session_var(SESS_AUTH_NAMES);
 	kill_session_var(SESS_TREE_PERMS);
