@@ -578,7 +578,7 @@ function boost_time_to_run($forcerun, $current_time, $last_run_time, $next_run_t
 			set_config_option('boost_next_run_time', $next_run_time);
 		}
 	} else {
-		$pollers = db_fetch_cell('SELECT COUNT(*) FROM pollers WHERE disabled = ""');
+		$pollers = db_fetch_cell('SELECT COUNT(*) FROM poller WHERE disabled = ""');
 
 		if ($pollers > 1) {
 			boost_debug('Someone attempted to disable boost through there are multiple Data Collectors Defined!');

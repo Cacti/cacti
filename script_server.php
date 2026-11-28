@@ -86,7 +86,7 @@ if (sizeof($options)) {
 		$allow_multi = false;
 
 		switch($arg) {
-			case 'enviorn':
+			case 'environ':
 				$environ = $value;
 
 				break;

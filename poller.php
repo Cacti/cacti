@@ -211,9 +211,10 @@ $poller_interval = read_config_option('poller_interval');
 
 // retrieve the last time the poller ran
 $poller_lastrun  = read_config_option('poller_lastrun_' . $poller_id);
+$poller_lastrun  = is_numeric($poller_lastrun) ? (float) $poller_lastrun : 0;
 
 // collect the system mibs every 4 hours
-if ($poller_lastrun % 14440 < $current_time % 14440 || empty($poller_lastrun)) {
+if ((int) $poller_lastrun % 14440 < $current_time % 14440 || empty($poller_lastrun)) {
 	$mibs = true;
 }
 
@@ -364,7 +365,7 @@ if ($debug) {
 }
 
 $poller_seconds_sincerun = 'Never';
-if (isset($poller_lastrun)) {
+if ($poller_lastrun > 0) {
 	$poller_seconds_sincerun = round($poller_start - $poller_lastrun, 2);
 }
 
@@ -378,7 +379,7 @@ if ($poller_interval <= 60) {
 }
 
 // get to see if we are polling faster than reported by the settings, if so, exit
-if ((isset($poller_lastrun) && isset($poller_interval) && $poller_lastrun > 0) && (!$force)) {
+if (($poller_lastrun > 0 && isset($poller_interval)) && (!$force)) {
 	// give the user some flexibility to run a little moe often
 	if ((($poller_start - $poller_lastrun)*1.3) < MAX_POLLER_RUNTIME) {
 		cacti_log("NOTE: $task_type is configured to run too often!  The Poller Interval is '$poller_interval' seconds, with a minimum $task_type period of '$min_period' seconds, but only " . number_format_i18n($poller_start - $poller_lastrun, 1) . ' seconds have passed since the poller last ran.', true, 'POLLER', $level);
@@ -389,7 +390,7 @@ if ((isset($poller_lastrun) && isset($poller_interval) && $poller_lastrun > 0) &
 /* check to see whether we have the poller interval set lower than
  * the poller is actually ran, if so, issue a warning
  */
-if ((($poller_start - $poller_lastrun - 10) > MAX_POLLER_RUNTIME) && ($poller_lastrun > 0)) {
+if (($poller_lastrun > 0) && (($poller_start - $poller_lastrun - 10) > MAX_POLLER_RUNTIME)) {
 	cacti_log("WARNING: $task_type is out of sync with the Poller Interval!  The Poller Interval is '$poller_interval' seconds, with a maximum of a '$min_period' second $task_type, but " . number_format_i18n($poller_start - $poller_lastrun, 1) . ' seconds have passed since the last poll!', true, 'POLLER');
 	admin_email(__('Cacti System Warning'), __('WARNING: %s is out of sync with the Poller Interval for poller id %d!  The Poller Interval is %d seconds, with a maximum of a %d seconds, but %d seconds have passed since the last poll!', $task_type, $poller_id, $poller_interval, $min_period, number_format_i18n($poller_start - $poller_lastrun, 1)));
 }

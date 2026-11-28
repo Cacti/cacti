@@ -56,9 +56,6 @@ if ($interval <= 0) {
 /* record the start time */
 $start = microtime(true);
 
-/* initialize the polling items */
-$polling_items = array();
-
 /* get poller_item for graph_id */
 $local_data_ids = db_fetch_assoc_prepared('SELECT DISTINCT dtr.local_data_id, dl.host_id
 	FROM graph_templates_item AS gti
@@ -91,12 +88,6 @@ foreach ($local_data_ids as $row) {
 $print_data_to_stdout = true;
 
 if (cacti_sizeof($idbyhost)) {
-	$polling_items = db_fetch_assoc('SELECT *
-		FROM poller_item
-		WHERE local_data_id IN (' . implode(',', $ids) . ')
-		AND host_id IN (' . implode(',', $hosts) . ')
-		ORDER BY host_id');
-
 	$script_server_calls = db_fetch_cell('SELECT count(*)
 		FROM poller_item
 		WHERE action=2
@@ -171,6 +162,9 @@ if (cacti_sizeof($idbyhost)) {
 				array($host_id));
 
 			if (cacti_sizeof($poller_items)) {
+				$host_cache    = null;
+				$snmp_sessions = array();
+
 				foreach($poller_items as $item) {
 					/* Reset between iterations: a poller_item action that
 					 * is not handled by the switch below must not inherit
@@ -183,26 +177,46 @@ if (cacti_sizeof($idbyhost)) {
 						if (($item['snmp_version'] == 0) || (($item['snmp_community'] == '') && ($item['snmp_version'] != 3))) {
 							$output = 'U';
 						} else {
-							$host = db_fetch_row_prepared('SELECT ping_retries, max_oids
-								FROM host
-								WHERE id = ?',
-								array($host_id));
+							if ($host_cache === null) {
+								$host_cache = db_fetch_row_prepared('SELECT ping_retries, max_oids
+									FROM host
+									WHERE id = ?',
+									array($host_id));
 
-							if (!cacti_sizeof($host)) {
-								$host['ping_retries'] = 1;
-								$host['max_oids'] = 1;
+								if (!cacti_sizeof($host_cache)) {
+									$host_cache = array(
+										'ping_retries' => 1,
+										'max_oids'     => 1
+									);
+								}
 							}
 
-							$session = cacti_snmp_session($item['hostname'], $item['snmp_community'], $item['snmp_version'],
-								$item['snmp_username'], $item['snmp_password'], $item['snmp_auth_protocol'], $item['snmp_priv_passphrase'],
-								$item['snmp_priv_protocol'], $item['snmp_context'], $item['snmp_engine_id'], $item['snmp_port'],
-								$item['snmp_timeout'], $host['ping_retries'], $host['max_oids']);
+							$session_key = $item['hostname'] . '|' .
+								$item['snmp_community'] . '|' .
+								$item['snmp_version'] . '|' .
+								$item['snmp_username'] . '|' .
+								$item['snmp_password'] . '|' .
+								$item['snmp_auth_protocol'] . '|' .
+								$item['snmp_priv_passphrase'] . '|' .
+								$item['snmp_priv_protocol'] . '|' .
+								$item['snmp_context'] . '|' .
+								$item['snmp_engine_id'] . '|' .
+								$item['snmp_port'] . '|' .
+								$item['snmp_timeout'];
+
+							if (!array_key_exists($session_key, $snmp_sessions)) {
+								$snmp_sessions[$session_key] = cacti_snmp_session($item['hostname'], $item['snmp_community'], $item['snmp_version'],
+									$item['snmp_username'], $item['snmp_password'], $item['snmp_auth_protocol'], $item['snmp_priv_passphrase'],
+									$item['snmp_priv_protocol'], $item['snmp_context'], $item['snmp_engine_id'], $item['snmp_port'],
+									$item['snmp_timeout'], $host_cache['ping_retries'], $host_cache['max_oids']);
+							}
+
+							$session = $snmp_sessions[$session_key];
 
 							if ($session === false) {
 								$output = 'U';
 							} else {
 								$output = cacti_snmp_session_get($session, $item['arg1']);
-								$session->close();
 							}
 
 							if (prepare_validate_result($output) === false) {
@@ -257,6 +271,12 @@ if (cacti_sizeof($idbyhost)) {
 							VALUES
 							(?, ?, ?, ?, ?)',
 							array($item['local_data_id'], $item['rrd_name'], $host_update_time, $poller_id, $output));
+					}
+				}
+
+				foreach ($snmp_sessions as $session) {
+					if ($session !== false && is_object($session)) {
+						$session->close();
 					}
 				}
 			}

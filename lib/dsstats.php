@@ -36,33 +36,34 @@ function get_rrdfile_names($thread_id = 1, $max_threads = 1) {
 	static $newrows = array();
 
 	if ($max_threads == 1) {
-		return db_fetch_assoc('SELECT dtd.local_data_id, data_source_path, rrd_num AS dsses
+		return db_fetch_assoc('SELECT dtd.local_data_id, dtd.data_source_path, MAX(pi.rrd_num) AS dsses
 			FROM data_template_data AS dtd
-			LEFT JOIN poller_item AS pi
+			INNER JOIN poller_item AS pi
 			ON pi.local_data_id = dtd.local_data_id
-			WHERE pi.local_data_id IS NOT NULL
-			AND data_source_path != ""
-			AND dtd.local_data_id != 0');
+			WHERE dtd.data_source_path != ""
+			AND dtd.local_data_id != 0
+			GROUP BY dtd.local_data_id, dtd.data_source_path');
 	} elseif (cacti_sizeof($newrows)) {
-		return $newrows[$thread_id];
+		return isset($newrows[$thread_id]) ? $newrows[$thread_id] : array();
 	} else {
-		$dsses_total = db_fetch_cell('SELECT SUM(rrd_num)
+		$rows = db_fetch_assoc('SELECT dtd.local_data_id, dtd.data_source_path, MAX(pi.rrd_num) AS dsses
 			FROM data_template_data AS dtd
-			LEFT JOIN poller_item AS pi
+			INNER JOIN poller_item AS pi
 			ON pi.local_data_id = dtd.local_data_id
-			WHERE pi.local_data_id IS NOT NULL
-			AND data_source_path != ""
-			AND dtd.local_data_id != 0');
+			WHERE dtd.data_source_path != ""
+			AND dtd.local_data_id != 0
+			GROUP BY dtd.local_data_id, dtd.data_source_path');
+
+		if (!cacti_sizeof($rows)) {
+			return array();
+		}
+
+		$dsses_total = 0;
+		foreach ($rows as $row) {
+			$dsses_total += (int) $row['dsses'];
+		}
 
 		$split_size = ceil($dsses_total / $max_threads);
-
-		$rows = db_fetch_assoc('SELECT dtd.local_data_id, data_source_path, rrd_num AS dsses
-			FROM data_template_data AS dtd
-			LEFT JOIN poller_item AS pi
-			ON pi.local_data_id = dtd.local_data_id
-			WHERE pi.local_data_id IS NOT NULL
-			AND data_source_path != ""
-			AND dtd.local_data_id != 0');
 
 		$thread  = 1;
 		$dsses   = 0;
@@ -684,14 +685,22 @@ function dsstats_poller_output(&$rrd_update_array) {
 
 			/* determine the keyvalue pairs to decide on how to store data */
 			if (!cacti_sizeof($ds_types)) {
-				$ds_types = array_rekey(
-					db_fetch_assoc('SELECT DISTINCT data_source_name, data_source_type_id, rrd_step, rrd_maximum
-						FROM data_template_rrd AS dtr
-						INNER JOIN data_template_data AS dtd
-						ON dtd.local_data_id = dtr.local_data_id
-						WHERE dtd.local_data_id > 0'),
-					'data_source_name', array('data_source_type_id', 'rrd_step', 'rrd_maximum')
-				);
+				$rows = db_fetch_assoc('SELECT dtr.local_data_id, dtr.data_source_name,
+					dtr.data_source_type_id, dtd.rrd_step, dtr.rrd_maximum
+					FROM data_template_rrd AS dtr
+					INNER JOIN data_template_data AS dtd
+					ON dtd.local_data_id = dtr.local_data_id
+					WHERE dtd.local_data_id > 0');
+
+				if (cacti_sizeof($rows)) {
+					foreach ($rows as $row) {
+						$ds_types[(int) $row['local_data_id']][$row['data_source_name']] = array(
+							'data_source_type_id' => $row['data_source_type_id'],
+							'rrd_step'            => $row['rrd_step'],
+							'rrd_maximum'         => $row['rrd_maximum']
+						);
+					}
+				}
 			}
 
 			/* make the association between the multi-part name value pairs and the RRDfile internal
@@ -710,6 +719,43 @@ function dsstats_poller_output(&$rrd_update_array) {
 				);
 			}
 
+			/* batch-prefetch last values for COUNTER and DERIVE data sources */
+			$last_values = array();
+			$counter_ids = array();
+
+			foreach ($rrd_update_array as $data_source) {
+				if (isset($data_source['times']) && isset($data_source['local_data_id'])) {
+					$ldid = (int) $data_source['local_data_id'];
+
+					if ($ldid > 0 && !isset($counter_ids[$ldid])) {
+						if (isset($ds_types[$ldid])) {
+							foreach ($ds_types[$ldid] as $ds_info) {
+								if (in_array((int) $ds_info['data_source_type_id'], array(2, 3, 6, 7), true)) {
+									$counter_ids[$ldid] = $ldid;
+									break;
+								}
+							}
+						} else {
+							$counter_ids[$ldid] = $ldid;
+						}
+					}
+				}
+			}
+
+			if (cacti_sizeof($counter_ids)) {
+				foreach (array_chunk(array_values($counter_ids), 2000) as $id_chunk) {
+					$rows = db_fetch_assoc('SELECT SQL_NO_CACHE local_data_id, rrd_name, `value`
+						FROM data_source_stats_hourly_last
+						WHERE local_data_id IN (' . implode(',', $id_chunk) . ')');
+
+					if (cacti_sizeof($rows)) {
+						foreach ($rows as $row) {
+							$last_values[(int) $row['local_data_id']][$row['rrd_name']] = $row['value'];
+						}
+					}
+				}
+			}
+
 			/* required for updating tables */
 			$cache_i      = 1;
 			$last_i       = 1;
@@ -724,6 +770,7 @@ function dsstats_poller_output(&$rrd_update_array) {
 				if (isset($data_source['times'])) {
 					foreach($data_source['times'] as $time => $sample) {
 						foreach($sample as $ds => $value) {
+							$local_data_id           = (int) $data_source['local_data_id'];
 							$result['local_data_id'] = $data_source['local_data_id'];
 							$result['rrd_name']      = $ds;
 							$result['time']          = date('Y-m-d H:i:s', $time);
@@ -742,34 +789,51 @@ function dsstats_poller_output(&$rrd_update_array) {
 									"Please check your script or data input method for errors.");
 							}
 
-							$lastval = '';
+							$currentval = 'NULL';
+							$lastval    = '';
 
-							if (!isset($ds_types[$result['rrd_name']]['data_source_type_id'])) {
+							if (!isset($ds_types[$local_data_id][$ds]['data_source_type_id'])) {
 								$polling_interval = db_fetch_cell_prepared('SELECT rrd_step
 									FROM data_template_data
 									WHERE local_data_id = ?',
-									array($data_source['local_data_id']));
+									array($local_data_id));
 
-								$ds_type = db_fetch_cell_prepared('SELECT data_source_type_id
+								$ds_row = db_fetch_row_prepared('SELECT data_source_type_id, rrd_maximum
 									FROM data_template_rrd
-									WHERE local_data_id = ?',
-									array($data_source['local_data_id']));
+									WHERE local_data_id = ?
+									AND data_source_name = ?',
+									array($local_data_id, $ds));
+
+								if (!cacti_sizeof($ds_row)) {
+									$ds_row = db_fetch_row_prepared('SELECT data_source_type_id, rrd_maximum
+										FROM data_template_rrd
+										WHERE local_data_id = ?',
+										array($local_data_id));
+								}
+
+								$ds_type   = isset($ds_row['data_source_type_id']) ? $ds_row['data_source_type_id'] : '';
+								$max_value = isset($ds_row['rrd_maximum']) ? $ds_row['rrd_maximum'] : 'U';
+
+								if ($ds_type != '') {
+									$ds_types[$local_data_id][$ds] = array(
+										'data_source_type_id' => $ds_type,
+										'rrd_step'            => $polling_interval,
+										'rrd_maximum'         => $max_value
+									);
+								}
 							} else {
-								$polling_interval = $ds_types[$result['rrd_name']]['rrd_step'];
-								$ds_type          = $ds_types[$result['rrd_name']]['data_source_type_id'];
+								$polling_interval = $ds_types[$local_data_id][$ds]['rrd_step'];
+								$ds_type          = $ds_types[$local_data_id][$ds]['data_source_type_id'];
+								$max_value        = $ds_types[$local_data_id][$ds]['rrd_maximum'];
 							}
 
 							switch ($ds_type) {
 							case 2:	// COUNTER
 							case 6:	// DCOUNTER
-								/* get the last values from the database for COUNTER and DERIVE data sources */
-								$ds_last = db_fetch_cell_prepared('SELECT SQL_NO_CACHE `value`
-									FROM data_source_stats_hourly_last
-									WHERE local_data_id = ?
-									AND rrd_name = ?',
-									array($result['local_data_id'], $result['rrd_name']));
+								/* get the last values from the prefetched cache for COUNTER and DERIVE data sources */
+								$ds_last = isset($last_values[$local_data_id][$ds]) ? $last_values[$local_data_id][$ds] : '';
 
-								if ($ds_last == '' || $ds_last == 'NULL') {
+								if ($ds_last === '' || $ds_last === null || $ds_last === 'NULL') {
 									$currentval = 'NULL';
 								} elseif ($result['output'] == 'NULL') {
 									$currentval = 'NULL';
@@ -777,8 +841,6 @@ function dsstats_poller_output(&$rrd_update_array) {
 									/* everything is normal */
 									$currentval = $result['output'] - $ds_last;
 								} else {
-									$max_value = $ds_types[$result['rrd_name']]['rrd_maximum'];
-
 									/* possible overflow, see if its 32bit or 64bit */
 									if ($ds_last > 4294967295) {
 										$currentval = (18446744073709551615 - $ds_last) + $result['output'];
@@ -792,31 +854,36 @@ function dsstats_poller_output(&$rrd_update_array) {
 								}
 
 								if ($currentval != 'NULL') {
-									$currentval = $currentval / $polling_interval;
+									if ($polling_interval > 0) {
+										$currentval = $currentval / $polling_interval;
 
-									if ($ds_type == 6) {
-										$currentval = round($currentval, 0);
+										if ($ds_type == 6) {
+											$currentval = round($currentval, 0);
+										}
+									} else {
+										$currentval = 'NULL';
 									}
 								}
 
 								$lastval = $result['output'];
 
-								if ($ds_type == 6) {
+								if ($ds_type == 6 && is_numeric($lastval)) {
 									$lastval = round($lastval, 0);
+								}
+
+								if ($lastval !== '' && $lastval !== 'NULL') {
+									$last_values[$local_data_id][$ds] = $lastval;
 								}
 
 								break;
 							case 3:	// DERIVE
 							case 7:	// DDERIVE
-								/* get the last values from the database for COUNTER and DERIVE data sources */
-								$ds_last = db_fetch_cell_prepared('SELECT SQL_NO_CACHE `value`
-									FROM data_source_stats_hourly_last
-									WHERE local_data_id = ?
-									AND rrd_name = ?', array($result['local_data_id'], $result['rrd_name']));
+								/* get the last values from the prefetched cache for COUNTER and DERIVE data sources */
+								$ds_last = isset($last_values[$local_data_id][$ds]) ? $last_values[$local_data_id][$ds] : '';
 
-								if ($ds_last == '') {
+								if ($ds_last === '' || $ds_last === null || $ds_last === 'NULL') {
 									$currentval = 'NULL';
-								} elseif ($result['output'] != 'NULL') {
+								} elseif ($result['output'] != 'NULL' && $polling_interval > 0) {
 									$currentval = ($result['output'] - $ds_last) / $polling_interval;
 
 									if ($ds_type == 7) {
@@ -828,8 +895,12 @@ function dsstats_poller_output(&$rrd_update_array) {
 
 								$lastval = $result['output'];
 
-								if ($ds_type == 7) {
+								if ($ds_type == 7 && is_numeric($lastval)) {
 									$lastval = round($lastval, 0);
+								}
+
+								if ($lastval !== '' && $lastval !== 'NULL') {
+									$last_values[$local_data_id][$ds] = $lastval;
 								}
 
 								break;
@@ -860,7 +931,7 @@ function dsstats_poller_output(&$rrd_update_array) {
 
 								break;
 							default:
-								cacti_log("WARNING: Unknown RRDtool Data Type '" . $ds_types[$result['rrd_name']]['data_source_type_id'] . "', For '" . $result['rrd_name'] . "'", false, 'DSSTATS');
+								cacti_log("WARNING: Unknown RRDtool Data Type '" . $ds_type . "', For '" . $result['rrd_name'] . "'", false, 'DSSTATS');
 
 								break;
 							}
@@ -978,9 +1049,7 @@ function dsstats_boost_bottom() {
 			sleep(2);
 		}
 
-		dsstats_get_and_store_ds_avgpeak_values('daily', 'child', 0);
-
-		dsstats_log_statistics('DAILY');
+		dsstats_log_statistics('BOOST');
 	}
 }
 

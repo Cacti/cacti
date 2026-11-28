@@ -1544,7 +1544,7 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 			SELECT *
 			FROM settings
 			WHERE name LIKE "path_spine%"
-			AND name="poller_type"');
+			OR name="poller_type"');
 		replicate_table_to_poller($rcnn_id, $data, 'settings');
 	}
 
@@ -1710,7 +1710,7 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 			db_execute_prepared("DELETE FROM poller_item
 				WHERE last_updated < ?
 				AND last_updated > '0000-00-00'
-				AND last_updated NOT NULL",
+				AND last_updated IS NOT NULL",
 				array(date('Y-m-d H:i:s', $time)), false, $rcnn_id);
 		}
 
@@ -1901,7 +1901,7 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id, $truncate
 		// Find columns to skip, or exclude from updates
 		foreach($columns as $index => $c) {
 			if (!db_column_exists($table, $c, false, $conn)) {
-				$skipcols[$index] = $c;
+				$skipcols[$c] = true;
 			} else {
 				$prefix .= ($colcnt > 0 ? ', ':'') . "`$c`";
 				$colcnt++;
@@ -1914,7 +1914,7 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id, $truncate
 			$colcnt  = 0;
 			$sql_row = '(';
 			foreach($row as $col => $value) {
-				if (array_search($col, $skipcols) === false) {
+				if (!isset($skipcols[$col])) {
 					$sql_row .= ($colcnt > 0 ? ', ':'') . db_qstr($value);
 					$colcnt++;
 				}
@@ -2124,9 +2124,9 @@ function replicate_table_to_poller($conn, &$data, $table, $exclude = false) {
 		// Find columns to skip from updates
 		foreach($columns as $index => $c) {
 			if (!db_column_exists($table, $c, false, $conn)) {
-				$skipcols[$index] = $c;
+				$skipcols[$c] = true;
 			} elseif ($exclude !== false && array_search($c, $exclude, true) !== false) {
-				$skipcols[$index] = $c;
+				$skipcols[$c] = true;
 			} else {
 				$prefix .= ($colcnt > 0 ? ', ':'') . $c;
 				$suffix .= ($colcnt > 0 ? ', ':'') . "$c=VALUES($c)";
@@ -2143,24 +2143,28 @@ function replicate_table_to_poller($conn, &$data, $table, $exclude = false) {
 			$colcnt  = 0;
 			$sql_row = '(';
 			foreach($row as $col => $value) {
-				if (array_search($col, $skipcols) === false) {
+				if (!isset($skipcols[$col])) {
 					$sql_row .= ($colcnt > 0 ? ', ':'') . db_qstr($value);
 					$colcnt++;
 				}
 			}
 			$sql_row .= ')';
-			$sql     .= ($rowcnt > 0 ? ', ':'') . $sql_row;
+			$row_sep  = ($rowcnt > 0 ? ', ' : '');
+			$row_len  = strlen($row_sep) + strlen($sql_row);
 
-			$rowcnt++;
-			$sqllen += strlen($sql_row);
-
-			if ($rowcnt > 150000 || ($sqllen + 1000 > $max_packet)) {
+			if ($rowcnt > 0 && ($rowcnt >= 150000 || ($sqllen + $row_len + 1000 > $max_packet))) {
 				db_execute($prefix . $sql . $suffix, true, $conn);
 				$rows_done += db_affected_rows($conn);
-				$sql = '';
-				$rowcnt = 0;
-				$sqllen = $ohead;
+				$sql     = '';
+				$rowcnt  = 0;
+				$sqllen  = $ohead;
+				$row_sep = '';
+				$row_len = strlen($sql_row);
 			}
+
+			$sql    .= $row_sep . $sql_row;
+			$rowcnt++;
+			$sqllen += $row_len;
 		}
 
 		if ($rowcnt > 0) {

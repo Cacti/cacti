@@ -529,27 +529,26 @@ function query_check_suitable($new_sort_field, $old_sort_field, $host_id, $snmp_
 
 function data_query_remap_indexes($local_data) {
 	if (cacti_sizeof($local_data)) {
-		foreach($local_data as $id) {
-			$index = db_fetch_cell_prepared('SELECT snmp_index
-				FROM data_local
-				WHERE id = ?',
-				array($id));
+		$ids = array();
 
-			$local_graph_ids = array_rekey(
-				db_fetch_assoc_prepared('SELECT DISTINCT gti.local_graph_id
-					FROM graph_templates_item AS gti
+		foreach ($local_data as $id) {
+			$id = (int) $id;
+			if ($id > 0) {
+				$ids[$id] = $id;
+			}
+		}
+
+		if (cacti_sizeof($ids)) {
+			foreach (array_chunk(array_values($ids), 1000) as $id_chunk) {
+				db_execute('UPDATE graph_local AS gl
+					INNER JOIN graph_templates_item AS gti
+					ON gti.local_graph_id = gl.id
 					INNER JOIN data_template_rrd AS dtr
-					ON gti.task_item_id=dtr.id
-					WHERE dtr.local_data_id = ?',
-					array($id)),
-				'local_graph_id', 'local_graph_id'
-			);
-
-			if (cacti_sizeof($local_graph_ids)) {
-				db_execute_prepared('UPDATE graph_local
-					SET snmp_index = ?
-					WHERE id IN(' . implode(', ', $local_graph_ids) . ')',
-					array($index));
+					ON gti.task_item_id = dtr.id
+					INNER JOIN data_local AS dl
+					ON dl.id = dtr.local_data_id
+					SET gl.snmp_index = dl.snmp_index
+					WHERE dtr.local_data_id IN (' . implode(', ', $id_chunk) . ')');
 			}
 		}
 	}
@@ -633,7 +632,7 @@ function get_data_query_array($snmp_query_id) {
 		/* snmp queries doe not require index_order
 		 * get it from the fields if not set
 		 */
-		calculate_or_set_index_order($raw_data);
+		calculate_or_set_index_order($xml_data);
 
 		/* store the array value to the global array for future reference */
 		$data_query_xml_arrays[$snmp_query_id] = $xml_data;
@@ -1148,7 +1147,8 @@ function query_snmp_host($host_id, $snmp_query_id) {
 						}
 					}
 
-					if (!empty($value_output_format)) {
+					if ($value_output_format !== SNMP_STRING_OUTPUT_GUESS) {
+						$results = array();
 						foreach ($oids as $oid) {
 							$results[$oid] = cacti_snmp_get($host['hostname'], $host['snmp_community'], $oid, $host['snmp_version'],
 								$host['snmp_username'], $host['snmp_password'], $host['snmp_auth_protocol'],
@@ -1599,7 +1599,6 @@ function data_query_rewrite_indexes(&$errmsg, $host_id, $snmp_query_id, $rewrite
 					$hash =  "$host_id@$snmp_query_id@$iv";
 					if (!isset($data_query_rewrite_indexes_cache[$hash])) {
 						$data_query_rewrite_indexes_cache[$hash] = array();
-						$iv = db_qstr($iv);
 
 						$field_values = db_fetch_assoc_prepared("SELECT snmp_index, field_value
 							FROM host_snmp_cache
@@ -1609,8 +1608,8 @@ function data_query_rewrite_indexes(&$errmsg, $host_id, $snmp_query_id, $rewrite
 							array($host_id, $snmp_query_id, $iv));
 
 						if (cacti_sizeof($field_values)) {
-							foreach ($field_values as $item) {
-								$data_query_rewrite_indexes_cache[$hash][$item['snmp_index']] = $item['field_value'];
+							foreach ($field_values as $field_item) {
+								$data_query_rewrite_indexes_cache[$hash][$field_item['snmp_index']] = $field_item['field_value'];
 							}
 						} else {
 							$errmsg[] = " field '$iv' was not found either in cache nor in DB";
@@ -1697,10 +1696,10 @@ function rewrite_snmp_enum_value($field_name, $value = null, $map = null) {
 				if ($matches[1] == 'NC') {
 					$src = '/' . str_replace('/', '\/', $matches[2]) . '/i';
 				} else {
-					$src = '/' . str_replace('/', '\/', $matches[1]) . '/';
+					$src = '/' . str_replace('/', '\/', $matches[2]) . '/';
 				}
 			} else {
-				$src = '/^' . str_replace('/^', '\/', $src) . '$/';
+				$src = '/^' . preg_quote($src, '/') . '$/';
 			}
 
 			$mapcache[$field_name][$src] = $dst;
@@ -2090,11 +2089,11 @@ function get_ordered_index_type_list($host_id, $data_query_id) {
 	if (isset($raw_xml['index_order_type'])) {
 		switch ($raw_xml['index_order_type']) {
 		case 'numeric':
-			$mustbenumeric = true;
+			$must_be_numeric = true;
 			break;
 		case 'alpha':
 		case 'alphabetic':
-			$mustbealpha = true;
+			$must_be_alpha = true;
 			break;
 		case 'alphanumeric':
 			break;
@@ -2212,18 +2211,18 @@ function get_ordered_index_type_list($host_id, $data_query_id) {
 
 				if (cacti_sizeof($field_values)) {
 					foreach ($field_values as $value) {
-						if ($must_be_numeric && !is_numeric($value)) {
+						if ($must_be_numeric && !is_numeric($value['field_value'])) {
 							if (read_config_option('data_source_trace') == 'on') {
 								cacti_log("Field Name '$field_name' found not suitable.  Must be numeric and non-numeric data found during Re-Index for Device[$host_id], DQ[$data_query_id]", false, 'DSTRACE');
 							}
 
-							continue;
-						} elseif ($must_be_alpha && is_numeric($value)) {
+							continue 2;
+						} elseif ($must_be_alpha && is_numeric($value['field_value'])) {
 							if (read_config_option('data_source_trace') == 'on') {
-								cacti_log("Field Name '$field_name' found not suitable.  Must be alphabetic and alphabetic data found during Re-Index for Device[$host_id], DQ[$data_query_id]", false, 'DSTRACE');
+								cacti_log("Field Name '$field_name' found not suitable.  Must be alphabetic and numeric data found during Re-Index for Device[$host_id], DQ[$data_query_id]", false, 'DSTRACE');
 							}
 
-							continue;
+							continue 2;
 						}
 					}
 				}
