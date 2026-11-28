@@ -247,7 +247,7 @@ function api_aggregate_create($aggregate_name, $graphs, $agg_template_id = 0) {
 		}
 
 		# update title cache
-		if (!empty($_local_graph_id)) {
+		if (!empty($local_graph_id)) {
 			update_graph_title_cache($local_graph_id);
 		}
 
@@ -337,8 +337,8 @@ function get_next_sequence($id, $field, $table_name, $group_query, $key_field='i
 			return $data['seq'];
 		}
 	} else {
-		$data = db_fetch_row("SELECT $field FROM $table_name WHERE $key_field = id");
-		return $data[$field];
+		$data = db_fetch_row_prepared("SELECT $field FROM $table_name WHERE $key_field = ?", [$id]);
+		return $data[$field] ?? 1;
 	}
 }
 
@@ -381,7 +381,7 @@ function aggregate_is_pure_stacked_graph($_local_graph_id) {
 function aggregate_is_stacked_graph($_local_graph_id) {
 	cacti_log(__FUNCTION__ . ' local_graph: ' . $_local_graph_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
-	$_pure_stacked_graph = false;
+	$_stacked_graph = false;
 
 	if (!empty($_local_graph_id)) {
 		# fetch all AREA graph items
@@ -862,29 +862,40 @@ function aggregate_prune_graphs($local_graph_id = 0) {
 	$aggregate_graphs = array();
 	$local_graph_ids  = array();
 
+	$sql_params       = [];
 	$sql_where        = '';
 	if ($local_graph_id > 0) {
-		$sql_where = "AND pagi.local_graph_id=$local_graph_id";
+		$sql_where    = 'AND ag.local_graph_id = ?';
+		$sql_params[] = $local_graph_id;
 	}
 
 	// Phase 1 Aggregate Graphs
-	$pruneme = db_fetch_assoc("SELECT
+	$pruneme = db_fetch_assoc_prepared("SELECT
 		pagi.aggregate_graph_id,
 		pagi.local_graph_id
 		FROM aggregate_graphs_items AS pagi
+		INNER JOIN aggregate_graphs AS ag
+		ON pagi.aggregate_graph_id = ag.id
 		LEFT JOIN graph_local AS gl
-		ON pagi.local_graph_id=gl.id
+		ON pagi.local_graph_id = gl.id
 		WHERE gl.id IS NULL
-		$sql_where");
+		$sql_where",
+		$sql_params);
 
-	foreach($pruneme as $p) {
-		$local_graph_ids[$p['local_graph_id']]      = $p['local_graph_id'];
-		$aggregate_graphs[$p['aggregate_graph_id']] = $p['aggregate_graph_id'];
+	if (cacti_sizeof($pruneme)) {
+		foreach ($pruneme as $p) {
+			$local_graph_ids[$p['local_graph_id']]      = (int) $p['local_graph_id'];
+			$aggregate_graphs[$p['aggregate_graph_id']] = (int) $p['aggregate_graph_id'];
+		}
 	}
 
 	if (cacti_sizeof($local_graph_ids)) {
+		$scope = ($local_graph_id > 0 && cacti_sizeof($aggregate_graphs))
+			? 'aggregate_graph_id IN (' . implode(',', $aggregate_graphs) . ') AND '
+			: '';
+
 		db_execute('DELETE FROM aggregate_graphs_items
-			WHERE local_graph_id IN (' . implode(',', $local_graph_ids) . ')');
+			WHERE ' . $scope . 'local_graph_id IN (' . implode(',', $local_graph_ids) . ')');
 	}
 
 	if (cacti_sizeof($aggregate_graphs) || $local_graph_id > 0) {

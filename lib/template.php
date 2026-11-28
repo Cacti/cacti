@@ -107,30 +107,34 @@ function push_out_data_source_custom_data($data_template_id) {
 		AND (dtd.local_data_template_data_id = ?)",
 		array($data_template_data['id']));
 
+	$input_fields_by_dtd = [];
+	if (cacti_sizeof($input_fields)) {
+		foreach ($input_fields as $input_field) {
+			if (isset($template_input_fields[$input_field['id']])) {
+				$input_fields_by_dtd[$input_field['data_template_data_id']][] = $input_field;
+			}
+		}
+	}
+
 	$ds_cnt    = 0;
 	$did_cnt   = 0;
 	$ds_in_str = '';
 	$did_vals  = '';
 	if (cacti_sizeof($data_sources)) {
 		foreach ($data_sources as $data_source) {
-			if (cacti_sizeof($input_fields)) {
-				foreach ($input_fields as $input_field) {
-					if ($data_source['id'] == $input_field['data_template_data_id'] &&
-						isset($template_input_fields[$input_field['id']])) {
-						/**
-						 * do not push out 'host fields'.  This list should never match as we have already
-						 * excluded these special types codes.  However, we will maintain for reference.
-						 */
-						if (!preg_match('/^' . VALID_HOST_FIELDS . '$/i', $input_field['type_code'])) {
-							/* this is not a 'host field', so we should either push out the value if it is templated */
-							$did_vals .= ($did_cnt == 0 ? '':',') . '(' . $input_field['id'] . ', ' . $data_source['id'] . ', ' . db_qstr($template_input_fields[$input_field['id']]['value']) . ')';
-							$did_cnt++;
-						} elseif ($template_input_fields[$input_field['id']]['value'] != $input_field['value']) {
-							/* templated input field deviates from current data source, so update required */
-							$did_vals .= ($did_cnt == 0 ? '':',') . '(' . $input_field['id'] . ', ' . $data_source['id'] . ', ' . db_qstr($template_input_fields[$input_field['id']]['value']) . ')';
-							$did_cnt++;
-						}
-					}
+			foreach ($input_fields_by_dtd[$data_source['id']] ?? [] as $input_field) {
+				/**
+				 * do not push out 'host fields'.  This list should never match as we have already
+				 * excluded these special types codes.  However, we will maintain for reference.
+				 */
+				if (!preg_match('/^' . VALID_HOST_FIELDS . '$/i', $input_field['type_code'])) {
+					/* this is not a 'host field', so we should either push out the value if it is templated */
+					$did_vals .= ($did_cnt == 0 ? '':',') . '(' . $input_field['id'] . ', ' . $data_source['id'] . ', ' . db_qstr($template_input_fields[$input_field['id']]['value']) . ')';
+					$did_cnt++;
+				} elseif ($template_input_fields[$input_field['id']]['value'] != $input_field['value']) {
+					/* templated input field deviates from current data source, so update required */
+					$did_vals .= ($did_cnt == 0 ? '':',') . '(' . $input_field['id'] . ', ' . $data_source['id'] . ', ' . db_qstr($template_input_fields[$input_field['id']]['value']) . ')';
+					$did_cnt++;
 				}
 			}
 
@@ -771,18 +775,18 @@ function resequence_graphs($graph_template_id, $local_graph_id = 0, $force = fal
 			}
 		}
 
-		foreach($local_graphs as $local_graph_id) {
-			if ($local_graph_id > 0 && $force) {
+		foreach($local_graphs as $lgid) {
+			if ($lgid > 0 && $force) {
 				$graph_items = db_fetch_assoc_prepared('SELECT *
 					FROM graph_templates_item
 					WHERE local_graph_id = ?
 					ORDER BY sequence, id',
-					array($local_graph_id));
+					[$lgid]);
 
 				$deletes = array();
 
 				if (cacti_sizeof($graph_items) != cacti_sizeof($template_items)) {
-					cacti_log(sprintf('WARNING: Graph Item Issue for Graph: %s, Template: %s, Items: %s/%s', $local_graph_id, $graph_template_id, cacti_sizeof($graph_items), cacti_sizeof($template_items)), false);
+					cacti_log(sprintf('WARNING: Graph Item Issue for Graph: %s, Template: %s, Items: %s/%s', $lgid, $graph_template_id, cacti_sizeof($graph_items), cacti_sizeof($template_items)), false);
 
 					// First search the graph_items list for items that don't exist in the template
 					foreach($graph_items as $gitem) {
@@ -820,7 +824,7 @@ function resequence_graphs($graph_template_id, $local_graph_id = 0, $force = fal
 						db_execute_prepared('DELETE FROM graph_templates_item
 							WHERE id IN (' . implode(',', $deletes) . ')
 							AND local_graph_id = ?',
-							array($local_graph_id));
+							[$lgid]);
 					}
 				}
 			}

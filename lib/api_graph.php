@@ -30,8 +30,6 @@ function api_delete_graphs(&$local_graph_ids, $delete_type) {
 		return;
 	}
 
-	api_graph_remove_aggregate_items($local_graph_ids);
-
 	switch ($delete_type) {
 	case '2': // delete all data sources referenced by this graph
 		$all_data_sources = array_rekey(
@@ -56,11 +54,11 @@ function api_delete_graphs(&$local_graph_ids, $delete_type) {
 					ON dtd.local_data_id=dtr.local_data_id
 					INNER JOIN graph_templates_item AS gti
 					ON dtr.id=gti.task_item_id
-					WHERE dtd.local_data_id > 0
+					WHERE ' . array_to_sql_or($all_data_sources, 'dtd.local_data_id') . '
+					AND dtd.local_data_id > 0
 					AND gti.local_graph_id NOT IN(SELECT local_graph_id FROM aggregate_graphs)
 					GROUP BY dtd.local_data_id
-					HAVING graphs = 1
-					AND ' . array_to_sql_or($all_data_sources, 'local_data_id')),
+					HAVING graphs = 1'),
 				'local_data_id', 'local_data_id'
 			);
 
@@ -78,9 +76,13 @@ function api_delete_graphs(&$local_graph_ids, $delete_type) {
 					ON dtd.local_data_id=dtr.local_data_id
 					LEFT JOIN graph_templates_item AS gti
 					ON dtr.id=gti.task_item_id
+					AND NOT EXISTS (
+						SELECT 1
+						FROM aggregate_graphs AS ag
+						WHERE ag.local_graph_id = gti.local_graph_id
+					)
 					WHERE ' . array_to_sql_or($all_data_sources, 'dtd.local_data_id') . '
 					AND gti.local_graph_id IS NULL
-					AND gti.local_graph_id NOT IN(SELECT local_graph_id FROM aggregate_graphs)
 					AND dtd.local_data_id > 0'),
 				'local_data_id', 'local_data_id'
 			);
