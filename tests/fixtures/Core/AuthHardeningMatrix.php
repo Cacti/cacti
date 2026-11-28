@@ -49,4 +49,13 @@ foreach ($scenarios as [$fixture, $mode, $expected]) {
 	}
 	$assertions++;
 }
+
+foreach (['enroll-valid' => 200, 'enroll-invalid' => 301, 'enroll-locked' => 429] as $mode => $status) {
+	$result = cacti_test_isolated_probe($root . '/tests/fixtures/AuthSecondFactorProbe.php', [$mode], true);
+
+	if ($result['enrollment']['status'] !== $status) {
+		throw new RuntimeException('Enrollment retry policy mismatch');
+	}
+	$assertions++;
+}
 print json_encode(['passed' => $assertions], JSON_THROW_ON_ERROR) . "\n";
