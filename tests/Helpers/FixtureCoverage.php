@@ -16,6 +16,15 @@ if ($fixtureCoveragePath !== false && $fixtureCoveragePath !== '') {
 	register_shutdown_function(static function () use ($fixtureCoveragePath) : void {
 		$data = xdebug_get_code_coverage();
 
+		// Child probes contribute statement coverage; no branch coverage is inferred.
+		foreach ($GLOBALS['cacti_fixture_child_coverage'] ?? [] as $file => $entry) {
+			$data[$file] ??= ['lines' => [], 'functions' => []];
+
+			foreach ($entry['lines'] ?? [] as $line => $hits) {
+				$data[$file]['lines'][$line] = max($hits, $data[$file]['lines'][$line] ?? -2);
+			}
+		}
+
 		foreach ($GLOBALS['cacti_fixture_source_map'] ?? [] as $temporary => $original) {
 			if (isset($data[$temporary])) {
 				$existing = $data[$original] ?? ['lines' => [], 'functions' => []];

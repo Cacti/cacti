@@ -658,6 +658,10 @@ msgstr ""
 msgid "No Aggregate Templates Found"
 msgstr ""
 
+#: auth_2fa.php lib/auth.php
+msgid "Your account has been locked.  Please contact your Administrator."
+msgstr ""
+
 #: auth_2fa.php
 msgid "Failed to verify token"
 msgstr ""
@@ -14024,18 +14028,6 @@ msgid "Access Denied!  Login Failed."
 msgstr ""
 
 #: lib/Auth/LocalAuthLoginProvider.php
-msgid "Access Denied!  Login failed, account disabled."
-msgstr ""
-
-#: lib/Auth/LocalAuthLoginProvider.php lib/auth.php
-msgid "Access Denied!  No password provided by user."
-msgstr ""
-
-#: lib/Auth/LocalAuthLoginProvider.php
-msgid "Access Denied! Login Failed."
-msgstr ""
-
-#: lib/Auth/LocalAuthLoginProvider.php
 msgid "Your Cacti administrator has forced complex passwords for logins and your current Cacti password does not match the new requirements.  Therefore, you must change your password now."
 msgstr ""
 
@@ -14781,16 +14773,16 @@ msgid "Device:"
 msgstr ""
 
 #: lib/auth.php
-msgid "Your account has been locked.  Please contact your Administrator."
-msgstr ""
-
-#: lib/auth.php
 msgid "Access Denied!  Login Disabled."
 msgstr ""
 
 #: lib/auth.php
 #, php-format
 msgid "%s authenticated by Web Server, but both Template and Guest Users are not defined in Cacti."
+msgstr ""
+
+#: lib/auth.php
+msgid "Access Denied!  No password provided by user."
 msgstr ""
 
 #: lib/auth.php login_sso.php

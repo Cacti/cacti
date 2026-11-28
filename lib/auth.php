@@ -5051,14 +5051,25 @@ function verify_2fa(int $user_id, string $code) : string {
 
 	$result = ['status' => 500, 'text' => __('Unknown error')];
 
-	if (!cacti_sizeof($current_user)) {
+	if (!is_array($current_user) || $current_user === []) {
 		$result['status'] = 404;
 		$result['text']   = __('ERROR: Unable to find user');
 	} else {
+		$username = $current_user['username'];
+		$realm    = (int) $current_user['realm'];
+
+		auth_checkclear_lockout($username, $realm);
+
+		if (auth_process_lockout_check($username, $realm)) {
+			return json_encode(['status' => 429, 'text' => __('Your account has been locked.  Please contact your Administrator.')]) ?: '';
+		}
+
 		$g       = new \Sonata\GoogleAuthenticator\GoogleAuthenticator();
 		$isValid = $g->checkCode($current_user['tfa_secret'], $code);
 
 		if (!$isValid) {
+			auth_process_lockout($username, $realm);
+
 			$result['status'] = 301;
 			$result['text']   = __('ERROR: Code was not verified, please try again');
 		} else {
