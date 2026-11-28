@@ -248,7 +248,8 @@ describe('graph_realtime.php hardening', function () use ($repoRoot) {
 	});
 
 	it('skips set_user_setting() when Guest account is active', function () use ($src) {
-		expect(substr_count($src, 'if (cacti_user_can_save_own_settings())'))->toBeGreaterThanOrEqual(2);
+		expect($src)->toContain('$save_preferences = cacti_user_can_save_own_settings();')
+			->and(substr_count($src, 'if ($save_preferences)'))->toBe(2);
 	});
 });
 

@@ -58,6 +58,7 @@ if (!is_string($_SESSION['sess_realtime_hash'] ?? null) || !preg_match('/^[a-fA-
 }
 
 $hash = $_SESSION['sess_realtime_hash'];
+$save_preferences = cacti_user_can_save_own_settings();
 
 set_default_action();
 
@@ -293,8 +294,8 @@ case 'countdown':
 	}
 
 	/* save user preferences */
-	if (cacti_user_can_save_own_settings()) {
-		set_user_setting('realtime_interval', $ds_step);
+	if ($save_preferences) {
+		set_user_setting('realtime_interval', $graph_data_array['ds_step']);
 		set_user_setting('realtime_gwindow', abs(get_request_var('graph_start')));
 		set_user_setting('realtime_size', get_request_var('size'));
 		set_user_setting('realtime_nolegend', get_request_var('graph_nolegend'));
@@ -369,7 +370,7 @@ if (!isset($_SESSION['sess_realtime_graph_start'])) {
 }
 
 /* save user preferences */
-if (cacti_user_can_save_own_settings()) {
+if ($save_preferences) {
 	set_user_setting('realtime_interval', get_request_var('ds_step'));
 	set_user_setting('realtime_gwindow', abs(get_request_var('graph_start')));
 	set_user_setting('realtime_size', get_request_var('size'));
