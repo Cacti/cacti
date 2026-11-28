@@ -280,6 +280,28 @@ if ($mode === 'collector') {
 	exit;
 }
 
+if ($mode === 'queue-rejection') {
+	define('CACTI_PATH_RRA', __DIR__);
+	define('CACTI_PATH_BASE', $root);
+
+	foreach (['rrdclean_queue_local_source', 'rrdclean_proxy_name_is_allowed'] as $function) {
+		\cacti_fixture_source_function($root . '/poller_maintenance.php', $function, __NAMESPACE__);
+	}
+
+	check(!rrdclean_proxy_name_is_allowed(['invalid']), 'A proxy target must be a string');
+	$locals = [
+		'file_array' => [['name' => '../outside.rrd', 'local_data_id' => 1, 'action' => 1]],
+		'proxy'      => false,
+		'rra_path'   => CACTI_PATH_RRA,
+	];
+	\cacti_fixture_source_block($root . '/poller_maintenance.php', __NAMESPACE__,
+		'~// now scan the files\s*(foreach \(\$file_array as \$file\) \{.*?^\t\})~ms', $locals);
+	check($GLOBALS['writes'] === [['DELETE', ['../outside.rrd']]], 'A refused local entry must be dequeued');
+	check(count($GLOBALS['logs']) === 1, 'The refused entry must be reported');
+	finish(['dequeued' => 1, 'warnings' => 1]);
+	exit;
+}
+
 // The remaining modes run page controller blocks behind the real POST check.
 require $root . '/lib/html.php';
 require $root . '/lib/html_utility.php';

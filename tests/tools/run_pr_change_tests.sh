@@ -99,7 +99,7 @@ run_probe DisplayAndValidation.php display-validation
 run_probe DisplayAndValidation.php input-method-save save
 run_probe RrdCleanerProxyQueue.php rrd-cleaner-proxy-queue
 run_probe RrdCleanerLocalSource.php rrd-cleaner-local-source
-for mode in escape collector post; do
+for mode in escape collector post queue-rejection; do
 	run_probe CollectorCleanupGates.php "collector-cleanup-$mode" "$mode"
 done
 for action in 4 6; do
