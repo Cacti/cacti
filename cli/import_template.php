@@ -91,7 +91,7 @@ if (cacti_sizeof($parms)) {
 				display_version();
 				exit(0);
 			default:
-				print 'ERROR: Invalid Argument: ($arg)' . PHP_EOL . PHP_EOL;
+				print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
 				exit(1);
 		}
 	}
@@ -99,13 +99,13 @@ if (cacti_sizeof($parms)) {
 	if($profile_id > 0) {
 		if ($with_profile) {
 			print "WARNING: '--with-profile' and '--profile-id=N' are exclusive. Ignoring '--with-profile'" . PHP_EOL;
-		} else {
-			$id = db_fetch_cell_prepared('SELECT id FROM data_source_profiles WHERE id = ?', array($profile_id));
+		}
 
-			if (empty($id)) {
-				print "WARNING: Data Source Profile ID $profile_id not found. Using System Default" . PHP_EOL;
-				$id = db_fetch_cell_prepared('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
-			}
+		$id = db_fetch_cell_prepared('SELECT id FROM data_source_profiles WHERE id = ?', array($profile_id));
+
+		if (empty($id)) {
+			print "WARNING: Data Source Profile ID $profile_id not found. Using System Default" . PHP_EOL;
+			$id = db_fetch_cell_prepared('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
 		}
 	} else {
 		$id = db_fetch_cell_prepared('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
@@ -132,7 +132,7 @@ if (cacti_sizeof($parms)) {
 				exit(1);
 			}
 
-			import_display_results($debug_data, array(), $preview_only);
+			import_display_results($debug_data, array(), false, $preview_only);
 		} else {
 			print "ERROR: file $filename is not readable, or does not exist" . PHP_EOL . PHP_EOL;
 			exit(1);
@@ -177,7 +177,7 @@ function display_help() {
 	print '    --profile-id=N    Use the specific profile id when importing' . PHP_EOL;
 	print '    --remove-orphans  If importing a new version of the template, old' . PHP_EOL;
 	print '                      elements will be removed, if they do not exist' . PHP_EOL;
-	print '                      in the new version of the template.';
+	print '                      in the new version of the template.' . PHP_EOL;
 	print '    --replace-svalues If replacing an old version of either a Device' . PHP_EOL;
 	print '                      Template with Data Queries or a Data Query, when' . PHP_EOL;
 	print '                      you select this option, all Data Query Suggested' . PHP_EOL;

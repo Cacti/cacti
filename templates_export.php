@@ -60,6 +60,13 @@ function form_save() {
     /* ==================================================== */
 
 	if (isset_request_var('save_component_export')) {
+		if (!isset($export_types[get_nfilter_request_var('export_type')])) {
+			raise_message('export_type', __('The selected Export Type is not valid.'), MESSAGE_LEVEL_ERROR);
+			header('Location: templates_export.php');
+
+			return;
+		}
+
 		$export_errors = 0;
 		$xml_data = get_item_xml(get_nfilter_request_var('export_type'), get_nfilter_request_var('export_item_id'), (((isset_request_var('include_deps') ? get_nfilter_request_var('include_deps') : '') == '') ? false : true));
 

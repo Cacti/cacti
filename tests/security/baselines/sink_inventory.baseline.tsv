@@ -541,7 +541,6 @@ fs_write	./cli/audit_database.php:213		if (file_put_contents($path, $contents) =
 fs_write	./cli/change_device.php:1169		$fh = fopen($file, 'r');
 fs_write	./cli/float_rrdfiles.php:350				$fp = fopen($tmp_file, 'w');
 fs_write	./cli/float_rrdfiles.php:354					$lf     = @fopen('php://stderr', 'w');
-fs_write	./cli/import_package.php:159				$fp   = fopen($filename, 'r');
 fs_write	./cli/import_template.php:121				$fp = fopen($filename,'r');
 fs_write	./cli/input_whitelist.php:188			file_put_contents($config['input_whitelist'], json_encode($input));
 fs_write	./cli/md5sum.php:179		if (file_put_contents($md5_file,$output) === false) {
@@ -959,6 +958,7 @@ header_redirect	./sites.php:279			header('Location: sites.php?header=false&actio
 header_redirect	./sites.php:367						header('Location: sites.php?header=false');
 header_redirect	./sites.php:392			header('Location: sites.php?header=false');
 header_redirect	./sites.php:442			header('Location: sites.php?header=false');
+header_redirect	./templates_export.php:65				header('Location: templates_export.php');
 header_redirect	./templates_export.php:78					header('Location: templates_export.php');
 header_redirect	./templates_import.php:128				header('Location: templates_import.php');
 header_redirect	./templates_import.php:77				header('Location: templates_import.php'); exit;
