@@ -3,6 +3,7 @@
 // Runs in its own process so protocol helpers and session state stay isolated.
 $root = dirname(__DIR__, 2);
 $mode = $argv[1];
+require $root . '/tests/Helpers/RequestCoverage.php';
 require $root . '/include/vendor/autoload.php';
 define('CACTI_PATH_INCLUDE', $root . '/include');
 define('CACTI_PATH_LIBRARY', $root . '/lib');
